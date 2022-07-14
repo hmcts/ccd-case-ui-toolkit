@@ -60,7 +60,7 @@ class TabsComponent {
 class TabComponent {
 
   @Input()
-  selected: boolean;
+  public selected: boolean;
 }
 
 @Component({
@@ -77,19 +77,19 @@ class TasksContainerComponent {
 })
 class EventTriggerComponent {
   @Input()
-  triggers: CaseViewTrigger[];
+  public triggers: CaseViewTrigger[];
 
   @Input()
-  triggerText: string;
+  public triggerText: string;
 
   @Input()
-  isDisabled: boolean;
+  public isDisabled: boolean;
 
   @Output()
-  onTriggerSubmit: EventEmitter<CaseViewTrigger> = new EventEmitter();
+  public onTriggerSubmit: EventEmitter<CaseViewTrigger> = new EventEmitter();
 
   @Output()
-  onTriggerChange: EventEmitter<any> = new EventEmitter();
+  public onTriggerChange: EventEmitter<any> = new EventEmitter();
 }
 
 @Component({
@@ -99,13 +99,13 @@ class EventTriggerComponent {
 class CallbackErrorsComponent {
 
   @Input()
-  triggerTextIgnore: string;
+  public triggerTextIgnore: string;
   @Input()
-  triggerTextContinue: string;
+  public triggerTextContinue: string;
   @Input()
-  callbackErrorsSubject: Subject<any> = new Subject();
+  public callbackErrorsSubject: Subject<any> = new Subject();
   @Output()
-  callbackErrorsContext: EventEmitter<any> = new EventEmitter();
+  public callbackErrorsContext: EventEmitter<any> = new EventEmitter();
 
 }
 
@@ -119,19 +119,19 @@ const MarkdownComponent: any = MockComponent({
   inputs: ['content', 'markdownUseHrefAsRouterLink']
 });
 
-let CaseActivityComponent: any = MockComponent({
+const CaseActivityComponent: any = MockComponent({
   selector: 'ccd-activity',
   inputs: ['caseId', 'displayMode']
 });
 
-let FieldReadComponent: any = MockComponent({
+const FieldReadComponent: any = MockComponent({
   selector: 'ccd-field-read', inputs: [
     'caseField',
     'caseReference'
   ]
 });
 
-let LinkComponent: any = MockComponent({
+const LinkComponent: any = MockComponent({
   selector: 'a', inputs: [
     'routerLink'
   ]
@@ -448,7 +448,7 @@ const CASE_VIEW: CaseView = {
   metadataFields: METADATA,
 };
 
-let mockRoute: any = {
+const mockRoute: any = {
   snapshot: {
     data: {
       case: CASE_VIEW
@@ -601,14 +601,14 @@ xdescribe('CaseFullAccessViewComponent', () => {
   }));
 
   it('should render a case header', () => {
-    let header = de.query(By.directive(CaseHeaderComponent));
+    const header = de.query(By.directive(CaseHeaderComponent));
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
   });
 
   it('should render the correct tabs based on show_condition', () => {
     // we expect address tab not to be rendered
-    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+    const tabHeaders = de.queryAll($ALL_TAB_HEADERS);
     expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length);
     expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
     expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[0].label);
@@ -616,7 +616,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
   it('should render the history tab first and select it', () => {
     // we expect address tab not to be rendered
-    let firstTabHeader = de.query($FIRST_TAB_HEADER);
+    const firstTabHeader = de.query($FIRST_TAB_HEADER);
 
     expect(firstTabHeader).toBeTruthy();
     expect(attr(firstTabHeader, 'title')).toBe('History');
@@ -624,7 +624,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
   it('should render each tab defined by the Case view', () => {
     // we expect address tab not to be rendered
-    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+    const tabHeaders = de.queryAll($ALL_TAB_HEADERS);
     expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length);
 
     expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeTruthy('Could not find tab Name');
@@ -632,7 +632,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should render the field labels based on show_condition', () => {
-    let headers = de
+    const headers = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr>th'));
 
@@ -645,21 +645,21 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should render tabs in ascending order', () => {
-    let tabHeaders = de.queryAll($CASE_TAB_HEADERS);
+    const tabHeaders = de.queryAll($CASE_TAB_HEADERS);
 
     expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[0].label);
     expect(orderService.sort).toHaveBeenCalledWith(CASE_VIEW.tabs);
   });
 
   it('should render a row for each field in a given tab', () => {
-    let rows = de
+    const rows = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr'));
     expect(rows.length).toBe(FIELDS.length);
   });
 
   it('should render each simple field label as a table header', () => {
-    let headers = de
+    const headers = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr>th'));
 
@@ -670,13 +670,13 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should render each compound field without label as a cell spanning 2 columns', () => {
-    let headers = de
+    const headers = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr.complex-field>th'));
 
     expect(headers.length).toBe(0);
 
-    let cells = de
+    const cells = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr.compound-field>th'));
 
@@ -684,19 +684,19 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should render each field value using FieldReadComponent', () => {
-    let readFields_fields = de
+    const readFields_fields = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr td>span>ccd-field-read'));
 
-    let readFields_compound = de
+    const readFields_compound = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr th>span>ccd-field-read'));
 
-    let readFields = readFields_fields.concat(readFields_compound);
+    const readFields = readFields_fields.concat(readFields_compound);
 
     FIELDS.forEach(field => {
       expect(readFields.find(f => {
-        let fieldInstance = f.componentInstance;
+        const fieldInstance = f.componentInstance;
         return JSON.stringify(fieldInstance.caseField) === JSON.stringify(field);
       }))
         .toBeTruthy(`Could not find field with type ${field.field_type}`);
@@ -705,7 +705,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should render fields in ascending order', () => {
-    let headers = de
+    const headers = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr>th'));
 
@@ -714,11 +714,11 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should render an event trigger', () => {
-    let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+    const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
 
     expect(eventTriggerElement).toBeTruthy();
 
-    let eventTrigger = eventTriggerElement.componentInstance;
+    const eventTrigger = eventTriggerElement.componentInstance;
 
     expect(eventTrigger.triggers).toEqual(TRIGGERS);
   });
@@ -726,8 +726,8 @@ xdescribe('CaseFullAccessViewComponent', () => {
   it('should emit trigger event on trigger submit', () => {
     spyOn(component, 'applyTrigger').and.callThrough();
 
-    let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
-    let eventTrigger = eventTriggerElement.componentInstance;
+    const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+    const eventTrigger = eventTriggerElement.componentInstance;
 
     eventTrigger.onTriggerSubmit.emit(TRIGGERS[0]);
 
@@ -766,7 +766,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
     deDialog = fixtureDialog.debugElement;
     fixtureDialog.detectChanges();
 
-    let dialogDeleteButton = deDialog.query($DIALOG_DELETE_BUTTON);
+    const dialogDeleteButton = deDialog.query($DIALOG_DELETE_BUTTON);
     dialogDeleteButton.nativeElement.click();
 
     expect(componentDialog.result).toEqual('Delete');
@@ -779,7 +779,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
     deDialog = fixtureDialog.debugElement;
     fixtureDialog.detectChanges();
 
-    let dialogCancelButton = deDialog.query($DIALOG_CANCEL_BUTTON);
+    const dialogCancelButton = deDialog.query($DIALOG_CANCEL_BUTTON);
     dialogCancelButton.nativeElement.click();
 
     expect(componentDialog.result).toEqual('Cancel');
@@ -787,13 +787,13 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should change button label when notified about callback errors', () => {
-    let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     component.callbackErrorsNotify(callbackErrorsContext);
     fixture.detectChanges();
 
-    let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
-    let eventTrigger = eventTriggerElement.componentInstance;
+    const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+    const eventTrigger = eventTriggerElement.componentInstance;
 
     expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
 
@@ -805,18 +805,18 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should initially not display form errors', () => {
-    let error = de.query($ERROR_SUMMARY);
+    const error = de.query($ERROR_SUMMARY);
     expect(error).toBeFalsy();
     expect(component.error).toBeFalsy();
   });
 
   it('should clear errors and warnings', () => {
-    let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     component.callbackErrorsNotify(callbackErrorsContext);
     fixture.detectChanges();
     component.clearErrorsAndWarnings();
-    let error = de.query($ERROR_SUMMARY);
+    const error = de.query($ERROR_SUMMARY);
     expect(error).toBeFalsy();
     expect(component.error).toBeFalsy();
     expect(component.ignoreWarning).toBeFalsy();
@@ -895,7 +895,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should contain a print link', () => {
-    let printLink = de.query($PRINT_LINK);
+    const printLink = de.query($PRINT_LINK);
 
     expect(printLink).toBeTruthy();
     expect(printLink.componentInstance.routerLink).toEqual('print');
@@ -904,7 +904,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
   it('should not contain a print link if Draft', () => {
     component.caseDetails.case_id = 'DRAFT123';
     fixture.detectChanges();
-    let printLink = de.query($PRINT_LINK);
+    const printLink = de.query($PRINT_LINK);
 
     expect(printLink).toBeFalsy();
   });
@@ -912,7 +912,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
   it('should not contain a print link if printableDocumentsUrl not configured', () => {
     component.caseDetails.case_type.printEnabled = null;
     fixture.detectChanges();
-    let printLink = de.query($PRINT_LINK);
+    const printLink = de.query($PRINT_LINK);
     expect(component.isPrintEnabled()).toBeFalsy();
     expect(printLink).toBeFalsy();
   });
@@ -1046,7 +1046,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
   }));
 
   it('should not display any tabs if unavailable', () => {
-    let tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+    const tabHeaders = de.queryAll($ALL_TAB_HEADERS);
     expect(tabHeaders.length).toBe(0);
   });
 });
@@ -1134,8 +1134,8 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
   }));
 
   it('should not display print and event selector if disabled via inputs', () => {
-    let eventTriggerElement = de.query(By.directive(EventTriggerComponent));
-    let printLink = de.query($PRINT_LINK);
+    const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+    const printLink = de.query($PRINT_LINK);
 
     expect(eventTriggerElement).toBeFalsy();
     expect(printLink).toBeFalsy();
@@ -1202,7 +1202,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks';
             }
           },
           ErrorNotifierService,
@@ -1258,9 +1258,9 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((<HTMLElement>tasksTab.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
+    expect((tasksTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
   });
-})
+});
 
 describe('CaseFullAccessViewComponent - appendedTabs', () => {
 
@@ -1322,7 +1322,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks';
             }
           },
           ErrorNotifierService,
@@ -1381,10 +1381,10 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     expect(matTabHTMLElement.children.length).toBe(6);
     const hearingsTab: HTMLElement = matTabHTMLElement.children[5] as HTMLElement;
-    expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
+    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Hearings');
   });
 
-})
+});
 
 describe('CaseFullAccessViewComponent - ends with caseID', () => {
 
@@ -1445,7 +1445,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456'
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456';
             }
           },
           ErrorNotifierService,
@@ -1482,10 +1482,10 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     expect(matTabHTMLElement.children.length).toBe(3);
     const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('History');
+    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('History');
   });
 
-})
+});
 
 // noinspection DuplicatedCode
 describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
@@ -1599,13 +1599,13 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((<HTMLElement>tasksTab0.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
+    expect((tasksTab0.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Tasks');
     const tasksTab1: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
-    expect((<HTMLElement>tasksTab1.querySelector('.mat-tab-label-content')).innerText).toBe('Roles and access');
+    expect((tasksTab1.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
     const tasksTab2: HTMLElement = matTabHTMLElement.children[2] as HTMLElement;
-    expect((<HTMLElement>tasksTab2.querySelector('.mat-tab-label-content')).innerText).toBe('Overview');
+    expect((tasksTab2.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Overview');
     const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
-    expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
+    expect((tasksTab3.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Case notes');
   });
 });
 

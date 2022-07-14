@@ -1,28 +1,28 @@
-import { By } from '@angular/platform-browser';
-import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule }
   from '@angular-material-components/datetime-picker';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
 import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
+import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
-import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
-import { DatetimePickerComponent } from './datetime-picker.component';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { FieldLabelPipe, FirstErrorPipe } from '../utils';
+import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
+import { DatetimePickerComponent } from './datetime-picker.component';
 
 describe('DatetimePickerComponent', () => {
 
   let component: DatetimePickerComponent;
   let fixture: ComponentFixture<DatetimePickerComponent>;
-  let caseFieldService = new CaseFieldService();
+  const caseFieldService = new CaseFieldService();
   // changing custom formats to make it easier to get date from input
   CUSTOM_MOMENT_FORMATS.parse.dateInput = 'DD/MM/YYYY, HH:mm:ss';
   CUSTOM_MOMENT_FORMATS.display.dateInput = 'DD/MM/YYYY, HH:mm:ss';
@@ -33,16 +33,16 @@ describe('DatetimePickerComponent', () => {
     type: 'DateTime'
   };
   const initialDateTime = new Date();
-  const initialDateEntryParameter = 'DD/MM/YYYY HH:mm:ss'
+  const initialDateEntryParameter = 'DD/MM/YYYY HH:mm:ss';
 
-  const CASE_FIELD: CaseField = <CaseField>({
+  const CASE_FIELD: CaseField = ({
     id: FIELD_ID,
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: initialDateTime,
     dateTimeEntryFormat: initialDateEntryParameter
-  });
+  }) as CaseField;
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
@@ -130,7 +130,7 @@ describe('DatetimePickerComponent', () => {
     tick(1);
     expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).toBeNull();
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+    const toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
     toggle.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
     expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
@@ -139,16 +139,16 @@ describe('DatetimePickerComponent', () => {
   }));
 
   it('should be able to change the format via caseField', fakeAsync(() => {
-    const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss'
+    const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss';
 
-    const FIRST_CASE_FIELD: CaseField = <CaseField>({
+    const FIRST_CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: initialDateTime,
       dateTimeEntryFormat: firstDateEntryParameter
-    });
+    }) as CaseField;
 
     component.caseField = FIRST_CASE_FIELD;
     component.ngOnInit();
@@ -158,16 +158,16 @@ describe('DatetimePickerComponent', () => {
     const firstFormattedDate = fixture.nativeElement.querySelector('input').value;
     expect(firstFormattedDate).not.toBe(null);
 
-    const secondDateEntryParameter = 'DD+MM+YYYY ss:mm:HH'
+    const secondDateEntryParameter = 'DD+MM+YYYY ss:mm:HH';
 
-    const SECOND_CASE_FIELD: CaseField = <CaseField>({
+    const SECOND_CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: initialDateTime,
       dateTimeEntryFormat: secondDateEntryParameter
-    });
+    }) as CaseField;
 
     // EUI-4118 - changed test to refer back to previous case field due to intermittent errors based on reactive form
     component.caseField = CASE_FIELD;
@@ -187,13 +187,13 @@ describe('DatetimePickerComponent', () => {
     tick(1);
     const initialValue = fixture.nativeElement.querySelector('input').value;
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+    const toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
     toggle.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
     expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
 
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -208,13 +208,13 @@ describe('DatetimePickerComponent', () => {
     const initialValue = fixture.nativeElement.querySelector('input').value;
     const initialDate = new Date();
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+    const toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
     toggle.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
     expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
 
-    let dayCells = fixture.debugElement.queryAll(
+    const dayCells = fixture.debugElement.queryAll(
       By.css('.mat-calendar-body-cell')
     );
 
@@ -222,7 +222,7 @@ describe('DatetimePickerComponent', () => {
     dayCells[0].nativeElement.click();
     fixture.detectChanges();
 
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -248,16 +248,16 @@ describe('DatetimePickerComponent', () => {
     fixture.detectChanges();
     tick(1);
 
-    const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss'
+    const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss';
 
-    const FIRST_CASE_FIELD: CaseField = <CaseField>({
+    const FIRST_CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: initialDateTime,
       dateTimeEntryFormat: firstDateEntryParameter
-    });
+    }) as CaseField;
 
     component.caseField = FIRST_CASE_FIELD;
     fixture.detectChanges();
@@ -267,7 +267,7 @@ describe('DatetimePickerComponent', () => {
 
     clickFirstElement(fixture);
 
-    let dayCells = fixture.debugElement.queryAll(
+    const dayCells = fixture.debugElement.queryAll(
       By.css('.mat-calendar-body-cell')
     );
 
@@ -279,7 +279,7 @@ describe('DatetimePickerComponent', () => {
 
     // check the new input against the first day of the month of the year in order to verify
     if (fixture.debugElement.query(By.css('.actions button'))) {
-      let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+      const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
       confirm.dispatchEvent(new MouseEvent('click'));
       fixture.detectChanges();
       if (initialDateTime.getDate() !== 1) {
@@ -302,7 +302,7 @@ describe('DatetimePickerComponent', () => {
     const originalHourValue = +initialValue.substring(11, 13);
     const originalMinuteValue = +initialValue.substring(14, 16);
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+    const toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
     toggle.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -316,7 +316,7 @@ describe('DatetimePickerComponent', () => {
     timeChanges[4].nativeElement.click();
     fixture.detectChanges();
 
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -340,7 +340,7 @@ describe('DatetimePickerComponent', () => {
 
     const initialValue = fixture.nativeElement.querySelector('input').value;
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+    const toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
     toggle.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -355,7 +355,7 @@ describe('DatetimePickerComponent', () => {
     }
     fixture.detectChanges();
 
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -374,7 +374,7 @@ describe('DatetimePickerComponent', () => {
     const initialValue = fixture.nativeElement.querySelector('input').value;
     const originalHourValue = +initialValue.substring(11, 13);
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+    const toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
     toggle.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -389,7 +389,7 @@ describe('DatetimePickerComponent', () => {
 
     expect(meridian.innerText).not.toBe(initialMeridian);
 
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -416,7 +416,7 @@ describe('DatetimePickerComponent', () => {
     const initialValue = fixture.nativeElement.querySelector('input').value;
     const initialDate = new Date(initialValue);
 
-    let toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
+    const toggle = fixture.debugElement.query(By.css('mat-datepicker-toggle#pickerOpener button')).nativeElement;
     toggle.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -427,7 +427,7 @@ describe('DatetimePickerComponent', () => {
     periodSelector.click();
     fixture.detectChanges();
 
-    let yearCells = fixture.debugElement.queryAll(
+    const yearCells = fixture.debugElement.queryAll(
       By.css('ngx-mat-multi-year-view .mat-calendar-body-cell')
     );
 
@@ -440,21 +440,21 @@ describe('DatetimePickerComponent', () => {
       fixture.detectChanges();
     }
 
-    let monthCells = fixture.debugElement.queryAll(
+    const monthCells = fixture.debugElement.queryAll(
       By.css('ngx-mat-year-view .mat-calendar-body-cell')
     );
 
     monthCells[1].nativeElement.click();
     fixture.detectChanges();
 
-    let dayCells = fixture.debugElement.queryAll(
+    const dayCells = fixture.debugElement.queryAll(
       By.css('ngx-mat-month-view .mat-calendar-body-cell')
     );
 
     dayCells[0].nativeElement.click();
     fixture.detectChanges();
 
-    let confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -475,22 +475,22 @@ describe('DatetimePickerComponent', () => {
   }));
 
   it('should set the correct maximum and minimum', fakeAsync(() => {
-    const miniDate = new Date('01-01-1500')
-    const maxiDate = new Date('01-01-4000')
+    const miniDate = new Date('01-01-1500');
+    const maxiDate = new Date('01-01-4000');
     const MIN_MAX_FIELD_TYPE: FieldType = {
       id: 'Date',
       type: 'DateTime',
       min: miniDate,
       max: maxiDate
     };
-    const MIN_MAX_CASE_FIELD: CaseField = <CaseField>({
+    const MIN_MAX_CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: MIN_MAX_FIELD_TYPE,
       value: initialDateTime,
       dateTimeEntryFormat: initialDateEntryParameter
-    });
+    }) as CaseField;
     expect(component.minDate(MIN_MAX_CASE_FIELD)).toEqual(miniDate);
     expect(component.maxDate(MIN_MAX_CASE_FIELD)).toEqual(maxiDate);
   }));

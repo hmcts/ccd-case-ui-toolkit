@@ -24,7 +24,7 @@ export class AlertComponent {
 
   @Input()
   public type: AlertMessageType;
-  alertMessageType = AlertMessageType;
+  public alertMessageType = AlertMessageType;
 
   @Input()
   public showIcon = true;

@@ -19,7 +19,7 @@ type CollectionItem = {
   prefix: string;
   index: number;
   container: FormGroup;
-}
+};
 
 @Component({
   selector: 'ccd-write-collection-field',
@@ -28,19 +28,19 @@ type CollectionItem = {
 })
 export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
   @Input()
-  caseFields: CaseField[] = [];
+  public caseFields: CaseField[] = [];
 
   @Input()
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 
-  formArray: FormArray;
+  public formArray: FormArray;
 
-  profile: Profile;
-  profileSubscription: Subscription;
+  public profile: Profile;
+  public profileSubscription: Subscription;
 
   @ViewChildren('collectionItem')
-  private items: QueryList<ElementRef>;
-  private collItems: CollectionItem[] = [];
+  private readonly items: QueryList<ElementRef>;
+  private readonly collItems: CollectionItem[] = [];
 
   constructor(private readonly dialog: MatDialog,
               private readonly scrollToService: ScrollToService,
@@ -49,7 +49,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     super();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (!this.isExpanded) { // meaning I am not rendered on the search/workbasket input filter
       this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     }
@@ -96,7 +96,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
     let value;
     if (this.isCollectionOfSimpleType(this.caseField)) {
-      value = group.get('value') as FormControl
+      value = group.get('value') as FormControl;
       if (!value) {
         value = new FormControl(item.value);
         // Now add the value FormControl to the outer group.
@@ -146,7 +146,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
 
     // isNew:
-    let cf: CaseField = this.newCaseField(cfid, item, index, isNew);
+    const cf: CaseField = this.newCaseField(cfid, item, index, isNew);
     FormValidatorsService.addValidators(cf, value);
     FieldsUtils.addCaseFieldAndComponentReferences(value, cf, this);
     return cf;
@@ -167,7 +167,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   public addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    const item = { value: null }
+    const item = { value: null };
     this.caseField.value.push(item);
     const index = this.caseField.value.length - 1;
     const caseField: CaseField = this.buildCaseField(item, index, true);

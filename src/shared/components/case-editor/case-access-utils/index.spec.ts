@@ -113,7 +113,7 @@ describe('CaseAccessUtils', () => {
                 'ADMIN',
                 'BASIC',
                 'dummy',
-                {reason: 3435, caseReference: '234', 'otherReason': ''},
+                {reason: 3435, caseReference: '234', otherReason: ''},
                 dateValue,
                 null
             );

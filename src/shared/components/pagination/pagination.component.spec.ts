@@ -1,10 +1,10 @@
 import { registerLocaleData } from '@angular/common';
-import { LOCALE_ID, DebugElement } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { DebugElement, LOCALE_ID } from '@angular/core';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { PaginationControlsComponent, PaginationControlsDirective, PaginatePipe, PaginationService } from 'ngx-pagination';
-import { ComponentTestComponent, getPageLinkItems, getControlsDirective, overrideTemplate } from './testing/testing-helpers';
+import { PaginatePipe, PaginationControlsComponent, PaginationControlsDirective, PaginationService } from 'ngx-pagination';
 import { PaginationComponent } from './pagination.component';
+import { ComponentTestComponent, getControlsDirective, getPageLinkItems, overrideTemplate } from './testing/testing-helpers';
 
 import locale from '@angular/common/locales/de';
 
@@ -26,24 +26,24 @@ describe('PaginationComponent:', () => {
   });
 
   it('should display the correct page links (simple)', fakeAsync(() => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance = fixture.componentInstance;
     instance.config.itemsPerPage = 30;
     fixture.detectChanges();
 
-    let expected = ['1', '2', '3', '4'];
+    const expected = ['1', '2', '3', '4'];
 
     expect(getPageLinkItems(fixture)).toEqual(expected);
   }));
 
   it('should display the correct page links (formatted numbers over 1000) with comma', fakeAsync(() => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance = fixture.componentInstance;
     instance.collection = Array.from(new Array(1000), (x, i) => `item ${i + 1}`);
     instance.config.itemsPerPage = 1;
     fixture.detectChanges();
 
-    let expected = ['1', '2', '3', '4', '5', '6', '7', '...', '1,000'];
+    const expected = ['1', '2', '3', '4', '5', '6', '7', '...', '1,000'];
     expect(getPageLinkItems(fixture)).toEqual(expected);
   }));
 
@@ -53,54 +53,54 @@ describe('PaginationComponent:', () => {
       providers: [PaginationService, { provide: LOCALE_ID, useValue: 'de_DE' }],
     });
 
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance = fixture.componentInstance;
     instance.collection = Array.from(new Array(1000), (x, i) => `item ${i + 1}`);
     instance.config.itemsPerPage = 1;
     fixture.detectChanges();
 
-    let expected = ['1', '2', '3', '4', '5', '6', '7', '...', '1.000'];
+    const expected = ['1', '2', '3', '4', '5', '6', '7', '...', '1.000'];
     expect(getPageLinkItems(fixture)).toEqual(expected);
   }));
 
   it('should display the correct page links (end ellipsis)', fakeAsync(() => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance = fixture.componentInstance;
     instance.config.itemsPerPage = 10;
     fixture.detectChanges();
 
-    let expected = ['1', '2', '3', '4', '5', '6', '7', '...', '10'];
+    const expected = ['1', '2', '3', '4', '5', '6', '7', '...', '10'];
 
     expect(getPageLinkItems(fixture)).toEqual(expected);
   }));
 
   it('should display the correct page links (start ellipsis)', fakeAsync(() => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance: ComponentTestComponent = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance: ComponentTestComponent = fixture.componentInstance;
     instance.config.itemsPerPage = 10;
     instance.config.currentPage = 10;
     fixture.detectChanges();
 
-    let expected = ['1', '...', '4', '5', '6', '7', '8', '9', '10'];
+    const expected = ['1', '...', '4', '5', '6', '7', '8', '9', '10'];
 
     expect(getPageLinkItems(fixture)).toEqual(expected);
   }));
 
   it('should display the correct page links (double ellipsis)', fakeAsync(() => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance: ComponentTestComponent = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance: ComponentTestComponent = fixture.componentInstance;
     instance.config.itemsPerPage = 1;
     instance.config.currentPage = 50;
     fixture.detectChanges();
 
-    let expected = ['1', '...', '48', '49', '50', '51', '52', '...', '100'];
+    const expected = ['1', '...', '48', '49', '50', '51', '52', '...', '100'];
 
     expect(getPageLinkItems(fixture)).toEqual(expected);
   }));
 
   it('should add "ellipsis" class to ellipsis links', fakeAsync(() => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance: ComponentTestComponent = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance: ComponentTestComponent = fixture.componentInstance;
     instance.config.itemsPerPage = 1;
     instance.config.currentPage = 50;
     fixture.detectChanges();
@@ -114,8 +114,8 @@ describe('PaginationComponent:', () => {
   }));
 
   it('should update links when collection size changes', fakeAsync(() => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance: ComponentTestComponent = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance: ComponentTestComponent = fixture.componentInstance;
     let expected = ['1', '2', '3', '4', '5', '6', '7', '...', '10'];
     fixture.detectChanges();
 
@@ -129,9 +129,9 @@ describe('PaginationComponent:', () => {
   }));
 
   it('should update the currently-active page when currentPage changes', fakeAsync(() => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance: ComponentTestComponent = fixture.componentInstance;
-    let controlsDirective = getControlsDirective(fixture);
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance: ComponentTestComponent = fixture.componentInstance;
+    const controlsDirective = getControlsDirective(fixture);
     fixture.detectChanges();
 
     expect(controlsDirective.getCurrent()).toBe(1);
@@ -144,12 +144,12 @@ describe('PaginationComponent:', () => {
 
   it('should highlight the currently-active page when currentPage is passed as a numeric string',
     fakeAsync(() => {
-      let fixture = TestBed.createComponent(ComponentTestComponent);
-      let instance: ComponentTestComponent = fixture.componentInstance;
+      const fixture = TestBed.createComponent(ComponentTestComponent);
+      const instance: ComponentTestComponent = fixture.componentInstance;
       instance.config.currentPage = '2' as any;
       fixture.detectChanges();
 
-      let current: DebugElement = fixture.debugElement.query(By.css('.current'));
+      const current: DebugElement = fixture.debugElement.query(By.css('.current'));
 
       expect(current).not.toBeNull();
       expect(current.nativeElement.innerText).toContain('2');
@@ -162,9 +162,9 @@ describe('PaginationComponent:', () => {
             <ul>
                 <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
             </ul>`);
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance = fixture.componentInstance;
-    let controlsDirective = getControlsDirective(fixture);
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance = fixture.componentInstance;
+    const controlsDirective = getControlsDirective(fixture);
     fixture.detectChanges();
 
     expect(controlsDirective.getCurrent()).toBe(1);
@@ -188,14 +188,14 @@ describe('PaginationComponent:', () => {
             </ul>
             <ccd-pagination id="test2"></ccd-pagination>`);
 
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance = fixture.componentInstance;
     (instance as any).p1 = 1;
     (instance as any).p2 = 1;
 
     fixture.detectChanges();
 
-    let controls: PaginationControlsDirective[] = fixture
+    const controls: PaginationControlsDirective[] = fixture
       .debugElement.queryAll(By.css('pagination-template'))
       .map(el => el.references['p']);
 
@@ -222,15 +222,15 @@ describe('PaginationComponent:', () => {
             </ul>
             <ccd-pagination id="test2" (pageChange)="p2 = $event"></ccd-pagination>`);
 
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance = fixture.componentInstance;
     (instance as any).p1 = 1;
     (instance as any).p2 = 1;
 
     fixture.detectChanges();
 
-    let controls: DebugElement[] = fixture.debugElement.queryAll(By.css('pagination-template'));
-    let controlsDirectives: PaginationControlsDirective[] = controls.map(el => el.references['p']);
+    const controls: DebugElement[] = fixture.debugElement.queryAll(By.css('pagination-template'));
+    const controlsDirectives: PaginationControlsDirective[] = controls.map(el => el.references['p']);
 
     expect(controlsDirectives[0].getCurrent()).toBe(1);
     expect(controlsDirectives[1].getCurrent()).toBe(1);
@@ -244,8 +244,8 @@ describe('PaginationComponent:', () => {
   }));
 
   it('"autoHide" should be boolean', () => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let controlsInstance = fixture.debugElement.query(By.css('ccd-pagination')).componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const controlsInstance = fixture.debugElement.query(By.css('ccd-pagination')).componentInstance;
     expect(controlsInstance.autoHide).toBe(false);
   });
 
@@ -255,7 +255,7 @@ describe('PaginationComponent:', () => {
                 <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
             </ul>
             <ccd-pagination autoHide="false" [id]="config.id"></ccd-pagination>`);
-    let fixture = TestBed.createComponent(ComponentTestComponent);
+    const fixture = TestBed.createComponent(ComponentTestComponent);
     fixture.detectChanges();
     const controlsCmp: PaginationControlsComponent = fixture.debugElement
       .query(By.css('ccd-pagination')).componentInstance;
@@ -264,8 +264,8 @@ describe('PaginationComponent:', () => {
   });
 
   it('"autoHide" state should be reflected in default template', () => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let instance = fixture.componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance = fixture.componentInstance;
     instance.config.itemsPerPage = 100;
     fixture.detectChanges();
 
@@ -278,8 +278,8 @@ describe('PaginationComponent:', () => {
   });
 
   it('"directionLinks" should be boolean', () => {
-    let fixture = TestBed.createComponent(ComponentTestComponent);
-    let controlsInstance = fixture.debugElement.query(By.css('ccd-pagination')).componentInstance;
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const controlsInstance = fixture.debugElement.query(By.css('ccd-pagination')).componentInstance;
     expect(controlsInstance.directionLinks).toBe(true);
   });
 
@@ -289,7 +289,7 @@ describe('PaginationComponent:', () => {
                 <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
             </ul>
             <ccd-pagination directionLinks="false" [id]="config.id"></ccd-pagination>`);
-    let fixture = TestBed.createComponent(ComponentTestComponent);
+    const fixture = TestBed.createComponent(ComponentTestComponent);
     fixture.detectChanges();
     const controlsCmp: PaginationControlsComponent = fixture.debugElement
       .query(By.css('ccd-pagination')).componentInstance;
@@ -303,7 +303,7 @@ describe('PaginationComponent:', () => {
                 <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
             </ul>
             <ccd-pagination responsive="true" [id]="config.id"></ccd-pagination>`);
-    let fixture = TestBed.createComponent(ComponentTestComponent);
+    const fixture = TestBed.createComponent(ComponentTestComponent);
     fixture.detectChanges();
     const controlsCmp: PaginationControlsComponent = fixture.debugElement
       .query(By.css('ccd-pagination')).componentInstance;
@@ -321,18 +321,18 @@ describe('PaginationComponent:', () => {
                        <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
                    </ul>
                    <ccd-pagination previousLabel="${TEST_LABEL}" id="test"></ccd-pagination>`);
-      let fixture = TestBed.createComponent(ComponentTestComponent);
-      let instance = fixture.componentInstance;
+      const fixture = TestBed.createComponent(ComponentTestComponent);
+      const instance = fixture.componentInstance;
       const expected = `${TEST_LABEL} page`;
       fixture.detectChanges();
 
-      let prevSpan = fixture.debugElement.query(By.css('.pagination-previous > span')).nativeElement;
+      const prevSpan = fixture.debugElement.query(By.css('.pagination-previous > span')).nativeElement;
       expect(prevSpan.innerText.replace(/\n/, ' ')).toContain(expected);
 
       instance.config.currentPage = 2;
       fixture.detectChanges();
 
-      let prevA = fixture.debugElement.query(By.css('.pagination-previous > a')).nativeElement;
+      const prevA = fixture.debugElement.query(By.css('.pagination-previous > a')).nativeElement;
       expect(prevA.innerText.replace(/\n/, ' ')).toContain(expected);
       expect(prevA.getAttribute('aria-label')).toBe(expected);
     }));
@@ -343,19 +343,19 @@ describe('PaginationComponent:', () => {
                        <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
                    </ul>
                    <ccd-pagination nextLabel="${TEST_LABEL}" id="test"></ccd-pagination>`);
-      let fixture = TestBed.createComponent(ComponentTestComponent);
-      let instance = fixture.componentInstance;
+      const fixture = TestBed.createComponent(ComponentTestComponent);
+      const instance = fixture.componentInstance;
       const expected = `${TEST_LABEL} page`;
       fixture.detectChanges();
 
-      let nextA = fixture.debugElement.query(By.css('.pagination-next > a')).nativeElement;
+      const nextA = fixture.debugElement.query(By.css('.pagination-next > a')).nativeElement;
       expect(nextA.innerText.replace(/\n/, '')).toContain(expected);
       expect(nextA.getAttribute('aria-label')).toBe(expected);
 
       instance.config.currentPage = 10;
       fixture.detectChanges();
 
-      let nextSpan = fixture.debugElement.query(By.css('.pagination-next > span')).nativeElement;
+      const nextSpan = fixture.debugElement.query(By.css('.pagination-next > span')).nativeElement;
       expect(nextSpan.innerText.replace(/\n/, '')).toContain(expected);
     }));
 
@@ -365,10 +365,10 @@ describe('PaginationComponent:', () => {
                                <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
                            </ul>
                            <pagination-controls screenReaderPaginationLabel="${TEST_LABEL}" id="test"></pagination-controls>`);
-      let fixture = TestBed.createComponent(ComponentTestComponent);
+      const fixture = TestBed.createComponent(ComponentTestComponent);
       fixture.detectChanges();
 
-      let paginationUl = fixture.debugElement.query(By.css('ul.ngx-pagination')).nativeElement;
+      const paginationUl = fixture.debugElement.query(By.css('ul.ngx-pagination')).nativeElement;
       expect(paginationUl.getAttribute('aria-label')).toBe(TEST_LABEL);
     }));
 
@@ -378,21 +378,21 @@ describe('PaginationComponent:', () => {
                        <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
                    </ul>
                    <ccd-pagination screenReaderPageLabel="${TEST_LABEL}" id="test"></ccd-pagination>`);
-      let fixture = TestBed.createComponent(ComponentTestComponent);
-      let instance = fixture.componentInstance;
+      const fixture = TestBed.createComponent(ComponentTestComponent);
+      const instance = fixture.componentInstance;
       instance.config.currentPage = 5;
 
       fixture.detectChanges();
 
-      let prevA = fixture.debugElement.query(By.css('.pagination-previous > a')).nativeElement;
+      const prevA = fixture.debugElement.query(By.css('.pagination-previous > a')).nativeElement;
       expect(prevA.innerText.replace(/\n/, ' ')).toContain(`Previous ${TEST_LABEL}`);
       expect(prevA.getAttribute('aria-label')).toBe(`Previous ${TEST_LABEL}`);
 
-      let nextA = fixture.debugElement.query(By.css('.pagination-next > a')).nativeElement;
+      const nextA = fixture.debugElement.query(By.css('.pagination-next > a')).nativeElement;
       expect(nextA.innerText.replace(/\n/, '')).toContain(`Next ${TEST_LABEL}`);
       expect(nextA.getAttribute('aria-label')).toBe(`Next ${TEST_LABEL}`);
 
-      let pageA = fixture.debugElement.queryAll(By.css('.ngx-pagination li > a'))[1].nativeElement;
+      const pageA = fixture.debugElement.queryAll(By.css('.ngx-pagination li > a'))[1].nativeElement;
       expect(pageA.innerText.replace(/\n/, ' ')).toContain(`${TEST_LABEL} 1`);
     }));
 
@@ -402,11 +402,11 @@ describe('PaginationComponent:', () => {
                        <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
                    </ul>
                    <ccd-pagination screenReaderCurrentLabel="${TEST_LABEL}" id="test"></ccd-pagination>`);
-      let fixture = TestBed.createComponent(ComponentTestComponent);
+      const fixture = TestBed.createComponent(ComponentTestComponent);
 
       fixture.detectChanges();
 
-      let currentPage = fixture.debugElement.query(By.css('.ngx-pagination li.current .show-for-sr')).nativeElement;
+      const currentPage = fixture.debugElement.query(By.css('.ngx-pagination li.current .show-for-sr')).nativeElement;
       expect(currentPage.innerText).toContain(`${TEST_LABEL}`);
     }));
   });

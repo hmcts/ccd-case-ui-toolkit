@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { AbstractAppConfig } from '../../../app.config';
 
 /**
@@ -10,13 +10,13 @@ export class AuthService {
 
   private static readonly PATH_OAUTH2_REDIRECT = '/oauth2redirect';
 
-  constructor(private appConfig: AbstractAppConfig,
-              @Inject(DOCUMENT) private document: any) {}
+  constructor(private readonly appConfig: AbstractAppConfig,
+              @Inject(DOCUMENT) private readonly document: any) {}
 
   public signIn(): void {
-    let loginUrl = this.appConfig.getLoginUrl();
-    let clientId = this.appConfig.getOAuth2ClientId();
-    let redirectUri = encodeURIComponent(this.redirectUri());
+    const loginUrl = this.appConfig.getLoginUrl();
+    const clientId = this.appConfig.getOAuth2ClientId();
+    const redirectUri = encodeURIComponent(this.redirectUri());
 
     this.document.location.href = `${loginUrl}?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
   }

@@ -17,12 +17,12 @@ export class DatePipe implements PipeTransform {
 
   /**
    * constructor to allow format translator to be injected
-   * @param formatTrans
+   * @param formatTrans format translator
    */
-  constructor(private formatTrans: FormatTranslatorService) {
+  constructor(private readonly formatTrans: FormatTranslatorService) {
   }
 
-  transform(value: string, zone: string, format: string): string {
+  public transform(value: string, zone: string, format: string): string {
     let resultDate = null;
     const ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
     if (value) {
@@ -88,19 +88,19 @@ export class DatePipe implements PipeTransform {
   }
 
   private getOffsetDate(date: Date): Date {
-    let localOffset = - date.getTimezoneOffset() / 60;
+    const localOffset = - date.getTimezoneOffset() / 60;
     return new Date(date.getTime() + localOffset * 3600 * 1000);
   }
 
   private getDate(match: RegExpMatchArray): Date {
-    let year = this.toInt(match[1]);
-    let month = this.toInt(match[2]) - 1;
-    let day = this.toInt(match[3]);
+    const year = this.toInt(match[1]);
+    const month = this.toInt(match[2]) - 1;
+    const day = this.toInt(match[3]);
     let resultDate;
     if (match[4] && match[5] && match[6]) {
-      let hour = this.toInt(match[4]);
-      let minutes = this.toInt(match[5]);
-      let seconds = this.toInt(match[6]);
+      const hour = this.toInt(match[4]);
+      const minutes = this.toInt(match[5]);
+      const seconds = this.toInt(match[6]);
       resultDate = new Date(year, month, day, hour, minutes, seconds, 0);
     } else {
       resultDate = new Date(year, month, day);

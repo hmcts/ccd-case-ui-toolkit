@@ -20,21 +20,21 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   public canHaveGreyBar = false;
 
   @Input()
-  caseFields: CaseField[] = [];
+  public caseFields: CaseField[] = [];
 
   @ViewChild('fieldContainer', /* TODO: add static flag */ { read: ViewContainerRef })
-  fieldContainer: ViewContainerRef;
+  public fieldContainer: ViewContainerRef;
 
-  constructor(private resolver: ComponentFactoryResolver,
-              private paletteService: PaletteService) {
+  constructor(private readonly resolver: ComponentFactoryResolver,
+              private readonly paletteService: PaletteService) {
     super();
   }
 
-  ngOnInit(): void {
-    let componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
+  public ngOnInit(): void {
+    const componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
 
-    let injector = Injector.create([], this.fieldContainer.parentInjector);
-    let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+    const injector = Injector.create([], this.fieldContainer.parentInjector);
+    const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Only Fixed list use plainToClassFromExist
     // Better performance

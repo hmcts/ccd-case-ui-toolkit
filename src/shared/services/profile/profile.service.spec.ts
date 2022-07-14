@@ -1,11 +1,11 @@
-import { ProfileService } from './profile.service';
+import { HttpHeaders } from '@angular/common/http';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpService } from '../http';
-import { createAProfile } from '../../domain/profile/profile.test.fixture';
 import { Profile } from '../../domain';
-import { HttpHeaders } from '@angular/common/http';
+import { createAProfile } from '../../domain/profile/profile.test.fixture';
+import { HttpService } from '../http';
+import { ProfileService } from './profile.service';
 
 describe('ProfileService', () => {
 

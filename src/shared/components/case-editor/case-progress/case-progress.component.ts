@@ -12,26 +12,26 @@ import { CasesService, EventTriggerService } from '../services';
 export class CaseProgressComponent implements OnInit {
 
   @Input()
-  case: string;
+  public case: string;
   @Input()
-  event: string;
+  public event: string;
 
   @Output()
-  cancelled: EventEmitter<any> = new EventEmitter();
+  public cancelled: EventEmitter<any> = new EventEmitter();
   @Output()
-  submitted: EventEmitter<any> = new EventEmitter();
+  public submitted: EventEmitter<any> = new EventEmitter();
 
   public caseDetails: CaseView;
   public eventTrigger: CaseEventTrigger;
 
   constructor(
-    private casesService: CasesService,
-    private alertService: AlertService,
-    private eventTriggerService: EventTriggerService
+    private readonly casesService: CasesService,
+    private readonly alertService: AlertService,
+    private readonly eventTriggerService: EventTriggerService
   ) {}
 
-  ngOnInit(): void {
-    let caseTypeId = undefined;
+  public ngOnInit(): void {
+    let caseTypeId;
     this.casesService.getCaseViewV2(this.case).toPromise()
       .then(caseView => this.caseDetails = caseView)
       .then(caseView => this.casesService.getEventTrigger(caseTypeId, this.event, caseView.case_id)
@@ -46,27 +46,27 @@ export class CaseProgressComponent implements OnInit {
       });
   }
 
-  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
+  public submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
     return (sanitizedEditForm: CaseEventData) =>
       this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
   }
 
-  validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
+  public validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
     return (sanitizedEditForm: CaseEventData, pageId: string) => this.casesService.validateCase(
       this.caseDetails.case_type.id,
       sanitizedEditForm,
       pageId);
   }
 
-  emitCancelled(event): void {
+  public emitCancelled(event): void {
     this.cancelled.emit(event);
   }
 
-  emitSubmitted(event): void {
+  public emitSubmitted(event): void {
     this.submitted.emit(event);
   }
 
-  isDataLoaded(): boolean {
+  public isDataLoaded(): boolean {
     return this.eventTrigger && this.caseDetails ? true : false;
   }
 }

@@ -22,102 +22,102 @@ export interface AccessManagementRequestReviewMockModel {
 }
 
 export abstract class AbstractAppConfig {
-  abstract load(): Promise<void>;
-  abstract getLoginUrl(): string;
-  abstract getApiUrl(): string;
-  abstract getCaseDataUrl(): string;
-  abstract getDocumentManagementUrl(): string;
-  getDocumentManagementUrlV2(): string {
+  public abstract load(): Promise<void>;
+  public abstract getLoginUrl(): string;
+  public abstract getApiUrl(): string;
+  public abstract getCaseDataUrl(): string;
+  public abstract getDocumentManagementUrl(): string;
+  public getDocumentManagementUrlV2(): string {
     return undefined;
   }
-  getDocumentSecureMode(): boolean {
+  public getDocumentSecureMode(): boolean {
     return undefined;
   }
-  abstract getRemoteDocumentManagementUrl(): string;
-  abstract getHrsUrl(): string;
-  abstract getRemoteHrsUrl(): string;
-  abstract getAnnotationApiUrl(): string;
-  abstract getPostcodeLookupUrl(): string;
-  abstract getOAuth2ClientId(): string;
-  abstract getPaymentsUrl(): string;
-  abstract getPayBulkScanBaseUrl(): string;
-  abstract getCreateOrUpdateDraftsUrl(ctid: string): string
-  abstract getViewOrDeleteDraftsUrl(did: string): string
-  abstract getActivityUrl(): string;
-  abstract getActivityNexPollRequestMs(): number;
-  abstract getActivityRetry(): number;
-  abstract getActivityBatchCollectionDelayMs(): number;
-  abstract getActivityMaxRequestPerBatch(): number;
-  abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
-  abstract getPrintServiceUrl(): string;
+  public abstract getRemoteDocumentManagementUrl(): string;
+  public abstract getHrsUrl(): string;
+  public abstract getRemoteHrsUrl(): string;
+  public abstract getAnnotationApiUrl(): string;
+  public abstract getPostcodeLookupUrl(): string;
+  public abstract getOAuth2ClientId(): string;
+  public abstract getPaymentsUrl(): string;
+  public abstract getPayBulkScanBaseUrl(): string;
+  public abstract getCreateOrUpdateDraftsUrl(ctid: string): string;
+  public abstract getViewOrDeleteDraftsUrl(did: string): string;
+  public abstract getActivityUrl(): string;
+  public abstract getActivityNexPollRequestMs(): number;
+  public abstract getActivityRetry(): number;
+  public abstract getActivityBatchCollectionDelayMs(): number;
+  public abstract getActivityMaxRequestPerBatch(): number;
+  public abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
+  public abstract getPrintServiceUrl(): string;
   /**
    * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release
    * @deprecated
    * @returns `undefined`
    */
-  getRemotePrintServiceUrl(): string {
+  public getRemotePrintServiceUrl(): string {
     return undefined;
   }
-  abstract getPaginationPageSize(): number;
-  abstract getBannersUrl(): string;
-  abstract getPrdUrl(): string;
-  abstract getCacheTimeOut(): number;
-  abstract getWorkAllocationApiUrl(): string;
-  getUserInfoApiUrl(): string {
+  public abstract getPaginationPageSize(): number;
+  public abstract getBannersUrl(): string;
+  public abstract getPrdUrl(): string;
+  public abstract getCacheTimeOut(): number;
+  public abstract getWorkAllocationApiUrl(): string;
+  public getUserInfoApiUrl(): string {
     return undefined;
   }
-  getAccessManagementMode(): boolean {
+  public getAccessManagementMode(): boolean {
     return undefined;
   }
-  getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
+  public getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return undefined;
   }
-  getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
+  public getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
     return undefined;
   }
-  getLocationRefApiUrl(): string {
+  public getLocationRefApiUrl(): string {
     return undefined;
   }
-  getCamRoleAssignmentsApiUrl(): string {
+  public getCamRoleAssignmentsApiUrl(): string {
     return undefined;
   }
-  abstract getRefundsUrl(): string;
-  abstract getPaymentReturnUrl(): string;
+  public abstract getRefundsUrl(): string;
+  public abstract getPaymentReturnUrl(): string;
 }
 
 export class CaseEditorConfig {
-  api_url: string;
-  case_data_url: string;
-  document_management_url: string;
-  document_management_url_v2: string;
-  hrs_url: string;
-  document_management_secure_enabled: boolean;
-  login_url: string;
-  oauth2_client_id: string;
-  postcode_lookup_url: string;
-  remote_document_management_url: string;
-  remote_hrs_url: string;
-  annotation_api_url: string;
-  payments_url: string;
-  pay_bulk_scan_url: string;
-  activity_batch_collection_delay_ms: number;
-  activity_next_poll_request_ms: number;
-  activity_retry: number;
-  activity_url: string;
-  activity_max_request_per_batch: number;
-  print_service_url: string;
+  public api_url: string;
+  public case_data_url: string;
+  public document_management_url: string;
+  public document_management_url_v2: string;
+  public hrs_url: string;
+  public document_management_secure_enabled: boolean;
+  public login_url: string;
+  public oauth2_client_id: string;
+  public postcode_lookup_url: string;
+  public remote_document_management_url: string;
+  public remote_hrs_url: string;
+  public annotation_api_url: string;
+  public payments_url: string;
+  public pay_bulk_scan_url: string;
+  public activity_batch_collection_delay_ms: number;
+  public activity_next_poll_request_ms: number;
+  public activity_retry: number;
+  public activity_url: string;
+  public activity_max_request_per_batch: number;
+  public print_service_url: string;
   /**
    * remote_print_service_url marked as optional since deprecation, ahead of removal in next major release
    * @deprecated
    */
-  remote_print_service_url?: string;
-  pagination_page_size: number;
-  prd_url: string;
-  cache_time_out: number;
-  work_allocation_api_url: string;
-  user_info_api_url: string;
-  access_management_mode?: boolean;
-  access_management_basic_view_mock?: {
+  public remote_print_service_url?: string;
+  public pagination_page_size: number;
+  public prd_url: string;
+  public cache_time_out: number;
+  public work_allocation_api_url: string;
+  public user_info_api_url: string;
+  public access_management_mode?: boolean;
+  public access_management_basic_view_mock?: {
     active?: boolean,
     basicFields?: {
       caseNameHmctsInternal?: string,
@@ -127,7 +127,7 @@ export class CaseEditorConfig {
     },
     accessProcess?: string
   };
-  access_management_request_review_mock?: {
+  public access_management_request_review_mock?: {
   active?: boolean;
   details?: {
     caseName: string;
@@ -137,9 +137,9 @@ export class CaseEditorConfig {
     reasonForCaseAccess: string;
   };
   accessProcess?: string;
-  }
-  location_ref_api_url?: string;
-  cam_role_assignments_api_url?: string;
-  refunds_url: string;
-  payment_return_url: string;
+  };
+  public location_ref_api_url?: string;
+  public cam_role_assignments_api_url?: string;
+  public refunds_url: string;
+  public payment_return_url: string;
 }

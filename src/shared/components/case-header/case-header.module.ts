@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CaseHeaderComponent } from './case-header.component';
-import { PaletteModule } from '../palette';
 import { PipesModule } from '../../pipes';
+import { PaletteModule } from '../palette';
+import { CaseHeaderComponent } from './case-header.component';
 
 @NgModule({
     imports: [

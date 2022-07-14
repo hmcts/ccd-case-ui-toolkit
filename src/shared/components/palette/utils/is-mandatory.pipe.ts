@@ -1,15 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 
 @Pipe({
   name: 'ccdIsMandatory'
 })
 export class IsMandatoryPipe implements PipeTransform {
 
-  constructor(private  caseFieldService: CaseFieldService) {};
+  constructor(private readonly  caseFieldService: CaseFieldService) {}
 
-  transform(field: CaseField): boolean {
+  public transform(field: CaseField): boolean {
     return this.caseFieldService.isMandatory(field);
   }
 }

@@ -76,7 +76,7 @@ describe('CasesService', () => {
       'wizardPageFieldToCaseFieldMapper', ['mapAll']);
 
     orderService = {
-      sort: function() {}
+      sort() {}
     };
     spyOn(orderService, 'sort').and.callFake((caseFields: CaseField[]) => {
       return caseFields;

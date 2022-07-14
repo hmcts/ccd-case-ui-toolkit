@@ -1,7 +1,7 @@
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { WizardPage } from '../domain/wizard-page.model';
 import { WizardFactoryService } from './wizard-factory.service';
-import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture'
 
 describe('WizardFactoryService', () => {
 
@@ -28,7 +28,7 @@ describe('WizardFactoryService', () => {
   });
 
   it('should return an instance of wizard', () => {
-    let wizard = wizardFactory.create(eventTrigger);
+    const wizard = wizardFactory.create(eventTrigger);
 
     expect(wizard).toBeTruthy();
     expect(wizard.getPage('page1', _ => true)).toBe(PAGE_1);

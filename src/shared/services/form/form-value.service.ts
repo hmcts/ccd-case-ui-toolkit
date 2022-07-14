@@ -25,12 +25,12 @@ export class FormValueService {
    * 1) simple field reference: form={ 'PersonFirstName': 'John' }, fieldKey=PersonFirstName, value=John
    * 2) complex field reference:
    *      form= { complex1': {
-                    'simple11': 'value11',
-                    'simple12': 'value12',
-                    'complex2': {
-                      'simple21': 'value21'
-                    }
-                }},
+   *        'simple11': 'value11',
+   *        'simple12': 'value12',
+   *        'complex2': {
+   *          'simple21': 'value21'
+   *        }
+   *      }},
    *      fieldKey=complex1.complex2.simple21
    *      colIndex=0,
    *      value=value21
@@ -114,12 +114,12 @@ export class FormValueService {
    * @param form form
    * @param fieldKey dot separated reference to value
    * @param colIndex index of collection item being referenced or 0 otherwise
-   * @returns {string} simple or combined value of a field
-   **/
+   * @returns string simple or combined value of a field
+   */
   public static getFieldValue(form, fieldKey, colIndex) {
-    let fieldIds = fieldKey.split('.');
-    let currentFieldId = fieldIds[0];
-    let currentForm = form[currentFieldId];
+    const fieldIds = fieldKey.split('.');
+    const currentFieldId = fieldIds[0];
+    const currentForm = form[currentFieldId];
     if (FieldsUtils.isMultiSelectValue(currentForm)) {
         return form[currentFieldId + FieldsUtils.LABEL_SUFFIX].join(', ');
     } else if (FieldsUtils.isCollectionOfSimpleTypes(currentForm)) {
@@ -174,7 +174,7 @@ export class FormValueService {
     }
   }
 
-  private static isEmptyData(data: Object): boolean {
+  private static isEmptyData(data: object): boolean {
     if (data) {
       let allEmpty = true;
       for (const prop of Object.keys(data)) {
@@ -198,14 +198,14 @@ export class FormValueService {
    * @param data The data to assess for "emptiness".
    * @param field The CaseField that will tell us if this is optional.
    */
-  private static clearOptionalEmpty(clearEmpty: boolean, data: Object, field: CaseField): boolean {
+  private static clearOptionalEmpty(clearEmpty: boolean, data: object, field: CaseField): boolean {
     if (clearEmpty) {
       return FormValueService.isOptional(field) && FormValueService.isEmptyData(data);
     }
     return false;
   }
 
-  constructor(private fieldTypeSanitiser: FieldTypeSanitiser) {
+  constructor(private readonly fieldTypeSanitiser: FieldTypeSanitiser) {
   }
 
   public sanitise(rawValue: object): object {
@@ -221,8 +221,8 @@ export class FormValueService {
     return s;
   }
 
-  filterCurrentPageFields(caseFields: CaseField[], editForm: any): any {
-    let cloneForm = JSON.parse(JSON.stringify(editForm));
+  public filterCurrentPageFields(caseFields: CaseField[], editForm: any): any {
+    const cloneForm = JSON.parse(JSON.stringify(editForm));
     Object.keys(cloneForm['data']).forEach((key) => {
       if (caseFields.findIndex((element) => element.id === key) < 0) {
         delete cloneForm['data'][key];
@@ -231,12 +231,12 @@ export class FormValueService {
     return cloneForm;
   }
 
-  sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
+  public sanitiseDynamicLists(caseFields: CaseField[], editForm: any): any {
     return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm.data);
   }
 
   public clearNonCaseFields(data: object, caseFields: CaseField[]) {
-    for (let dataKey in data) {
+    for (const dataKey in data) {
       if (!caseFields.find(cf => cf.id === dataKey)) {
         delete data [dataKey];
       }
@@ -399,9 +399,9 @@ export class FormValueService {
    * Remove any empty or invalid arry with only id
    *
    * @param data The object tree of form values on which to perform the removal
-   * @param field {@link CaseField} domain model object for each field
+   * @param field domain model object for each field
    */
-  removeInvalidCollectionData(data: object, field: CaseField) {
+  public removeInvalidCollectionData(data: object, field: CaseField) {
     if (data[field.id] && data[field.id].length > 0) {
       for (const objCollection of data[field.id]) {
         if (Object.keys(objCollection).length === 1 && Object.keys(objCollection).indexOf('id') > -1) {

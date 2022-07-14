@@ -20,24 +20,24 @@ export class SearchFiltersComponent implements OnInit {
   public caseFields: CaseField[];
 
   @Input()
-  jurisdictions: Jurisdiction[];
+  public jurisdictions: Jurisdiction[];
 
   @Input()
-  autoApply: boolean;
+  public autoApply: boolean;
 
   @Output()
-  onApply: EventEmitter<any> = new EventEmitter();
+  public onApply: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  onReset: EventEmitter<any> = new EventEmitter();
+  public onReset: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  onJurisdiction: EventEmitter<any> = new EventEmitter();
+  public onJurisdiction: EventEmitter<any> = new EventEmitter();
 
-  searchInputs: SearchInput[];
-  searchInputsReady: boolean;
+  public searchInputs: SearchInput[];
+  public searchInputsReady: boolean;
 
-  selected: {
+  public selected: {
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,
     formGroup?: FormGroup,
@@ -46,14 +46,14 @@ export class SearchFiltersComponent implements OnInit {
     metadataFields?: string[]
   };
 
-  selectedJurisdictionCaseTypes?: CaseTypeLite[];
+  public selectedJurisdictionCaseTypes?: CaseTypeLite[];
 
-  formGroup: FormGroup = new FormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
 
-  constructor(private searchService: SearchService,
-    private orderService: OrderService,
-    private jurisdictionService: JurisdictionService,
-    private windowService: WindowService) {
+  constructor(private readonly searchService: SearchService,
+    private readonly orderService: OrderService,
+    private readonly jurisdictionService: JurisdictionService,
+    private readonly windowService: WindowService) {
   }
 
   public ngOnInit(): void {
@@ -109,7 +109,7 @@ export class SearchFiltersComponent implements OnInit {
     this.windowService.setLocalStorage(META_FIELDS_LOC_STORAGE, JSON.stringify(this.selected.metadataFields));
     this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, JSON.stringify(this.selected.jurisdiction));
     if (this.selected.caseType) {
-      this.windowService.setLocalStorage(CASE_TYPE_LOC_STORAGE, JSON.stringify(this.selected.caseType))
+      this.windowService.setLocalStorage(CASE_TYPE_LOC_STORAGE, JSON.stringify(this.selected.caseType));
     }
   }
 
@@ -180,7 +180,7 @@ export class SearchFiltersComponent implements OnInit {
 
   private getQueryParams() {
     // Save filters as query parameters for current route
-    let queryParams = {};
+    const queryParams = {};
     if (this.selected.jurisdiction) {
       queryParams[SearchFiltersComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
     }

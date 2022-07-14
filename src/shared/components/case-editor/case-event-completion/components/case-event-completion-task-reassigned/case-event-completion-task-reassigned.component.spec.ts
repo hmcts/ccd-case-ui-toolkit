@@ -63,7 +63,7 @@ describe('TaskReassignedComponent', () => {
     email: 'testuser@demoenv.com',
     location: null,
     roleCategory: null
-  }
+  };
 
   const judicialworker: Judicialworker = {
     title: null,
@@ -71,12 +71,12 @@ describe('TaskReassignedComponent', () => {
     sidam_id: '1234-1234-1234-1234',
     full_name: 'Test Judicialworker',
     email_id: 'testuser@demoenv.com'
-  }
+  };
 
   const mockRoute: any = {
     snapshot: {
       params: {
-        'cid': '1620409659381330'
+        cid: '1620409659381330'
       }
     }
   };
@@ -129,7 +129,7 @@ describe('TaskReassignedComponent', () => {
   });
 
   it('should display error message task reassigned', () => {
-    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'))
+    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
     const headingHtml = heading.nativeElement as HTMLElement;
     expect(headingHtml.innerText).toBe('Task reassigned');
     expect(mockCaseworkerService.getCaseworkers).toHaveBeenCalled();

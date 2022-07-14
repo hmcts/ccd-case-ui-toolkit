@@ -11,45 +11,45 @@ function coerceToBoolean(input: string | boolean): boolean {
 })
 export class PaginationComponent {
   @Input()
-  visibilityLabel: string;
-  @Input() id: string;
-  @Input() maxSize = 7;
-  @Input() previousLabel = 'Previous';
-  @Input() nextLabel = 'Next';
-  @Input() screenReaderPaginationLabel = 'Pagination';
-  @Input() screenReaderPageLabel = 'page';
-  @Input() screenReaderCurrentLabel = `You're on page`;
-  @Output() pageChange: EventEmitter<number> = new EventEmitter<number>();
-  @Output() pageBoundsCorrection: EventEmitter<number> = new EventEmitter<number>();
+  public visibilityLabel: string;
+  @Input() public id: string;
+  @Input() public maxSize = 7;
+  @Input() public previousLabel = 'Previous';
+  @Input() public nextLabel = 'Next';
+  @Input() public screenReaderPaginationLabel = 'Pagination';
+  @Input() public screenReaderPageLabel = 'page';
+  @Input() public screenReaderCurrentLabel = `You're on page`;
+  @Output() public pageChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() public pageBoundsCorrection: EventEmitter<number> = new EventEmitter<number>();
 
   private _directionLinks = true;
   private _autoHide = false;
   private _responsive = false;
 
   @Input()
-  get directionLinks(): boolean {
+  public get directionLinks(): boolean {
     return this._directionLinks;
   }
 
-  set directionLinks(value: boolean) {
+  public set directionLinks(value: boolean) {
     this._directionLinks = coerceToBoolean(value);
   }
 
   @Input()
-  get autoHide(): boolean {
+  public get autoHide(): boolean {
     return this._autoHide;
   }
 
-  set autoHide(value: boolean) {
+  public set autoHide(value: boolean) {
     this._autoHide = coerceToBoolean(value);
   }
 
   @Input()
-  get responsive(): boolean {
+  public get responsive(): boolean {
     return this._responsive;
   }
 
-  set responsive(value: boolean) {
+  public set responsive(value: boolean) {
     this._responsive = coerceToBoolean(value);
   }
 }

@@ -1,11 +1,11 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
-import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { attr } from '../../../test/helpers';
+import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteMultiSelectListFieldComponent } from './write-multi-select-list-field.component';
 
 const VALUES = [ 'Option1', 'Option3' ];
@@ -83,7 +83,7 @@ describe('WriteMultiSelectListFieldComponent', () => {
   });
 
   it('should render a checkbox for each available option', () => {
-    let checkboxes = de.queryAll($CHECKBOXES);
+    const checkboxes = de.queryAll($CHECKBOXES);
 
     expect(checkboxes.length).toEqual(FIELD_TYPE.fixed_list_items.length);
 
@@ -93,7 +93,7 @@ describe('WriteMultiSelectListFieldComponent', () => {
   });
 
   it('should mark as selected the initially selected checkboxes', () => {
-    let checkboxes = de.queryAll($SELECTED_CHECKBOXES);
+    const checkboxes = de.queryAll($SELECTED_CHECKBOXES);
 
     expect(checkboxes.length).toEqual(VALUES.length);
 
@@ -103,7 +103,7 @@ describe('WriteMultiSelectListFieldComponent', () => {
   });
 
   it('should remove option from values when unselected', () => {
-    let option1 = de.query($OPTION_1).nativeElement;
+    const option1 = de.query($OPTION_1).nativeElement;
     option1.click();
 
     fixture.detectChanges();
@@ -114,7 +114,7 @@ describe('WriteMultiSelectListFieldComponent', () => {
   });
 
   it('should add option to values when selected', () => {
-    let option2 = de.query($OPTION_2).nativeElement;
+    const option2 = de.query($OPTION_2).nativeElement;
     option2.click();
 
     fixture.detectChanges();

@@ -11,11 +11,11 @@ import { FeeValue } from './fee-value.model';
 })
 export class ReadOrderSummaryFieldComponent extends AbstractFieldReadComponent {
 
-  getFees(): FeeValue[] {
+  public getFees(): FeeValue[] {
     return this.caseField.value ? this.caseField.value.Fees : [];
   }
 
-  getPaymentTotal(): string {
+  public getPaymentTotal(): string {
     return this.caseField.value ? this.caseField.value.PaymentTotal : '';
   }
 }

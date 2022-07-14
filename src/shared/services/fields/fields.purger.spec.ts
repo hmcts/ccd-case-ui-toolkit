@@ -31,24 +31,24 @@ describe('deleteFieldValue() tests', () => {
         retain_hidden_value: true
       } as CaseField
     ]
-  }
+  };
 
-  const ADDRESS_FIELD_COMPLEX: CaseField = <CaseField>({
+  const ADDRESS_FIELD_COMPLEX: CaseField = ({
     id: 'Address',
     label: 'Address',
     field_type: ADDRESS_DETAILS_FIELD_TYPE,
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
-  const ADDRESS_FIELD_COMPLEX_RETAIN_HIDDEN: CaseField = <CaseField>({
+  const ADDRESS_FIELD_COMPLEX_RETAIN_HIDDEN: CaseField = ({
     id: 'Address',
     label: 'Address',
     field_type: ADDRESS_DETAILS_FIELD_TYPE,
     display_context: 'READONLY',
     retain_hidden_value: true
-  });
+  }) as CaseField;
 
-  const ADDRESS_FIELD_COLLECTION: CaseField = <CaseField>({
+  const ADDRESS_FIELD_COLLECTION: CaseField = ({
     id: 'AddressCollection',
     label: 'Address (collection)',
     field_type: {
@@ -57,14 +57,14 @@ describe('deleteFieldValue() tests', () => {
       collection_field_type: ADDRESS_DETAILS_FIELD_TYPE
     },
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
   const DUMMY_DOCUMENT_FIELD_TYPE: FieldType = {
     id: 'DummyDocument',
     type: 'Document'
-  }
+  };
 
-  const DUMMY_DOCUMENT_FIELD_COLLECTION: CaseField = <CaseField>({
+  const DUMMY_DOCUMENT_FIELD_COLLECTION: CaseField = ({
     id: 'DocumentCollection',
     label: 'Document (collection)',
     field_type: {
@@ -73,7 +73,7 @@ describe('deleteFieldValue() tests', () => {
       collection_field_type: DUMMY_DOCUMENT_FIELD_TYPE
     },
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
   const COUNTRIES: FixedListItem[] = [{code: 'UK', label: 'United Kingdom'}, {code: 'US', label: 'United States'}];
   const COUNTRY_MULTI_SELECT_FIELD_TYPE: FieldType = createMultiSelectListFieldType('countryCodes', COUNTRIES);
@@ -94,13 +94,13 @@ describe('deleteFieldValue() tests', () => {
     {code: '2732', label: 'Croydon Magistrates\' Court'}
   ];
 
-  const COURT_SELECTION_FIELD: CaseField = <CaseField>({
+  const COURT_SELECTION_FIELD: CaseField = ({
     id: 'CourtSelection',
     label: 'Choose preferred court',
     field_type: COURTS_DYNAMIC_LIST_FIELD_TYPE,
     display_context: 'READONLY',
     list_items: COURT_LIST
-  });
+  }) as CaseField;
 
   it('should delete fields of a Complex type', () => {
     const formGroup = new FormGroup({

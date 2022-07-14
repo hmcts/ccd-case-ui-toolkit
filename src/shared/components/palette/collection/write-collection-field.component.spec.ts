@@ -50,11 +50,11 @@ const $ADD_BUTTON_TOP = By.css('.form-group>.panel>.button:nth-of-type(1)');
 const $ADD_BUTTON_BOTTOM = By.css('.form-group>.panel>.button:nth-of-type(2)');
 const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
-let FieldWriteComponent = MockComponent({
+const FieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
   inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
 });
-let FieldReadComponent = MockComponent({
+const FieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
   inputs: ['caseField', 'caseFields', 'formGroup', 'context']
 });
@@ -80,7 +80,7 @@ describe('WriteCollectionFieldComponent', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = <CaseField>({
+    caseField = (({
       id: FIELD_ID,
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
@@ -96,7 +96,7 @@ describe('WriteCollectionFieldComponent', () => {
           delete: true
         }
       ]
-    });
+    }) as CaseField);
     formGroup = new FormGroup({
       field1: new FormControl()
     });
@@ -139,13 +139,13 @@ describe('WriteCollectionFieldComponent', () => {
   }));
 
   it('should render a row with a write field for each items', () => {
-    let writeFields = de.queryAll($WRITE_FIELDS);
+    const writeFields = de.queryAll($WRITE_FIELDS);
 
     expect(writeFields.length).toEqual(2);
   });
 
   it('should pass ID, type and value to child field', () => {
-    let field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
+    const field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
 
     expect(field1.caseField.id).toEqual('value');
     expect(field1.caseField.value).toEqual(VALUES[0].value);
@@ -155,8 +155,8 @@ describe('WriteCollectionFieldComponent', () => {
   });
 
   it('should pass ID prefix without index when simple type', () => {
-    let field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
-    let field2 = de.queryAll($WRITE_FIELDS)[1].componentInstance;
+    const field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
+    const field2 = de.queryAll($WRITE_FIELDS)[1].componentInstance;
 
     expect(field1.idPrefix).toEqual(caseField.id + '_');
     expect(field2.idPrefix).toEqual(caseField.id + '_');
@@ -167,24 +167,24 @@ describe('WriteCollectionFieldComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    let field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
-    let field2 = de.queryAll($WRITE_FIELDS)[1].componentInstance;
+    const field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
+    const field2 = de.queryAll($WRITE_FIELDS)[1].componentInstance;
 
     expect(field1.idPrefix).toEqual(caseField.id + '_' + 0 + '_');
     expect(field2.idPrefix).toEqual(caseField.id + '_' + 1 + '_');
   });
 
   it('should add empty item to collection when add button is clicked', () => {
-    let addButton = de.query($ADD_BUTTON_TOP);
+    const addButton = de.query($ADD_BUTTON_TOP);
 
     addButton.nativeElement.click();
     fixture.detectChanges();
 
-    let writeFields = de.queryAll($WRITE_FIELDS);
+    const writeFields = de.queryAll($WRITE_FIELDS);
 
     expect(writeFields.length).toEqual(3);
 
-    let addedField = writeFields[2].componentInstance;
+    const addedField = writeFields[2].componentInstance;
 
     // Show empty case field
     expect(addedField.caseField.id).toEqual('value');
@@ -195,13 +195,13 @@ describe('WriteCollectionFieldComponent', () => {
   });
 
   it('should scroll when item added with top button', done => {
-    let addButton = de.query($ADD_BUTTON_TOP);
+    const addButton = de.query($ADD_BUTTON_TOP);
 
     addButton.nativeElement.click();
     fixture.detectChanges();
 
-    let writeFields = de.queryAll($WRITE_FIELDS);
-    let lastIndex = writeFields.length - 1;
+    const writeFields = de.queryAll($WRITE_FIELDS);
+    const lastIndex = writeFields.length - 1;
 
     setTimeout(() => {
       expect(scrollToService.scrollTo).toHaveBeenCalledWith({
@@ -214,7 +214,7 @@ describe('WriteCollectionFieldComponent', () => {
   });
 
   it('should NOT scroll when item added with bottom button', done => {
-    let addButton = de.query($ADD_BUTTON_BOTTOM);
+    const addButton = de.query($ADD_BUTTON_BOTTOM);
 
     addButton.nativeElement.click();
     fixture.detectChanges();
@@ -226,23 +226,23 @@ describe('WriteCollectionFieldComponent', () => {
   });
 
   it('should have 1 Remove button per item', () => {
-    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+    const removeButtons = de.queryAll($REMOVE_BUTTONS);
 
     expect(removeButtons.length).toBe(VALUES.length);
   });
 
   it('should display removal confirmation dialog when remove button is clicked', () => {
-    const tempCaseField = <CaseField>({
+    const tempCaseField = ({
       ...caseField,
       display_context_parameter: '#COLLECTION(allowInsert,allowDelete)'
-    });
+    }) as CaseField;
     component.caseFields = [tempCaseField];
     component.caseField = tempCaseField;
     component.ngOnInit();
     fixture.detectChanges();
-    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+    const removeButtons = de.queryAll($REMOVE_BUTTONS);
 
-    let removeFirstButton = removeButtons[0];
+    const removeFirstButton = removeButtons[0];
     removeFirstButton.nativeElement.click();
     fixture.detectChanges();
 
@@ -250,23 +250,23 @@ describe('WriteCollectionFieldComponent', () => {
   });
 
   it('should remove item from collection when remove button is clicked and confirmed', () => {
-    const tempCaseField = <CaseField>({
+    const tempCaseField = ({
       ...caseField,
       display_context_parameter: '#COLLECTION(allowInsert,allowDelete)'
-    });
+    }) as CaseField;
     component.caseField = tempCaseField;
     component.caseFields = [tempCaseField];
     fixture.detectChanges();
     // Confirm removal through mock dialog
     dialogRef.afterClosed.and.returnValue(of('Remove'));
 
-    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+    const removeButtons = de.queryAll($REMOVE_BUTTONS);
 
-    let removeFirstButton = removeButtons[0];
+    const removeFirstButton = removeButtons[0];
     removeFirstButton.nativeElement.click();
     fixture.detectChanges();
 
-    let writeFields = de.queryAll($WRITE_FIELDS);
+    const writeFields = de.queryAll($WRITE_FIELDS);
     expect(writeFields.length).toBe(VALUES.length - 1);
 
     expect(component.formArray.controls.length).toBe(1);
@@ -277,13 +277,13 @@ describe('WriteCollectionFieldComponent', () => {
     // Declined removal through mock dialog
     dialogRef.afterClosed.and.returnValue(of('Cancel'));
 
-    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+    const removeButtons = de.queryAll($REMOVE_BUTTONS);
 
-    let removeFirstButton = removeButtons[0];
+    const removeFirstButton = removeButtons[0];
     removeFirstButton.nativeElement.click();
     fixture.detectChanges();
 
-    let writeFields = de.queryAll($WRITE_FIELDS);
+    const writeFields = de.queryAll($WRITE_FIELDS);
     expect(writeFields.length).toBe(VALUES.length);
   });
 
@@ -292,7 +292,7 @@ describe('WriteCollectionFieldComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    let fields = de.queryAll($WRITE_FIELDS);
+    const fields = de.queryAll($WRITE_FIELDS);
     expect(fields.length).toBe(0);
   });
 });
@@ -328,7 +328,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = <CaseField>({
+    caseField = (({
       id: FIELD_ID,
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
@@ -343,7 +343,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
           delete: false
         }
       ]
-    });
+    }) as CaseField);
     formGroup = new FormGroup({
       field1: new FormControl()
     });
@@ -386,25 +386,25 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   }));
 
   it('should disable remove buttons when user does not have DELETE right', () => {
-    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+    const removeButtons = de.queryAll($REMOVE_BUTTONS);
 
     expect(removeButtons[0].nativeElement.disabled).toBe(true);
   });
 
   it('should not disable remove buttons for newly added items even when user does not have DELETE right', () => {
-    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+    const removeButtons = de.queryAll($REMOVE_BUTTONS);
 
     expect(removeButtons[1].nativeElement.disabled).toBe(false);
   });
 
   it('should disable add button when user does not have CREATE right', () => {
-    let addButton = de.query($ADD_BUTTON_TOP);
+    const addButton = de.query($ADD_BUTTON_TOP);
 
     expect(addButton.nativeElement.disabled).toBe(true);
   });
 
   it('should render a row with a write field for each items', () => {
-    let writeFields = de.queryAll($WRITE_FIELDS);
+    const writeFields = de.queryAll($WRITE_FIELDS);
 
     expect(writeFields.length).toEqual(2);
   });
@@ -443,7 +443,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = <CaseField>({
+    caseField = (({
       id: FIELD_ID,
       label: 'X',
       field_type: SIMPLE_FIELD_TYPE,
@@ -458,7 +458,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
           delete: false
         }
       ]
-    });
+    }) as CaseField);
     formGroup = new FormGroup({
       field1: new FormControl()
     });
@@ -501,9 +501,9 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   }));
 
   it('should change the displayContext to READONLY when user does not have update right', () => {
-    let collectionItem = collectionValues[0];
+    const collectionItem = collectionValues[0];
 
-    let updatedCaseField = component.buildCaseField(collectionItem, 0);
+    const updatedCaseField = component.buildCaseField(collectionItem, 0);
 
     expect(updatedCaseField.display_context).toEqual('READONLY');
   });

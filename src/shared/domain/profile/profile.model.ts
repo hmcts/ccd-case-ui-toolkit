@@ -10,7 +10,7 @@ function hasRoles(profile: Profile): boolean {
 
 // @dynamic
 export class Profile {
-  user: {
+  public user: {
     idam: {
       id: string,
       email: string,
@@ -20,12 +20,12 @@ export class Profile {
     }
   };
 
-  channels: string[];
+  public channels: string[];
 
   @Type(() => Jurisdiction)
-  jurisdictions: Jurisdiction[];
+  public jurisdictions: Jurisdiction[];
 
-  default: {
+  public default: {
     workbasket: {
       jurisdiction_id: string,
       case_type_id: string,
@@ -33,14 +33,14 @@ export class Profile {
     }
   };
 
-  isSolicitor(): boolean {
+  public isSolicitor(): boolean {
     if (hasRoles(this)) {
       return this.user.idam.roles.find(r => r.endsWith('-solicitor')) !== undefined;
     }
     return false;
   }
 
-  isCourtAdmin(): boolean {
+  public isCourtAdmin(): boolean {
     if (hasRoles(this)) {
       return this.user.idam.roles.find(r => r.endsWith('-courtadmin')) !== undefined;
     }

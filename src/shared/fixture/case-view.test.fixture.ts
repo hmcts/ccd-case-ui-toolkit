@@ -1,5 +1,5 @@
-import { createCaseTabArray } from './case-tab.test.fixture';
 import { CaseField, CaseView } from '../domain';
+import { createCaseTabArray } from './case-tab.test.fixture';
 
 export let createCaseView = () => {
   const caseView = new CaseView();
@@ -19,7 +19,7 @@ export let createCaseView = () => {
 
   caseView.tabs = createCaseTabArray();
 
-  caseView.metadataFields = [<CaseField>({
+  caseView.metadataFields = [({
     id: '[STATE]',
     label: 'State',
     display_context: 'READONLY',
@@ -30,7 +30,7 @@ export let createCaseView = () => {
     order: 2,
     value: 'State1',
     show_condition: ''
-  })];
+  }) as CaseField];
 
   return caseView;
 };

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FormControl } from '@angular/forms';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
   selector: 'ccd-write-phone-uk-field',
@@ -8,9 +8,9 @@ import { FormControl } from '@angular/forms';
 })
 export class WritePhoneUKFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  phoneUkControl: FormControl;
+  public phoneUkControl: FormControl;
 
-  ngOnInit() {
+  public ngOnInit() {
     this.phoneUkControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 }

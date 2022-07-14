@@ -1,14 +1,14 @@
-import { EventLogTableComponent } from './event-log-table.component';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { formatDate } from '@angular/common';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CaseViewEvent } from '../../../../domain/case-view';
-import { DatePipe } from '../../utils';
 import createSpyObj = jasmine.createSpyObj;
 import * as moment from 'moment-timezone';
+import { CaseViewEvent } from '../../../../domain/case-view';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
-import { formatDate } from '@angular/common';
+import { DatePipe } from '../../utils';
+import { EventLogTableComponent } from './event-log-table.component';
 
 describe('EventLogTableComponent', () => {
 
@@ -91,7 +91,7 @@ describe('EventLogTableComponent', () => {
     }));
 
     it('should render a table with 3 columns', () => {
-      let headers = de.queryAll($TABLE_HEADERS);
+      const headers = de.queryAll($TABLE_HEADERS);
 
       expect(headers.length).toBe(3);
 
@@ -101,14 +101,14 @@ describe('EventLogTableComponent', () => {
     });
 
     it('should render a row for each event', () => {
-      let rows = de.queryAll($TABLE_ROWS);
+      const rows = de.queryAll($TABLE_ROWS);
 
       expect(rows.length).toBe(EVENTS.length);
 
-      let firstRowCells = rows[0].queryAll(By.css('td'));
+      const firstRowCells = rows[0].queryAll(By.css('td'));
 
       expect(firstRowCells.length).toBe(3);
-      let firstEvent = EVENTS[0];
+      const firstEvent = EVENTS[0];
 
       const date = new Date(2017, 4, 10); // 10th May, 2017
       const timeZoneOffset = - (new Date(date).getTimezoneOffset());
@@ -116,24 +116,24 @@ describe('EventLogTableComponent', () => {
       expect(firstRowCells[COL_EVENT].nativeElement.textContent).toBe(firstEvent.event_name + firstEvent.significant_item.description);
       expect(firstRowCells[COL_AUTHOR].nativeElement.textContent).toEqual('Justin SMITH');
 
-      let secondRowCells = rows[1].queryAll(By.css('td'));
+      const secondRowCells = rows[1].queryAll(By.css('td'));
 
       expect(secondRowCells.length).toBe(3);
-      let secondEvent = EVENTS[1];
+      const secondEvent = EVENTS[1];
 
       expect(secondRowCells[COL_EVENT].nativeElement.textContent).toBe(secondEvent.event_name);
       expect(secondRowCells[COL_AUTHOR].nativeElement.textContent).toEqual('Phillip CHAN');
     });
 
     it('should highlight the row selected', () => {
-      let rows = de.queryAll($TABLE_ROWS);
+      const rows = de.queryAll($TABLE_ROWS);
 
       expect(rows[0].classes['EventLogTable-Selected']).toBeTruthy();
       expect(rows[1].classes['EventLogTable-Selected']).toBeFalsy();
     });
 
     it('should change the selected row when another row is clicked', () => {
-      let rows = de.queryAll($TABLE_ROWS);
+      const rows = de.queryAll($TABLE_ROWS);
 
       rows[1].nativeElement.click();
       fixture.detectChanges();
@@ -146,7 +146,7 @@ describe('EventLogTableComponent', () => {
     it('should fire onSelect event when another row is clicked', () => {
       spyOn(component.onSelect, 'emit');
 
-      let rows = de.queryAll($TABLE_ROWS);
+      const rows = de.queryAll($TABLE_ROWS);
 
       rows[1].nativeElement.click();
       fixture.detectChanges();
@@ -155,7 +155,7 @@ describe('EventLogTableComponent', () => {
     });
 
     it('should set aria-label attribute for non selected row date column', () => {
-      let columns = de.queryAll($TABLE_COLUMNS);
+      const columns = de.queryAll($TABLE_COLUMNS);
 
       expect(columns[4].nativeElement.getAttribute('aria-label')).toBe(`date ${formatDate(EVENTS[1].timestamp, 'dd MMM yyyy hh:mm:ss a', 'en-GB')},
         press enter key for event ${EVENTS[1].event_name} details`);
@@ -163,17 +163,17 @@ describe('EventLogTableComponent', () => {
 
     it('should fire onSelect event when enter key pressed on non selected date column', () => {
       spyOn(component.onSelect, 'emit');
-      let columns = de.queryAll($TABLE_COLUMNS);
+      const columns = de.queryAll($TABLE_COLUMNS);
 
       columns[4].nativeElement.dispatchEvent(new KeyboardEvent('keydown', {
-        'key': 'Enter'
+        key: 'Enter'
       }));
 
       expect(component.onSelect.emit).toHaveBeenCalledWith(EVENTS[1]);
     });
 
     it('should render hyperlink for each row and link to event id', () => {
-      let links = de.queryAll($TABLE_ROW_LINKS_STANDALONE);
+      const links = de.queryAll($TABLE_ROW_LINKS_STANDALONE);
 
       expect(links.length).toBe(2);
       expect(links[0].nativeElement.getAttribute('href')).toBe('/event/5/history');
@@ -228,7 +228,7 @@ describe('EventLogTableComponent', () => {
     }));
 
     it('should emit event if hyperlink clicked', () => {
-      let rows = de.queryAll($TABLE_ROW_LINKS_TIMELINE);
+      const rows = de.queryAll($TABLE_ROW_LINKS_TIMELINE);
 
       rows[1].nativeElement.click();
       fixture.detectChanges();

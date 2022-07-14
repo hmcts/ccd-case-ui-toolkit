@@ -1,6 +1,6 @@
-import { PrintUrlPipe } from './print-url.pipe';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../../../app.config';
+import { PrintUrlPipe } from './print-url.pipe';
 
 describe('PrintUrlPipe', () => {
   const LOCAL_PRINT_SERVICE_URL = '/print';

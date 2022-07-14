@@ -8,7 +8,7 @@ export class DynamicRadioListPipe implements PipeTransform {
 
   private static readonly EMPTY = '';
 
-  transform(value: any, items: FixedListItem[]): any {
+  public transform(value: any, items: FixedListItem[]): any {
     /**
      *
      * If value is object with element `value.code`, use code instead.

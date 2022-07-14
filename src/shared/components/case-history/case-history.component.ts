@@ -28,22 +28,22 @@ export class CaseHistoryComponent implements OnInit, OnDestroy {
   public caseSubscription: Subscription;
 
   constructor(
-    private route: ActivatedRoute,
-    private alertService: AlertService,
-    private orderService: OrderService,
-    private caseNotifier: CaseNotifier,
-    private caseHistoryService: CaseHistoryService) { }
+    private readonly route: ActivatedRoute,
+    private readonly alertService: AlertService,
+    private readonly orderService: OrderService,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly caseHistoryService: CaseHistoryService) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
       this.caseDetails = caseDetails;
-      let eventId = this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID) || this.event;
+      const eventId = this.route.snapshot.paramMap.get(CaseHistoryComponent.PARAM_EVENT_ID) || this.event;
       this.caseHistoryService
         .get(this.caseDetails.case_id, eventId)
         .pipe(
           map(caseHistory => {
             if (!caseHistory) {
-              let error = new HttpError();
+              const error = new HttpError();
               error.message = CaseHistoryComponent.ERROR_MESSAGE;
               throw error;
             }

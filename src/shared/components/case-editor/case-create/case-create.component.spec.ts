@@ -11,7 +11,7 @@ import { CaseCreateComponent } from './case-create.component';
 
 import createSpyObj = jasmine.createSpyObj;
 
-let CaseEditComponent: any = MockComponent({
+const CaseEditComponent: any = MockComponent({
   selector: 'ccd-case-edit',
   inputs: ['eventTrigger', 'submit', 'validate', 'caseDetails', 'saveDraft'],
   outputs: ['cancelled', 'submitted']
@@ -26,18 +26,18 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
     undefined,
     false,
     [
-      <CaseField>({
+      ({
         id: 'PersonFirstName',
         label: 'First name',
         field_type: null,
         display_context: 'READONLY'
-      }),
-      <CaseField>({
+      }) as CaseField,
+      ({
         id: 'PersonLastName',
         label: 'Last name',
         field_type: null,
         display_context: 'OPTIONAL'
-      })
+      }) as CaseField
     ],
     [],
     true
@@ -58,7 +58,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
 
   const SANITISED_EDIT_FORM: CaseEventData = {
     data: {
-      'PersonLastName': 'Khaleesi'
+      PersonLastName: 'Khaleesi'
     },
     event: {
       id: null,
@@ -131,7 +131,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
   it('should emit submitted event when submitted emitter is called', () => {
     component.ngOnInit();
 
-    let event = {id: 1, name: 'name'};
+    const event = {id: 1, name: 'name'};
     component.emitSubmitted(event);
     expect(submitHandler.applyFilters).toHaveBeenCalledWith(event);
   });
@@ -139,7 +139,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
   it('should emit cancelled event when cancelled emitter is called', () => {
     component.ngOnInit();
 
-    let event = {id: 1, name: 'name'};
+    const event = {id: 1, name: 'name'};
     component.emitCancelled(event);
     expect(cancelHandler.applyFilters).toHaveBeenCalledWith(event);
   });
@@ -176,18 +176,18 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
     DRAFT_PREFIX + DRAFT_ID,
     false,
     [
-      <CaseField>({
+      ({
         id: 'PersonFirstName',
         label: 'First name',
         field_type: null,
         display_context: 'READONLY'
-      }),
-      <CaseField>({
+      }) as CaseField,
+      ({
         id: 'PersonLastName',
         label: 'Last name',
         field_type: null,
         display_context: 'OPTIONAL'
-      })
+      }) as CaseField
     ],
     [],
     true
@@ -200,7 +200,7 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
 
   const SANITISED_EDIT_FORM: CaseEventData = {
     data: {
-      'PersonLastName': 'Khaleesi'
+      PersonLastName: 'Khaleesi'
     },
     event: {
       id: null,

@@ -23,7 +23,7 @@ describe('TaskConflictComponent', () => {
   });
 
   it('should display error message task conflict', () => {
-    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'))
+    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
     const headingHtml = heading.nativeElement as HTMLElement;
     expect(headingHtml.innerText).toBe('Task conflict');
   });

@@ -1,15 +1,15 @@
-import { NgModule } from '@angular/core';
-import { SearchResultComponent } from './search-result.component';
-import { BrowserService, SearchResultViewItemComparatorFactory } from '../../services';
 import { CommonModule } from '@angular/common';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { PipesModule } from '../../pipes';
-import { RouterModule } from '@angular/router';
-import { PaletteModule } from '../palette';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivityModule } from '../activity';
+import { RouterModule } from '@angular/router';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { LabelSubstitutorModule } from '../../directives';
+import { PipesModule } from '../../pipes';
+import { BrowserService, SearchResultViewItemComparatorFactory } from '../../services';
+import { ActivityModule } from '../activity';
 import { PaginationModule } from '../pagination/pagination.module';
+import { PaletteModule } from '../palette';
+import { SearchResultComponent } from './search-result.component';
 
 @NgModule({
   imports: [

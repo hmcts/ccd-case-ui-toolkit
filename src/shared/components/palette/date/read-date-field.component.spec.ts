@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadDateFieldComponent } from './read-date-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { DatePipe } from '../utils/date.pipe';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { DatePipe } from '../utils/date.pipe';
+import { ReadDateFieldComponent } from './read-date-field.component';
 
 describe('ReadDateFieldComponent', () => {
 
@@ -16,13 +16,13 @@ describe('ReadDateFieldComponent', () => {
   };
   const VALUE = '1800-07-15';
   describe('Non-persistable readonly date field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
     const FORMATTED_VALUE = '15 Jul 1800';
     const EMPTY = '';
 
@@ -86,13 +86,13 @@ describe('ReadDateFieldComponent', () => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;
     };
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadDateFieldComponent>;
     let component: ReadDateFieldComponent;

@@ -9,10 +9,10 @@ import { CaseField } from '../../../domain/definition';
 })
 export class CcdTabFieldsPipe implements PipeTransform {
 
-  transform(tab: CaseTab): CaseField {
+  public transform(tab: CaseTab): CaseField {
     const value: any = tab.fields.reduce((acc: any, field: CaseField) => {
       return {...acc, [field.id]: field.value};
-    }, {})
+    }, {});
     return plainToClassFromExist(new CaseField(), {
       id: tab.id,
       label: tab.label,

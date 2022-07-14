@@ -14,6 +14,6 @@ export class ActivityIconComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 }

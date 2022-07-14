@@ -1,15 +1,15 @@
-import { WizardPageField } from '../domain';
-import { CaseField } from '../../../domain';
-import { ComplexFieldOverride } from '../domain/wizard-page-field-complex-override.model';
 import { Injectable } from '@angular/core';
 import { ShowCondition } from '../../../directives/conditional-show/domain';
+import { CaseField } from '../../../domain';
+import { WizardPageField } from '../domain';
+import { ComplexFieldOverride } from '../domain/wizard-page-field-complex-override.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WizardPageFieldToCaseFieldMapper {
 
-  mapAll(wizardPageFields: WizardPageField[], caseFields: CaseField[]): CaseField[] {
+  public mapAll(wizardPageFields: WizardPageField[], caseFields: CaseField[]): CaseField[] {
     return wizardPageFields.map(wizardField => {
       return this.map(wizardField, caseFields);
     });
@@ -17,7 +17,7 @@ export class WizardPageFieldToCaseFieldMapper {
 
   private map(wizardPageField: WizardPageField, caseFields: CaseField[]): CaseField {
 
-    let caseField: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
+    const caseField: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
     caseField.wizardProps = wizardPageField;
     caseField.order = wizardPageField.order;
 
@@ -39,7 +39,7 @@ export class WizardPageFieldToCaseFieldMapper {
     const caseFieldIds = override.complex_field_element_id.split('.');
     let case_field_leaf: CaseField;
 
-    let children = this.getCaseFieldChildren(caseField);
+    const children = this.getCaseFieldChildren(caseField);
 
     if (children.length > 0) {
       const [_, ...tail] = caseFieldIds;
@@ -71,7 +71,7 @@ export class WizardPageFieldToCaseFieldMapper {
       caseField.show_condition = ShowCondition.addPathPrefixToCondition(caseField.show_condition, pathPrefix);
     }
 
-    let childrenCaseFields = this.getCaseFieldChildren(caseField);
+    const childrenCaseFields = this.getCaseFieldChildren(caseField);
 
     childrenCaseFields.forEach(collectionCaseField => {
       this.fixShowConditionPath(collectionCaseField, this.preparePathPrefix(pathPrefix, caseField.id));
@@ -85,19 +85,19 @@ export class WizardPageFieldToCaseFieldMapper {
   private getCaseFieldLeaf(caseFieldId: string[], caseFields: CaseField[]): CaseField {
     const [head, ...tail] = caseFieldId;
     if (caseFieldId.length === 1) {
-      let caseLeaf = caseFields.find(e => e.id === head);
+      const caseLeaf = caseFields.find(e => e.id === head);
       if (!caseLeaf) {
         throw new Error(`Cannot find leaf for caseFieldId ${caseFieldId.join('.')}`);
       }
       return caseLeaf;
     } else if (caseFieldId.length > 1) {
-      let caseField = caseFields.find(e => e.id === head);
-      let children = this.getCaseFieldChildren(caseField);
+      const caseField = caseFields.find(e => e.id === head);
+      const children = this.getCaseFieldChildren(caseField);
 
       if (children.length === 0) {
         throw new Error(`field_type or complex_fields missing for ${caseFieldId.join('.')}`);
       }
-      return this.getCaseFieldLeaf(tail, children)
+      return this.getCaseFieldLeaf(tail, children);
     } else {
       throw new Error(`Cannot find leaf for caseFieldId ${caseFieldId.join('.')}`);
     }
@@ -105,7 +105,7 @@ export class WizardPageFieldToCaseFieldMapper {
 
   private hideParentIfAllChildrenHidden(caseField: CaseField) {
 
-    let childrenCaseFields = this.getCaseFieldChildren(caseField);
+    const childrenCaseFields = this.getCaseFieldChildren(caseField);
 
     childrenCaseFields.forEach(e => this.hideParentIfAllChildrenHidden(e));
 

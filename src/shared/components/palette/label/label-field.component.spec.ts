@@ -1,13 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { LabelFieldComponent } from './label-field.component';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FieldType } from '../../../domain/definition/field-type.model';
 import { MockComponent } from 'ng2-mock-component';
 import { LabelSubstitutorDirective } from '../../../directives/substitutor/label-substitutor.directive';
-import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { LabelFieldComponent } from './label-field.component';
 
 describe('LabelFieldComponent', () => {
 
@@ -17,27 +17,27 @@ describe('LabelFieldComponent', () => {
     id: 'Label',
     type: 'Label'
   };
-  const CASE_FIELD_WITH_NO_VALUE: CaseField = <CaseField>({
+  const CASE_FIELD_WITH_NO_VALUE: CaseField = ({
     id: 'label',
     label: 'Label Field Label',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
-  });
-  const CASE_FIELD: CaseField = <CaseField>({
+  }) as CaseField;
+  const CASE_FIELD: CaseField = ({
     id: 'label',
     label: 'Label Field Label',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: 'Label Field Value'
-  });
+  }) as CaseField;
 
-  const LABEL_CASE_FIELD: CaseField = <CaseField>({
+  const LABEL_CASE_FIELD: CaseField = ({
     id: 'field',
     label: '${label}',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: 'Label Field Value'
-  });
+  }) as CaseField;
 
   const CASE_FIELDS: CaseField[] = [
     CASE_FIELD

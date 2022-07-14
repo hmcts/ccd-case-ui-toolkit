@@ -12,27 +12,27 @@ import { CasesService, EventTriggerService } from '../services';
 export class CaseCreateComponent implements OnInit {
 
   @Input()
-  jurisdiction: string;
+  public jurisdiction: string;
   @Input()
-  caseType: string;
+  public caseType: string;
   @Input()
-  event: string;
+  public event: string;
 
   @Output()
-  cancelled: EventEmitter<any> = new EventEmitter();
+  public cancelled: EventEmitter<any> = new EventEmitter();
   @Output()
-  submitted: EventEmitter<any> = new EventEmitter();
+  public submitted: EventEmitter<any> = new EventEmitter();
 
   public eventTrigger: CaseEventTrigger;
 
   constructor(
-    private casesService: CasesService,
-    private alertService: AlertService,
-    private draftService: DraftService,
-    private eventTriggerService: EventTriggerService,
+    private readonly casesService: CasesService,
+    private readonly alertService: AlertService,
+    private readonly draftService: DraftService,
+    private readonly eventTriggerService: EventTriggerService,
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.casesService.getEventTrigger(this.caseType, this.event).toPromise()
       .then(eventTrigger => {
         this.eventTrigger = eventTrigger;
@@ -44,19 +44,19 @@ export class CaseCreateComponent implements OnInit {
       });
   }
 
-  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
+  public submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
     return (sanitizedEditForm: CaseEventData) => {
       sanitizedEditForm.draft_id = this.eventTrigger.case_id;
       return this.casesService.createCase(this.caseType, sanitizedEditForm);
-    }
+    };
   }
 
-  validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
+  public validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
     return (sanitizedEditForm: CaseEventData, pageId: string) => this.casesService
       .validateCase(this.caseType, sanitizedEditForm, pageId);
   }
 
-  saveDraft(): (caseEventData: CaseEventData) => Observable<Draft> {
+  public saveDraft(): (caseEventData: CaseEventData) => Observable<Draft> {
     if (this.eventTrigger.can_save_draft) {
       return (caseEventData: CaseEventData) => this.draftService.createOrUpdateDraft(this.caseType,
                                                                                      this.eventTrigger.case_id,
@@ -64,15 +64,15 @@ export class CaseCreateComponent implements OnInit {
     }
   }
 
-  emitCancelled(event): void {
+  public emitCancelled(event): void {
     this.cancelled.emit(event);
   }
 
-  emitSubmitted(event): void {
+  public emitSubmitted(event): void {
     this.submitted.emit(event);
   }
 
-  isDataLoaded(): boolean {
+  public isDataLoaded(): boolean {
     return this.eventTrigger ? true : false;
   }
 }

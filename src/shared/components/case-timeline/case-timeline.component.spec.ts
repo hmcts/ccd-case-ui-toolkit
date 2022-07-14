@@ -1,13 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { MockComponent } from 'ng2-mock-component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { CaseViewEvent, CaseView, HttpError } from '../../domain';
-import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
-import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { CasesService, CaseNotifier } from '../case-editor';
+import { MockComponent } from 'ng2-mock-component';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { CaseView, CaseViewEvent, HttpError } from '../../domain';
 import createSpyObj = jasmine.createSpyObj;
 import { AlertService } from '../../services';
+import { CaseNotifier, CasesService } from '../case-editor';
+import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
 
 describe('CaseTimelineComponent', () => {
 
@@ -135,13 +135,13 @@ describe('CaseTimelineComponent', () => {
       expect(component.events).toEqual(CASE_EVENTS);
       expect(component.displayMode).toEqual(CaseTimelineDisplayMode.TIMELINE);
 
-      let eventLogDe = de.query(By.directive(EventLogComponent));
+      const eventLogDe = de.query(By.directive(EventLogComponent));
 
       expect(eventLogDe).toBeDefined();
-      let eventLogComponent = eventLogDe.componentInstance;
+      const eventLogComponent = eventLogDe.componentInstance;
       expect(eventLogComponent.events).toEqual(CASE_EVENTS);
 
-      let caseHistoryDetailsDe = de.query(By.directive(CaseHistoryComponent));
+      const caseHistoryDetailsDe = de.query(By.directive(CaseHistoryComponent));
 
       expect(caseHistoryDetailsDe).toBeNull();
     });
@@ -154,15 +154,15 @@ describe('CaseTimelineComponent', () => {
 
       fixture.detectChanges();
 
-      let link = de.query($BACK_TO_TIMELINE_LINK);
+      const link = de.query($BACK_TO_TIMELINE_LINK);
       expect(link.nativeElement.textContent).toBe('Back to case timeline');
 
-      let caseHistoryDe = de.query(By.directive(CaseHistoryComponent));
+      const caseHistoryDe = de.query(By.directive(CaseHistoryComponent));
       expect(caseHistoryDe).toBeDefined();
-      let caseHistoryComponent = caseHistoryDe.componentInstance;
+      const caseHistoryComponent = caseHistoryDe.componentInstance;
       expect(caseHistoryComponent.event).toEqual('5');
 
-      let eventLogDe = de.query(By.directive(EventLogComponent));
+      const eventLogDe = de.query(By.directive(EventLogComponent));
       expect(eventLogDe).toBeNull();
     });
 
@@ -175,12 +175,12 @@ describe('CaseTimelineComponent', () => {
       component.goToCaseTimeline();
       fixture.detectChanges();
 
-      let caseHistoryDetailsDe = de.query(By.directive(CaseHistoryComponent));
+      const caseHistoryDetailsDe = de.query(By.directive(CaseHistoryComponent));
       expect(caseHistoryDetailsDe).toBeNull();
 
-      let eventLogDe = de.query(By.directive(EventLogComponent));
+      const eventLogDe = de.query(By.directive(EventLogComponent));
       expect(eventLogDe).toBeDefined();
-      let eventLogComponent = eventLogDe.componentInstance;
+      const eventLogComponent = eventLogDe.componentInstance;
       expect(eventLogComponent.events).toEqual(CASE_EVENTS);
     });
   });
@@ -230,7 +230,7 @@ describe('CaseTimelineComponent', () => {
 
     it('should call alert service and not render event log component', () => {
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_REFERENCE);
-      let eventLogDe = de.query(By.directive(EventLogComponent));
+      const eventLogDe = de.query(By.directive(EventLogComponent));
 
       expect(eventLogDe).toBeNull();
       expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);

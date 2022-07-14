@@ -1,14 +1,14 @@
 export class ActivityInfo {
-  forename: string;
-  surname: string;
+  public forename: string;
+  public surname: string;
 }
 
 export class Activity {
-  caseId: string;
-  viewers: ActivityInfo[];
-  editors: ActivityInfo[];
-  unknownViewers: number;
-  unknownEditors: number;
+  public caseId: string;
+  public viewers: ActivityInfo[];
+  public editors: ActivityInfo[];
+  public unknownViewers: number;
+  public unknownEditors: number;
 }
 
 export enum DisplayMode {

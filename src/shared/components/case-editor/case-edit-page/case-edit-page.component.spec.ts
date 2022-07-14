@@ -6,23 +6,23 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
+import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
 import { CaseEventData, CaseEventTrigger, CaseField, Draft, FieldType, HttpError } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import createSpyObj = jasmine.createSpyObj;
+import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValueService } from '../../../services';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CcdPageFieldsPipe, FieldsFilterPipe } from '../../palette/complex';
+import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
 import { CaseEditPageComponent } from './case-edit-page.component';
-import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
-import createSpyObj = jasmine.createSpyObj;
-import { CcdCaseTitlePipe } from '../../../pipes/case-title';
-import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
-import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 describe('CaseEditPageComponent', () => {
 
@@ -39,43 +39,43 @@ describe('CaseEditPageComponent', () => {
 
   const ERROR_HEADING_GENERIC = 'Something went wrong';
   const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
-  const ERROR_HEADING_SPECIFIC = 'The event could not be created'
-  const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors'
+  const ERROR_HEADING_SPECIFIC = 'The event could not be created';
+  const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors';
 
   let comp: CaseEditPageComponent;
   let fixture: ComponentFixture<CaseEditPageComponent>;
   let wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
-  let readOnly = new CaseField();
-  let fieldTypeSanitiser = new FieldTypeSanitiser();
-  let formValueService = new FormValueService(fieldTypeSanitiser);
-  let formErrorService = new FormErrorService();
-  let firstPage = new WizardPage();
-  let caseFieldService = new CaseFieldService();
-  let pageValidationService = new PageValidationService(caseFieldService);
+  const readOnly = new CaseField();
+  const fieldTypeSanitiser = new FieldTypeSanitiser();
+  const formValueService = new FormValueService(fieldTypeSanitiser);
+  const formErrorService = new FormErrorService();
+  const firstPage = new WizardPage();
+  const caseFieldService = new CaseFieldService();
+  const pageValidationService = new PageValidationService(caseFieldService);
   let route: any;
   let snapshot: any;
   const FORM_GROUP = new FormGroup({
-    'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
+    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
   });
   const WIZARD = new Wizard([wizardPage]);
-  let someObservable = {
-    'subscribe': () => new Draft()
+  const someObservable = {
+    subscribe: () => new Draft()
   };
   let dialog: any;
   let matDialogRef: any;
 
   let caseEditComponentStub: any;
   let cancelled: any;
-  let caseField1 = new CaseField();
-  let caseField2 = new CaseField();
-  let eventData = new CaseEventData();
+  const caseField1 = new CaseField();
+  const caseField2 = new CaseField();
+  const eventData = new CaseEventData();
   const caseEventDataPrevious: CaseEventData = {
-    'data': {
-      'field1': 'Updated value'
+    data: {
+      field1: 'Updated value'
     },
-    'event': {'id': '', 'summary': '', 'description': ''},
-    'event_token': '',
-    'ignore_warning': true
+    event: {id: '', summary: '', description: ''},
+    event_token: '',
+    ignore_warning: true
   };
 
   describe('Save and Resume enabled', () => {
@@ -83,27 +83,27 @@ describe('CaseEditPageComponent', () => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponentStub = {
-        'form': FORM_GROUP,
-        'wizard': WIZARD,
-        'data': '',
-        'eventTrigger': {'case_fields': [caseField1], 'name': 'Test event trigger name', 'can_save_draft': true},
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'first': () => true,
-        'next': () => true,
-        'previous': () => true,
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'validate': (caseEventData: CaseEventData) => of(caseEventData),
-        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
+        form: FORM_GROUP,
+        wizard: WIZARD,
+        data: '',
+        eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        first: () => true,
+        next: () => true,
+        previous: () => true,
+        cancel: () => undefined,
+        cancelled: cancelled,
+        validate: (caseEventData: CaseEventData) => of(caseEventData),
+        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
         params: of({id: 123}),
-        snapshot: snapshot
+        snapshot
       };
 
       matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
@@ -188,9 +188,9 @@ describe('CaseEditPageComponent', () => {
     });
 
     it('should return true on hasPrevious check', () => {
-      let errorContext = {
-        'ignore_warning': true,
-        'trigger_text': 'Some error!'
+      const errorContext = {
+        ignore_warning: true,
+        trigger_text: 'Some error!'
       };
       comp.callbackErrorsNotify(errorContext);
       expect(comp.ignoreWarning).toBeTruthy();
@@ -272,7 +272,7 @@ describe('CaseEditPageComponent', () => {
       expect(cancelled.emit)
         .toHaveBeenCalledWith({
           status: CaseEditPageComponent.RESUMED_FORM_SAVE,
-          data: {data: {'field1': 'SOME_VALUE'}}
+          data: {data: {field1: 'SOME_VALUE'}}
         });
     });
 
@@ -286,7 +286,7 @@ describe('CaseEditPageComponent', () => {
       comp.cancel();
       expect(cancelled.emit).toHaveBeenCalledWith({
         status: CaseEditPageComponent.NEW_FORM_SAVE,
-        data: {data: {'field1': 'SOME_VALUE'}}
+        data: {data: {field1: 'SOME_VALUE'}}
       });
     });
 
@@ -327,7 +327,7 @@ describe('CaseEditPageComponent', () => {
       comp.currentPage = wizardPage;
       fixture.detectChanges();
 
-      let cancelText = comp.getCancelText();
+      const cancelText = comp.getCancelText();
 
       expect(cancelText).toEqual('Return to case list');
     });
@@ -349,27 +349,27 @@ describe('CaseEditPageComponent', () => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponentStub = {
-        'form': FORM_GROUP,
-        'wizard': WIZARD,
-        'data': '',
-        'eventTrigger': {'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false},
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'first': () => true,
-        'next': () => true,
-        'previous': () => true,
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'validate': (caseEventData: CaseEventData) => of(caseEventData),
-        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': []},
+        form: FORM_GROUP,
+        wizard: WIZARD,
+        data: '',
+        eventTrigger: {case_fields: [], name: 'Test event trigger name', can_save_draft: false},
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        first: () => true,
+        next: () => true,
+        previous: () => true,
+        cancel: () => undefined,
+        cancelled: cancelled,
+        validate: (caseEventData: CaseEventData) => of(caseEventData),
+        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: []},
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
         params: of({id: 123}),
-        snapshot: snapshot
+        snapshot
       };
 
       matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
@@ -408,7 +408,7 @@ describe('CaseEditPageComponent', () => {
     it('should return "Cancel" as cancel button text if save and resume not enabled for event', () => {
       fixture.detectChanges();
 
-      let cancelText = comp.getCancelText();
+      const cancelText = comp.getCancelText();
 
       expect(cancelText).toEqual('Cancel');
     });
@@ -427,54 +427,54 @@ describe('CaseEditPageComponent', () => {
   });
 
   describe('updateFormData - should set data', () => {
-    let eventTrigger: CaseEventTrigger = {
-      'id': 'someId',
-      'name': 'Test event trigger name',
-      'case_fields': [createCaseField('field1', 'oldValue')],
-      'event_token': 'Test event token',
-      'can_save_draft': false,
-      'wizard_pages': WIZARD.pages,
+    const eventTrigger: CaseEventTrigger = {
+      id: 'someId',
+      name: 'Test event trigger name',
+      case_fields: [createCaseField('field1', 'oldValue')],
+      event_token: 'Test event token',
+      can_save_draft: false,
+      wizard_pages: WIZARD.pages,
 
       hasFields: () => true,
       hasPages: () => true
     };
 
-    let formGroup: FormGroup = new FormGroup({
-      'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
+    const formGroup: FormGroup = new FormGroup({
+      data: new FormGroup({field1: new FormControl('SOME_VALUE')})
     });
 
     beforeEach(async(() => {
       firstPage.id = 'first page';
 
       caseEditComponentStub = {
-        'form': formGroup,
-        'wizard': WIZARD,
-        'data': '',
-        'eventTrigger': eventTrigger,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'first': () => true,
-        'next': () => true,
-        'previous': () => true,
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'validate': (caseEventData: CaseEventData) => of(caseEventData),
-        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': {
-          'case_id': '1234567812345678',
-          'tabs': [],
-          'metadataFields': [],
-          'state': {
-            'id': 'incompleteApplication',
-            'name': 'Incomplete Application',
-            'title_display': '# 1234567812345678: test'
+        form: formGroup,
+        wizard: WIZARD,
+        data: '',
+        eventTrigger: eventTrigger,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        first: () => true,
+        next: () => true,
+        previous: () => true,
+        cancel: () => undefined,
+        cancelled: cancelled,
+        validate: (caseEventData: CaseEventData) => of(caseEventData),
+        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+        caseDetails: {
+          case_id: '1234567812345678',
+          tabs: [],
+          metadataFields: [],
+          state: {
+            id: 'incompleteApplication',
+            name: 'Incomplete Application',
+            title_display: '# 1234567812345678: test'
           }
         },
       };
 
       route = {
         params: of({id: 123}),
-        snapshot: snapshot
+        snapshot
       };
 
       TestBed.configureTestingModule({
@@ -505,15 +505,15 @@ describe('CaseEditPageComponent', () => {
     });
 
     it('should update CaseEventTrigger field value from the MidEvent callback', () => {
-      let id = 'field1';
-      let updatedValue = 'Updated value';
+      const id = 'field1';
+      const updatedValue = 'Updated value';
       const jsonData: CaseEventData = {
-        'data': {
-          'field1': updatedValue
+        data: {
+          field1: updatedValue
         },
-        'event': {'id': '', 'summary': '', 'description': ''},
-        'event_token': '',
-        'ignore_warning': true
+        event: {id: '', summary: '', description: ''},
+        event_token: '',
+        ignore_warning: true
       };
       comp.currentPage = wizardPage;
       comp.updateFormData(jsonData);
@@ -534,36 +534,36 @@ describe('CaseEditPageComponent', () => {
     beforeEach(async(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
-      let validateResult = {
-        'data': {
-          'field1': 'EX12345678'
+      const validateResult = {
+        data: {
+          field1: 'EX12345678'
         }
       };
 
-      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
+      const caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
 
       caseEditComponentStub = {
-        'form': FORM_GROUP,
-        'wizard': WIZARD,
-        'data': '',
-        'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true},
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'first': () => true,
-        'next': () => true,
-        'previous': () => true,
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'validate': (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
-        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
+        form: FORM_GROUP,
+        wizard: WIZARD,
+        data: '',
+        eventTrigger: {case_fields: caseFields, name: 'Test event trigger name', can_save_draft: true},
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        first: () => true,
+        next: () => true,
+        previous: () => true,
+        cancel: () => undefined,
+        cancelled: cancelled,
+        validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
+        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
         params: of({id: 123}),
-        snapshot: snapshot
+        snapshot
       };
 
       matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
@@ -730,12 +730,12 @@ describe('CaseEditPageComponent', () => {
     });
 
     it('should change button label when callback warnings notified ', () => {
-      let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+      const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
       callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_START;
       comp.callbackErrorsNotify(callbackErrorsContext);
 
       fixture.detectChanges();
-      let button = de.query($SELECT_SUBMIT_BUTTON);
+      const button = de.query($SELECT_SUBMIT_BUTTON);
       expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_START);
       expect(comp.ignoreWarning).toBeFalsy();
 
@@ -753,30 +753,30 @@ describe('CaseEditPageComponent', () => {
     beforeEach(async(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
-      let caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
+      const caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
 
       caseEditComponentStub = {
-        'form': FORM_GROUP,
-        'wizard': WIZARD,
-        'data': '',
-        'eventTrigger': {'case_fields': caseFields, 'name': 'Test event trigger name', 'can_save_draft': true},
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'first': () => true,
-        'next': () => true,
-        'previous': () => true,
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'validate': (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
-        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
+        form: FORM_GROUP,
+        wizard: WIZARD,
+        data: '',
+        eventTrigger: {case_fields: caseFields, name: 'Test event trigger name', can_save_draft: true},
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        first: () => true,
+        next: () => true,
+        previous: () => true,
+        cancel: () => undefined,
+        cancelled: cancelled,
+        validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
+        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
         params: of({id: 123}),
-        snapshot: snapshot
+        snapshot
       };
 
       matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
@@ -834,10 +834,10 @@ describe('CaseEditPageComponent', () => {
   describe('Check for Validation Error', () => {
 
     const F_GROUP = new FormGroup({
-      'data': new FormGroup({'Invalidfield1': new FormControl(null, Validators.required)
-                              , 'Invalidfield2': new FormControl(null, Validators.required)
-                              , 'OrganisationField': new FormControl(null, Validators.required)
-                              , 'complexField1': new FormControl(null, Validators.required)
+      data: new FormGroup({Invalidfield1: new FormControl(null, Validators.required)
+                              , Invalidfield2: new FormControl(null, Validators.required)
+                              , OrganisationField: new FormControl(null, Validators.required)
+                              , complexField1: new FormControl(null, Validators.required)
                             })
     });
 
@@ -857,40 +857,40 @@ describe('CaseEditPageComponent', () => {
       ]
     };
 
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'OrganisationField',
       label: 'OrganisationField',
       display_context: 'MANDATORY',
       field_type: FIELD_TYPE_WITH_VALUES,
       value: ''
-    });
+    }) as CaseField;
 
     beforeEach(async(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
 
       caseEditComponentStub = {
-        'form': F_GROUP,
-        'wizard': WIZARD,
-        'data': '',
-        'eventTrigger': {'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false},
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'first': () => true,
-        'next': () => true,
-        'previous': () => true,
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'validate': (caseEventData: CaseEventData) => of(caseEventData),
-        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
-        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': []},
+        form: F_GROUP,
+        wizard: WIZARD,
+        data: '',
+        eventTrigger: {case_fields: [], name: 'Test event trigger name', can_save_draft: false},
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        first: () => true,
+        next: () => true,
+        previous: () => true,
+        cancel: () => undefined,
+        cancelled: cancelled,
+        validate: (caseEventData: CaseEventData) => of(caseEventData),
+        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: []},
       };
       snapshot = {
         queryParamMap: createSpyObj('queryParamMap', ['get']),
       };
       route = {
         params: of({id: 123}),
-        snapshot: snapshot
+        snapshot
       };
 
       matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
@@ -938,7 +938,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach(error => {
-        expect(error.message).toEqual(`${error.id} is required`)
+        expect(error.message).toEqual(`${error.id} is required`);
       });
     });
 
@@ -956,13 +956,13 @@ describe('CaseEditPageComponent', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach(error => {
-        expect(error.message).toEqual(`${error.id} is required`)
+        expect(error.message).toEqual(`${error.id} is required`);
       });
-    })
+    });
   });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
-    let cf = new CaseField();
+    const cf = new CaseField();
     cf.id = id;
     cf.value = value;
     cf.display_context = display_context;
@@ -970,7 +970,7 @@ describe('CaseEditPageComponent', () => {
   }
 
   function createWizardPage(fields: CaseField[], isMultiColumn = false, order = 0): WizardPage {
-    let wp: WizardPage = new WizardPage();
+    const wp: WizardPage = new WizardPage();
     wp.case_fields = fields;
     wp.label = 'Test Label';
     wp.getCol1Fields = () => fields;

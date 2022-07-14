@@ -1,12 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { PaletteService } from '../palette.service';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { FieldWriteComponent } from './field-write.component';
+import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
-import { plainToClassFromExist } from 'class-transformer';
+import { PaletteService } from '../palette.service';
+import { FieldWriteComponent } from './field-write.component';
 import createSpyObj = jasmine.createSpyObj;
 
 const CLASS = 'person-first-name-cls';
@@ -38,7 +38,7 @@ describe('FieldWriteComponent', () => {
   let formValidatorService: any;
 
   let formGroup: FormGroup;
-  let caseFields: CaseField[] = [CASE_FIELD];
+  const caseFields: CaseField[] = [CASE_FIELD];
 
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -87,14 +87,14 @@ describe('FieldWriteComponent', () => {
   });
 
   it('should inject component instance as child', () => {
-    let divWrapper = de.children[0];
-    let ngContent = divWrapper.children[0];
+    const divWrapper = de.children[0];
+    const ngContent = divWrapper.children[0];
     expect(ngContent.children.length).toBe(1);
 
-    let fieldTestComponent = ngContent.children[0];
+    const fieldTestComponent = ngContent.children[0];
     expect(fieldTestComponent.attributes['class']).toEqual(CLASS);
 
-    let fieldTest = fieldTestComponent.componentInstance;
+    const fieldTest = fieldTestComponent.componentInstance;
     expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
     expect(fieldTest.formGroup).toBe(formGroup);

@@ -8,12 +8,12 @@ import { MULTIPLE_TASKS_FOUND, WorkAllocationService } from './work-allocation.s
 import createSpyObj = jasmine.createSpyObj;
 
 interface UserInfo {
-  id: string,
-  forename: string,
-  surname: string,
-  email: string,
-  active: boolean,
-  roles: string[]
+  id: string;
+  forename: string;
+  surname: string;
+  email: string;
+  active: boolean;
+  roles: string[];
 }
 
 interface UserDetails {
@@ -22,7 +22,7 @@ interface UserDetails {
     totalIdleTime: number,
   };
   canShareCases: boolean;
-  userInfo: UserInfo
+  userInfo: UserInfo;
 }
 
 function getExampleUserInfo(): UserInfo[] {
@@ -41,7 +41,7 @@ function getExampleUserInfo(): UserInfo[] {
     email: 'testing2@mail.com',
     active: true,
     roles: ['caseworker-ia-caseofficer']
-  }]
+  }];
 }
 
 function getExampleUserDetails(): UserDetails[] {
@@ -60,7 +60,7 @@ function getExampleUserDetails(): UserDetails[] {
     },
     canShareCases: true,
     userInfo: getExampleUserInfo()[1]
-  }]
+  }];
 }
 
 function getExampleTask(): TaskRespone {
@@ -159,7 +159,7 @@ describe('WorkAllocationService', () => {
 
     it('should set error service error when the search fails', (done) => {
       httpService.post.and.returnValue(throwError(ERROR));
-      const searchRequest: TaskSearchParameter = { ccdId: '1234567890' }
+      const searchRequest: TaskSearchParameter = { ccdId: '1234567890' };
       workAllocationService.searchTasks(searchRequest)
         .subscribe(() => {
           // Should not get here... so if we do, make sure it fails.
@@ -237,7 +237,7 @@ describe('WorkAllocationService', () => {
 
     it('should call post with the correct parameters', () => {
       workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
-      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {'completion_options': {'assign_and_complete': true}});
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {completion_options: {assign_and_complete: true}});
     });
 
     it('should set error service error when the call fails', (done) => {

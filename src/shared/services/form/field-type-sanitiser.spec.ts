@@ -1,5 +1,5 @@
-import { FieldTypeSanitiser } from './field-type-sanitiser';
 import { CaseField } from '../../domain/definition';
+import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 describe('FieldTypeSanitiser', () => {
 
@@ -41,7 +41,7 @@ describe('FieldTypeSanitiser', () => {
     data: {
       dynamicList: 'M'
     }
-  }
+  };
 
   const caseFields: CaseField[] = [
     Object.assign(new CaseField(), {

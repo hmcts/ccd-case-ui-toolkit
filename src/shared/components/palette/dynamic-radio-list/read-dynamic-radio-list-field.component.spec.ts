@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadDynamicRadioListFieldComponent } from './read-dynamic-radio-list-field.component';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { DynamicRadioListPipe } from './dynamic-radio-list.pipe';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { ReadDynamicRadioListFieldComponent } from './read-dynamic-radio-list-field.component';
 
 describe('ReadDynamicRadioListFieldComponent', () => {
 
@@ -26,24 +26,24 @@ describe('ReadDynamicRadioListFieldComponent', () => {
       label: 'Other',
       order: 3
     }
-  ]
+  ];
   const FIELD_TYPE: FieldType = {
     id: 'Gender',
     type: 'DynamicRadioList'
   };
 
   describe('Non-persistable readonly fixed radio list field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: FIELD_LIST_ITEMS[1],
       list_items: FIELD_LIST_ITEMS
-    });
+    }) as CaseField;
     const EMPTY = '';
 
-    const CASE_FIELD_2: CaseField = <CaseField>({
+    const CASE_FIELD_2: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
@@ -52,9 +52,9 @@ describe('ReadDynamicRadioListFieldComponent', () => {
         code: FIELD_LIST_ITEMS[1],
         list_items: FIELD_LIST_ITEMS
       }
-    });
+    }) as CaseField;
 
-    const CASE_FIELD_3: CaseField = <CaseField>({
+    const CASE_FIELD_3: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
@@ -63,7 +63,7 @@ describe('ReadDynamicRadioListFieldComponent', () => {
         code: FIELD_LIST_ITEMS[1],
         list_items: FIELD_LIST_ITEMS
       }
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadDynamicRadioListFieldComponent>;
     let component: ReadDynamicRadioListFieldComponent;

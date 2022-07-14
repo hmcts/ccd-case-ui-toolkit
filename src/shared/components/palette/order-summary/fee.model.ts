@@ -1,6 +1,6 @@
 export class Fee {
-    FeeCode: string;
-    FeeAmount: string;
-    FeeDescription?: string;
-    FeeVersion: string;
+    public FeeCode: string;
+    public FeeAmount: string;
+    public FeeDescription?: string;
+    public FeeVersion: string;
 }

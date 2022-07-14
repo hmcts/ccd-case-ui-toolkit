@@ -28,9 +28,9 @@ describe('EventCompletionStateMachineService', () => {
   let mockWorkAllocationService: WorkAllocationService;
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
-  let eventCompletionComponentEmitter: any = {
+  const eventCompletionComponentEmitter: any = {
     eventCanBeCompleted: new EventEmitter<boolean>(true)
-  }
+  };
 
   mockRouter = {
     navigate: jasmine.createSpy('navigate'),
@@ -74,7 +74,7 @@ describe('EventCompletionStateMachineService', () => {
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
   mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
 
-  let context: EventCompletionStateMachineContext = {
+  const context: EventCompletionStateMachineContext = {
     task: oneTask,
     caseId: '1620409659381330',
     eventId: 'editAppealAfterSubmit',
@@ -83,7 +83,7 @@ describe('EventCompletionStateMachineService', () => {
     route: mockRoute,
     sessionStorageService: mockSessionStorageService,
     workAllocationService: mockWorkAllocationService,
-    alertService: alertService,
+    alertService,
     canBeCompleted: false,
     component: eventCompletionComponentEmitter
   };

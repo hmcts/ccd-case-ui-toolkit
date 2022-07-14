@@ -8,16 +8,16 @@ type FormContainer = FormGroup | FormArray;
 
 export abstract class AbstractFormFieldComponent {
   @Input()
-  caseField: CaseField;
+  public caseField: CaseField;
 
   @Input()
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 
   @Input()
-  parent?: FormContainer;
+  public parent?: FormContainer;
 
   @Input()
-  idPrefix = '';
+  public idPrefix = '';
 
   public id() {
     return this.idPrefix + this.caseField.id;

@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadEmailFieldComponent } from './read-email-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { text } from '../../../test/helpers';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { text } from '../../../test/helpers';
+import { ReadEmailFieldComponent } from './read-email-field.component';
 
 describe('ReadEmailFieldComponent', () => {
 
@@ -16,13 +16,13 @@ describe('ReadEmailFieldComponent', () => {
   const VALUE = 'ccd@hmcts.net';
 
   describe('Non-persistable readonly email field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
     const EMPTY = '';
 
     let fixture: ComponentFixture<ReadEmailFieldComponent>;
@@ -73,13 +73,13 @@ describe('ReadEmailFieldComponent', () => {
 
   describe('Persistable readonly email field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadEmailFieldComponent>;
     let component: ReadEmailFieldComponent;

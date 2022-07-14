@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeleteOrCancelDialogComponent } from './delete-or-cancel-dialog.component';
+import { DebugElement } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { DeleteOrCancelDialogComponent } from './delete-or-cancel-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('DeleteOrCancelDialogComponent', () => {
@@ -39,7 +39,7 @@ describe('DeleteOrCancelDialogComponent', () => {
   });
 
   it('should close dialog with `Delete` when delete button clicked', () => {
-    let deleteButton = de.query(DELETE_BUTTON);
+    const deleteButton = de.query(DELETE_BUTTON);
 
     deleteButton.nativeElement.click();
     fixture.detectChanges();
@@ -48,7 +48,7 @@ describe('DeleteOrCancelDialogComponent', () => {
   });
 
   it('should close dialog with `Cancel` when cancel button clicked', () => {
-    let removeButton = de.query(CANCEL_BUTTON);
+    const removeButton = de.query(CANCEL_BUTTON);
 
     removeButton.nativeElement.click();
     fixture.detectChanges();

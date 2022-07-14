@@ -21,7 +21,7 @@ describe('CcdCollectionTableCaseFieldsFilterPipe', () => {
         }
       }
     }
-  ]
+  ];
 
   const CASE_FIELD = {
     id: 'Hearing',
@@ -39,21 +39,21 @@ describe('CcdCollectionTableCaseFieldsFilterPipe', () => {
       type: 'Complex'
     },
     display_context_parameter: '#TABLE(Hearing_type,Hearing_venue)'
-  }
+  };
   it('to create complex case field with a single case field', () => {
     const pipe = new CcdCollectionTableCaseFieldsFilterPipe();
-    const RESULT = pipe.transform(CASE_FIELDS, CASE_FIELD as CaseField, {})
+    const RESULT = pipe.transform(CASE_FIELDS, CASE_FIELD as CaseField, {});
     expect(RESULT.field_type.complex_fields.length).toBe(1);
     expect(RESULT.field_type.complex_fields[0].id).toBe('hearingShowDetails');
-    expect(RESULT.id).toBe('Hearing')
+    expect(RESULT.id).toBe('Hearing');
     expect(RESULT.field_type.type).toBe('Complex');
   });
 
   it('should create a complex case field without a single case field', () => {
     const pipe = new CcdCollectionTableCaseFieldsFilterPipe();
-    const RESULT = pipe.transform([], CASE_FIELD as CaseField, {})
+    const RESULT = pipe.transform([], CASE_FIELD as CaseField, {});
     expect(RESULT.field_type.complex_fields.length).toBe(0);
-    expect(RESULT.id).toBe('Hearing')
+    expect(RESULT.id).toBe('Hearing');
     expect(RESULT.field_type.type).toBe('Complex');
   });
 
@@ -65,20 +65,20 @@ describe('CcdCollectionTableCaseFieldsFilterPipe', () => {
         AddressLine3: 444,
         AddressLine4: 666
       }
-    )
+    );
     expect(RESULT.field_type.complex_fields.length).toBe(1);
-    expect(RESULT.id).toBe('Hearing')
+    expect(RESULT.id).toBe('Hearing');
     expect(RESULT.value.AddressLine1).toBe('AAFlat 10');
     expect(RESULT.value.AddressLine2).toBe(111);
     expect(RESULT.value.AddressLine3).toBe(444);
     expect(RESULT.value.AddressLine4).toBe(666);
-  })
+  });
 
   it('should create a plain case field', () => {
     const pipe = new CcdCollectionTableCaseFieldsFilterPipe();
-    const RESULT = pipe.transform([], null, {})
+    const RESULT = pipe.transform([], null, {});
     expect(RESULT.field_type.complex_fields.length).toBe(0);
-    expect(RESULT.id).toBe('')
-    expect(RESULT.label).toBe('')
-  })
+    expect(RESULT.id).toBe('');
+    expect(RESULT.label).toBe('');
+  });
 });

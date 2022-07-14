@@ -114,12 +114,12 @@ export class FormatTranslatorService {
     let prev = '\0';
     let inQuote = false;
 
-    let maybePush = <T>(target: T[], obj: T, flag: boolean) => {
+    const maybePush = <T>(target: T[], obj: T, flag: boolean) => {
       if (!flag) {
         target.push(obj);
       }
     };
-    for (let c of javaFormat) {
+    for (const c of javaFormat) {
       switch (c) {
         case '\'':
           if (prev === '\'') {
@@ -176,7 +176,7 @@ export class FormatTranslatorService {
     return result.join('');
   }
 
-  showOnlyDates(dateFormat: string): string {
+  public showOnlyDates(dateFormat: string): string {
     // replace 'd' character with 'D' for the moment library
     // This ensures only dates allowed
     while (dateFormat.includes('d')) {
@@ -188,7 +188,7 @@ export class FormatTranslatorService {
     return dateFormat;
   }
 
-  removeTime(dateFormat: string): string {
+  public removeTime(dateFormat: string): string {
     // remove hours irrelevant of whether 12 or 24 hour clock
     while (dateFormat.includes('H') || dateFormat.includes('h')) {
       dateFormat = dateFormat.replace('H', '');
@@ -210,38 +210,38 @@ export class FormatTranslatorService {
     return dateFormat.trim();
   }
 
-  hasDate(value: string): boolean {
+  public hasDate(value: string): boolean {
     return this.translate(value).length &&
       value.toLowerCase().indexOf('d') >= 0 &&
       value.indexOf('M') >= 0 && value.toLowerCase().indexOf('y') >= 0;
   }
 
-  is24Hour(value: string): boolean {
+  public is24Hour(value: string): boolean {
     return this.translate(value).length &&
       value.indexOf('H') >= 0;
   }
 
-  hasNoDay(value: string): boolean {
+  public hasNoDay(value: string): boolean {
     return this.translate(value).length && value.toLowerCase().indexOf('d') === -1 &&
       value.indexOf('M') >= 0 && value.toLowerCase().indexOf('y') >= 0;
   }
 
-  hasNoDayAndMonth(value: string): boolean {
+  public hasNoDayAndMonth(value: string): boolean {
     return this.translate(value).length &&
       value.toLowerCase().indexOf('d') === -1 &&
       value.indexOf('M') === -1 &&
       value.toLowerCase().indexOf('y') >= 0;
   }
 
-  hasHours(value: string): boolean {
+  public hasHours(value: string): boolean {
     return this.translate(value).length && value.toLowerCase().indexOf('h') >= 0 && value.indexOf('m') === -1;
   }
 
-  hasMinutes(value: string): boolean {
+  public hasMinutes(value: string): boolean {
     return this.translate(value).length && value.indexOf('m') >= 0 && value.toLowerCase().indexOf('h') >= 0;
   }
 
-  hasSeconds(value: string): boolean {
+  public hasSeconds(value: string): boolean {
     return this.translate(value).length && value.toLowerCase().indexOf('s') >= 0;
   }
 }

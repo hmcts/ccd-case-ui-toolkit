@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { State, StateMachine } from '@edium/fsm';
-import { EventStartStates, EventStartStateMachineContext } from '../models';
+import { EventStartStateMachineContext, EventStartStates } from '../models';
 
 const EVENT_STATE_MACHINE = 'EVENT STATE MACHINE';
 

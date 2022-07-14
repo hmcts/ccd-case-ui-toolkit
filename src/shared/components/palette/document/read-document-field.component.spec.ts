@@ -1,20 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadDocumentFieldComponent } from './read-document-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { attr, text } from '../../../test/helpers';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import createSpyObj = jasmine.createSpyObj;
 import { By } from '@angular/platform-browser';
-import { DocumentUrlPipe } from './document-url.pipe';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-import { FormGroup } from '@angular/forms';
-import { WindowService } from '../../../services/window';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { DocumentManagementService } from '../../../services/document-management';
-import { Router, ActivatedRoute } from '@angular/router';
+import { WindowService } from '../../../services/window';
+import { attr, text } from '../../../test/helpers';
 import any = jasmine.any;
 import { CasesService } from '../../case-editor/services/cases.service';
-import { of } from 'rxjs';
+import { DocumentUrlPipe } from './document-url.pipe';
+import { ReadDocumentFieldComponent } from './read-document-field.component';
 
 describe('ReadDocumentFieldComponent', () => {
 
@@ -24,22 +24,22 @@ describe('ReadDocumentFieldComponent', () => {
     type: 'Document'
   };
   const VALUE = {
-    'document_url': 'https://www.example.com',
-    'document_binary_url': 'https://www.example.com/binary',
-    'document_filename': 'evidence_document.evd'
+    document_url: 'https://www.example.com',
+    document_binary_url: 'https://www.example.com/binary',
+    document_filename: 'evidence_document.evd'
   };
   let mockDocumentManagementService: any;
   let windowService;
   let router: any;
 
   describe('Non-persistable readonly document field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
     const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
     const GATEWAY_HRS_URL = 'http://localhost:1234/hearing-recordings';
     const DOCUMENT_CLICKABLE_HREF = 'javascript:void(0)';
@@ -76,7 +76,7 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}},
+            { provide: ActivatedRoute, useValue: {snapshot: {params: {cid: '123'}}}},
             { provide: CasesService, useValue: mockCasesService }
           ]
         })
@@ -96,7 +96,7 @@ describe('ReadDocumentFieldComponent', () => {
       fixture.detectChanges();
 
       expect(text(de)).toEqual(VALUE.document_filename.toString());
-      let linkElement = de.query(By.css('a'));
+      const linkElement = de.query(By.css('a'));
       expect(linkElement).toBeTruthy();
       expect(attr(linkElement, 'href')).toEqual(DOCUMENT_CLICKABLE_HREF);
     });
@@ -105,7 +105,7 @@ describe('ReadDocumentFieldComponent', () => {
       component.caseField.value = VALUE;
       fixture.detectChanges();
       spyOn(component, 'showMediaViewer');
-      let linkElement = de.query(By.css('a'));
+      const linkElement = de.query(By.css('a'));
       expect(linkElement).toBeTruthy();
       linkElement.triggerEventHandler('click', null);
       fixture.detectChanges();
@@ -129,13 +129,13 @@ describe('ReadDocumentFieldComponent', () => {
 
   describe('Persistable readonly document field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
     const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
     const GATEWAY_HRS_URL = 'http://localhost:1234/hearing-recordings';
 
@@ -171,7 +171,7 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: ActivatedRoute, useValue: {snapshot: {params: {'cid': '123'}}}},
+            { provide: ActivatedRoute, useValue: {snapshot: {params: {cid: '123'}}}},
             { provide: CasesService, useValue: mockCasesService }
           ]
         })

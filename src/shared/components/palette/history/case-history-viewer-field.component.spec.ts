@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { CaseHistoryViewerFieldComponent } from './case-history-viewer-field.component';
-import { MockComponent } from 'ng2-mock-component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { MockComponent } from 'ng2-mock-component';
 import { CaseViewEvent } from '../../../domain';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { CaseHistoryViewerFieldComponent } from './case-history-viewer-field.component';
 
 describe('CaseHistoryViewerFieldComponent', () => {
 
@@ -51,13 +51,13 @@ describe('CaseHistoryViewerFieldComponent', () => {
       }
     }
   ];
-  const CASE_FIELD: CaseField = <CaseField>({
+  const CASE_FIELD: CaseField = ({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: CASE_EVENTS
-  });
+  }) as CaseField;
   const CASE_REFERENCE = '1234123412341234';
 
   let EventLogComponent;
@@ -95,11 +95,11 @@ describe('CaseHistoryViewerFieldComponent', () => {
   }));
 
   it('should render case history component', () => {
-    let eventLogDe = de.query(By.directive(EventLogComponent));
+    const eventLogDe = de.query(By.directive(EventLogComponent));
 
     expect(eventLogDe).toBeDefined();
 
-    let eventLogComponent = eventLogDe.componentInstance;
+    const eventLogComponent = eventLogDe.componentInstance;
     expect(eventLogComponent.events).toEqual(CASE_EVENTS);
   });
 });

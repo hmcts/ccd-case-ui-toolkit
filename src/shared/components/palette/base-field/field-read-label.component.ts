@@ -2,8 +2,8 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
-import { AbstractFormFieldComponent } from './abstract-form-field.component';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
+import { AbstractFormFieldComponent } from './abstract-form-field.component';
 
 @Component({
   selector: 'ccd-field-read-label',
@@ -18,10 +18,10 @@ export class FieldReadLabelComponent extends AbstractFieldReadComponent implemen
   public canHaveGreyBar = false;
 
   @Input()
-  withLabel: boolean;
+  public withLabel: boolean;
 
   @Input()
-  markdownUseHrefAsRouterLink?: boolean;
+  public markdownUseHrefAsRouterLink?: boolean;
 
   public isLabel(): boolean {
     return this.caseField.field_type && this.caseField.field_type.type === 'Label';
@@ -35,10 +35,10 @@ export class FieldReadLabelComponent extends AbstractFieldReadComponent implemen
     return this.caseField.isCaseLink();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    let change = changes['caseField'];
+  public ngOnChanges(changes: SimpleChanges): void {
+    const change = changes['caseField'];
     if (change) {
-      let cfNew = change.currentValue;
+      const cfNew = change.currentValue;
       if (!(cfNew instanceof CaseField)) {
         this.fixCaseField();
       }

@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadYesNoFieldComponent } from './read-yes-no-field.component';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { ReadYesNoFieldComponent } from './read-yes-no-field.component';
 import createSpyObj = jasmine.createSpyObj;
 import { YesNoService } from './yes-no.service';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FormGroup } from '@angular/forms';
 
 describe('ReadYesNoFieldComponent', () => {
 
@@ -17,13 +17,13 @@ describe('ReadYesNoFieldComponent', () => {
   const FIELD_ID = 'ReadOnlyFieldId';
 
   describe('Non-persistable readonly yes/no field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
     const FORMATTED_VALUE = 'Yes';
 
     let fixture: ComponentFixture<ReadYesNoFieldComponent>;
@@ -66,13 +66,13 @@ describe('ReadYesNoFieldComponent', () => {
 
   describe('Persistable readonly yes/no field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadYesNoFieldComponent>;
     let component: ReadYesNoFieldComponent;

@@ -1,8 +1,8 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { ActivityPollingService } from '../../services/activity/activity.polling.service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
 import { Activity, ActivityInfo } from '../../domain/activity/activity.model';
 import { DisplayMode } from '../../domain/activity/activity.model';
-import { Subject } from 'rxjs';
+import { ActivityPollingService } from '../../services/activity/activity.polling.service';
 
 @Component({
   selector: 'ccd-activity',
@@ -10,27 +10,27 @@ import { Subject } from 'rxjs';
   styleUrls: ['./activity.component.css']
 })
 export class ActivityComponent implements OnInit, OnDestroy {
-  activity: Activity;
-  dspMode = DisplayMode;
+  public activity: Activity;
+  public dspMode = DisplayMode;
 
-  viewersText: string;
-  editorsText: string;
+  public viewersText: string;
+  public editorsText: string;
 
-  subscription: Subject<Activity>;
+  public subscription: Subject<Activity>;
 
   @Input()
   public caseId: string;
 
   @Input()
-  displayMode: DisplayMode;
-  private VIEWERS_PREFIX = '';
-  private VIEWERS_SUFFIX = 'viewing this case';
-  private EDITORS_PREFIX = 'This case is being updated by ';
-  private EDITORS_SUFFIX = '';
+  public displayMode: DisplayMode;
+  private readonly VIEWERS_PREFIX = '';
+  private readonly VIEWERS_SUFFIX = 'viewing this case';
+  private readonly EDITORS_PREFIX = 'This case is being updated by ';
+  private readonly EDITORS_SUFFIX = '';
 
-  constructor(private activityPollingService: ActivityPollingService) {}
+  constructor(private readonly activityPollingService: ActivityPollingService) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.activity = new Activity();
     this.activity.caseId = this.caseId;
     this.activity.editors = [];
@@ -42,7 +42,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
     this.subscription = this.activityPollingService.subscribeToActivity(this.caseId, newActivity => this.onActivityChange(newActivity));
   }
 
-  onActivityChange(newActivity: Activity) {
+  public onActivityChange(newActivity: Activity) {
     this.activity = newActivity;
     this.viewersText = this.generateDescription(this.VIEWERS_PREFIX,
       this.VIEWERS_SUFFIX,
@@ -54,20 +54,20 @@ export class ActivityComponent implements OnInit, OnDestroy {
       this.activity.unknownEditors);
   }
 
-  isActivityEnabled() {
+  public isActivityEnabled() {
     return this.activityPollingService.isEnabled;
   }
 
-  isActiveCase() {
+  public isActiveCase() {
     return this.activity.editors.length || this.activity.viewers.length || this.activity.unknownEditors || this.activity.unknownViewers;
   }
 
-  viewersPresent(): boolean {
-    return (this.activity.viewers.length > 0 || this.activity.unknownViewers > 0)
+  public viewersPresent(): boolean {
+    return (this.activity.viewers.length > 0 || this.activity.unknownViewers > 0);
   }
 
-  editorsPresent(): boolean {
-    return (this.activity.editors.length > 0 || this.activity.unknownEditors > 0)
+  public editorsPresent(): boolean {
+    return (this.activity.editors.length > 0 || this.activity.unknownEditors > 0);
   }
 
   public ngOnDestroy(): void {
@@ -78,7 +78,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
     this.activityPollingService.stopPolling();
   }
 
-  generateDescription(prefix: string, suffix: string, namesArray: Array<ActivityInfo>, unknownCount) {
+  public generateDescription(prefix: string, suffix: string, namesArray: ActivityInfo[], unknownCount) {
     let resultText = prefix;
     resultText += namesArray.map(activityInfo => activityInfo.forename + ' ' + activityInfo.surname).join(', ');
     if (unknownCount > 0) {

@@ -11,7 +11,7 @@ describe('AddressesService', () => {
   let appConfig;
   let httpService;
   let httpTestingController: HttpTestingController;
-  let validPostCode = 'SW1A 2AA';
+  const validPostCode = 'SW1A 2AA';
   let injector: TestBed;
   let httpMock: HttpTestingController;
   const validPostCodeResults: any = require('../../fixture/valid-postcode-results.json');
@@ -21,7 +21,7 @@ describe('AddressesService', () => {
     appConfig = jasmine.createSpyObj<AbstractAppConfig>('AppConfig', ['getPostcodeLookupUrl']);
     httpService = jasmine.createSpyObj<HttpService>('HttpService', ['get']);
     appConfig.getPostcodeLookupUrl.and.returnValue('http://postcodeUrl/postcode=${postcode}&key=${key}');
-    let postCodeResponse = validPostCodeResults;
+    const postCodeResponse = validPostCodeResults;
     httpService.get.and.returnValue(Observable.of(postCodeResponse));
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -42,12 +42,12 @@ describe('AddressesService', () => {
 
   it('should return least one addresses from a given postcode', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
-    result.subscribe(addresses => { expect(addresses.length).toBeGreaterThan(1)});
+    result.subscribe(addresses => { expect(addresses.length).toBeGreaterThan(1);});
   });
 
   it('should return all addresses from a given postcode location', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
-    result.subscribe(addresses => { expect(addresses.length).toEqual(20)});
+    result.subscribe(addresses => { expect(addresses.length).toEqual(20);});
   });
 
   it('should return addresses with either addressLine1 or addressLine2 populated', () => {
@@ -72,7 +72,7 @@ describe('AddressesService', () => {
 
   it('should return addresses with postcode value', () => {
     const result = addressesService.getAddressesForPostcode(validPostCode);
-    result.subscribe(addresses => { expect(addresses[0].PostCode.length).toBeGreaterThan(0)});
+    result.subscribe(addresses => { expect(addresses[0].PostCode.length).toBeGreaterThan(0);});
   });
 
   it('should return subscriber error when postcode service returns zero', () => {
@@ -123,8 +123,8 @@ describe('AddressesService', () => {
 
   function isInCapitalCase(word: string) {
     return (letter: string) => {
-      let uppCase = letter.charAt(0) === letter.charAt(0).toUpperCase();
-      let lowCase = letter.charAt(1) === letter.charAt(1).toLowerCase();
+      const uppCase = letter.charAt(0) === letter.charAt(0).toUpperCase();
+      const lowCase = letter.charAt(1) === letter.charAt(1).toLowerCase();
       return (uppCase && lowCase);
     };
   }

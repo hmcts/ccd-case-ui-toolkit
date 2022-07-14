@@ -1,11 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { SearchResultComponent } from './search-result.component';
 import { Component, DebugElement, Input, NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
-import { FormGroup } from '@angular/forms';
+import { AbstractAppConfig as AppConfig } from '../../../app.config';
+import { PlaceholderService } from '../../directives';
 import {
   CaseState,
   CaseType,
@@ -17,8 +18,7 @@ import {
 } from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
 import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory } from '../../services';
-import { AbstractAppConfig as AppConfig } from '../../../app.config';
-import { PlaceholderService } from '../../directives';
+import { SearchResultComponent } from './search-result.component';
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
@@ -27,7 +27,7 @@ import createSpyObj = jasmine.createSpyObj;
 })
 class FieldReadComponent {
   @Input()
-  caseField: string;
+  public caseField: string;
 }
 
 describe('SearchResultComponent', () => {
@@ -164,14 +164,14 @@ describe('SearchResultComponent', () => {
     let fixture: ComponentFixture<SearchResultComponent>;
     let component: SearchResultComponent;
     let de: DebugElement;
-    let CaseActivityComponent: any = MockComponent({
+    const CaseActivityComponent: any = MockComponent({
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
     let activityService: any;
     let searchHandler;
     let appConfig: any;
-    let caseReferencePipe = new CaseReferencePipe();
+    const caseReferencePipe = new CaseReferencePipe();
 
     beforeEach(async(() => {
       activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
@@ -234,24 +234,24 @@ describe('SearchResultComponent', () => {
     }));
 
     it('should render pagination header', () => {
-      let pagination = de.query(By.css('div.pagination-top'));
+      const pagination = de.query(By.css('div.pagination-top'));
       expect(pagination).toBeTruthy();
       expect(pagination.nativeElement.textContent.trim()).toBe('Showing 1 to 4 of 4 results');
     });
 
     it('should render a table <thead> and <tbody>', () => {
-      let table = de.query(By.css('div>table'));
+      const table = de.query(By.css('div>table'));
       expect(table.nativeElement.tagName).toBe('TABLE');
       expect(table.children.length).toBe(3);
-      let thead = de.query(By.css('div>table>thead'));
+      const thead = de.query(By.css('div>table>thead'));
       expect(thead.nativeElement.tagName).toBe('THEAD');
       expect(thead.children.length).toBe(1);
-      let tbody = de.query(By.css('div>table>tbody'));
+      const tbody = de.query(By.css('div>table>tbody'));
       expect(tbody.nativeElement.tagName).toBe('TBODY');
     });
 
     it('should render pagination controls if results and metadata not empty', () => {
-      let pagination = de.queryAll(By.css('ccd-pagination'));
+      const pagination = de.queryAll(By.css('ccd-pagination'));
 
       expect(pagination.length).toBeTruthy();
     });
@@ -272,7 +272,7 @@ describe('SearchResultComponent', () => {
 
     it('should render columns based on SearchResultView', () => {
 
-      let headRow = de.query(By.css('div>table>thead>tr'));
+      const headRow = de.query(By.css('div>table>thead>tr'));
       // added +1 for case activity column
       expect(headRow.children.length).toBe(RESULT_VIEW.columns.length + 1);
       RESULT_VIEW.columns.forEach(col => {
@@ -286,64 +286,64 @@ describe('SearchResultComponent', () => {
       activityService.isEnabled = false;
       fixture.detectChanges();
 
-      let headRow = de.query(By.css('div>table>thead>tr'));
+      const headRow = de.query(By.css('div>table>thead>tr'));
 
       expect(headRow.children.length).toBe(RESULT_VIEW.columns.length);
     });
 
     it('should display case reference with hyphens', () => {
-      let caseReference = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(1) a'));
+      const caseReference = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(1) a'));
       expect(caseReference.nativeElement.textContent.trim()).toBe('0000-0000-0000-0002');
     });
 
     it('should sort columns with higher order last', () => {
-      let lastHeader = de.query(By.css('div>table>thead>tr th:nth-child(3)')).nativeElement.textContent.trim();
+      const lastHeader = de.query(By.css('div>table>thead>tr th:nth-child(3)')).nativeElement.textContent.trim();
 
       expect(lastHeader.startsWith(RESULT_VIEW.columns[0].label)).toBe(true);
 
-      let lastValue = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3)')).nativeElement.textContent.trim();
+      const lastValue = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3)')).nativeElement.textContent.trim();
       expect(lastValue.startsWith(RESULT_VIEW.results[0].case_fields['PersonFirstName'])).toBe(true);
     });
 
     it('should keep order of columns with same order', () => {
-      let lastHeader = de.query(By.css('div>table>thead>tr th:nth-child(1)')).nativeElement.textContent.trim();
+      const lastHeader = de.query(By.css('div>table>thead>tr th:nth-child(1)')).nativeElement.textContent.trim();
       expect(lastHeader.startsWith(RESULT_VIEW.columns[1].label)).toBe(true);
 
-      let lastValue = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1)')).nativeElement.textContent.trim();
+      const lastValue = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1)')).nativeElement.textContent.trim();
 
       expect(lastValue.startsWith(RESULT_VIEW.results[1].case_fields['PersonLastName'])).toBe(true);
     });
 
     it('should render one row for each SearchResultViewItem', () => {
-      let tbody = de.query(By.css('div>table>tbody'));
+      const tbody = de.query(By.css('div>table>tbody'));
 
       expect(tbody.children.length).toEqual(RESULT_VIEW.results.length);
     });
 
     it('should render required columns for each SearchResultViewItem row', () => {
-      let firstRow = de.query(By.css('div>table>tbody tr:nth-child(1)'));
+      const firstRow = de.query(By.css('div>table>tbody tr:nth-child(1)'));
       // added +1 for case activity column
       expect(firstRow.children.length).toBe(RESULT_VIEW.columns.length + 1);
       // draft
-      let firstRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) a'));
+      const firstRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) a'));
 
       expect(firstRowFirstCol.nativeElement.textContent.trim()).toBe(DRAFT_PREFIX);
 
-      let firstRowComponent = firstRow.children.slice(1, 3);
-      let firstRowResult = RESULT_VIEW.results[0];
+      const firstRowComponent = firstRow.children.slice(1, 3);
+      const firstRowResult = RESULT_VIEW.results[0];
       expect(firstRowComponent[1].children[0].children[0].componentInstance.caseField.value).toEqual(firstRowResult
         .case_fields['PersonFirstName']);
       expect(firstRowComponent[0].children[0].children[0].componentInstance.caseField.value).toEqual(firstRowResult
         .case_fields['PersonAddress']);
-      let secondRow = de.query(By.css('div>table>tbody tr:nth-child(2)'));
-      let secondResult = RESULT_VIEW.results[1];
+      const secondRow = de.query(By.css('div>table>tbody tr:nth-child(2)'));
+      const secondResult = RESULT_VIEW.results[1];
 
       // case
-      let secondRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1) a'));
+      const secondRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1) a'));
       expect(secondRowFirstCol.nativeElement.textContent.trim()).toBe(secondResult.case_fields['PersonLastName']);
 
-      let secondRowComponent = secondRow.children.slice(1, 3);
-      let secondRowResult = RESULT_VIEW.results[1];
+      const secondRowComponent = secondRow.children.slice(1, 3);
+      const secondRowResult = RESULT_VIEW.results[1];
 
       expect(secondRowComponent[0].children[0].children[0].componentInstance.caseField.value).toEqual(secondRowResult
         .case_fields['PersonAddress']);
@@ -352,7 +352,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('should render an case activity column with header', () => {
-      let headRow = de.query(By.css('div>table>thead>tr th:nth-child(4)'));
+      const headRow = de.query(By.css('div>table>thead>tr th:nth-child(4)'));
 
       expect(headRow.nativeElement.textContent).toBe('');
     });
@@ -362,13 +362,13 @@ describe('SearchResultComponent', () => {
       activityService.isEnabled = false;
       fixture.detectChanges();
 
-      let headRow = de.query(By.css('div>table>thead>tr th:nth-child(5)'));
+      const headRow = de.query(By.css('div>table>thead>tr th:nth-child(5)'));
 
       expect(headRow).toBeNull();
     });
 
     it('should not display error message when results present', () => {
-      let error = de.query(By.css('div.notification'));
+      const error = de.query(By.css('div.notification'));
 
       expect(error).toBeFalsy();
     });
@@ -376,7 +376,7 @@ describe('SearchResultComponent', () => {
     it('should emit correct page if go to page triggered', () => {
       component.goToPage(2);
 
-      let selected = {
+      const selected = {
         init: false,
         jurisdiction: JURISDICTION,
         caseType: CASE_TYPE,
@@ -388,14 +388,14 @@ describe('SearchResultComponent', () => {
 
       expect(component.selected.page).toBe(2);
       expect(searchHandler.applyFilters).toHaveBeenCalledWith({
-        selected: selected,
+        selected,
         queryParams: {jurisdiction: selected.jurisdiction.id, 'case-type': selected.caseType.id, 'case-state': selected.caseState.id}
       });
     });
 
     it('should replace the caseLink url placeholders with a valid data', () => {
-      let id = 'ID001';
-      let url = component.prepareCaseLinkUrl(id);
+      const id = 'ID001';
+      const url = component.prepareCaseLinkUrl(id);
       expect(url).toBe('/case/' + JURISDICTION.id + '/' + CASE_TYPE.id + '/' + id);
     });
 
@@ -415,9 +415,9 @@ describe('SearchResultComponent', () => {
       component.ngOnChanges({ page: new SimpleChange(null, 5, true) });
       fixture.detectChanges();
 
-      let firstResult = component.getFirstResult();
-      let lastResult = component.getLastResult();
-      let totalResults = component.getTotalResults();
+      const firstResult = component.getFirstResult();
+      const lastResult = component.getLastResult();
+      const totalResults = component.getTotalResults();
 
       expect(firstResult).toBe(105);
       expect(lastResult).toBe(108);
@@ -425,8 +425,8 @@ describe('SearchResultComponent', () => {
     });
 
     it('should render widget matching ordering (defaulting to sort descending if unordered) and sort rows when widget pressed', () => {
-      let sortFirstNameLink = de.query(By.css('div>table>thead>tr th:nth-child(3) table tbody a'));
-      let sortLastNameLink = de.query(By.css('div>table>thead>tr th:nth-child(1) table tbody a'));
+      const sortFirstNameLink = de.query(By.css('div>table>thead>tr th:nth-child(3) table tbody a'));
+      const sortLastNameLink = de.query(By.css('div>table>thead>tr th:nth-child(1) table tbody a'));
 
       expect(sortFirstNameLink.nativeElement.textContent).toBe('▼');
       expect(sortLastNameLink.nativeElement.textContent).toBe('▲');
@@ -445,11 +445,11 @@ describe('SearchResultComponent', () => {
       });
     });
 
-    function assertOrder(order: Array<number>) {
-      let firstField = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
-      let secondField = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
-      let thirdField = de.query(By.css('div>table>tbody tr:nth-child(3) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
-      let fourthField = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
+    function assertOrder(order: number[]) {
+      const firstField = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
+      const secondField = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
+      const thirdField = de.query(By.css('div>table>tbody tr:nth-child(3) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
+      const fourthField = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
 
       expect(firstField).toBe(RESULT_VIEW.results[order[0]].case_fields['PersonFirstName']);
       expect(secondField).toBe(RESULT_VIEW.results[order[1]].case_fields['PersonFirstName']);
@@ -458,20 +458,20 @@ describe('SearchResultComponent', () => {
     }
 
     it('should not break while sorting with unknown sort comparators like Complex type Address', () => {
-      let complexType = de.query(By.css('div>table>thead>tr th:nth-child(2) table tbody div'));
+      const complexType = de.query(By.css('div>table>thead>tr th:nth-child(2) table tbody div'));
       complexType.triggerEventHandler('click', null);
       fixture.detectChanges();
       expect(complexType.nativeElement.textContent).toBe('Address');
     });
 
     it('should render case reference value in first column with hyperlink if not draft and first column field value is null', () => {
-      let fourthRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(1) a'));
+      const fourthRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(1) a'));
 
       expect(fourthRowFirstCol.nativeElement.textContent.trim()).toBe(new CaseReferencePipe().transform(RESULT_VIEW.results[3].case_id));
     });
 
     it('should render DRAFT value in first column with hyperlink if case_id is DRAFT prefixed even if first column not null', () => {
-      let firstRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) a'));
+      const firstRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(1) a'));
       expect(firstRowFirstCol.nativeElement.textContent.trim()).toBe(DRAFT_PREFIX);
     });
 
@@ -526,7 +526,7 @@ describe('SearchResultComponent', () => {
         supplementary_data: {
           orgs_assigned_users: {'9QV1DT1': 3}
         },
-      }]
+      }];
       expect(component.canAnyBeShared()).toEqual(true);
     });
 
@@ -537,7 +537,7 @@ describe('SearchResultComponent', () => {
       }, {
         case_id: '2',
         case_fields: null
-      }]
+      }];
 
       const tempCaseItem: SearchResultViewItem = {
         case_id: '1',
@@ -545,7 +545,7 @@ describe('SearchResultComponent', () => {
         supplementary_data: {
           orgs_assigned_users: {'9QV1DT1': 3}
         }
-      }
+      };
       expect(component.isSelected(tempCaseItem)).toBeTruthy();
     });
 
@@ -556,13 +556,13 @@ describe('SearchResultComponent', () => {
       }, {
         case_id: '2',
         case_fields: null
-      }]
+      }];
 
       const tempCaseItem: SearchResultViewItem = {
         case_id: '3',
         case_fields: null,
         supplementary_data: null
-      }
+      };
       expect(component.isSelected(tempCaseItem)).toBeFalsy();
 
     });
@@ -682,7 +682,7 @@ describe('SearchResultComponent', () => {
             orgs_assigned_users: {'9QV1DT1': 3}
           }
         }
-      ]
+      ];
       component.selectAll();
       expect(component.selectedCases.length).toEqual(0);
     });
@@ -705,7 +705,7 @@ describe('SearchResultComponent', () => {
         supplementary_data: {
           orgs_assigned_users: {'9QV1DT1': 3}
         }
-      }
+      };
       component.changeSelection(aSelectedCase);
       expect(component.selectedCases.length).toEqual(1);
     });
@@ -751,14 +751,14 @@ describe('SearchResultComponent', () => {
             PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
           }
         }
-      ]
+      ];
       const aSelectedCase = {
         case_id: '0000000000000002',
         case_fields: {
           PersonFirstName: 'Bill',
           PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
         }
-      }
+      };
       component.changeSelection(aSelectedCase);
       expect(component.selectedCases.length).toEqual(3);
     });
@@ -836,13 +836,13 @@ describe('SearchResultComponent', () => {
       })
     };
 
-    let CaseActivityComponent: any = MockComponent({
+    const CaseActivityComponent: any = MockComponent({
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
     let activityService: any;
     let appConfig: any;
-    let caseReferencePipe = new CaseReferencePipe();
+    const caseReferencePipe = new CaseReferencePipe();
 
     beforeEach(async(() => {
       activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
@@ -889,7 +889,7 @@ describe('SearchResultComponent', () => {
     }));
 
     it('should display error message when no results', () => {
-      let error = de.query(By.css('div.notification'));
+      const error = de.query(By.css('div.notification'));
 
       expect(error).toBeTruthy();
     });
@@ -903,7 +903,7 @@ describe('SearchResultComponent', () => {
 
       fixture.detectChanges();
 
-      let table = de.query(By.css('table'));
+      const table = de.query(By.css('table'));
 
       expect(table).toBeFalsy();
     });
@@ -913,7 +913,7 @@ describe('SearchResultComponent', () => {
 
       fixture.detectChanges();
 
-      let table = de.query(By.css('table'));
+      const table = de.query(By.css('table'));
 
       expect(table).toBeFalsy();
     });
@@ -927,7 +927,7 @@ describe('SearchResultComponent', () => {
 
       fixture.detectChanges();
 
-      let pagination = de.queryAll(By.css('pagination-controls.pagination'));
+      const pagination = de.queryAll(By.css('pagination-controls.pagination'));
 
       expect(pagination.length).toBeFalsy();
     });
@@ -937,7 +937,7 @@ describe('SearchResultComponent', () => {
 
       fixture.detectChanges();
 
-      let pagination = de.queryAll(By.css('pagination-controls.pagination'));
+      const pagination = de.queryAll(By.css('pagination-controls.pagination'));
 
       expect(pagination.length).toBeFalsy();
     });
@@ -947,7 +947,7 @@ describe('SearchResultComponent', () => {
 
       fixture.detectChanges();
 
-      let pagination = de.query(By.css('div.pagination-top'));
+      const pagination = de.query(By.css('div.pagination-top'));
       expect(pagination).toBeFalsy();
     });
   });

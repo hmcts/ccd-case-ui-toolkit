@@ -16,7 +16,7 @@ describe('CaseworkerService', () => {
     email: 'testuser@demoenv.com',
     location: null,
     roleCategory: null
-  }
+  };
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';

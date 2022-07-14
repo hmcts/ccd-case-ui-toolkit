@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { FormControl } from '@angular/forms';
+import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
   selector: 'ccd-read-money-gbp-field',
@@ -9,10 +9,10 @@ import { FormControl } from '@angular/forms';
 export class ReadMoneyGbpFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
   @Input()
-  amount: any;
-  value: any;
+  public amount: any;
+  public value: any;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.amount) {
       this.value = this.amount;
     } else if (this.caseField) {
@@ -21,7 +21,7 @@ export class ReadMoneyGbpFieldComponent extends AbstractFieldReadComponent imple
     }
   }
 
-  isNumber(): boolean {
+  public isNumber(): boolean {
     return null !== this.value && !isNaN(this.value);
   }
 

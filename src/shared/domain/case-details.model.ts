@@ -1,11 +1,11 @@
 export class CaseDetails {
-  id: string;
-  jurisdiction: string;
-  case_type_id: string;
-  state: string;
-  created_date?: string;
-  last_modified?: string;
-  locked_by_user_id?: string;
-  security_level?: string;
-  case_data?: object;
+  public id: string;
+  public jurisdiction: string;
+  public case_type_id: string;
+  public state: string;
+  public created_date?: string;
+  public last_modified?: string;
+  public locked_by_user_id?: string;
+  public security_level?: string;
+  public case_data?: object;
 }

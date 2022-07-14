@@ -103,10 +103,10 @@ export class SearchResultComponent implements OnChanges, OnInit {
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
     appConfig: AbstractAppConfig,
-    private activityService: ActivityService,
-    private caseReferencePipe: CaseReferencePipe,
-    private placeholderService: PlaceholderService,
-    private browserService: BrowserService
+    private readonly activityService: ActivityService,
+    private readonly caseReferencePipe: CaseReferencePipe,
+    private readonly placeholderService: PlaceholderService,
+    private readonly browserService: BrowserService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -121,7 +121,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     return maximumResultReached ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.preSelectedCases) {
       for (const preSelectedCase of this.preSelectedCases) {
         if (this.selectedCases && !this.selectedCases.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
@@ -132,7 +132,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     this.selection.emit(this.selectedCases);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
 
     if (changes['resultView']) {
       this.hideRows = false;
@@ -222,7 +222,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public allOnPageSelected(): boolean {
     let canBeSharedCount = 0;
     for (let i = 0, l = this.resultView.results.length; i < l; i++) {
-      let r = this.resultView.results[i];
+      const r = this.resultView.results[i];
       if (this.canBeShared(r)) {
         canBeSharedCount ++;
       }
@@ -277,13 +277,13 @@ export class SearchResultComponent implements OnChanges, OnInit {
     this.selected.metadataFields = this.metadataFields;
     this.selected.page = page;
     // Apply filters
-    let queryParams = {};
+    const queryParams = {};
     queryParams[SearchResultComponent.PARAM_JURISDICTION] = this.selected.jurisdiction ? this.selected.jurisdiction.id : null;
     queryParams[SearchResultComponent.PARAM_CASE_TYPE] = this.selected.caseType ? this.selected.caseType.id : null;
     queryParams[SearchResultComponent.PARAM_CASE_STATE] = this.selected.caseState ? this.selected.caseState.id : null;
     this.changePage.emit({
       selected: this.selected,
-      queryParams: queryParams
+      queryParams
     });
 
     const topContainer = document.getElementById('top');
@@ -366,7 +366,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   public hyphenateIfCaseReferenceOrGet(col, result): any {
     if (col.case_field_id === '[CASE_REFERENCE]') {
-      return this.caseReferencePipe.transform(result.case_fields[col.case_field_id])
+      return this.caseReferencePipe.transform(result.case_fields[col.case_field_id]);
     } else {
       if (col.id) {
         if (col.id === '[CASE_REFERENCE]') {
@@ -411,7 +411,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   public goToCase(caseId: string) {
     this.clickCase.emit({
-      caseId: caseId
+      caseId
     });
   }
 
@@ -424,7 +424,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   private isSortAscending(column: SearchResultViewColumn): boolean {
-    let currentSortOrder = this.currentSortOrder(column);
+    const currentSortOrder = this.currentSortOrder(column);
 
     return currentSortOrder === SortOrder.UNSORTED || currentSortOrder === SortOrder.DESCENDING;
   }
@@ -438,7 +438,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       return SortOrder.UNSORTED;
     }
     for (let i = 0; i < this.resultView.results.length - 1; i++) {
-      let comparison = this.comparator(column).compare(this.resultView.results[i], this.resultView.results[i + 1]);
+      const comparison = this.comparator(column).compare(this.resultView.results[i], this.resultView.results[i + 1]);
       isDescending = isDescending && comparison <= 0;
       isAscending = isAscending && comparison >= 0;
       if (!isAscending && !isDescending) {

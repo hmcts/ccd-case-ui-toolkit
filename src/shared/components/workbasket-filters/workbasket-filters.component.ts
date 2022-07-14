@@ -22,23 +22,23 @@ export class WorkbasketFiltersComponent implements OnInit {
   public caseFields: CaseField[];
 
   @Input()
-  jurisdictions: Jurisdiction[];
+  public jurisdictions: Jurisdiction[];
 
   @Input()
-  defaults;
+  public defaults;
 
   @Output()
-  onApply: EventEmitter<any> = new EventEmitter();
+  public onApply: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  onReset: EventEmitter<any> = new EventEmitter();
+  public onReset: EventEmitter<any> = new EventEmitter();
 
-  workbasketInputs: WorkbasketInputModel[];
-  workbasketInputsReady: boolean;
+  public workbasketInputs: WorkbasketInputModel[];
+  public workbasketInputsReady: boolean;
 
-  workbasketDefaults: boolean;
+  public workbasketDefaults: boolean;
 
-  selected: {
+  public selected: {
     init?: boolean,
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,
@@ -48,20 +48,20 @@ export class WorkbasketFiltersComponent implements OnInit {
     metadataFields?: string[]
   };
 
-  formGroup: FormGroup = new FormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
 
-  selectedJurisdictionCaseTypes?: CaseTypeLite[];
-  selectedCaseTypeStates?: CaseState[];
+  public selectedJurisdictionCaseTypes?: CaseTypeLite[];
+  public selectedCaseTypeStates?: CaseState[];
 
-  initialised = false;
+  public initialised = false;
 
   constructor(
-    private route: ActivatedRoute,
-    private workbasketInputFilterService: WorkbasketInputFilterService,
-    private orderService: OrderService,
-    private jurisdictionService: JurisdictionService,
-    private alertService: AlertService,
-    private windowService: WindowService) {
+    private readonly route: ActivatedRoute,
+    private readonly workbasketInputFilterService: WorkbasketInputFilterService,
+    private readonly orderService: OrderService,
+    private readonly jurisdictionService: JurisdictionService,
+    private readonly alertService: AlertService,
+    private readonly windowService: WindowService) {
   }
 
   public ngOnInit(): void {
@@ -76,7 +76,7 @@ export class WorkbasketFiltersComponent implements OnInit {
 
   public apply(init): void {
     // Save filters as query parameters for current route
-    let queryParams = {};
+    const queryParams = {};
     if (this.selected.jurisdiction) {
       queryParams[WorkbasketFiltersComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
     }
@@ -110,7 +110,7 @@ export class WorkbasketFiltersComponent implements OnInit {
       }
     }
     // Apply filters
-    this.onApply.emit({selected: this.selected, queryParams: queryParams});
+    this.onApply.emit({selected: this.selected, queryParams});
     this.setFocusToTop();
   }
 
@@ -248,11 +248,11 @@ export class WorkbasketFiltersComponent implements OnInit {
    */
   private initFilters(init: boolean) {
     const savedQueryParams = this.windowService.getLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
-    let routeSnapshot: ActivatedRouteSnapshot = this.route.snapshot;
+    const routeSnapshot: ActivatedRouteSnapshot = this.route.snapshot;
     if (savedQueryParams) {
       routeSnapshot.queryParams = JSON.parse(savedQueryParams);
     }
-    let selectedJurisdictionId = routeSnapshot.queryParams[WorkbasketFiltersComponent.PARAM_JURISDICTION] ||
+    const selectedJurisdictionId = routeSnapshot.queryParams[WorkbasketFiltersComponent.PARAM_JURISDICTION] ||
       (this.defaults && this.defaults.jurisdiction_id);
     if (selectedJurisdictionId) {
       this.selected.jurisdiction = this.jurisdictions.find(j => selectedJurisdictionId === j.id);
@@ -274,7 +274,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   private selectCaseState(caseType: CaseTypeLite, routeSnapshot: ActivatedRouteSnapshot): CaseState {
     let caseState;
     if (caseType) {
-      let selectedCaseStateId = this.selectCaseStateIdFromQueryOrDefaults(routeSnapshot, (this.defaults && this.defaults.state_id));
+      const selectedCaseStateId = this.selectCaseStateIdFromQueryOrDefaults(routeSnapshot, (this.defaults && this.defaults.state_id));
       caseState = caseType.states.find(ct => selectedCaseStateId === ct.id);
     }
     return caseState ? caseState : null;
@@ -287,7 +287,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   private selectCaseType(selected: any, caseTypes: CaseTypeLite[], routeSnapshot: ActivatedRouteSnapshot): CaseTypeLite {
     let caseType;
     if (selected.jurisdiction) {
-      let selectedCaseTypeId = this.selectCaseTypeIdFromQueryOrDefaults(routeSnapshot, (this.defaults && this.defaults.case_type_id));
+      const selectedCaseTypeId = this.selectCaseTypeIdFromQueryOrDefaults(routeSnapshot, (this.defaults && this.defaults.case_type_id));
       caseType = caseTypes.find(ct => selectedCaseTypeId === ct.id);
     }
     return caseType ? caseType : caseTypes[0];

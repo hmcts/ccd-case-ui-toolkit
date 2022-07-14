@@ -19,10 +19,10 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
     this.fixCaseField();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    let change = changes['caseField'];
+  public ngOnChanges(changes: SimpleChanges): void {
+    const change = changes['caseField'];
     if (change) {
-      let cfNew = change.currentValue;
+      const cfNew = change.currentValue;
       if (!(cfNew instanceof CaseField)) {
         this.fixCaseField();
       }

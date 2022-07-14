@@ -3,8 +3,8 @@ import { SortOrder } from './sort-order';
 
 export class SortParameters {
 
-  comparator: SearchResultViewItemComparator;
-  sortOrder: SortOrder;
+  public comparator: SearchResultViewItemComparator;
+  public sortOrder: SortOrder;
 
   constructor(comparator: SearchResultViewItemComparator, sortOrder: SortOrder) {
     this.comparator = comparator;

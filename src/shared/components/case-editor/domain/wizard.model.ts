@@ -5,7 +5,7 @@ import { WizardPage } from './wizard-page.model';
 export class Wizard {
   public pages: WizardPage[];
 
-  private orderService = new OrderService();
+  private readonly orderService = new OrderService();
 
   constructor(wizardPages: WizardPage[]) {
     this.pages = this.orderService.sort(wizardPages);
@@ -16,7 +16,7 @@ export class Wizard {
   }
 
   public getPage(pageId: string, canShow: Predicate<WizardPage>): WizardPage {
-    let foundPage: WizardPage = this.findPage(pageId);
+    const foundPage: WizardPage = this.findPage(pageId);
     if (!foundPage) {
       throw new Error(`No page for ID: ${pageId}`);
     }
@@ -29,7 +29,7 @@ export class Wizard {
   }
 
   public nextPage(pageId: string, canShow: Predicate<WizardPage>): WizardPage {
-    let currentIndex = this.findExistingIndex(pageId);
+    const currentIndex = this.findExistingIndex(pageId);
 
     return this.pages
       .slice(currentIndex + 1)
@@ -37,7 +37,7 @@ export class Wizard {
   }
 
   public previousPage(pageId: string, canShow: Predicate<WizardPage>): WizardPage {
-    let currentIndex = this.findExistingIndex(pageId);
+    const currentIndex = this.findExistingIndex(pageId);
 
     return this.pages
       .slice(0, currentIndex)
@@ -62,7 +62,7 @@ export class Wizard {
   }
 
   private findExistingIndex(pageId: string): number {
-    let index = this.pages.findIndex(page => pageId === page.id);
+    const index = this.pages.findIndex(page => pageId === page.id);
 
     if (-1 === index) {
       throw new Error(`No page for ID: ${pageId}`);

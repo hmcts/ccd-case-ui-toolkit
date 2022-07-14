@@ -11,19 +11,8 @@ import { SessionStorageService } from '../session';
 // @dynamic
 @Injectable()
 export class ActivityService {
-  static readonly DUMMY_CASE_REFERENCE = '0';
-  static get ACTIVITY_VIEW() { return 'view'; }
-  static get ACTIVITY_EDIT() { return 'edit'; }
-
-  private static handleHttpError(response: HttpErrorResponse): HttpError {
-    const error: HttpError = HttpErrorService.convertToHttpError(response);
-    if (response.status && response.status !== error.status) {
-      error.status = response.status;
-    }
-    return error;
-  }
-
-  private userAuthorised: boolean = undefined;
+  public static get ACTIVITY_VIEW() { return 'view'; }
+  public static get ACTIVITY_EDIT() { return 'edit'; }
 
   constructor(
     private readonly http: HttpService,
@@ -34,12 +23,23 @@ export class ActivityService {
   public get isEnabled(): boolean {
     return this.activityUrl() && this.userAuthorised;
   }
+  public static readonly DUMMY_CASE_REFERENCE = '0';
+
+  private userAuthorised: boolean = undefined;
+
+  private static handleHttpError(response: HttpErrorResponse): HttpError {
+    const error: HttpError = HttpErrorService.convertToHttpError(response);
+    if (response.status && response.status !== error.status) {
+      error.status = response.status;
+    }
+    return error;
+  }
 
   public getOptions(): OptionsType {
     const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
     const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', userDetails.token);
     const options: OptionsType = {
-      headers: headers,
+      headers,
       withCredentials: true,
       observe: 'body',
     };
@@ -62,7 +62,7 @@ export class ActivityService {
     try {
       const options = this.getOptions();
       const url = this.activityUrl() + `/cases/${caseId}/activity`;
-      let body = { activity };
+      const body = { activity };
       return this.http
         .post(url, body, options, false)
         .map(response => response);
@@ -82,7 +82,7 @@ export class ActivityService {
           if ([401, 403].indexOf(error.status) > -1) {
             this.userAuthorised = false;
           } else {
-            this.userAuthorised = true
+            this.userAuthorised = true;
           }
         }
       );

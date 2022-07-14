@@ -1,13 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, EventEmitter } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
+import { HttpError } from '../../domain/http';
+import { text } from '../../test/helpers';
 import { CallbackErrorsComponent } from './callback-errors.component';
 import createSpyObj = jasmine.createSpyObj;
 import { CallbackErrorsContext } from './domain/error-context';
-import { By } from '@angular/platform-browser';
-import { text } from '../../test/helpers';
-import { HttpError } from '../../domain/http';
 
 describe('CallbackErrorsComponent', () => {
 
@@ -28,8 +28,8 @@ describe('CallbackErrorsComponent', () => {
   let fixture: ComponentFixture<CallbackErrorsComponent>;
   let component: CallbackErrorsComponent;
   let de: DebugElement;
-  let triggerTextIgnore = 'Ignore Warnings and Submit test';
-  let triggerTextContinue = 'Submit test';
+  const triggerTextIgnore = 'Ignore Warnings and Submit test';
+  const triggerTextContinue = 'Submit test';
   let callbackErrorsSubject: any;
   let mockCallbackErrorsContext: any;
 

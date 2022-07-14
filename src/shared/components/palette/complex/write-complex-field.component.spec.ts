@@ -19,7 +19,7 @@ const buildFields = (component: WriteComplexFieldComponent) => {
   for (const field of fields) {
     component.buildField(field);
   }
-}
+};
 
 describe('WriteComplexFieldComponent', () => {
   const $COMPLEX_PANEL = By.css('.form-group');
@@ -38,7 +38,7 @@ describe('WriteComplexFieldComponent', () => {
 
   @Pipe({name: 'ccdIsReadOnly'})
   class MockIsReadOnlyPipe implements PipeTransform {
-    transform(field: CaseField): boolean {
+    public transform(field: CaseField): boolean {
       if (!field || !field.display_context) {
         return false;
       }
@@ -81,7 +81,7 @@ describe('WriteComplexFieldComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -90,8 +90,8 @@ describe('WriteComplexFieldComponent', () => {
             type: 'Text'
           },
           value: ''
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -100,7 +100,7 @@ describe('WriteComplexFieldComponent', () => {
             type: 'Text'
           },
           value: '111 East India road'
-        })
+        }) as CaseField
       ]
     };
 
@@ -108,7 +108,7 @@ describe('WriteComplexFieldComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -117,8 +117,8 @@ describe('WriteComplexFieldComponent', () => {
             type: 'Text'
           },
           value: 'Flat 9'
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -127,8 +127,8 @@ describe('WriteComplexFieldComponent', () => {
             type: 'Text'
           },
           value: '111 East India road'
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressPostcode',
           label: 'Post code',
           display_context: 'OPTIONAL',
@@ -136,7 +136,7 @@ describe('WriteComplexFieldComponent', () => {
             id: 'Postcode',
             type: 'Complex',
             complex_fields: [
-              <CaseField>({
+              ({
                 id: 'PostcodeCity',
                 label: 'City',
                 display_context: 'OPTIONAL',
@@ -145,8 +145,8 @@ describe('WriteComplexFieldComponent', () => {
                   type: 'Text'
                 },
                 value: 'London'
-              }),
-              <CaseField>({
+              }) as CaseField,
+              ({
                 id: 'PostcodeCountry',
                 label: 'Country',
                 display_context: 'OPTIONAL',
@@ -155,20 +155,20 @@ describe('WriteComplexFieldComponent', () => {
                   type: 'Text'
                 },
                 value: 'UK'
-              })
+              }) as CaseField
             ]
           }
-        })
+        }) as CaseField
       ]
     };
 
     const FIELD_ID = 'AComplexField';
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES
-    });
+    }) as CaseField;
 
     const LINE_1 = 0;
     const LINE_2 = 1;
@@ -213,12 +213,12 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     it('should render fields with empty value', () => {
-      component.caseField = <CaseField>({
+      component.caseField = (({
         id: 'x',
         label: 'x',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITH_MISSING_VALUE
-      });
+      }) as CaseField);
       component.ngOnInit();
       fixture.detectChanges();
 
@@ -253,12 +253,12 @@ describe('WriteComplexFieldComponent', () => {
     it('should add control if it does not exist in the formGroup', () => {
       // component.caseField is CASE_FIELD to start with.
       // Try re-building the first field and ensure it's appropriately handled.
-      const NEW_FIELD = <CaseField>({
+      const NEW_FIELD = ({
         id: 'AddressLine3',
         label: 'Line 3',
         display_context: 'OPTIONAL',
         field_type: { id: 'Text', type: 'Text' }
-      });
+      }) as CaseField;
       // Spy on the addControl method, which should NOT be called.
       const addControlSpy = spyOn(component.complexGroup, 'addControl').and.callThrough();
       const newFieldControl = component.complexGroup.get(NEW_FIELD.id);
@@ -279,7 +279,7 @@ describe('WriteComplexFieldComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -287,8 +287,8 @@ describe('WriteComplexFieldComponent', () => {
             id: 'Text',
             type: 'Text'
           }
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -296,8 +296,8 @@ describe('WriteComplexFieldComponent', () => {
             id: 'Text',
             type: 'Text'
           }
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressPostcode',
           label: 'Post code',
           display_context: 'OPTIONAL',
@@ -305,7 +305,7 @@ describe('WriteComplexFieldComponent', () => {
             id: 'Postcode',
             type: 'Complex',
             complex_fields: [
-              <CaseField>({
+              ({
                 id: 'PostcodeCity',
                 label: 'City',
                 display_context: 'OPTIONAL',
@@ -313,8 +313,8 @@ describe('WriteComplexFieldComponent', () => {
                   id: 'Text',
                   type: 'Text'
                 }
-              }),
-              <CaseField>({
+              }) as CaseField,
+              ({
                 id: 'PostcodeCountry',
                 label: 'Country',
                 display_context: 'OPTIONAL',
@@ -322,28 +322,28 @@ describe('WriteComplexFieldComponent', () => {
                   id: 'Text',
                   type: 'Text'
                 }
-              })
+              }) as CaseField
             ]
           }
-        })
+        }) as CaseField
       ]
     };
 
     const FIELD_ID = 'SomeFieldId';
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'Complex Field',
       field_type: FIELD_TYPE,
       display_context: 'OPTIONAL',
       value: {
-        'AddressLine1': 'Flat 9',
-        'AddressLine2': '111 East India road',
-        'AddressPostcode': {
-          'PostcodeCity': 'London',
-          'PostcodeCountry': 'UK'
+        AddressLine1: 'Flat 9',
+        AddressLine2: '111 East India road',
+        AddressPostcode: {
+          PostcodeCity: 'London',
+          PostcodeCountry: 'UK'
         }
       }
-    });
+    }) as CaseField;
     const FORM_GROUP: FormGroup = new FormGroup({});
 
     const LINE_1 = 0;
@@ -402,15 +402,15 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     it('should render fields with empty value', () => {
-      component.caseField = <CaseField>( <CaseField>({
+      component.caseField = (( ({
         id: 'x',
         label: 'x',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE,
         value: {
-          'AddressLine1': 'Flat 9'
+          AddressLine1: 'Flat 9'
         }
-      }));
+      }) as CaseField) as CaseField);
       fixture.detectChanges();
 
       const labels = de.queryAll($COMPLEX_PANEL_VALUES);
@@ -422,15 +422,15 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     it('should render label if set to true', () => {
-      component.caseField = <CaseField>({
+      component.caseField = (({
         id: 'renderLabelId',
         label: 'Test Label',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE,
         value: {
-          'AddressLine1': 'Flat 9'
+          AddressLine1: 'Flat 9'
         }
-      });
+      }) as CaseField);
       component.renderLabel = true;
       fixture.detectChanges();
       expect(component.caseField.label).toBe('Test Label');
@@ -438,30 +438,30 @@ describe('WriteComplexFieldComponent', () => {
   });
 
   describe('when display_context of AddressLine1 is MANDATORY', () => {
-    const ADDRESS_LINE_1: CaseField = <CaseField>({
+    const ADDRESS_LINE_1: CaseField = ({
       id: 'AddressLine1',
       label: 'Line 1',
       display_context: 'MANDATORY',
       field_type: { id: 'TextMax150', type: 'Text' },
       value: ''
-    });
-    const ADDRESS_LINE_2: CaseField = <CaseField>({
+    }) as CaseField;
+    const ADDRESS_LINE_2: CaseField = ({
       id: 'AddressLine2',
       label: 'Line 2',
       field_type: { id: 'Text', type: 'Text' },
       value: '111 East India road'
-    });
-    const BROKEN_ADDRESS_LINE_1: CaseField = <CaseField>({
+    }) as CaseField;
+    const BROKEN_ADDRESS_LINE_1: CaseField = ({
       id: 'AddressLine1',
       label: 'Line 1',
       display_context: 'MANDATORY',
       field_type: { id: '"TextMax150"', type: 'Text' },
       value: ''
-    });
+    }) as CaseField;
     const ADDRESS_TYPE: FieldType = {
       id: 'AddressUK',
       type: 'Complex',
-    }
+    };
 
     const FIELD_TYPE_WITH_VALUES: FieldType = {
       id: 'TextMax150',
@@ -469,12 +469,12 @@ describe('WriteComplexFieldComponent', () => {
     };
 
     const FIELD_ID = 'AComplexField';
-    const CASE_FIELD_M: CaseField =  <CaseField>({
+    const CASE_FIELD_M: CaseField =  ({
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'MANDATORY',
       field_type: FIELD_TYPE_WITH_VALUES
-    });
+    }) as CaseField;
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
@@ -495,7 +495,7 @@ describe('WriteComplexFieldComponent', () => {
 
     it('should not add validators when case field is not AddressLine1 and TextMax150', () => {
       formValidatorService.addValidators.calls.reset();
-      component.caseField = <CaseField>({
+      component.caseField = (({
         id: 'anotherComplexField',
         label: 'Complex Field',
         display_context: 'MANDATORY',
@@ -503,7 +503,7 @@ describe('WriteComplexFieldComponent', () => {
           ...ADDRESS_TYPE,
           complex_fields: [ BROKEN_ADDRESS_LINE_1, ADDRESS_LINE_2 ]
         }
-      });
+      }) as CaseField);
       component.ngOnInit();
       buildFields(component);
       fixture.detectChanges();
@@ -515,7 +515,7 @@ describe('WriteComplexFieldComponent', () => {
 
     it('should add validators when case field is AddressLine1 and TextMax150', () => {
       formValidatorService.addValidators.calls.reset();
-      component.caseField = <CaseField>({
+      component.caseField = (({
         id: 'anotherComplexField',
         label: 'Complex Field',
         display_context: 'MANDATORY',
@@ -523,7 +523,7 @@ describe('WriteComplexFieldComponent', () => {
           ...ADDRESS_TYPE,
           complex_fields: [ ADDRESS_LINE_1, ADDRESS_LINE_2 ]
         }
-      });
+      }) as CaseField);
       component.ngOnInit();
       buildFields(component);
       fixture.detectChanges();
@@ -536,13 +536,13 @@ describe('WriteComplexFieldComponent', () => {
 
     it('should not add validators when case field is AddressLine1 but NOT TextMax150', () => {
       formValidatorService.addValidators.calls.reset();
-      component.caseField = <CaseField>({
+      component.caseField = (({
         id: 'anotherComplexField',
         label: 'Complex Field',
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ <CaseField>({
+          complex_fields: [ ({
             id: 'AddressLine1',
             label: 'Line 1',
             field_type: {
@@ -550,9 +550,9 @@ describe('WriteComplexFieldComponent', () => {
               type: 'Text'
             },
             value: ''
-          }), ADDRESS_LINE_2 ]
+          }) as CaseField, ADDRESS_LINE_2 ]
         }
-      });
+      }) as CaseField);
       component.ngOnInit();
       buildFields(component);
       fixture.detectChanges();
@@ -564,13 +564,13 @@ describe('WriteComplexFieldComponent', () => {
 
     it('should not add validators when case field is NOT AddressLine1', () => {
       formValidatorService.addValidators.calls.reset();
-      component.caseField = <CaseField>({
+      component.caseField = (({
         id: 'anotherComplexField',
         label: 'Complex Field',
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ <CaseField>({
+          complex_fields: [ ({
             id: 'AddressLine3', // Should fall down here.
             label: 'Line 1',
             field_type: {
@@ -578,9 +578,9 @@ describe('WriteComplexFieldComponent', () => {
               type: 'Text'
             },
             value: ''
-          }), ADDRESS_LINE_2 ]
+          }) as CaseField, ADDRESS_LINE_2 ]
         }
-      });
+      }) as CaseField);
       component.ngOnInit();
       buildFields(component);
       fixture.detectChanges();
@@ -592,25 +592,25 @@ describe('WriteComplexFieldComponent', () => {
   });
 
   describe('inheritance of "retain_hidden_value" value from Address parent type', () => {
-    const ADDRESS_LINE_1: CaseField = <CaseField>({
+    const ADDRESS_LINE_1: CaseField = ({
       id: 'AddressLine1',
       label: 'Line 1',
       field_type: {id: 'TextMax150', type: 'Text'},
       value: ''
-    });
-    const ADDRESS_LINE_2: CaseField = <CaseField>({
+    }) as CaseField;
+    const ADDRESS_LINE_2: CaseField = ({
       id: 'AddressLine2',
       label: 'Line 2',
       field_type: {id: 'Text', type: 'Text'},
       value: '111 East India road'
-    });
+    }) as CaseField;
     const ADDRESS_TYPE: FieldType = {
       id: 'AddressUK',
       type: 'Complex'
-    }
+    };
 
     const FIELD_ID = 'AnAddressField';
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'Address Field',
       field_type: {
@@ -618,7 +618,7 @@ describe('WriteComplexFieldComponent', () => {
         complex_fields: [ADDRESS_LINE_1, ADDRESS_LINE_2]
       },
       retain_hidden_value: true
-    });
+    }) as CaseField;
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
@@ -647,25 +647,25 @@ describe('WriteComplexFieldComponent', () => {
   });
 
   describe('inheritance of "retain_hidden_value" value from Complex parent type', () => {
-    const ADDRESS_LINE_1: CaseField = <CaseField>({
+    const ADDRESS_LINE_1: CaseField = ({
       id: 'AddressLine1',
       label: 'Line 1',
       field_type: {id: 'TextMax150', type: 'Text'},
       value: ''
-    });
-    const ADDRESS_LINE_2: CaseField = <CaseField>({
+    }) as CaseField;
+    const ADDRESS_LINE_2: CaseField = ({
       id: 'AddressLine2',
       label: 'Line 2',
       field_type: {id: 'Text', type: 'Text'},
       value: '111 East India road'
-    });
+    }) as CaseField;
     const COMPLEX_TYPE: FieldType = {
       id: 'OtherAddress',
       type: 'Complex'
-    }
+    };
 
     const FIELD_ID = 'AnAddressField';
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'Address Field',
       field_type: {
@@ -673,7 +673,7 @@ describe('WriteComplexFieldComponent', () => {
         complex_fields: [ADDRESS_LINE_1, ADDRESS_LINE_2]
       },
       retain_hidden_value: true
-    });
+    }) as CaseField;
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
@@ -710,17 +710,17 @@ describe('WriteComplexFieldComponent', () => {
         type: 'Text'
       }
     };
-    const COLLECTION_FIELD: CaseField = <CaseField>({
+    const COLLECTION_FIELD: CaseField = ({
       id: 'ACollection',
       label: 'Collection of text fields',
       field_type: COLLECTION_TYPE,
       display_context: 'READONLY'
-    });
+    }) as CaseField;
     const COMPLEX_TYPE: FieldType = {
       id: 'ComplexFieldWithCollection',
       type: 'Complex'
     };
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'AComplexField',
       label: 'Complex field containing a Collection field',
       field_type: {
@@ -728,7 +728,7 @@ describe('WriteComplexFieldComponent', () => {
         complex_fields: [COLLECTION_FIELD]
       },
       display_context: 'COMPLEX'
-    });
+    }) as CaseField;
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
@@ -767,16 +767,16 @@ describe('WriteComplexFieldComponent', () => {
         type: 'Text'
       }
     };
-    const COLLECTION_FIELD: CaseField = <CaseField>({
+    const COLLECTION_FIELD: CaseField = ({
       id: 'ACollection',
       label: 'Collection of text fields',
       field_type: COLLECTION_TYPE
-    });
+    }) as CaseField;
     const COMPLEX_TYPE: FieldType = {
       id: 'ComplexFieldWithCollection',
       type: 'Complex'
     };
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'AComplexField',
       label: 'Complex field containing a Collection field',
       field_type: {
@@ -784,7 +784,7 @@ describe('WriteComplexFieldComponent', () => {
         complex_fields: [COLLECTION_FIELD]
       },
       display_context: 'COMPLEX'
-    });
+    }) as CaseField;
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 

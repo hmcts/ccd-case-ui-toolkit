@@ -2,39 +2,39 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class WindowService {
-  locationAssign(url: string): void {
+  public locationAssign(url: string): void {
     window.location.assign(url);
   }
 
-  setLocalStorage(key: string, value: string) {
+  public setLocalStorage(key: string, value: string) {
     window.localStorage.setItem(key, value);
   }
 
-  getLocalStorage(key: string) {
+  public getLocalStorage(key: string) {
     return window.localStorage.getItem(key);
   }
 
-  clearLocalStorage() {
+  public clearLocalStorage() {
     window.localStorage.clear();
   }
 
-  removeLocalStorage(key: string) {
+  public removeLocalStorage(key: string) {
     window.localStorage.removeItem(key);
   }
 
-  setSessionStorage(key: string, value: string) {
+  public setSessionStorage(key: string, value: string) {
     window.sessionStorage.setItem(key, value);
   }
 
-  getSessionStorage(key: string) {
+  public getSessionStorage(key: string) {
     return window.sessionStorage.getItem(key);
   }
 
-  openOnNewTab(url: string): void {
+  public openOnNewTab(url: string): void {
     window.open(url, '_blank');
   }
 
-  confirm(message: string): boolean {
+  public confirm(message: string): boolean {
     return window.confirm(message);
   }
 }

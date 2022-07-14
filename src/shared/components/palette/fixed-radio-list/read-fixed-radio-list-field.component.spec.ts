@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadFixedRadioListFieldComponent } from './read-fixed-radio-list-field.component';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { FixedRadioListPipe } from './fixed-radio-list.pipe';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FormGroup } from '@angular/forms';
+import { ReadFixedRadioListFieldComponent } from './read-fixed-radio-list-field.component';
 
 describe('ReadFixedRadioListFieldComponent', () => {
 
@@ -34,13 +34,13 @@ describe('ReadFixedRadioListFieldComponent', () => {
   };
 
   describe('Non-persistable readonly fixed radio list field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
     const EMPTY = '';
 
     let fixture: ComponentFixture<ReadFixedRadioListFieldComponent>;
@@ -92,13 +92,13 @@ describe('ReadFixedRadioListFieldComponent', () => {
 
   describe('Persistable readonly fixed radio list field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadFixedRadioListFieldComponent>;
     let component: ReadFixedRadioListFieldComponent;

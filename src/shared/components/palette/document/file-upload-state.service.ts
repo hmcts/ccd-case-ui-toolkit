@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class FileUploadStateService {
-    uploadInProgress: boolean;
+    public uploadInProgress: boolean;
 
-    setUploadInProgress(value: boolean): void {
+    public setUploadInProgress(value: boolean): void {
         this.uploadInProgress = value;
     }
 
-    isUploadInProgress(): boolean {
+    public isUploadInProgress(): boolean {
         return this.uploadInProgress;
     }
 }

@@ -1,7 +1,7 @@
-import { AbstractAppConfig } from '../../../app.config';
 import { Observable } from 'rxjs';
-import { OrganisationService, Organisation, OrganisationAddress } from './organisation.service';
+import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../../services';
+import { Organisation, OrganisationAddress, OrganisationService } from './organisation.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('Organisation Service', () => {
@@ -9,7 +9,7 @@ describe('Organisation Service', () => {
   let appConfig: any;
   let httpService: any;
   let organisationService: OrganisationService;
-  let ORGANISATIONADDRESS: OrganisationAddress[] = [{
+  const ORGANISATIONADDRESS: OrganisationAddress[] = [{
     addressLine1: '12',
     addressLine2: 'Nithdale Role',
     addressLine3: '',
@@ -18,8 +18,8 @@ describe('Organisation Service', () => {
     country: 'UK',
     postCode: 'L15 5AX',
     dxAddress: []
-  }]
-  let ORGANISATIONS: Organisation[] = [{
+  }];
+  const ORGANISATIONS: Organisation[] = [{
     organisationIdentifier: '0222223',
     name: 'test solicitor',
     status: 'active',
@@ -34,7 +34,7 @@ describe('Organisation Service', () => {
     },
     paymentAccount: ['test'],
     contactInformation: ORGANISATIONADDRESS
-  }]
+  }];
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getPrdUrl', 'getCacheTimeOut']);
     appConfig.getPrdUrl.and.returnValue(PRD_URL);
@@ -47,7 +47,7 @@ describe('Organisation Service', () => {
       httpService.get.and.returnValue(Observable.of(ORGANISATIONS));
     });
     it('should call getActiveOrganisations() ', () => {
-      let test = spyOn(organisationService, 'getActiveOrganisations');
+      const test = spyOn(organisationService, 'getActiveOrganisations');
       organisationService.getActiveOrganisations();
       expect(test).toHaveBeenCalled();
       expect(organisationService.getActiveOrganisations).toHaveBeenCalledWith();
@@ -69,8 +69,8 @@ describe('Organisation Service', () => {
           expect(ORGANISATIONS[0].contactInformation[0].townCity).toBe(org.townCity);
 
           expect(ORGANISATIONS[0].contactInformation[0].postCode).toBe(org.postCode);
-        })
+        });
       });
     });
-  })
+  });
 });

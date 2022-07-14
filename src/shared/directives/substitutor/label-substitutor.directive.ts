@@ -11,10 +11,10 @@ import { PlaceholderService } from './services';
  */
 export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
-  @Input() caseField: CaseField;
-  @Input() contextFields: CaseField[] = [];
-  @Input() formGroup: FormGroup;
-  @Input() elementsToSubstitute: string[] = ['label', 'hint_text'];
+  @Input() public caseField: CaseField;
+  @Input() public contextFields: CaseField[] = [];
+  @Input() public formGroup: FormGroup;
+  @Input() public elementsToSubstitute: string[] = ['label', 'hint_text'];
 
   private initialLabel: string;
   private initialHintText: string;

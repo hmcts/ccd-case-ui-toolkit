@@ -1,13 +1,13 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { WriteMoneyGbpFieldComponent } from './write-money-gbp-field.component';
-import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { FieldType } from '../../../domain';
 import { CaseField } from '../../../domain';
-import { PaletteUtilsModule } from '../utils';
-import { By } from '@angular/platform-browser';
-import { MoneyGbpInputComponent } from './money-gbp-input.component';
 import { CaseFieldService } from '../../../services';
+import { PaletteUtilsModule } from '../utils';
+import { MoneyGbpInputComponent } from './money-gbp-input.component';
+import { WriteMoneyGbpFieldComponent } from './write-money-gbp-field.component';
 
 describe('WriteMoneyGbpFieldComponent', () => {
 
@@ -17,20 +17,20 @@ describe('WriteMoneyGbpFieldComponent', () => {
     type: 'MoneyGBP'
   };
   const VALUE = '23';
-  const CASE_FIELD: CaseField = <CaseField>({
+  const CASE_FIELD: CaseField = ({
     id: FIELD_ID,
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: VALUE
-  });
+  }) as CaseField;
 
   const FORM_GROUP: FormGroup = new FormGroup({});
 
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;
   let de: DebugElement;
-  let caseFieldService = new CaseFieldService();
+  const caseFieldService = new CaseFieldService();
 
   beforeEach(async(() => {
     TestBed
@@ -68,7 +68,7 @@ describe('WriteMoneyGbpFieldComponent', () => {
   });
 
   it('should render `ccd-money-gbp-input`', () => {
-    let input = de.query(By.directive(MoneyGbpInputComponent));
+    const input = de.query(By.directive(MoneyGbpInputComponent));
 
     expect(input).toBeTruthy();
   });
@@ -82,20 +82,20 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
     type: 'MoneyGBP'
   };
   const VALUE = '-2500';
-  const CASE_FIELD: CaseField = <CaseField>({
+  const CASE_FIELD: CaseField = ({
     id: FIELD_ID,
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
     value: VALUE
-  });
+  }) as CaseField;
 
   const FORM_GROUP: FormGroup = new FormGroup({});
 
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;
   let de: DebugElement;
-  let caseFieldService = new CaseFieldService();
+  const caseFieldService = new CaseFieldService();
 
   beforeEach(async(() => {
     TestBed
@@ -133,7 +133,7 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
   });
 
   it('should render `ccd-money-gbp-input`', () => {
-    let input = de.query(By.directive(MoneyGbpInputComponent));
+    const input = de.query(By.directive(MoneyGbpInputComponent));
 
     expect(input).toBeTruthy();
   });

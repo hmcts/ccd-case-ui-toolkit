@@ -1,13 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FieldReadComponent } from './field-read.component';
-import { PaletteService } from '../palette.service';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { CaseField } from '../../../domain/definition';
 import { By } from '@angular/platform-browser';
-import { PaletteContext } from './palette-context.enum';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
+import { CaseField } from '../../../domain/definition';
+import { PaletteService } from '../palette.service';
+import { FieldReadComponent } from './field-read.component';
+import { PaletteContext } from './palette-context.enum';
 import createSpyObj = jasmine.createSpyObj;
 
 const $FIELD_READ_LABEL = By.css('ccd-field-read-label');
@@ -44,16 +44,16 @@ class FieldTestComponent {}
 })
 class FieldReadLabelComponent {
   @Input()
-  caseField: CaseField;
+  public caseField: CaseField;
 
   @Input()
-  withLabel: boolean;
+  public withLabel: boolean;
 
   @Input()
-  topLevelFormGroup: FormGroup;
+  public topLevelFormGroup: FormGroup;
 
   @Input()
-  markdownUseHrefAsRouterLink?: boolean;
+  public markdownUseHrefAsRouterLink?: boolean;
 }
 
 describe('FieldReadComponent', () => {
@@ -64,8 +64,8 @@ describe('FieldReadComponent', () => {
 
   let paletteService: any;
 
-  let formGroup: FormGroup = new FormGroup({});
-  let caseFields: CaseField[] = [CASE_FIELD];
+  const formGroup: FormGroup = new FormGroup({});
+  const caseFields: CaseField[] = [CASE_FIELD];
 
   beforeEach(async(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
@@ -117,16 +117,16 @@ describe('FieldReadComponent', () => {
   it('should inject component instance as child', () => {
     fixture.detectChanges();
 
-    let fieldReadLabelComponent = de.query($FIELD_READ_LABEL);
+    const fieldReadLabelComponent = de.query($FIELD_READ_LABEL);
     expect(fieldReadLabelComponent.children.length).toBe(1);
 
-    let fieldReadLabel = fieldReadLabelComponent.componentInstance;
+    const fieldReadLabel = fieldReadLabelComponent.componentInstance;
     expect(fieldReadLabel.caseField).toBe(CASE_FIELD);
 
-    let fieldTestComponent = de.query($FIELD_TEST);
+    const fieldTestComponent = de.query($FIELD_TEST);
     expect(fieldTestComponent).toBeTruthy();
 
-    let fieldTest = fieldTestComponent.componentInstance;
+    const fieldTest = fieldTestComponent.componentInstance;
     expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
     expect(fieldTest.formGroup).toBe(formGroup);
@@ -135,15 +135,15 @@ describe('FieldReadComponent', () => {
   it('should pass context to field instance', () => {
     fixture.detectChanges();
 
-    let fieldTest = de.query($FIELD_TEST).componentInstance;
+    const fieldTest = de.query($FIELD_TEST).componentInstance;
     expect(fieldTest.context).toBe(PaletteContext.CHECK_YOUR_ANSWER);
   });
 
   it('should NOT display label by default', () => {
     fixture.detectChanges();
 
-    let fieldReadLabelComponent = de.query(By.css('ccd-field-read-label'));
-    let fieldReadLabel = fieldReadLabelComponent.componentInstance;
+    const fieldReadLabelComponent = de.query(By.css('ccd-field-read-label'));
+    const fieldReadLabel = fieldReadLabelComponent.componentInstance;
     expect(fieldReadLabel.withLabel).toBe(false);
   });
 
@@ -151,8 +151,8 @@ describe('FieldReadComponent', () => {
     component.withLabel = true;
     fixture.detectChanges();
 
-    let fieldReadLabelComponent = de.query(By.css('ccd-field-read-label'));
-    let fieldReadLabel = fieldReadLabelComponent.componentInstance;
+    const fieldReadLabelComponent = de.query(By.css('ccd-field-read-label'));
+    const fieldReadLabel = fieldReadLabelComponent.componentInstance;
     expect(fieldReadLabel.withLabel).toBe(true);
   });
 });

@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { ReadCollectionFieldComponent } from './read-collection-field.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { PaletteContext } from '../base-field/palette-context.enum';
+import { ReadCollectionFieldComponent } from './read-collection-field.component';
 
 describe('ReadCollectionFieldComponent', () => {
 
@@ -31,15 +31,15 @@ describe('ReadCollectionFieldComponent', () => {
       value: 'Jacques',
     }
   ];
-  const CASE_FIELD: CaseField = <CaseField>({
+  const CASE_FIELD: CaseField = ({
     id: 'x',
     label: 'X',
     field_type: FIELD_TYPE,
     display_context: 'OPTIONAL',
     value: VALUES,
     hidden: false
-  });
-  let FieldReadComponent = MockComponent({
+  }) as CaseField;
+  const FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
   });
@@ -76,11 +76,11 @@ describe('ReadCollectionFieldComponent', () => {
     component.caseField.value = VALUES;
     fixture.detectChanges();
 
-    let cells = de.queryAll($CHILD_FIELDS);
+    const cells = de.queryAll($CHILD_FIELDS);
 
     for (let i = 0; i < VALUES.length; i++) {
 
-      let field = cells[i].componentInstance;
+      const field = cells[i].componentInstance;
 
       expect(field.caseField).toEqual({
         id: i,
@@ -120,11 +120,11 @@ describe('ReadCollectionFieldComponent', () => {
     component.caseField.value = VALUES;
     fixture.detectChanges();
 
-    let cells = de.queryAll($CHILD_FIELDS);
+    const cells = de.queryAll($CHILD_FIELDS);
 
     for (let i = 0; i < VALUES.length; i++) {
 
-      let field = cells[i].componentInstance;
+      const field = cells[i].componentInstance;
 
       expect(field.context).toEqual(PaletteContext.CHECK_YOUR_ANSWER);
     }
@@ -156,15 +156,15 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
     }
   ];
 
-  const CASE_FIELD_WITH_DISPLAY_CONTEXT: CaseField = <CaseField>({
+  const CASE_FIELD_WITH_DISPLAY_CONTEXT: CaseField = ({
     id: 'x',
     label: 'X',
     field_type: FIELD_TYPE,
     display_context: 'OPTIONAL',
     display_context_parameter: '#TABLE(Title,FIRSTNAME)',
     value: VALUES
-  });
-  let FieldReadComponent = MockComponent({
+  }) as CaseField;
+  const FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
   });
@@ -199,7 +199,7 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
   it('render as a table with one row and one cell to be passed down the chain', () => {
     component.caseField.value = VALUES;
     fixture.detectChanges();
-    let cell = de.queryAll($CHILD_FIELDS);
+    const cell = de.queryAll($CHILD_FIELDS);
     expect(cell[0].name).toEqual('ccd-field-read');
   });
 });

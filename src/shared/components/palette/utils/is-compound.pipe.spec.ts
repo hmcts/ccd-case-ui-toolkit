@@ -1,9 +1,9 @@
-import { IsCompoundPipe } from './is-compound.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { IsCompoundPipe } from './is-compound.pipe';
 
 describe('IsCompoundPipe', () => {
 
-  let isCompound: IsCompoundPipe = new IsCompoundPipe();
+  const isCompound: IsCompoundPipe = new IsCompoundPipe();
 
   it('should identify null field as NOT compound', () => {
     expect(isCompound.transform(null))

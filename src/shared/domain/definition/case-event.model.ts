@@ -1,14 +1,14 @@
-import { EventCaseField } from './event-case-field.model';
 import { Orderable } from '../order';
 import { AccessControlList } from './access-control-list.model';
+import { EventCaseField } from './event-case-field.model';
 
 export class CaseEvent implements Orderable {
-  id: string;
-  name: string;
-  post_state: string;
-  pre_states: string[];
-  case_fields: EventCaseField[];
-  description: string;
-  order?: number;
-  acls?: AccessControlList[];
+  public id: string;
+  public name: string;
+  public post_state: string;
+  public pre_states: string[];
+  public case_fields: EventCaseField[];
+  public description: string;
+  public order?: number;
+  public acls?: AccessControlList[];
 }

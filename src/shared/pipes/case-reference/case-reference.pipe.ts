@@ -6,7 +6,7 @@ import { Draft, DRAFT_PREFIX } from '../../domain/draft.model';
 })
 export class CaseReferencePipe implements PipeTransform {
 
-  transform(caseReference: string): string {
+  public transform(caseReference: string): string {
     if (!caseReference) {
       return '';
     }
@@ -19,7 +19,7 @@ export class CaseReferencePipe implements PipeTransform {
           const isLink = match[0] === '/';
           if (isLink) {
             return match;
-          };
+          }
 
           return [g1, g2, g3, g4].join('-');
       });

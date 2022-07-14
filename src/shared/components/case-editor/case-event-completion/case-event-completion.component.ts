@@ -22,7 +22,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
   public eventCompletionParams: EventCompletionParams;
 
   @Output()
-  eventCanBeCompleted: EventEmitter<boolean> = new EventEmitter();
+  public eventCanBeCompleted: EventEmitter<boolean> = new EventEmitter();
 
   public stateMachine: StateMachine;
   public context: EventCompletionStateMachineContext;

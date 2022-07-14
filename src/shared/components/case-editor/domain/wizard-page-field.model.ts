@@ -2,8 +2,8 @@ import { Orderable } from '../../../domain/order/orderable.model';
 import { ComplexFieldOverride } from './wizard-page-field-complex-override.model';
 
 export class WizardPageField implements Orderable {
-  case_field_id: string;
-  order?: number;
-  page_column_no?: number;
-  complex_field_overrides?: ComplexFieldOverride[];
+  public case_field_id: string;
+  public order?: number;
+  public page_column_no?: number;
+  public complex_field_overrides?: ComplexFieldOverride[];
 }

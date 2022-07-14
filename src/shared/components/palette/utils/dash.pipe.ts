@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class DashPipe implements PipeTransform {
 
-  transform(value: string): string {
+  public transform(value: string): string {
     return value ? value : '-';
   }
 }

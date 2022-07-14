@@ -1,5 +1,5 @@
-import { CaseField } from '../../domain/definition';
 import { Injectable } from '@angular/core';
+import { CaseField } from '../../domain/definition';
 import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 
 @Injectable()

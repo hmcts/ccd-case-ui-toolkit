@@ -1,19 +1,19 @@
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
-import { HttpService } from '../http/http.service';
 import { AbstractAppConfig } from '../../../app.config';
 import { Banner } from '../../domain';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpService } from '../http/http.service';
 
 @Injectable()
 export class BannersService {
   public static readonly V2_MEDIATYPE_BANNERS = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-banners.v2+json;charset=UTF-8';
 
-  constructor(private httpService: HttpService, private appConfig: AbstractAppConfig) {
+  constructor(private readonly httpService: HttpService, private readonly appConfig: AbstractAppConfig) {
   }
 
-  getBanners(jurisdictionReferences: string[]): Observable<Banner[]> {
+  public getBanners(jurisdictionReferences: string[]): Observable<Banner[]> {
     const url = this.appConfig.getBannersUrl();
     const headers = new HttpHeaders()
       .set('experimental', 'true')

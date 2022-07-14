@@ -1,13 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { CaseViewComponent } from './case-view.component';
-import { CaseView, HttpError } from '../../../domain';
-import { CasesService, CaseNotifier } from '../../case-editor';
-import { AlertService, DraftService, NavigationNotifierService } from '../../../services';
-import { RouterTestingModule } from '@angular/router/testing'
-import { MockComponent } from 'ng2-mock-component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { plainToClassFromExist } from 'class-transformer';
+import { MockComponent } from 'ng2-mock-component';
+import { Observable, throwError } from 'rxjs';
+import { CaseView, HttpError } from '../../../domain';
+import { AlertService, DraftService, NavigationNotifierService } from '../../../services';
+import { CaseNotifier, CasesService } from '../../case-editor';
+import { CaseViewComponent } from './case-view.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseViewComponent', () => {
@@ -45,7 +45,7 @@ describe('CaseViewComponent', () => {
   let component: CaseViewComponent;
   let de: DebugElement;
 
-  let CaseViewerComponent: any = MockComponent({
+  const CaseViewerComponent: any = MockComponent({
     selector: 'ccd-case-viewer',
     inputs: ['hasPrint', 'hasEventSelector']
   });

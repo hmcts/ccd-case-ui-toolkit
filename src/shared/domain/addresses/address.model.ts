@@ -1,9 +1,9 @@
 export class AddressModel {
-  AddressLine1 = '';
-  AddressLine2 = '';
-  AddressLine3 = '';
-  PostTown = '';
-  County = '';
-  PostCode = '';
-  Country = '';
+  public AddressLine1 = '';
+  public AddressLine2 = '';
+  public AddressLine3 = '';
+  public PostTown = '';
+  public County = '';
+  public PostCode = '';
+  public Country = '';
 }

@@ -6,5 +6,5 @@ export interface UserDetails {
     totalIdleTime: number,
   };
   canShareCases: boolean;
-  userInfo: UserInfo
+  userInfo: UserInfo;
 }

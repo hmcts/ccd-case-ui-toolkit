@@ -9,7 +9,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 })
 export class ReadEmailFieldComponent extends AbstractFieldReadComponent {
 
-  isFieldValueEmpty(): boolean {
+  public isFieldValueEmpty(): boolean {
     return (!this.caseField.value);
   }
 

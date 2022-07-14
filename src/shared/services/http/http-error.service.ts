@@ -7,6 +7,13 @@ import { AuthService } from '../auth';
 
 @Injectable()
 export class HttpErrorService {
+
+  constructor(private readonly authService: AuthService) {}
+
+  private static readonly CONTENT_TYPE = 'Content-Type';
+  private static readonly JSON = 'json';
+
+  private error: HttpError;
   public static convertToHttpError(error: HttpErrorResponse | any): HttpError {
     if (error instanceof HttpError) {
       return error;
@@ -36,19 +43,12 @@ export class HttpErrorService {
     return httpError;
   }
 
-  private static readonly CONTENT_TYPE = 'Content-Type';
-  private static readonly JSON = 'json';
-
-  private error: HttpError;
-
-  constructor(private readonly authService: AuthService) {}
-
   public setError(error: HttpError) {
     this.error = error;
   }
 
   public removeError(): HttpError {
-    let error = this.error;
+    const error = this.error;
     this.error = null;
     return error;
   }

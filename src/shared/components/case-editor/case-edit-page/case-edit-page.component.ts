@@ -1,24 +1,24 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { CallbackErrorsContext } from '../../error/domain/error-context';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { PageValidationService } from '../services/page-validation.service';
-import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog';
-import { WizardPage } from '../domain/wizard-page.model';
-import { FormErrorService } from '../../../services/form/form-error.service';
 import { CaseEventData } from '../../../domain/case-event-data.model';
-import { DRAFT_PREFIX } from '../../../domain/draft.model';
-import { Wizard } from '../domain/wizard.model';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
-import { FieldsUtils } from '../../../services/fields';
+import { DRAFT_PREFIX } from '../../../domain/draft.model';
+import { HttpError } from '../../../domain/http/http-error.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { FieldsUtils } from '../../../services/fields';
+import { FormErrorService } from '../../../services/form/form-error.service';
+import { FormValueService } from '../../../services/form/form-value.service';
+import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog';
+import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { initDialog } from '../../helpers';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { WizardPage } from '../domain/wizard-page.model';
+import { Wizard } from '../domain/wizard.model';
+import { PageValidationService } from '../services/page-validation.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -26,45 +26,6 @@ import { initDialog } from '../../helpers';
   styleUrls: ['./case-edit-page.scss']
 })
 export class CaseEditPageComponent implements OnInit, AfterViewChecked {
-
-  static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
-  static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
-  static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
-  static readonly RESUMED_FORM_SAVE = 'RESUMED_FORM_SAVE';
-  static readonly TRIGGER_TEXT_START = 'Continue';
-  static readonly TRIGGER_TEXT_SAVE = 'Save and continue';
-  static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
-
-  private static scrollToTop(): void {
-    window.scrollTo(0, 0);
-  }
-
-  private static setFocusToTop() {
-    const topContainer = document.getElementById('top');
-    if (topContainer) {
-      topContainer.focus();
-    }
-  }
-
-  eventTrigger: CaseEventTrigger;
-  editForm: FormGroup;
-  wizard: Wizard;
-  currentPage: WizardPage;
-  dialogConfig: MatDialogConfig;
-  error: HttpError;
-  callbackErrorsSubject: Subject<any> = new Subject();
-  ignoreWarning = false;
-  triggerTextStart = CaseEditPageComponent.TRIGGER_TEXT_START;
-  triggerTextIgnoreWarnings = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
-  triggerText: string;
-  isSubmitting = false;
-  formValuesChanged = false;
-  pageChangeSubject: Subject<boolean> = new Subject();
-  caseFields: CaseField[];
-  validationErrors: { id: string, message: string }[] = [];
-  showSpinner: boolean;
-
-  hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(
     private readonly caseEdit: CaseEditComponent,
@@ -77,6 +38,45 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     private readonly caseFieldService: CaseFieldService
   ) { }
 
+  public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
+  public static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
+  public static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
+  public static readonly RESUMED_FORM_SAVE = 'RESUMED_FORM_SAVE';
+  public static readonly TRIGGER_TEXT_START = 'Continue';
+  public static readonly TRIGGER_TEXT_SAVE = 'Save and continue';
+  public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
+
+  public eventTrigger: CaseEventTrigger;
+  public editForm: FormGroup;
+  public wizard: Wizard;
+  public currentPage: WizardPage;
+  public dialogConfig: MatDialogConfig;
+  public error: HttpError;
+  public callbackErrorsSubject: Subject<any> = new Subject();
+  public ignoreWarning = false;
+  public triggerTextStart = CaseEditPageComponent.TRIGGER_TEXT_START;
+  public triggerTextIgnoreWarnings = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
+  public triggerText: string;
+  public isSubmitting = false;
+  public formValuesChanged = false;
+  public pageChangeSubject: Subject<boolean> = new Subject();
+  public caseFields: CaseField[];
+  public validationErrors: { id: string, message: string }[] = [];
+  public showSpinner: boolean;
+
+  public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  private static scrollToTop(): void {
+    window.scrollTo(0, 0);
+  }
+
+  private static setFocusToTop() {
+    const topContainer = document.getElementById('top');
+    if (topContainer) {
+      topContainer.focus();
+    }
+  }
+
   public ngOnInit(): void {
     initDialog(this.dialogConfig);
     this.eventTrigger = this.caseEdit.eventTrigger;
@@ -87,9 +87,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
     this.route.params
       .subscribe(params => {
-        let pageId = params['page'];
+        const pageId = params['page'];
         if (!this.currentPage || pageId !== this.currentPage.id) {
-          let page = this.caseEdit.getPage(pageId);
+          const page = this.caseEdit.getPage(pageId);
           if (page) {
             this.currentPage = page;
           } else {
@@ -99,25 +99,25 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
               return this.first();
             }
           }
-          this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage.id))
+          this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage.id));
         }
       });
     CaseEditPageComponent.setFocusToTop();
   }
 
-  ngAfterViewChecked(): void {
+  public ngAfterViewChecked(): void {
     this.cdRef.detectChanges();
   }
 
-  applyValuesChanged(valuesChanged: boolean): void {
+  public applyValuesChanged(valuesChanged: boolean): void {
     this.formValuesChanged = valuesChanged;
   }
 
-  first(): Promise<boolean> {
+  public first(): Promise<boolean> {
     return this.caseEdit.first();
   }
 
-  currentPageIsNotValid(): boolean {
+  public currentPageIsNotValid(): boolean {
     return !this.pageValidationService.isPageValid(this.currentPage, this.editForm);
   }
 
@@ -128,7 +128,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
    */
   public toPreviousPage(): void {
     this.validationErrors = [];
-    let caseEventData: CaseEventData = this.buildCaseEventData();
+    const caseEventData: CaseEventData = this.buildCaseEventData();
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
     this.previous();
@@ -176,7 +176,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
                     if (id.charAt(id.indexOf(index.toString())) === index.toString()) {
                       this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, control.get('value'), id);
                     }
-                  })
+                  });
                 });
               }
             } else {
@@ -207,7 +207,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (!this.isSubmitting && !this.currentPageIsNotValid()) {
       this.isSubmitting = true;
       this.error = null;
-      let caseEventData: CaseEventData = this.buildCaseEventData();
+      const caseEventData: CaseEventData = this.buildCaseEventData();
       this.showSpinner = true;
       this.caseEdit.validate(caseEventData, this.currentPage.id)
         .subscribe((jsonData) => {
@@ -226,7 +226,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     CaseEditPageComponent.setFocusToTop();
   }
 
-  updateFormData(jsonData: CaseEventData): void {
+  public updateFormData(jsonData: CaseEventData): void {
     for (const caseFieldId of Object.keys(jsonData.data)) {
       if (this.pageWithFieldExists(caseFieldId)) {
         this.updateEventTriggerCaseFields(caseFieldId, jsonData, this.caseEdit.eventTrigger);
@@ -236,11 +236,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // we do the check, becasue the data comes from the external source
-  pageWithFieldExists(caseFieldId: string) {
+  public pageWithFieldExists(caseFieldId: string) {
     return this.wizard.findWizardPage(caseFieldId);
   }
 
-  updateEventTriggerCaseFields(caseFieldId: string, jsonData: CaseEventData, eventTrigger: CaseEventTrigger) {
+  public updateEventTriggerCaseFields(caseFieldId: string, jsonData: CaseEventData, eventTrigger: CaseEventTrigger) {
     if (eventTrigger.case_fields) {
       eventTrigger.case_fields
         .filter(element => element.id === caseFieldId)
@@ -248,8 +248,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {
-    let theControl = formGroup.controls['data'].get(caseFieldId);
+  public updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {
+    const theControl = formGroup.controls['data'].get(caseFieldId);
     if (theControl && theControl['status'] !== 'DISABLED') {
       if (Array.isArray(theControl.value) && Array.isArray(value)
               && theControl.value.length > value.length && theControl['caseField']
@@ -262,12 +262,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  callbackErrorsNotify(errorContext: CallbackErrorsContext) {
+  public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
     this.ignoreWarning = errorContext.ignore_warning;
     this.triggerText = errorContext.trigger_text;
   }
 
-  next(): Promise<boolean> {
+  public next(): Promise<boolean> {
     this.resetErrors();
     this.isSubmitting = false;
     this.formValuesChanged = false;
@@ -275,7 +275,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return this.caseEdit.next(this.currentPage.id);
   }
 
-  previous(): Promise<boolean> {
+  public previous(): Promise<boolean> {
     this.resetErrors();
     this.saveDraft();
     this.formValuesChanged = false;
@@ -283,11 +283,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return this.caseEdit.previous(this.currentPage.id);
   }
 
-  hasPrevious(): boolean {
+  public hasPrevious(): boolean {
     return this.caseEdit.hasPrevious(this.currentPage.id);
   }
 
-  cancel(): void {
+  public cancel(): void {
     if (this.eventTrigger.can_save_draft) {
       if (this.formValuesChanged) {
         const dialogRef = this.dialog.open(SaveOrDiscardDialogComponent, this.dialogConfig);
@@ -331,7 +331,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   private getTriggerText(): string {
     return this.eventTrigger && this.eventTrigger.can_save_draft
       ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
-      : CaseEditPageComponent.TRIGGER_TEXT_START
+      : CaseEditPageComponent.TRIGGER_TEXT_START;
   }
 
   private discard(): void {
@@ -361,7 +361,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   private saveDraft() {
     if (this.eventTrigger.can_save_draft) {
-      let draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
+      const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
       draftCaseEventData.event_token = this.eventTrigger.event_token;
       draftCaseEventData.ignore_warning = this.ignoreWarning;
       this.caseEdit.saveDraft(draftCaseEventData).subscribe(

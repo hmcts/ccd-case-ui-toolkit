@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Jurisdiction } from '../../domain';
 import { READ_ACCESS } from '../../domain/case-view/access-types.model';
 import { DefinitionsService } from '../../services';
-import { Jurisdiction } from '../../domain';
 
 @Component({
   selector: 'ccd-case-list-filters',
@@ -10,23 +10,23 @@ import { Jurisdiction } from '../../domain';
 export class CaseListFiltersComponent implements OnInit {
 
   @Input()
-  defaults;
+  public defaults;
 
   @Output()
-  onApply: EventEmitter<any> = new EventEmitter();
+  public onApply: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  onReset: EventEmitter<any> = new EventEmitter();
+  public onReset: EventEmitter<any> = new EventEmitter();
 
-  jurisdictions: Jurisdiction[];
-  isVisible: boolean;
+  public jurisdictions: Jurisdiction[];
+  public isVisible: boolean;
 
   constructor(
-    private definitionsService: DefinitionsService,
+    private readonly definitionsService: DefinitionsService,
   ) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.isVisible = false;
 
     this.definitionsService.getJurisdictions(READ_ACCESS)
@@ -36,11 +36,11 @@ export class CaseListFiltersComponent implements OnInit {
       });
   }
 
-  onWrapperApply(value) {
+  public onWrapperApply(value) {
     this.onApply.emit(value);
   }
 
-  onWrapperReset(value) {
+  public onWrapperReset(value) {
     this.onReset.emit(value);
   }
 

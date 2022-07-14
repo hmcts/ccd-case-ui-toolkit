@@ -1,11 +1,11 @@
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { IsMandatoryPipe } from './is-mandatory.pipe';
-import { CaseField } from '../../../domain/definition/case-field.model';
 
 describe('IsReadOnlyPipe', () => {
 
-  let caseFieldService = new CaseFieldService();
-  let isMandatoryPipe: IsMandatoryPipe = new IsMandatoryPipe(caseFieldService);
+  const caseFieldService = new CaseFieldService();
+  const isMandatoryPipe: IsMandatoryPipe = new IsMandatoryPipe(caseFieldService);
 
   it('should identify null field as NOT mandatory', () => {
     expect(isMandatoryPipe.transform(null))

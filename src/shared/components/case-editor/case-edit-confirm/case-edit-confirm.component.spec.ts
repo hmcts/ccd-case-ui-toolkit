@@ -1,19 +1,19 @@
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
-import { CaseEditConfirmComponent } from './case-edit-confirm.component';
 import { By } from '@angular/platform-browser';
-import { WizardPage } from '../domain/wizard-page.model';
-import { MarkdownModule } from '../../markdown/markdown.module';
-import { FieldsUtils } from '../../../services/fields';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 import { CaseField } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { PipesModule } from '../../../pipes';
+import { FieldsUtils } from '../../../services/fields';
+import { MarkdownModule } from '../../markdown/markdown.module';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { WizardPage } from '../domain/wizard-page.model';
 import { ConvertHrefToRouterService } from '../services';
+import { CaseEditConfirmComponent } from './case-edit-confirm.component';
 
 describe('CaseEditConfirmComponent', () => {
   let fixture: ComponentFixture<CaseEditConfirmComponent>;
@@ -23,10 +23,10 @@ describe('CaseEditConfirmComponent', () => {
   let routerStub: any;
   let caseEditComponentStub: any;
 
-  let firstPage = new WizardPage();
+  const firstPage = new WizardPage();
 
   const FORM_GROUP = new FormGroup({
-    'data': new FormGroup({'PersonLastName': new FormControl('Khaleesi')})
+    data: new FormGroup({PersonLastName: new FormControl('Khaleesi')})
   });
   routerStub = {
     navigate: jasmine.createSpy('navigate'),
@@ -43,20 +43,20 @@ describe('CaseEditConfirmComponent', () => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
     firstPage.id = 'first page';
     caseEditComponentStub = {
-      'form': FORM_GROUP,
-      'data': '',
-      'eventTrigger': {'case_fields': [caseField1, caseField2, caseField3]},
-      'hasPrevious': () => true,
-      'getPage': () => firstPage,
-      'confirmation': {
-        'getCaseId': () => 'case1',
-        'getStatus': () => 'status1',
-        'getHeader': () => 'Header',
-        'getBody': () => 'A body with mark down'
+      form: FORM_GROUP,
+      data: '',
+      eventTrigger: {case_fields: [caseField1, caseField2, caseField3]},
+      hasPrevious: () => true,
+      getPage: () => firstPage,
+      confirmation: {
+        getCaseId: () => 'case1',
+        getStatus: () => 'status1',
+        getHeader: () => 'Header',
+        getBody: () => 'A body with mark down'
       },
-      'caseDetails': {'case_id': '1234567812345678', 'tabs': [{id: 'tab1', label: 'tabLabel1',
-        fields: [caseField1, caseField2, caseField3]}], 'metadataFields': [],
-        'state': {'id': '1', 'name': 'Incomplete Application', 'title_display': '# 1234567812345678: test'}},
+      caseDetails: {case_id: '1234567812345678', tabs: [{id: 'tab1', label: 'tabLabel1',
+        fields: [caseField1, caseField2, caseField3]}], metadataFields: [],
+        state: {id: '1', name: 'Incomplete Application', title_display: '# 1234567812345678: test'}},
     };
     TestBed
       .configureTestingModule({
@@ -125,7 +125,7 @@ describe('CaseEditConfirmComponent', () => {
 
   beforeEach(async(() => {
     caseEditCompStub = {
-      'eventTrigger': {'case_fields': []},
+      eventTrigger: {case_fields: []},
     };
     TestBed
       .configureTestingModule({

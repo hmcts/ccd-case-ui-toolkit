@@ -36,7 +36,7 @@ describe('MultipleTasksExistComponent', () => {
   });
 
   it('should display error message multiple-tasks-exist', () => {
-    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'))
+    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
     const headingHtml = heading.nativeElement as HTMLElement;
     expect(headingHtml.innerText).toBe('Multiple tasks exist');
   });

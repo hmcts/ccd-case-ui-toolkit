@@ -9,7 +9,7 @@ export class PrintUrlPipe implements PipeTransform {
   private static readonly MSIE_BROWSER_NAME = 'MSIE';
   private static readonly IE11_BROWSER_ENGINE = 'Trident';
 
-  constructor(private appConfig: AbstractAppConfig) {}
+  constructor(private readonly appConfig: AbstractAppConfig) {}
 
   /**
    * Takes a "remote" Print Service URL (for example, as returned by calling the `/documents` CCD endpoint) and
@@ -22,7 +22,7 @@ export class PrintUrlPipe implements PipeTransform {
    * @returns A rewritten URL as per the above description, or the original `remoteUrl` if it is `null`, `undefined`,
    * or the empty string
    */
-  transform(remoteUrl: string): string {
+  public transform(remoteUrl: string): string {
     if (remoteUrl && remoteUrl.length > 0) {
       let printServiceUrlPathname: string;
 

@@ -1,13 +1,13 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { finalize, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { finalize, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpService, OptionsType } from '../http';
-import { RequestOptionsBuilder, SearchView } from '../request';
 import { SearchInput } from '../../components/search-filters';
 import { SearchResultView } from '../../domain/search';
+import { HttpService, OptionsType } from '../http';
 import { LoadingService } from '../loading';
-import { HttpHeaders } from '@angular/common/http';
+import { RequestOptionsBuilder, SearchView } from '../request';
 
 @Injectable()
 export class SearchService {
@@ -19,10 +19,10 @@ export class SearchService {
   private currentJurisdiction: string;
   private currentCaseType: string;
 
-  constructor(private appConfig: AbstractAppConfig,
-              private httpService: HttpService,
-              private requestOptionsBuilder: RequestOptionsBuilder,
-              private loadingService: LoadingService) { }
+  constructor(private readonly appConfig: AbstractAppConfig,
+              private readonly httpService: HttpService,
+              private readonly requestOptionsBuilder: RequestOptionsBuilder,
+              private readonly loadingService: LoadingService) { }
 
   public search(jurisdictionId: string, caseTypeId: string,
                 metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<SearchResultView> {
@@ -31,7 +31,7 @@ export class SearchService {
                                            + `/case-types/${caseTypeId}`
                                            + `/cases`;
 
-    let options: OptionsType  = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
+    const options: OptionsType  = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     const loadingToken = this.loadingService.register();
     return this.httpService
       .get(url, options)
@@ -45,7 +45,7 @@ export class SearchService {
                 metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: {column: string, order: number}): Observable<{}> {
     const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;
 
-    let options: OptionsType = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
+    const options: OptionsType = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     const body: {} = {
       sort,
       size: this.appConfig.getPaginationPageSize()
@@ -59,11 +59,11 @@ export class SearchService {
       );
   }
 
-  getSearchInputUrl(caseTypeId: string): string {
+  public getSearchInputUrl(caseTypeId: string): string {
     return `${this.appConfig.getCaseDataUrl()}/internal/case-types/${caseTypeId}/search-inputs`;
   }
 
-  getSearchInputs(jurisdictionId: string, caseTypeId: string): Observable<SearchInput[]> {
+  public getSearchInputs(jurisdictionId: string, caseTypeId: string): Observable<SearchInput[]> {
     const url = this.getSearchInputUrl(caseTypeId);
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -89,7 +89,7 @@ export class SearchService {
       );
   }
 
-  isDataValid(jurisdictionId: string, caseTypeId: string): boolean {
-    return this.currentJurisdiction === jurisdictionId && this.currentCaseType === caseTypeId
+  public isDataValid(jurisdictionId: string, caseTypeId: string): boolean {
+    return this.currentJurisdiction === jurisdictionId && this.currentCaseType === caseTypeId;
   }
 }

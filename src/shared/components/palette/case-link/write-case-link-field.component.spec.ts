@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 import { DebugElement } from '@angular/core';
-import { CaseField, FieldType } from '../../../domain/definition';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { PaletteUtilsModule } from '../utils';
+import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 
 const VALUE = {
   CaseReference: '1234-5678-1234-5678'
@@ -13,13 +13,13 @@ const FIELD_TYPE: FieldType = {
   id: 'CaseLink',
   type: 'Complex',
 };
-const CASE_REFERENCE: CaseField = <CaseField>({
+const CASE_REFERENCE: CaseField = ({
   id: 'CaseReference',
   label: 'Case Reference',
   field_type: {id: 'TextCaseReference', type: 'Text'}
-});
+}) as CaseField;
 
-const CASE_FIELD: CaseField = <CaseField>({
+const CASE_FIELD: CaseField = ({
   id: FIELD_ID,
   label: 'New Case Link',
   display_context: 'OPTIONAL',
@@ -29,7 +29,7 @@ const CASE_FIELD: CaseField = <CaseField>({
   },
   value: VALUE,
   retain_hidden_value: true
-});
+}) as CaseField;
 
 describe('WriteCaseLinkFieldComponent', () => {
   let component: WriteCaseLinkFieldComponent;

@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadCaseLinkFieldComponent } from './read-case-link-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { By } from '@angular/platform-browser';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { ReadCaseLinkFieldComponent } from './read-case-link-field.component';
 
 const $LINK = By.css('a');
 const CASE_REFERENCE_RAW = '1234123412341238';
@@ -24,13 +24,13 @@ describe('ReadCaseLinkFieldComponent', () => {
 
   describe('Non-persistable readonly case-link field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'aCaseLink',
       label: 'A case link',
       field_type: FIELD_TYPE,
       value: VALUE,
       display_context: 'READONLY'
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadCaseLinkFieldComponent>;
     let component: ReadCaseLinkFieldComponent;
@@ -86,13 +86,13 @@ describe('ReadCaseLinkFieldComponent', () => {
 
   describe('Persistable readonly case-link field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'A case link',
       field_type: FIELD_TYPE,
       value: VALUE,
       display_context: 'READONLY'
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadCaseLinkFieldComponent>;
     let component: ReadCaseLinkFieldComponent;

@@ -1,38 +1,38 @@
-import { CaseField, FieldType } from '../../../domain/definition';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { WriteDocumentFieldComponent } from './write-document-field.component';
 import { DebugElement } from '@angular/core';
-import { DocumentManagementService } from '../../../services/document-management';
-import { DocumentData } from '../../../domain/document';
-import { of, throwError, Subscription } from 'rxjs';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { FormGroup } from '@angular/forms';
-import { FieldLabelPipe } from '../utils';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { of, Subscription, throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
+import { CaseField, FieldType } from '../../../domain/definition';
+import { DocumentData } from '../../../domain/document';
+import { DocumentManagementService } from '../../../services/document-management';
+import { CaseNotifier } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
+import { FieldLabelPipe } from '../utils';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 import { FileUploadStateService } from './file-upload-state.service';
-import { AbstractAppConfig } from '../../../../app.config';
-import { CaseNotifier } from '../../case-editor';
+import { WriteDocumentFieldComponent } from './write-document-field.component';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
   type: 'Document'
 };
 const VALUE = {
-  'document_url': 'https://www.example.com',
-  'document_binary_url': 'https://www.example.com/binary',
-  'document_filename': 'evidence_document.evd'
+  document_url: 'https://www.example.com',
+  document_binary_url: 'https://www.example.com/binary',
+  document_filename: 'evidence_document.evd'
 };
-const CASE_FIELD: CaseField = <CaseField>({
+const CASE_FIELD: CaseField = ({
   id: 'x',
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
   value: VALUE
-});
+}) as CaseField;
 
 const DOCUMENT_MANAGEMENT_URL = 'http://docmanagement.ccd.reform/documents';
 const RESPONSE_FIRST_DOCUMENT: DocumentData = {
@@ -96,7 +96,7 @@ describe('WriteDocumentFieldComponent', () => {
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
 
-  let ReadDocumentComponent = MockComponent({
+  const ReadDocumentComponent = MockComponent({
     selector: 'ccd-read-document-field',
     inputs: ['caseField']
   });
@@ -169,13 +169,13 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should render an element for file selection', () => {
-    let uploadElement = de.query(By.css('input[type=file]'));
+    const uploadElement = de.query(By.css('input[type=file]'));
 
     expect(uploadElement).toBeTruthy();
   });
 
   it('should render a ccd-read-document-field tag for an existing document', () => {
-    let ccdReadDocumentElement = de.query(By.css('ccd-read-document-field'));
+    const ccdReadDocumentElement = de.query(By.css('ccd-read-document-field'));
 
     expect(ccdReadDocumentElement).toBeTruthy();
   });
@@ -253,8 +253,8 @@ describe('WriteDocumentFieldComponent', () => {
       }]
     };
     mockDocumentManagementService.uploadFile.and.returnValue(of(REPLACE_DOCUMENT));
-    let blobParts: BlobPart[] = ['some contents for blob'];
-    let file: File = new File(blobParts, 'test.pdf');
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.pdf');
     component.fileChangeEvent({
       target: {
         files: [
@@ -266,8 +266,8 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should upload given document', () => {
-    let blobParts: BlobPart[] = ['some contents for blob'];
-    let file: File = new File(blobParts, 'test.pdf');
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.pdf');
     component.fileChangeEvent({
       target: {
         files: [
@@ -283,8 +283,8 @@ describe('WriteDocumentFieldComponent', () => {
     mockDocumentManagementService.uploadFile.and.returnValue(throwError('{"error": "A terrible thing happened", ' +
       '"message": "But really really terrible thing!", "status": 502}'));
 
-    let blobParts: BlobPart[] = ['some contents for blob'];
-    let file: File = new File(blobParts, 'test.pdf');
+    const blobParts: BlobPart[] = ['some contents for blob'];
+    const file: File = new File(blobParts, 'test.pdf');
     component.fileChangeEvent({
       target: {
         files: [
@@ -303,7 +303,7 @@ describe('WriteDocumentFieldComponent', () => {
     componentDialog = fixtureDialog.componentInstance;
     deDialog = fixtureDialog.debugElement;
     fixtureDialog.detectChanges();
-    let replaceElement = deDialog.query(By.css('.button[title=Replace]'));
+    const replaceElement = deDialog.query(By.css('.button[title=Replace]'));
     expect(replaceElement).toBeTruthy();
   });
 
@@ -313,7 +313,7 @@ describe('WriteDocumentFieldComponent', () => {
     deDialog = fixtureDialog.debugElement;
     fixtureDialog.detectChanges();
 
-    let dialogReplacelButton = deDialog.query($DIALOG_REPLACE_BUTTON);
+    const dialogReplacelButton = deDialog.query($DIALOG_REPLACE_BUTTON);
     dialogReplacelButton.nativeElement.click();
     expect(componentDialog.result).toEqual('Replace');
     fixture.detectChanges();
@@ -324,7 +324,7 @@ describe('WriteDocumentFieldComponent', () => {
     componentDialog = fixtureDialog.componentInstance;
     deDialog = fixtureDialog.debugElement;
     fixtureDialog.detectChanges();
-    let dialogCancelButton = deDialog.query($DIALOG_CANCEL_BUTTON);
+    const dialogCancelButton = deDialog.query($DIALOG_CANCEL_BUTTON);
     dialogCancelButton.nativeElement.click();
     expect(componentDialog.result).toEqual('Cancel');
     fixture.detectChanges();
@@ -342,12 +342,12 @@ describe('WriteDocumentFieldComponent', () => {
       type: 'Document',
       regular_expression: '.pdf,.docx,.xlsx'
     };
-    component.caseField = <CaseField>({
+    component.caseField = (({
       id: 'x',
       label: 'X',
       field_type: FIELD_TYPE_WITH_REGEX,
       value: VALUE
-    });
+    }) as CaseField);
 
     component.ngOnInit();
     fixture.detectChanges();
@@ -382,18 +382,18 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     type: 'Document'
   };
   const VALUE_MANDATORY = {
-    'document_url': 'https://www.example.com',
-    'document_binary_url': 'https://www.example.com/binary',
-    'document_filename': 'evidence_document.evd'
+    document_url: 'https://www.example.com',
+    document_binary_url: 'https://www.example.com/binary',
+    document_filename: 'evidence_document.evd'
   };
 
-  const CASE_FIELD_MANDATORY: CaseField = <CaseField>({
+  const CASE_FIELD_MANDATORY: CaseField = ({
     id: 'x',
     label: 'X',
     display_context: 'MANDATORY',
     field_type: FIELD_TYPE_MANDATORY,
     value: VALUE_MANDATORY
-  });
+  }) as CaseField;
   const DOCUMENT_MANAGEMENT_URL_MANDATORY = 'http://docmanagement.ccd.reform/documents';
   const RESPONSE_FIRST_DOCUMENT_MANDATORY: DocumentData = {
     _embedded: {
@@ -453,7 +453,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
 
-  let ReadDocumentComponent = MockComponent({
+  const ReadDocumentComponent = MockComponent({
     selector: 'ccd-read-document-field',
     inputs: ['caseField']
   });

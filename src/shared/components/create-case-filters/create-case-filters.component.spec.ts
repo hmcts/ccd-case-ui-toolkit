@@ -1,16 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CreateCaseFiltersComponent } from './create-case-filters.component';
+import { By } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
+import { AccessControlList } from '../../domain/definition/access-control-list.model';
+import { CaseEvent } from '../../domain/definition/case-event.model';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
-import { CaseEvent } from '../../domain/definition/case-event.model';
-import { Observable } from 'rxjs';
-import { DefinitionsService, OrderService, AlertService, SessionStorageService } from '../../services';
-import { AccessControlList } from '../../domain/definition/access-control-list.model';
 import { createACL } from '../../fixture/shared.test.fixture';
+import { AlertService, DefinitionsService, OrderService, SessionStorageService } from '../../services';
+import { CreateCaseFiltersComponent } from './create-case-filters.component';
 
 const EVENT_ID_1 = 'ID_1';
 const EVENT_NAME_1 = 'Event one';
@@ -274,7 +274,7 @@ const changeDummy = (jurisdictions) => {
       currentValue: jurisdictions
     }
   };
-}
+};
 
 describe('CreateCaseFiltersComponent', () => {
 
@@ -403,19 +403,19 @@ describe('CreateCaseFiltersComponent', () => {
     component.filterJurisdictionControl.setValue('');
     component.onJurisdictionIdChange();
     fixture.detectChanges();
-    let selector = de.query($SELECT_JURISDICTION);
+    const selector = de.query($SELECT_JURISDICTION);
 
     expect(selector.nativeElement.selectedIndex).toEqual(0);
     expect(component.selected.jurisdiction).toBeUndefined();
 
     expect(selector.children.length).toEqual(3);
-    let selectJurisdiction = selector.children[0];
+    const selectJurisdiction = selector.children[0];
 
     expect(selectJurisdiction.nativeElement.textContent).toEqual('--Select a value--');
-    let juris1 = selector.children[1];
+    const juris1 = selector.children[1];
 
     expect(juris1.nativeElement.textContent).toEqual(JURISDICTION_1.name);
-    let juris2 = selector.children[2];
+    const juris2 = selector.children[2];
 
     expect(juris2.nativeElement.textContent).toEqual(JURISDICTION_2.name);
   });
@@ -428,7 +428,7 @@ describe('CreateCaseFiltersComponent', () => {
     component.onJurisdictionIdChange();
     fixture.detectChanges();
 
-    let selector = de.query($SELECT_JURISDICTION);
+    const selector = de.query($SELECT_JURISDICTION);
     expect(selector.nativeElement.selectedIndex).toEqual(1);
     expect(selector.nativeElement.value).toBe(JURISDICTION_SINGLE_EVENT.id);
     expect(component.selected.jurisdiction).toBe(JURISDICTION_SINGLE_EVENT);
@@ -442,20 +442,20 @@ describe('CreateCaseFiltersComponent', () => {
     component.onJurisdictionIdChange();
     fixture.detectChanges();
 
-    let selector = de.query($SELECT_CASE_TYPE);
+    const selector = de.query($SELECT_CASE_TYPE);
 
     expect(selector.children.length).toEqual(4);
 
-    let selectCaseType = selector.children[0];
+    const selectCaseType = selector.children[0];
     expect(selectCaseType.nativeElement.textContent).toEqual('--Select a value--');
-    let ct1 = selector.children[1];
+    const ct1 = selector.children[1];
     expect(ct1.nativeElement.textContent).toEqual(CASE_TYPES_2[0].name);
-    let ct2 = selector.children[2];
+    const ct2 = selector.children[2];
     expect(ct2.nativeElement.textContent).toEqual(CASE_TYPES_2[1].name);
-    let ct3 = selector.children[3];
+    const ct3 = selector.children[3];
     expect(ct3.nativeElement.textContent).toEqual(CASE_TYPES_2[2].name);
 
-    let eventSelector = de.query($SELECT_EVENT);
+    const eventSelector = de.query($SELECT_EVENT);
     expect(eventSelector.children.length).toEqual(1);
     expect(eventSelector.nativeElement.selectedIndex).toEqual(0);
     expect(eventSelector.nativeElement.value).toBe('');
@@ -471,7 +471,7 @@ describe('CreateCaseFiltersComponent', () => {
     component.filterCaseTypeControl.setValue(CASE_TYPES_2[2].id);
     fixture.detectChanges();
 
-    let selector = de.query($SELECT_CASE_TYPE);
+    const selector = de.query($SELECT_CASE_TYPE);
     expect(selector.nativeElement.selectedIndex).toEqual(3);
     expect(selector.nativeElement.value).toBe(CASE_TYPES_2[2].id);
   }));
@@ -483,23 +483,23 @@ describe('CreateCaseFiltersComponent', () => {
     component.filterJurisdictionControl.setValue('');
     component.onJurisdictionIdChange();
     fixture.detectChanges();
-    let caseTypeSelector = de.query($SELECT_CASE_TYPE);
+    const caseTypeSelector = de.query($SELECT_CASE_TYPE);
     expect(caseTypeSelector.nativeElement.selectedIndex).toEqual(0);
     expect(caseTypeSelector.nativeElement.value).toBe('');
     expect(caseTypeSelector.nativeElement.isEnabled).toBeFalsy();
     expect(caseTypeSelector.children.length).toEqual(1);
 
-    let caseTypeSelectEvent0 = caseTypeSelector.children[0];
+    const caseTypeSelectEvent0 = caseTypeSelector.children[0];
     expect(caseTypeSelectEvent0.nativeElement.value).toBe('');
     expect(caseTypeSelectEvent0.nativeElement.textContent).toEqual('--Select a value--');
 
-    let eventSelector = de.query($SELECT_EVENT);
+    const eventSelector = de.query($SELECT_EVENT);
     expect(eventSelector.children.length).toEqual(1);
     expect(eventSelector.nativeElement.selectedIndex).toEqual(0);
     expect(eventSelector.nativeElement.value).toBe('');
     expect(eventSelector.nativeElement.isEnabled).toBeFalsy();
 
-    let eventSelectEvent0 = eventSelector.children[0];
+    const eventSelectEvent0 = eventSelector.children[0];
     expect(eventSelectEvent0.nativeElement.value).toBe('');
     expect(eventSelectEvent0.nativeElement.textContent).toEqual('--Select a value--');
   }));
@@ -515,16 +515,16 @@ describe('CreateCaseFiltersComponent', () => {
 
     fixture.detectChanges();
 
-    let selector = de.query($SELECT_EVENT);
+    const selector = de.query($SELECT_EVENT);
 
     expect(selector.children.length).toEqual(3);
-    let selectEvent0 = selector.children[0];
+    const selectEvent0 = selector.children[0];
     expect(selectEvent0.nativeElement.value).toBe('');
     expect(selectEvent0.nativeElement.textContent).toEqual('--Select a value--');
-    let selectEvent1 = selector.children[1];
+    const selectEvent1 = selector.children[1];
     expect(selectEvent1.nativeElement.value).toBe(EVENT_ID_1);
     expect(selectEvent1.nativeElement.textContent).toEqual(EVENT_NAME_1);
-    let selectEvent2 = selector.children[2];
+    const selectEvent2 = selector.children[2];
     expect(selectEvent2.nativeElement.value).toBe(EVENT_ID_3);
     expect(selectEvent2.nativeElement.textContent).toEqual(EVENT_NAME_3);
   }));
@@ -537,9 +537,9 @@ describe('CreateCaseFiltersComponent', () => {
     component.onJurisdictionIdChange();
     fixture.detectChanges();
 
-    let caseTypeSelector = de.query($SELECT_CASE_TYPE);
+    const caseTypeSelector = de.query($SELECT_CASE_TYPE);
     expect(caseTypeSelector.children.length).toEqual(4);
-    let eventSelector = de.query($SELECT_EVENT);
+    const eventSelector = de.query($SELECT_EVENT);
     expect(eventSelector.children.length).toEqual(1);
 
     component.filterJurisdictionControl.setValue('');
@@ -550,7 +550,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(caseTypeSelector.nativeElement.isEnabled).toBeFalsy();
 
     expect(eventSelector.children.length).toEqual(1);
-    let selectEvent0 = eventSelector.children[0];
+    const selectEvent0 = eventSelector.children[0];
     expect(selectEvent0.nativeElement.value).toBe('');
     expect(selectEvent0.nativeElement.textContent).toEqual('--Select a value--');
     expect(eventSelector.nativeElement.isEnabled).toBeFalsy();
@@ -567,15 +567,15 @@ describe('CreateCaseFiltersComponent', () => {
 
     fixture.detectChanges();
 
-    let eventSelector = de.query($SELECT_EVENT);
+    const eventSelector = de.query($SELECT_EVENT);
     expect(eventSelector.children.length).toEqual(3);
-    let selectEvent0 = eventSelector.children[0];
+    const selectEvent0 = eventSelector.children[0];
     expect(selectEvent0.nativeElement.value).toBe('');
     expect(selectEvent0.nativeElement.textContent).toEqual('--Select a value--');
-    let selectEvent1 = eventSelector.children[1];
+    const selectEvent1 = eventSelector.children[1];
     expect(selectEvent1.nativeElement.value).toBe(EVENT_ID_1);
     expect(selectEvent1.nativeElement.textContent).toEqual(EVENT_NAME_1);
-    let selectEvent2 = eventSelector.children[2];
+    const selectEvent2 = eventSelector.children[2];
     expect(selectEvent2.nativeElement.value).toBe(EVENT_ID_3);
     expect(selectEvent2.nativeElement.textContent).toEqual(EVENT_NAME_3);
 
@@ -601,15 +601,15 @@ describe('CreateCaseFiltersComponent', () => {
 
     fixture.detectChanges();
 
-    let eventSelector = de.query($SELECT_EVENT);
+    const eventSelector = de.query($SELECT_EVENT);
     expect(eventSelector.children.length).toEqual(3);
-    let selectEvent0 = eventSelector.children[0];
+    const selectEvent0 = eventSelector.children[0];
     expect(selectEvent0.nativeElement.value).toBe('');
     expect(selectEvent0.nativeElement.textContent).toEqual('--Select a value--');
-    let selectEvent1 = eventSelector.children[1];
+    const selectEvent1 = eventSelector.children[1];
     expect(selectEvent1.nativeElement.value).toBe(EVENT_ID_1);
     expect(selectEvent1.nativeElement.textContent).toEqual(EVENT_NAME_1);
-    let selectEvent2 = eventSelector.children[2];
+    const selectEvent2 = eventSelector.children[2];
     expect(selectEvent2.nativeElement.value).toBe(EVENT_ID_3);
     expect(selectEvent2.nativeElement.textContent).toEqual(EVENT_NAME_3);
 
@@ -628,13 +628,13 @@ describe('CreateCaseFiltersComponent', () => {
     component.filterCaseTypeControl.setValue('');
     component.onCaseTypeIdChange();
 
-    let eventSelector = de.query($SELECT_EVENT);
+    const eventSelector = de.query($SELECT_EVENT);
     expect(eventSelector.nativeElement.selectedIndex).toEqual(0);
     expect(eventSelector.nativeElement.value).toBe('');
     expect(eventSelector.nativeElement.isEnabled).toBeFalsy();
 
     expect(eventSelector.children.length).toEqual(1);
-    let selectEvent0 = eventSelector.children[0];
+    const selectEvent0 = eventSelector.children[0];
     expect(selectEvent0.nativeElement.value).toBe('');
     expect(selectEvent0.nativeElement.textContent).toEqual('--Select a value--');
   }));
@@ -649,7 +649,7 @@ describe('CreateCaseFiltersComponent', () => {
     component.onEventIdChange();
 
     fixture.detectChanges();
-    let button = de.query($SELECT_BUTTON);
+    const button = de.query($SELECT_BUTTON);
     expect(button.nativeElement.disabled).toBeTruthy();
   }));
 
@@ -663,7 +663,7 @@ describe('CreateCaseFiltersComponent', () => {
     component.onEventIdChange();
 
     fixture.detectChanges();
-    let button = de.query($SELECT_BUTTON);
+    const button = de.query($SELECT_BUTTON);
     expect(button.nativeElement.disabled).toBeFalsy();
   }));
 
@@ -678,7 +678,7 @@ describe('CreateCaseFiltersComponent', () => {
     spyOn(component.selectionSubmitted, 'emit');
 
     fixture.detectChanges();
-    let button = de.query($SELECT_BUTTON);
+    const button = de.query($SELECT_BUTTON);
     button.nativeElement.click();
 
     expect(component.selectionSubmitted.emit).toHaveBeenCalledWith({

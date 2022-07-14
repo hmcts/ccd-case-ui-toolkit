@@ -3,13 +3,13 @@ import { ConditionalShowFormDirective } from '../conditional-show-form.directive
 
 @Injectable()
 export class ConditionalShowRegistrarService {
-  registeredDirectives: ConditionalShowFormDirective[] = [];
+  public registeredDirectives: ConditionalShowFormDirective[] = [];
 
-  register(newDirective: ConditionalShowFormDirective): void {
+  public register(newDirective: ConditionalShowFormDirective): void {
       this.registeredDirectives.push(newDirective);
   }
 
-  reset(): void {
+  public reset(): void {
     this.registeredDirectives = [];
   }
 }

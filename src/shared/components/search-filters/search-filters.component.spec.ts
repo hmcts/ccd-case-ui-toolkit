@@ -1,16 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, DebugElement, Input } from '@angular/core';
-import { SearchFiltersComponent } from './search-filters.component';
-import { By } from '@angular/platform-browser';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Observable } from 'rxjs/Rx';
-import createSpyObj = jasmine.createSpyObj;
-import { createSearchInputs } from './domain/search-input.test.fixture';
-import { JurisdictionService, SearchService, OrderService, WindowService } from '../../services';
-import { Jurisdiction, CaseType } from '../../domain';
-import { SearchInput } from './domain';
-import { AbstractFieldWriteComponent } from '../palette';
+import { By } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
 import { ConditionalShowModule } from '../../directives';
+import { CaseType, Jurisdiction } from '../../domain';
+import { JurisdictionService, OrderService, SearchService, WindowService } from '../../services';
+import { AbstractFieldWriteComponent } from '../palette';
+import { SearchInput } from './domain';
+import { createSearchInputs } from './domain/search-input.test.fixture';
+import { SearchFiltersComponent } from './search-filters.component';
+import createSpyObj = jasmine.createSpyObj;
 
 const JURISDICTION_1: Jurisdiction = {
   id: 'J1',
@@ -50,7 +50,7 @@ const JURISDICTION_3: Jurisdiction = {
   name: 'Jurisdiction 3',
   description: '',
   caseTypes: [CASE_TYPE_1]
-}
+};
 
 const CASE_TYPES_2: CaseType[] = [
   {
@@ -125,7 +125,7 @@ const TEST_SEARCH_INPUTS: SearchInput[] = createSearchInputs();
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
   @Input()
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 }
 
 function createObservableFrom<T>(param: T): Observable<T> {
@@ -144,7 +144,7 @@ const TEST_FORM_GROUP = new FormGroup({});
 const METADATA_FIELDS = ['PersonLastName'];
 const searchfiltervalue = `{\"PersonLastName\":null,\"PersonFirstName\":\"CaseFirstName\",`
   + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\":null,\"AddressLine3\":null,`
-  + `\"PostTown\":null,\"County\":null,\"PostCode\":null,\"Country\":null}}`
+  + `\"PostTown\":null,\"County\":null,\"PostCode\":null,\"Country\":null}}`;
 describe('SearchFiltersComponent', () => {
 
   let fixture: ComponentFixture<SearchFiltersComponent>;
@@ -315,14 +315,14 @@ describe('SearchFiltersComponent', () => {
   });
 
   it('should initialise jurisdiction selector with given jurisdictions', () => {
-    let selector = de.query(By.css('#s-jurisdiction'));
+    const selector = de.query(By.css('#s-jurisdiction'));
 
     expect(selector.children.length).toEqual(2);
 
-    let juris1 = selector.children[0];
+    const juris1 = selector.children[0];
     expect(juris1.nativeElement.textContent).toEqual(JURISDICTION_1.name);
 
-    let juris2 = selector.children[1];
+    const juris2 = selector.children[1];
     expect(juris2.nativeElement.textContent).toEqual(JURISDICTION_2.name);
   });
 
@@ -332,7 +332,7 @@ describe('SearchFiltersComponent', () => {
     component.onJurisdictionIdChange();
     fixture.detectChanges();
 
-    let selector = de.query(By.css('#s-jurisdiction'));
+    const selector = de.query(By.css('#s-jurisdiction'));
     fixture
       .whenStable()
       .then(() => {
@@ -344,7 +344,7 @@ describe('SearchFiltersComponent', () => {
 
   it('should populate case types dropdown with CRUD filtered case types', async(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
-    let selector = de.query(By.css('#s-case-type'));
+    const selector = de.query(By.css('#s-case-type'));
     expect(selector.children.length).toEqual(0);
 
     resetCaseTypes(JURISDICTION_1, CRUD_FILTERED_CASE_TYPES);
@@ -357,10 +357,10 @@ describe('SearchFiltersComponent', () => {
       .then(() => {
         expect(selector.children.length).toEqual(3);
 
-        let juris1 = selector.children[0];
+        const juris1 = selector.children[0];
         expect(juris1.nativeElement.textContent).toEqual(CRUD_FILTERED_CASE_TYPES[0].name);
 
-        let juris2 = selector.children[1];
+        const juris2 = selector.children[1];
         expect(juris2.nativeElement.textContent).toEqual(CRUD_FILTERED_CASE_TYPES[1].name);
       });
   }));
@@ -372,16 +372,16 @@ describe('SearchFiltersComponent', () => {
     component.onJurisdictionIdChange();
     fixture.detectChanges();
 
-    let selector = de.query(By.css('#s-case-type'));
+    const selector = de.query(By.css('#s-case-type'));
     expect(selector.children.length).toEqual(4);
 
-    let ct1 = selector.children[0];
+    const ct1 = selector.children[0];
     expect(ct1.nativeElement.textContent).toEqual(CASE_TYPES_2[0].name);
 
-    let ct2 = selector.children[1];
+    const ct2 = selector.children[1];
     expect(ct2.nativeElement.textContent).toEqual(CASE_TYPES_2[1].name);
 
-    let ct3 = selector.children[2];
+    const ct3 = selector.children[2];
     expect(ct3.nativeElement.textContent).toEqual(CASE_TYPES_2[2].name);
   });
 
@@ -393,7 +393,7 @@ describe('SearchFiltersComponent', () => {
     fixture
       .whenStable()
       .then(() => {
-        let selector = de.query(By.css('#s-case-type'));
+        const selector = de.query(By.css('#s-case-type'));
         expect(selector.nativeElement.selectedIndex).toEqual(2);
         expect(component.selected.caseType).toBe(CASE_TYPES_2[2]);
       });
@@ -405,7 +405,7 @@ describe('SearchFiltersComponent', () => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.onCaseTypeIdChange();
     fixture.detectChanges();
-    let button = de.query(By.css('button'));
+    const button = de.query(By.css('button'));
     expect(button.nativeElement.disabled).toBeFalsy();
 
   }));
@@ -414,7 +414,7 @@ describe('SearchFiltersComponent', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     fixture.detectChanges();
 
-    let button = de.query(By.css('button'));
+    const button = de.query(By.css('button'));
     expect(button.nativeElement.disabled).toBeTruthy();
     expect(mockSearchService.getSearchInputs).toHaveBeenCalledTimes(0);
   }));
@@ -465,7 +465,7 @@ describe('SearchFiltersComponent', () => {
     component.onCaseTypeIdChange();
     fixture.detectChanges();
 
-    let dynamicFilters = de.query(By.css('#dynamicFilters'));
+    const dynamicFilters = de.query(By.css('#dynamicFilters'));
     expect(dynamicFilters.children.length).toBe(TEST_SEARCH_INPUTS.length);
   });
 
@@ -477,14 +477,14 @@ describe('SearchFiltersComponent', () => {
     component.onCaseTypeIdChange();
     fixture.detectChanges();
 
-    let firstInput = TEST_SEARCH_INPUTS[0];
+    const firstInput = TEST_SEARCH_INPUTS[0];
 
-    let dynamicFilters = de.query(By.css('#dynamicFilters'));
+    const dynamicFilters = de.query(By.css('#dynamicFilters'));
 
-    let writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
+    const writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
 
-    let writeFieldInstance = writeField.componentInstance;
-    expect(writeFieldInstance.caseField.id).toEqual(firstInput.field.id)
+    const writeFieldInstance = writeField.componentInstance;
+    expect(writeFieldInstance.caseField.id).toEqual(firstInput.field.id);
     expect(writeFieldInstance.caseField.label).toEqual(firstInput.field.label);
     expect(writeFieldInstance.formGroup).toBeTruthy();
   });
@@ -492,17 +492,17 @@ describe('SearchFiltersComponent', () => {
   it('should render a valid search input complex field component with a path defined', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
-    let complexFieldSearchInput = TEST_SEARCH_INPUTS[2];
+    const complexFieldSearchInput = TEST_SEARCH_INPUTS[2];
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom([complexFieldSearchInput]));
 
-    let expectedFieldId = complexFieldSearchInput.field.id + '.' + complexFieldSearchInput.field.elementPath;
+    const expectedFieldId = complexFieldSearchInput.field.id + '.' + complexFieldSearchInput.field.elementPath;
 
     component.onCaseTypeIdChange();
     fixture.detectChanges();
 
-    let dynamicFilters = de.query(By.css('#dynamicFilters'));
-    let writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
-    let writeFieldInstance = writeField.componentInstance;
+    const dynamicFilters = de.query(By.css('#dynamicFilters'));
+    const writeField = dynamicFilters.query(By.directive(FieldWriteComponent));
+    const writeFieldInstance = writeField.componentInstance;
 
     expect(writeFieldInstance.caseField.id).toEqual(expectedFieldId);
     expect(writeFieldInstance.formGroup).toBeTruthy();
@@ -514,23 +514,23 @@ describe('SearchFiltersComponent', () => {
     component.selected.jurisdiction = JURISDICTION_3;
     component.selected.caseType = CASE_TYPES_2[3];
 
-    let control = new FormControl('test');
+    const control = new FormControl('test');
     control.setValue('anything');
     const formControls = {
-      'name': control
+      name: control
     };
 
-    let formGroup = new FormGroup(formControls);
+    const formGroup = new FormGroup(formControls);
 
     component.onCaseTypeIdChange();
     fixture.detectChanges();
     fixture
       .whenStable()
       .then(() => {
-        let button = de.query(By.css('button'));
+        const button = de.query(By.css('button'));
         component.formGroup = formGroup;
         button.nativeElement.click();
-        let arg: any = searchHandler.applyFilters.calls.mostRecent().args[0].selected;
+        const arg: any = searchHandler.applyFilters.calls.mostRecent().args[0].selected;
         expect(arg['jurisdiction']).toEqual(JURISDICTION_3);
         expect(arg['caseType']).toEqual(CASE_TYPES_2[3]);
         expect(arg['formGroup'].value).toEqual(formGroup.value);
@@ -603,20 +603,20 @@ describe('Clear localStorage', () => {
     component.selected.jurisdiction = JURISDICTION_3;
     component.selected.caseType = CASE_TYPES_2[3];
 
-    let control = new FormControl('test');
+    const control = new FormControl('test');
     control.setValue('anything');
     const formControls = {
-      'name': control
+      name: control
     };
 
-    let formGroup = new FormGroup(formControls);
+    const formGroup = new FormGroup(formControls);
 
     component.onCaseTypeIdChange();
     fixture.detectChanges();
     fixture
       .whenStable()
       .then(() => {
-        let button = de.query(By.css('#reset'));
+        const button = de.query(By.css('#reset'));
         component.formGroup = formGroup;
         button.nativeElement.click();
         expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(4);

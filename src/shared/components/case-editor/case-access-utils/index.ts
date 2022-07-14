@@ -82,26 +82,26 @@ export class CaseAccessUtils {
         beginTime: Date = null,
         endTime: Date = null
     ): RoleRequestPayload {
-        const process =  (<ChallengedAccessRequest>details).caseReference !== undefined ? 'challenged-access' : 'specific-access';
+        const process =  (details as ChallengedAccessRequest).caseReference !== undefined ? 'challenged-access' : 'specific-access';
         const payload: RoleRequestPayload = {
             roleRequest: {
-                assignerId: assignerId,
+                assignerId,
                 process,
                 reference:  `${caseId}/${roleName}/${actorId}`,
                 replaceExisting: true
             },
             requestedRoles: [{
                 actorIdType: 'IDAM',
-                actorId: actorId,
+                actorId,
                 roleType: 'CASE',
                 roleName,
                 classification: 'PUBLIC',
-                roleCategory: roleCategory,
-                grantType: grantType,
-                beginTime: beginTime,
-                endTime: endTime,
+                roleCategory,
+                grantType,
+                beginTime,
+                endTime,
                 attributes: {
-                    caseId: caseId
+                    caseId
                 },
                 notes: [{
                     userId: assignerId,

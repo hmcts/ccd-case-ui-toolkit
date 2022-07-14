@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { isUndefined } from 'util';
-import { SearchResultViewColumn, SearchResultViewItemComparator, SearchResultViewItem } from '../../../domain';
+import { SearchResultViewColumn, SearchResultViewItem, SearchResultViewItemComparator } from '../../../domain';
 
 @Injectable()
 export class SearchResultViewItemComparatorFactory {
 
-  createSearchResultViewItemComparator(column: SearchResultViewColumn): SearchResultViewItemComparator {
-    let fieldId = column.case_field_id;
+  public createSearchResultViewItemComparator(column: SearchResultViewColumn): SearchResultViewItemComparator {
+    const fieldId = column.case_field_id;
     switch (column.case_field_type.type) {
       case ('MultiSelectList'): {
         return this.textArrayComparator(fieldId);
@@ -34,7 +34,7 @@ export class SearchResultViewItemComparatorFactory {
   }
 
   private numberComparator(fieldId: string): SearchResultViewItemComparator {
-    return <SearchResultViewItemComparator>{
+    return {
       compare(a: SearchResultViewItem, b: SearchResultViewItem) {
         let fieldA = a.case_fields[fieldId];
         let fieldB = b.case_fields[fieldId];
@@ -42,11 +42,11 @@ export class SearchResultViewItemComparatorFactory {
         fieldB = isUndefined(fieldB) || fieldB === null ? 0 : fieldB;
         return fieldA - fieldB;
       }
-    };
+    } as SearchResultViewItemComparator;
   }
 
   private stringComparator(fieldId: string) {
-    return <SearchResultViewItemComparator>{
+    return {
       compare(a: SearchResultViewItem, b: SearchResultViewItem) {
         let fieldA = a.case_fields[fieldId];
         let fieldB = b.case_fields[fieldId];
@@ -54,11 +54,11 @@ export class SearchResultViewItemComparatorFactory {
         fieldB = isUndefined(fieldB) || fieldB == null ? '' : fieldB.toLowerCase();
         return fieldA === fieldB ? 0 : fieldA > fieldB ? 1 : -1;
       }
-    };
+    } as SearchResultViewItemComparator;
   }
 
   private textArrayComparator(fieldId: string) {
-    return <SearchResultViewItemComparator>{
+    return {
       compare(a: SearchResultViewItem, b: SearchResultViewItem) {
         let fieldA = a.case_fields[fieldId];
         let fieldB = b.case_fields[fieldId];
@@ -66,6 +66,6 @@ export class SearchResultViewItemComparatorFactory {
         fieldB = isUndefined(fieldB) || fieldB == null ? '' : fieldB.join().toLowerCase();
         return fieldA === fieldB ? 0 : fieldA > fieldB ? 1 : -1;
       }
-    };
+    } as SearchResultViewItemComparator;
   }
 }

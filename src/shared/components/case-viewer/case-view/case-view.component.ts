@@ -1,12 +1,12 @@
-import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { AlertService } from '../../../services';
-import { CaseView, Draft } from '../../../domain';
-import { CasesService, CaseNotifier } from '../../case-editor';
-import { DraftService } from '../../../services';
-import { Observable, throwError, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { NavigationNotifierService } from '../../../services';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
+import { Observable, Subscription, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CaseView, Draft } from '../../../domain';
+import { AlertService } from '../../../services';
+import { DraftService } from '../../../services';
+import { NavigationNotifierService } from '../../../services';
+import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
   selector: 'ccd-case-view',
@@ -15,27 +15,27 @@ import { plainToClassFromExist } from 'class-transformer';
 export class CaseViewComponent implements OnInit, OnDestroy {
 
   @Input()
-  case: string;
+  public case: string;
   @Input()
-  hasPrint = true;
+  public hasPrint = true;
   @Input()
-  hasEventSelector = true;
+  public hasEventSelector = true;
 
   @Output()
-  navigationTriggered: EventEmitter<any> = new EventEmitter();
+  public navigationTriggered: EventEmitter<any> = new EventEmitter();
 
-  navigationSubscription: Subscription;
-  caseDetails: CaseView;
+  public navigationSubscription: Subscription;
+  public caseDetails: CaseView;
 
   constructor(
-    private navigationNotifierService: NavigationNotifierService,
-    private caseNotifier: CaseNotifier,
-    private casesService: CasesService,
-    private draftService: DraftService,
-    private alertService: AlertService,
+    private readonly navigationNotifierService: NavigationNotifierService,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly casesService: CasesService,
+    private readonly draftService: DraftService,
+    private readonly alertService: AlertService,
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.getCaseView(this.case)
       .pipe(
         map(caseView => {
@@ -56,7 +56,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  isDataLoaded(): boolean {
+  public isDataLoaded(): boolean {
     return !!this.caseDetails;
   }
 

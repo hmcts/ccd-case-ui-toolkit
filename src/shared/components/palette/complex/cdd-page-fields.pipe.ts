@@ -10,7 +10,7 @@ import { WizardPage } from '../../case-editor/domain';
 })
 export class CcdPageFieldsPipe implements PipeTransform {
 
-  transform(page: WizardPage, dataFormGroup: FormGroup): CaseField {
+  public transform(page: WizardPage, dataFormGroup: FormGroup): CaseField {
     const complex_fields: CaseField[] = Object.keys(dataFormGroup.controls).map(key => {
       const control: AbstractControl = dataFormGroup.controls[key];
       return control['caseField'] as CaseField;
@@ -21,7 +21,7 @@ export class CcdPageFieldsPipe implements PipeTransform {
     const value: any = page.case_fields.reduce((acc: any, field: CaseField) => {
       const fieldValue: any = rawValue[field.id] || field.value;
       return {...acc, [field.id]: fieldValue};
-    }, {})
+    }, {});
     return plainToClassFromExist(new CaseField(), {
       id: page.id,
       label: page.label,

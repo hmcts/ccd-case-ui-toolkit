@@ -1,9 +1,9 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpService, HttpErrorService } from '../http';
-import { CaseEventData, Draft, DRAFT_PREFIX, CaseView } from '../../domain';
-import { HttpHeaders } from '@angular/common/http';
+import { CaseEventData, CaseView, Draft, DRAFT_PREFIX } from '../../domain';
+import { HttpErrorService, HttpService } from '../http';
 
 @Injectable()
 export class DraftService {
@@ -18,12 +18,12 @@ export class DraftService {
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-draft-delete.v2+json;charset=UTF-8';
 
   constructor(
-    private http: HttpService,
-    private appConfig: AbstractAppConfig,
-    private errorService: HttpErrorService
+    private readonly http: HttpService,
+    private readonly appConfig: AbstractAppConfig,
+    private readonly errorService: HttpErrorService
   ) {}
 
-  createDraft(ctid: string, eventData: CaseEventData): Observable<Draft> {
+  public createDraft(ctid: string, eventData: CaseEventData): Observable<Draft> {
     const saveDraftEndpoint = this.appConfig.getCreateOrUpdateDraftsUrl(ctid);
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -37,7 +37,7 @@ export class DraftService {
       });
   }
 
-  updateDraft(ctid: string, draftId: string, eventData: CaseEventData): Observable<Draft> {
+  public updateDraft(ctid: string, draftId: string, eventData: CaseEventData): Observable<Draft> {
     const saveDraftEndpoint = this.appConfig.getCreateOrUpdateDraftsUrl(ctid) + draftId;
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -51,7 +51,7 @@ export class DraftService {
       });
   }
 
-  getDraft(draftId: string): Observable<CaseView> {
+  public getDraft(draftId: string): Observable<CaseView> {
     const url = this.appConfig.getViewOrDeleteDraftsUrl(draftId.slice(DRAFT_PREFIX.length));
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -65,7 +65,7 @@ export class DraftService {
       });
   }
 
-  deleteDraft(draftId: string): Observable<{} | any> {
+  public deleteDraft(draftId: string): Observable<{} | any> {
     const url = this.appConfig.getViewOrDeleteDraftsUrl(draftId.slice(DRAFT_PREFIX.length));
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -79,7 +79,7 @@ export class DraftService {
       });
   }
 
-  createOrUpdateDraft(caseTypeId: string, draftId: string, caseEventData: CaseEventData): Observable<Draft> {
+  public createOrUpdateDraft(caseTypeId: string, draftId: string, caseEventData: CaseEventData): Observable<Draft> {
     if (!draftId) {
       return this.createDraft(caseTypeId, caseEventData);
     } else {

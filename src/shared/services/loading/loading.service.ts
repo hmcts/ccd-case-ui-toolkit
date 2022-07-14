@@ -5,12 +5,12 @@ import { distinctUntilChanged } from 'rxjs/operators';
 export abstract class HasLoadingState {
   public get isLoading(): Observable<boolean> {
     return;
-  };
+  }
 }
 @Injectable()
 export class LoadingService implements HasLoadingState {
-  private registered = new Map<string, string>();
-  private loading = new BehaviorSubject<boolean>(false);
+  private readonly registered = new Map<string, string>();
+  private readonly loading = new BehaviorSubject<boolean>(false);
 
   public get isLoading(): Observable<boolean> {
     return this.loading.pipe(distinctUntilChanged());

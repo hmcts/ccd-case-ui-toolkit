@@ -1,5 +1,5 @@
-import { FormErrorService } from './form-error.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { FormErrorService } from './form-error.service';
 
 describe('FormErrorService', () => {
 
@@ -21,14 +21,14 @@ describe('FormErrorService', () => {
 
   describe('mapFieldErrors', () => {
     it('should map simple error to associated form control', () => {
-      let errors = [
+      const errors = [
         {
           id: FIELD_1,
           message: MESSAGE_1
         }
       ];
 
-      let form = new FormGroup({
+      const form = new FormGroup({
         [FIELD_1]: new FormControl()
       });
 
@@ -38,7 +38,7 @@ describe('FormErrorService', () => {
     });
 
     it('should map multiple simple errors', () => {
-      let errors = [
+      const errors = [
         {
           id: FIELD_1,
           message: MESSAGE_1
@@ -49,7 +49,7 @@ describe('FormErrorService', () => {
         }
       ];
 
-      let form = new FormGroup({
+      const form = new FormGroup({
         [FIELD_1]: new FormControl(),
         [FIELD_2]: new FormControl()
       });
@@ -61,14 +61,14 @@ describe('FormErrorService', () => {
     });
 
     it('should map nested errors', () => {
-      let errors = [
+      const errors = [
         {
           id: NESTED_FIELD,
           message: MESSAGE_1
         }
       ];
 
-      let form = new FormGroup({
+      const form = new FormGroup({
         [FIELD_1]: new FormGroup({
           [FIELD_2]: new FormGroup({
             [FIELD_3]: new FormControl()
@@ -85,14 +85,14 @@ describe('FormErrorService', () => {
     });
 
     it('should ignore simple errors for unknown fields', () => {
-      let errors = [
+      const errors = [
         {
           id: FIELD_2,
           message: MESSAGE_1
         }
       ];
 
-      let form = new FormGroup({
+      const form = new FormGroup({
         [FIELD_1]: new FormControl()
       });
 
@@ -102,9 +102,9 @@ describe('FormErrorService', () => {
     });
 
     it('should ignore empty errors', () => {
-      let errors = [];
+      const errors = [];
 
-      let form = new FormGroup({
+      const form = new FormGroup({
         [FIELD_1]: new FormControl()
       });
 
@@ -114,14 +114,14 @@ describe('FormErrorService', () => {
     });
 
     it('should ignore nested errors for unknown fields', () => {
-      let errors = [
+      const errors = [
         {
           id: FIELD_1 + '.' + FIELD_3,
           message: MESSAGE_1
         }
       ];
 
-      let form = new FormGroup({
+      const form = new FormGroup({
         [FIELD_1]: new FormGroup({
           [FIELD_2]: new FormControl()
         })
@@ -136,14 +136,14 @@ describe('FormErrorService', () => {
     });
 
     it('should ignore nested errors for unknown group', () => {
-      let errors = [
+      const errors = [
         {
           id: FIELD_3 + '.' + FIELD_3 + '.' + FIELD_3,
           message: MESSAGE_1
         }
       ];
 
-      let form = new FormGroup({
+      const form = new FormGroup({
         [FIELD_1]: new FormGroup({
           [FIELD_2]: new FormGroup({
             [FIELD_3]: new FormControl()
@@ -164,9 +164,9 @@ describe('FormErrorService', () => {
     });
 
     it('should reset all errors', () => {
-      let field3 = new FormControl();
+      const field3 = new FormControl();
 
-      let form = new FormGroup({
+      const form = new FormGroup({
         [FIELD_1]: new FormGroup({
           [FIELD_2]: new FormGroup({
             [FIELD_3]: field3

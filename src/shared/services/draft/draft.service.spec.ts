@@ -1,10 +1,10 @@
-import { Observable, throwError } from 'rxjs';
-import createSpyObj = jasmine.createSpyObj;
-import { DraftService } from './draft.service';
-import { AbstractAppConfig } from '../../../app.config';
-import { HttpService, HttpErrorService } from '../http';
-import { CaseEventData, CaseDetails, Draft, CaseView, HttpError } from '../../domain';
 import { HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../app.config';
+import { CaseDetails, CaseEventData, CaseView, Draft, HttpError } from '../../domain';
+import { HttpErrorService, HttpService } from '../http';
+import { DraftService } from './draft.service';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('Drafts Service', () => {
 
@@ -69,7 +69,7 @@ describe('Drafts Service', () => {
     });
 
     it('should create a draft on server', () => {
-      let UNDEFINED_DRAFT_ID = undefined;
+      const UNDEFINED_DRAFT_ID = null;
       draftService
         .createOrUpdateDraft(CT_ID, UNDEFINED_DRAFT_ID, CASE_EVENT_DATA)
         .subscribe(

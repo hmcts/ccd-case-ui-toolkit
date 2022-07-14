@@ -1,20 +1,20 @@
+import { Type } from 'class-transformer';
 import { CaseEvent } from './case-event.model';
+import { CaseField } from './case-field.model';
 import { CaseState } from './case-state.model';
 import { Jurisdiction } from './jurisdiction.model';
-import { CaseField } from './case-field.model';
-import { Type } from 'class-transformer';
 
 // @dynamics
 export class CaseType {
-  id: string;
-  name: string;
-  events: CaseEvent[];
-  states: CaseState[];
+  public id: string;
+  public name: string;
+  public events: CaseEvent[];
+  public states: CaseState[];
 
   @Type(() => CaseField)
-  case_fields: CaseField[];
+  public case_fields: CaseField[];
 
-  description: string;
-  jurisdiction: Jurisdiction;
-  printEnabled?: boolean;
+  public description: string;
+  public jurisdiction: Jurisdiction;
+  public printEnabled?: boolean;
 }

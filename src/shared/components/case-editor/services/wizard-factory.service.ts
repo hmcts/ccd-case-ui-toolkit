@@ -2,7 +2,7 @@ import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.m
 import { Wizard } from '../domain';
 
 export class WizardFactoryService {
-  create(eventTrigger: CaseEventTrigger): Wizard {
+  public create(eventTrigger: CaseEventTrigger): Wizard {
     return new Wizard(eventTrigger.wizard_pages);
   }
 }

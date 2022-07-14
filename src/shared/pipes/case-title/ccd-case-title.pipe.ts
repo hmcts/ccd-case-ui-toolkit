@@ -7,9 +7,9 @@ import { FieldsUtils } from '../../services/fields/fields.utils';
   name: 'ccdCaseTitle'
 })
 export class CcdCaseTitlePipe implements PipeTransform {
-  constructor(private placeholderService: PlaceholderService, private fieldsUtils: FieldsUtils) {
+  constructor(private readonly placeholderService: PlaceholderService, private readonly fieldsUtils: FieldsUtils) {
   }
-  transform(caseTitle: string, caseFields: CaseField[], values: any): any {
+  public transform(caseTitle: string, caseFields: CaseField[], values: any): any {
     const caseFieldValues = this.getReadOnlyAndFormFields(values, caseFields);
     const result = this.placeholderService.resolvePlaceholders(caseFieldValues, caseTitle);
     return result;

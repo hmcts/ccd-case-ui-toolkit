@@ -11,9 +11,6 @@ import { SortOrder } from './sort-order';
   styleUrls: ['./read-complex-field-collection-table.scss']
 })
 export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadComponent implements OnInit {
-  private static isSortAscending(column: any): boolean {
-    return !(column.sortOrder === SortOrder.UNSORTED || column.sortOrder === SortOrder.DESCENDING);
-  }
 
   public columns: String[];
   public columnsVerticalLabel: any;
@@ -21,19 +18,22 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   public columnsAllLabels: any;
   public rows: any[] = [];
   public isHidden: boolean[] = [];
+  private static isSortAscending(column: any): boolean {
+    return !(column.sortOrder === SortOrder.UNSORTED || column.sortOrder === SortOrder.DESCENDING);
+  }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     super.ngOnInit();
     if (this.caseField.display_context_parameter
       && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
 
-      let displayContextParameter = this.caseField.display_context_parameter.trim();
-      let result: string = displayContextParameter.replace('#TABLE(', '');
+      const displayContextParameter = this.caseField.display_context_parameter.trim();
+      const result: string = displayContextParameter.replace('#TABLE(', '');
       this.columns = result.replace(')', '').split(',').map((c: string) => c.trim());
 
-      let labelsVertical: { [k: string]: any } = {};
-      let labelsHorizontal: { [k: string]: any } = {};
-      let allLabels: { [k: string]: any } = {};
+      const labelsVertical: { [k: string]: any } = {};
+      const labelsHorizontal: { [k: string]: any } = {};
+      const allLabels: { [k: string]: any } = {};
       this.populateCaseFieldValuesIntoRows();
       this.populateLabels(labelsVertical, allLabels);
       this.populateHorizontalLabels(labelsHorizontal, allLabels, labelsVertical);
@@ -88,7 +88,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   public keepOriginalOrder = (a, b) => a.key;
 
   public sortRowsByColumns(column): void {
-    let shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED
+    const shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED
       || this.columnsHorizontalLabel[column].sortOrder === SortOrder.DESCENDING;
 
     switch (this.columnsHorizontalLabel[column].type.type) {
@@ -132,7 +132,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   private populateHorizontalLabels(labelsHorizontal: { [p: string]: any },
                                    allLabels: { [p: string]: any },
                                    labelsVertical: { [p: string]: any }): void {
-    for (let id of this.columns) {
+    for (const id of this.columns) {
       const trimmedId = id.trim();
       labelsHorizontal[trimmedId] = allLabels[trimmedId];
       labelsHorizontal[trimmedId].sortOrder = SortOrder.UNSORTED;
@@ -141,7 +141,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   }
 
   private populateLabels(labelsVertical: { [p: string]: any }, allLabels: { [p: string]: any }): void {
-    for (let obj of this.caseField.field_type.complex_fields) {
+    for (const obj of this.caseField.field_type.complex_fields) {
       if (obj.field_type.type === 'FixedList' ||
         obj.field_type.type === 'MultiSelectList' ||
         obj.field_type.type === 'FixedRadioList') {
@@ -158,15 +158,15 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
   }
 
   private populateCaseFieldValuesIntoRows(): void {
-    for (let obj of this.caseField.value) {
+    for (const obj of this.caseField.value) {
       this.rows.push(obj.value);
       this.isHidden.push(true);
     }
   }
 
   private isVerticleDataNotEmpty(row): boolean {
-    let result = false
-    for (let key in this.columnsVerticalLabel) {
+    let result = false;
+    for (const key in this.columnsVerticalLabel) {
       if (this.rows[row][key]) {
         result = true;
       }

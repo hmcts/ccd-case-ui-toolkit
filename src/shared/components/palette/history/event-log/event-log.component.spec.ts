@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { EventLogComponent } from './event-log.component';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { CaseViewEvent } from '../../../../domain/case-view';
-import { DatePipe } from '../../utils';
 import createSpyObj = jasmine.createSpyObj;
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
+import { DatePipe } from '../../utils';
+import { EventLogComponent } from './event-log.component';
 
 describe('EventLogComponent', () => {
 
@@ -15,16 +15,16 @@ describe('EventLogComponent', () => {
   })
   class EventLogTableComponent {
     @Input()
-    events: CaseViewEvent[];
+    public events: CaseViewEvent[];
 
     @Input()
-    selected: CaseViewEvent;
+    public selected: CaseViewEvent;
 
     @Output()
-    onSelect = new EventEmitter<CaseViewEvent>();
+    public onSelect = new EventEmitter<CaseViewEvent>();
 
     @Output()
-    onCaseHistory = new EventEmitter<string>();
+    public onCaseHistory = new EventEmitter<string>();
   }
 
   @Component({
@@ -33,7 +33,7 @@ describe('EventLogComponent', () => {
   })
   class EventLogDetailsComponent {
     @Input()
-    event: CaseViewEvent;
+    public event: CaseViewEvent;
   }
 
   const EVENTS: CaseViewEvent[] = [
@@ -108,18 +108,18 @@ describe('EventLogComponent', () => {
     }));
 
     it('should render an event log table', () => {
-      let logTableElement = de.query(By.directive(EventLogTableComponent));
+      const logTableElement = de.query(By.directive(EventLogTableComponent));
 
       expect(logTableElement).toBeTruthy();
 
-      let logTable = logTableElement.componentInstance;
+      const logTable = logTableElement.componentInstance;
 
       expect(logTable.events).toEqual(EVENTS);
     });
 
     it('should have log table with no historyDetails subscribers', () => {
-      let logTableElement = de.query(By.directive(EventLogTableComponent));
-      let logTable = logTableElement.componentInstance;
+      const logTableElement = de.query(By.directive(EventLogTableComponent));
+      const logTable = logTableElement.componentInstance;
 
       expect(logTable.onCaseHistory.observers.length).toBe(0);
     });
@@ -127,8 +127,8 @@ describe('EventLogComponent', () => {
     it('should select the first event by default', () => {
       expect(component.selected).toBe(SELECTED_EVENT);
 
-      let logTableElement = de.query(By.directive(EventLogTableComponent));
-      let logTable = logTableElement.componentInstance;
+      const logTableElement = de.query(By.directive(EventLogTableComponent));
+      const logTable = logTableElement.componentInstance;
 
       expect(logTable.selected).toEqual(SELECTED_EVENT);
     });
@@ -136,8 +136,8 @@ describe('EventLogComponent', () => {
     it('should emit selected event on selection change', () => {
       spyOn(component, 'select').and.callThrough();
 
-      let logTableElement = de.query(By.directive(EventLogTableComponent));
-      let logTable = logTableElement.componentInstance;
+      const logTableElement = de.query(By.directive(EventLogTableComponent));
+      const logTable = logTableElement.componentInstance;
 
       logTable.onSelect.emit(NEWLY_SELECTED_EVENT);
 
@@ -147,11 +147,11 @@ describe('EventLogComponent', () => {
     });
 
     it('should render an event log details', () => {
-      let logDetailsElement = de.query(By.directive(EventLogDetailsComponent));
+      const logDetailsElement = de.query(By.directive(EventLogDetailsComponent));
 
       expect(logDetailsElement).toBeTruthy();
 
-      let logTable = logDetailsElement.componentInstance;
+      const logTable = logDetailsElement.componentInstance;
 
       expect(logTable.event).toEqual(SELECTED_EVENT);
     });
@@ -189,8 +189,8 @@ describe('EventLogComponent', () => {
     }));
 
     it('should have log table with one historyDetails subscriber', () => {
-      let logTableElement = de.query(By.directive(EventLogTableComponent));
-      let logTable = logTableElement.componentInstance;
+      const logTableElement = de.query(By.directive(EventLogTableComponent));
+      const logTable = logTableElement.componentInstance;
 
       expect(logTable.onCaseHistory.observers.length).toBe(1);
     });

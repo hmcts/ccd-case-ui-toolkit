@@ -1,9 +1,9 @@
-import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { Observable } from 'rxjs';
-import { DefinitionsService } from './definitions.service';
+import { AbstractAppConfig as AppConfig } from '../../../app.config';
+import { CaseTypeLite, Jurisdiction } from '../../domain';
 import createSpyObj = jasmine.createSpyObj;
 import { HttpService } from '../http/http.service';
-import { CaseTypeLite, Jurisdiction } from '../../domain';
+import { DefinitionsService } from './definitions.service';
 
 describe('DefinitionsService', () => {
 

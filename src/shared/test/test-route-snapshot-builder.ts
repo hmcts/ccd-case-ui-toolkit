@@ -2,25 +2,25 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 
 export class TestRouteSnapshotBuilder {
   private parent: ActivatedRouteSnapshot = null;
-  private params: Object = {};
-  private data: Object = {};
+  private params: object = {};
+  private data: object = {};
 
-  withParent(parent: ActivatedRouteSnapshot): TestRouteSnapshotBuilder {
+  public withParent(parent: ActivatedRouteSnapshot): TestRouteSnapshotBuilder {
     this.parent = parent;
     return this;
   }
 
-  withParams(params: Object): TestRouteSnapshotBuilder {
+  public withParams(params: object): TestRouteSnapshotBuilder {
     this.params = params;
     return this;
   }
 
-  withData(data: Object): TestRouteSnapshotBuilder {
+  public withData(data: object): TestRouteSnapshotBuilder {
     this.data = data;
     return this;
   }
 
-  build(): ActivatedRouteSnapshot {
+  public build(): ActivatedRouteSnapshot {
     return {
       url: [],
       params: this.params,

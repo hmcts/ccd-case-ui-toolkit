@@ -15,13 +15,13 @@ const FIELD_TYPE: FieldType = {
   type: 'WaysToPay'
 };
 const VALUE = '';
-const CASE_FIELD: CaseField = <CaseField>({
+const CASE_FIELD: CaseField = ({
   id: FIELD_ID,
   label: 'X',
   field_type: FIELD_TYPE,
   value: VALUE,
   display_context: 'OPTIONAL'
-});
+}) as CaseField;
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 
@@ -58,9 +58,9 @@ const APP_CONFIG: AbstractAppConfig = {
     getRefundsUrl: () => 'refundsUrl',
     getWorkAllocationApiUrl: () => 'workAllocationApiUrl',
     getUserInfoApiUrl: () => 'userInfoApiUrl',
-    getAccessManagementBasicViewMock: () => { return {}; },
+    getAccessManagementBasicViewMock: () => ({}),
     getAccessManagementMode: () => true,
-    getAccessManagementRequestReviewMockModel: () => { return {}; },
+    getAccessManagementRequestReviewMockModel: () => ({}),
     getCamRoleAssignmentsApiUrl: () => 'camRoleAssignmentsApiUrl',
     getLocationRefApiUrl: () => 'locationRefApiUrl',
     getPaymentReturnUrl: () => 'paymentReturnUrl'

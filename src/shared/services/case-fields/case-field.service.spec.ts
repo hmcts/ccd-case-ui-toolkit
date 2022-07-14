@@ -1,9 +1,9 @@
-import { CaseFieldService } from './case-field.service';
 import { CaseField } from '../../domain/definition/case-field.model';
+import { CaseFieldService } from './case-field.service';
 
 describe('CaseFieldService', () => {
 
-  let caseFieldService: CaseFieldService = new CaseFieldService();
+  const caseFieldService: CaseFieldService = new CaseFieldService();
   describe('isOptional', () => {
 
     it('should identify null field as NOT optional', () => {

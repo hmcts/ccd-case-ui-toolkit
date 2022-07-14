@@ -16,6 +16,12 @@ export class PlaceholderService {
 
 export namespace PlaceholderService {
     export class PlaceholderSubstitutor {
+
+        constructor(values: { stringToResolve: string, pageFormFields: object }) {
+            this.stringToResolve = values.stringToResolve;
+            this.originalStringToResolve = values.stringToResolve;
+            this.pageFormFields = values.pageFormFields;
+        }
         private static readonly PLACEHOLDER_CONTENT_PATTERN = /^[a-zA-Z0-9_.\]\[]+$/;
         private static readonly PLACEHOLDER_PATTERN = /\$\{[a-zA-Z0-9_.\]\[]+\}/;
         private static readonly STARTING_PLACEHOLDER = '$';
@@ -27,9 +33,6 @@ ___
         private static readonly PLACEHOLDER_START =
             PlaceholderSubstitutor.STARTING_PLACEHOLDER + PlaceholderSubstitutor.OPENING_PLACEHOLDER;
         private static readonly PLACEHOLDER_END = PlaceholderSubstitutor.CLOSING_PLACEHOLDER;
-        private static wrapPlaceholder(str: string): string {
-            return `${this.PLACEHOLDER_START}${str}${this.PLACEHOLDER_END}`;
-        }
 
         private stringToResolve: string;
         private scanIndex: number;
@@ -38,14 +41,11 @@ ___
         private fieldIdToSubstitute: string;
         private startSubstitutionIndex: number;
         private isCollecting: boolean;
-        private resolvedFormValues = [];
+        private readonly resolvedFormValues = [];
         private readonly pageFormFields: object;
         private readonly originalStringToResolve: string;
-
-        constructor(values: { stringToResolve: string, pageFormFields: object }) {
-            this.stringToResolve = values.stringToResolve;
-            this.originalStringToResolve = values.stringToResolve;
-            this.pageFormFields = values.pageFormFields;
+        private static wrapPlaceholder(str: string): string {
+            return `${this.PLACEHOLDER_START}${str}${this.PLACEHOLDER_END}`;
         }
 
         public resolvePlaceholders(): string {
@@ -62,7 +62,7 @@ ___
                                 this.appendCharacter();
                             }
                         }
-                        this.scanIndex++
+                        this.scanIndex++;
                     }
                     this.appendOriginalStringIfCollectionItemAsPlaceholder();
                 }
@@ -181,7 +181,7 @@ ___
             let pageFormFieldsClone = FieldsUtils.cloneObject(this.pageFormFields);
             let numberCollectionItemsAsPlaceholder = 1;
 
-            for (let index = 0; index < fieldIds.length; index++) {
+            for (const index of fieldIds) {
                 if (FieldsUtils.isCollection(pageFormFieldsClone)) {
                     numberCollectionItemsAsPlaceholder = pageFormFieldsClone.length;
                     break;
@@ -224,5 +224,5 @@ ___
         private resetScanIndexAfterSubstitution(): void {
             this.scanIndex = this.startSubstitutionIndex + this.getSubstitutionValueLengthOrZero();
         }
-    };
+    }
 }

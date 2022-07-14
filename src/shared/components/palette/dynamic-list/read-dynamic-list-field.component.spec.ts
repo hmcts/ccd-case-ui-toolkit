@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadDynamicListFieldComponent } from './read-dynamic-list-field.component';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { DynamicListPipe } from './dynamic-list.pipe';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { ReadDynamicListFieldComponent } from './read-dynamic-list-field.component';
 
 describe('ReadDynamicListFieldComponent', () => {
 

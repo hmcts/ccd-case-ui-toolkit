@@ -161,7 +161,7 @@ describe('HttpService', () => {
     });
 
     it('should call the supplied errorHandler method if provided', () => {
-      let errorHandlerCalls = [];
+      const errorHandlerCalls = [];
       const errorHandler = (response: HttpErrorResponse): HttpError => {
         errorHandlerCalls.push(response);
         return null;

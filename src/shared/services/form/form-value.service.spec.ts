@@ -16,44 +16,44 @@ describe('FormValueService', () => {
 
   it('should trim spaces from strings', () => {
     const value = formValueService.sanitise({
-      'string1': '     x     ',
-      'string2': '     y      '
+      string1: '     x     ',
+      string2: '     y      '
     });
     expect(value).toEqual({
-      'string1': 'x',
-      'string2': 'y'
+      string1: 'x',
+      string2: 'y'
     } as object);
   });
 
   it('should trim spaces from strings recursively', () => {
     const value = formValueService.sanitise({
-      'object': {
-        'string1': '    x     '
+      object: {
+        string1: '    x     '
       },
-      'string2': '     y      '
+      string2: '     y      '
     });
 
     expect(value).toEqual({
-      'object': {
-        'string1': 'x'
+      object: {
+        string1: 'x'
       },
-      'string2': 'y'
+      string2: 'y'
     } as object);
   });
 
   it('should trim spaces from strings in collection', () => {
     const value = formValueService.sanitise({
-      'collection': [
+      collection: [
         {
-          'value': '      x        '
+          value: '      x        '
         }
       ]
     });
 
     expect(value).toEqual({
-      'collection': [
+      collection: [
         {
-          'value': 'x'
+          value: 'x'
         }
       ]
     } as object);
@@ -61,11 +61,11 @@ describe('FormValueService', () => {
 
   it('should convert numbers to strings', () => {
     const value = formValueService.sanitise({
-      'number': 42
+      number: 42
     });
 
     expect(value).toEqual({
-      'number': '42'
+      number: '42'
     } as object);
   });
 
@@ -75,11 +75,11 @@ describe('FormValueService', () => {
     const fieldType = new FieldType();
     fieldType.type = 'DynamicList';
     caseField.id = 'dynamicList';
-    caseField.field_type = fieldType
+    caseField.field_type = fieldType;
     caseField.value = {
       value: { code: 'L1', label: 'List 1' },
       list_items: [{ code: 'L1', label: 'List 1' }, { code: 'L2', label: 'List 2' }]
-    }
+    };
     const caseFields = [caseField];
     formValueService.sanitiseDynamicLists(caseFields, formFields);
     const actual = '{"value":{"code":"L2","label":"List 2"},"list_items":[{"code":"L1","label":"List 1"},{"code":"L2","label":"List 2"}]}';
@@ -98,7 +98,7 @@ describe('FormValueService', () => {
       };
       const actual = {
         document1: null
-      }
+      };
       expect(formValueService.sanitise(data)).toEqual(actual);
     });
 
@@ -112,7 +112,7 @@ describe('FormValueService', () => {
       };
       const actual = {
         document1: null
-      }
+      };
       expect(formValueService.sanitise(data)).toEqual(actual);
     });
 
@@ -126,7 +126,7 @@ describe('FormValueService', () => {
       };
       const actual = {
         document1: null
-      }
+      };
       expect(formValueService.sanitise(data)).toEqual(actual);
     });
   });
@@ -140,47 +140,47 @@ describe('FormValueService', () => {
       fieldType.type = 'Label';
       caseField.id = 'fieldId';
       caseField.field_type = fieldType;
-      caseField.value = { label: 'Text Field 0', default_value: 'test text' }
+      caseField.value = { label: 'Text Field 0', default_value: 'test text' };
       const caseFields = [caseField];
       formValueService.removeNullLabels(data, caseFields);
       const actual = '{"type":"Label","label":"Text Field 0"}';
       expect(JSON.stringify(data)).toEqual(actual);
-    })
+    });
 
-  })
+  });
 
   describe('get field value', () => {
     describe('simple types', () => {
       it('should return value if form is a simple object', () => {
-        const pageFormFields = { 'PersonFirstName': 'John' };
+        const pageFormFields = { PersonFirstName: 'John' };
         const fieldIdToSubstitute = 'PersonFirstName';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('John');
       });
 
       it('should return value if form is a simple object recursive', () => {
-        const pageFormFields = { 'PersonFirstName': 'John' };
+        const pageFormFields = { PersonFirstName: 'John' };
         const fieldIdToSubstitute = 'PersonFirstName';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('John');
       });
 
       it('should return value if form is a collection with simple object referenced by exact key reference', () => {
-        const pageFormFields = [{ 'value': { 'PersonFirstName': 'John' } }];
+        const pageFormFields = [{ value: { PersonFirstName: 'John' } }];
         const fieldIdToSubstitute = '0.value.PersonFirstName';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('John');
       });
 
       it('should return value if form is a complex item with nonempty object', () => {
-        const pageFormFields = { '_1': { 'field': 'value' }, '_2': 'two', '_3': 'three' };
+        const pageFormFields = { _1: { field: 'value' }, _2: 'two', _3: 'three' };
         const fieldIdToSubstitute = '_1.field';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('value');
       });
 
       it('should return value if form is a complex item with nonempty object recursive', () => {
-        const pageFormFields = { '_1': { 'field': 'value' }, '_2': 'two', '_3': 'three' };
+        const pageFormFields = { _1: { field: 'value' }, _2: 'two', _3: 'three' };
         const fieldIdToSubstitute = '_1.field';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('value');
@@ -194,35 +194,35 @@ describe('FormValueService', () => {
       });
 
       it('should return undefined if form is a simple item with no value ', () => {
-        const pageFormFields = { 'PersonFirstName': null };
+        const pageFormFields = { PersonFirstName: null };
         const fieldIdToSubstitute = 'PersonFirstName';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBeNull();
       });
 
       it('should return empty value if form is a simple item with empty value', () => {
-        const pageFormFields = { 'PersonFirstName': '' };
+        const pageFormFields = { PersonFirstName: '' };
         const fieldIdToSubstitute = 'PersonFirstName';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBe('');
       });
 
       it('should return empty object if form is a simple item with empty object value', () => {
-        const pageFormFields = { 'PersonFirstName': {} };
+        const pageFormFields = { PersonFirstName: {} };
         const fieldIdToSubstitute = 'PersonFirstName';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toEqual({});
       });
 
       it('should return undefined referenced key is not in the form', () => {
-        const pageFormFields = { '_1': 'one' };
+        const pageFormFields = { _1: 'one' };
         const fieldIdToSubstitute = '_2';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toBeUndefined();
       });
 
       it('should return label value if form is an object with a collection that is multivalue list', () => {
-        const pageFormFields = { '_1_one': ['code1', 'code2'], '_1_one---LABEL': ['label1', 'label2'] };
+        const pageFormFields = { _1_one: ['code1', 'code2'], '_1_one---LABEL': ['label1', 'label2'] };
         const fieldIdToSubstitute = '_1_one';
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
         expect(actual).toEqual('label1, label2');
@@ -233,8 +233,8 @@ describe('FormValueService', () => {
 
       it('should return leaf value', () => {
         const pageFormFields = {
-          'complex': {
-            'nested': 'nested value', 'nested2': 'nested value2', 'nested3': { 'doubleNested': 'double nested' }
+          complex: {
+            nested: 'nested value', nested2: 'nested value2', nested3: { doubleNested: 'double nested' }
           }
         };
         const fieldIdToSubstitute = 'complex.nested3.doubleNested';
@@ -244,8 +244,8 @@ describe('FormValueService', () => {
 
       it('should return undefined if complex leaf value', () => {
         const pageFormFields = {
-          'complex': {
-            'nested': 'nested value', 'nested2': 'nested value2', 'nested3': { 'doubleNested': 'double nested' }
+          complex: {
+            nested: 'nested value', nested2: 'nested value2', nested3: { doubleNested: 'double nested' }
           }
         };
         const fieldIdToSubstitute = 'complex.nested3';
@@ -255,9 +255,9 @@ describe('FormValueService', () => {
 
       it('should return undefined if reference key has trailing delimiter', () => {
         const pageFormFields = {
-          'complex': {
-            'nested': 'nested value', 'nested2': 'nested value2'
-            , 'nested3': { 'doubleNested': 'double nested' }
+          complex: {
+            nested: 'nested value', nested2: 'nested value2'
+            , nested3: { doubleNested: 'double nested' }
           }
         };
         const fieldIdToSubstitute = 'complex.nested3.';
@@ -267,9 +267,9 @@ describe('FormValueService', () => {
 
       it('should return undefined if reference key not matched', () => {
         const pageFormFields = {
-          'complex': {
-            'nested': 'nested value', 'nested2': 'nested value2'
-            , 'nested3': { 'doubleNested': 'double nested' }
+          complex: {
+            nested: 'nested value', nested2: 'nested value2'
+            , nested3: { doubleNested: 'double nested' }
           }
         };
         let fieldIdToSubstitute = 'complex.nested21';
@@ -285,17 +285,17 @@ describe('FormValueService', () => {
     describe('complex of collection of complex types', () => {
       it('should return collection item by index', () => {
         const pageFormFields = {
-          'topComplex': {
-            'field': 'value',
-            'collection': [
-              { 'value': {
-                'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+          topComplex: {
+            field: 'value',
+            collection: [
+              { value: {
+                complex: { nested: 'nested value1', nested2: { doubleNested: { trippleNested: 'tripple nested7' } } } }
               },
-              { 'value': {
-                'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+              { value: {
+                complex: { nested: 'nested value2', nested2: { doubleNested: { trippleNested: 'tripple nested8' } } } }
               },
-              { 'value': {
-                'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+              { value: {
+                complex: { nested: 'nested value3', nested2: { doubleNested: { trippleNested: 'tripple nested9' } } } }
               }
             ]
           }
@@ -309,17 +309,17 @@ describe('FormValueService', () => {
 
       it('should return undefined if collection item absent for given index', () => {
         const pageFormFields = {
-          'topComplex': {
-            'field': 'value',
-            'collection': [
-              { 'value': {
-                'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+          topComplex: {
+            field: 'value',
+            collection: [
+              { value: {
+                complex: { nested: 'nested value1', nested2: { doubleNested: { trippleNested: 'tripple nested7' } } } }
               },
-              { 'value': {
-                'complex': { 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+              { value: {
+                complex: { nested2: { doubleNested: { trippleNested: 'tripple nested8' } } } }
               },
-              { 'value': {
-                'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+              { value: {
+                complex: { nested: 'nested value3', nested2: { doubleNested: { trippleNested: 'tripple nested9' } } } }
               }
             ]
           }
@@ -333,16 +333,16 @@ describe('FormValueService', () => {
 
       it('should return undefined if collection item is complex leaf value', () => {
         const pageFormFields = {
-          'topComplex': {
-            'collection': [
-              { 'value': {
-                'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+          topComplex: {
+            collection: [
+              { value: {
+                complex: { nested: 'nested value1', nested2: { doubleNested: { trippleNested: 'tripple nested7' } } } }
               },
-              { 'value': {
-                'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+              { value: {
+                complex: { nested: 'nested value2', nested2: { doubleNested: { trippleNested: 'tripple nested8' } } } }
               },
-              { 'value': {
-                'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+              { value: {
+                complex: { nested: 'nested value3', nested2: { doubleNested: { trippleNested: 'tripple nested9' } } } }
               }
             ]
           }
@@ -358,7 +358,7 @@ describe('FormValueService', () => {
     describe('collection types', () => {
 
       it('should return simple text collection item by index', () => {
-        const pageFormFields = { '_1_one': [{ 'value': 'value1' }, { 'value': 'value2' }], '_3_three': 'simpleValue' };
+        const pageFormFields = { _1_one: [{ value: 'value1' }, { value: 'value2' }], _3_three: 'simpleValue' };
         const fieldIdToSubstitute = '_1_one';
 
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
@@ -367,7 +367,7 @@ describe('FormValueService', () => {
       });
 
       it('should return simple number collection item by index', () => {
-        const pageFormFields = { '_1_one': [{ 'value': 35 }, { 'value': 45 }], '_3_three': 'simpleValue' };
+        const pageFormFields = { _1_one: [{ value: 35 }, { value: 45 }], _3_three: 'simpleValue' };
         const fieldIdToSubstitute = '_1_one';
 
         const actual = FormValueService.getFieldValue(pageFormFields, fieldIdToSubstitute, 0);
@@ -377,8 +377,8 @@ describe('FormValueService', () => {
 
       it('should return undefined if collection item is complex leaf value', () => {
         const pageFormFields = {
-          '_1_one': [{ 'value': { 'id': 'complex1' } }, { 'value': { 'id': 'complex2' } }],
-          '_3_three': 'simpleValue'
+          _1_one: [{ value: { id: 'complex1' } }, { value: { id: 'complex2' } }],
+          _3_three: 'simpleValue'
         };
         const fieldIdToSubstitute = '_1_one';
 
@@ -389,8 +389,8 @@ describe('FormValueService', () => {
 
       it('should return undefined if collection item is another collection', () => {
         const pageFormFields = {
-          '_1_one': [{ 'value': [{ 'value': { 'id': 'complex1' } }] }, { 'value': [{ 'value': { 'id': 'complex2' } }] }],
-          '_3_three': 'simpleValue'
+          _1_one: [{ value: [{ value: { id: 'complex1' } }] }, { value: [{ value: { id: 'complex2' } }] }],
+          _3_three: 'simpleValue'
         };
         const fieldIdToSubstitute = '_1_one';
 
@@ -404,15 +404,15 @@ describe('FormValueService', () => {
 
       it('should return simple text collection item by index', () => {
         const pageFormFields = {
-          'collection': [
-            { 'value': {
-              'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+          collection: [
+            { value: {
+              complex: { nested: 'nested value1', nested2: { doubleNested: { trippleNested: 'tripple nested7' } } } }
             },
-            { 'value': {
-              'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+            { value: {
+              complex: { nested: 'nested value2', nested2: { doubleNested: { trippleNested: 'tripple nested8' } } } }
             },
-            { 'value': {
-              'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+            { value: {
+              complex: { nested: 'nested value3', nested2: { doubleNested: { trippleNested: 'tripple nested9' } } } }
             }
           ]
         };
@@ -425,15 +425,15 @@ describe('FormValueService', () => {
 
       it('should return undefined if collection item absent for given index', () => {
         const pageFormFields = {
-          'collection': [
-            { 'value': {
-              'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+          collection: [
+            { value: {
+              complex: { nested: 'nested value1', nested2: { doubleNested: { trippleNested: 'tripple nested7' } } } }
             },
-            { 'value': {
-              'complex': { 'nested': 'nested value1' } }
+            { value: {
+              complex: { nested: 'nested value1' } }
             },
-            { 'value': {
-              'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+            { value: {
+              complex: { nested: 'nested value3', nested2: { doubleNested: { trippleNested: 'tripple nested9' } } } }
             }
           ]
         };
@@ -446,15 +446,15 @@ describe('FormValueService', () => {
 
       it('should return undefined if collection item is a complex leaf value', () => {
         const pageFormFields = {
-          'collection': [
-            { 'value': {
-              'complex': { 'nested': 'nested value1', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested7' } } } }
+          collection: [
+            { value: {
+              complex: { nested: 'nested value1', nested2: { doubleNested: { trippleNested: 'tripple nested7' } } } }
             },
-            { 'value': {
-              'complex': { 'nested': 'nested value2', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested8' } } } }
+            { value: {
+              complex: { nested: 'nested value2', nested2: { doubleNested: { trippleNested: 'tripple nested8' } } } }
             },
-            { 'value': {
-              'complex': { 'nested': 'nested value3', 'nested2': { 'doubleNested': { 'trippleNested': 'tripple nested9' } } } }
+            { value: {
+              complex: { nested: 'nested value3', nested2: { doubleNested: { trippleNested: 'tripple nested9' } } } }
             }
           ]
         };

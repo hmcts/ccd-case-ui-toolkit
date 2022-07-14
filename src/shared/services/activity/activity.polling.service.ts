@@ -9,14 +9,14 @@ import { ActivityService } from './activity.service';
 @Injectable()
 export class ActivityPollingService {
 
-  private pendingRequests = new Map<string, Subject<Activity>>();
+  private readonly pendingRequests = new Map<string, Subject<Activity>>();
   private currentTimeoutHandle: any;
   private pollActivitiesSubscription: Subscription;
-  private pollConfig: IOptions;
-  private batchCollectionDelayMs: number;
-  private maxRequestsPerBatch: number;
+  private readonly pollConfig: IOptions;
+  private readonly batchCollectionDelayMs: number;
+  private readonly maxRequestsPerBatch: number;
 
-  constructor(private activityService: ActivityService, private ngZone: NgZone, private config: AbstractAppConfig) {
+  constructor(private readonly activityService: ActivityService, private readonly ngZone: NgZone, private readonly config: AbstractAppConfig) {
     this.pollConfig = {
       interval: config.getActivityNexPollRequestMs(),
       attempts: config.getActivityRetry(),
@@ -26,11 +26,11 @@ export class ActivityPollingService {
     this.maxRequestsPerBatch = config.getActivityMaxRequestPerBatch();
   }
 
-  get isEnabled(): boolean {
+  public get isEnabled(): boolean {
     return this.activityService.isEnabled;
   }
 
-  subscribeToActivity(caseId: string, done: (activity: Activity) => void): Subject<Activity> {
+  public subscribeToActivity(caseId: string, done: (activity: Activity) => void): Subject<Activity> {
     if (!this.isEnabled) {
       return new Subject<Activity>();
     }
@@ -61,7 +61,7 @@ export class ActivityPollingService {
     return subject;
   }
 
-  stopPolling() {
+  public stopPolling() {
     if (this.pollActivitiesSubscription) {
       this.pollActivitiesSubscription.unsubscribe();
     }
@@ -78,7 +78,7 @@ export class ActivityPollingService {
     this.performBatchRequest(requests);
   }
 
-  pollActivities(...caseIds: string[]): Observable<Activity[]> {
+  public pollActivities(...caseIds: string[]): Observable<Activity[]> {
     if (!this.isEnabled) {
       return empty();
     }
@@ -86,11 +86,11 @@ export class ActivityPollingService {
     return polling(this.activityService.getActivities(...caseIds), this.pollConfig);
   }
 
-  postViewActivity(caseId: string): Observable<Activity[]> {
+  public postViewActivity(caseId: string): Observable<Activity[]> {
     return this.postActivity(caseId, ActivityService.ACTIVITY_VIEW);
   }
 
-  postEditActivity(caseId: string): Observable<Activity[]> {
+  public postEditActivity(caseId: string): Observable<Activity[]> {
     return this.postActivity(caseId, ActivityService.ACTIVITY_EDIT);
   }
 
@@ -112,8 +112,8 @@ export class ActivityPollingService {
             Array.from(requests.values()).forEach((subject) => subject.error(err));
           }
         )
-      )
-    })
+      );
+    });
   }
 
   private postActivity(caseId: string, activityType: string): Observable<Activity[]> {

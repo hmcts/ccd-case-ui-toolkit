@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { WriteOrganisationFieldComponent } from './write-organisation-field.component';
-import { MarkdownModule } from '../../markdown';
-import { OrganisationConverter } from '../../../domain/organisation';
-import { WriteOrganisationComplexFieldComponent } from './write-organisation-complex-field.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { OrganisationService } from '../../../services/organisation';
 import { of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
+import { OrganisationConverter } from '../../../domain/organisation';
+import { OrganisationService } from '../../../services/organisation';
 import { WindowService } from '../../../services/window';
+import { MarkdownModule } from '../../markdown';
+import { WriteOrganisationComplexFieldComponent } from './write-organisation-complex-field.component';
+import { WriteOrganisationFieldComponent } from './write-organisation-field.component';
 
 describe('WriteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
@@ -66,18 +66,18 @@ describe('WriteOrganisationFieldComponent', () => {
     id: 'Organisation',
     type: 'Complex',
   };
-  const ORGANISATION_ID: CaseField = <CaseField>({
+  const ORGANISATION_ID: CaseField = ({
     id: 'OrganisationID',
     label: 'Organisation ID',
     field_type: {id: 'Text', type: 'Text'}
-  });
-  const ORGANISATION_NAME: CaseField = <CaseField>({
+  }) as CaseField;
+  const ORGANISATION_NAME: CaseField = ({
     id: 'OrganisationName',
     label: 'Name',
     field_type: {id: 'Text', type: 'Text'}
-  });
+  }) as CaseField;
 
-  const CASE_FIELD: CaseField = <CaseField>({
+  const CASE_FIELD: CaseField = ({
     id: FIELD_ID,
     label: 'New Organisation',
     display_context: 'OPTIONAL',
@@ -87,7 +87,7 @@ describe('WriteOrganisationFieldComponent', () => {
     },
     value: VALUE,
     retain_hidden_value: true
-  });
+  }) as CaseField;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -178,13 +178,13 @@ describe('WriteOrganisationFieldComponent', () => {
     component.caseField.field_type = {
       ...FIELD_TYPE,
       complex_fields: [ORGANISATION_ID, ORGANISATION_NAME]
-    }
+    };
     component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
     component.selectedOrg$.toPromise().then(selectedOrg => {
-      expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>')
+      expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
     });
   });
 
@@ -430,7 +430,7 @@ describe('WriteOrganisationFieldComponent', () => {
       organisationIdentifier: 'O111111',
       name: 'Woodford solicitor',
       address: '12<br>Nithdale Role<br>Liverpool<br>Merseyside<br>UK<br>L15 5AX<br>'
-    }
+    };
     component.selectOrg(selectedOrg);
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();

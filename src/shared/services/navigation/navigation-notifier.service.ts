@@ -1,12 +1,12 @@
-import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class NavigationNotifierService {
-  navigationSource: BehaviorSubject<any> = new BehaviorSubject<any>({});
-  navigation = this.navigationSource.asObservable();
+  public navigationSource: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  public navigation = this.navigationSource.asObservable();
 
-  announceNavigation(origin: any) {
+  public announceNavigation(origin: any) {
     this.navigationSource.next(origin);
   }
 }

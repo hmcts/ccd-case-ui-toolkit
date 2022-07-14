@@ -1,10 +1,10 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
-import { HttpService } from '../http/http.service';
-import { WorkbasketInputModel } from '../../domain';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpHeaders } from '@angular/common/http';
+import { WorkbasketInputModel } from '../../domain';
+import { HttpService } from '../http/http.service';
 
 @Injectable()
 export class WorkbasketInputFilterService {
@@ -14,14 +14,14 @@ export class WorkbasketInputFilterService {
   private currentJurisdiction: string;
   private currentCaseType: string;
 
-  constructor(private httpService: HttpService, private appConfig: AbstractAppConfig) {
+  constructor(private readonly httpService: HttpService, private readonly appConfig: AbstractAppConfig) {
   }
 
-  getWorkbasketInputUrl(caseTypeId: string): string {
+  public getWorkbasketInputUrl(caseTypeId: string): string {
     return `${this.appConfig.getCaseDataUrl()}/internal/case-types/${caseTypeId}/work-basket-inputs`;
   }
 
-  getWorkbasketInputs(jurisdictionId: string, caseTypeId: string): Observable<WorkbasketInputModel[]> {
+  public getWorkbasketInputs(jurisdictionId: string, caseTypeId: string): Observable<WorkbasketInputModel[]> {
     const url = this.getWorkbasketInputUrl(caseTypeId);
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -48,7 +48,7 @@ export class WorkbasketInputFilterService {
       });
   }
 
-  isDataValid(jurisdictionId: string, caseTypeId: string): boolean {
-    return this.currentJurisdiction === jurisdictionId && this.currentCaseType === caseTypeId
+  public isDataValid(jurisdictionId: string, caseTypeId: string): boolean {
+    return this.currentJurisdiction === jurisdictionId && this.currentCaseType === caseTypeId;
   }
 }

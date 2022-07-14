@@ -1,5 +1,5 @@
-import { Field } from '../search/field.model';
 import { Orderable } from '../order/orderable.model';
+import { Field } from '../search/field.model';
 
 export class WorkbasketInputModel implements Orderable {
     constructor(
@@ -12,5 +12,5 @@ export class WorkbasketInputModel implements Orderable {
 }
 
 export class WorkbasketInput {
-  public workbasketInputs: WorkbasketInputModel[]
+  public workbasketInputs: WorkbasketInputModel[];
 }

@@ -6,7 +6,7 @@ import { ValidationErrors } from '@angular/forms';
 })
 export class FirstErrorPipe implements PipeTransform {
 
-  transform(value: ValidationErrors, args?: string): string {
+  public transform(value: ValidationErrors, args?: string): string {
     if (!value) {
       return '';
     }
@@ -29,7 +29,7 @@ export class FirstErrorPipe implements PipeTransform {
     } else if (keys[0] === 'maxlength') {
       return `${args} exceeds the maximum length`;
     } else if (value.hasOwnProperty('matDatetimePickerParse')) {
-      return 'The date entered is not valid. Please provide a valid date'
+      return 'The date entered is not valid. Please provide a valid date';
     }
     return value[keys[0]];
   }

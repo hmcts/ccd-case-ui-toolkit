@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DateInputComponent } from './date-input.component';
 import { DebugElement } from '@angular/core';
-import { PaletteUtilsModule } from '../../../shared/components/palette/utils/utils.module';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { PaletteUtilsModule } from '../../../shared/components/palette/utils/utils.module';
+import { DateInputComponent } from './date-input.component';
 import createSpy = jasmine.createSpy;
 
 describe('Date input component', function () {
@@ -49,7 +49,7 @@ describe('Date input component', function () {
     fixture.detectChanges();
   }));
   it('should verify day, month, year value from date', async () => {
-    component.id = 'dateField'
+    component.id = 'dateField';
     component.writeValue('2021-04-09T08:02:27.542');
     fixture.detectChanges();
     const monthInput = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
@@ -105,7 +105,7 @@ describe('Date input component', function () {
     it('day input should valid for a string value', async () => {
       component.id = 'dayInput';
       component.dayChange('09');
-      component.displayDay = '09'
+      component.displayDay = '09';
       fixture.detectChanges();
       const input = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
       expect(input.value).toBe('09');
@@ -120,12 +120,12 @@ describe('Date input component', function () {
       expect(input.value).toBeNull();
     });
 
-  })
+  });
   describe('month input component', function () {
     it('month input should valid for a string value', async () => {
       component.id = 'monthInput';
       component.monthChange('04');
-      component.displayMonth = '04'
+      component.displayMonth = '04';
       fixture.detectChanges();
       const input = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
       expect(input.value).toBe('04');
@@ -138,13 +138,13 @@ describe('Date input component', function () {
       const input = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
       expect(input.value).toBeNull();
     });
-  })
+  });
   describe('year input component', function () {
 
     it('year input should null for a null value', async () => {
       component.id = 'yearInput';
       component.yearChange('2021');
-      component.displayYear = '2021'
+      component.displayYear = '2021';
       fixture.detectChanges();
       const input = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
       expect(input.value).toBe('2021');
@@ -158,5 +158,5 @@ describe('Date input component', function () {
       const input = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
       expect(input.value).toBeNull();
     });
-  })
+  });
 });

@@ -1,24 +1,24 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
-import { MarkdownModule } from '../../markdown';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ConditionalShowModule } from '../../../directives/conditional-show';
 import { CommonModule } from '@angular/common';
-import { FieldsFilterPipe } from '../complex';
-import { PaletteUtilsModule } from '../utils';
-import { CaseField, FieldType } from '../../../domain/definition';
-import { PaletteService } from '../palette.service';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MockComponent } from 'ng2-mock-component';
-import { OrganisationService } from '../../../services/organisation';
-import { OrganisationConverter } from '../../../domain/organisation';
 import { of } from 'rxjs';
+import { ConditionalShowModule } from '../../../directives/conditional-show';
+import { CaseField, FieldType } from '../../../domain/definition';
+import { OrganisationConverter } from '../../../domain/organisation';
+import { OrganisationService } from '../../../services/organisation';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
+import { MarkdownModule } from '../../markdown';
+import { FieldsFilterPipe } from '../complex';
+import { PaletteService } from '../palette.service';
+import { PaletteUtilsModule } from '../utils';
+import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
 
 describe('ReadOrganisationFieldTableComponent', () => {
   let component: ReadOrganisationFieldTableComponent;
   let fixture: ComponentFixture<ReadOrganisationFieldTableComponent>;
-  let FieldReadComponent = MockComponent({
+  const FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
   });
@@ -27,7 +27,7 @@ describe('ReadOrganisationFieldTableComponent', () => {
     id: 'Organisation',
     type: 'Complex',
     complex_fields: [
-      <CaseField>({
+      ({
         id: 'OrganisationID',
         label: 'Organisation ID',
         display_context: 'MANDATORY',
@@ -36,8 +36,8 @@ describe('ReadOrganisationFieldTableComponent', () => {
           type: 'Text'
         },
         value: 'O111111'
-      }),
-      <CaseField>({
+      }) as CaseField,
+      ({
         id: 'OrganisationName',
         label: 'Organisation Name',
         display_context: 'MANDATORY',
@@ -46,15 +46,15 @@ describe('ReadOrganisationFieldTableComponent', () => {
           type: 'Text'
         },
         value: 'Test organisation name'
-      })
+      }) as CaseField
     ]
   };
-  const CASE_FIELD: CaseField = <CaseField>({
+  const CASE_FIELD: CaseField = ({
     id: 'respondentOrganisation',
     label: 'Complex Field',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE_WITH_VALUES
-  });
+  }) as CaseField;
   const ORGANISATIONS = [{
     organisationIdentifier: 'O111111',
     name: 'Woodford solicitor',
@@ -131,7 +131,7 @@ describe('ReadOrganisationFieldTableComponent', () => {
     component.caseFields = [CASE_FIELD];
     mockOrganisationService.getActiveOrganisations.and.returnValue(of(ORGANISATIONS));
     component.caseField = new CaseField();
-    component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
+    component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
     fixture.detectChanges();
   });
 
@@ -146,6 +146,6 @@ describe('ReadOrganisationFieldTableComponent', () => {
         expect(selectedOrg.name).toEqual('The Ethical solicitor');
         expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
       }
-    )
+    );
   });
 });

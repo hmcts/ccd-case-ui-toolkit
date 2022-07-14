@@ -1,13 +1,13 @@
-import { SearchService } from './search.service';
-import createSpyObj = jasmine.createSpyObj;
-import { of, Observable } from 'rxjs';
-import { SearchInput } from '../../components/search-filters';
-import { FieldType, Field } from '../../domain';
-import { RequestOptionsBuilder } from '../request';
-import { HttpService, OptionsType } from '../http';
-import { AbstractAppConfig } from '../../../app.config';
-import { LoadingService } from '../loading';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import createSpyObj = jasmine.createSpyObj;
+import { Observable, of } from 'rxjs';
+import { AbstractAppConfig } from '../../../app.config';
+import { SearchInput } from '../../components/search-filters';
+import { Field, FieldType } from '../../domain';
+import { HttpService, OptionsType } from '../http';
+import { LoadingService } from '../loading';
+import { RequestOptionsBuilder } from '../request';
+import { SearchService } from './search.service';
 
 describe('SearchService', () => {
 
@@ -86,8 +86,8 @@ describe('SearchService', () => {
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', () => {
-      let metaCriteria = { 'caseState': 'testState'};
-      let caseCriteria = { 'firstName': 'testFirstName', 'lastName': 'testLastName'};
+      const metaCriteria = { caseState: 'testState'};
+      const caseCriteria = { firstName: 'testFirstName', lastName: 'testLastName'};
 
       searchService
         .search(JID, CTID, metaCriteria, caseCriteria)
@@ -106,8 +106,8 @@ describe('SearchService', () => {
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
-      let metaCriteria = { 'caseState': 'testState'};
-      let caseCriteria = { 'firstName': 'testFirstName', 'lastName': 'testLastName'};
+      const metaCriteria = { caseState: 'testState'};
+      const caseCriteria = { firstName: 'testFirstName', lastName: 'testLastName'};
       searchService
         .search(JID, CTID, metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET)
         .subscribe();
@@ -137,7 +137,7 @@ describe('SearchService', () => {
         case_type: 'CT_TEST'
       };
       searchService
-        .search(JID, CTID, metadata, {'name': 'value'})
+        .search(JID, CTID, metadata, {name: 'value'})
         .subscribe();
 
       params.set('jurisdiction', 'TEST');
@@ -153,7 +153,7 @@ describe('SearchService', () => {
         case_type: 'CT_TEST'
       };
       searchService
-        .search(JID, CTID, metadata, {'name': ' value '})
+        .search(JID, CTID, metadata, {name: ' value '})
         .subscribe();
 
       params.set('jurisdiction', 'TEST');
@@ -169,7 +169,7 @@ describe('SearchService', () => {
         case_type: 'CT_TEST'
       };
       searchService
-        .search(JID, CTID, metadata, {'name': ''})
+        .search(JID, CTID, metadata, {name: ''})
         .subscribe();
 
       params.set('jurisdiction', 'TEST');
@@ -184,7 +184,7 @@ describe('SearchService', () => {
         case_type: 'CT_TEST'
       };
       searchService
-        .search(JID, CTID, metadata, {'name': '   '})
+        .search(JID, CTID, metadata, {name: '   '})
         .subscribe();
 
       params.set('jurisdiction', 'TEST');
@@ -202,7 +202,7 @@ describe('SearchService', () => {
     });
 
     it('should call backend with right URL, authorization and method for search input', () => {
-      httpService.get.and.returnValue(of(SEARCH_INPUTS))
+      httpService.get.and.returnValue(of(SEARCH_INPUTS));
 
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
@@ -284,8 +284,8 @@ describe('SearchService', () => {
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', () => {
-      let metaCriteria = { 'caseState': 'testState'};
-      let caseCriteria = { 'firstName': 'testFirstName', 'lastName': 'testLastName'};
+      const metaCriteria = { caseState: 'testState'};
+      const caseCriteria = { firstName: 'testFirstName', lastName: 'testLastName'};
 
       searchService
         .searchCases(CTID, metaCriteria, caseCriteria)
@@ -304,8 +304,8 @@ describe('SearchService', () => {
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
-      let metaCriteria = { 'caseState': 'testState'};
-      let caseCriteria = { 'firstName': 'testFirstName', 'lastName': 'testLastName'};
+      const metaCriteria = { caseState: 'testState'};
+      const caseCriteria = { firstName: 'testFirstName', lastName: 'testLastName'};
       searchService
         .searchCases(CTID, metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET)
         .subscribe();
@@ -314,8 +314,8 @@ describe('SearchService', () => {
     });
 
     it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
-      let metaCriteria = { 'page': 1 };
-      let caseCriteria = { 'preferredDQPilotCourt': 'Sunderland County, Family, Magistrates’ and Tribunal Hearings' };
+      const metaCriteria = { page: 1 };
+      const caseCriteria = { preferredDQPilotCourt: 'Sunderland County, Family, Magistrates’ and Tribunal Hearings' };
       searchService
         .searchCases(CTID, metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET)
         .subscribe();

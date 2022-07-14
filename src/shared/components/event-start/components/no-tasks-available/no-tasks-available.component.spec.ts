@@ -36,7 +36,7 @@ describe('NoTasksAvalaibleComponent', () => {
   });
 
   it('should display error message no tasks available', () => {
-    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'))
+    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
     const headingHtml = heading.nativeElement as HTMLElement;
     expect(headingHtml.innerText).toBe('No task available');
   });

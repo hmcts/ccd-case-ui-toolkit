@@ -8,7 +8,7 @@ import { CaseEventCompletionComponent, COMPONENT_PORTAL_INJECTION_TOKEN } from '
 export class CaseEventCompletionTaskCancelledComponent {
   public caseId: string;
 
-  constructor(@Inject(COMPONENT_PORTAL_INJECTION_TOKEN) private parentComponent: CaseEventCompletionComponent) {
+  constructor(@Inject(COMPONENT_PORTAL_INJECTION_TOKEN) private readonly parentComponent: CaseEventCompletionComponent) {
     this.caseId = this.parentComponent.context.caseId;
   }
 

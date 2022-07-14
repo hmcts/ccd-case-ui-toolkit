@@ -28,36 +28,6 @@ import { CaseNotifier } from '../services';
   styleUrls: ['../case-edit.scss']
 })
 export class CaseEditSubmitComponent implements OnInit, OnDestroy {
-  public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
-    const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
-    const bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
-
-    if (!aCaseField) {
-      return !bCaseField ? 0 : 1;
-    }
-
-    if (!bCaseField) {
-      return -1;
-    }
-    return a.show_summary_content_option - b.show_summary_content_option;
-  }
-
-  public eventTrigger: CaseEventTrigger;
-  public editForm: FormGroup;
-  public error: HttpError;
-  public callbackErrorsSubject: Subject<any> = new Subject();
-  public ignoreWarning = false;
-  public triggerText: string;
-  public wizard: Wizard;
-  public profile: Profile;
-  public showSummaryFields: CaseField[];
-  public paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
-  public isSubmitting: boolean;
-  public profileSubscription: Subscription;
-  public contextFields: CaseField[];
-  public task: Task;
-  public eventCompletionParams: EventCompletionParams;
-  public eventCompletionChecksRequired = false;
 
   constructor(
     private readonly caseEdit: CaseEditComponent,
@@ -85,6 +55,36 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return this.error
       && this.error.callbackErrors
       && this.error.callbackErrors.length;
+  }
+
+  public eventTrigger: CaseEventTrigger;
+  public editForm: FormGroup;
+  public error: HttpError;
+  public callbackErrorsSubject: Subject<any> = new Subject();
+  public ignoreWarning = false;
+  public triggerText: string;
+  public wizard: Wizard;
+  public profile: Profile;
+  public showSummaryFields: CaseField[];
+  public paletteContext: PaletteContext = PaletteContext.CHECK_YOUR_ANSWER;
+  public isSubmitting: boolean;
+  public profileSubscription: Subscription;
+  public contextFields: CaseField[];
+  public task: Task;
+  public eventCompletionParams: EventCompletionParams;
+  public eventCompletionChecksRequired = false;
+  public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
+    const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
+    const bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
+
+    if (!aCaseField) {
+      return !bCaseField ? 0 : 1;
+    }
+
+    if (!bCaseField) {
+      return -1;
+    }
+    return a.show_summary_content_option - b.show_summary_content_option;
   }
 
   public ngOnInit(): void {
@@ -387,11 +387,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
             // parent)
             // Update rawFormValueData for this field
             // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
-            let form: FormGroup = new FormGroup({});
+            const form: FormGroup = new FormGroup({});
             if (formGroup.controls[key].value) {
               Object.keys(formGroup.controls[key].value).forEach((item) => {
                 form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
-              })
+              });
             }
             rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
               form, caseField.field_type.complex_fields, caseField);

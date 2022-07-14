@@ -16,9 +16,9 @@ export class TabsComponent implements AfterContentInit {
   @ContentChildren(TabComponent)
   public panels: QueryList<TabComponent>;
 
-  private panelIds: string[] = [];
+  private readonly panelIds: string[] = [];
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private readonly route: ActivatedRoute) {}
 
   public ngAfterContentInit(): void {
     this.panels.forEach((panel) => this.panelIds.push(panel.id));

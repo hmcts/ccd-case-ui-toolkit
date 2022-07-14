@@ -1,10 +1,10 @@
 import { FieldType } from '../definition';
 
 export class SearchResultViewColumn {
-  case_field_id: string;
-  case_field_type: FieldType;
-  display_context?: string;
-  display_context_parameter?: string;
-  label: string;
-  order: number;
+  public case_field_id: string;
+  public case_field_type: FieldType;
+  public display_context?: string;
+  public display_context_parameter?: string;
+  public label: string;
+  public order: number;
 }

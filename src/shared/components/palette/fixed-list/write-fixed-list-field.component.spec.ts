@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteFixedListFieldComponent } from './write-fixed-list-field.component';
 
 const VALUE = 'F';
@@ -75,7 +75,7 @@ describe('WriteFixedListFieldComponent', () => {
   it('should select default value', () => {
     component.fixedListFormControl.setValue(null);
     fixture.detectChanges();
-    let options = de.queryAll($OPTION);
+    const options = de.queryAll($OPTION);
 
     expect(options.length).toEqual(4);
     expect(options[0].nativeElement.textContent).toEqual('--Select a value--');
@@ -85,13 +85,13 @@ describe('WriteFixedListFieldComponent', () => {
     fixture
         .whenStable()
         .then(() => {
-          let select = de.query($SELECT);
+          const select = de.query($SELECT);
           expect(select.nativeElement.selectedIndex).toEqual(0);
         });
   });
 
   it('should render all options', () => {
-    let options = de.queryAll($OPTION);
+    const options = de.queryAll($OPTION);
     expect(options[0].nativeElement.textContent).toEqual('--Select a value--');
     expect(options[1].nativeElement.textContent).toEqual('Male');
     expect(options[2].nativeElement.textContent).toEqual('Female');
@@ -104,7 +104,7 @@ describe('WriteFixedListFieldComponent', () => {
     fixture
         .whenStable()
         .then(() => {
-          let select = de.query($SELECT);
+          const select = de.query($SELECT);
           expect(select.nativeElement.selectedIndex).toEqual(1);
         });
   });

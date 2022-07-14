@@ -16,20 +16,20 @@ export enum CaseTimelineDisplayMode {
 export class CaseTimelineComponent implements OnInit {
 
   @Input()
-  case: string;
+  public case: string;
 
-  events: CaseViewEvent[];
-  selectedEventId: string;
-  dspMode = CaseTimelineDisplayMode;
-  displayMode: CaseTimelineDisplayMode = CaseTimelineDisplayMode.TIMELINE;
+  public events: CaseViewEvent[];
+  public selectedEventId: string;
+  public dspMode = CaseTimelineDisplayMode;
+  public displayMode: CaseTimelineDisplayMode = CaseTimelineDisplayMode.TIMELINE;
 
   constructor(
-    private caseNotifier: CaseNotifier,
-    private casesService: CasesService,
-    private alertService: AlertService,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly casesService: CasesService,
+    private readonly alertService: AlertService,
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.casesService
       .getCaseViewV2(this.case)
       .pipe(
@@ -45,11 +45,11 @@ export class CaseTimelineComponent implements OnInit {
       });
   }
 
-  isDataLoaded(): boolean {
+  public isDataLoaded(): boolean {
     return this.events ? true : false;
   }
 
-  caseHistoryClicked(eventId: string) {
+  public caseHistoryClicked(eventId: string) {
     this.displayMode = CaseTimelineDisplayMode.DETAILS;
     this.selectedEventId = eventId;
   }

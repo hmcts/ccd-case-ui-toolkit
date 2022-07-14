@@ -97,8 +97,9 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   // 2. split the search string into arrays and apply the each array item into the address fields
   // 3. both step 1, 2 will go until max count result reaches, and finally combine both result sets into final collection
   public searchOrg(organisations: OrganisationVm[], lowerOrgSearchText: string): SimpleOrganisationModel[] {
-    const partMatchingResultSet = [], withSpaceMatchingResultSet = [];
-    const MAX_RESULT_COUNT = WriteOrganisationFieldComponent.MAX_RESULT_COUNT
+    const partMatchingResultSet = [];
+    const withSpaceMatchingResultSet = [];
+    const MAX_RESULT_COUNT = WriteOrganisationFieldComponent.MAX_RESULT_COUNT;
     organisations.forEach((organisation) => {
       if ( partMatchingResultSet.length < MAX_RESULT_COUNT && this.searchCriteria(organisation, lowerOrgSearchText)) {
         partMatchingResultSet.push(organisation);

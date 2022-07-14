@@ -13,15 +13,15 @@ export class HttpService {
   private static readonly HEADER_CONTENT_TYPE = 'Content-Type';
 
   constructor(
-    private httpclient: HttpClient,
-    private httpErrorService: HttpErrorService
+    private readonly httpclient: HttpClient,
+    private readonly httpErrorService: HttpErrorService
   ) {}
 
   /**
    *
    * @param url Url resolved using UrlResolverService
-   * @param options
-   * @returns {Observable<any>}
+   * @param options OptionsType
+   * @returns Observable<any> return value
    * @see UrlResolverService
    */
 
@@ -46,9 +46,9 @@ export class HttpService {
   /**
    *
    * @param url Url resolved using UrlResolverService
-   * @param body
-   * @param options
-   * @returns {Observable<any>}
+   * @param body Body for post
+   * @param options OptionsType
+   * @returns Observable<any> return value
    * @see UrlResolverService
    */
   public post(url: string, body: any, options?: OptionsType, redirectIfNotAuthorised = true): Observable<any> {
@@ -64,9 +64,9 @@ export class HttpService {
   /**
    *
    * @param url Url resolved using UrlResolverService
-   * @param body
-   * @param options
-   * @returns {Observable<any>}
+   * @param body Body for post
+   * @param options OptionsType
+   * @returns Observable<any> return value
    * @see UrlResolverService
    */
   public put(url: string, body: any, options?: OptionsType): Observable<any> {
@@ -82,8 +82,8 @@ export class HttpService {
   /**
    *
    * @param url Url resolved using UrlResolverService
-   * @param options
-   * @returns {Observable<any>}
+   * @param options OptionsType
+   * @returns Observable<any> return value
    * @see UrlResolverService
    */
   public delete(url: string, options?: OptionsType): Observable<any> {

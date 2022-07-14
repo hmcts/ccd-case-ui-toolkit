@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { PhaseComponent } from './phase/phase.component';
 import { HeaderBarComponent } from './header-bar/header-bar.component';
-import { NavigationComponent } from './navigation/navigation.component';
 import { NavigationItemComponent } from './navigation/navigation-item.component';
+import { NavigationComponent } from './navigation/navigation.component';
+import { PhaseComponent } from './phase/phase.component';
 
 @NgModule({
     imports: [CommonModule, RouterModule],

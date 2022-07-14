@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AlertComponent } from './alert.component';
+import { NgModule } from '@angular/core';
 import { AlertIconClassPipe } from './alert-icon-class.pipe';
+import { AlertComponent } from './alert.component';
 
 @NgModule({
   imports: [CommonModule],

@@ -1,29 +1,29 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { Predicate } from '../../../domain/predicate.model';
 import { AlertService } from '../../../services/alert/alert.service';
+import { FieldsUtils } from '../../../services/fields';
 import { RouterHelperService } from '../../../services/router/router-helper.service';
-import { WizardFactoryService } from './wizard-factory.service';
-import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
 import { EventTriggerService } from './event-trigger.service';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { FieldsUtils } from '../../../services/fields';
+import { WizardFactoryService } from './wizard-factory.service';
 
 @Injectable()
 export class CaseEditWizardGuard implements Resolve<boolean> {
 
   constructor(
-    private router: Router,
-    private routerHelper: RouterHelperService,
-    private wizardFactory: WizardFactoryService,
-    private alertService: AlertService,
-    private eventTriggerService: EventTriggerService
+    private readonly router: Router,
+    private readonly routerHelper: RouterHelperService,
+    private readonly wizardFactory: WizardFactoryService,
+    private readonly alertService: AlertService,
+    private readonly eventTriggerService: EventTriggerService
   ) {}
 
-  resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
+  public resolve(route: ActivatedRouteSnapshot): Promise<boolean> {
     this.eventTriggerService.eventTriggerSource.asObservable().first().subscribe(eventTrigger => {
       this.processEventTrigger(route, eventTrigger);
     });
@@ -39,10 +39,10 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
       return Promise.resolve(false);
     }
 
-    let wizard = this.wizardFactory.create(eventTrigger);
-    let currentState = this.buildState(eventTrigger.case_fields);
+    const wizard = this.wizardFactory.create(eventTrigger);
+    const currentState = this.buildState(eventTrigger.case_fields);
     // TODO Extract predicate and state creation in a factory
-    let canShowPredicate: Predicate<WizardPage> = (page: WizardPage): boolean => {
+    const canShowPredicate: Predicate<WizardPage> = (page: WizardPage): boolean => {
       return ShowCondition.getInstance(page.show_condition).match(currentState);
     };
 
@@ -51,7 +51,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
       return Promise.resolve(false);
     }
 
-    let pageId = route.params['page'];
+    const pageId = route.params['page'];
 
     if (!wizard.hasPage(pageId)) {
       this.goToFirst(wizard, canShowPredicate, route)
@@ -64,7 +64,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
   }
 
   private goToFirst(wizard: Wizard, canShowPredicate: Predicate<WizardPage>, route: ActivatedRouteSnapshot): Promise<boolean> {
-    let firstPage = wizard.firstPage(canShowPredicate);
+    const firstPage = wizard.firstPage(canShowPredicate);
     // If there’s no specific wizard page called, it makes another navigation to either the first page available or to the submit page
     // TODO should find a way to navigate to target page without going through the whole loop (and make a second call to BE) again
     return this.router.navigate([...this.parentUrlSegments(route), firstPage ? firstPage.id : 'submit'],
@@ -76,7 +76,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
   }
 
   private buildState(caseFields: CaseField[]): any {
-    let state = {};
+    const state = {};
 
     /**
      *

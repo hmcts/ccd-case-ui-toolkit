@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CaseView, CaseField, Draft } from '../../domain';
+import { CaseField, CaseView, Draft } from '../../domain';
 
 @Component({
   selector: 'ccd-case-header',
@@ -10,11 +10,11 @@ import { CaseView, CaseField, Draft } from '../../domain';
 export class CaseHeaderComponent implements OnInit {
 
   @Input()
-  caseDetails: CaseView;
-  caseTitle: CaseField;
-  caseFields: CaseField[];
+  public caseDetails: CaseView;
+  public caseTitle: CaseField;
+  public caseFields: CaseField[];
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.caseTitle = new CaseField();
     if (!this.isDraft() && this.caseDetails.state.title_display) {
       this.caseTitle.label = this.caseDetails.state.title_display;
@@ -22,7 +22,7 @@ export class CaseHeaderComponent implements OnInit {
     }
   }
 
-  isDraft(): boolean {
+  public isDraft(): boolean {
     return Draft.isDraft(this.caseDetails.case_id);
   }
 

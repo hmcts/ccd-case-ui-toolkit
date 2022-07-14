@@ -1,7 +1,7 @@
-import { createJurisdiction } from './jurisdiction.test.fixture';
+import { CaseHistory, CaseHistoryCaseType } from '../components/case-history/domain';
 import { createCaseTabArray } from './case-tab.test.fixture';
 import { createCaseViewEvent } from './case-view-event.test.fixture';
-import { CaseHistory, CaseHistoryCaseType } from '../components/case-history/domain';
+import { createJurisdiction } from './jurisdiction.test.fixture';
 
 export let createCaseHistory = () => {
   const caseHistory = new CaseHistory();

@@ -1,4 +1,4 @@
 export class EventCaseField {
-  case_field_id: string;
-  showCondition: string;
+  public case_field_id: string;
+  public showCondition: string;
 }

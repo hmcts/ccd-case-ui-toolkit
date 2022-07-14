@@ -1,7 +1,7 @@
 import { FeeValue } from './fee-value.model';
 
 export class OrderSummary {
-    PaymentReference: string;
-    Fees: FeeValue[];
-    PaymentTotal: string;
+    public PaymentReference: string;
+    public Fees: FeeValue[];
+    public PaymentTotal: string;
 }

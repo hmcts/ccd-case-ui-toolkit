@@ -1,13 +1,13 @@
-import { Orderable } from '../order';
-import { CaseField } from '../definition';
 import { Type } from 'class-transformer';
+import { CaseField } from '../definition';
+import { Orderable } from '../order';
 
 // @dynamic
 export class CaseTab implements Orderable {
-  id: string;
-  label: string;
-  order?: number;
+  public id: string;
+  public label: string;
+  public order?: number;
   @Type(() => CaseField)
-  fields: CaseField[];
-  show_condition?: string;
+  public fields: CaseField[];
+  public show_condition?: string;
 }

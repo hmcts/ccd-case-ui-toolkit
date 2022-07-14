@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { ReadCaseLinkFieldComponent } from './read-case-link-field.component';
-import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PipesModule } from '../../../pipes';
 import { PaletteUtilsModule } from '../utils/utils.module';
+import { ReadCaseLinkFieldComponent } from './read-case-link-field.component';
+import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 
 @NgModule({
   imports: [

@@ -1,33 +1,33 @@
-import { HttpErrorService } from './http-error.service';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { HttpError } from '../../domain/http/http-error.model';
 import { AuthService } from '../auth/auth.service';
-import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpErrorService } from './http-error.service';
 
 describe('HttpErrorService', () => {
   const CURRENT_URL = 'http://core-case-data.common-components.reform';
   const ERROR_MESSAGE = 'Nein! Nein! Nein!';
   const VALID_ERROR_BODY = {
-    'timestamp': '2017-05-24T15:24:17.857+0000',
-    'status': 422,
-    'error': 'Unprocessable Entity',
-    'exception': 'uk.gov.hmcts.ccd.endpoint.exceptions.ValidationException',
-    'message': 'string is not a known event ID for the specified case type TestAddressBookCase',
-    'path': '/caseworkers/0/jurisdictions/TEST/case-types/TestAddressBookCase/cases'
+    timestamp: '2017-05-24T15:24:17.857+0000',
+    status: 422,
+    error: 'Unprocessable Entity',
+    exception: 'uk.gov.hmcts.ccd.endpoint.exceptions.ValidationException',
+    message: 'string is not a known event ID for the specified case type TestAddressBookCase',
+    path: '/caseworkers/0/jurisdictions/TEST/case-types/TestAddressBookCase/cases'
   };
 
   const HTTP_401_ERROR_BODY = {
-    'timestamp': '2017-05-24T15:24:17.857+0000',
-    'status': 401,
-    'error': 'Unauthorized',
-    'message': 'Unauthorized user...',
-    'path': CURRENT_URL
+    timestamp: '2017-05-24T15:24:17.857+0000',
+    status: 401,
+    error: 'Unauthorized',
+    message: 'Unauthorized user...',
+    path: CURRENT_URL
   };
   const HTTP_403_ERROR_BODY = {
-    'timestamp': '2017-05-24T15:24:17.857+0000',
-    'status': 403,
-    'error': 'Forbidden',
-    'message': 'The server understood the request but refuses to authorize it....',
-    'path': CURRENT_URL
+    timestamp: '2017-05-24T15:24:17.857+0000',
+    status: 403,
+    error: 'Forbidden',
+    message: 'The server understood the request but refuses to authorize it....',
+    path: CURRENT_URL
   };
   const VALID_ERROR_RESPONSE = new HttpErrorResponse({
     headers: new HttpHeaders()
@@ -129,7 +129,7 @@ describe('HttpErrorService', () => {
     });
 
     it('should use message when error is an unknown object with a message property', (done) => {
-      let expectedError = new HttpError();
+      const expectedError = new HttpError();
       expectedError.message = ERROR_MESSAGE;
 
       errorService.handle({

@@ -1,13 +1,13 @@
+import { Type } from 'class-transformer';
+import { CaseField } from '../definition';
 import { CaseTab } from './case-tab.model';
 import { CaseViewEvent } from './case-view-event.model';
 import { CaseViewTrigger } from './case-view-trigger.model';
-import { CaseField } from '../definition';
-import { Type } from 'class-transformer';
 
 // @dynamic
 export class CaseView {
-  case_id?: string;
-  case_type: {
+  public case_id?: string;
+  public case_type: {
     id: string,
     name: string,
     description?: string,
@@ -18,23 +18,23 @@ export class CaseView {
     },
     printEnabled?: boolean
   };
-  state: {
+  public state: {
     id: string,
     name: string,
     description?: string
     title_display?: string
   };
-  channels: string[];
+  public channels: string[];
   @Type(() => CaseTab)
-  tabs: CaseTab[];
-  triggers: CaseViewTrigger[];
-  events: CaseViewEvent[];
+  public tabs: CaseTab[];
+  public triggers: CaseViewTrigger[];
+  public events: CaseViewEvent[];
   @Type(() => CaseField)
-  metadataFields?: CaseField[];
-  basicFields?: {
+  public metadataFields?: CaseField[];
+  public basicFields?: {
     caseNameHmctsInternal?: string,
     caseManagementLocation?: {
       baseLocation?: number
     }
-  }
+  };
 }

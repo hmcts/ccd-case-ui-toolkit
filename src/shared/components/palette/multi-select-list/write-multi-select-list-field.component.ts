@@ -9,9 +9,9 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  checkboxes: FormArray;
+  public checkboxes: FormArray;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.checkboxes = new FormArray([]);
 
     // Initialise array with existing values
@@ -32,7 +32,7 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
     }
   }
 
-  onCheckChange(event) {
+  public onCheckChange(event) {
     if (!this.isSelected(event.target.value)) {
       // Add a new control in the FormArray
       this.checkboxes.push(new FormControl(event.target.value));
@@ -47,7 +47,7 @@ export class WriteMultiSelectListFieldComponent extends AbstractFieldWriteCompon
     }
   }
 
-  isSelected(code): AbstractControl {
+  public isSelected(code): AbstractControl {
     if (this.checkboxes && this.checkboxes.controls) {
       return this.checkboxes.controls.find(control => control.value === code);
     }

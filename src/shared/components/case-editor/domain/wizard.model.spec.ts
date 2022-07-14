@@ -1,7 +1,7 @@
-import { Wizard } from './wizard.model';
+import { CaseField } from '../../../domain/definition';
 import createSpy = jasmine.createSpy;
 import { WizardPage } from './wizard-page.model';
-import { CaseField } from '../../../domain/definition';
+import { Wizard } from './wizard.model';
 
 describe('wizard.model', () => {
 
@@ -38,27 +38,27 @@ describe('wizard.model', () => {
     });
 
     it('should return first by order', () => {
-      let page = wizard.firstPage(canShow);
+      const page = wizard.firstPage(canShow);
       expect(page).toBe(PAGE_1);
     });
 
     it('should get page by id', () => {
-      let page = wizard.getPage(PAGE_2.id, canShow);
+      const page = wizard.getPage(PAGE_2.id, canShow);
       expect(page).toBe(PAGE_2);
     });
 
     it('should get next page', () => {
-      let page = wizard.nextPage(PAGE_2.id, canShow);
+      const page = wizard.nextPage(PAGE_2.id, canShow);
       expect(page).toBe(PAGE_3);
     });
 
     it('should get previous page', () => {
-      let page = wizard.previousPage(PAGE_2.id, canShow);
+      const page = wizard.previousPage(PAGE_2.id, canShow);
       expect(page).toBe(PAGE_1);
     });
 
     it('should have previous page', () => {
-      let hasPrevious = wizard.hasPreviousPage(PAGE_2.id, canShow);
+      const hasPrevious = wizard.hasPreviousPage(PAGE_2.id, canShow);
       expect(hasPrevious).toBeTruthy();
     });
 
@@ -77,29 +77,29 @@ describe('wizard.model', () => {
     });
 
     it('should return undefined when no next', () => {
-      let page = wizard.nextPage(PAGE_3.id, canShow);
+      const page = wizard.nextPage(PAGE_3.id, canShow);
       expect(page).toBeUndefined();
     });
 
     it('should return undefined when no previous', () => {
-      let page = wizard.previousPage(PAGE_1.id, canShow);
+      const page = wizard.previousPage(PAGE_1.id, canShow);
       expect(page).toBeUndefined();
     });
 
     it('should not have previous when first', () => {
-      let hasPrevious = wizard.hasPreviousPage(PAGE_1.id, canShow);
+      const hasPrevious = wizard.hasPreviousPage(PAGE_1.id, canShow);
       expect(hasPrevious).toBeFalsy();
     });
   });
 
   describe('find page containing caseFieldId', () => {
     it('should get next page', () => {
-      let page = wizard.findWizardPage('caseField1');
+      const page = wizard.findWizardPage('caseField1');
       expect(page).toBe(PAGE_2);
     });
 
     it('should return undefined if wizardPage does not exists', () => {
-      let page = wizard.findWizardPage('nonExistentCaseFieldId');
+      const page = wizard.findWizardPage('nonExistentCaseFieldId');
       expect(page).toBeUndefined();
     });
   });
@@ -108,7 +108,7 @@ describe('wizard.model', () => {
     it('should return first visible page', () => {
       canShow.and.returnValues(false, true);
 
-      let page = wizard.firstPage(canShow);
+      const page = wizard.firstPage(canShow);
       expect(page).toBe(PAGE_2);
       expect(canShow).toHaveBeenCalledWith(PAGE_1);
       expect(canShow).toHaveBeenCalledWith(PAGE_2);
@@ -117,7 +117,7 @@ describe('wizard.model', () => {
     it('should return undefined when getting hidden page', () => {
       canShow.and.returnValue(false);
 
-      let page = wizard.getPage(PAGE_1.id, canShow);
+      const page = wizard.getPage(PAGE_1.id, canShow);
       expect(page).toBeUndefined();
       expect(canShow).toHaveBeenCalledWith(PAGE_1);
     });
@@ -126,7 +126,7 @@ describe('wizard.model', () => {
       // PAGE_2 --> hidden, PAGE_3 --> visible
       canShow.and.returnValues(false, true);
 
-      let page = wizard.nextPage(PAGE_1.id, canShow);
+      const page = wizard.nextPage(PAGE_1.id, canShow);
       expect(page).toBe(PAGE_3);
       expect(canShow).not.toHaveBeenCalledWith(PAGE_1);
       expect(canShow).toHaveBeenCalledWith(PAGE_2);
@@ -136,7 +136,7 @@ describe('wizard.model', () => {
     it('should return undefined when no next visible page', () => {
       canShow.and.returnValue(false);
 
-      let page = wizard.nextPage(PAGE_1.id, canShow);
+      const page = wizard.nextPage(PAGE_1.id, canShow);
       expect(page).toBeUndefined();
     });
 
@@ -144,7 +144,7 @@ describe('wizard.model', () => {
       // PAGE_1 --> visible, PAGE_2 --> hidden
       canShow.and.returnValues(false, true);
 
-      let page = wizard.previousPage(PAGE_3.id, canShow);
+      const page = wizard.previousPage(PAGE_3.id, canShow);
       expect(page).toBe(PAGE_1);
       expect(canShow).not.toHaveBeenCalledWith(PAGE_3);
       expect(canShow).toHaveBeenCalledWith(PAGE_2);
@@ -154,14 +154,14 @@ describe('wizard.model', () => {
     it('should return undefined when no previous visible page', () => {
       canShow.and.returnValues(false);
 
-      let page = wizard.previousPage(PAGE_3.id, canShow);
+      const page = wizard.previousPage(PAGE_3.id, canShow);
       expect(page).toBeUndefined();
     });
 
     it('should return undefined when no visible page', () => {
       canShow.and.returnValue(false);
 
-      let page = wizard.firstPage(canShow);
+      const page = wizard.firstPage(canShow);
       expect(page).toBeUndefined();
     });
   });
@@ -180,7 +180,7 @@ describe('wizard.model', () => {
   });
 
   function buildPage(pageId: string, label: string, order: number, caseFields: CaseField[] = undefined): WizardPage {
-    let wp = new WizardPage();
+    const wp = new WizardPage();
     wp.id = pageId;
     wp.label = label;
     wp.order = order;
@@ -189,7 +189,7 @@ describe('wizard.model', () => {
   }
 
   function buildCaseField(caseFieldId: string, caseFieldValue: any) {
-    let caseField = new CaseField();
+    const caseField = new CaseField();
     caseField.id = caseFieldId;
     caseField.value = caseFieldValue;
     return caseField;

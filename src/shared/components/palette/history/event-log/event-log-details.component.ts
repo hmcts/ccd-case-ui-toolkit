@@ -8,5 +8,5 @@ import { CaseViewEvent } from '../../../../domain';
 })
 export class EventLogDetailsComponent {
   @Input()
-  event: CaseViewEvent;
+  public event: CaseViewEvent;
 }

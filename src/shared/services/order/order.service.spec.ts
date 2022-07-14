@@ -1,5 +1,5 @@
-import { OrderService } from './order.service';
 import { createCaseField, createFieldType, createFixedListFieldType, textFieldType } from '../../fixture/shared.test.fixture';
+import { OrderService } from './order.service';
 
 describe('OrderService', () => {
 
@@ -40,26 +40,26 @@ describe('OrderService', () => {
 
   describe('sort', () => {
     it('should return cloned array', () => {
-      let array = [ITEM_0, ITEM_1, ITEM_2];
-      let arrayClone = [ITEM_0, ITEM_1, ITEM_2];
+      const array = [ITEM_0, ITEM_1, ITEM_2];
+      const arrayClone = [ITEM_0, ITEM_1, ITEM_2];
 
       spyOn(array, 'slice').and.returnValue(arrayClone);
 
-      let sortedArray = orderService.sort(array);
+      const sortedArray = orderService.sort(array);
 
       expect(array.slice).toHaveBeenCalledWith();
       expect(sortedArray).toEqual(arrayClone);
     });
 
     it('should sort cloned array by ascending order', () => {
-      let array = [ITEM_2, ITEM_1, ITEM_0];
-      let arrayClone = [ITEM_2, ITEM_1, ITEM_0];
-      let arrayExpected = [ITEM_0, ITEM_1, ITEM_2];
+      const array = [ITEM_2, ITEM_1, ITEM_0];
+      const arrayClone = [ITEM_2, ITEM_1, ITEM_0];
+      const arrayExpected = [ITEM_0, ITEM_1, ITEM_2];
 
       spyOn(array, 'slice').and.returnValue(arrayClone);
       spyOn(arrayClone, 'sort').and.returnValue(arrayExpected);
 
-      let sortedArray = orderService.sort(array);
+      const sortedArray = orderService.sort(array);
 
       expect(arrayClone.sort).toHaveBeenCalledWith(orderService.sortAsc);
       expect(sortedArray).toBe(arrayExpected);
@@ -72,7 +72,7 @@ describe('OrderService', () => {
         createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 5),
         createCaseField('testField1', 'Debtor name', '', textFieldType(), null, 3)];
 
-      let caseFieldsOrdered = orderService.sort(CASE_FIELDS);
+      const caseFieldsOrdered = orderService.sort(CASE_FIELDS);
 
       expect(caseFieldsOrdered[0].order).toEqual(3);
       expect(caseFieldsOrdered[0].id).toEqual('testField1');
@@ -86,7 +86,7 @@ describe('OrderService', () => {
         createCaseField('testField1', 'Debtor name', '', textFieldType(), null, 3),
         createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 5)];
 
-      let caseFieldsOrdered = orderService.sort(CASE_FIELDS);
+      const caseFieldsOrdered = orderService.sort(CASE_FIELDS);
 
       expect(caseFieldsOrdered[0].order).toEqual(3);
       expect(caseFieldsOrdered[0].id).toEqual('testField1');
@@ -99,7 +99,7 @@ describe('OrderService', () => {
         createCaseField('testField1', 'Debtor name', '', textFieldType(), null),
         createCaseField('testField2', 'Debtor name', '', textFieldType(), null, 3)];
 
-      let caseFieldsOrdered = orderService.sort(CASE_FIELDS);
+      const caseFieldsOrdered = orderService.sort(CASE_FIELDS);
 
       expect(caseFieldsOrdered[0].order).toEqual(3);
       expect(caseFieldsOrdered[0].id).toEqual('testField2');

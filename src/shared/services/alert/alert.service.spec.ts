@@ -1,6 +1,6 @@
-import { AlertService } from './alert.service';
-import { Alert } from '../../domain/alert/alert.model';
 import { NavigationEnd, NavigationStart } from '@angular/router';
+import { Alert } from '../../domain/alert/alert.model';
+import { AlertService } from './alert.service';
 
 describe('AlertService', () => {
 
@@ -21,7 +21,7 @@ describe('AlertService', () => {
     message: 'This is a success with a warning'
   };
 
-  const ERROR_MESSAGE = 'This is an error'
+  const ERROR_MESSAGE = 'This is an error';
   const SUCCESS_MESSAGE = 'This is a success';
   const WARNING_MESSAGE = 'This is a warning';
   const A_MESSAGE = 'This is a success with a warning';
@@ -128,7 +128,7 @@ describe('AlertService', () => {
     alertService.setPreserveAlerts(true);
     routerObserver(new NavigationStart(0, ''));
 
-    let preserve = alertService.isPreserveAlerts();
+    const preserve = alertService.isPreserveAlerts();
     expect(preserve).toBe(false);
   });
 
@@ -187,13 +187,13 @@ describe('AlertService', () => {
         subscribe: observer => routerObserver = observer
       },
       url: 'cases/case-1/'
-    }
+    };
     secondMockUrlRouter = {
       events: {
         subscribe: observer => routerObserver = observer
       },
       url: 'cases/case-2/'
-    }
+    };
     firstMockUrlAlertService = new AlertService(firstMockUrlRouter);
     secondMockUrlAlertService = new AlertService(secondMockUrlRouter);
     it('should enable checking if the current url contains the string', () => {

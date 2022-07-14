@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RemoveDialogComponent } from './remove-dialog.component';
+import { DebugElement } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { RemoveDialogComponent } from './remove-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('RemoveDialogComponent', () => {
@@ -39,7 +39,7 @@ describe('RemoveDialogComponent', () => {
   });
 
   it('should close dialog with `Remove` when remove button clicked', () => {
-    let removeButton = de.query(REMOVE_BUTTON);
+    const removeButton = de.query(REMOVE_BUTTON);
 
     removeButton.nativeElement.click();
     fixture.detectChanges();
@@ -48,7 +48,7 @@ describe('RemoveDialogComponent', () => {
   });
 
   it('should close dialog with `Cancel` when cancel button clicked', () => {
-    let removeButton = de.query(CANCEL_BUTTON);
+    const removeButton = de.query(CANCEL_BUTTON);
 
     removeButton.nativeElement.click();
     fixture.detectChanges();

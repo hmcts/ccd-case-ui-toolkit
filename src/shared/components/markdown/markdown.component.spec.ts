@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
-import { NgxMdModule, NgxMdComponent } from 'ngx-md';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { NgxMdComponent, NgxMdModule } from 'ngx-md';
 import { PipesModule } from '../../pipes';
 import { ConvertHrefToRouterService } from '../case-editor/services';
+import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 
 describe('MarkdownComponent', () => {
 
@@ -87,8 +87,8 @@ describe('MarkdownComponent - Anchor', () => {
 
   const $MARKDOWN = By.css('markdown');
 
-  let CONTENT = `[Add case note](/case/IA/Asylum/1632395877596617/trigger/addCaseNote)`;
-  let EXPECTED_CONTENT = `<p><a href="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">Add case note</a></p>`;
+  const CONTENT = `[Add case note](/case/IA/Asylum/1632395877596617/trigger/addCaseNote)`;
+  const EXPECTED_CONTENT = `<p><a href="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">Add case note</a></p>`;
 
   let fixture: ComponentFixture<CCDMarkDownComponent>;
   let component: CCDMarkDownComponent;

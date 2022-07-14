@@ -1,8 +1,8 @@
-import { AuthService } from './auth.service';
-import { HttpService } from '../http/http.service';
 import { of } from 'rxjs';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../app.config';
+import { HttpService } from '../http/http.service';
+import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
 
@@ -41,7 +41,7 @@ describe('AuthService', () => {
     it('should redirect IDAM login page', () => {
       authService.signIn();
 
-      let expectedParams = [
+      const expectedParams = [
         `response_type=code`,
         `client_id=${OAUTH2_CLIENT_ID}`,
         `redirect_uri=${REDIRECT_URI_ENCODED}`,

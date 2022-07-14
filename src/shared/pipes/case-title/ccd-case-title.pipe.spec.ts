@@ -1,9 +1,9 @@
+import { TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
 import { PlaceholderService } from '../../directives/substitutor/services/placeholder.service';
 import { CaseField } from '../../domain';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { CcdCaseTitlePipe } from './ccd-case-title.pipe';
-import { TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
 
 describe('CcdCaseTitlePipe', () => {
   let ccdCaseTitle: CcdCaseTitlePipe;
@@ -11,7 +11,7 @@ describe('CcdCaseTitlePipe', () => {
   const fieldsUtils: FieldsUtils = new FieldsUtils();
 
   const caseFields: CaseField[] = [
-    <CaseField>({
+    ({
       id: 'FirstNameId',
       label: 'First name',
       value: 'John',
@@ -20,8 +20,8 @@ describe('CcdCaseTitlePipe', () => {
         id: 'Text',
         type: 'Text'
       }
-    }),
-    <CaseField>({
+    }) as CaseField,
+    ({
       id: 'LastNameId',
       label: 'Last name',
       value: 'West',
@@ -30,8 +30,8 @@ describe('CcdCaseTitlePipe', () => {
         id: 'Text',
         type: 'Text'
       }
-    }),
-    <CaseField>({
+    }) as CaseField,
+    ({
       id: 'Case_ReferenceId',
       label: 'Case_Reference',
       value: '123456',
@@ -40,7 +40,7 @@ describe('CcdCaseTitlePipe', () => {
         id: 'Text',
         type: 'Text'
       }
-    }),
+    }) as CaseField,
   ];
 
   const FORM_GROUP = new FormGroup({

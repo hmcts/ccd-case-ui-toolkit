@@ -48,7 +48,7 @@ export class CaseListComponent {
 
   @Output() public pageChange = new EventEmitter();
 
-  constructor(private browserService: BrowserService) { }
+  constructor(private readonly browserService: BrowserService) { }
 
   public formatDate(date: Date): string {
     return date ? formatDate(date, 'dd MMM yyyy', 'en-GB') : '-';
@@ -63,7 +63,7 @@ export class CaseListComponent {
   }
 
   public canAnyBeShared(): boolean {
-    return this.cases.some(c => this.canBeShared(c))
+    return this.cases.some(c => this.canBeShared(c));
   }
 
   public selectAll(): void {
@@ -110,7 +110,7 @@ export class CaseListComponent {
     return !this.cases.some(aCase => !this.isSelected(aCase));
   }
 
-  onKeyUp($event: KeyboardEvent, aCase: any): void {
+  public onKeyUp($event: KeyboardEvent, aCase: any): void {
     if ($event.key === 'Space') {
       if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
         this.changeSelection(aCase);
@@ -125,9 +125,9 @@ export class CaseListComponent {
 }
 
 export class TableColumnConfig {
-  header: string;
-  key: string;
-  type?: string;
+  public header: string;
+  public key: string;
+  public type?: string;
   constructor() {
     this.header = '';
     this.key = '';

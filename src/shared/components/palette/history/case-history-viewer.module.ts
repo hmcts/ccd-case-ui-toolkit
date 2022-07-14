@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { CaseHistoryViewerFieldComponent } from './case-history-viewer-field.component';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PaletteUtilsModule } from '../utils/utils.module';
-import { EventLogModule } from './event-log';
-import { DatePipe } from '../utils';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { DatePipe } from '../utils';
+import { PaletteUtilsModule } from '../utils/utils.module';
+import { CaseHistoryViewerFieldComponent } from './case-history-viewer-field.component';
+import { EventLogModule } from './event-log';
 
 @NgModule({
   imports: [

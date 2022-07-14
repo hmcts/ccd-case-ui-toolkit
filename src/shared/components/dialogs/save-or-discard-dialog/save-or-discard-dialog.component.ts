@@ -8,19 +8,19 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class SaveOrDiscardDialogComponent {
 
-  result: string;
+  public result: string;
 
-  constructor(private matDialogRef: MatDialogRef<SaveOrDiscardDialogComponent>) {}
+  constructor(private readonly matDialogRef: MatDialogRef<SaveOrDiscardDialogComponent>) {}
 
-  cancel() {
+  public cancel() {
     this.result = 'Cancel';
     this.matDialogRef.close(this.result);
   }
-  save() {
+  public save() {
     this.result = 'Save';
     this.matDialogRef.close(this.result);
   }
-  discard() {
+  public discard() {
     this.result = 'Discard';
     this.matDialogRef.close(this.result);
   }

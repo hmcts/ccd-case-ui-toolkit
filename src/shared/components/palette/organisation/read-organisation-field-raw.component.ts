@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
-import { CaseField } from '../../../domain/definition';
-import { OrganisationService, OrganisationVm } from '../../../services/organisation';
-import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/organisation';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { CaseField } from '../../../domain/definition';
+import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/organisation';
+import { OrganisationService, OrganisationVm } from '../../../services/organisation';
+import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({
   selector: 'ccd-read-organisation-field-raw',
@@ -14,16 +14,16 @@ import { switchMap } from 'rxjs/operators';
 export class ReadOrganisationFieldRawComponent extends AbstractFieldReadComponent implements OnInit {
 
   @Input()
-  caseFields: CaseField[] = [];
+  public caseFields: CaseField[] = [];
 
   public organisations$: Observable<OrganisationVm[]>;
   public selectedOrg$: Observable<SimpleOrganisationModel>;
 
-  constructor(private organisationService: OrganisationService, private organisationConverter: OrganisationConverter) {
+  constructor(private readonly organisationService: OrganisationService, private readonly organisationConverter: OrganisationConverter) {
     super();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     super.ngOnInit();
     if (this.caseField.value && this.caseField.value.OrganisationID) {
       this.organisations$ = this.organisationService.getActiveOrganisations();

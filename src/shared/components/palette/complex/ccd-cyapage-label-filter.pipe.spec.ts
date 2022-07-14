@@ -1,5 +1,5 @@
-import { CcdCYAPageLabelFilterPipe } from './ccd-cyapage-label-filter.pipe';
 import { CaseField } from '../../../domain';
+import { CcdCYAPageLabelFilterPipe } from './ccd-cyapage-label-filter.pipe';
 
 describe('CcdCYAPageLabelFilterPipe', () => {
 
@@ -13,7 +13,7 @@ describe('CcdCYAPageLabelFilterPipe', () => {
     label: 'You can save and return to this page at any time. Questions marked with a * need to be completed before you can send your' +
       ' application.',
     show_condition: null,
-  }
+  };
 
   const COMPLEX_CASE_FIELD = {
     display_context: 'COMPLEX',
@@ -49,7 +49,7 @@ describe('CcdCYAPageLabelFilterPipe', () => {
     },
     label: 'Orders and directions needed',
     show_condition: null,
-  }
+  };
   const CASE_FIELDS: CaseField[] = [
     LABEL_CASE_FIELD,
     COMPLEX_CASE_FIELD,

@@ -7,11 +7,11 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 })
 export class LabelFieldComponent {
   @Input()
-  caseField: CaseField;
+  public caseField: CaseField;
 
   @Input()
-  caseFields: CaseField[] = [];
+  public caseFields: CaseField[] = [];
 
   @Input()
-  markdownUseHrefAsRouterLink?: boolean;
+  public markdownUseHrefAsRouterLink?: boolean;
 }

@@ -1,14 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseHeaderComponent } from './case-header.component';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { text } from '../../test/helpers';
-import { createCaseView } from '../../fixture/case-view.test.fixture';
 import { MockComponent } from 'ng2-mock-component';
-import { CaseReferencePipe } from '../../pipes';
 import { LabelSubstitutorDirective, PlaceholderService } from '../../directives';
-import { LabelFieldComponent } from '../palette';
+import { createCaseView } from '../../fixture/case-view.test.fixture';
+import { CaseReferencePipe } from '../../pipes';
 import { FieldsUtils } from '../../services';
+import { text } from '../../test/helpers';
+import { LabelFieldComponent } from '../palette';
+import { CaseHeaderComponent } from './case-header.component';
 
 describe('CaseHeaderComponent', () => {
 
@@ -53,7 +53,7 @@ describe('CaseHeaderComponent', () => {
   }));
 
   it('should render a header with case reference when title display is empty', () => {
-    let header = de.query($HEADING);
+    const header = de.query($HEADING);
     fixture
       .whenStable()
       .then(() => {
@@ -67,7 +67,7 @@ describe('CaseHeaderComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    let header = de.query($MARKDOWN);
+    const header = de.query($MARKDOWN);
     expect(header).toBeTruthy();
     expect(header.nativeElement.getAttribute('ng-reflect-content')).toEqual('Title');
   });

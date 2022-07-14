@@ -1,15 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { CaseFieldService } from '../../../services/case-fields';
 import { CaseField } from '../../../domain/definition';
+import { CaseFieldService } from '../../../services/case-fields';
 
 @Pipe({
   name: 'ccdIsReadOnlyAndNotCollection'
 })
 export class IsReadOnlyAndNotCollectionPipe implements PipeTransform {
 
-  constructor(private  caseFieldService: CaseFieldService) {};
+  constructor(private readonly  caseFieldService: CaseFieldService) {}
 
-  transform(field: CaseField): boolean {
+  public transform(field: CaseField): boolean {
     if (!field || !field.field_type || !field.field_type.type) {
       return false;
     }

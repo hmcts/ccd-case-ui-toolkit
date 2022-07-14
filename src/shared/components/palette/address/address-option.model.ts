@@ -1,9 +1,9 @@
 import { AddressModel } from '../../../domain/addresses/address.model';
 export class AddressOption {
 
-  description: string;
+  public description: string;
 
-  value: AddressModel;
+  public value: AddressModel;
 
   constructor (addressModel: AddressModel, description: string) {
     if (description == null) {

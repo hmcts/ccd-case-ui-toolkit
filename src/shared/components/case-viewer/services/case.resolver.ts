@@ -1,12 +1,12 @@
-import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
+import { plainToClassFromExist } from 'class-transformer';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
-import { CaseNotifier, CasesService } from '../../case-editor';
 import { DraftService, NavigationOrigin } from '../../../services';
-import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
+import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -18,12 +18,12 @@ export class CaseResolver implements Resolve<CaseView> {
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
   // we cache the case view to avoid retrieving it for each child route
-  previousUrl: string;
-  constructor(private caseNotifier: CaseNotifier,
-              private casesService: CasesService,
-              private draftService: DraftService,
-              private navigationNotifierService: NavigationNotifierService,
-              private router: Router) {
+  public previousUrl: string;
+  constructor(private readonly caseNotifier: CaseNotifier,
+              private readonly casesService: CasesService,
+              private readonly draftService: DraftService,
+              private readonly navigationNotifierService: NavigationNotifierService,
+              private readonly router: Router) {
     router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
@@ -31,9 +31,9 @@ export class CaseResolver implements Resolve<CaseView> {
       });
   }
 
-  resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
+  public resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
 
-    let cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
+    const cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
 
     if (!cid) {
       // when redirected to case view after a case created, and the user has no READ access,
@@ -104,7 +104,7 @@ export class CaseResolver implements Resolve<CaseView> {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
-      this.router.navigate(['/list/case'])
+      this.router.navigate(['/list/case']);
       return Observable.of(null);
     }
     if (error.status !== 401 && error.status !== 403) {

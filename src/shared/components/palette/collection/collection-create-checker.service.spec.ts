@@ -1,18 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { CollectionCreateCheckerService } from './collection-create-checker.service';
+import { AccessControlList } from '../../../domain/definition/access-control-list.model';
 import { Profile } from '../../../domain/profile';
 import { createACL, createCaseField, createFieldType, textFieldType } from '../../../fixture';
-import { AccessControlList } from '../../../domain/definition/access-control-list.model';
+import { CollectionCreateCheckerService } from './collection-create-checker.service';
 
 describe('CollectionCreateCheckerService', () => {
   const ROLE1 = 'role1';
   const ROLE2 = 'role2';
   const ROLE3 = 'role3';
-  let acl1: AccessControlList = createACL(ROLE1, true, true, true, false);
-  let acl2: AccessControlList = createACL(ROLE2, true, true, false, false);
-  let acl3: AccessControlList = createACL(ROLE3, false, true, false, false);
+  const acl1: AccessControlList = createACL(ROLE1, true, true, true, false);
+  const acl2: AccessControlList = createACL(ROLE2, true, true, false, false);
+  const acl3: AccessControlList = createACL(ROLE3, false, true, false, false);
 
-  let collectionCreateCheckerService: CollectionCreateCheckerService = new CollectionCreateCheckerService();
+  const collectionCreateCheckerService: CollectionCreateCheckerService = new CollectionCreateCheckerService();
   const DATE_TEXT_FIELD = createCaseField('date', 'Date', '', textFieldType(), 'READONLY', undefined, undefined, [acl1, acl2]);
   const DESCRIPTION_TEXT_FIELD = createCaseField('description', 'Description', '', textFieldType(), 'READONLY',
     undefined, undefined, [acl3]);
@@ -29,8 +29,8 @@ describe('CollectionCreateCheckerService', () => {
   const TIMELINE_EVENTS_COLLECTION = createCaseField('defendantTimeLineEvents', 'Timeline Events', '',
     createFieldType('defendantTimeLineEvents-acd64b3a', 'Collection', [], TIMELINE_EVENT_COMPLEX), 'OPTIONAL',
     undefined, undefined, [acl2]);
-  let rolesArray: Array<string> = [ROLE1, ROLE2, ROLE3];
-  let profile: Profile = {
+  const rolesArray: string[] = [ROLE1, ROLE2, ROLE3];
+  const profile: Profile = {
     user: {
       idam: {
         id: '21',

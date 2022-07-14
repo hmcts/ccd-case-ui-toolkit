@@ -1,10 +1,10 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { DebugElement } from '@angular/core';
-import { PaletteUtilsModule } from '../utils';
 import { By } from '@angular/platform-browser';
-import { MoneyGbpInputComponent } from './money-gbp-input.component';
 import { MockComponent } from 'ng2-mock-component';
+import { PaletteUtilsModule } from '../utils';
+import { MoneyGbpInputComponent } from './money-gbp-input.component';
 import createSpy = jasmine.createSpy;
 
 describe('MoneyGbpInputComponent', () => {
@@ -60,7 +60,7 @@ describe('MoneyGbpInputComponent', () => {
     component.writeValue('12345');
     fixture.detectChanges();
 
-    let input = de.query($INPUT).componentInstance;
+    const input = de.query($INPUT).componentInstance;
 
     expect(input.value).toEqual('123.45');
   });
@@ -69,7 +69,7 @@ describe('MoneyGbpInputComponent', () => {
     component.writeValue('45');
     fixture.detectChanges();
 
-    let input = de.query($INPUT).componentInstance;
+    const input = de.query($INPUT).componentInstance;
 
     expect(input.value).toEqual('0.45');
   });
@@ -78,7 +78,7 @@ describe('MoneyGbpInputComponent', () => {
     component.writeValue('0');
     fixture.detectChanges();
 
-    let input = de.query($INPUT).componentInstance;
+    const input = de.query($INPUT).componentInstance;
 
     expect(input.value).toEqual('0.00');
   });
@@ -87,7 +87,7 @@ describe('MoneyGbpInputComponent', () => {
     component.writeValue(null);
     fixture.detectChanges();
 
-    let input = de.query($INPUT).componentInstance;
+    const input = de.query($INPUT).componentInstance;
 
     expect(input.value).toBeNull();
   });
@@ -96,7 +96,7 @@ describe('MoneyGbpInputComponent', () => {
     component.writeValue(undefined);
     fixture.detectChanges();
 
-    let input = de.query($INPUT).componentInstance;
+    const input = de.query($INPUT).componentInstance;
 
     expect(input.value).toBeNull();
   });
@@ -162,57 +162,57 @@ describe('MoneyGbpInputComponent', () => {
   });
 
   it('should be invalid when contains letters', () => {
-    let results = component.validate({ value: 'x'} as FormControl);
+    const results = component.validate({ value: 'x'} as FormControl);
 
     expect(results['pattern']).toBeTruthy();
   });
 
   it('should be valid when digits', () => {
-    let results = component.validate({ value: '12.34'} as FormControl);
+    const results = component.validate({ value: '12.34'} as FormControl);
 
     expect(results).toBeUndefined();
   });
 
   it('should be valid when digits with negative value', () => {
-    let results = component.validate({ value: '-12.34'} as FormControl);
+    const results = component.validate({ value: '-12.34'} as FormControl);
 
     expect(results).toBeUndefined();
   });
 
   it('should be invalid when too many decimal places', () => {
-    let results = component.validate({ value: '12.345'} as FormControl);
+    const results = component.validate({ value: '12.345'} as FormControl);
 
     expect(results['pattern']).toBeTruthy();
   });
 
   it('should be invalid when too many decimal places with negative value', () => {
-    let results = component.validate({ value: '-12.345'} as FormControl);
+    const results = component.validate({ value: '-12.345'} as FormControl);
 
     expect(results['pattern']).toBeTruthy();
   });
 
   it('should be valid when empty string', () => {
-    let results = component.validate({ value: ''} as FormControl);
+    const results = component.validate({ value: ''} as FormControl);
 
     expect(results).toBeUndefined();
   });
 
   it('should not be valid when empty string and mandatory', () => {
     component.mandatory = true;
-    let results = component.validate({ value: ''} as FormControl);
+    const results = component.validate({ value: ''} as FormControl);
 
     expect(results).toEqual({pattern: 'This field is required'});
   });
 
   it('should be valid when null', () => {
-    let results = component.validate({ value: null} as FormControl);
+    const results = component.validate({ value: null} as FormControl);
 
     expect(results).toBeUndefined();
   });
 
   it('should not be valid when null and mandatory', () => {
     component.mandatory = true;
-    let results = component.validate({ value: null} as FormControl);
+    const results = component.validate({ value: null} as FormControl);
 
     expect(results).toEqual({pattern: 'This field is required'});
   });

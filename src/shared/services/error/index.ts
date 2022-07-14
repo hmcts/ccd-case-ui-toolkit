@@ -1,1 +1,1 @@
-export * from './error-notifier.service'
+export * from './error-notifier.service';

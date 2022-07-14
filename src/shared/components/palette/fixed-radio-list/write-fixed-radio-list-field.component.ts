@@ -8,10 +8,10 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteFixedRadioListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  fixedRadioListControl: FormControl;
+  public fixedRadioListControl: FormControl;
 
-  ngOnInit() {
-    let notEmpty = this.caseField.value !== null && this.caseField.value !== undefined;
+  public ngOnInit() {
+    const notEmpty = this.caseField.value !== null && this.caseField.value !== undefined;
     this.fixedRadioListControl = this.registerControl(new FormControl(notEmpty ? this.caseField.value : null)) as FormControl;
   }
 }

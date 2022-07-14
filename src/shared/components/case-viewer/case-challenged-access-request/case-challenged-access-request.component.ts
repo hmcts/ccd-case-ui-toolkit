@@ -51,7 +51,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
       new FormControl('', {
         validators: [(control: AbstractControl): {[key: string]: boolean} | null => {
           if (this.formGroup.get(this.radioSelectedControlName).value === AccessReason.LINKED_TO_CURRENT_CASE && this.inputEmpty(control)) {
-            return {'invalid': true};
+            return {invalid: true};
           }
           return null;
         }],
@@ -62,7 +62,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
       new FormControl('', {
         validators: [(control: AbstractControl): {[key: string]: boolean} | null => {
           if (this.formGroup.get(this.radioSelectedControlName).value === AccessReason.OTHER && this.inputEmpty(control)) {
-            return {'invalid': true};
+            return {invalid: true};
           }
           return null;
         }],
@@ -150,6 +150,6 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
 }
 
 export interface DisplayedAccessReason {
-  reason: AccessReason,
-  checked: boolean
+  reason: AccessReason;
+  checked: boolean;
 }

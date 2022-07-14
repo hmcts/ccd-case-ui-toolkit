@@ -10,16 +10,16 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteTextAreaFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  textareaControl: FormControl;
+  public textareaControl: FormControl;
   constructor(private readonly browserService: BrowserService) {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.textareaControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 
-  autoGrow(event) {
+  public autoGrow(event) {
     if (this.browserService.isIEOrEdge()) {
       event.target.style.height = 'auto';
       event.target.style.height = event.target.scrollHeight + 'px';

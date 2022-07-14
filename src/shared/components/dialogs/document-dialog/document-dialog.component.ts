@@ -8,18 +8,18 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class DocumentDialogComponent implements OnInit {
 
-  result: string;
+  public result: string;
 
-  constructor(private matDialogRef: MatDialogRef<DocumentDialogComponent>) {}
+  constructor(private readonly matDialogRef: MatDialogRef<DocumentDialogComponent>) {}
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 
-  replace() {
+  public replace() {
     this.result = 'Replace';
     this.matDialogRef.close(this.result);
   }
-  cancel() {
+  public cancel() {
     this.result = 'Cancel';
     this.matDialogRef.close(this.result);
   }

@@ -16,30 +16,30 @@ import { AddressOption } from './address-option.model';
 export class WriteAddressFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
 
   @ViewChild('writeComplexFieldComponent', { static: false })
-  writeComplexFieldComponent: WriteComplexFieldComponent;
+  public writeComplexFieldComponent: WriteComplexFieldComponent;
 
   @ViewChildren(FocusElementDirective)
-  focusElementDirectives: QueryList<FocusElementDirective>;
+  public focusElementDirectives: QueryList<FocusElementDirective>;
 
-  addressesService: AddressesService;
+  public addressesService: AddressesService;
 
   @Input()
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 
-  addressFormGroup = new FormGroup({});
-  postcode: FormControl;
-  addressList: FormControl;
+  public addressFormGroup = new FormGroup({});
+  public postcode: FormControl;
+  public addressList: FormControl;
 
-  addressOptions: AddressOption[];
+  public addressOptions: AddressOption[];
 
-  missingPostcode = false;
+  public missingPostcode = false;
 
-  constructor(addressesService: AddressesService, private isCompoundPipe: IsCompoundPipe) {
+  constructor(addressesService: AddressesService, private readonly isCompoundPipe: IsCompoundPipe) {
     super();
     this.addressesService = addressesService;
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (!this.isComplexWithHiddenFields()) {
       this.postcode = new FormControl('');
       this.addressFormGroup.addControl('postcode', this.postcode);
@@ -48,7 +48,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     }
   }
 
-  findAddress() {
+  public findAddress() {
     if (!this.postcode.value) {
       this.missingPostcode = true;
     } else {
@@ -77,25 +77,25 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     }
   }
 
-  refocusElement(): void {
+  public refocusElement(): void {
     if (this.focusElementDirectives && this.focusElementDirectives.length > 0) {
       this.focusElementDirectives.first.focus();
     }
   }
 
-  blankAddress() {
+  public blankAddress() {
     this.caseField.value = new AddressModel();
     this.setFormValue();
   }
 
-  isComplexWithHiddenFields() {
+  public isComplexWithHiddenFields() {
     if (this.caseField.isComplex() && this.caseField.field_type.complex_fields
       && this.caseField.field_type.complex_fields.some(cf => cf.hidden === true)) {
       return true;
     }
   }
 
-  shouldShowDetailFields() {
+  public shouldShowDetailFields() {
     if (this.isComplexWithHiddenFields()) {
       return true;
     }
@@ -117,20 +117,20 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     return hasAddress;
   }
 
-  addressSelected() {
+  public addressSelected() {
     this.caseField.value = this.addressList.value;
     this.setFormValue();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
-    let change = changes['caseField'];
+    const change = changes['caseField'];
     if (change) {
       this.setFormValue();
     }
   }
 
-  buildIdPrefix(elementId: string): string {
+  public buildIdPrefix(elementId: string): string {
     return `${this.idPrefix}_${elementId}`;
   }
 

@@ -202,7 +202,7 @@ describe('ReadComplexFieldComponent', () => {
       id: 'Complex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -212,8 +212,8 @@ describe('ReadComplexFieldComponent', () => {
           },
           value: 'Flat 9',
           isDynamic: () => false
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -223,22 +223,22 @@ describe('ReadComplexFieldComponent', () => {
           },
           value: '111 East India road',
           isDynamic: () => false
-        })
+        }) as CaseField
       ]
     };
 
     const FIELD_ID = 'AComplexField';
     const VALUE = {
-      'AddressLine1': '1 West',
-      'AddressLine2': 'South'
+      AddressLine1: '1 West',
+      AddressLine2: 'South'
     };
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadComplexFieldComponent>;
     let component: ReadComplexFieldComponent;

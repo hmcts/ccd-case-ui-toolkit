@@ -1,9 +1,9 @@
-import { FieldLabelPipe } from './field-label.pipe';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldLabelPipe } from './field-label.pipe';
 
 describe('FieldLabelPipe', () => {
 
-  let fieldLabelPipe: FieldLabelPipe = new FieldLabelPipe();
+  const fieldLabelPipe: FieldLabelPipe = new FieldLabelPipe();
 
   it('should return empty string for null values', () => {
     expect(fieldLabelPipe.transform(null))

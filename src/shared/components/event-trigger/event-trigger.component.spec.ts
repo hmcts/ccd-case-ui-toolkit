@@ -34,7 +34,7 @@ describe('EventTriggerComponent', () => {
         currentValue: triggers
       }
     };
-  }
+  };
 
   const SORTED_TRIGGERS: CaseViewTrigger[] = [...TRIGGERS];
 
@@ -90,17 +90,17 @@ describe('EventTriggerComponent', () => {
       component.triggers = [];
       fixture.detectChanges();
 
-      let form = de.query($EVENT_TRIGGER_FORM);
+      const form = de.query($EVENT_TRIGGER_FORM);
       expect(form).toBeNull();
     });
 
     it('should render a <select> with an <option> for every trigger', () => {
-      let options = de.queryAll($SELECT_OPTIONS);
+      const options = de.queryAll($SELECT_OPTIONS);
 
       expect(options.length).toBe(2);
 
       TRIGGERS.forEach(trigger => {
-        let optionDe = options.find(option => text(option) === trigger.name);
+        const optionDe = options.find(option => text(option) === trigger.name);
 
         expect(optionDe).toBeTruthy();
         expect(attr(optionDe, 'title')).toBe(trigger.description);
@@ -108,7 +108,7 @@ describe('EventTriggerComponent', () => {
     });
 
     it('should initially display default placeholder option when more than 1 trigger', () => {
-      let defaultOption = de.query($SELECT_DEFAULT);
+      const defaultOption = de.query($SELECT_DEFAULT);
 
       expect(defaultOption).toBeTruthy();
       expect(attr(defaultOption, 'value')).toBe('');
@@ -129,7 +129,7 @@ describe('EventTriggerComponent', () => {
       component.triggerForm.controls['trigger'].setValue(TRIGGERS[1]);
       fixture.detectChanges();
 
-      let button = de.query($SUBMIT_BUTTON);
+      const button = de.query($SUBMIT_BUTTON);
       expect(button).toBeTruthy();
 
       button.nativeElement.click();
@@ -138,7 +138,7 @@ describe('EventTriggerComponent', () => {
     });
 
     it('should output an `onTriggerChange` event when selection is changed', () => {
-      let dropdown = de.query($SELECT_BOX);
+      const dropdown = de.query($SELECT_BOX);
       expect(dropdown).toBeTruthy();
 
       dropdown.nativeElement.dispatchEvent(new Event('change'));
@@ -148,7 +148,7 @@ describe('EventTriggerComponent', () => {
     });
 
     it('should disable button when form is not valid', () => {
-      let button = de.query($SUBMIT_BUTTON);
+      const button = de.query($SUBMIT_BUTTON);
 
       expect(component.triggerForm.valid).toBeFalsy('Assumption');
       expect(attr(button, 'disabled')).toEqual('');
@@ -158,7 +158,7 @@ describe('EventTriggerComponent', () => {
       component.triggerForm.controls['trigger'].setValue(TRIGGERS[0]);
       fixture.detectChanges();
 
-      let button = de.query($SUBMIT_BUTTON);
+      const button = de.query($SUBMIT_BUTTON);
 
       expect(component.triggerForm.valid).toBeTruthy('Assumption');
       expect(attr(button, 'disabled')).toEqual(null);
@@ -168,7 +168,7 @@ describe('EventTriggerComponent', () => {
       component.triggerForm.controls['trigger'].setValue(TRIGGERS[0]);
       fixture.detectChanges();
 
-      let button = de.query($SUBMIT_BUTTON);
+      const button = de.query($SUBMIT_BUTTON);
       expect(attr(button, 'disabled')).toEqual(null);
 
       component.isDisabled = true;
@@ -209,7 +209,7 @@ describe('EventTriggerComponent', () => {
     }));
 
     it('should NOT initially display a default placeholder option when just 1 trigger', () => {
-      let defaultOption = de.query($SELECT_DEFAULT);
+      const defaultOption = de.query($SELECT_DEFAULT);
 
       expect(!!defaultOption).toBeFalsy();
     });

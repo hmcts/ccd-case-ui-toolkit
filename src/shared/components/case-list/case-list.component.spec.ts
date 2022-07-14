@@ -3,9 +3,9 @@ import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { PaginatePipe, PaginationService } from 'ngx-pagination';
 import { BrowserService } from '../../services';
 import { CaseListComponent, TableConfig } from './case-list.component';
-import { PaginatePipe, PaginationService } from 'ngx-pagination';
 
 describe('CaseListComponent', () => {
   const cases: any[] = [
@@ -49,7 +49,7 @@ describe('CaseListComponent', () => {
 
   let component: CaseListComponent;
   let fixture: ComponentFixture<CaseListComponent>;
-  let de: DebugElement
+  let de: DebugElement;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

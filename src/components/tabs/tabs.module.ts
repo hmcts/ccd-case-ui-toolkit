@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TabsComponent } from './tabs.component';
-import { TabComponent } from './tab.component';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TabComponent } from './tab.component';
+import { TabsComponent } from './tabs.component';
 
 @NgModule({
   imports: [

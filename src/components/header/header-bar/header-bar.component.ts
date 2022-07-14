@@ -18,7 +18,7 @@ export class HeaderBarComponent {
   public username: string;
 
   @Output()
-  private signOutRequest: EventEmitter<any> = new EventEmitter();
+  private readonly signOutRequest: EventEmitter<any> = new EventEmitter();
 
   public signOut() {
     this.signOutRequest.emit();

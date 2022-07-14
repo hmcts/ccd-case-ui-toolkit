@@ -1,12 +1,12 @@
-import { EventTriggerResolver } from './event-trigger.resolver';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
-import { CaseResolver } from './case.resolver';
+import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventTrigger, HttpError, Profile } from '../../../domain';
+import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { createCaseEventTrigger } from '../../../fixture';
 import { HttpService, ProfileNotifier, ProfileService } from '../../../services';
-import { createAProfile } from '../../../domain/profile/profile.test.fixture';
-import { AbstractAppConfig } from '../../../../app.config';
+import { CaseResolver } from './case.resolver';
+import { EventTriggerResolver } from './event-trigger.resolver';
 
 describe('EventTriggerResolver', () => {
 
@@ -42,8 +42,8 @@ describe('EventTriggerResolver', () => {
   let httpService: any;
   const MOCK_PROFILE: Profile = createAProfile();
   const API_URL = 'https://data.ccd.reform';
-  let FUNC = () => false;
-  let PROFILE: Profile = {
+  const FUNC = () => false;
+  const PROFILE: Profile = {
     user: {
       idam: {
         id: 'user1',
@@ -62,11 +62,11 @@ describe('EventTriggerResolver', () => {
         state_id: ''
       }
     },
-    'isSolicitor': FUNC,
-    'isCourtAdmin': FUNC
+    isSolicitor: FUNC,
+    isCourtAdmin: FUNC
   };
 
-  let PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+  const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
   const PROFILE_CACHED: Profile = PROFILE;
 
   beforeEach(() => {

@@ -1,12 +1,12 @@
-import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class ErrorNotifierService {
-  errorSource: Subject<any> = new Subject<any>();
-  error = this.errorSource.asObservable();
+  public errorSource: Subject<any> = new Subject<any>();
+  public error = this.errorSource.asObservable();
 
-  announceError(error: any) {
+  public announceError(error: any) {
     this.errorSource.next(error);
   }
 }

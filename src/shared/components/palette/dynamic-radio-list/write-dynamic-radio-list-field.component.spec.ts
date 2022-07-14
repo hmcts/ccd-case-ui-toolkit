@@ -1,12 +1,12 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
-import { WriteDynamicRadioListFieldComponent } from './write-dynamic-radio-list-field.component';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { attr, text } from '../../../test/helpers';
+import { PaletteUtilsModule } from '../utils/utils.module';
+import { WriteDynamicRadioListFieldComponent } from './write-dynamic-radio-list-field.component';
 
 const VALUE = 'F';
 const EXPECTED_LABEL = 'Female';
@@ -34,14 +34,14 @@ const FIELD_TYPE: FieldType = {
   type: 'DynamicList',
 };
 
-const CASE_FIELD: CaseField = <CaseField>({
+const CASE_FIELD: CaseField = ({
   id: FIELD_ID,
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
   value: VALUE,
   list_items: FIELD_LIST_ITEMS
-});
+}) as CaseField;
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 
@@ -86,7 +86,7 @@ describe('WriteDynamicRadioListFieldComponent', () => {
   });
 
   it('should render all options', () => {
-    let options = de.queryAll($RADIO);
+    const options = de.queryAll($RADIO);
 
     expect(options.length).toEqual(3);
     expect(attr(options[0], 'type')).toEqual('radio');

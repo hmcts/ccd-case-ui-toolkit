@@ -7,26 +7,26 @@ import { ConvertHrefToRouterService } from '../case-editor/services';
 })
 export class MarkdownComponent implements OnInit {
   @Input()
-  content: string;
+  public content: string;
   @Input()
-  markdownUseHrefAsRouterLink!: boolean;
+  public markdownUseHrefAsRouterLink!: boolean;
 
-  constructor(private convertHrefToRouterService: ConvertHrefToRouterService) {}
+  constructor(private readonly convertHrefToRouterService: ConvertHrefToRouterService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.content = this.content.replace(/  \n/g, '<br>');
   }
 
   @HostListener('click', ['$event'])
-  onMarkdownClick(event: MouseEvent) {
+  public onMarkdownClick(event: MouseEvent) {
     // If we don't have an anchor tag, we don't need to do anything.
     if (event.target instanceof HTMLAnchorElement === false) {
       return;
     }
-    return this.callUpdateHrefLink((<HTMLAnchorElement>event.target), event);
+    return this.callUpdateHrefLink((event.target as HTMLAnchorElement), event);
   }
 
-  callUpdateHrefLink(eventTarget, event?) {
+  public callUpdateHrefLink(eventTarget, event?) {
     const targetPath = eventTarget.pathname;
     const hash = eventTarget.hash;
     const search = eventTarget.search;

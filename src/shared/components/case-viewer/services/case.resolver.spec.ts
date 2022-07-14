@@ -1,8 +1,8 @@
-import { CaseResolver } from './case.resolver';
 import { NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CaseView } from '../../../domain';
 import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
+import { CaseResolver } from './case.resolver';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseResolver', () => {
@@ -213,7 +213,7 @@ describe('CaseResolver', () => {
     });
 
     it('should redirect to case list page when case id is empty', () => {
-      let navigationResult = Promise.resolve('someResult');
+      const navigationResult = Promise.resolve('someResult');
       router.navigate.and.returnValue(navigationResult);
       route.paramMap.get.and.returnValue('');
 

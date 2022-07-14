@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
+import { ConnectableObservable, Observable } from 'rxjs';
 import { Observer } from 'rxjs/Observer';
 import 'rxjs/operator/publish';
-import { ConnectableObservable, Observable } from 'rxjs/Rx';
 import { AlertLevel } from '../../domain';
 import { Alert } from '../../domain/alert/alert.model';
 
@@ -31,7 +31,7 @@ export class AlertService {
 
   private preserveAlerts = false;
 
-  constructor(private router: Router) {
+  constructor(private readonly router: Router) {
 
     this.successes = Observable
       .create(observer => this.successObserver = observer)
@@ -68,7 +68,7 @@ export class AlertService {
       });
   }
 
-  clear(): void {
+  public clear(): void {
     this.successObserver.next(null);
     this.errorObserver.next(null);
     this.warningObserver.next(null);
@@ -81,7 +81,7 @@ export class AlertService {
     this.message = '';
   }
 
-  error(message: string): void {
+  public error(message: string): void {
     this.preservedError = this.preserveMessages(message);
     const alert: Alert = { level: 'error', message };
     this.errorObserver.next(alert);
@@ -90,7 +90,7 @@ export class AlertService {
     this.push(alert);
   }
 
-  warning(message: string): void {
+  public warning(message: string): void {
     this.preservedWarning = this.preserveMessages(message);
     const alert: Alert = { level: 'warning', message };
     this.warningObserver.next(alert);
@@ -99,7 +99,7 @@ export class AlertService {
     this.push(alert);
   }
 
-  success(message: string): void {
+  public success(message: string): void {
     this.preservedSuccess = this.preserveMessages(message);
     const alert: Alert = { level: 'success', message };
     this.successObserver.next(alert);
@@ -108,7 +108,7 @@ export class AlertService {
     this.push(alert);
   }
 
-  setPreserveAlerts(preserve: boolean, urlInfo?: string[]) {
+  public setPreserveAlerts(preserve: boolean, urlInfo?: string[]) {
     // if there is no url setting then just preserve the messages
     if (!urlInfo) {
       this.preserveAlerts = preserve;
@@ -118,7 +118,7 @@ export class AlertService {
     }
   }
 
-  currentUrlIncludesInfo(preserve: boolean, urlInfo: string[]): boolean {
+  public currentUrlIncludesInfo(preserve: boolean, urlInfo: string[]): boolean {
     // loop through the list of strings and check the router includes all of them
     for (const urlSnip of urlInfo) {
       if (!this.router.url.includes(urlSnip)) {
@@ -130,11 +130,11 @@ export class AlertService {
     return preserve;
   }
 
-  isPreserveAlerts(): boolean {
+  public isPreserveAlerts(): boolean {
     return this.preserveAlerts;
   }
 
-  preserveMessages(message: string): string {
+  public preserveMessages(message: string): string {
     // preserve the messages if set to preserve them
     if (this.isPreserveAlerts()) {
       return message;
@@ -144,7 +144,7 @@ export class AlertService {
   }
 
   // TODO: Remove
-  push(msgObject) {
+  public push(msgObject) {
     this.message = msgObject.message;
     this.level = msgObject.level;
 

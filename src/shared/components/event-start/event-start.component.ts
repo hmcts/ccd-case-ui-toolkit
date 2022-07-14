@@ -30,10 +30,10 @@ export class EventStartComponent implements OnInit {
 
     // Setup the context
     this.context = {
-      tasks: tasks,
-      caseId: caseId,
-      eventId: eventId,
-      taskId: taskId,
+      tasks,
+      caseId,
+      eventId,
+      taskId,
       router: this.router,
       route: this.route,
       sessionStorageService: this.sessionStorageService

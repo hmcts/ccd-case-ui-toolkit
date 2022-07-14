@@ -15,7 +15,7 @@ describe('JudicialworkerService', () => {
     sidam_id: '4321-4321-4321-4321',
     full_name: 'Test Judicial user',
     email_id: 'testuser@demoenv.com'
-  }
+  };
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';

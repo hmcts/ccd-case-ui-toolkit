@@ -15,20 +15,19 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     id: 'CasePaymentHistoryViewer',
     type: 'CasePaymentHistoryViewer'
   };
-  const CASE_FIELD: CaseField = <CaseField>({
+  const CASE_FIELD: CaseField = ({
     id: 'x',
     label: 'X',
     display_context: 'OPTIONAL',
     field_type: FIELD_TYPE,
-  });
+  }) as CaseField;
   const CASE_REFERENCE = '1234123412341234';
   const PAYMENTS_URL = 'http://payment-api:123';
   const BULKSCAN_API_URL = 'http://bulkscant-api:123';
   const REFUNDS_URL = 'http://refunds-api:123';
 
   let appConfig;
-  let PaymentWebComponent;
-  let sessionStorage;
+  let paymentWebComponent = null;
 
   let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
   let component: CasePaymentHistoryViewerFieldComponent;
@@ -40,7 +39,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
     appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
 
-    PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
+    paymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
         'CCD_CASE_NUMBER',
         'BULKSCAN_API_ROOT',
@@ -64,7 +63,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
           CasePaymentHistoryViewerFieldComponent,
 
           // Mocks
-          PaymentWebComponent
+          paymentWebComponent
         ],
         providers: [
           { provide: AbstractAppConfig, useValue: appConfig },
@@ -84,14 +83,14 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   }));
 
   it('should render Payments web component', () => {
-    let paymentDe = de.query(By.directive(PaymentWebComponent));
+    const paymentDe = de.query(By.directive(paymentWebComponent));
 
     expect(paymentDe).toBeDefined();
 
-    let paymentComponent = paymentDe.componentInstance;
+    const paymentComponent = paymentDe.componentInstance;
     expect(paymentComponent.API_ROOT).toEqual(PAYMENTS_URL);
     expect(paymentComponent.CCD_CASE_NUMBER).toEqual(CASE_REFERENCE);
-    expect(paymentComponent.SELECTED_OPTION).toEqual('CCDorException')
+    expect(paymentComponent.SELECTED_OPTION).toEqual('CCDorException');
     expect(paymentComponent.BULKSCAN_API_ROOT).toEqual(BULKSCAN_API_URL);
     expect(paymentComponent.ISBSENABLE).toEqual('true');
   });

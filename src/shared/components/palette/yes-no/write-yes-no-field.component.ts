@@ -9,14 +9,14 @@ import { YesNoService } from './yes-no.service';
 })
 export class WriteYesNoFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  yesNoValues = [ 'Yes', 'No' ];
-  yesNoControl: FormControl;
+  public yesNoValues = [ 'Yes', 'No' ];
+  public yesNoControl: FormControl;
 
-  constructor(private yesNoService: YesNoService) {
+  constructor(private readonly yesNoService: YesNoService) {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.yesNoControl = this.registerControl(new FormControl(this.yesNoService.format(this.caseField.value))) as FormControl;
   }
 }

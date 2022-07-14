@@ -49,10 +49,10 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
   public onChange(event) {
 
     // get value from input
-    let newValue = event.target.value;
+    const newValue = event.target.value;
 
     if (newValue && MoneyGbpInputComponent.PATTERN_REGEXP.test(newValue)) {
-      let parts = newValue.split('.');
+      const parts = newValue.split('.');
 
       if (!parts[1]) {
         parts[1] = '00';
@@ -76,7 +76,7 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
     if (obj) {
       this.rawValue = obj;
 
-      let integerPart = obj.slice(0, -2) || '0';
+      const integerPart = obj.slice(0, -2) || '0';
       let decimalPart = obj.slice(-2);
 
       while (2 > decimalPart.length) {

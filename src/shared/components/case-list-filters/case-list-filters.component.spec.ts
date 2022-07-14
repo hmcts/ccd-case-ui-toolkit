@@ -1,13 +1,13 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { CaseListFiltersComponent } from './case-list-filters.component';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import createSpyObj = jasmine.createSpyObj;
 import { Observable } from 'rxjs';
+import { CaseListFiltersComponent } from './case-list-filters.component';
 let mockDefinitionsService: any;
-import { DefinitionsService } from '../../services';
-import { Jurisdiction, CaseTypeLite } from '../../domain';
-import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
+import { MockComponent } from 'ng2-mock-component';
+import { CaseTypeLite, Jurisdiction } from '../../domain';
+import { DefinitionsService } from '../../services';
 
 const EVENT_ID_1 = 'ID_1';
 const EVENT_NAME_1 = 'Event one';
@@ -96,7 +96,7 @@ const JURISDICTION_2: Jurisdiction = {
     caseTypes: CASE_TYPES_2
 };
 
-let WorkbasketFiltersComponent: any = MockComponent({
+const WorkbasketFiltersComponent: any = MockComponent({
     selector: 'ccd-workbasket-filters',
     inputs: [
         'jurisdictions',

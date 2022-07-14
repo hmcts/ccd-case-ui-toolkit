@@ -1,6 +1,6 @@
-import { DocumentUrlPipe } from './document-url.pipe';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../../app.config';
+import { DocumentUrlPipe } from './document-url.pipe';
 
 describe('DocumentUrlPipe', () => {
   const DOCUMENT_MANAGEMENT_URL = 'http://localhost:1234/documents';
@@ -27,35 +27,35 @@ describe('DocumentUrlPipe', () => {
 
   describe('given a document URL matching the remote HRS api', () => {
     it('should be replaced with a relative HRS URL', () => {
-      let url = documentUrlPipe.transform(MATCHING_REMOTE_HRS_URL);
+      const url = documentUrlPipe.transform(MATCHING_REMOTE_HRS_URL);
       expect(url).toEqual(HRS_URL);
     });
   });
 
   describe('given the Document Management URL is the one in the app config', () => {
     it('should be replaced with the Document Management endpoint URL of the API Gateway', () => {
-      let url = documentUrlPipe.transform(MATCHING_REMOTE_DOCUMENT_MANAGEMENT_URL);
+      const url = documentUrlPipe.transform(MATCHING_REMOTE_DOCUMENT_MANAGEMENT_URL);
       expect(url).toEqual(DOCUMENT_MANAGEMENT_URL);
     });
   });
 
   describe('given a document URL matching the remote HRS api', () => {
     it('should be replaced with a relative HRS URL', () => {
-      let url = documentUrlPipe.transform(MATCHING_REMOTE_HRS_URL);
+      const url = documentUrlPipe.transform(MATCHING_REMOTE_HRS_URL);
       expect(url).toEqual(HRS_URL);
     });
   });
 
   describe('given the Document Management URL is NOT the one in the app config', () => {
     it('should be left unchanged', () => {
-      let url = documentUrlPipe.transform(NON_MATCHING_REMOTE_DOCUMENT_MANAGEMENT_URL);
+      const url = documentUrlPipe.transform(NON_MATCHING_REMOTE_DOCUMENT_MANAGEMENT_URL);
       expect(url).toEqual(NON_MATCHING_REMOTE_DOCUMENT_MANAGEMENT_URL);
     });
   });
 
   describe('given a document URL not matching the remote HRS api', () => {
     it('should be left unchanged', () => {
-      let url = documentUrlPipe.transform(NON_MATCHING_REMOTE_HRS_URL);
+      const url = documentUrlPipe.transform(NON_MATCHING_REMOTE_HRS_URL);
       expect(url).toEqual(NON_MATCHING_REMOTE_HRS_URL);
     });
   });

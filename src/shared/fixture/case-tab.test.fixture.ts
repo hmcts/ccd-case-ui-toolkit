@@ -1,5 +1,5 @@
-import { CaseField, CaseTab } from '../domain';
 import { plainToClass } from 'class-transformer';
+import { CaseField, CaseTab } from '../domain';
 
 export let createCaseTabArray = () => {
   const tab1 = new CaseTab();

@@ -35,24 +35,24 @@ describe('CaseEventTriggerComponent', () => {
     '3',
     true,
     [
-      <CaseField>({
+      ({
         id: 'PersonFirstName',
         label: 'First name',
         field_type: null,
         display_context: 'READONLY'
-      }),
-      <CaseField>({
+      }) as CaseField,
+      ({
         id: 'PersonLastName',
         label: 'Last name',
         field_type: null,
         display_context: 'OPTIONAL'
-      })
+      }) as CaseField
     ]
   );
 
   const SANITISED_EDIT_FORM: CaseEventData = {
     data: {
-      'PersonLastName': 'Khaleesi'
+      PersonLastName: 'Khaleesi'
     },
     event: {
       id: EVENT_TRIGGER.id,
@@ -70,33 +70,33 @@ describe('CaseEventTriggerComponent', () => {
   let component: CaseEventTriggerComponent;
   let de: DebugElement;
 
-  let CaseEditComponent: any = MockComponent({
+  const CaseEditComponent: any = MockComponent({
     selector: 'ccd-case-edit',
     inputs: ['eventTrigger', 'submit', 'validate', 'caseDetails', 'saveDraft'],
     outputs: ['cancelled', 'submitted']
   });
 
-  let CaseActivityComponent: any = MockComponent({
+  const CaseActivityComponent: any = MockComponent({
     selector: 'ccd-activity',
     inputs: ['caseId', 'displayMode']
   });
 
-  let CaseHeaderComponent: any = MockComponent({
+  const CaseHeaderComponent: any = MockComponent({
     selector: 'ccd-case-header',
     inputs: ['caseDetails']
   });
 
-  let EventTriggerHeaderComponent: any = MockComponent({
+  const EventTriggerHeaderComponent: any = MockComponent({
     selector: 'ccd-event-trigger-header',
     inputs: ['eventTrigger']
   });
 
-  let FieldRead: any = MockComponent({
+  const FieldRead: any = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField']
   });
 
-  let FieldWrite: any = MockComponent({
+  const FieldWrite: any = MockComponent({
     selector: 'ccd-field-write',
     inputs: ['caseField', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
   });
@@ -105,14 +105,14 @@ describe('CaseEventTriggerComponent', () => {
     selector: 'a'
   });
 
-  let URL_SEGMENTS: UrlSegment[] = [
+  const URL_SEGMENTS: UrlSegment[] = [
     new UrlSegment('a', {}),
     new UrlSegment('b', {})
   ];
 
-  let URL_SEGMENTS_OBS: Observable<UrlSegment[]> = Observable.of(URL_SEGMENTS);
+  const URL_SEGMENTS_OBS: Observable<UrlSegment[]> = Observable.of(URL_SEGMENTS);
 
-  let mockRoute: any = {
+  const mockRoute: any = {
     snapshot: {
       data: {
         case: CASE_DETAILS,

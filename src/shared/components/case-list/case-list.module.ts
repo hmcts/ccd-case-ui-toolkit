@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { CaseListComponent } from './case-list.component';
-import { BrowserService } from '../../services';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { BrowserService } from '../../services';
 import { PaginationModule } from '../pagination/pagination.module';
+import { CaseListComponent } from './case-list.component';
 
 @NgModule({
   imports: [

@@ -8,9 +8,9 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteMoneyGbpFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  moneyGbpControl: FormControl;
+  public moneyGbpControl: FormControl;
 
-  ngOnInit() {
+  public ngOnInit() {
     this.moneyGbpControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 }

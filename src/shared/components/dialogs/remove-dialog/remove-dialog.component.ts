@@ -8,15 +8,15 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class RemoveDialogComponent {
 
-  result: string;
+  public result: string;
 
-  constructor(private matDialogRef: MatDialogRef<RemoveDialogComponent>) {}
+  constructor(private readonly matDialogRef: MatDialogRef<RemoveDialogComponent>) {}
 
-  remove() {
+  public remove() {
     this.result = 'Remove';
     this.matDialogRef.close(this.result);
   }
-  cancel() {
+  public cancel() {
     this.result = 'Cancel';
     this.matDialogRef.close(this.result);
   }

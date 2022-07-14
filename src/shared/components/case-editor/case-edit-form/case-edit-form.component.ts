@@ -1,9 +1,9 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValueService } from '../../../services/form/form-value.service';
-import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-edit-form',
@@ -12,21 +12,21 @@ import { debounceTime } from 'rxjs/operators';
 export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
 
   @Input()
-  fields: CaseField[] = [];
+  public fields: CaseField[] = [];
   @Input()
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
   @Input()
-  caseFields: CaseField[] = [];
+  public caseFields: CaseField[] = [];
   @Input()
-  pageChangeSubject: Subject<boolean> = new Subject();
+  public pageChangeSubject: Subject<boolean> = new Subject();
   @Output()
-  valuesChanged: EventEmitter<any> = new EventEmitter();
+  public valuesChanged: EventEmitter<any> = new EventEmitter();
 
-  initial: any;
-  pageChangeSubscription: Subscription;
-  formGroupChangeSubscription: Subscription;
+  public initial: any;
+  public pageChangeSubscription: Subscription;
+  public formGroupChangeSubscription: Subscription;
 
-  constructor(private formValueService: FormValueService) {}
+  constructor(private readonly formValueService: FormValueService) {}
 
   public ngOnDestroy(): void {
     if (this.pageChangeSubscription) {
@@ -39,7 +39,7 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
 
   // We need the below un/subscribe complexity as we do not have proper page component per page with its AfterViewInit hook
   // being called on each page load. This is done for "Cancel and return" modal from RDM-2302.
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.retrieveInitialFormValues();
     this.pageChangeSubscription = this.pageChangeSubject.subscribe(() => {
       if (this.formGroupChangeSubscription) {
@@ -54,7 +54,7 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
     this.subscribeToFormChanges();
   }
 
-  subscribeToFormChanges() {
+  public subscribeToFormChanges() {
     this.formGroupChangeSubscription = this.formGroup.valueChanges
       .pipe(
         debounceTime(200)
@@ -62,11 +62,11 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
       .subscribe(_ => this.detectChangesAndEmit(_));
   }
 
-  retrieveInitialFormValues() {
+  public retrieveInitialFormValues() {
     this.initial = JSON.stringify(this.formValueService.sanitise(this.formGroup.value));
   }
 
-  detectChangesAndEmit(changes) {
+  public detectChangesAndEmit(changes) {
     const current = JSON.stringify(this.formValueService.sanitise(changes));
     this.initial !== current ? this.valuesChanged.emit(true) : this.valuesChanged.emit(false);
   }

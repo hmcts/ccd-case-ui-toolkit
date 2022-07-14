@@ -1,10 +1,10 @@
-import { WorkbasketInputFilterService } from './workbasket-input-filter.service';
+import { HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
-import { HttpService } from '../http/http.service';
-import { Observable } from 'rxjs';
 import { WorkbasketInput, WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpService } from '../http/http.service';
+import { WorkbasketInputFilterService } from './workbasket-input-filter.service';
 
 describe('DefinitionsService', () => {
   const API_DATA_URL = 'http://data.ccd.reform/aggregated';

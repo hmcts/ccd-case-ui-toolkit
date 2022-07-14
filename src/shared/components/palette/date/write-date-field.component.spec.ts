@@ -1,12 +1,12 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DebugElement } from '@angular/core';
+import { FormModule } from '../../../../components/form/form.module';
 import { FieldType } from '../../../domain';
 import { CaseField } from '../../../domain';
+import { CaseFieldService } from '../../../services';
 import { PaletteUtilsModule } from '../utils';
 import { WriteDateFieldComponent } from './write-date-field.component';
-import { CaseFieldService } from '../../../services';
-import { FormModule } from '../../../../components/form/form.module';
 
 const FIELD_ID = 'CreatedAt';
 const FIELD_TYPE: FieldType = {
@@ -14,13 +14,13 @@ const FIELD_TYPE: FieldType = {
   type: 'Date'
 };
 const VALUE = '2017-07-26';
-const CASE_FIELD: CaseField = <CaseField>({
+const CASE_FIELD: CaseField = ({
   id: FIELD_ID,
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
   value: VALUE
-});
+}) as CaseField;
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 
@@ -29,7 +29,7 @@ describe('WriteDateFieldComponent', () => {
   let fixture: ComponentFixture<WriteDateFieldComponent>;
   let component: WriteDateFieldComponent;
   let de: DebugElement;
-  let caseFieldService = new CaseFieldService();
+  const caseFieldService = new CaseFieldService();
 
   beforeEach(async(() => {
     TestBed

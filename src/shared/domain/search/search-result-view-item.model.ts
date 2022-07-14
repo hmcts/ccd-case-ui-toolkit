@@ -1,13 +1,13 @@
-import { CaseField } from '../definition';
 import { Type } from 'class-transformer';
+import { CaseField } from '../definition';
 
 // @dynamic
 export class SearchResultViewItem {
-  case_id: string;
-  case_fields: object;
+  public case_id: string;
+  public case_fields: object;
   @Type(() => CaseField)
-  hydrated_case_fields?: CaseField[];
-  columns?: object;
-  supplementary_data?: any;
-  display_context_parameter?: any;
+  public hydrated_case_fields?: CaseField[];
+  public columns?: object;
+  public supplementary_data?: any;
+  public display_context_parameter?: any;
 }

@@ -24,7 +24,7 @@ export class RequestOptionsBuilder {
       return false;
     }
 
-    buildOptions(metaCriteria: object, caseCriteria: object, view?: SearchView): OptionsType {
+    public buildOptions(metaCriteria: object, caseCriteria: object, view?: SearchView): OptionsType {
       // TODO: This should probably be the now built-in URLSearchParams but it
       // requires a bigger refactor and there are bigger fish to fry right now.
       let params = new HttpParams();
@@ -34,7 +34,7 @@ export class RequestOptionsBuilder {
       }
 
       if (metaCriteria) {
-        for (let criterion of Object.keys(metaCriteria)) {
+        for (const criterion of Object.keys(metaCriteria)) {
           // EUI-3490. Make sure the parameter should be included for adding it.
           // This was already handled by the old URLSearchParams mechanism.
           if (RequestOptionsBuilder.includeParam(metaCriteria[criterion])) {
@@ -44,7 +44,7 @@ export class RequestOptionsBuilder {
       }
 
       if (caseCriteria) {
-        for (let criterion of Object.keys(caseCriteria)) {
+        for (const criterion of Object.keys(caseCriteria)) {
           if (RequestOptionsBuilder.includeParam(caseCriteria[criterion])) {
             const key = RequestOptionsBuilder.FIELD_PREFIX + criterion;
             const value = caseCriteria[criterion].trim ? caseCriteria[criterion].trim() : caseCriteria[criterion];
@@ -53,7 +53,7 @@ export class RequestOptionsBuilder {
         }
       }
 
-      let options: OptionsType = { params, observe: 'body'};
+      const options: OptionsType = { params, observe: 'body'};
       return options;
     }
 

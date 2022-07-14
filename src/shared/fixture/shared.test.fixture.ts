@@ -38,7 +38,7 @@ export const createCaseEventTrigger = (id: string,
 export const aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
                            show_summary_content_option: number, typeComplexFields: CaseField[] = [],
                            retain_hidden_value?: boolean, hidden?: boolean): CaseField => {
-  return <CaseField>({
+  return ({
     id: id || 'personFirstName',
     field_type: {
       id: type.toString() || 'Text',
@@ -47,10 +47,10 @@ export const aCaseField = (id: string, label: string, type: FieldTypeEnum, displ
     },
     display_context: display_context || 'OPTIONAL',
     label: label || 'First name',
-    show_summary_content_option: show_summary_content_option,
+    show_summary_content_option,
     retain_hidden_value: retain_hidden_value || false,
     hidden: hidden || false
-  });
+  }) as CaseField;
 };
 
 export const createWizardPage = (id: string,
@@ -175,11 +175,11 @@ export const createMultiSelectListFieldType = (typeId: string,
 };
 
 export const createACL = (role: string, create: boolean, read: boolean, update: boolean, _delete: boolean): AccessControlList => {
-  return <AccessControlList>({
+  return ({
     role: role || 'roleX',
-    create: create,
-    read: read,
-    update: update,
+    create,
+    read,
+    update,
     delete: _delete
-  });
+  }) as AccessControlList;
 };

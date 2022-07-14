@@ -8,9 +8,9 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteNumberFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  numberControl: FormControl;
+  public numberControl: FormControl;
 
-  ngOnInit() {
+  public ngOnInit() {
     this.numberControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 }

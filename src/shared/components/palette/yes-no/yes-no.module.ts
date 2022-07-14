@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReadYesNoFieldComponent } from './read-yes-no-field.component';
-import { YesNoService } from './yes-no.service';
-import { WriteYesNoFieldComponent } from './write-yes-no-field.component';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PaletteUtilsModule } from '../utils/utils.module';
 import { MarkdownModule } from '../../markdown/markdown.module';
+import { PaletteUtilsModule } from '../utils/utils.module';
+import { ReadYesNoFieldComponent } from './read-yes-no-field.component';
+import { WriteYesNoFieldComponent } from './write-yes-no-field.component';
+import { YesNoService } from './yes-no.service';
 
 @NgModule({
   imports: [

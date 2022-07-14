@@ -1,5 +1,5 @@
-import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { Component, OnInit } from '@angular/core';
+import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { YesNoService } from './yes-no.service';
 
 @Component({
@@ -8,13 +8,13 @@ import { YesNoService } from './yes-no.service';
 })
 export class ReadYesNoFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
-  formattedValue: string;
+  public formattedValue: string;
 
-  constructor(private yesNoService: YesNoService) {
+  constructor(private readonly yesNoService: YesNoService) {
     super();
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     super.ngOnInit();
     this.formattedValue = this.yesNoService.format(this.caseField.value);
   }

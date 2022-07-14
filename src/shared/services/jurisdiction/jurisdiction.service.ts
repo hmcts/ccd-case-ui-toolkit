@@ -5,11 +5,11 @@ import { Jurisdiction } from '../../domain';
 @Injectable()
 export class JurisdictionService {
 
-  readonly selectedJurisdictionSource = new Subject<Jurisdiction>();
+  public readonly selectedJurisdictionSource = new Subject<Jurisdiction>();
 
   public selectedJurisdiction = this.selectedJurisdictionSource.asObservable();
 
-  announceSelectedJurisdiction(jurisdiction: Jurisdiction) {
+  public announceSelectedJurisdiction(jurisdiction: Jurisdiction) {
     this.selectedJurisdictionSource.next(jurisdiction);
   }
 

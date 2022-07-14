@@ -8,9 +8,9 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteDynamicListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  dynamicListFormControl: FormControl;
+  public dynamicListFormControl: FormControl;
 
-  ngOnInit() {
+  public ngOnInit() {
     /**
      * Reassigning list_items from formatted_value when list_items is empty
      */

@@ -1,10 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
-import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
-import { Router, ActivatedRoute } from '@angular/router';
-import { WindowService } from '../../../services/window';
-import { DocumentManagementService } from '../../../services/document-management';
-import { CasesService } from '../../case-editor/services/cases.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { DocumentManagementService } from '../../../services/document-management';
+import { WindowService } from '../../../services/window';
+import { CasesService } from '../../case-editor/services/cases.service';
+import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 const MEDIA_VIEWER_INFO = 'media-viewer-info';
 
@@ -14,19 +14,19 @@ const MEDIA_VIEWER_INFO = 'media-viewer-info';
 })
 export class ReadDocumentFieldComponent extends AbstractFieldReadComponent implements OnDestroy {
 
-  caseViewSubscription: Subscription;
+  public caseViewSubscription: Subscription;
 
   constructor(
-    private windowService: WindowService,
-    private documentManagement: DocumentManagementService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private casesService: CasesService
+    private readonly windowService: WindowService,
+    private readonly documentManagement: DocumentManagementService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly casesService: CasesService
   ) {
     super();
   }
 
-  showMediaViewer(): void {
+  public showMediaViewer(): void {
     const caseId = this.route.snapshot.params['cid'];
     this.windowService.removeLocalStorage(MEDIA_VIEWER_INFO);
     if (caseId) {
@@ -52,8 +52,8 @@ export class ReadDocumentFieldComponent extends AbstractFieldReadComponent imple
     this.windowService.openOnNewTab(this.getMediaViewerUrl());
   }
 
-  getMediaViewerUrl(): string {
-    let routerMediaViewer = this.router.createUrlTree(['/media-viewer']);
+  public getMediaViewerUrl(): string {
+    const routerMediaViewer = this.router.createUrlTree(['/media-viewer']);
     if (routerMediaViewer) {
       return routerMediaViewer.toString();
     }

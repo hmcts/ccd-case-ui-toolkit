@@ -19,7 +19,7 @@ export interface EventCompletionStateMachineContext {
   route: ActivatedRoute;
   sessionStorageService: SessionStorageService;
   workAllocationService: WorkAllocationService;
-  alertService: AlertService,
+  alertService: AlertService;
   canBeCompleted: boolean;
   component: EventCompletionComponentEmitter;
 }

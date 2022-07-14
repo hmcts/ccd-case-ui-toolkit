@@ -14,30 +14,30 @@ import { CreateCaseFiltersSelection } from './create-case-filters-selection.mode
 export class CreateCaseFiltersComponent implements OnInit {
 
   @Input()
-  isDisabled: boolean;
+  public isDisabled: boolean;
   @Input()
-  startButtonText: string;
+  public startButtonText: string;
   @Output()
-  selectionSubmitted: EventEmitter<CreateCaseFiltersSelection> = new EventEmitter();
+  public selectionSubmitted: EventEmitter<CreateCaseFiltersSelection> = new EventEmitter();
   @Output()
-  selectionChanged: EventEmitter<any> = new EventEmitter();
+  public selectionChanged: EventEmitter<any> = new EventEmitter();
 
-  formGroup: FormGroup = new FormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
 
-  selected: {
+  public selected: {
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,
     event?: CaseEvent,
     formGroup?: FormGroup
   };
 
-  jurisdictions: Jurisdiction[];
-  selectedJurisdictionCaseTypes?: CaseTypeLite[];
-  selectedCaseTypeEvents?: CaseEvent[];
+  public jurisdictions: Jurisdiction[];
+  public selectedJurisdictionCaseTypes?: CaseTypeLite[];
+  public selectedCaseTypeEvents?: CaseEvent[];
 
-  filterJurisdictionControl: FormControl;
-  filterCaseTypeControl: FormControl;
-  filterEventControl: FormControl;
+  public filterJurisdictionControl: FormControl;
+  public filterCaseTypeControl: FormControl;
+  public filterEventControl: FormControl;
 
   constructor(
     private readonly orderService: OrderService,
@@ -45,7 +45,7 @@ export class CreateCaseFiltersComponent implements OnInit {
     private readonly sessionStorageService: SessionStorageService
   ) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.selected = {};
     this.initControls();
     this.definitionsService.getJurisdictions(CREATE_ACCESS)

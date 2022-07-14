@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { CaseField, FieldType } from '../../../domain/definition';
 import { By } from '@angular/platform-browser';
+import { CaseField, FieldType } from '../../../domain/definition';
+import { createFieldType, newCaseField } from '../../../fixture';
 import { text } from '../../../test/helpers';
 import { FieldReadLabelComponent } from './field-read-label.component';
-import { newCaseField, createFieldType } from '../../../fixture';
 
 const CASE_FIELD: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL')
   .withValue('Johnny').build();
@@ -54,7 +54,7 @@ describe('FieldReadLabelComponent', () => {
     component.withLabel = true;
     fixture.detectChanges();
 
-    let label = de.query(BY_FIELD_LABEL);
+    const label = de.query(BY_FIELD_LABEL);
     expect(label).toBeTruthy();
     expect(text(label)).toEqual(CASE_FIELD.label);
   });
@@ -64,7 +64,7 @@ describe('FieldReadLabelComponent', () => {
     component.withLabel = true;
     fixture.detectChanges();
 
-    let label = de.query(BY_FIELD_LABEL);
+    const label = de.query(BY_FIELD_LABEL);
     expect(label).toBeFalsy();
   });
 
@@ -72,7 +72,7 @@ describe('FieldReadLabelComponent', () => {
     component.withLabel = false;
     fixture.detectChanges();
 
-    let label = de.query(BY_FIELD_LABEL);
+    const label = de.query(BY_FIELD_LABEL);
     expect(label).toBeFalsy();
   });
 
@@ -81,7 +81,7 @@ describe('FieldReadLabelComponent', () => {
     component.withLabel = true;
     fixture.detectChanges();
 
-    let label = de.query(BY_FIELD_LABEL);
+    const label = de.query(BY_FIELD_LABEL);
     expect(label).toBeTruthy();
     expect(text(label)).toEqual(CASE_LINK_FIELD.label);
   });

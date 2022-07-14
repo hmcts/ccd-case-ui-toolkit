@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SaveOrDiscardDialogComponent } from './save-or-discard-dialog.component';
+import { DebugElement } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { SaveOrDiscardDialogComponent } from './save-or-discard-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('SaveOrDiscardDialogComponent', () => {
@@ -39,7 +39,7 @@ describe('SaveOrDiscardDialogComponent', () => {
   });
 
   it('should close dialog with `Save` when delete button clicked', () => {
-    let saveButton = de.query(SAVE_BUTTON);
+    const saveButton = de.query(SAVE_BUTTON);
 
     saveButton.nativeElement.click();
     fixture.detectChanges();
@@ -48,7 +48,7 @@ describe('SaveOrDiscardDialogComponent', () => {
   });
 
   it('should close dialog with `Discard` when cancel button clicked', () => {
-    let discardButton = de.query(DISCARD_BUTTON);
+    const discardButton = de.query(DISCARD_BUTTON);
 
     discardButton.nativeElement.click();
     fixture.detectChanges();

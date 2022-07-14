@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2, Injectable, RendererFactory2 } from '@angular/core';
+import { ElementRef, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { CaseField } from '../../../domain';
 
 /** Keeps track of initially hidden fields that toggle to show on the page (parent page).
@@ -9,7 +9,7 @@ import { CaseField } from '../../../domain';
 export class GreyBarService {
 
   private fieldsToggledToShow: string[] = [];
-  private renderer: Renderer2;
+  private readonly renderer: Renderer2;
 
   constructor(rendererFactory: RendererFactory2) {
       this.renderer = rendererFactory.createRenderer(null, null);
@@ -22,7 +22,7 @@ export class GreyBarService {
   }
 
   public removeGreyBar(el: ElementRef) {
-    let divSelector = el.nativeElement.querySelector('div')
+    const divSelector = el.nativeElement.querySelector('div');
     if (divSelector) {
       this.renderer.removeClass(divSelector, 'show-condition-grey-bar');
     }
@@ -45,7 +45,7 @@ export class GreyBarService {
   }
 
   private addGreyBar(el: ElementRef) {
-    let divSelector = el.nativeElement.querySelector('div')
+    const divSelector = el.nativeElement.querySelector('div');
     if (divSelector) {
       this.renderer.addClass(divSelector, 'show-condition-grey-bar');
     }

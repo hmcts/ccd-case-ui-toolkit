@@ -20,7 +20,7 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   public caseworkerSubscription: Subscription;
   public judicialworkerSubscription: Subscription;
 
-  constructor(@Inject(COMPONENT_PORTAL_INJECTION_TOKEN) private parentComponent: CaseEventCompletionComponent,
+  constructor(@Inject(COMPONENT_PORTAL_INJECTION_TOKEN) private readonly parentComponent: CaseEventCompletionComponent,
     private readonly route: ActivatedRoute,
     private readonly workAllocationService: WorkAllocationService,
     private readonly sessionStorageService: SessionStorageService,

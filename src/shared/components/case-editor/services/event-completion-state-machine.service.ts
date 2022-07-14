@@ -35,31 +35,31 @@ export class EventCompletionStateMachineService {
       EventCompletionStates.CheckTasksCanBeCompleted,
       false,
       this.entryActionForStateCheckTasksCanBeCompleted
-    )
+    );
 
     this.stateCompleteEventAndTask = stateMachine.createState(
       EventCompletionStates.CompleteEventAndTask,
       false,
       this.entryActionForStateCompleteEventAndTask
-    )
+    );
 
     this.stateTaskCompletedOrCancelled = stateMachine.createState(
       EventCompletionStates.TaskCompetedOrCancelled,
       false,
       this.entryActionForStateTaskCompletedOrCancelled
-    )
+    );
 
     this.stateTaskAssignedToAnotherUser = stateMachine.createState(
       EventCompletionStates.TaskAssignedToAnotherUser,
       false,
       this.entryActionForStateTaskAssignedToAnotherUser
-    )
+    );
 
     this.stateTaskUnassigned = stateMachine.createState(
       EventCompletionStates.TaskUnassigned,
       false,
       this.entryActionForStateTaskUnassigned
-    )
+    );
 
     // Create final state, the second param isComplete is set to true to make sure state machine finished running
     this.stateFinal = stateMachine.createState(

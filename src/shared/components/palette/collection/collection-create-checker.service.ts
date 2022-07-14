@@ -6,7 +6,7 @@ import { Profile } from '../../../domain/profile';
 export class CollectionCreateCheckerService {
 
   public setDisplayContextForChildren(caseField: CaseField, profile: Profile) {
-    let children = this.getCaseFieldChildren(caseField);
+    const children = this.getCaseFieldChildren(caseField);
 
     if (children && children.length > 0) {
       children.forEach(child => {
@@ -14,7 +14,7 @@ export class CollectionCreateCheckerService {
           child.display_context = caseField.display_context;
         }
         if (this.isCollection(child) || this.isComplex(child)) {
-          this.setDisplayContextForChildren(child, profile)
+          this.setDisplayContextForChildren(child, profile);
         }
       });
     }

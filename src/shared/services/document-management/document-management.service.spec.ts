@@ -1,9 +1,9 @@
-import { DocumentManagementService } from './document-management.service';
 import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpService } from '../http';
 import { CaseField, DocumentData, FieldType } from '../../domain';
+import { HttpService } from '../http';
+import { DocumentManagementService } from './document-management.service';
 
 describe('DocumentManagementService', () => {
   const DOCUMENT_MANAGEMENT_URL = 'https://www.example.com/binary';
@@ -73,7 +73,7 @@ describe('DocumentManagementService', () => {
     it('should set Content-Type header to null', () => {
       documentManagementService.uploadFile(new FormData()).subscribe(() => {
 
-        let headers = httpService.post.calls.mostRecent().args[2].headers;
+        const headers = httpService.post.calls.mostRecent().args[2].headers;
         expect(headers.get('Content-Type')).toBe(null);
       });
     });
@@ -89,14 +89,14 @@ describe('DocumentManagementService', () => {
       id: 'Collection',
       type: 'Collection',
     };
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       field_type: FIELD_TYPE,
       display_context: 'OPTIONAL',
       value: [],
       hidden: false
-    });
+    }) as CaseField;
     const MEDIA_VIEWER_PDF = {
       document_binary_url: 'https://www.example.com/binary',
       document_filename: 'sample.pdf',

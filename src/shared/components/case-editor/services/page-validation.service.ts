@@ -8,14 +8,14 @@ import { WizardPage } from '../domain/wizard-page.model';
 
 @Injectable()
 export class PageValidationService {
-  constructor(private caseFieldService: CaseFieldService) {}
+  constructor(private readonly caseFieldService: CaseFieldService) {}
 
   public isPageValid(page: WizardPage, editForm: FormGroup): boolean {
     return page.case_fields
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
       .filter(caseField => !this.isHidden(caseField, editForm))
       .every(caseField => {
-        let theControl = editForm.controls['data'].get(caseField.id);
+        const theControl = editForm.controls['data'].get(caseField.id);
         return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
       });
   }

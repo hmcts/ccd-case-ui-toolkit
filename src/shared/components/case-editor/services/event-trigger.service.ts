@@ -5,9 +5,9 @@ import { CaseEventTrigger } from '../../../domain';
 @Injectable()
 export class EventTriggerService {
 
-  eventTriggerSource = new Subject<CaseEventTrigger>();
+  public eventTriggerSource = new Subject<CaseEventTrigger>();
 
-  announceEventTrigger(eventTrigger: CaseEventTrigger) {
+  public announceEventTrigger(eventTrigger: CaseEventTrigger) {
     this.eventTriggerSource.next(eventTrigger);
   }
 

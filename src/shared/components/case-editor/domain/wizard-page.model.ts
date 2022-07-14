@@ -1,35 +1,35 @@
+import { Type } from 'class-transformer';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { Orderable } from '../../../domain/order/orderable.model';
 import { WizardPageField } from './wizard-page-field.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
-import { Type } from 'class-transformer';
 
 // @dynamic
 export class WizardPage implements Orderable {
 
-  id: string;
-  label: string;
-  order?: number;
+  public id: string;
+  public label: string;
+  public order?: number;
 
   @Type(() => WizardPageField)
-  wizard_page_fields: WizardPageField[];
+  public wizard_page_fields: WizardPageField[];
 
   @Type(() => CaseField)
-  case_fields: CaseField[];
+  public case_fields: CaseField[];
 
-  show_condition?: string;
+  public show_condition?: string;
 
-  parsedShowCondition: ShowCondition;
+  public parsedShowCondition: ShowCondition;
 
-  getCol1Fields(): CaseField[] {
+  public getCol1Fields(): CaseField[] {
     return this.case_fields.filter(f =>
       !f.wizardProps.page_column_no || f.wizardProps.page_column_no === 1);
   }
-  getCol2Fields(): CaseField[] {
+  public getCol2Fields(): CaseField[] {
     return this.case_fields.filter(f => f.wizardProps.page_column_no === 2);
   }
 
-  isMultiColumn(): Boolean {
+  public isMultiColumn(): Boolean {
     return this.getCol2Fields().length > 0;
   }
 }

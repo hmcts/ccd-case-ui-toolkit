@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FieldReadComponent } from './field-read.component';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FieldWriteComponent } from './field-write.component';
 import { FieldReadLabelComponent } from './field-read-label.component';
+import { FieldReadComponent } from './field-read.component';
+import { FieldWriteComponent } from './field-write.component';
 
 @NgModule({
   imports: [

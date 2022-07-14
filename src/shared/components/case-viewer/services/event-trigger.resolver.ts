@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { CaseEventTrigger, Profile } from '../../../domain';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { CasesService } from '../../case-editor';
+import { CaseEventTrigger, Profile } from '../../../domain';
 import { AlertService, ProfileNotifier, ProfileService } from '../../../services';
+import { CasesService } from '../../case-editor';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
@@ -15,13 +15,13 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
   private cachedEventTrigger: CaseEventTrigger;
   private cachedProfile: Profile;
   constructor(
-    private casesService: CasesService,
-    private alertService: AlertService,
-    private profileService: ProfileService,
-    private profileNotifier: ProfileNotifier,
+    private readonly casesService: CasesService,
+    private readonly alertService: AlertService,
+    private readonly profileService: ProfileService,
+    private readonly profileNotifier: ProfileNotifier,
     ) {}
 
-  resolve(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
+  public resolve(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
     return this.isRootTriggerEventRoute(route) ? this.getAndCacheEventTrigger(route)
         : this.cachedEventTrigger ? Promise.resolve(this.cachedEventTrigger)
         : this.getAndCacheEventTrigger(route);
@@ -33,9 +33,9 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
   }
 
   private getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
-    let cid = route.parent.paramMap.get(EventTriggerResolver.PARAM_CASE_ID);
-    let caseTypeId = undefined;
-    let eventTriggerId = route.paramMap.get(EventTriggerResolver.PARAM_EVENT_ID);
+    const cid = route.parent.paramMap.get(EventTriggerResolver.PARAM_CASE_ID);
+    let caseTypeId;
+    const eventTriggerId = route.paramMap.get(EventTriggerResolver.PARAM_EVENT_ID);
     let ignoreWarning = route.queryParamMap.get(EventTriggerResolver.IGNORE_WARNING);
     if (-1 === EventTriggerResolver.IGNORE_WARNING_VALUES.indexOf(ignoreWarning)) {
       ignoreWarning = 'false';

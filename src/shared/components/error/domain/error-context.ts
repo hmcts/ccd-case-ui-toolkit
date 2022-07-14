@@ -1,4 +1,4 @@
 export class CallbackErrorsContext {
-  trigger_text: string;
-  ignore_warning: boolean;
+  public trigger_text: string;
+  public ignore_warning: boolean;
 }

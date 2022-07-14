@@ -1,4 +1,4 @@
-import { FieldType, Field } from '../../../domain';
+import { Field, FieldType } from '../../../domain';
 import { SearchInput } from './search-input.model';
 
 export let createSearchInputs = () => {

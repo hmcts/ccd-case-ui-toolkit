@@ -32,10 +32,10 @@ import { initDialog } from '../../helpers';
 })
 export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterViewInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
-  static readonly TRIGGER_TEXT_START = 'Go';
-  static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
-  static readonly UNICODE_SPACE = '%20';
-  static readonly EMPTY_SPACE = ' ';
+  public static readonly TRIGGER_TEXT_START = 'Go';
+  public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
+  public static readonly UNICODE_SPACE = '%20';
+  public static readonly EMPTY_SPACE = ' ';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -74,12 +74,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
     private readonly errorNotifierService: ErrorNotifierService,
-    private convertHrefToRouterService: ConvertHrefToRouterService,
+    private readonly convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     initDialog(this.dialogConfig);
 
     this.init();
@@ -107,7 +107,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     return this.caseDetails.case_type.printEnabled;
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.activitySubscription && this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
     }
@@ -244,7 +244,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
-    const id = (<HTMLElement>tab.element.nativeElement).id;
+    const id = (tab.element.nativeElement as HTMLElement).id;
     const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
     if ((tabChangeEvent.index <= 1 && this.prependedTabs.length) ||
       (tabChangeEvent.index >= tabsLengthBeforeAppended && this.appendedTabs.length)) {

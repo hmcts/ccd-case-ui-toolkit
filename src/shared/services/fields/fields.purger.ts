@@ -10,7 +10,7 @@ import { FieldsUtils } from './fields.utils';
 @Injectable()
 export class FieldsPurger {
 
-  constructor(private fieldsUtils: FieldsUtils) {}
+  constructor(private readonly fieldsUtils: FieldsUtils) {}
 
   /**
    * Deletes a field value by setting the value of the corresponding {@link FormControl} to null (or an empty array
@@ -286,10 +286,10 @@ export class FieldsPurger {
 
   private isObject(elem: any): boolean {
     return this.getType(elem) === 'Object';
-  };
+  }
 
   // TODO: call isReadOnly on CaseFields once we make it available
   private isReadonly(case_field: CaseField): boolean {
-    return case_field.display_context.toUpperCase() === 'READONLY'
+    return case_field.display_context.toUpperCase() === 'READONLY';
   }
 }

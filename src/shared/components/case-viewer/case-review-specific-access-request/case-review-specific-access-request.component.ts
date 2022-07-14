@@ -88,7 +88,7 @@ export class CaseReviewSpecificAccessRequestComponent
       // request model created , it will be used for submission part
       const challengedAccessRequest = {
         reason: reasonNumber,
-        caseId: caseId,
+        caseId,
       } as ReviewSpecificAccessRequest;
       if ( AccessReason.REJECT_REQUEST === radioSelectedValue ) {
         this.router.navigate(['rejected'], {relativeTo: this.route});

@@ -8,9 +8,9 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteEmailFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  emailControl: FormControl;
+  public emailControl: FormControl;
 
-  ngOnInit() {
+  public ngOnInit() {
     this.emailControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
 }

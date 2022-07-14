@@ -1,10 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { DocumentDialogComponent } from './document-dialog';
 import { DeleteOrCancelDialogComponent } from './delete-or-cancel-dialog';
-import { SaveOrDiscardDialogComponent } from './save-or-discard-dialog';
+import { DocumentDialogComponent } from './document-dialog';
 import { RemoveDialogComponent } from './remove-dialog';
+import { SaveOrDiscardDialogComponent } from './save-or-discard-dialog';
 
 @NgModule({
   imports: [

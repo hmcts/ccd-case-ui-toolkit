@@ -19,22 +19,22 @@ const ADDRESS_FIELD_TYPES = [ 'AddressUK', 'AddressGlobalUK', 'AddressGlobal' ];
 })
 export class WriteComplexFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   @Input()
-  caseFields: CaseField[] = [];
+  public caseFields: CaseField[] = [];
 
   @Input()
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 
-  complexGroup: FormGroup;
-
-  @Input()
-  renderLabel = true;
+  public complexGroup: FormGroup;
 
   @Input()
-  ignoreMandatory = false;
+  public renderLabel = true;
+
+  @Input()
+  public ignoreMandatory = false;
 
   public complexFields: CaseField[];
 
-  constructor(private isCompoundPipe: IsCompoundPipe, private formValidatorsService: FormValidatorsService) {
+  constructor(private readonly isCompoundPipe: IsCompoundPipe, private readonly formValidatorsService: FormValidatorsService) {
     super();
     this.complexGroup = new FormGroup({});
   }

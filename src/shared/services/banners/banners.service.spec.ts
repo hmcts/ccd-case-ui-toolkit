@@ -1,10 +1,10 @@
-import { Observable } from 'rxjs';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AbstractAppConfig } from '../../../app.config';
+import { Banner } from '../../domain';
+import { HttpService } from '../http';
 import createSpyObj = jasmine.createSpyObj;
 import { BannersService } from './banners.service';
-import { AbstractAppConfig } from '../../../app.config';
-import { HttpService } from '../http';
-import { Banner } from '../../domain';
 
 describe('Banner service', () => {
 
@@ -14,7 +14,7 @@ describe('Banner service', () => {
     bannerUrl: 'banner',
     bannerViewed: true,
     bannerEnabled: true
-  }]
+  }];
   const JID = ['DIVORCE', 'PROBATE'];
   let params: HttpParams;
   const API_URL = 'http://aggregated.ccd.reform';
@@ -25,7 +25,7 @@ describe('Banner service', () => {
   let bannerService: BannersService;
 
   describe('Banners()', () => {
-    const MOCK_BANNER1 = { banners: MOCK_BANNER }
+    const MOCK_BANNER1 = { banners: MOCK_BANNER };
     beforeEach(() => {
       params = new HttpParams();
       httpService = createSpyObj<HttpService>('httpService', ['get']);

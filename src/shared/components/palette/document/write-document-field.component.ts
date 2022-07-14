@@ -20,15 +20,15 @@ import { FileUploadStateService } from './file-upload-state.service';
   templateUrl: './write-document-field.html'
 })
 export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
-  static readonly DOCUMENT_URL = 'document_url';
-  static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
-  static readonly DOCUMENT_FILENAME = 'document_filename';
-  static readonly DOCUMENT_HASH = 'document_hash';
-  static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
-  static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
-  static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
+  public static readonly DOCUMENT_URL = 'document_url';
+  public static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
+  public static readonly DOCUMENT_FILENAME = 'document_filename';
+  public static readonly DOCUMENT_HASH = 'document_hash';
+  public static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
+  public static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
+  public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
 
-  @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
+  @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
   public selectedFile: File;
   public valid = true;
@@ -42,15 +42,15 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   private caseDetails: CaseView;
   private uploadedDocument: FormGroup;
-  private dialogConfig: MatDialogConfig;
+  private readonly dialogConfig: MatDialogConfig;
   private secureModeOn: boolean;
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
     private readonly caseNotifier: CaseNotifier,
-    private documentManagement: DocumentManagementService,
+    private readonly documentManagement: DocumentManagementService,
     public dialog: MatDialog,
-    private fileUploadStateService: FileUploadStateService,
+    private readonly fileUploadStateService: FileUploadStateService,
   ) {
     super();
   }
@@ -60,9 +60,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     // Capturing the event of of the associated  ElementRef <input type="file" #fileInpu
 
     if (this.fileInput.nativeElement.contains(event.target)) {
-      this.clickInsideTheDocument = true
+      this.clickInsideTheDocument = true;
     } else {
-      this.fileValidations()
+      this.fileValidations();
     }
   }
 
@@ -207,7 +207,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private isUpLoadingAFile(): boolean {
-    return this.fileUploadMessages === WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS
+    return this.fileUploadMessages === WriteDocumentFieldComponent.UPLOAD_WAITING_FILE_STATUS;
   }
   private validateFormUploadedDocument(): boolean {
     if (!this.uploadedDocument) {
@@ -301,7 +301,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       }
     }
 
-    let document = this.secureModeOn ? result.documents[0] : result._embedded.documents[0];
+    const document = this.secureModeOn ? result.documents[0] : result._embedded.documents[0];
 
     if (this.secureModeOn) {
       this.updateDocumentForm(

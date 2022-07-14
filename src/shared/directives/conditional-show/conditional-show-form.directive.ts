@@ -20,9 +20,9 @@ import { ShowCondition } from './domain';
  */
 export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDestroy {
 
-  @Input() caseFields: CaseField[];
-  @Input() contextFields: CaseField[] = [];
-  @Input() formGroup: FormGroup;
+  @Input() public caseFields: CaseField[];
+  @Input() public contextFields: CaseField[] = [];
+  @Input() public formGroup: FormGroup;
 
   private allFieldValues: any;
   private formChangesSubscription: Subscription;
@@ -30,7 +30,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   constructor(private readonly fieldsUtils: FieldsUtils) {
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     if (!this.formGroup) {
       this.formGroup = new FormGroup({});
     }
@@ -45,12 +45,12 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
    * load for an event with a lot of content. After this change,
    * that number dropped to fewer than 2,500 - that's a.
    */
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     this.evalAllShowHideConditions();
     this.subscribeToFormChanges();
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.unsubscribeFromFormChanges();
   }
 
@@ -109,18 +109,18 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   }
 
   // make sure for the 3 callbacks that we are bound to this via an arrow function
-  private handleFormControl = (formControl: FormControl): void => {
+  private readonly handleFormControl = (formControl: FormControl): void => {
     this.evaluateControl(formControl);
   }
 
-  private handleFormArray = (formArray: FormArray): void => {
+  private readonly handleFormArray = (formArray: FormArray): void => {
     this.evaluateControl(formArray);
     formArray.controls.forEach(formControl => {
       this.fieldsUtils.controlIterator(formControl, this.handleFormArray, this.handleFormGroup, this.handleFormControl);
     });
   }
 
-  private handleFormGroup = (formGroup: FormGroup): void => {
+  private readonly handleFormGroup = (formGroup: FormGroup): void => {
     this.evaluateControl(formGroup);
     let groupControl = formGroup;
     if (formGroup.get('value') && formGroup.get('value') instanceof FormGroup) { // Complex Field
@@ -157,7 +157,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
   }
 
   private getCurrentPagesReadOnlyAndFormFieldValues(): any {
-    let formFields = this.getFormFieldsValuesIncludingDisabled();
+    const formFields = this.getFormFieldsValuesIncludingDisabled();
     this.allFieldValues = this.fieldsUtils.mergeCaseFieldsAndFormFields(this.contextFields, formFields);
     return this.allFieldValues;
   }

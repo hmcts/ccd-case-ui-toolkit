@@ -12,5 +12,5 @@ export function initDialog(dialogConfig: MatDialogConfig): void {
     this.dialogConfig.closeOnNavigation = false;
     this.dialogConfig.position = {
       top: window.innerHeight / 2 - 120 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    }
+    };
 }

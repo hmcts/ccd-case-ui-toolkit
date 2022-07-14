@@ -1,2 +1,2 @@
-export * from './case-list.component'
-export * from './case-list.module'
+export * from './case-list.component';
+export * from './case-list.module';

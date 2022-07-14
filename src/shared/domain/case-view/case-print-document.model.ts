@@ -1,5 +1,5 @@
 export class CasePrintDocument {
-  name: string;
-  type: string;
-  url: string;
+  public name: string;
+  public type: string;
+  public url: string;
 }

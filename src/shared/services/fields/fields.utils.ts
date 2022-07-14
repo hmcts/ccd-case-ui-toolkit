@@ -19,6 +19,9 @@ export class FieldsUtils {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
 
+  private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
+  private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
+
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {
       return plainToClassFromExist(new CaseField(), obj);
@@ -139,9 +142,6 @@ export class FieldsUtils {
 
     return jsonBody;
   }
-
-  private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
-  private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
 
   private static prepareValue(field: CaseField): any {
     if (field.value) {
@@ -282,7 +282,7 @@ export class FieldsUtils {
               const list_items = dynamicListValue[0].list_items;
               const complexValue = dynamicListValue.map(data => data.value);
               const value = {
-                list_items: list_items,
+                list_items,
                 value: complexValue.length > 0 ? complexValue : undefined
               };
               field.value = {
@@ -359,7 +359,7 @@ export class FieldsUtils {
     if (aControl instanceof FormArray) { // We're in a collection
       formArrayFn(aControl);
     } else if (aControl instanceof FormGroup) { // We're in a complex type.
-      formGroupFn(aControl)
+      formGroupFn(aControl);
     } else if (aControl instanceof FormControl) { // FormControl
       controlFn(aControl);
     }

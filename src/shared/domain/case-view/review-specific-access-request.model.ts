@@ -1,4 +1,4 @@
 export interface ReviewSpecificAccessRequest {
-  reason: number,
-  caseId: string,
+  reason: number;
+  caseId: string;
 }

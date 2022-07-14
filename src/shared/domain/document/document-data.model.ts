@@ -1,30 +1,30 @@
 export class HRef {
-  href: string;
+  public href: string;
 }
 
 export class DocumentLinks {
-  self: HRef;
-  binary: HRef;
+  public self: HRef;
+  public binary: HRef;
 }
 
 export class Document {
-  _links: DocumentLinks;
-  originalDocumentName: string;
-  hashToken?: string;
+  public _links: DocumentLinks;
+  public originalDocumentName: string;
+  public hashToken?: string;
 }
 
 export class Embedded {
-  documents: Document[];
+  public documents: Document[];
 }
 
 export class DocumentData {
-  _embedded: Embedded;
-  documents: Document[];
+  public _embedded: Embedded;
+  public documents: Document[];
 }
 
 export class FormDocument {
-  document_url: string;
-  document_binary_url: string;
-  document_filename: string;
-  document_hash?: string;
+  public document_url: string;
+  public document_binary_url: string;
+  public document_filename: string;
+  public document_hash?: string;
 }

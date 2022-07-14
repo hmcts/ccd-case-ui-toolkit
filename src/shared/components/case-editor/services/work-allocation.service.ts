@@ -93,8 +93,8 @@ export class WorkAllocationService {
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {
-        'completion_options': {
-          'assign_and_complete': true
+        completion_options: {
+          assign_and_complete: true
         }
       })
       .pipe(

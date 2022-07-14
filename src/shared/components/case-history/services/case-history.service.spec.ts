@@ -1,13 +1,13 @@
-import { Observable } from 'rxjs';
-import { CaseHistoryService } from './case-history.service';
-import { HttpError } from '../../../domain';
-import { AbstractAppConfig } from '../../../../app.config';
-import { HttpErrorService, HttpService } from '../../../services';
-import { CaseHistory } from '../domain';
-import { createCaseHistory } from '../../../fixture';
-import { classToPlain } from 'class-transformer';
 import createSpyObj = jasmine.createSpyObj;
 import { HttpHeaders } from '@angular/common/http';
+import { classToPlain } from 'class-transformer';
+import { Observable } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
+import { HttpError } from '../../../domain';
+import { createCaseHistory } from '../../../fixture';
+import { HttpErrorService, HttpService } from '../../../services';
+import { CaseHistory } from '../domain';
+import { CaseHistoryService } from './case-history.service';
 
 describe('CaseHistoryService', () => {
 

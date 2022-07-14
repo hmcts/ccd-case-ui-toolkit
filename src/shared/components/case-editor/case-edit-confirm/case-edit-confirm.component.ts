@@ -1,28 +1,28 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { Confirmation } from '../domain/confirmation.model';
 import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { FormGroup } from '@angular/forms';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { Confirmation } from '../domain/confirmation.model';
 
 @Component({
   templateUrl: './case-edit-confirm.html',
   styleUrls: ['../case-edit.scss']
 })
 export class CaseEditConfirmComponent {
-  eventTrigger: CaseEventTrigger;
-  triggerText = 'Close and Return to case details';
-  formGroup = new FormControl();
-  confirmation: Confirmation;
-  caseFields: CaseField[];
-  editForm: FormGroup;
+  public eventTrigger: CaseEventTrigger;
+  public triggerText = 'Close and Return to case details';
+  public formGroup = new FormControl();
+  public confirmation: Confirmation;
+  public caseFields: CaseField[];
+  public editForm: FormGroup;
 
-  private caseId: string;
+  private readonly caseId: string;
 
-  constructor(private caseEdit: CaseEditComponent, private router: Router) {
+  constructor(private readonly caseEdit: CaseEditComponent, private readonly router: Router) {
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
     this.caseFields = this.getCaseFields();
@@ -34,11 +34,11 @@ export class CaseEditConfirmComponent {
     }
   }
 
-  submit(): void {
+  public submit(): void {
     this.caseEdit.submitted.emit({caseId: this.confirmation.getCaseId(), status: this.confirmation.getStatus()});
   }
 
-  getCaseId(): string {
+  public getCaseId(): string {
     return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
   }
 

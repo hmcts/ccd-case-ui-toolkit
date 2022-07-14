@@ -32,9 +32,9 @@ import { CaseEditSubmitComponent } from './case-edit-submit.component';
 
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
+import { CallbackErrorsContext } from '../../error';
 import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import { CaseNotifier } from '../services';
-import { CallbackErrorsContext } from '../../error';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -83,7 +83,7 @@ describe('CaseEditSubmitComponent', () => {
   const caseFieldService = new CaseFieldService();
   const fieldsUtils = new FieldsUtils();
   const FORM_GROUP = new FormGroup({
-    data: new FormGroup({'PersonLastName': new FormControl('Khaleesi')})
+    data: new FormGroup({PersonLastName: new FormControl('Khaleesi')})
   });
   const HIDE_ALL_TEXT_ELEMENT = new FormControl('Hide all');
   const COMPLEX_SUBFIELD_1_VALUE_RETAINED = '1st child field of complex type (retain)';
@@ -322,8 +322,8 @@ describe('CaseEditSubmitComponent', () => {
       }
     },
     user: USER,
-    'isSolicitor': FUNC,
-    'isCourtAdmin': FUNC,
+    isSolicitor: FUNC,
+    isCourtAdmin: FUNC,
   };
 
   const mockRoute: any = {
@@ -353,8 +353,8 @@ describe('CaseEditSubmitComponent', () => {
 
   const ERROR_HEADING_GENERIC = 'Something went wrong';
   const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
-  const ERROR_HEADING_SPECIFIC = 'The event could not be created'
-  const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors'
+  const ERROR_HEADING_SPECIFIC = 'The event could not be created';
+  const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors';
 
   describe('Save and Resume disabled', () => {
     const pages: WizardPage[] = [
@@ -369,18 +369,18 @@ describe('CaseEditSubmitComponent', () => {
       spyOn(orderService, 'sort').and.callThrough();
 
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': FORM_GROUP,
-        'data': '',
-        'eventTrigger':
-          {'case_fields': [caseField1, caseField2, caseField3], 'end_button_label': END_BUTTON_LABEL, 'can_save_draft': false},
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'cancel': () => undefined,
-        'cancelled': cancelled,
+        form: FORM_GROUP,
+        data: '',
+        eventTrigger:
+          {case_fields: [caseField1, caseField2, caseField3], end_button_label: END_BUTTON_LABEL, can_save_draft: false},
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        cancel: () => undefined,
+        cancelled: cancelled,
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
@@ -653,7 +653,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -669,18 +669,18 @@ describe('CaseEditSubmitComponent', () => {
       orderService = new OrderService();
       spyOn(orderService, 'sort').and.callThrough();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': FORM_GROUP,
-        'data': '',
-        'eventTrigger': {'case_fields': [], 'can_save_draft': true},
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [], 'state': {'id': 'incompleteApplication', 'name': 'Incomplete Application', 'title_display': '# 12345678123456: west'}},
+        form: FORM_GROUP,
+        data: '',
+        eventTrigger: {case_fields: [], can_save_draft: true},
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        cancel: () => undefined,
+        cancelled: cancelled,
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [], state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
@@ -798,7 +798,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -814,17 +814,17 @@ describe('CaseEditSubmitComponent', () => {
     beforeEach(async(() => {
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': FORM_GROUP,
-        'data': '',
-        'eventTrigger': {'case_fields': [], 'can_save_draft': true},
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'cancel': () => undefined,
-        'cancelled': cancelled,
+        form: FORM_GROUP,
+        data: '',
+        eventTrigger: {case_fields: [], can_save_draft: true},
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        cancel: () => undefined,
+        cancelled: cancelled,
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
@@ -1014,7 +1014,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -1046,24 +1046,24 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithHiddenSimpleAndComplexFields(),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField],
-          'can_save_draft': true
+        form: createFormGroupWithHiddenSimpleAndComplexFields(),
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -1164,7 +1164,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -1188,24 +1188,24 @@ describe('CaseEditSubmitComponent', () => {
       };
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithHiddenMultiSelectAndDocumentFields(),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [countryMultiSelectField, documentField, caseField3],
-          'can_save_draft': true
+        form: createFormGroupWithHiddenMultiSelectAndDocumentFields(),
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [countryMultiSelectField, documentField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -1301,7 +1301,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -1333,24 +1333,24 @@ describe('CaseEditSubmitComponent', () => {
       };
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithHiddenMultiSelectAndDocumentFields(),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [countryMultiSelectField, documentField, caseField3],
-          'can_save_draft': true
+        form: createFormGroupWithHiddenMultiSelectAndDocumentFields(),
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [countryMultiSelectField, documentField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -1451,7 +1451,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -1477,24 +1477,24 @@ describe('CaseEditSubmitComponent', () => {
       };
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithHiddenMultiSelectAndDocumentFields(),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [countryMultiSelectField, documentField, caseField3],
-          'can_save_draft': true
+        form: createFormGroupWithHiddenMultiSelectAndDocumentFields(),
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [countryMultiSelectField, documentField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -1589,7 +1589,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -1626,25 +1626,25 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createComplexElementHidden())),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [complexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [complexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => { mockCaseNotifier.cachedCaseView = null; }
         })
@@ -1749,14 +1749,14 @@ describe('CaseEditSubmitComponent', () => {
       const callbackErrorsContext = new CallbackErrorsContext();
       callbackErrorsContext.ignore_warning = true;
       callbackErrorsContext.trigger_text = 'test';
-      comp.callbackErrorsNotify(callbackErrorsContext)
+      comp.callbackErrorsNotify(callbackErrorsContext);
       expect(comp.ignoreWarning).toBe(true);
       expect(comp.triggerText).toBe('test');
     });
 
     it('should check for isLabel', () => {
       const caseField: CaseField = aCaseField('field1', 'field1', 'Label', 'OPTIONAL', 4);
-      comp.isLabel(caseField)
+      comp.isLabel(caseField);
       expect(comp.isLabel(caseField)).toBe(true);
     });
   });
@@ -1787,7 +1787,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -1818,25 +1818,25 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_EMPTY;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY)),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [complexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [complexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -1930,7 +1930,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -1955,25 +1955,25 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED)),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [complexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [complexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -2067,7 +2067,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -2092,24 +2092,24 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithNestedComplexField(createNestedComplexElementHidden(createComplexElementHidden())),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [nestedComplexCaseField, caseField3],
-          'can_save_draft': true
+        form: createFormGroupWithNestedComplexField(createNestedComplexElementHidden(createComplexElementHidden())),
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [nestedComplexCaseField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -2210,7 +2210,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -2236,24 +2236,24 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithNestedComplexField(createNestedComplexElementHidden(createComplexElementHidden())),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [nestedComplexCaseField, caseField3],
-          'can_save_draft': true
+        form: createFormGroupWithNestedComplexField(createNestedComplexElementHidden(createComplexElementHidden())),
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [nestedComplexCaseField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -2348,7 +2348,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -2390,26 +2390,26 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(
             COLLECTION_ELEMENT_ID_ATTRIBUTE, createNestedComplexElementHidden(createComplexElementHidden()))),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [nestedComplexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [nestedComplexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -2514,7 +2514,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -2552,26 +2552,26 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_EMPTY;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(
             COLLECTION_ELEMENT_ID_ATTRIBUTE, createNestedComplexElementHidden(COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY))),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [nestedComplexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [nestedComplexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -2665,7 +2665,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -2695,26 +2695,26 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(
             COLLECTION_ELEMENT_ID_ATTRIBUTE, createNestedComplexElementHidden(COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED))),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [nestedComplexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [nestedComplexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -2808,7 +2808,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -2842,25 +2842,25 @@ describe('CaseEditSubmitComponent', () => {
       }];
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createDocumentElementHidden())),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [documentCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [documentCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -2962,7 +2962,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -2988,25 +2988,25 @@ describe('CaseEditSubmitComponent', () => {
       }];
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createDocumentElementHidden())),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [documentCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [documentCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -3102,7 +3102,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -3134,24 +3134,24 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithHiddenSimpleAndComplexFields(),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField],
-          'can_save_draft': true
+        form: createFormGroupWithHiddenSimpleAndComplexFields(),
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -3252,7 +3252,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -3284,24 +3284,24 @@ describe('CaseEditSubmitComponent', () => {
       };
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithHiddenMultiSelectAndDocumentFields(),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [countryMultiSelectField, documentField, caseField3],
-          'can_save_draft': true
+        form: createFormGroupWithHiddenMultiSelectAndDocumentFields(),
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [countryMultiSelectField, documentField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -3401,7 +3401,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -3435,25 +3435,25 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createComplexElementHidden())),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [complexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [complexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -3556,7 +3556,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -3587,25 +3587,25 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_EMPTY;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY)),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [complexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [complexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -3707,7 +3707,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -3749,26 +3749,26 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField2.value = COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(
             COLLECTION_ELEMENT_ID_ATTRIBUTE, createNestedComplexElementHidden(createComplexElementHidden()))),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [nestedComplexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [nestedComplexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -3873,7 +3873,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -3911,26 +3911,26 @@ describe('CaseEditSubmitComponent', () => {
       complexSubField1.value = COMPLEX_SUBFIELD_1_VALUE_EMPTY;
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(
             COLLECTION_ELEMENT_ID_ATTRIBUTE, createNestedComplexElementHidden(COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY))),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [nestedComplexCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [nestedComplexCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -4034,7 +4034,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -4068,25 +4068,25 @@ describe('CaseEditSubmitComponent', () => {
       }];
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createDocumentElementHidden())),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'eventTrigger': {
-          'case_fields': [documentCollectionField, caseField3],
-          'can_save_draft': true
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [documentCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })
@@ -4190,7 +4190,7 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
-              'isSolicitor': () => false,
+              isSolicitor: () => false,
             }
           }
         }
@@ -4224,29 +4224,29 @@ describe('CaseEditSubmitComponent', () => {
       }];
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit'])
+      cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
-        'form': createFormGroupWithCollectionField(
+        form: createFormGroupWithCollectionField(
           createCollectionElementHidden(COLLECTION_ELEMENT_ID_ATTRIBUTE, createDocumentElementHidden())),
-        'fieldsPurger': new FieldsPurger(fieldsUtils),
-        'data': '',
-        'event': {
-          'id': 'sendDirection'
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        event: {
+          id: 'sendDirection'
         },
-        'eventTrigger': {
-          'case_fields': [documentCollectionField, caseField3],
-          'can_save_draft': true
+        eventTrigger: {
+          case_fields: [documentCollectionField, caseField3],
+          can_save_draft: true
         },
-        'wizard': wizard,
-        'hasPrevious': () => true,
-        'getPage': () => firstPage,
-        'navigateToPage': () => undefined,
-        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+        wizard: wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
-        'cancel': () => undefined,
-        'cancelled': cancelled,
-        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [], 'state': {'id': 'incompleteApplication', 'name': 'Incomplete Application', 'title_display': '# 12345678123456: west'}},
-        'submit': createSpy('submit').and.returnValue({
+        cancel: () => undefined,
+        cancelled: cancelled,
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [], state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
+        submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })

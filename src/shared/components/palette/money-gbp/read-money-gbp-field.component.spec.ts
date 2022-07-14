@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadMoneyGbpFieldComponent } from './read-money-gbp-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType, CaseField } from '../../../domain';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { CaseField, FieldType } from '../../../domain';
+import { ReadMoneyGbpFieldComponent } from './read-money-gbp-field.component';
 
 describe('ReadMoneyGBPFieldComponent', () => {
 
@@ -14,13 +14,13 @@ describe('ReadMoneyGBPFieldComponent', () => {
   const VALUE = 4220;
 
   describe('Non-persistable readonly textarea field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadMoneyGbpFieldComponent>;
     let component: ReadMoneyGbpFieldComponent;
@@ -198,13 +198,13 @@ describe('ReadMoneyGBPFieldComponent', () => {
 
   describe('Persistable readonly textarea field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadMoneyGbpFieldComponent>;
     let component: ReadMoneyGbpFieldComponent;

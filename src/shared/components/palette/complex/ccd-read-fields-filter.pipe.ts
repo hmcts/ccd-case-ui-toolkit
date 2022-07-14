@@ -1,10 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 
+import { plainToClassFromExist } from 'class-transformer';
 import { ShowCondition } from '../../../directives';
 import { CaseField } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
-import { plainToClassFromExist } from 'class-transformer';
 
 @Pipe({
   name: 'ccdReadFieldsFilter'
@@ -21,8 +21,8 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   private static readonly ALWAYS_NULL_FIELDS = ['CasePaymentHistoryViewer', 'WaysToPay'];
 
   private static readonly NESTED_TYPES = {
-    'Complex': ReadFieldsFilterPipe.isValidComplex,
-    'Collection': ReadFieldsFilterPipe.isValidCollection
+    Complex: ReadFieldsFilterPipe.isValidComplex,
+    Collection: ReadFieldsFilterPipe.isValidCollection
   };
 
   /**
@@ -34,10 +34,10 @@ export class ReadFieldsFilterPipe implements PipeTransform {
    */
   private static isValidComplex(field: CaseField, values?: object): boolean {
     values = values || {};
-    let type = field.field_type;
-    let value = ReadFieldsFilterPipe.getValue(field, values);
+    const type = field.field_type;
+    const value = ReadFieldsFilterPipe.getValue(field, values);
 
-    let hasChildrenWithValue = type.complex_fields.find(f => {
+    const hasChildrenWithValue = type.complex_fields.find(f => {
       const willKeep = ReadFieldsFilterPipe.keepField(f, value, true);
       return willKeep && ReadFieldsFilterPipe.evaluateConditionalShow(f, value).hidden !== true;
     });
@@ -102,9 +102,9 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   private static getValue(field: CaseField, values: any, index?: number): any {
     let value: any;
     if (index >= 0 ) {
-      value = values[index].value[field.id]
+      value = values[index].value[field.id];
     } else {
-      value = values[field.id]
+      value = values[field.id];
     }
     return ReadFieldsFilterPipe.isEmpty(field.value) ? value : field.value;
   }
@@ -132,7 +132,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
    * @param path The current path to this field.
    * @returns CaseField[]
    */
-  transform(
+  public transform(
     complexField: CaseField, keepEmpty?: boolean, index?: number,
     setupHidden = false, formGroup?: FormGroup | AbstractControl, path?: string): CaseField[] {
     if (!complexField || !complexField.field_type) {

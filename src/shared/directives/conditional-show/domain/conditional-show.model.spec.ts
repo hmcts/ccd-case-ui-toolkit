@@ -66,96 +66,96 @@ describe('conditional-show', () => {
 
   describe('matches when', () => {
     it('empty condition', () => {
-      let sc = new ShowCondition('');
-      let fields = {
+      const sc = new ShowCondition('');
+      const fields = {
         field : 's1'
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(true);
     });
 
     it('dynamic list show condition', () => {
-      let sc = new ShowCondition('field="List3"');
-      let fields = {
+      const sc = new ShowCondition('field="List3"');
+      const fields = {
         field : { value: {code: 'List3', label: 'List 3'},
         list_items: [{code: 'List1', label: 'List 2'},
           {code: 'List2', label: 'List 3'},
           {code: 'List3', label: 'List 3'}]
       }
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
       expect(matched).toBe(true);
     });
 
     it('field has expected value', () => {
-      let sc = new ShowCondition('field="s1"');
-      let fields = {
+      const sc = new ShowCondition('field="s1"');
+      const fields = {
         field : 's1'
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(true);
     });
 
     it('field has expected value and is a number', () => {
-      let sc = new ShowCondition('field="3"');
-      let fields = {
+      const sc = new ShowCondition('field="3"');
+      const fields = {
         field : 3
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(true);
     });
 
     it('field starts with a string', () => {
-      let sc = new ShowCondition('field="te*"');
-      let fields = {
+      const sc = new ShowCondition('field="te*"');
+      const fields = {
         field : 'test'
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when multiple values match exactly', () => {
-      let sc = new ShowCondition('field="s1,s2"');
-      let fields = {
+      const sc = new ShowCondition('field="s1,s2"');
+      const fields = {
         field : ['s1', 's2']
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when multiple values match exactly regardless of the order', () => {
-      let sc = new ShowCondition('field="s2,s3,s1"');
-      let fields = {
+      const sc = new ShowCondition('field="s2,s3,s1"');
+      const fields = {
         field : ['s3', 's1', 's2']
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when value will match exactly on a complex field', () => {
-      let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
-      let fields = {
+      const sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      const fields = {
         claimantDetails: {
           NamePrefix: 'Mr.'
         }
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when value will match exactly on AddressUK complex field', () => {
-      let sc = new ShowCondition('claimantDetails.AddressUKCode.PostTown="London"');
-      let fields = {
+      const sc = new ShowCondition('claimantDetails.AddressUKCode.PostTown="London"');
+      const fields = {
         solicitorName: 'Ben Kember',
         claimantDetails: {
           NamePrefix: 'Mr.',
@@ -173,48 +173,48 @@ describe('conditional-show', () => {
         }
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when value will match on a collection element with a complex field', () => {
-      let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
+      const sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
 
-      let fields = COLLECTION_OF_INTERIM_RETURNS;
-      let path = 'interimReturns_1_outcomeOfVisit'; // path tells the matcher we will match against the element with index 1
-      let matched = sc.match(fields, path);
+      const fields = COLLECTION_OF_INTERIM_RETURNS;
+      const path = 'interimReturns_1_outcomeOfVisit'; // path tells the matcher we will match against the element with index 1
+      const matched = sc.match(fields, path);
 
       expect(matched).toBe(true);
     });
 
     it('field starts with a string and has empty value', () => {
-      let sc = new ShowCondition('claimantDetails.NamePrefix=""');
-      let fields = {
+      const sc = new ShowCondition('claimantDetails.NamePrefix=""');
+      const fields = {
         claimantDetails: {
           NamePrefix: ''
         }
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(true);
     });
 
     it('should check empty path name condition', () => {
-      let sc = new ShowCondition('');
+      const sc = new ShowCondition('');
 
       expect(sc['updatePathName']('')).toEqual('');
     });
 
     it('should check path name for complex with collection field', () => {
-      let sc = new ShowCondition('');
+      const sc = new ShowCondition('');
 
       expect(sc['updatePathName']('ComplexWithCollectionFieldShowCondition1_CollectionItems')).toEqual('ComplexWithCollectionFieldShowCondition1_CollectionItems');
     });
 
     it('should check complex collection items path name', () => {
-      let sc = new ShowCondition('');
+      const sc = new ShowCondition('');
 
       expect(sc['updatePathName']('CollectionItems_0_0')).toEqual('CollectionItems_CollectionItems_0');
     });
@@ -239,55 +239,55 @@ describe('conditional-show', () => {
     }));
 
     it('empty condition', () => {
-      let sc = new ShowCondition('');
-      let matched = sc.matchByContextFields(contextFields);
+      const sc = new ShowCondition('');
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('field has expected value', () => {
-      let sc = new ShowCondition('field1="s1"');
+      const sc = new ShowCondition('field1="s1"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('field has expected value and is a number', () => {
-      let sc = new ShowCondition('field2="3"');
-      let matched = sc.matchByContextFields(contextFields);
+      const sc = new ShowCondition('field2="3"');
+      const matched = sc.matchByContextFields(contextFields);
       expect(matched).toBe(true);
     });
 
     it('field starts with a string', () => {
-      let sc = new ShowCondition('field3="te*"');
-      let matched = sc.matchByContextFields(contextFields);
+      const sc = new ShowCondition('field3="te*"');
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when multiple values match exactly', () => {
       caseField1.value = ['s1', 's2'];
-      let sc = new ShowCondition('field1="s1,s2"');
+      const sc = new ShowCondition('field1="s1,s2"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when multiple values match exactly regardless of the order', () => {
       caseField1.value = ['s2' , 's1'];
-      let sc = new ShowCondition('field1="s1,s2"');
+      const sc = new ShowCondition('field1="s1,s2"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when complex values match exactly', () => {
-      let sc = new ShowCondition('claimantDetails.AddressUKCode.PostTown="London"');
+      const sc = new ShowCondition('claimantDetails.AddressUKCode.PostTown="London"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -295,160 +295,160 @@ describe('conditional-show', () => {
 
   describe('not matches when', () => {
     it('field value is not equal to condition', () => {
-      let sc = new ShowCondition('field="test"');
-      let fields = {
+      const sc = new ShowCondition('field="test"');
+      const fields = {
         field : 'test1'
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('field value does not start with the condition string', () => {
-      let sc = new ShowCondition('field="te*"');
-      let fields = {
+      const sc = new ShowCondition('field="te*"');
+      const fields = {
         field : 'yest'
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('field starts with a string and does not exist', () => {
-      let sc = new ShowCondition('field="te*"');
-      let fields = {
+      const sc = new ShowCondition('field="te*"');
+      const fields = {
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('field starts with a string and does not exist', () => {
-      let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
-      let fields = {
+      const sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      const fields = {
         claimantDetails: {
           OtherPrefix: 'Mr.'
         }
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('should return false when multiple values does not match exactly', () => {
-      let sc = new ShowCondition('field="s1,s2"');
-      let fields = {
+      const sc = new ShowCondition('field="s1,s2"');
+      const fields = {
         field : ['s1', 's2' , 's3']
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('field mentioned in condition has no value asked in EQUALS condition', () => {
-      let sc = new ShowCondition('field="test"');
-      let fields = {
+      const sc = new ShowCondition('field="test"');
+      const fields = {
         field : undefined
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('field mentioned in multi value condition has no value asked in EQUALS condition', () => {
-      let sc = new ShowCondition('field="test,pest"');
-      let fields = {
+      const sc = new ShowCondition('field="test,pest"');
+      const fields = {
         field : undefined
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('field mentioned in condition has no value asked in CONTAINS condition', () => {
-      let sc = new ShowCondition('fieldCONTAINS"test,mest"');
-      let fields = {
+      const sc = new ShowCondition('fieldCONTAINS"test,mest"');
+      const fields = {
         field : []
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('field mentioned in condition has no value', () => {
-      let sc = new ShowCondition('fieldCONTAINS"test,mest"');
-      let fields = {
+      const sc = new ShowCondition('fieldCONTAINS"test,mest"');
+      const fields = {
         field : undefined
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('field mentioned in single value condition has no value', () => {
-      let sc = new ShowCondition('fieldCONTAINS"test"');
-      let fields = {
+      const sc = new ShowCondition('fieldCONTAINS"test"');
+      const fields = {
         field : undefined
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('invalid field mentioned in complex field condition', () => {
-      let sc = new ShowCondition('claimantDetails.InvalidField="Mr."');
-      let fields = {
+      const sc = new ShowCondition('claimantDetails.InvalidField="Mr."');
+      const fields = {
         claimantDetails: {
           NamePrefix: 'Mr.'
         }
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('field mentioned in complex field condition has no value', () => {
-      let sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
-      let fields = {
+      const sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
+      const fields = {
         claimantDetails: {
           NamePrefix: undefined
         }
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
 
     it('should return false when value will not match on a collection element with a complex field', () => {
-      let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
+      const sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
 
-      let fields = COLLECTION_OF_INTERIM_RETURNS;
-      let path = 'interimReturns_0_outcomeOfVisit'; // path tells the matcher we will match against the element with index 0
-      let matched = sc.match(fields, path);
+      const fields = COLLECTION_OF_INTERIM_RETURNS;
+      const path = 'interimReturns_0_outcomeOfVisit'; // path tells the matcher we will match against the element with index 0
+      const matched = sc.match(fields, path);
 
       expect(matched).toBe(false);
     });
 
     it('should return false when the provided path collection number is invalid', () => {
-      let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
+      const sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
 
-      let fields = COLLECTION_OF_INTERIM_RETURNS;
-      let path = 'interimReturns_wrongNumber_outcomeOfVisit'; // we provide invalid element index
-      let matched = sc.match(fields, path);
+      const fields = COLLECTION_OF_INTERIM_RETURNS;
+      const path = 'interimReturns_wrongNumber_outcomeOfVisit'; // we provide invalid element index
+      const matched = sc.match(fields, path);
 
       expect(matched).toBe(false);
     });
 
     it('should return false when the provided path is broken', () => {
-      let sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
+      const sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
 
-      let fields = COLLECTION_OF_INTERIM_RETURNS;
-      let path = 'nonMatchingField_0_outcomeOfVisit';
-      let matched = sc.match(fields, path);
+      const fields = COLLECTION_OF_INTERIM_RETURNS;
+      const path = 'nonMatchingField_0_outcomeOfVisit';
+      const matched = sc.match(fields, path);
 
       expect(matched).toBe(false);
     });
@@ -473,41 +473,41 @@ describe('conditional-show', () => {
     }));
 
     it('field value is not equal to condition', () => {
-      let sc = new ShowCondition('field1="test"');
-      let matched = sc.matchByContextFields(contextFields);
+      const sc = new ShowCondition('field1="test"');
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
 
     it('field value does not start with ' +
       'the condition string', () => {
-      let sc = new ShowCondition('field1="te*"');
-      let matched = sc.matchByContextFields(contextFields);
+      const sc = new ShowCondition('field1="te*"');
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
 
     it('should return false when multiple values does not match exactly', () => {
       caseField1.value = ['s2', 's1', 's3'];
-      let sc = new ShowCondition('field1="s1,s2"');
+      const sc = new ShowCondition('field1="s1,s2"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
 
     it('should return false when values does not exist', () => {
       caseField1.value = undefined;
-      let sc = new ShowCondition('field1="s1,s2"');
+      const sc = new ShowCondition('field1="s1,s2"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
     it('should return true when complex values match exactly', () => {
-      let sc = new ShowCondition('claimantDetails.AddressUKCode="London"');
+      const sc = new ShowCondition('claimantDetails.AddressUKCode="London"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -532,43 +532,43 @@ describe('conditional-show', () => {
 
     it('should return true when all conditions are true', () => {
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition('field1CONTAINS"s3,s2" AND field2=3 AND field3="te*" AND field4="s1 AND s2"');
+      const sc = new ShowCondition('field1CONTAINS"s3,s2" AND field2=3 AND field3="te*" AND field4="s1 AND s2"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return false when any condition is false', () => {
-      let sc = new ShowCondition('field1="s1" AND field2=3 AND field3="no-match"');
-      let matched = sc.matchByContextFields(contextFields);
+      const sc = new ShowCondition('field1="s1" AND field2=3 AND field3="no-match"');
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
 
     it('should evaluate AND conditions correctly when AND keyword is present in the value being matched', () => {
-      let sc = new ShowCondition('field4="s1 AND s2" AND field2=3');
+      const sc = new ShowCondition('field4="s1 AND s2" AND field2=3');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should evaluate AND conditions correctly for a mix of EQUALS and CONTAINS', () => {
       caseField2.value = ['s4', 's2', 's3'];
-      let sc = new ShowCondition('field4="s1 AND s2" AND field2CONTAINSs3,s4');
+      const sc = new ShowCondition('field4="s1 AND s2" AND field2CONTAINSs3,s4');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when all conditions are true when using Complex fields', () => {
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition(
+      const sc = new ShowCondition(
         'field1CONTAINS"s3,s2" AND claimantDetails.AddressUKCode.PostTown="London" AND claimantDetails.AddressUKCode.Country="UK"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -583,62 +583,62 @@ describe('conditional-show', () => {
     }));
 
     it('should return true when single value matches ', () => {
-      let sc = new ShowCondition('field1CONTAINS"s1"');
+      const sc = new ShowCondition('field1CONTAINS"s1"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when values match', () => {
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition('field1CONTAINS"s1,s3"');
+      const sc = new ShowCondition('field1CONTAINS"s1,s3"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return true when value match regardless of order', () => {
       caseField1.value = ['s3', 's1', 's2'];
-      let sc = new ShowCondition('field1CONTAINS"s2,s1"');
+      const sc = new ShowCondition('field1CONTAINS"s2,s1"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return false when values do not match', () => {
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition('field1CONTAINS"s1,s4"');
+      const sc = new ShowCondition('field1CONTAINS"s1,s4"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
 
     it('should return true when single value condition matches', () => {
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition('field1CONTAINS"s3"');
+      const sc = new ShowCondition('field1CONTAINS"s3"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
 
     it('should return false for non multi select fields', () => {
-      let sc = new ShowCondition('field3CONTAINS"temmy"');
+      const sc = new ShowCondition('field3CONTAINS"temmy"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
 
     it('should return false when value does not exist', () => {
       caseField1.value = undefined;
-      let sc = new ShowCondition('field1CONTAINS"s1,s4"');
+      const sc = new ShowCondition('field1CONTAINS"s1,s4"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(false);
     });
@@ -647,9 +647,9 @@ describe('conditional-show', () => {
       complexAddressUK.value = {
         County: ['Middlesex', 'London'],
       };
-      let sc = new ShowCondition('claimantDetails.AddressUKCode.CountyCONTAINS"London"');
+      const sc = new ShowCondition('claimantDetails.AddressUKCode.CountyCONTAINS"London"');
 
-      let matched = sc.matchByContextFields(contextFields);
+      const matched = sc.matchByContextFields(contextFields);
 
       expect(matched).toBe(true);
     });
@@ -675,106 +675,106 @@ describe('conditional-show', () => {
 
   describe('NOT EQUALS', () => {
     it('Scenario1 show: comparator match with specific value', () => {
-      let sc = new ShowCondition('field!="MOJ"');
-      let fields = {
+      const sc = new ShowCondition('field!="MOJ"');
+      const fields = {
         field: 'Reform'
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
       expect(matched).toBe(true);
     });
     it('Scenario2 show: is not blank', () => {
-      let sc = new ShowCondition('field!=""');
-      let fields = {
+      const sc = new ShowCondition('field!=""');
+      const fields = {
         field: 'MOJ'
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
       expect(matched).toBe(true);
     });
     it('Scenario2 hide: is not blank', () => {
-      let sc = new ShowCondition('field!=""');
-      let fields = {
+      const sc = new ShowCondition('field!=""');
+      const fields = {
         field: '    '
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
       expect(matched).toBe(false);
     });
     it('Scenario2 hide: is not blank with null value', () => {
-      let sc = new ShowCondition('field!=""');
-      let fields = {
+      const sc = new ShowCondition('field!=""');
+      const fields = {
         field: null
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
       expect(matched).toBe(false);
     });
     it('Scenario2 hide: is not blank with showCondition multiple spaces', () => {
-      let sc = new ShowCondition('field!="  "');
-      let fields = {
+      const sc = new ShowCondition('field!="  "');
+      const fields = {
         field: null
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
       expect(matched).toBe(false);
     });
     it('Scenario3 hide: has any value', () => {
-      let sc = new ShowCondition('field!="*"');
-      let fields = {
+      const sc = new ShowCondition('field!="*"');
+      const fields = {
         field: 'MOJ'
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
       expect(matched).toBe(false);
     });
     it('Scenario4 hide: comparator does not match value', () => {
-      let sc = new ShowCondition('field!="Reform"');
-      let fields = {
+      const sc = new ShowCondition('field!="Reform"');
+      const fields = {
         field: 'Reform'
       };
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
       expect(matched).toBe(false);
     });
     it('Scenario4 hide: multi select not equals', () => {
-      let sc = new ShowCondition('field!="s1,s2"');
-      let fields = {
+      const sc = new ShowCondition('field!="s1,s2"');
+      const fields = {
         field: ['s1', 's2']
       };
 
-      let matched = sc.match(fields);
+      const matched = sc.match(fields);
 
       expect(matched).toBe(false);
     });
     describe('OR conditional tests', () => {
       it('Scenario1: OR condition', () => {
-        let sc = new ShowCondition('field1="field1NoMatchValue" OR field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
+        const sc = new ShowCondition('field1="field1NoMatchValue" OR field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(false);
       });
       it('Scenario2 positive: OR logic with equals', () => {
-        let sc = new ShowCondition('field1="field1Value" OR field2=3 OR field3="no-match"');
+        const sc = new ShowCondition('field1="field1Value" OR field2=3 OR field3="no-match"');
         contextFields[1].value = 3;
-        let matched = sc.matchByContextFields(contextFields);
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(true);
       });
       it('Scenario2 positive: OR logic with not equals', () => {
-        let sc = new ShowCondition('field1!="field1Value" OR field2=3 OR field3="no-match"');
-        let matched = sc.matchByContextFields(contextFields);
+        const sc = new ShowCondition('field1!="field1Value" OR field2=3 OR field3="no-match"');
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(true);
       });
       it('OR condition mixed with AND => equals condition', () => {
-        let sc = new ShowCondition('field1="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
+        const sc = new ShowCondition('field1="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(false);
       });
       it('OR condition mixed with AND => not equals condition', () => {
-        let sc = new ShowCondition('field1!="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
+        const sc = new ShowCondition('field1!="field1NoMatchValue" OR field2="field2NoMatchValue" AND field3="field3NoMatchValue"');
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(true);
       });
       it('AND condition mixed with OR => equals condition', () => {
-        let sc = new ShowCondition('field1="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
+        const sc = new ShowCondition('field1="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(false);
       });
       it('AND condition mixed with OR => not equals condition', () => {
-        let sc = new ShowCondition('field1!="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
-        let matched = sc.matchByContextFields(contextFields);
+        const sc = new ShowCondition('field1!="field1NoMatchValue" AND field2="field2NoMatchValue" OR field3="field3NoMatchValue"');
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(true);
       });
     });

@@ -1,13 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { ReadMultiSelectListFieldComponent } from './read-multi-select-list-field.component';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { text } from '../../../test/helpers';
 import { FixedListPipe } from '../fixed-list/fixed-list.pipe';
-import { FormGroup } from '@angular/forms';
+import { ReadMultiSelectListFieldComponent } from './read-multi-select-list-field.component';
 
 describe('ReadMultiSelectListFieldComponent', () => {
 
@@ -44,7 +44,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
     CASE_FIELD.field_type = FIELD_TYPE;
     CASE_FIELD.value = VALUES;
 
-    let FieldReadComponent = MockComponent({
+    const FieldReadComponent = MockComponent({
       selector: 'ccd-field-read',
       inputs: ['caseField']
     });
@@ -81,7 +81,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
       component.caseField.value = VALUES;
       fixture.detectChanges();
 
-      let cells = de.queryAll($VALUES);
+      const cells = de.queryAll($VALUES);
 
       expect(cells.length).toEqual(VALUES.length);
 
@@ -122,7 +122,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
     CASE_FIELD.field_type = FIELD_TYPE;
     CASE_FIELD.value = VALUES;
 
-    let FieldReadComponent = MockComponent({
+    const FieldReadComponent = MockComponent({
       selector: 'ccd-field-read',
       inputs: ['caseField']
     });

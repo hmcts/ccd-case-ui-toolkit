@@ -1,5 +1,5 @@
 export class Confirmation {
-  constructor(private caseId: string, private status: string, private header: string, private body: string) {
+  constructor(private readonly caseId: string, private readonly status: string, private readonly header: string, private readonly body: string) {
   }
 
   public getCaseId(): string {

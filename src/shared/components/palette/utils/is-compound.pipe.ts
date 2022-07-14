@@ -11,11 +11,11 @@ export class IsCompoundPipe implements PipeTransform {
     'Complex', 'Label', 'AddressGlobal', 'AddressUK', 'AddressGlobalUK', 'CasePaymentHistoryViewer', 'CaseHistoryViewer', 'Organisation', 'WaysToPay'
   ];
 
-  private static readonly EXCLUDE: String[] = [
+  private static readonly EXCLUDE: string[] = [
     'CaseLink'
   ];
 
-  transform(field: CaseField): boolean {
+  public transform(field: CaseField): boolean {
     if (!field || !field.field_type || !field.field_type.type) {
       return false;
     }

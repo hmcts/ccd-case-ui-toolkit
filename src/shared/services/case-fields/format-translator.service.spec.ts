@@ -2,7 +2,7 @@ import { FormatTranslatorService } from './format-translator.service';
 
 describe('FormatTranslatorService', () => {
 
-  let formatTranslator: FormatTranslatorService = new FormatTranslatorService();
+  const formatTranslator: FormatTranslatorService = new FormatTranslatorService();
   describe('FormatTranslator translates date formats from Java to Angular formatDate', () => {
 
     it('should pass through normal date strings', () => {
@@ -16,20 +16,20 @@ describe('FormatTranslatorService', () => {
     });
     it ('should ignore the contents of quoted strings', () => {
       // tslint:disable-next-line:quotemark
-      expect(formatTranslator.translate("dd MMM yyyy' cool date format bro dd MMM yyyy'")).toBe('DD MMM YYYY')
-    })
+      expect(formatTranslator.translate("dd MMM yyyy' cool date format bro dd MMM yyyy'")).toBe('DD MMM YYYY');
+    });
     it ('should ignore quoted strings in the middle', () => {
       // tslint:disable-next-line:quotemark
-      expect(formatTranslator.translate("dd MMM ' cool date format bro dd MMM yyyy'yyyy")).toBe('DD MMM YYYY')
-    })
+      expect(formatTranslator.translate("dd MMM ' cool date format bro dd MMM yyyy'yyyy")).toBe('DD MMM YYYY');
+    });
     it ('should ignore multiple quoted strings', () => {
       // tslint:disable-next-line:quotemark
-      expect(formatTranslator.translate("dd MMM yyyy' cool' 'date' 'format bro dd MMM yyyy'")).toBe('DD MMM YYYY  ')
-    })
+      expect(formatTranslator.translate("dd MMM yyyy' cool' 'date' 'format bro dd MMM yyyy'")).toBe('DD MMM YYYY  ');
+    });
     it ('should ignore escaped single quotes', () => {
       // tslint:disable-next-line:quotemark
-      expect(formatTranslator.translate("dd MMM ''yyyy''")).toBe('DD MMM YYYY')
-    })
+      expect(formatTranslator.translate("dd MMM ''yyyy''")).toBe('DD MMM YYYY');
+    });
 
     it ('should remove time', () => {
       expect(formatTranslator.removeTime('YYYY/MM/DD hh:mm:ss')).toBe('YYYY/MM/DD');
@@ -74,4 +74,4 @@ describe('FormatTranslatorService', () => {
       expect(formatTranslator.hasSeconds('SS')).toBe(true);
     });
   });
-})
+});

@@ -3,8 +3,8 @@ import { Orderable } from '../order';
 export class CaseViewTrigger implements Orderable {
   public static readonly DELETE = 'DELETE';
 
-  id: string;
-  name: string;
-  description: string;
-  order?: number;
+  public id: string;
+  public name: string;
+  public description: string;
+  public order?: number;
 }

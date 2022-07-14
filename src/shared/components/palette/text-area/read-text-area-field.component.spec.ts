@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadTextAreaFieldComponent } from './read-text-area-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { By } from '@angular/platform-browser';
-import { text } from '../../../test/helpers';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { text } from '../../../test/helpers';
+import { ReadTextAreaFieldComponent } from './read-text-area-field.component';
 
 describe('ReadTextAreaFieldComponent', () => {
 
@@ -19,13 +19,13 @@ describe('ReadTextAreaFieldComponent', () => {
   const VALUE = 'Hello world';
 
   describe('Non-persistable readonly textarea field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadTextAreaFieldComponent>;
     let component: ReadTextAreaFieldComponent;
@@ -55,7 +55,7 @@ describe('ReadTextAreaFieldComponent', () => {
       component.caseField.value = VALUE;
       fixture.detectChanges();
 
-      let span = de.query($SPAN);
+      const span = de.query($SPAN);
 
       expect(text(span)).toEqual(VALUE.toString());
     });
@@ -64,7 +64,7 @@ describe('ReadTextAreaFieldComponent', () => {
       component.caseField.value = undefined;
       fixture.detectChanges();
 
-      let span = de.query($SPAN);
+      const span = de.query($SPAN);
 
       expect(text(span)).toBeNull();
     });
@@ -73,7 +73,7 @@ describe('ReadTextAreaFieldComponent', () => {
       component.caseField.value = null;
       fixture.detectChanges();
 
-      let span = de.query($SPAN);
+      const span = de.query($SPAN);
 
       expect(text(span)).toBeNull();
     });
@@ -82,22 +82,22 @@ describe('ReadTextAreaFieldComponent', () => {
       component.caseField.value = 'line1\nLine2';
       fixture.detectChanges();
 
-      let span = de.query($SPAN);
+      const span = de.query($SPAN);
 
-      let whiteSpace = window.getComputedStyle(span.nativeElement, null).getPropertyValue('white-space');
+      const whiteSpace = window.getComputedStyle(span.nativeElement, null).getPropertyValue('white-space');
       expect(whiteSpace).toEqual('pre-wrap');
     });
   });
 
   describe('Persistable readonly textarea field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadTextAreaFieldComponent>;
     let component: ReadTextAreaFieldComponent;

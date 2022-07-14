@@ -14,13 +14,13 @@ const FIELD_TYPE: FieldType = {
   type: 'Text'
 };
 const VALUE = 'Hello world';
-const CASE_FIELD: CaseField = <CaseField>({
+const CASE_FIELD: CaseField = ({
   id: FIELD_ID,
   label: 'X',
   field_type: FIELD_TYPE,
   value: VALUE,
   display_context: 'OPTIONAL'
-});
+}) as CaseField;
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 
@@ -29,7 +29,7 @@ describe('WriteTextFieldComponent', () => {
   const $INPUT = By.css('.form-group input');
 
   // Input is mocked so that one-way bound inputs can be tested
-  let Input: any = MockComponent({ selector: 'input', inputs: [
+  const Input: any = MockComponent({ selector: 'input', inputs: [
     'type',
     'formControl'
   ]});
@@ -74,7 +74,7 @@ describe('WriteTextFieldComponent', () => {
   });
 
   it('should render text input element linked to formControl', () => {
-    let input = de.query($INPUT);
+    const input = de.query($INPUT);
 
     expect(input.nativeElement.getAttribute('type')).toBe('text');
     expect(input.componentInstance.formControl).toEqual(component.textControl);

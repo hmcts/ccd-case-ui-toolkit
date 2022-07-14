@@ -1,26 +1,26 @@
 import { Type } from 'class-transformer';
-import { Jurisdiction, CaseTab, CaseViewEvent } from '../../../domain';
+import { CaseTab, CaseViewEvent, Jurisdiction } from '../../../domain';
 
 // @dynamic
 export class CaseHistoryCaseType {
-  id: string;
-  name: string;
-  description?: string;
+  public id: string;
+  public name: string;
+  public description?: string;
 
   @Type(() => Jurisdiction)
-  jurisdiction: Jurisdiction;
+  public jurisdiction: Jurisdiction;
 }
 
 // @dynamic
 export class CaseHistory {
-  case_id?: string;
+  public case_id?: string;
 
   @Type(() => CaseHistoryCaseType)
-  caseType: CaseHistoryCaseType;
+  public caseType: CaseHistoryCaseType;
 
   @Type(() => CaseTab)
-  tabs: CaseTab[];
+  public tabs: CaseTab[];
 
   @Type(() => CaseViewEvent)
-  event: CaseViewEvent;
+  public event: CaseViewEvent;
 }

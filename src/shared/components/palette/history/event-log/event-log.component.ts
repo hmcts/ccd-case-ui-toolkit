@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseViewEvent } from '../../../../domain';
 
 @Component({
@@ -9,25 +9,25 @@ import { CaseViewEvent } from '../../../../domain';
 export class EventLogComponent implements OnInit {
 
   @Input()
-  events: CaseViewEvent[];
+  public events: CaseViewEvent[];
 
   @Output()
-  onCaseHistory = new EventEmitter<String>();
+  public onCaseHistory = new EventEmitter<string>();
 
-  selected: CaseViewEvent;
+  public selected: CaseViewEvent;
 
-  isPartOfCaseTimeline = false;
+  public isPartOfCaseTimeline = false;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.selected = this.events[0];
     this.isPartOfCaseTimeline = this.onCaseHistory.observers.length > 0;
   }
 
-  select(event: CaseViewEvent): void {
+  public select(event: CaseViewEvent): void {
     this.selected = event;
   }
 
-  caseHistoryClicked(eventId: string) {
+  public caseHistoryClicked(eventId: string) {
     this.onCaseHistory.emit(eventId);
   }
 

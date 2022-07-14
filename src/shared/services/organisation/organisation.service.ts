@@ -48,6 +48,11 @@ export interface OrganisationVm {
 
 @Injectable()
 export class OrganisationService {
+
+    constructor(private readonly http: HttpClient,
+                private readonly appconfig: AbstractAppConfig) {}
+
+    private organisations$: Observable<OrganisationVm[]>;
     public static mapOrganisation(organisations: Organisation[]): OrganisationVm [] {
         const organisationsVm = new Array<OrganisationVm>();
         organisations.forEach(org => {
@@ -69,11 +74,6 @@ export class OrganisationService {
         });
         return organisationsVm;
     }
-
-    private organisations$: Observable<OrganisationVm[]>;
-
-    constructor(private readonly http: HttpClient,
-                private readonly appconfig: AbstractAppConfig) {}
 
     public getActiveOrganisations(): Observable<OrganisationVm[]> {
         if (!this.organisations$) {

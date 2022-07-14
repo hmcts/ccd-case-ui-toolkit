@@ -1,15 +1,14 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Component, DebugElement, Input } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { DebugElement, Component, Input } from '@angular/core';
-import { CaseField } from '../../domain/definition/case-field.model';
-import { async } from '@angular/core/testing';
-import { FormGroup, FormControl } from '@angular/forms';
-import { FieldsUtils } from '../../services/fields/fields.utils';
-import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
-import createSpyObj = jasmine.createSpyObj;
 import { FieldType } from '../../domain/definition';
-import { GreyBarService } from './services/grey-bar.service';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { FieldsUtils } from '../../services/fields/fields.utils';
 import { ConditionalShowFormDirective } from './conditional-show-form.directive';
+import { ConditionalShowRegistrarService } from './services/conditional-show-registrar.service';
+import { GreyBarService } from './services/grey-bar.service';
+import createSpyObj = jasmine.createSpyObj;
 
 @Component({
     template: `
@@ -25,9 +24,9 @@ import { ConditionalShowFormDirective } from './conditional-show-form.directive'
 })
 
 class TestHostComponent {
-  @Input() caseFields: CaseField[];
-  @Input() formGroup: FormGroup;
-  @Input() complexFormGroup: FormGroup;
+  @Input() public caseFields: CaseField[];
+  @Input() public formGroup: FormGroup;
+  @Input() public complexFormGroup: FormGroup;
 
   public carHidden = false;
   public makeHidden = true;
@@ -36,18 +35,18 @@ class TestHostComponent {
   // TODO: Sort the bindings out so we can test that the [hidden]
   // works. Binding to isHidden(name) results in an
   // ExpressionChangedAfterItHasBeenCheckedError.
-  isHidden(name: string) {
+  public isHidden(name: string) {
     if (this.caseFields) {
-      let f = this.caseFields.find( (cf, ix) =>  (cf.id === name) );
+      const f = this.caseFields.find( (cf, ix) =>  (cf.id === name) );
       return f ? f.hidden : false;
     }
     return false;
   }
 }
 
-let field = (id, value, showCondition?) => {
-    let caseField = new CaseField();
-    let fieldType = new FieldType();
+const field = (id, value, showCondition?) => {
+    const caseField = new CaseField();
+    const fieldType = new FieldType();
     fieldType.id = 'fieldId';
     fieldType.type = 'Text';
     caseField.id = id;
@@ -62,14 +61,14 @@ describe('ConditionalShowFormDirective', () => {
     let comp:    TestHostComponent;
     let fixture: ComponentFixture<TestHostComponent>;
     let de:      DebugElement;
-    let el:      HTMLElement;
-    let elRadioN: HTMLElement;
+    const el: HTMLElement= null;
+    const elRadioN: HTMLElement = null;
     let elRadioY: HTMLElement;
     let elMake: HTMLElement;
     let elModel: HTMLElement;
 
     let conditionalShowForm: ConditionalShowFormDirective;
-    let mockRegistrar: ConditionalShowRegistrarService = createSpyObj<ConditionalShowRegistrarService>(
+    const mockRegistrar: ConditionalShowRegistrarService = createSpyObj<ConditionalShowRegistrarService>(
       'conditionalShowRegistrarService',
       ['register']
     );
@@ -89,17 +88,17 @@ describe('ConditionalShowFormDirective', () => {
         fixture = TestBed.createComponent(TestHostComponent);
         comp = fixture.componentInstance;
         de = fixture.debugElement.query(By.directive(ConditionalShowFormDirective));
-        elRadioY = fixture.debugElement.query(By.css('#HasCarY')).nativeElement
-        elRadioN = fixture.debugElement.query(By.css('#HasCarN')).nativeElement
-        elModel = fixture.debugElement.query(By.css('#CarModel')).nativeElement
-        elMake = fixture.debugElement.query(By.css('#CarMake')).nativeElement
+        elRadioY = fixture.debugElement.query(By.css('#HasCarY')).nativeElement;
+        elRadioN = fixture.debugElement.query(By.css('#HasCarN')).nativeElement;
+        elModel = fixture.debugElement.query(By.css('#CarModel')).nativeElement;
+        elMake = fixture.debugElement.query(By.css('#CarMake')).nativeElement;
         conditionalShowForm = de.injector.get(ConditionalShowFormDirective) as ConditionalShowFormDirective;
     });
 
   function bindCaseFields(formGroup: FormGroup, caseFields: CaseField[]) {
     Object.keys(formGroup.controls).forEach((key, ix) => {
       formGroup.get(key)['caseField'] = caseFields[ix];
-    })
+    });
   }
 
   it('should not trigger when hide condition is empty', (done) => {
@@ -138,7 +137,7 @@ describe('ConditionalShowFormDirective', () => {
         expect(comp.caseFields[2].hidden).toBeTruthy();
         done();
       });
-    })
+    });
 
   it ('should show when condition is true', (done) => {
     comp.caseFields = [ field('hasCar', 'Yes', ''),
@@ -156,7 +155,7 @@ describe('ConditionalShowFormDirective', () => {
       expect(comp.caseFields[2].hidden).toBe(false);
       done();
     });
-  })
+  });
   it ('should hide when field value changes to make condition false', fakeAsync(() => {
     comp.caseFields = [ field('hasCar', 'Yes', ''),
       field('carMake', 'Ford', 'hasCar="Yes"'),
@@ -172,12 +171,12 @@ describe('ConditionalShowFormDirective', () => {
       expect(comp.caseFields[1].hidden).toBe(false);
       expect(comp.caseFields[2].hidden).toBe(false);
       comp.formGroup.patchValue({hasCar: 'No'});
-      tick(500)
+      tick(500);
       fixture.detectChanges();
       expect(comp.caseFields[1].hidden).toBe(true);
       expect(comp.caseFields[2].hidden).toBe(true);
     });
-  }))
+  }));
   /*
   it('should display not grey bar when toggled to show if grey bar disabled', () => {
       fixture = TestBed.createComponent(TestHostGreyBarDisabledComponent);

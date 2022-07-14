@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Jurisdiction } from '../../domain';
-import { DefinitionsService } from '../../services';
 import { READ_ACCESS } from '../../domain/case-view/access-types.model';
+import { DefinitionsService } from '../../services';
 
 @Component({
     selector: 'ccd-search-filters-wrapper',
@@ -11,26 +11,26 @@ import { READ_ACCESS } from '../../domain/case-view/access-types.model';
 export class SearchFiltersWrapperComponent implements OnInit {
 
     @Input()
-    autoApply: boolean;
+    public autoApply: boolean;
 
     @Output()
-    onApply: EventEmitter<any> = new EventEmitter();
+    public onApply: EventEmitter<any> = new EventEmitter();
 
     @Output()
-    onReset: EventEmitter<any> = new EventEmitter();
+    public onReset: EventEmitter<any> = new EventEmitter();
 
     @Output()
-    onJurisdiction: EventEmitter<any> = new EventEmitter();
+    public onJurisdiction: EventEmitter<any> = new EventEmitter();
 
-    jurisdictions: Jurisdiction[];
-    isVisible: boolean;
+    public jurisdictions: Jurisdiction[];
+    public isVisible: boolean;
 
     constructor(
-        private definitionsService: DefinitionsService,
+        private readonly definitionsService: DefinitionsService,
     ) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.isVisible = false;
 
         this.definitionsService.getJurisdictions(READ_ACCESS)
@@ -40,15 +40,15 @@ export class SearchFiltersWrapperComponent implements OnInit {
             });
     }
 
-    onWrapperApply(value) {
+    public onWrapperApply(value) {
         this.onApply.emit(value);
     }
 
-    onWrapperReset(value) {
+    public onWrapperReset(value) {
         this.onReset.emit(value);
     }
 
-    onWrapperJurisdiction(value) {
+    public onWrapperJurisdiction(value) {
         this.onJurisdiction.emit(value);
     }
 }

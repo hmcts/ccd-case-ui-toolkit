@@ -1,21 +1,21 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MockComponent } from 'ng2-mock-component';
-import { CaseEditComponent } from './case-edit.component';
-import { DebugElement } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MockComponent } from 'ng2-mock-component';
 import { Observable, of } from 'rxjs';
-import { FieldsPurger, FieldsUtils } from '../../../services';
 import { ConditionalShowRegistrarService } from '../../../directives';
-import { FieldsFilterPipe, PaletteUtilsModule } from '../../palette';
-import { WizardFactoryService } from '../services/wizard-factory.service';
-import { FormErrorService, FormValueService } from '../../../services/form';
-import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { Wizard, WizardPage, WizardPageField } from '../domain';
-import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType, Profile } from '../../../domain';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { FieldsPurger, FieldsUtils } from '../../../services';
+import { FormErrorService, FormValueService } from '../../../services/form';
+import { FieldsFilterPipe, PaletteUtilsModule } from '../../palette';
+import { Wizard, WizardPage, WizardPageField } from '../domain';
+import { WizardFactoryService } from '../services/wizard-factory.service';
+import { CaseEditComponent } from './case-edit.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditComponent', () => {
@@ -26,22 +26,22 @@ describe('CaseEditComponent', () => {
     'caseId',
     false,
     [
-      <CaseField>({
+      ({
         id: 'PersonFirstName',
         label: 'First name',
         field_type: null,
         display_context: 'READONLY'
-      }),
-      <CaseField>({
+      }) as CaseField,
+      ({
         id: 'PersonLastName',
         label: 'Last name',
         field_type: null,
         display_context: 'OPTIONAL'
-      })
+      }) as CaseField
     ]
   );
 
-  const CASE_FIELD_WITH_SHOW_CONDITION: CaseField = <CaseField>({
+  const CASE_FIELD_WITH_SHOW_CONDITION: CaseField = ({
     id: 'PersonFirstName',
     label: 'First name',
     field_type: {
@@ -50,9 +50,9 @@ describe('CaseEditComponent', () => {
     },
     display_context: 'READONLY',
     show_condition: 'PersonLastName=\"Smith\"'
-  });
+  }) as CaseField;
 
-  const CASE_FIELD_1: CaseField = <CaseField>({
+  const CASE_FIELD_1: CaseField = ({
     id: 'PersonFirstName',
     label: 'First name',
     field_type: {
@@ -60,9 +60,9 @@ describe('CaseEditComponent', () => {
       type: 'Text'
     },
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
-  const CASE_FIELD_2: CaseField = <CaseField>({
+  const CASE_FIELD_2: CaseField = ({
     id: 'PersonLastName',
     label: 'Last name',
     field_type: {
@@ -70,7 +70,7 @@ describe('CaseEditComponent', () => {
       type: 'Text'
     },
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
   const PERSON_NAME_FIELD_TYPE: FieldType = {
     id: 'PersonName',
@@ -86,16 +86,16 @@ describe('CaseEditComponent', () => {
         display_context: 'READONLY'
       } as CaseField
     ]
-  }
+  };
 
-  const CASE_FIELD_2_COMPLEX: CaseField = <CaseField>({
+  const CASE_FIELD_2_COMPLEX: CaseField = ({
     id: 'PersonLastName',
     label: 'Last name',
     field_type: PERSON_NAME_FIELD_TYPE,
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
-  const CASE_FIELD_2_COLLECTION: CaseField = <CaseField>({
+  const CASE_FIELD_2_COLLECTION: CaseField = ({
     id: 'PersonLastNameCollection',
     label: 'Last name (collection)',
     field_type: {
@@ -104,9 +104,9 @@ describe('CaseEditComponent', () => {
       collection_field_type: PERSON_NAME_FIELD_TYPE
     },
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
-  const CASE_FIELD_3: CaseField = <CaseField>({
+  const CASE_FIELD_3: CaseField = ({
     id: 'Address',
     label: 'Address',
     field_type: {
@@ -114,7 +114,7 @@ describe('CaseEditComponent', () => {
       type: 'Text'
     },
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
   const ADDRESS_DETAILS_FIELD_TYPE: FieldType = {
     id: 'AddressDetails',
@@ -130,16 +130,16 @@ describe('CaseEditComponent', () => {
         display_context: 'READONLY'
       } as CaseField
     ]
-  }
+  };
 
-  const CASE_FIELD_3_COMPLEX: CaseField = <CaseField>({
+  const CASE_FIELD_3_COMPLEX: CaseField = ({
     id: 'Address',
     label: 'Address',
     field_type: ADDRESS_DETAILS_FIELD_TYPE,
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
-  const CASE_FIELD_3_COLLECTION: CaseField = <CaseField>({
+  const CASE_FIELD_3_COLLECTION: CaseField = ({
     id: 'AddressCollection',
     label: 'Address (collection)',
     field_type: {
@@ -148,7 +148,7 @@ describe('CaseEditComponent', () => {
       collection_field_type: ADDRESS_DETAILS_FIELD_TYPE
     },
     display_context: 'READONLY'
-  });
+  }) as CaseField;
 
   const WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION: WizardPageField = {
     case_field_id: CASE_FIELD_WITH_SHOW_CONDITION.id
@@ -237,8 +237,8 @@ describe('CaseEditComponent', () => {
         }
       },
       user: USER,
-      'isSolicitor': FUNC,
-      'isCourtAdmin': FUNC
+      isSolicitor: FUNC,
+      isCourtAdmin: FUNC
     };
 
     beforeEach(async(() => {
@@ -1031,8 +1031,8 @@ describe('CaseEditComponent', () => {
         }
       },
       user: USER,
-      'isSolicitor': FUNC,
-      'isCourtAdmin': FUNC
+      isSolicitor: FUNC,
+      isCourtAdmin: FUNC
     };
 
     const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
@@ -1066,7 +1066,7 @@ describe('CaseEditComponent', () => {
                     roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                   }
                 },
-                'isSolicitor': () => false,
+                isSolicitor: () => false,
               }
             }
           }

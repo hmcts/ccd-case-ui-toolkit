@@ -1,7 +1,7 @@
+import { RendererFactory2 } from '@angular/core';
 import { async } from '@angular/core/testing';
 import createSpyObj = jasmine.createSpyObj;
 import { GreyBarService } from './grey-bar.service';
-import { RendererFactory2 } from '@angular/core';
 
 let greyBarService: GreyBarService;
 

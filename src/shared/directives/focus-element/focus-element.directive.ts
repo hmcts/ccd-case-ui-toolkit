@@ -13,14 +13,14 @@ import { AfterContentInit, Directive, ElementRef, Renderer2 } from '@angular/cor
  */
 export class FocusElementDirective implements AfterContentInit {
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {
+  constructor(private readonly el: ElementRef, private readonly renderer: Renderer2) {
   }
 
-  ngAfterContentInit(): void {
+  public ngAfterContentInit(): void {
     this.focus();
   }
 
-  focus(): void {
+  public focus(): void {
     if (this.el.nativeElement) {
       const focusElement = this.renderer.selectRootElement(this.el.nativeElement, true);
       if (focusElement) {

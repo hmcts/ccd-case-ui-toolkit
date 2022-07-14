@@ -16,19 +16,19 @@ describe('HttpError', () => {
   describe('from()', () => {
 
     const ERROR_FULL = {
-      'timestamp': '2017-05-24T15:24:17.857+0000',
-      'status': 422,
-      'error': 'Unprocessable Entity',
-      'exception': 'uk.gov.hmcts.ccd.endpoint.exceptions.ValidationException',
-      'message': 'string is not a known event ID for the specified case type TestAddressBookCase',
-      'path': '/caseworkers/0/jurisdictions/TEST/case-types/TestAddressBookCase/cases'
+      timestamp: '2017-05-24T15:24:17.857+0000',
+      status: 422,
+      error: 'Unprocessable Entity',
+      exception: 'uk.gov.hmcts.ccd.endpoint.exceptions.ValidationException',
+      message: 'string is not a known event ID for the specified case type TestAddressBookCase',
+      path: '/caseworkers/0/jurisdictions/TEST/case-types/TestAddressBookCase/cases'
     };
 
     const ERROR_PARTIAL = {
-      'status': 422,
-      'error': 'Unprocessable Entity',
-      'exception': 'uk.gov.hmcts.ccd.endpoint.exceptions.ValidationException',
-      'path': '/caseworkers/0/jurisdictions/TEST/case-types/TestAddressBookCase/cases'
+      status: 422,
+      error: 'Unprocessable Entity',
+      exception: 'uk.gov.hmcts.ccd.endpoint.exceptions.ValidationException',
+      path: '/caseworkers/0/jurisdictions/TEST/case-types/TestAddressBookCase/cases'
     };
 
     it('should return default error when given null', () => {

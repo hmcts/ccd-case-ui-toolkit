@@ -57,11 +57,11 @@ const expectCaseFieldPartial = (de, caseField) => {
 };
 
 const expectLabel = (de: DebugElement, label) => {
-  expect(text(de)).toEqual(label)
+  expect(text(de)).toEqual(label);
 };
 
 const expectContext = (de, expectedContext) => {
-  expect(de.componentInstance.context).toEqual(expectedContext)
+  expect(de.componentInstance.context).toEqual(expectedContext);
 };
 
 describe('ReadComplexFieldRawComponent', () => {
@@ -89,7 +89,7 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -98,8 +98,8 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: 'Flat 9'
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -108,8 +108,8 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: '111 East India road'
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine3',
           label: 'Line 3',
           display_context: 'OPTIONAL',
@@ -118,21 +118,21 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: 'Poplar'
-        }),
+        }) as CaseField,
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = <CaseField>({
+      caseField = (({
         id: '',
         label: 'Complex Field',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITH_VALUES
-      });
+      }) as CaseField);
 
-      let test = initTests(caseField, [
+      const test = initTests(caseField, [
         FieldReadComponent
       ]);
       de = test.de;
@@ -141,19 +141,19 @@ describe('ReadComplexFieldRawComponent', () => {
     }));
 
     it('should render a list', () => {
-      let complexList = de.query($COMPLEX_LIST);
+      const complexList = de.query($COMPLEX_LIST);
 
       expect(complexList).toBeTruthy();
     });
 
     it('should render one list item per child field', () => {
-      let complexListItems = de.queryAll($COMPLEX_LIST_ITEMS);
+      const complexListItems = de.queryAll($COMPLEX_LIST_ITEMS);
 
       expect(complexListItems.length).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields.length);
     });
 
     it('should render one field read component per child field', () => {
-      let complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
+      const complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields.length);
       expectCaseFieldPartial(complexListValues[0], FIELD_TYPE_WITH_VALUES.complex_fields[0]);
@@ -162,7 +162,7 @@ describe('ReadComplexFieldRawComponent', () => {
     });
 
     it('should render one field read component per child field', () => {
-      let complexListLabels = de.queryAll($COMPLEX_LIST_LABELS);
+      const complexListLabels = de.queryAll($COMPLEX_LIST_LABELS);
 
       expect(complexListLabels.length).toEqual(FIELD_TYPE_WITH_VALUES.complex_fields.length);
       expectLabel(complexListLabels[0], FIELD_TYPE_WITH_VALUES.complex_fields[0].label);
@@ -171,7 +171,7 @@ describe('ReadComplexFieldRawComponent', () => {
     });
 
     it('should render one field read component per child field', () => {
-      let complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
+      const complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
 
       expectContext(complexListValues[0], PaletteContext.CHECK_YOUR_ANSWER);
       expectContext(complexListValues[1], PaletteContext.CHECK_YOUR_ANSWER);
@@ -185,7 +185,7 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -194,8 +194,8 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: 'Flat 9'
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -204,8 +204,8 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: ''
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine3',
           label: 'Line 3',
           display_context: 'OPTIONAL',
@@ -214,21 +214,21 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
           value: 'Poplar'
-        }),
+        }) as CaseField,
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = <CaseField>({
+      caseField = (({
         id: '',
         label: 'Complex Field',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITH_MISSING_VALUE
-      });
+      }) as CaseField);
 
-      let test = initTests(caseField, [
+      const test = initTests(caseField, [
         FieldReadComponent
       ]);
       de = test.de;
@@ -237,7 +237,7 @@ describe('ReadComplexFieldRawComponent', () => {
     }));
 
     it('should omit child fields with empty values', () => {
-      let complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
+      const complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITH_MISSING_VALUE.complex_fields.length - 1);
       expectCaseFieldPartial(complexListValues[0], FIELD_TYPE_WITH_MISSING_VALUE.complex_fields[0]);
@@ -251,7 +251,7 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -259,8 +259,8 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -268,8 +268,8 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine3',
           label: 'Line 3',
           display_context: 'OPTIONAL',
@@ -277,26 +277,26 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        }),
+        }) as CaseField,
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField =  <CaseField>({
+      caseField =  (({
         id: '',
         label: 'Complex Field',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITHOUT_VALUES,
         value: {
-          'AddressLine1': 'Flat 9',
-          'AddressLine2': '111 East India road',
-          'AddressLine3': 'Poplar',
+          AddressLine1: 'Flat 9',
+          AddressLine2: '111 East India road',
+          AddressLine3: 'Poplar',
         }
-      });
+      }) as CaseField);
 
-      let test = initTests(caseField, [
+      const test = initTests(caseField, [
         FieldReadComponent
       ]);
       de = test.de;
@@ -305,7 +305,7 @@ describe('ReadComplexFieldRawComponent', () => {
     }));
 
     it('should render one field read component per child field', () => {
-      let complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
+      const complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITHOUT_VALUES.complex_fields.length);
       expectCaseFieldPartial(complexListValues[0], Object.assign(
@@ -338,7 +338,7 @@ describe('ReadComplexFieldRawComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -346,8 +346,8 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -355,8 +355,8 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        }),
-          <CaseField>({
+        }) as CaseField,
+          ({
           id: 'AddressLine3',
           label: 'Line 3',
           display_context: 'OPTIONAL',
@@ -364,25 +364,25 @@ describe('ReadComplexFieldRawComponent', () => {
             id: 'Text',
             type: 'Text'
           },
-        }),
+        }) as CaseField,
       ]
     };
 
     let caseField: CaseField;
 
     beforeEach(async(() => {
-      caseField = <CaseField>({
+      caseField = (({
         id: '',
         label: 'Complex Field',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITHOUT_VALUES,
         value: {
-          'AddressLine1': 'Flat 9',
-          'AddressLine3': 'Poplar',
+          AddressLine1: 'Flat 9',
+          AddressLine3: 'Poplar',
         }
-      });
+      }) as CaseField);
 
-      let test = initTests(caseField, [
+      const test = initTests(caseField, [
         FieldReadComponent
       ]);
       de = test.de;
@@ -391,7 +391,7 @@ describe('ReadComplexFieldRawComponent', () => {
     }));
 
     it('should omit child fields with empty values', () => {
-      let complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
+      const complexListValues = de.queryAll($COMPLEX_LIST_VALUES);
 
       expect(complexListValues.length).toEqual(FIELD_TYPE_WITHOUT_VALUES.complex_fields.length - 1);
       expectCaseFieldPartial(complexListValues[0], Object.assign(

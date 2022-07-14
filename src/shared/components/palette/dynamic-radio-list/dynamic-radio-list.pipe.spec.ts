@@ -1,5 +1,5 @@
-import { DynamicRadioListPipe } from './dynamic-radio-list.pipe';
 import { FixedListItem } from '../../../domain/definition/fixed-list-item.model';
+import { DynamicRadioListPipe } from './dynamic-radio-list.pipe';
 
 describe('DynamicRadioListPipe', () => {
 

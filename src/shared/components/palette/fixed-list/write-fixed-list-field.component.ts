@@ -8,7 +8,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  fixedListFormControl: FormControl;
+  public fixedListFormControl: FormControl;
 
   public get listItems(): any[] {
     if (this.caseField) {
@@ -22,8 +22,8 @@ export class WriteFixedListFieldComponent extends AbstractFieldWriteComponent im
     return [];
   }
 
-  ngOnInit() {
-    let isNull = this.caseField.value === undefined || this.caseField.value === '';
+  public ngOnInit() {
+    const isNull = this.caseField.value === undefined || this.caseField.value === '';
 
     if (isNull) {
       this.caseField.value = null;

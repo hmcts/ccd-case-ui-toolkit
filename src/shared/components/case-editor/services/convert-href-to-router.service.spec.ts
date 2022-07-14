@@ -2,8 +2,8 @@ import { async, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ConvertHrefToRouterService } from './convert-href-to-router.service';
 describe('ConvertHrefToRouterService', () => {
-  let store: ConvertHrefToRouterService
-  let router = {
+  let store: ConvertHrefToRouterService;
+  const router = {
           navigate: jasmine.createSpy('navigate'),
         };
   beforeEach(() => {
@@ -12,7 +12,7 @@ describe('ConvertHrefToRouterService', () => {
         ConvertHrefToRouterService,
         { provide: Router, useValue: router }
       ],
-    })
+    });
     store = TestBed.inject(ConvertHrefToRouterService);
   });
 

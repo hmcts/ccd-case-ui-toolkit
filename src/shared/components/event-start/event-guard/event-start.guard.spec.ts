@@ -1,7 +1,7 @@
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { EventStartGuard } from './event-start.guard';
 import { of } from 'rxjs';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { EventStartGuard } from './event-start.guard';
 
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../../app.config';
@@ -27,7 +27,7 @@ describe('EventStartGuard', () => {
     }
   ];
   const route = {} as ActivatedRouteSnapshot;
-  route.params = {}
+  route.params = {};
   route.params.cid = '1620409659381330';
   route.params.eid = 'start';
   route.queryParams = {};
@@ -42,7 +42,7 @@ describe('EventStartGuard', () => {
     const payload: TaskPayload = {
       task_required_for_event: true,
       tasks
-    }
+    };
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
@@ -56,7 +56,7 @@ describe('EventStartGuard', () => {
     const payload: TaskPayload = {
       task_required_for_event: false,
       tasks: []
-    }
+    };
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
@@ -82,7 +82,7 @@ describe('EventStartGuard', () => {
       active: true,
       roles: [],
       roleCategories: []
-    }
+    };
   }
 
   describe('checkTaskInEventNotRequired', () => {
@@ -98,14 +98,14 @@ describe('EventStartGuard', () => {
     });
 
     it('should return true if there are no tasks assigned to the user', () => {
-      const mockPayload: TaskPayload = {task_required_for_event: false, tasks: tasks};
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
     });
 
     it('should return true and navigate to event trigger if one task is assigned to user', () => {
       tasks[0].assignee = '1';
-      const mockPayload: TaskPayload = {task_required_for_event: false, tasks: tasks};
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));
@@ -114,7 +114,7 @@ describe('EventStartGuard', () => {
     it('should return false with error navigation if there are more than 1 tasks assigned to the user', () => {
       tasks[0].assignee = '1';
       tasks.push(tasks[0]);
-      const mockPayload: TaskPayload = {task_required_for_event: false, tasks: tasks};
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(false);
       expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
@@ -123,7 +123,7 @@ describe('EventStartGuard', () => {
     it('should return true and navigate to event trigger if navigated to via task next steps', () => {
       tasks[0].assignee = '1';
       tasks.push(tasks[0]);
-      const mockPayload: TaskPayload = {task_required_for_event: false, tasks: tasks};
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));

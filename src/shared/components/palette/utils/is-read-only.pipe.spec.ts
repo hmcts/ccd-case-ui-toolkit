@@ -1,11 +1,11 @@
-import { IsReadOnlyPipe } from './is-read-only.pipe';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { IsReadOnlyPipe } from './is-read-only.pipe';
 
 describe('IsReadOnlyPipe', () => {
 
-  let caseFieldService = new CaseFieldService();
-  let isReadOnly: IsReadOnlyPipe = new IsReadOnlyPipe(caseFieldService);
+  const caseFieldService = new CaseFieldService();
+  const isReadOnly: IsReadOnlyPipe = new IsReadOnlyPipe(caseFieldService);
 
   it('should identify null field as NOT readOnly', () => {
     expect(isReadOnly.transform(null))

@@ -13,7 +13,7 @@ export class CcdCYAPageLabelFilterPipe implements PipeTransform {
         caseField.field_type.collection_field_type.complex_fields.length) {
         caseField.field_type.collection_field_type.complex_fields = this.transform(
           caseField.field_type.collection_field_type.complex_fields
-        )
+        );
       }
       if (caseField.field_type.complex_fields && caseField.field_type.complex_fields.length) {
         caseField.field_type.complex_fields = this.getNonLabelComplexFieldType(caseField.field_type.complex_fields);
@@ -23,6 +23,6 @@ export class CcdCYAPageLabelFilterPipe implements PipeTransform {
     });
   }
 
-  private getNonLabelComplexFieldType = (complexFields: CaseField[]): CaseField[] =>
-    complexFields.filter((caseField: CaseField) => caseField.field_type.type !== 'Label');
+  private readonly getNonLabelComplexFieldType = (complexFields: CaseField[]): CaseField[] =>
+    complexFields.filter((caseField: CaseField) => caseField.field_type.type !== 'Label')
 }

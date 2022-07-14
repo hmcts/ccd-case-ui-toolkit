@@ -1,16 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-collection-table.component';
 import { Component, DebugElement, Input } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { FieldsFilterPipe } from './fields-filter.pipe';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
-import { PaletteContext } from '../base-field/palette-context.enum';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { createFieldType, newCaseField, textFieldType } from '../../../fixture';
-import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
+import { PaletteContext } from '../base-field/palette-context.enum';
+import { PaletteUtilsModule } from '../utils/utils.module';
 import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
+import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
+import { FieldsFilterPipe } from './fields-filter.pipe';
+import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-collection-table.component';
 
 @Component({
   selector: 'ccd-field-read',
@@ -18,9 +18,9 @@ import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-v
 })
 class MockFieldReadComponent {
   @Input()
-  caseField: CaseField;
+  public caseField: CaseField;
   @Input()
-  context: PaletteContext;
+  public context: PaletteContext;
 }
 
 @Component({
@@ -31,9 +31,9 @@ class MockFieldReadComponent {
 })
 class MockReadCaseLinkFieldComponent {
   @Input()
-  caseField: CaseField;
+  public caseField: CaseField;
   @Input()
-  context: PaletteContext;
+  public context: PaletteContext;
 }
 
 describe('ReadComplexFieldCollectionTableComponent', () => {
@@ -132,7 +132,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
     }));
 
     it('should render a panel with a header for the complex type', () => {
-      let panelTitle = de
+      const panelTitle = de
         .query($COMPLEX_PANEL)
         .query($COMPLEX_PANEL_TITLE);
 
@@ -141,14 +141,14 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
     });
 
     it('should render a table with a row containing 2 columns for each simple type and 3 columns for each row', () => {
-      let simpleRowsHeaders = de
+      const simpleRowsHeaders = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
       expect(simpleRowsHeaders.length).toBe(2);
       expect(simpleRowsHeaders[LINE_1].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label);
       expect(simpleRowsHeaders[LINE_2].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].label);
 
-      let simpleRowsValues = de
+      const simpleRowsValues = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
       expect(simpleRowsValues.length).toBe(4);
@@ -157,14 +157,14 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(simpleRowsValues[2].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value[FIRST_COLUMN]);
       expect(simpleRowsValues[3].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value[SECOND_COLUMN]);
 
-      let simpleRowsHeadersClickers = de
+      const simpleRowsHeadersClickers = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS_CLICK);
       expect(simpleRowsHeadersClickers.length).toBe(2);
 
       expect(simpleRowsHeadersClickers[0].properties.innerHTML).toEqual(UNORDERED);
       expect(simpleRowsHeadersClickers[1].properties.innerHTML).toEqual(UNORDERED);
-      expect(component.columnsVerticalLabel['AddressPostcode'].label).toEqual('Post code')
+      expect(component.columnsVerticalLabel['AddressPostcode'].label).toEqual('Post code');
       expect(component.columnsVerticalLabel['AddressPostcode'].type).toEqual('Complex');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.id).toEqual('AddressPostcode');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.label).toEqual('Post code');
@@ -172,7 +172,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.field_type.type).toEqual('Complex');
       expect(component.columnsVerticalLabel['AddressPostcode'].caseField.value).toEqual('tw45ed');
 
-      let expandedRowsVerticalHeaders = de
+      const expandedRowsVerticalHeaders = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_EXPANDED_ROWS_HEADERS);
       expect(expandedRowsVerticalHeaders.length).toBe(6);
@@ -185,7 +185,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(expandedRowsVerticalHeaders[LINE_5].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_4].label);
       expect(expandedRowsVerticalHeaders[LINE_6].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_5].label);
 
-      let expandedRowsValues = de
+      const expandedRowsValues = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_EXPANDED_ROWS_VALUES);
       expect(expandedRowsValues.length).toBe(4);
@@ -337,8 +337,8 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
     }));
 
     it('should render all ccd-field-read elements', () => {
-      let fieldReadElements = fixture.debugElement.queryAll(By.directive(MockFieldReadComponent));
-      let fieldReads = fieldReadElements.map(readElement => readElement.injector.get(MockFieldReadComponent));
+      const fieldReadElements = fixture.debugElement.queryAll(By.directive(MockFieldReadComponent));
+      const fieldReads = fieldReadElements.map(readElement => readElement.injector.get(MockFieldReadComponent));
 
       expect(fieldReads).toBeTruthy();
       expect(fieldReads.length).toBe(13);
@@ -370,7 +370,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
     });
 
     it('should render all case links', () => {
-      let caseLinks = de.queryAll($COMPLEX_PANEL_CASE_LINKS);
+      const caseLinks = de.queryAll($COMPLEX_PANEL_CASE_LINKS);
       expect(caseLinks.length).toBe(2);
 
       expect(caseLinks[0].properties.href).toEqual('/v2/case/' + COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink.CaseReference);
@@ -378,7 +378,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
     });
 
     it('should render all case link values', () => {
-      let caseLinkValues = de.queryAll($COMPLEX_PANEL_CASE_LINK_VALUES);
+      const caseLinkValues = de.queryAll($COMPLEX_PANEL_CASE_LINK_VALUES);
       expect(caseLinkValues.length).toBe(2);
 
       expect(caseLinkValues[0].nativeElement.textContent.trim()).toBe(COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink.CaseReference);

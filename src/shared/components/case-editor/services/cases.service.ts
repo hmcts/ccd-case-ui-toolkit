@@ -54,13 +54,13 @@ export class CasesService {
   public get = this.getCaseView;
 
   constructor(
-    private http: HttpService,
-    private appConfig: AbstractAppConfig,
-    private orderService: OrderService,
-    private errorService: HttpErrorService,
-    private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
+    private readonly http: HttpService,
+    private readonly appConfig: AbstractAppConfig,
+    private readonly orderService: OrderService,
+    private readonly errorService: HttpErrorService,
+    private readonly wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
     private readonly workAllocationService: WorkAllocationService,
-    private loadingService: LoadingService,
+    private readonly loadingService: LoadingService,
     private readonly sessionStorageService: SessionStorageService
   ) {
   }
@@ -113,8 +113,8 @@ export class CasesService {
 
     const url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    let headers = new HttpHeaders()
-    headers = headers.set('experimental', 'true')
+    let headers = new HttpHeaders();
+    headers = headers.set('experimental', 'true');
     headers = headers.set('Content-Type', 'application/json');
 
     if (Draft.isDraft(caseId)) {
@@ -280,12 +280,12 @@ export class CasesService {
       replaceExisting: true,
       assignerId: payload.requestedRoles[0].actorId,
       reference: `${caseId}/${roleName}/${payload.requestedRoles[0].actorId}`
-    }
+    };
 
     payload.requestedRoles[0] = {
       ...payload.requestedRoles[0],
       roleName: 'specific-access-requested',
-      roleCategory: roleCategory,
+      roleCategory,
       classification: 'PRIVATE',
       endTime: new Date(new Date().setDate(new Date().getDate() + 30)),
       beginTime: null,
@@ -296,12 +296,12 @@ export class CasesService {
     payload.requestedRoles[0].attributes = {
       ...payload.requestedRoles[0].attributes,
       requestedRole: roleName
-    }
+    };
 
     payload.requestedRoles[0].notes[0] = {
       ...payload.requestedRoles[0].notes[0],
       userId: payload.requestedRoles[0].actorId
-    }
+    };
     return this.http.post(
       `/api/specific-access-request`,
       payload

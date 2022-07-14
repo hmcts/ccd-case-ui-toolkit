@@ -1,15 +1,15 @@
+import { FieldType, FieldTypeEnum, SearchResultViewColumn, SearchResultViewItem } from '../../../domain';
 import { SearchResultViewItemComparatorFactory } from './search-result-view-item-comparator-factory';
-import { FieldTypeEnum, SearchResultViewColumn, FieldType, SearchResultViewItem } from '../../../domain';
 
 describe('SearchResultViewItemComparatorFactory', () => {
 
-  let TEST_CASE_FIELD_ID = 'TestCaseFieldId';
+  const TEST_CASE_FIELD_ID = 'TestCaseFieldId';
 
   describe('Number field type', () => {
 
     it('Should return a comparator to order numbers', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Number'));
 
       expect(comparator.compare(item(69), item(69))).toBe(0);
@@ -20,7 +20,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces null or undefined field to zero', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Number'));
 
       expect(comparator.compare(item(undefined), item(0))).toBe(0);
@@ -37,7 +37,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order numbers', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('MoneyGBP'));
 
       expect(comparator.compare(item(6969), item(6969))).toBe(0);
@@ -48,7 +48,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces null or undefined field to zero', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('MoneyGBP'));
 
       expect(comparator.compare(item(undefined), item(0))).toBe(0);
@@ -65,7 +65,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order strings', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Text'));
 
       expect(comparator.compare(item('cat'), item('cat'))).toBe(0);
@@ -76,7 +76,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces null or undefined field to an empty string', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Text'));
 
       expect(comparator.compare(item(undefined), item(''))).toBe(0);
@@ -93,7 +93,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order strings', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('TextArea'));
 
       expect(comparator.compare(item('cat'), item('cat'))).toBe(0);
@@ -104,7 +104,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces null or undefined field to an empty string', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('TextArea'));
 
       expect(comparator.compare(item(undefined), item(''))).toBe(0);
@@ -121,7 +121,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order email addresses', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Email'));
 
       expect(comparator.compare(item('cat@kitty.com'), item('cat@kitty.com'))).toBe(0);
@@ -135,7 +135,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces null or undefined field to an empty string', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Email'));
 
       expect(comparator.compare(item(undefined), item(''))).toBe(0);
@@ -152,7 +152,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order postcodes', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Postcode'));
 
       expect(comparator.compare(item('E1W 3AX'), item('E1W 3AX'))).toBe(0);
@@ -163,7 +163,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces null or undefined field to an empty string', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Postcode'));
 
       expect(comparator.compare(item(undefined), item(''))).toBe(0);
@@ -180,7 +180,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order Yes/No values', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('YesOrNo'));
 
       expect(comparator.compare(item('Yes'), item('Yes'))).toBe(0);
@@ -191,7 +191,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces null or undefined field to an empty string', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('YesOrNo'));
 
       expect(comparator.compare(item(undefined), item(''))).toBe(0);
@@ -208,7 +208,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order UK phone numbers as text', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('PhoneUK'));
 
       expect(comparator.compare(item('+447989284891'), item('+447989284891'))).toBe(0);
@@ -219,7 +219,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces null or undefined field to an empty string', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('PhoneUK'));
 
       expect(comparator.compare(item(undefined), item(''))).toBe(0);
@@ -236,7 +236,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order text', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('FixedList'));
 
       expect(comparator.compare(item('FixedListValueA'), item('FixedListValueA'))).toBe(0);
@@ -247,7 +247,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces null or undefined field to an empty string', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('FixedList'));
 
       expect(comparator.compare(item(undefined), item(''))).toBe(0);
@@ -264,7 +264,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order array items', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('MultiSelectList'));
 
       expect(comparator.compare(item(['London', 'Cardiff']), item(['London', 'Cardiff']))).toBe(0);
@@ -275,7 +275,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces a null or undefined field to an empty array', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('MultiSelectList'));
 
       expect(comparator.compare(item(undefined), item([]))).toBe(0);
@@ -292,7 +292,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator to order dates', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Date'));
 
       expect(comparator.compare(item('1954-09-25Z'), item('1954-09-25Z'))).toBe(0);
@@ -303,7 +303,7 @@ describe('SearchResultViewItemComparatorFactory', () => {
 
     it('Should return a comparator which co-erces non-existant field to an empty string', () => {
 
-      let comparator
+      const comparator
         = new SearchResultViewItemComparatorFactory().createSearchResultViewItemComparator(column('Email'));
 
       expect(comparator.compare(item(undefined), item(''))).toBe(0);
@@ -334,15 +334,15 @@ describe('SearchResultViewItemComparatorFactory', () => {
   });
 
   function column(type: FieldTypeEnum): SearchResultViewColumn {
-    let col = new SearchResultViewColumn();
+    const col = new SearchResultViewColumn();
     col.case_field_id = TEST_CASE_FIELD_ID;
     col.case_field_type = new FieldType();
     col.case_field_type.type = type;
     return col;
-  };
+  }
 
   function item(caseFieldContent: any): SearchResultViewItem {
-    let searchResultViewItem = new SearchResultViewItem();
+    const searchResultViewItem = new SearchResultViewItem();
     searchResultViewItem.case_fields = new Array();
     searchResultViewItem.case_fields[TEST_CASE_FIELD_ID] = caseFieldContent;
     return searchResultViewItem;

@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadNumberFieldComponent } from './read-number-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { CaseReferencePipe } from '../../../pipes/case-reference';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { CaseReferencePipe } from '../../../pipes/case-reference';
+import { ReadNumberFieldComponent } from './read-number-field.component';
 
 describe('ReadNumberFieldComponent', () => {
 
@@ -16,13 +16,13 @@ describe('ReadNumberFieldComponent', () => {
   const VALUE = 42;
 
   describe('Non-persistable readonly number field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadNumberFieldComponent>;
     let component: ReadNumberFieldComponent;
@@ -72,13 +72,13 @@ describe('ReadNumberFieldComponent', () => {
 
   describe('Persistable readonly number field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE,
       value: VALUE
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadNumberFieldComponent>;
     let component: ReadNumberFieldComponent;

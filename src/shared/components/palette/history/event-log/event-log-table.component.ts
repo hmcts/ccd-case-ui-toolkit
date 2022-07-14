@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { CaseViewEvent } from '../../../../domain';
 import { formatDate } from '@angular/common';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CaseViewEvent } from '../../../../domain';
 
 @Component({
   selector: 'ccd-event-log-table',
@@ -10,42 +10,42 @@ import { formatDate } from '@angular/common';
 export class EventLogTableComponent implements OnInit {
 
   @Input()
-  events: CaseViewEvent[];
+  public events: CaseViewEvent[];
 
   @Input()
-  selected: CaseViewEvent;
+  public selected: CaseViewEvent;
 
   @Output()
-  onSelect = new EventEmitter<CaseViewEvent>();
+  public onSelect = new EventEmitter<CaseViewEvent>();
 
   @Output()
-  onCaseHistory = new EventEmitter<string>();
+  public onCaseHistory = new EventEmitter<string>();
 
-  isPartOfCaseTimeline = false;
+  public isPartOfCaseTimeline = false;
 
   public ngOnInit(): void {
     this.isPartOfCaseTimeline = this.onCaseHistory.observers.length > 0;
   }
 
-  select(event: CaseViewEvent): void {
+  public select(event: CaseViewEvent): void {
     this.selected = event;
     this.onSelect.emit(event);
   }
 
-  significantItemExist(event: CaseViewEvent): boolean {
+  public significantItemExist(event: CaseViewEvent): boolean {
     return (event.significant_item &&
         event.significant_item.type === 'DOCUMENT' &&
         event.significant_item.url !== undefined &&
         event.significant_item.description !== undefined);
   }
 
-  getSignificantItemUrl(event: CaseViewEvent): string {
+  public getSignificantItemUrl(event: CaseViewEvent): string {
     if (event.significant_item) {
       return event.significant_item.url;
     }
   }
 
-  getSignificantItemDesc(event: CaseViewEvent): string {
+  public getSignificantItemDesc(event: CaseViewEvent): string {
     if (event.significant_item) {
       return event.significant_item.description;
     }

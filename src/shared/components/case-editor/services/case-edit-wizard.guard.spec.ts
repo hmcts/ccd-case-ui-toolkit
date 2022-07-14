@@ -1,14 +1,14 @@
 import createSpyObj = jasmine.createSpyObj;
-import { CaseEditWizardGuard } from './case-edit-wizard.guard';
+import { fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { TestRouteSnapshotBuilder } from '../../../test/test-route-snapshot-builder';
-import { AlertService } from '../../../services/alert/alert.service';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
+import { AlertService } from '../../../services/alert/alert.service';
+import { TestRouteSnapshotBuilder } from '../../../test/test-route-snapshot-builder';
 import { WizardPage } from '../domain/wizard-page.model';
+import { CaseEditWizardGuard } from './case-edit-wizard.guard';
 import { EventTriggerService } from './event-trigger.service';
-import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('CaseEditWizardGuard', () => {
 
@@ -35,7 +35,7 @@ describe('CaseEditWizardGuard', () => {
     eventTrigger = createCaseEventTrigger('editCase', 'Edit case', 'caseId', false, [ new CaseField() ], [ page('pageX') ]);
 
     routeParams = {
-      'page': 'pageX'
+      page: 'pageX'
     };
 
     queryParams = { queryParams: [] };
@@ -45,8 +45,8 @@ describe('CaseEditWizardGuard', () => {
     routerHelper = createSpyObj('RouterHelperService', ['getUrlSegmentsFromRoot']);
     routerHelper.getUrlSegmentsFromRoot.and.returnValue(PARENT_URL_SEGMENTS);
 
-    let parentRoute = new TestRouteSnapshotBuilder().withData({
-      eventTrigger: eventTrigger
+    const parentRoute = new TestRouteSnapshotBuilder().withData({
+      eventTrigger
     }).build();
     route = new TestRouteSnapshotBuilder()
       .withParent(parentRoute)
@@ -181,7 +181,7 @@ describe('CaseEditWizardGuard', () => {
   });
 
   function page(pageId: string): WizardPage {
-    let wp = new WizardPage();
+    const wp = new WizardPage();
     wp.id = pageId;
     return wp;
   }

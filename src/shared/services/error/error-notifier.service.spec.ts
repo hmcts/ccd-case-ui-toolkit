@@ -1,7 +1,7 @@
-import { ErrorNotifierService } from './error-notifier.service';
 import createSpyObj = jasmine.createSpyObj;
 import { Subject } from 'rxjs';
 import { HttpError } from '../../domain';
+import { ErrorNotifierService } from './error-notifier.service';
 
 describe('ErrorNotifierService', () => {
   let errorNotifierService: ErrorNotifierService;
@@ -14,7 +14,7 @@ describe('ErrorNotifierService', () => {
   });
 
   it('should push the error out through the error source', () => {
-    let error = new HttpError();
+    const error = new HttpError();
     errorNotifierService.announceError(error);
     expect(spyErrorSource.next).toHaveBeenCalledWith(error);
   });

@@ -1,13 +1,13 @@
+import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { DebugElement, Component, Input } from '@angular/core';
-import { LabelSubstitutorDirective } from './label-substitutor.directive';
 import { CaseField } from '../../domain/definition/case-field.model';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
 import { FieldsUtils } from '../../services/fields/fields.utils';
+import { LabelSubstitutorDirective } from './label-substitutor.directive';
 import { PlaceholderService } from './services/placeholder.service';
 import createSpyObj = jasmine.createSpyObj;
-import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
 
 @Component({
   template: `
@@ -20,14 +20,14 @@ import { FormatTranslatorService } from '../../services/case-fields/format-trans
 })
 class TestHostComponent {
 
-  @Input() caseField: CaseField;
-  @Input() caseFields: CaseField[];
-  @Input() formGroup: FormGroup = new FormGroup({});
-  @Input() elementsToSubstitute: string[] = ['label', 'hint_text', 'value'];
+  @Input() public caseField: CaseField;
+  @Input() public caseFields: CaseField[];
+  @Input() public formGroup: FormGroup = new FormGroup({});
+  @Input() public elementsToSubstitute: string[] = ['label', 'hint_text', 'value'];
 }
 
-let field = (id, value, fieldType, label?, hintText?) => {
-  let caseField = new CaseField();
+const field = (id, value, fieldType, label?, hintText?) => {
+  const caseField = new CaseField();
   caseField.id = id;
   caseField.value = value;
   caseField.field_type = fieldType;
@@ -36,12 +36,12 @@ let field = (id, value, fieldType, label?, hintText?) => {
   return caseField;
 };
 
-let textField = (id, value, label?, hintText?) => {
-  let caseField = new CaseField();
+const textField = (id, value, label?, hintText?) => {
+  const caseField = new CaseField();
   caseField.id = id;
   caseField.value = value;
   caseField.field_type = {
-    id: id,
+    id,
     type: 'Text'
   };
   caseField.label = label;
@@ -79,9 +79,9 @@ describe('LabelSubstitutorDirective', () => {
   describe('simple type fields', () => {
 
     it('should display elements', () => {
-      let label = 'Label B with valueA=${LabelA} and valueA=${LabelA}:1';
-      let hintText = 'Label B with valueA=${LabelA} and valueA=${LabelA}:2';
-      let value = 'Label B with valueA=${LabelA} and valueA=${LabelA}:3';
+      const label = 'Label B with valueA=${LabelA} and valueA=${LabelA}:1';
+      const hintText = 'Label B with valueA=${LabelA} and valueA=${LabelA}:2';
+      const value = 'Label B with valueA=${LabelA} and valueA=${LabelA}:3';
       comp.caseField = textField('LabelB', value, label, hintText);
       comp.caseFields = [comp.caseField];
 
@@ -97,9 +97,9 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should display undefined elements', () => {
-      let label = undefined;
-      let hintText = undefined;
-      let value = undefined;
+      const label = null;
+      const hintText = null;
+      const value = null;
       comp.caseField = textField('LabelB', value, label, hintText);
       comp.caseFields = [comp.caseField];
 
@@ -112,9 +112,9 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should display empty elements', () => {
-      let label = '';
-      let hintText = '';
-      let value = '';
+      const label = '';
+      const hintText = '';
+      const value = '';
       comp.caseField = textField('LabelB', value, label, hintText);
       comp.caseFields = [comp.caseField];
 
@@ -127,9 +127,9 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should use elementsToSubstitute to select which caseField elements we substitute', () => {
-      let label = 'Some label';
-      let hintText = 'Some hint text';
-      let value = 'Some value';
+      const label = 'Some label';
+      const hintText = 'Some hint text';
+      const value = 'Some value';
       comp.caseField = textField('LabelB', value, label, hintText);
       comp.caseFields = [comp.caseField];
       comp.elementsToSubstitute = ['value'];
@@ -143,7 +143,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass case field value to substitute label when case field value but no form field value present', () => {
-      let label = 'someLabel:';
+      const label = 'someLabel:';
       comp.caseField = textField('LabelB', undefined, label);
       comp.caseFields = [comp.caseField, field('LabelA', 'ValueA', '')];
       fixture.detectChanges();
@@ -152,7 +152,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form value to substitute label if both case field and form values exist for same field', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, field('LabelA', 'ValueA1', '')];
       comp.formGroup = new FormGroup({
@@ -164,7 +164,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass correct values when both form field and case field values present for different fields', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, textField('LabelD', 'ValueD', '')];
       comp.formGroup = new FormGroup({
@@ -179,7 +179,7 @@ describe('LabelSubstitutorDirective', () => {
   });
 
   describe('list type fields', () => {
-    const LABEL = 'someLabel'
+    const LABEL = 'someLabel';
     const init = (type: string, value: any, items: string[], labelAValue?: any): void => {
       comp.caseField = textField('LabelB', '', LABEL);
       comp.caseFields = [comp.caseField, field('LabelA', value, {
@@ -226,7 +226,7 @@ describe('LabelSubstitutorDirective', () => {
           LabelA: items.map(item => `Value${item}`),
           [`LabelA${FieldsUtils.LABEL_SUFFIX}`]: items.map(item => `Option ${item}`)
         };
-      }
+      };
 
       it('should pass form field value when field is not read only and no case field value but form field value present', () => {
         init(FIELD_TYPE, '', ITEMS, ['ValueA', 'ValueD']);
@@ -286,7 +286,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with MoneyGBP when both form and case field values present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, field('LabelA', '99999', {
         id: 'LabelA',
@@ -304,7 +304,7 @@ describe('LabelSubstitutorDirective', () => {
   describe('Date type fields', () => {
 
     it('should pass case field value with Date when case field value but no form field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, field('LabelA', '2018-03-07', {
         id: 'LabelA',
@@ -316,7 +316,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with Date when form field value but no case field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, field('LabelA', '', {
         id: 'LabelA',
@@ -331,7 +331,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with Date when both form and case field values present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, field('LabelA', '2018-03-07', {
         id: 'LabelA',
@@ -346,7 +346,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with invalid date when both form and case field values present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, field('LabelA', 'bob', {
         id: 'LabelA',
@@ -368,7 +368,7 @@ describe('LabelSubstitutorDirective', () => {
   describe('Collection type fields', () => {
 
     it('should pass form field value with comma delimited text items when case field value but no form field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const VALUES = [
         {
@@ -395,7 +395,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with comma delimited text items when form field value but no case field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const VALUES = [
         {
@@ -425,7 +425,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with comma delimited text items when both form and case field values present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const VALUES = [
         {
@@ -468,7 +468,7 @@ describe('LabelSubstitutorDirective', () => {
   describe('Collection of fixed list type fields', () => {
 
     it('should pass form field value with comma delimited label items when case field value but no form field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const VALUES = [{value: 'ValueA'}, {value: 'ValueC'}, {value: 'ValueD'}];
       comp.caseFields = [comp.caseField, field('LabelA', VALUES, {
@@ -499,7 +499,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with comma delimited label items when form field value but no case field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const VALUES = [{value: 'ValueA'}, {value: 'ValueC'}, {value: 'ValueD'}];
       comp.caseFields = [comp.caseField, field('LabelA', [], {
@@ -533,7 +533,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with comma delimited label items when both form and case field values present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const VALUES = [{value: 'ValueA'}, {value: 'ValueC'}, {value: 'ValueD'}];
       comp.caseFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
@@ -570,7 +570,7 @@ describe('LabelSubstitutorDirective', () => {
   describe('Collection of MoneyGBP type fields', () => {
 
     it('should pass form field value with comma delimited label items when case field value but no form field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '12345'}, {value: '34888'}, {value: '9944521'}];
       const TRANSFORMED_VALUES = [{value: '£123.45'}, {value: '£348.88'}, {value: '£99,445.21'}];
@@ -588,7 +588,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with comma delimited label items when form field value but no case field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '12345'}, {value: '34888'}, {value: '9944521'}];
       const TRANSFORMED_VALUES = [{value: '£123.45'}, {value: '£348.88'}, {value: '£99,445.21'}];
@@ -609,7 +609,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with comma delimited label items when both form and case field values present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '12345'}, {value: '34888'}, {value: '9944521'}];
       const TRANSFORMED_VALUES = [{value: '£123.45'}, {value: '£348.88'}, {value: '£99,445.21'}];
@@ -633,7 +633,7 @@ describe('LabelSubstitutorDirective', () => {
   describe('Collection of Date type fields', () => {
 
     it('should pass form field value with comma delimited label items when case field value but no form field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '2018-03-07'}, {value: '2015-02-22'}, {value: '2017-12-12'}];
       const TRANSFORMED_VALUES = [{value: '7 Mar 2018'}, {value: '22 Feb 2015'}, {value: '12 Dec 2017'}];
@@ -651,7 +651,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with comma delimited label items when form field value but no case field value present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '2018-03-07'}, {value: '2015-02-22'}, {value: '2017-12-12'}];
       const TRANSFORMED_VALUES = [{value: '7 Mar 2018'}, {value: '22 Feb 2015'}, {value: '12 Dec 2017'}];
@@ -672,7 +672,7 @@ describe('LabelSubstitutorDirective', () => {
     });
 
     it('should pass form field value with comma delimited label items when both form and case field values present', () => {
-      let label = 'someLabel';
+      const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       const RAW_VALUES = [{value: '2018-03-07'}, {value: '2015-02-22'}, {value: '2017-12-12'}];
       const TRANSFORMED_VALUES = [{value: '7 Mar 2018'}, {value: '22 Feb 2015'}, {value: '12 Dec 2017'}];

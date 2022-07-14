@@ -15,30 +15,30 @@ const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
 export class FieldReadComponent extends AbstractFieldReadComponent implements OnInit {
 
   @Input()
-  withLabel = false;
+  public withLabel = false;
 
   @Input()
-  formGroup: FormGroup = new FormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
 
   @Input()
-  caseFields: CaseField[] = [];
+  public caseFields: CaseField[] = [];
 
   @Input()
-  markdownUseHrefAsRouterLink?: boolean;
+  public markdownUseHrefAsRouterLink?: boolean;
 
   @ViewChild('fieldContainer', { static: false, read: ViewContainerRef })
-  fieldContainer: ViewContainerRef;
+  public fieldContainer: ViewContainerRef;
 
-  constructor(private resolver: ComponentFactoryResolver, private paletteService: PaletteService) {
+  constructor(private readonly resolver: ComponentFactoryResolver, private readonly paletteService: PaletteService) {
     super();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // Ensure all field values are resolved by label interpolation before the component is fully initialised.
     Promise.resolve(null).then(() => {
-      let componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
-      let injector = Injector.create([], this.fieldContainer.parentInjector);
-      let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+      const componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
+      const injector = Injector.create([], this.fieldContainer.parentInjector);
+      const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
       // Provide component @Inputs
       // Only Fixed list use plainToClassFromExist

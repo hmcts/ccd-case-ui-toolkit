@@ -4,40 +4,40 @@ import { WizardPageField } from '../../components/case-editor/domain/wizard-page
 import { Orderable } from '../order';
 import { AccessControlList } from './access-control-list.model';
 import { FieldTypeEnum } from './field-type-enum.model';
-import { FixedListItem } from './fixed-list-item.model';
+import { FieldType } from './field-type.model';
 
 // @dynamic
 export class CaseField implements Orderable {
-  id: string;
-  hidden: boolean;
-  hiddenCannotChange: boolean;
-  label: string;
-  order?: number;
+  public id: string;
+  public hidden: boolean;
+  public hiddenCannotChange: boolean;
+  public label: string;
+  public order?: number;
 
   @Type(() => FieldType)
-  field_type: FieldType;
+  public field_type: FieldType;
 
-  hint_text?: string;
-  security_label?: string;
-  display_context: string;
-  display_context_parameter?: string;
-  month_format?: string;
-  show_condition?: string;
-  show_summary_change_option?: boolean;
-  show_summary_content_option?: number;
-  acls?: AccessControlList[];
-  metadata?: boolean;
-  formatted_value?: any;
-  retain_hidden_value: boolean;
+  public hint_text?: string;
+  public security_label?: string;
+  public display_context: string;
+  public display_context_parameter?: string;
+  public month_format?: string;
+  public show_condition?: string;
+  public show_summary_change_option?: boolean;
+  public show_summary_content_option?: number;
+  public acls?: AccessControlList[];
+  public metadata?: boolean;
+  public formatted_value?: any;
+  public retain_hidden_value: boolean;
 
   @Type(() => WizardPageField)
-  wizardProps?: WizardPageField;
+  public wizardProps?: WizardPageField;
 
   private _value: any;
   private _list_items: any = [];
 
   @Expose()
-  get value(): any {
+  public get value(): any {
     if (this.isDynamic()) {
       return this._value && this._value.value ? this._value.value.code : this._value;
     } else {
@@ -45,7 +45,7 @@ export class CaseField implements Orderable {
     }
   }
 
-  set value(value: any) {
+  public set value(value: any) {
     if (this.isDynamic()) {
       if (value && value instanceof Object && value.list_items) {
         this._list_items = value.list_items;
@@ -61,7 +61,7 @@ export class CaseField implements Orderable {
   }
 
   @Expose()
-  get list_items(): any {
+  public get list_items(): any {
     if (this.isDynamic()) {
       return this._value && this._value.list_items ? this._value.list_items : this._list_items;
     } else {
@@ -69,12 +69,12 @@ export class CaseField implements Orderable {
     }
   }
 
-  set list_items(items: any) {
+  public set list_items(items: any) {
     this._list_items = items;
   }
 
   @Expose()
-  get dateTimeEntryFormat(): string {
+  public get dateTimeEntryFormat(): string {
     if (this.isComplexDisplay()) {
       return null;
     }
@@ -85,12 +85,12 @@ export class CaseField implements Orderable {
   }
 
   @Expose()
-  get dateTimeDisplayFormat(): string {
+  public get dateTimeDisplayFormat(): string {
     if (this.isComplexEntry()) {
       return null;
     }
     if (this.display_context_parameter) {
-      return this.extractBracketValue(this.display_context_parameter, '#DATETIMEDISPLAY')
+      return this.extractBracketValue(this.display_context_parameter, '#DATETIMEDISPLAY');
     }
     return null;
   }
@@ -124,17 +124,17 @@ export class CaseField implements Orderable {
   }
 
   @Expose()
-  isCollection(): boolean {
+  public isCollection(): boolean {
     return this.field_type && this.field_type.type === 'Collection';
   }
 
   @Expose()
-  isComplex(): boolean {
+  public isComplex(): boolean {
     return this.field_type && this.field_type.type === 'Complex';
   }
 
   @Expose()
-  isDynamic(): boolean {
+  public isDynamic(): boolean {
     const dynamicFieldTypes: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
 
     if (!this.field_type) {
@@ -145,7 +145,7 @@ export class CaseField implements Orderable {
   }
 
   @Expose()
-  isCaseLink(): boolean {
+  public isCaseLink(): boolean {
     return this.isComplex()
       && this.field_type.id === 'CaseLink'
       && this.field_type.complex_fields.some(cf => cf.id === 'CaseReference');
@@ -154,30 +154,12 @@ export class CaseField implements Orderable {
       fmt = fmt.split(',')
         .find(a => a.trim().startsWith(paramName));
       if (fmt) {
-        let s = fmt.indexOf(leftBracket) + 1;
-        let e = fmt.indexOf(rightBracket, s);
+        const s = fmt.indexOf(leftBracket) + 1;
+        const e = fmt.indexOf(rightBracket, s);
         if (e > s && s >= 0) {
           return fmt.substr(s, (e - s));
         }
       }
       return null;
   }
-}
-
-// @dynamic
-export class FieldType {
-  id: string;
-  type: FieldTypeEnum;
-  min?: number | Date;
-  max?: number | Date;
-  regular_expression?: string;
-
-  @Type(() => FixedListItem)
-  fixed_list_items?: FixedListItem[];
-
-  @Type(() => CaseField)
-  complex_fields?: CaseField[];
-
-  @Type(() => FieldType)
-  collection_field_type?: FieldType;
 }

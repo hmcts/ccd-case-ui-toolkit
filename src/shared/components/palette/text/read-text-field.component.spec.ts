@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadTextFieldComponent } from './read-text-field.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { ReadTextFieldComponent } from './read-text-field.component';
 
 describe('ReadTextFieldComponent', () => {
 
@@ -15,13 +15,13 @@ describe('ReadTextFieldComponent', () => {
   const FIELD_ID = 'ReadOnlyFieldId';
 
   describe('Non-persistable readonly text field', () => {
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',
       field_type: FIELD_TYPE,
       value: VALUE,
       display_context: 'READONLY'
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadTextFieldComponent>;
     let component: ReadTextFieldComponent;
@@ -72,13 +72,13 @@ describe('ReadTextFieldComponent', () => {
 
   describe('Persistable readonly text field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       field_type: FIELD_TYPE,
       value: VALUE,
       display_context: 'READONLY'
-    });
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadTextFieldComponent>;
     let component: ReadTextFieldComponent;

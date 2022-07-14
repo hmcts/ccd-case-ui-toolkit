@@ -6,7 +6,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 })
 export class FieldLabelPipe implements PipeTransform {
 
-  transform (field: CaseField): string {
+  public transform (field: CaseField): string {
     if (!field || !field.label) {
       return '';
     } else if (!field.display_context) {

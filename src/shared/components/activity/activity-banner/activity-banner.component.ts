@@ -17,6 +17,6 @@ export class ActivityBannerComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 }

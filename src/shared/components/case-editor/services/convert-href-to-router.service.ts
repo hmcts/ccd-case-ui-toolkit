@@ -5,29 +5,29 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable()
 export class ConvertHrefToRouterService {
 
-  private hrefMarkdownLinkContent = new BehaviorSubject('Default');
+  private readonly hrefMarkdownLinkContent = new BehaviorSubject('Default');
 
   constructor(private readonly router: Router) {}
 
-  updateHrefLink(content: string): void {
+  public updateHrefLink(content: string): void {
     this.hrefMarkdownLinkContent.next(content);
   }
 
-  getHrefMarkdownLinkContent(): Observable<string> {
+  public getHrefMarkdownLinkContent(): Observable<string> {
     return this.hrefMarkdownLinkContent.asObservable();
   }
 
-  callAngularRouter(hrefMarkdownLinkContent): void {
+  public callAngularRouter(hrefMarkdownLinkContent): void {
     const urls = hrefMarkdownLinkContent.split('?');
     const queryParams = urls[1];
-    let queryParamObj = {};
+    const queryParamObj = {};
 
     if (queryParams) {
       const queryParam = queryParams.split('&');
       if (queryParam[0]) {
         for (let i = 0; i < queryParam.length; i++) {
-          let param = queryParam[i].split('=');
-          queryParamObj[param[0]] = param[1]
+          const param = queryParam[i].split('=');
+          queryParamObj[param[0]] = param[1];
         }
       }
     }

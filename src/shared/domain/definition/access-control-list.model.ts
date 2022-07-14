@@ -1,7 +1,7 @@
 export class AccessControlList {
-  role: string;
-  create: boolean;
-  read: boolean;
-  update: boolean;
-  delete: boolean;
+  public role: string;
+  public create: boolean;
+  public read: boolean;
+  public update: boolean;
+  public delete: boolean;
 }

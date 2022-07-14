@@ -7,7 +7,7 @@ export class FormErrorService {
   public mapFieldErrors(errors: { id: string; message: string }[], form: FormGroup, errorKey: string): void {
 
     errors.forEach(error => {
-      let formControl = this.getFormControl(form, error.id);
+      const formControl = this.getFormControl(form, error.id);
 
       if (formControl) {
         formControl.setErrors({
@@ -18,7 +18,7 @@ export class FormErrorService {
   }
 
   private getFormControl(form: FormGroup, fieldId: string): FormControl {
-    let fields = fieldId.split('.');
+    const fields = fieldId.split('.');
 
     let group: FormGroup = form;
     let inArray = false;

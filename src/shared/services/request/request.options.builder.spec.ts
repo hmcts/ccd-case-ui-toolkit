@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
-import { RequestOptionsBuilder } from './request.options.builder';
 import { OptionsType } from '../http';
+import { RequestOptionsBuilder } from './request.options.builder';
 
 describe('RequestOptionsBuilder', () => {
 
@@ -22,51 +22,51 @@ describe('RequestOptionsBuilder', () => {
     });
 
     it('should not set if no params', () => {
-      let result = requestOptionsBuilder.buildOptions({}, {});
+      const result = requestOptionsBuilder.buildOptions({}, {});
 
-      let expected: OptionsType = { params, observe: 'body'};
+      const expected: OptionsType = { params, observe: 'body'};
       expect(result).toEqual(expected);
     });
 
     it('should set view if present', () => {
-      let result = requestOptionsBuilder.buildOptions({}, {}, 'WORKBASKET');
+      const result = requestOptionsBuilder.buildOptions({}, {}, 'WORKBASKET');
 
       params = params.set('view', 'WORKBASKET');
-      let expected: OptionsType = { params, observe: 'body'};
+      const expected: OptionsType = { params, observe: 'body'};
       expect(result).toEqual(expected);
     });
 
     it('should set metaCriteria if present', () => {
-      let metaCriteria = {'caseState': 'testState'};
-      let result = requestOptionsBuilder.buildOptions(metaCriteria, {});
+      const metaCriteria = {caseState: 'testState'};
+      const result = requestOptionsBuilder.buildOptions(metaCriteria, {});
 
       params = params.set('caseState', 'testState');
-      let expected: OptionsType = {params, observe: 'body'};
+      const expected: OptionsType = {params, observe: 'body'};
       expect(result).toEqual(expected);
     });
 
     // FIXME
     xit('should set caseCriteria if present', () => {
-      let caseCriteria = {'firstName': 'testFirstName', 'lastName': 'testLastName'};
-      let result = requestOptionsBuilder.buildOptions({}, caseCriteria);
+      const caseCriteria = {firstName: 'testFirstName', lastName: 'testLastName'};
+      const result = requestOptionsBuilder.buildOptions({}, caseCriteria);
 
       params = params.set('case.firstName', 'testFirstName');
       params = params.set('case.lastName', 'testLastName');
-      let expected: OptionsType = {params, observe: 'body'};
+      const expected: OptionsType = {params, observe: 'body'};
       expect(result).toEqual(expected);
     });
 
     // FIXME
     xit('should set all params if present', () => {
-      let metaCriteria = {'caseState': 'testState'};
-      let caseCriteria = {'firstName': 'testFirstName', 'lastName': 'testLastName'};
-      let result = requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, 'WORKBASKET');
+      const metaCriteria = {caseState: 'testState'};
+      const caseCriteria = {firstName: 'testFirstName', lastName: 'testLastName'};
+      const result = requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, 'WORKBASKET');
 
       params = params.set('view', 'WORKBASKET');
       params = params.set('caseState', 'testState');
       params = params.set('case.firstName', 'testFirstName');
       params = params.set('case.lastName', 'testLastName');
-      let expected: OptionsType = {params, observe: 'body'};
+      const expected: OptionsType = {params, observe: 'body'};
       expect(result).toEqual(expected);
     });
   });

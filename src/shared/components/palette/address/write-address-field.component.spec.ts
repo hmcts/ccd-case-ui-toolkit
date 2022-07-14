@@ -39,8 +39,8 @@ describe('WriteAddressFieldComponent', () => {
     @ViewChild(WriteAddressFieldComponent, /* TODO: add static flag */ {})
     public componentUnderTest: WriteAddressFieldComponent;
 
-    caseField = caseField(null);
-    formGroup = addressFormGroup();
+    public caseField = caseField(null);
+    public formGroup = addressFormGroup();
   }
 
   @Component({
@@ -50,21 +50,21 @@ describe('WriteAddressFieldComponent', () => {
   class MockWriteComplexFieldComponent {
 
     @Input()
-    caseField: CaseField;
+    public caseField: CaseField;
 
     @Input()
-    parent?: FormGroup | FormArray;
+    public parent?: FormGroup | FormArray;
 
     @Input()
-    idPrefix = '';
+    public idPrefix = '';
 
     @Input()
-    ignoreMandatory = false;
+    public ignoreMandatory = false;
 
     @Input()
-    renderLabel: boolean;
+    public renderLabel: boolean;
 
-    complexGroup = {
+    public complexGroup = {
       value : {},
       setValue: (value) => { this.complexGroup.value = value; }
     };
@@ -77,7 +77,7 @@ describe('WriteAddressFieldComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
 
   function caseField(address: AddressModel) {
-    let field = new CaseField();
+    const field = new CaseField();
     field.id = 'caseFieldId';
     field.label = CASE_FIELD_LABEL;
     field.field_type = createFieldType('FieldTypeId', 'Complex');
@@ -110,7 +110,7 @@ describe('WriteAddressFieldComponent', () => {
   }
 
   function queryPostcode(postcode: string) {
-    let postcodeField = fixture.debugElement.query($POSTCODE_LOOKUP_INPUT).nativeElement;
+    const postcodeField = fixture.debugElement.query($POSTCODE_LOOKUP_INPUT).nativeElement;
     postcodeField.value = postcode;
     postcodeField.dispatchEvent(new Event('input'));
     fixture.detectChanges();

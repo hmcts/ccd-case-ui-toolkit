@@ -15,22 +15,22 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
   public static readonly TRIGGER_TEXT_IGNORE = 'Ignore Warning and Go';
 
   @Input()
-  triggerTextIgnore: string = CallbackErrorsComponent.TRIGGER_TEXT_IGNORE;
+  public triggerTextIgnore: string = CallbackErrorsComponent.TRIGGER_TEXT_IGNORE;
   @Input()
-  triggerTextContinue: string = CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
+  public triggerTextContinue: string = CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
   @Input()
-  callbackErrorsSubject: Subject<any> = new Subject();
+  public callbackErrorsSubject: Subject<any> = new Subject();
 
   @Output()
-  callbackErrorsContext: EventEmitter<CallbackErrorsContext> = new EventEmitter();
+  public callbackErrorsContext: EventEmitter<CallbackErrorsContext> = new EventEmitter();
 
-  error: HttpError;
+  public error: HttpError;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
       if (this.hasWarnings() || this.hasErrors() || this.hasInvalidData()) {
-        let callbackErrorsContext: CallbackErrorsContext = this.buildCallbackErrorsContext();
+        const callbackErrorsContext: CallbackErrorsContext = this.buildCallbackErrorsContext();
         this.callbackErrorsContext.emit(callbackErrorsContext);
       }
     });
@@ -55,7 +55,7 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
   }
 
   private buildCallbackErrorsContext(): CallbackErrorsContext {
-    let errorContext: CallbackErrorsContext = new CallbackErrorsContext();
+    const errorContext: CallbackErrorsContext = new CallbackErrorsContext();
     if (this.hasWarnings() && !this.hasErrors() && !this.hasInvalidData()) {
       errorContext.ignore_warning = true;
       errorContext.trigger_text = this.triggerTextIgnore;

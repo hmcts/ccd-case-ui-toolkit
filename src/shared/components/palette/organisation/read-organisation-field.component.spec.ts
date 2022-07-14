@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadOrganisationFieldComponent } from './read-organisation-field.component';
 import { of } from 'rxjs';
-import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
-import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
-import { MarkdownModule } from '../../markdown';
 import { CaseField } from '../../../domain/definition';
+import { OrganisationConverter } from '../../../domain/organisation';
+import { OrganisationService } from '../../../services/organisation';
+import { MarkdownModule } from '../../markdown';
 import { PaletteContext } from '../base-field';
 import { PaletteService } from '../palette.service';
-import { OrganisationService } from '../../../services/organisation';
-import { OrganisationConverter } from '../../../domain/organisation';
+import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
+import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
+import { ReadOrganisationFieldComponent } from './read-organisation-field.component';
 
 describe('ReadOrganisationFieldComponent', () => {
   let component: ReadOrganisationFieldComponent;

@@ -13,26 +13,26 @@ import { CaseNotifier, CasesService } from '../../case-editor';
   templateUrl: './case-event-trigger.html'
 })
 export class CaseEventTriggerComponent implements OnInit, OnDestroy {
-  BANNER = DisplayMode.BANNER;
-  eventTrigger: CaseEventTrigger;
-  caseDetails: CaseView;
-  activitySubscription: Subscription;
-  caseSubscription: Subscription;
-  parentUrl: string;
+  public BANNER = DisplayMode.BANNER;
+  public eventTrigger: CaseEventTrigger;
+  public caseDetails: CaseView;
+  public activitySubscription: Subscription;
+  public caseSubscription: Subscription;
+  public parentUrl: string;
 
   constructor(
-    private ngZone: NgZone,
-    private casesService: CasesService,
-    private caseNotifier: CaseNotifier,
-    private router: Router,
-    private alertService: AlertService,
-    private route: ActivatedRoute,
-    private caseReferencePipe: CaseReferencePipe,
-    private activityPollingService: ActivityPollingService
+    private readonly ngZone: NgZone,
+    private readonly casesService: CasesService,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly router: Router,
+    private readonly alertService: AlertService,
+    private readonly route: ActivatedRoute,
+    private readonly caseReferencePipe: CaseReferencePipe,
+    private readonly activityPollingService: ActivityPollingService
   ) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {
@@ -62,27 +62,27 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     }
   }
 
-  postEditActivity(): Observable<Activity[]> {
+  public postEditActivity(): Observable<Activity[]> {
     return this.activityPollingService.postEditActivity(this.caseDetails.case_id);
   }
 
-  submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
+  public submit(): (sanitizedEditForm: CaseEventData) => Observable<object> {
     return (sanitizedEditForm: CaseEventData) =>
       this.casesService.createEvent(this.caseDetails, sanitizedEditForm);
   }
 
-  validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
+  public validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
     return (sanitizedEditForm: CaseEventData, pageId: string) => this.casesService.validateCase(
       this.caseDetails.case_type.id, sanitizedEditForm,
       pageId);
   }
 
-  submitted(event: any): void {
-    let eventStatus: string = event['status'];
+  public submitted(event: any): void {
+    const eventStatus: string = event['status'];
     this.router
       .navigate([this.parentUrl])
       .then(() => {
-        let caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
+        const caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
         if (EventStatusService.isIncomplete(eventStatus)) {
           this.alertService.warning(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name} `
             + `but the callback service cannot be completed`);
@@ -92,11 +92,11 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     });
   }
 
-  cancel(): Promise<boolean> {
+  public cancel(): Promise<boolean> {
     return this.router.navigate([this.parentUrl]);
   }
 
-  isDataLoaded(): boolean {
+  public isDataLoaded(): boolean {
     return !!(this.eventTrigger && this.caseDetails);
   }
 }

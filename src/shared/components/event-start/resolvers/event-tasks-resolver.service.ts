@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Task } from '../../../domain/work-allocation/Task';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { WorkAllocationService } from '../../case-editor';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Task } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { SessionStorageService } from '../../../services';
+import { WorkAllocationService } from '../../case-editor';
 
 @Injectable()
 export class EventTasksResolverService implements Resolve<Task[]> {

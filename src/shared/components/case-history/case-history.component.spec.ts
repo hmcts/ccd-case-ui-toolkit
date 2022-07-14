@@ -69,7 +69,7 @@ describe('CaseHistoryComponent', () => {
   let fixture: ComponentFixture<CaseHistoryComponent>;
   let de: DebugElement;
 
-  let mockRoute: any = {
+  const mockRoute: any = {
     snapshot: {
       paramMap: createSpyObj('paramMap', ['get']),
     }
@@ -81,13 +81,13 @@ describe('CaseHistoryComponent', () => {
   let caseHistoryService;
   let alertService;
 
-  let FieldReadComponent: any = MockComponent({
+  const FieldReadComponent: any = MockComponent({
     selector: 'ccd-field-read', inputs: [
       'caseField', 'caseReference', 'formGroup', 'topLevelFormGroup', 'idPrefix'
     ]
   });
 
-  let LinkComponent: any = MockComponent({
+  const LinkComponent: any = MockComponent({
     selector: 'a', inputs: [
       'routerLink'
     ]
@@ -143,14 +143,14 @@ describe('CaseHistoryComponent', () => {
   }));
 
   it('should render a case header', () => {
-    let header = de.query(By.directive(CaseHeaderComponent));
+    const header = de.query(By.directive(CaseHeaderComponent));
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
   });
 
   it('should render the correct case details based on show_condition', () => {
     // we expect address section not to be rendered
-    let headers = fixture.nativeElement.querySelectorAll($CASE_DETAIL_HEADERS);
+    const headers = fixture.nativeElement.querySelectorAll($CASE_DETAIL_HEADERS);
 
     expect(headers.length).toBe(CASE_HISTORY.tabs.length - 1);
     expect(headers[0].textContent).toBe(CASE_HISTORY.tabs[1].label);
@@ -158,7 +158,7 @@ describe('CaseHistoryComponent', () => {
   });
 
   it('should render the event details first followed by case details', () => {
-    let headers = fixture.nativeElement.querySelectorAll('h2');
+    const headers = fixture.nativeElement.querySelectorAll('h2');
 
     expect(headers[0].textContent).toBe('Event Details');
     expect(headers[1].textContent).toBe('Case Details');
@@ -182,7 +182,7 @@ describe('CaseHistoryComponent', () => {
   });
 
   it('should render each simple field label as a table header', () => {
-    let headers = de
+    const headers = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr>th'));
 
@@ -225,7 +225,7 @@ describe('CaseHistoryComponent', () => {
   });
 
   it('should render fields in ascending order', () => {
-    let headers = de
+    const headers = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr>th'));
 
@@ -233,7 +233,7 @@ describe('CaseHistoryComponent', () => {
   });
 
   it('should render case history sections in ascending order of tabs', () => {
-    let headers = fixture.nativeElement.querySelectorAll($CASE_DETAIL_HEADERS);
+    const headers = fixture.nativeElement.querySelectorAll($CASE_DETAIL_HEADERS);
 
     expect(headers[0].textContent).toBe(CASE_HISTORY.tabs[1].label);
     expect(headers[1].textContent).toBe(CASE_HISTORY.tabs[2].label);

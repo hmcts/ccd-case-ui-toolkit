@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ErrorsModule } from '../error/errors.module';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { CaseTimelineComponent } from './case-timeline.component';
-import { EventLogModule } from '../palette';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CaseHistoryModule } from '../case-history';
+import { ErrorsModule } from '../error/errors.module';
+import { EventLogModule } from '../palette';
+import { CaseTimelineComponent } from './case-timeline.component';
 
 @NgModule({
     imports: [

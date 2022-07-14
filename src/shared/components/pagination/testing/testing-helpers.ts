@@ -38,7 +38,7 @@ export function getControlsDirective(fixture: ComponentFixture<ComponentTestComp
 export function getPageLinkItems(fixture: ComponentFixture<any>,
   selector = 'ccd-pagination li',
   includeAll = false): string[] {
-  let all = fixture.debugElement.queryAll(By.css(selector))
+  const all = fixture.debugElement.queryAll(By.css(selector))
     .filter(el => (el.nativeElement as HTMLLIElement).classList.contains('small-screen') === false)
     .map((el: DebugElement) => el.nativeElement.innerText);
 
@@ -46,7 +46,7 @@ export function getPageLinkItems(fixture: ComponentFixture<any>,
     return all;
   } else {
     return all.filter(str => {
-      return str.match(/\d*\,?\.?\d+|\.\.\./)
+      return str.match(/\d*\,?\.?\d+|\.\.\./);
     })
       .map(str => str.match(/\d*\,?\.?\d+|\.\.\./)[0]);
   }
@@ -79,12 +79,12 @@ export function overrideTemplate<T>(component: Type<T>, templateString: string):
     </ccd-pagination>`
 })
 export class ComponentTestComponent {
-  maxSize = 9;
-  directionLinks = true;
-  autoHide = true;
-  responsive = false;
-  collection: string[] = [];
-  config: PaginationInstance = {
+  public maxSize = 9;
+  public directionLinks = true;
+  public autoHide = true;
+  public responsive = false;
+  public collection: string[] = [];
+  public config: PaginationInstance = {
     id: 'test',
     itemsPerPage: 10,
     currentPage: 1

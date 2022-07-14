@@ -1,4 +1,4 @@
-import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
+import { ShowCondition } from '../../../directives/conditional-show/domain';
 import {
   createCaseField,
   createComplexFieldOverride,
@@ -9,7 +9,7 @@ import {
   createWizardPageField,
   textFieldType
 } from '../../../fixture/shared.test.fixture';
-import { ShowCondition } from '../../../directives/conditional-show/domain';
+import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 
 describe('WizardPageFieldToCaseFieldMapper', () => {
 
@@ -79,23 +79,23 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
 
   it('should map wizardPageFields using complex_field_overrides data', () => {
 
-    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
+    const caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
 
-    let debtorName = caseFields[0];
+    const debtorName = caseFields[0];
 
     expect(debtorName.hidden).toBeFalsy('debtorName.hidden should be undefined');
     expect(debtorName.display_context).toEqual('MANDATORY');
     expect(debtorName.id).toEqual('debtorName');
     expect(debtorName.show_condition).toBeUndefined('debtorName.show_condition should be undefined');
 
-    let finalReturn = caseFields[1];
+    const finalReturn = caseFields[1];
 
     expect(finalReturn.field_type.complex_fields.length).toBe(2);
-    let addressAttended = finalReturn.field_type.complex_fields[0];
-    let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
-    let addressLine2 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine2');
-    let addressLine3 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine3');
-    let postCode = addressAttended.field_type.complex_fields.find(e => e.id === 'PostCode');
+    const addressAttended = finalReturn.field_type.complex_fields[0];
+    const addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
+    const addressLine2 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine2');
+    const addressLine3 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine3');
+    const postCode = addressAttended.field_type.complex_fields.find(e => e.id === 'PostCode');
 
     expect(addressLine1.hidden).toBeFalsy('addressLine1.hidden should be undefined');
     expect(addressLine1.display_context).toEqual('MANDATORY');
@@ -111,7 +111,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     expect(postCode.hint_text).toEqual('Enter the postcode');
     expect(postCode.show_condition).toEqual('debtorName="Some name"');
 
-    let caseLink = finalReturn.field_type.complex_fields[1];
+    const caseLink = finalReturn.field_type.complex_fields[1];
     expect(caseLink.hidden).toBeFalsy('caseLink.hidden should be undefined');
     expect(caseLink.display_context).toEqual('OPTIONAL');
     expect(caseLink.label).toEqual('Case Link test');
@@ -120,10 +120,10 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
   });
 
   it('should set order on all top level caseFields', () => {
-    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
+    const caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
 
-    let debtorName = caseFields.find(e => e.id === 'debtorName');
-    let finalReturn = caseFields.find(e => e.id === 'finalReturn');
+    const debtorName = caseFields.find(e => e.id === 'debtorName');
+    const finalReturn = caseFields.find(e => e.id === 'finalReturn');
 
     expect(finalReturn.order).toEqual(1); // overridden from 2
     expect(debtorName.order).toEqual(2); // overridden from 1
@@ -131,10 +131,10 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
 
   it('should hide caseLink both parent and a child', () => {
 
-    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);
+    const caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);
 
-    let finalReturn = caseFields[1];
-    let caseLink = finalReturn.field_type.complex_fields[1];
+    const finalReturn = caseFields[1];
+    const caseLink = finalReturn.field_type.complex_fields[1];
     expect(caseLink.hidden).toBe(true, 'finalReturn.testCaseLink.hidden should be true');
     const caseReference = caseLink.field_type.complex_fields[0];
     expect(caseReference.hidden).toBe(true, 'finalReturn.testCaseLink.CaseReference.hidden should be true');
@@ -142,11 +142,11 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
 
   it('should fix INCOMPLETE_SHOW_CONDITION path for complex fields caseField', () => {
 
-    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);
+    const caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE_WITH_HIDDEN_CASE_LINK.wizard_page_fields, CASE_FIELDS);
 
-    let finalReturn = caseFields[1];
-    let addressAttended = finalReturn.field_type.complex_fields[0];
-    let addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
+    const finalReturn = caseFields[1];
+    const addressAttended = finalReturn.field_type.complex_fields[0];
+    const addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
 
     expect(addressLine1.show_condition).toBe('finalReturn.addressAttended.' + INCOMPLETE_SHOW_CONDITION_ONE
       + ' AND ' + 'finalReturn.addressAttended.' + INCOMPLETE_SHOW_CONDITION_TWO);
@@ -198,22 +198,22 @@ describe('WizardPageFieldToCaseFieldMapper - nested Collection of Collection typ
 
   it('should map wizardPageFields using complex_field_overrides data', () => {
 
-    let caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
+    const caseFields = wizardPageFieldToCaseFieldMapper.mapAll(WIZARD_PAGE.wizard_page_fields, CASE_FIELDS);
 
-    let reason = caseFields[0];
+    const reason = caseFields[0];
 
     expect(reason.hidden).toBeFalsy('debtorName.hidden should be undefined');
     expect(reason.display_context).toEqual('MANDATORY');
     expect(reason.id).toEqual('reason');
     expect(reason.show_condition).toBeUndefined('debtorName.show_condition should be undefined');
 
-    let respondents = caseFields[1];
+    const respondents = caseFields[1];
 
     expect(respondents.field_type.collection_field_type.complex_fields.length).toBe(3);
 
-    let responseSubject = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'responseSubject');
-    let partyName = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'partyName');
-    let defendantTimeLineEvents = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'defendantTimeLineEvents');
+    const responseSubject = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'responseSubject');
+    const partyName = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'partyName');
+    const defendantTimeLineEvents = respondents.field_type.collection_field_type.complex_fields.find(e => e.id === 'defendantTimeLineEvents');
 
     expect(responseSubject.hidden).toBeFalsy('responseSubject.hidden should be undefined');
     expect(responseSubject.display_context).toEqual('OPTIONAL');
@@ -223,8 +223,8 @@ describe('WizardPageFieldToCaseFieldMapper - nested Collection of Collection typ
     expect(partyName.hidden).toEqual(true);
     expect(defendantTimeLineEvents.hidden).toEqual(true);
 
-    let timelineEventDate = defendantTimeLineEvents.field_type.collection_field_type.complex_fields.find(e => e.id === 'date');
-    let timelineEventDescription = defendantTimeLineEvents
+    const timelineEventDate = defendantTimeLineEvents.field_type.collection_field_type.complex_fields.find(e => e.id === 'date');
+    const timelineEventDescription = defendantTimeLineEvents
       .field_type.collection_field_type.complex_fields.find(e => e.id === 'description');
 
     expect(timelineEventDate.hidden).toEqual(true);

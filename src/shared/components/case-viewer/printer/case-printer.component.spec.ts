@@ -1,17 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
+import { CasePrintDocument, CaseView } from '../../../domain';
+import { AlertService } from '../../../services';
+import { attr, text } from '../../../test/helpers';
+import { CaseNotifier, CasesService } from '../../case-editor';
+import { PaletteUtilsModule } from '../../palette';
 import { CasePrinterComponent } from './case-printer.component';
 import createSpyObj = jasmine.createSpyObj;
 import { PrintUrlPipe } from './pipes/print-url.pipe';
-import { CaseView, CasePrintDocument } from '../../../domain';
-import { AbstractAppConfig } from '../../../../app.config';
-import { PaletteUtilsModule } from '../../palette';
-import { attr, text } from '../../../test/helpers';
-import { CaseNotifier, CasesService } from '../../case-editor';
-import { AlertService } from '../../../services';
-import { Observable, BehaviorSubject } from 'rxjs';
 
 describe('CasePrinterComponent', () => {
 

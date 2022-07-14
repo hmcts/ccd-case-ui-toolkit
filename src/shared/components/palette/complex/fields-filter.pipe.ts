@@ -17,7 +17,7 @@ export class FieldsFilterPipe implements PipeTransform {
   ];
 
   private static readonly NESTED_TYPES = {
-    'Complex': FieldsFilterPipe.isValidComplex
+    Complex: FieldsFilterPipe.isValidComplex
   };
 
   /**
@@ -29,10 +29,10 @@ export class FieldsFilterPipe implements PipeTransform {
    */
   private static isValidComplex(field: CaseField, values?: object): boolean {
     values = values || {};
-    let type = field.field_type;
-    let value = FieldsFilterPipe.getValue(field, values);
+    const type = field.field_type;
+    const value = FieldsFilterPipe.getValue(field, values);
 
-    let hasChildrenWithValue = type.complex_fields.find(f => {
+    const hasChildrenWithValue = type.complex_fields.find(f => {
       return FieldsFilterPipe.keepField(f, value);
     });
 
@@ -72,9 +72,9 @@ export class FieldsFilterPipe implements PipeTransform {
   private static getValue(field: CaseField, values: any, index?: number): any {
     let value: any;
     if (index >= 0 ) {
-      value = values[index].value[field.id]
+      value = values[index].value[field.id];
     } else {
-      value = values[field.id]
+      value = values[field.id];
     }
     return FieldsFilterPipe.isEmpty(field.value) ? value : field.value;
   }
@@ -88,7 +88,7 @@ export class FieldsFilterPipe implements PipeTransform {
    * @param stripHidden
    * @returns {any}
    */
-  transform(complexField: CaseField, keepEmpty?: boolean, index?: number, stripHidden= false): CaseField[] {
+  public transform(complexField: CaseField, keepEmpty?: boolean, index?: number, stripHidden= false): CaseField[] {
     if (!complexField || !complexField.field_type) {
       return [];
     }
@@ -100,7 +100,7 @@ export class FieldsFilterPipe implements PipeTransform {
     return fields
       .filter( f => {
         if (stripHidden && f.show_condition) {
-          const cond = ShowCondition.getInstance(f.show_condition)
+          const cond = ShowCondition.getInstance(f.show_condition);
           return cond.match(checkConditionsAgainst);
         }
         return true;

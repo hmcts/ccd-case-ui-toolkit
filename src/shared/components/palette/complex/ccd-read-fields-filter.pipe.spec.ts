@@ -2,11 +2,11 @@ import { CaseField } from './../../../domain/definition/case-field.model';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
 function buildCaseField(id: string, properties: object, value?: any): CaseField {
-  return <CaseField>({
+  return ({
     id,
     ...properties,
     value
-  });
+  }) as CaseField;
 }
 function getComplexField(id: string, complex_fields: CaseField[], value?: any): CaseField {
   return buildCaseField(id, {

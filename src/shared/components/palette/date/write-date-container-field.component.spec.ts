@@ -1,20 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
+import { FormModule } from '../../../../components/form/form.module';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
-import { DatetimePickerComponent } from '../datetime-picker/datetime-picker.component';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
-import { FormModule } from '../../../../components/form/form.module';
+import { DatetimePickerComponent } from '../datetime-picker/datetime-picker.component';
 import { PaletteUtilsModule } from '../utils';
-import { WriteDateFieldComponent } from './write-date-field.component';
 import { WriteDateContainerFieldComponent } from './write-date-container-field.component';
+import { WriteDateFieldComponent } from './write-date-field.component';
 
 const FIELD_ID = 'CreatedAt';
 const FIELD_TYPE: FieldType = {
@@ -22,13 +22,13 @@ const FIELD_TYPE: FieldType = {
   type: 'Date'
 };
 const VALUE = '2017-07-26';
-const CASE_FIELD: CaseField = <CaseField>({
+const CASE_FIELD: CaseField = ({
   id: FIELD_ID,
   label: 'X',
   display_context: 'OPTIONAL',
   field_type: FIELD_TYPE,
   value: VALUE
-});
+}) as CaseField;
 
 const FORM_GROUP: FormGroup = new FormGroup({});
 
@@ -37,7 +37,7 @@ describe('WriteDateContainerFieldComponent', () => {
   let fixture: ComponentFixture<WriteDateContainerFieldComponent>;
   let component: WriteDateContainerFieldComponent;
   let de: DebugElement;
-  let caseFieldService = new CaseFieldService();
+  const caseFieldService = new CaseFieldService();
 
   beforeEach(async(() => {
     TestBed
@@ -83,14 +83,14 @@ describe('WriteDateContainerFieldComponent', () => {
   });
 
   it('should show DateTimePickerComponent when dateTimeEntryFormat given', () => {
-    const NEW_CASE_FIELD: CaseField = <CaseField>({
+    const NEW_CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
       display_context: 'DATETIMEENTRY',
       field_type: FIELD_TYPE,
       value: VALUE,
       dateTimeEntryFormat: 'DD/MM/YYYY HH:mm:ss'
-    });
+    }) as CaseField;
     component.caseField = NEW_CASE_FIELD;
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('ccd-datetime-picker')).not.toBe(null);

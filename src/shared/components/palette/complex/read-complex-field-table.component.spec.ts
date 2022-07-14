@@ -1,18 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { FieldsFilterPipe } from './fields-filter.pipe';
 import { MockComponent } from 'ng2-mock-component';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
-import { PaletteContext } from '../base-field/palette-context.enum';
-import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { ConditionalShowRegistrarService } from '../../../directives/conditional-show/services/conditional-show-registrar.service';
 import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { PaletteContext } from '../base-field/palette-context.enum';
+import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
+import { FieldsFilterPipe } from './fields-filter.pipe';
+import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
 
 describe('ReadComplexFieldTableComponent', () => {
 
@@ -23,7 +23,7 @@ describe('ReadComplexFieldTableComponent', () => {
   const $COMPLEX_PANEL_COMPOUND_ROWS_VALUES = By.css('table>tbody>tr.complex-panel-compound-field>td>span>ccd-field-read');
   const $COMPLEX_PANEL_ALL_VALUES = By.css('table>tbody>tr>td>span>ccd-field-read');
 
-  let FieldReadComponent = MockComponent({
+  const FieldReadComponent = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context', 'topLevelFormGroup']
   });
@@ -43,7 +43,7 @@ describe('ReadComplexFieldTableComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -52,8 +52,8 @@ describe('ReadComplexFieldTableComponent', () => {
             type: 'Text'
           },
           value: ''
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -62,7 +62,7 @@ describe('ReadComplexFieldTableComponent', () => {
             type: 'Text'
           },
           value: '111 East India road'
-        })
+        }) as CaseField
       ]
     };
 
@@ -70,7 +70,7 @@ describe('ReadComplexFieldTableComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -80,8 +80,8 @@ describe('ReadComplexFieldTableComponent', () => {
           },
           hidden: false,
           value: 'Flat 9'
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -91,8 +91,8 @@ describe('ReadComplexFieldTableComponent', () => {
           },
           hidden: false,
           value: '111 East India road'
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressPostcode',
           label: 'Post code',
           display_context: 'OPTIONAL',
@@ -100,7 +100,7 @@ describe('ReadComplexFieldTableComponent', () => {
             id: 'Postcode',
             type: 'Complex',
             complex_fields: [
-              <CaseField>({
+              ({
                 id: 'PostcodeCity',
                 label: 'City',
                 display_context: 'OPTIONAL',
@@ -109,8 +109,8 @@ describe('ReadComplexFieldTableComponent', () => {
                   type: 'Text'
                 },
                 value: 'London'
-              }),
-              <CaseField>({
+              }) as CaseField,
+              ({
                 id: 'PostcodeCountry',
                 label: 'Country',
                 display_context: 'OPTIONAL',
@@ -119,20 +119,20 @@ describe('ReadComplexFieldTableComponent', () => {
                   type: 'Text'
                 },
                 value: 'UK'
-              })
+              }) as CaseField
             ]
           },
           hidden: false
-        })
+        }) as CaseField
       ]
     };
 
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: '',
       label: 'Complex Field',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES
-    });
+    }) as CaseField;
 
     const LINE_1 = 0;
     const LINE_2 = 1;
@@ -172,7 +172,7 @@ describe('ReadComplexFieldTableComponent', () => {
     }));
 
     it('should render a panel with a header for the complex type', () => {
-      let panelTitle = de
+      const panelTitle = de
         .query($COMPLEX_PANEL)
         .query($COMPLEX_PANEL_TITLE);
 
@@ -181,7 +181,7 @@ describe('ReadComplexFieldTableComponent', () => {
     });
 
     it('should render a table with a row containing 2 columns for each simple type', () => {
-      let simpleRowsHeaders = de
+      const simpleRowsHeaders = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
 
@@ -189,7 +189,7 @@ describe('ReadComplexFieldTableComponent', () => {
       expect(simpleRowsHeaders[LINE_1].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_1].label);
       expect(simpleRowsHeaders[LINE_2].nativeElement.textContent).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label);
 
-      let simpleRowsValues = de
+      const simpleRowsValues = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
 
@@ -199,7 +199,7 @@ describe('ReadComplexFieldTableComponent', () => {
     });
 
     it('should render a table with a row containing 1 column for each compound type', () => {
-      let compoundRowsHeaders = de
+      const compoundRowsHeaders = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_COMPOUND_ROWS_VALUES);
 
@@ -208,15 +208,15 @@ describe('ReadComplexFieldTableComponent', () => {
     });
 
     it('should NOT render fields with empty value', () => {
-      component.caseField = <CaseField>({
+      component.caseField = (({
         id: 'x',
         label: 'x',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITH_MISSING_VALUE
-      });
+      }) as CaseField);
       fixture.detectChanges();
 
-      let labels = de.queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
+      const labels = de.queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
 
       expect(labels.length).toEqual(1);
 
@@ -224,31 +224,31 @@ describe('ReadComplexFieldTableComponent', () => {
     });
 
     it('should only render title when no fields', () => {
-      component.caseField = <CaseField>({
+      component.caseField = (({
         id: 'x',
         label: 'x',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE_WITHOUT_FIELDS
-      });
+      }) as CaseField);
       fixture.detectChanges();
 
-      let title = de.query($COMPLEX_PANEL_TITLE);
+      const title = de.query($COMPLEX_PANEL_TITLE);
       expect(title).toBeTruthy();
 
-      let labels = de.queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
+      const labels = de.queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
 
       expect(labels.length).toEqual(0);
     });
 
     it('should pass context down to child fields', () => {
-      let simpleRowsValues = de
+      const simpleRowsValues = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_SIMPLE_ROWS_VALUES);
 
       expect(simpleRowsValues[LINE_1].componentInstance.context).toEqual(PaletteContext.CHECK_YOUR_ANSWER);
       expect(simpleRowsValues[LINE_2].componentInstance.context).toEqual(PaletteContext.CHECK_YOUR_ANSWER);
 
-      let compoundRowsValues = de
+      const compoundRowsValues = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_COMPOUND_ROWS_VALUES);
 
@@ -261,7 +261,7 @@ describe('ReadComplexFieldTableComponent', () => {
       id: 'IAmVeryComplex',
       type: 'Complex',
       complex_fields: [
-        <CaseField>({
+        ({
           id: 'AddressLine1',
           label: 'Line 1',
           display_context: 'OPTIONAL',
@@ -269,8 +269,8 @@ describe('ReadComplexFieldTableComponent', () => {
             id: 'Text',
             type: 'Text'
           }
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressLine2',
           label: 'Line 2',
           display_context: 'OPTIONAL',
@@ -278,8 +278,8 @@ describe('ReadComplexFieldTableComponent', () => {
             id: 'Text',
             type: 'Text'
           }
-        }),
-        <CaseField>({
+        }) as CaseField,
+        ({
           id: 'AddressPostcode',
           label: 'Post code',
           display_context: 'OPTIONAL',
@@ -287,7 +287,7 @@ describe('ReadComplexFieldTableComponent', () => {
             id: 'Postcode',
             type: 'Complex',
             complex_fields: [
-              <CaseField>({
+              ({
                 id: 'PostcodeCity',
                 label: 'City',
                 display_context: 'OPTIONAL',
@@ -295,8 +295,8 @@ describe('ReadComplexFieldTableComponent', () => {
                   id: 'Text',
                   type: 'Text'
                 }
-              }),
-              <CaseField>({
+              }) as CaseField,
+              ({
                 id: 'PostcodeCountry',
                 label: 'Country',
                 display_context: 'OPTIONAL',
@@ -304,27 +304,27 @@ describe('ReadComplexFieldTableComponent', () => {
                   id: 'Text',
                   type: 'Text'
                 }
-              })
+              }) as CaseField
             ]
           }
-        })
+        }) as CaseField
       ]
     };
 
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = ({
       id: '',
       label: 'Complex Field',
       field_type: FIELD_TYPE,
       display_context: 'OPTIONAL',
       value: {
-        'AddressLine1': 'Flat 9',
-        'AddressLine2': '111 East India road',
-        'AddressPostcode': {
-          'PostcodeCity': 'London',
-          'PostcodeCountry': 'UK'
+        AddressLine1: 'Flat 9',
+        AddressLine2: '111 East India road',
+        AddressPostcode: {
+          PostcodeCity: 'London',
+          PostcodeCountry: 'UK'
         }
       }
-    });
+    }) as CaseField;
 
     const LINE_1 = 0;
     const LINE_2 = 1;
@@ -362,13 +362,13 @@ describe('ReadComplexFieldTableComponent', () => {
     }));
 
     it('should render a table with a row containing 2 columns for each simple type', () => {
-      let values = de
+      const values = de
         .query($COMPLEX_PANEL)
         .queryAll($COMPLEX_PANEL_ALL_VALUES);
 
       expect(values.length).toBe(3);
 
-      let line1 = FIELD_TYPE.complex_fields[LINE_1];
+      const line1 = FIELD_TYPE.complex_fields[LINE_1];
       expect(values[LINE_1].componentInstance.caseField).toEqual({
         id: line1.id,
         label: line1.label,
@@ -378,7 +378,7 @@ describe('ReadComplexFieldTableComponent', () => {
         value: CASE_FIELD.value['AddressLine1']
       });
 
-      let line2 = FIELD_TYPE.complex_fields[LINE_2];
+      const line2 = FIELD_TYPE.complex_fields[LINE_2];
       expect(values[LINE_2].componentInstance.caseField).toEqual({
         id: line2.id,
         label: line2.label,
@@ -388,7 +388,7 @@ describe('ReadComplexFieldTableComponent', () => {
         value: CASE_FIELD.value['AddressLine2']
       });
 
-      let postcode = FIELD_TYPE.complex_fields[POSTCODE];
+      const postcode = FIELD_TYPE.complex_fields[POSTCODE];
       expect(values[POSTCODE].componentInstance.caseField).toEqual({
         id: postcode.id,
         label: postcode.label,
@@ -400,18 +400,18 @@ describe('ReadComplexFieldTableComponent', () => {
     });
 
     it('should NOT render fields with empty value', () => {
-      component.caseField = <CaseField>({
+      component.caseField = (({
         id: 'x',
         label: 'x',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE,
         value: {
-          'AddressLine1': 'Flat 9'
+          AddressLine1: 'Flat 9'
         }
-      });
+      }) as CaseField);
       fixture.detectChanges();
 
-      let labels = de.queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
+      const labels = de.queryAll($COMPLEX_PANEL_SIMPLE_ROWS_HEADERS);
 
       expect(labels.length).toEqual(1);
 

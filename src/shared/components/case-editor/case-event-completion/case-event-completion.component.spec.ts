@@ -64,7 +64,7 @@ describe('CaseEventCompletionComponent', () => {
   };
 
   const eventCompletionParams: EventCompletionParams = {
-    task: task,
+    task,
     caseId: '1234-1234-1234-1234',
     eventId: '4321-4321-4321-4321'
   };
@@ -82,7 +82,7 @@ describe('CaseEventCompletionComponent', () => {
   eventCompletionStateMachineService = createSpyObj<EventCompletionStateMachineService>('EventCompletionStateMachineService', ['initialiseStateMachine', 'createStates', 'addTransitions', 'startStateMachine']);
 
   const context = {
-    task: task,
+    task,
     caseId: '1620409659381330',
     eventId: null,
     reassignedTask: null,
@@ -90,13 +90,13 @@ describe('CaseEventCompletionComponent', () => {
     route: mockRoute,
     sessionStorageService: null,
     workAllocationService: mockWorkAllocationService,
-    alertService: alertService,
+    alertService,
     canBeCompleted: false,
     component: this
   };
 
   parentComponent = {
-    context: context,
+    context,
     eventCanBeCompleted: new EventEmitter<boolean>(true)
   };
 

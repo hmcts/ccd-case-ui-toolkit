@@ -11,8 +11,8 @@ import { CaseNotifier } from '../case-editor';
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
 
-  static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
-  static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
+  public static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
+  public static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -73,7 +73,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   // remove once Access management goes live
   private setMockData(caseDetails: CaseView): void {
-    const accessManagementBasicViewMock = this.appConfig.getAccessManagementBasicViewMock()
+    const accessManagementBasicViewMock = this.appConfig.getAccessManagementBasicViewMock();
     if (accessManagementBasicViewMock && accessManagementBasicViewMock.active && !caseDetails.basicFields) {
       const access_process_index = caseDetails.metadataFields.findIndex(metadataField =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);

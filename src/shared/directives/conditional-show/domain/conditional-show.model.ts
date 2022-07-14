@@ -4,6 +4,27 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 export class ShowCondition {
+
+  // Expects a show condition of the form: <fieldName>="string"
+  constructor(public condition: string) {
+    if (!!condition) {
+      if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
+        this.orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
+      } else {
+        this.andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
+      }
+    }
+  }
+
+  private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
+  private static readonly OR_CONDITION_REGEXP = new RegExp('\\sOR\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
+  private static readonly CONDITION_NOT_EQUALS = '!=';
+  private static readonly CONDITION_EQUALS = '=';
+  private static readonly CONTAINS = 'CONTAINS';
+  private static readonly instanceCache = new Map<string, ShowCondition>();
+
+  private readonly orConditions: string[] = null;
+  private readonly andConditions: string[] = null;
   public static addPathPrefixToCondition(showCondition: string, pathPrefix: string): string {
     if (!pathPrefix || pathPrefix === '') {
       return showCondition;
@@ -82,13 +103,6 @@ export class ShowCondition {
     return false;
   }
 
-  private static readonly AND_CONDITION_REGEXP = new RegExp('\\sAND\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
-  private static readonly OR_CONDITION_REGEXP = new RegExp('\\sOR\\s(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)', 'g');
-  private static readonly CONDITION_NOT_EQUALS = '!=';
-  private static readonly CONDITION_EQUALS = '=';
-  private static readonly CONTAINS = 'CONTAINS';
-  private static instanceCache = new Map<string, ShowCondition>();
-
   private static extractConditions(conditionsArray: string[], pathPrefix: string): string[] {
     const extracted = conditionsArray.map(condition => {
       if (condition.startsWith(pathPrefix)) {
@@ -108,20 +122,6 @@ export class ShowCondition {
       }
     }
     return [ condition.split(separator)[0], separator ];
-  }
-
-  private orConditions: string[] = null;
-  private andConditions: string[] = null;
-
-  // Expects a show condition of the form: <fieldName>="string"
-  constructor(public condition: string) {
-    if (!!condition) {
-      if (condition.search(ShowCondition.OR_CONDITION_REGEXP) !== -1) {
-        this.orConditions = condition.split(ShowCondition.OR_CONDITION_REGEXP);
-      } else {
-        this.andConditions = condition.split(ShowCondition.AND_CONDITION_REGEXP);
-      }
-    }
   }
 
   public match(fields: object, path?: string): boolean {
@@ -152,7 +152,7 @@ export class ShowCondition {
    */
    private updatePathName(path: string): string {
     if (path && path.split(/[_]+/g).length > 0) {
-      let [pathName, ...pathTail] = path.split(/[_]+/g);
+      const [pathName, ...pathTail] = path.split(/[_]+/g);
       const pathFinalIndex = pathTail.pop();
       const pathTailString = pathTail.toString();
 
@@ -229,11 +229,11 @@ export class ShowCondition {
 
   private checkValueContains(expectedValue: string, currentValue: any): boolean {
     if (expectedValue.search(',') > -1) {
-      let expectedValues = expectedValue.split(',').sort();
-      let values = currentValue ? currentValue.sort().toString() : '';
+      const expectedValues = expectedValue.split(',').sort();
+      const values = currentValue ? currentValue.sort().toString() : '';
       return expectedValues.every(item => values.search(item) >= 0);
     } else {
-      let values = currentValue && Array.isArray(currentValue) ? currentValue.toString() : '';
+      const values = currentValue && Array.isArray(currentValue) ? currentValue.toString() : '';
       return values.search(expectedValue) >= 0;
     }
   }
@@ -268,7 +268,7 @@ export class ShowCondition {
       const [_, ...pathTail] = path.split(/[_]+/g);
       if (pathTail.length > 0) {
         try {
-          let arrayIndex = Number.parseInt(pathTail[0], 10);
+          const arrayIndex = Number.parseInt(pathTail[0], 10);
           const [__, ...dropNumberPath] = pathTail;
           return (fields[head][arrayIndex] !== undefined) ? this.findValueForComplexCondition(
             fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;

@@ -13,16 +13,16 @@ import { FeeValue } from './fee-value.model';
 export class ReadOrderSummaryRowComponent extends AbstractFieldReadComponent implements OnInit {
 
   @Input()
-  feeValue: FeeValue;
+  public feeValue: FeeValue;
 
-  ngOnInit() {
+  public ngOnInit() {
     // We don't want to register this if we don't have a caseField
     if (this.caseField) {
       super.ngOnInit();
     }
   }
 
-  getFeeAmount(): string {
+  public getFeeAmount(): string {
     return this.feeValue.value ? this.feeValue.value.FeeAmount : '';
   }
 }

@@ -1,11 +1,11 @@
-import { EventLogDetailsComponent } from './event-log-details.component';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { CaseViewEvent } from '../../../../domain/case-view';
-import { DatePipe, DashPipe } from '../../utils';
-import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 import { not } from 'rxjs/internal-compatibility';
+import { CaseViewEvent } from '../../../../domain/case-view';
+import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
+import { DashPipe, DatePipe } from '../../utils';
+import { EventLogDetailsComponent } from './event-log-details.component';
 
 describe('EventLogDetails', () => {
 
@@ -52,12 +52,12 @@ describe('EventLogDetails', () => {
   const expectRow = (row: DebugElement) => {
     return {
       toEqual: (label: string, value: string) => {
-        let actualLabel = row
+        const actualLabel = row
           .query(By.css('th'))
           .nativeElement
           .textContent
           .trim();
-        let actualValue = row
+        const actualValue = row
           .query(By.css('td'))
           .nativeElement
           .textContent
@@ -66,12 +66,12 @@ describe('EventLogDetails', () => {
         expect(actualValue).toBe(value);
       },
       toNotEqual: (label: string, value: string) => {
-        let actualLabel = row
+        const actualLabel = row
           .query(By.css('th'))
           .nativeElement
           .textContent
           .trim();
-        let actualValue = row
+        const actualValue = row
           .query(By.css('td'))
           .nativeElement
           .textContent
@@ -109,11 +109,11 @@ describe('EventLogDetails', () => {
   }));
 
   xit('should render a table with the case details', () => {
-    let rows = de.queryAll($TABLE_ROWS);
+    const rows = de.queryAll($TABLE_ROWS);
 
     expect(rows.length).toBe(6);
 
-    let resultDate = new DatePipe(null).transform(EVENT.timestamp, 'utc', null) +
+    const resultDate = new DatePipe(null).transform(EVENT.timestamp, 'utc', null) +
       ' Local: ' + new DatePipe(null).transform(EVENT.timestamp, 'local', null);
     expectRow(rows[0]).toEqual('Date', resultDate);
     expectRow(rows[1]).toEqual('Author', 'Justin SMITH');
@@ -127,7 +127,7 @@ describe('EventLogDetails', () => {
     component.event = EVENT_WITH_EMPTY_SUMMARY_AND_COMMENT;
     fixture.detectChanges();
 
-    let rows = de.queryAll($TABLE_ROWS);
+    const rows = de.queryAll($TABLE_ROWS);
 
     expect(rows.length).toBe(6);
 

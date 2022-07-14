@@ -1,10 +1,9 @@
-///<reference path="router-helper.service.ts"/>
 import { RouterHelperService } from './router-helper.service';
 
 describe('CaseEditSubmitComponent', () => {
   let classUnderTest: RouterHelperService;
 
-  let mockRoute: any = {
+  const mockRoute: any = {
     pathFromRoot: [
       {
         url: [
@@ -28,7 +27,7 @@ describe('CaseEditSubmitComponent', () => {
   });
 
   it('should delegate navigateToPage calls to caseEditComponent', () => {
-    let result: string[] = classUnderTest.getUrlSegmentsFromRoot(mockRoute);
+    const result: string[] = classUnderTest.getUrlSegmentsFromRoot(mockRoute);
     expect(result.length).toBe(2);
   });
 });

@@ -56,14 +56,14 @@ describe('TaskRequirementComponent', () => {
     email: 'testuser@demoenv.com',
     location: null,
     roleCategory: null
-  }
+  };
   const judicialworker: Judicialworker = {
     title: null,
     knownAs: null,
     sidam_id: '4321-4321-4321-4321',
     full_name: 'Test Judicialworker',
     email_id: 'testuser@demoenv.com'
-  }
+  };
   const mockRoute: any = {
     snapshot: {
       data: {
@@ -107,7 +107,7 @@ describe('TaskRequirementComponent', () => {
   });
 
   it('should display error message task assigned', () => {
-    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'))
+    const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
     const headingHtml = heading.nativeElement as HTMLElement;
     expect(headingHtml.innerText).toBe('Task assignment required');
     expect(mockCaseworkerService.getCaseworkers).toHaveBeenCalled();
