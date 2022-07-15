@@ -1,6 +1,5 @@
 import { HttpHeaders, HttpParams } from '@angular/common/http';
-import createSpyObj = jasmine.createSpyObj;
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { SearchInput } from '../../components/search-filters';
 import { Field, FieldType } from '../../domain';
@@ -8,6 +7,7 @@ import { HttpService, OptionsType } from '../http';
 import { LoadingService } from '../loading';
 import { RequestOptionsBuilder } from '../request';
 import { SearchService } from './search.service';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('SearchService', () => {
 
@@ -64,7 +64,7 @@ describe('SearchService', () => {
       appConfig.getCaseDataUrl.and.returnValue(DATA_URL);
 
       httpService = createSpyObj<HttpService>('httpService', ['get']);
-      httpService.get.and.returnValue(Observable.of({}));
+      httpService.get.and.returnValue(of({}));
 
       params = new HttpParams();
       requestOptionsArgs = { params, observe: 'body' };
@@ -238,7 +238,7 @@ describe('SearchService', () => {
     it('should unregister loading token when finished', () => {
       searchService
         .search(JID, CTID, {}, {})
-        .finally(() => {
+        .subscribe(() => {
           expect(loadingService.unregister).toHaveBeenCalled();
         });
     });
@@ -262,7 +262,7 @@ describe('SearchService', () => {
       appConfig.getPaginationPageSize.and.returnValue(25);
 
       httpService = createSpyObj<HttpService>('httpService', ['post']);
-      httpService.post.and.returnValue(Observable.of({}));
+      httpService.post.and.returnValue(of({}));
 
       params = new HttpParams();
       requestOptionsArgs = { params, observe: 'body' };
@@ -334,7 +334,7 @@ describe('SearchService', () => {
     it('should unregister loading token when finished', () => {
       searchService
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
-        .finally(() => {
+        .subscribe(() => {
           expect(loadingService.unregister).toHaveBeenCalled();
         });
     });

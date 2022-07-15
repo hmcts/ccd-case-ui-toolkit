@@ -1,6 +1,6 @@
 
 import { NgZone } from '@angular/core';
-import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { ActivityPollingService } from './activity.polling.service';
 import { ActivityService } from './activity.service';
 
@@ -19,7 +19,7 @@ describe('ActivityPollingService', () => {
     ngZone.runOutsideAngular.and.callFake((fn: () => void) => fn());
 
     activityService = jasmine.createSpyObj<ActivityService>('activityService', ['getActivities', 'postActivity']);
-    activityService.getActivities.and.returnValue(Observable.of());
+    activityService.getActivities.and.returnValue(of());
     activityService.isEnabled = true;
 
     appConfig = jasmine.createSpyObj('AppConfig', ['getActivityMaxRequestPerBatch', 'getActivityBatchCollectionDelayMs',

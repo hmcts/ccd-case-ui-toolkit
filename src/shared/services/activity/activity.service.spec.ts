@@ -1,5 +1,5 @@
 
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AbstractAppConfig } from '../../../';
 import { HttpService } from '../../services/http';
 import { SessionStorageService } from '../session/session-storage.service';
@@ -21,8 +21,8 @@ describe('ActivityService', () => {
     appConfig.getActivityUrl.and.returnValue('someUrl');
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
-    httpService.get.and.returnValue(Observable.of(response));
-    httpService.post.and.returnValue(Observable.of(response));
+    httpService.get.and.returnValue(of(response));
+    httpService.post.and.returnValue(of(response));
     sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"');
 
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);

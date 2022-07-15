@@ -1,7 +1,7 @@
 import createSpyObj = jasmine.createSpyObj;
 import { HttpHeaders } from '@angular/common/http';
 import { classToPlain } from 'class-transformer';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError } from '../../../domain';
 import { createCaseHistory } from '../../../fixture';
@@ -38,7 +38,7 @@ describe('CaseHistoryService', () => {
     const CASE_HISTORY: CaseHistory = createCaseHistory();
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(classToPlain(CASE_HISTORY, {excludePrefixes: ['_']})));
+      httpService.get.and.returnValue(of(classToPlain(CASE_HISTORY, {excludePrefixes: ['_']})));
     });
 
     it('should use HttpService::get with correct url', () => {

@@ -54,7 +54,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
     case_type_id: CTID,
     state: 'CaseCreated'
   };
-  const CREATED_CASE_OBS: Observable<CaseDetails> = Observable.of(CREATED_CASE);
+  const CREATED_CASE_OBS: Observable<CaseDetails> = of(CREATED_CASE);
 
   const SANITISED_EDIT_FORM: CaseEventData = {
     data: {

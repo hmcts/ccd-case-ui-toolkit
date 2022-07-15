@@ -1,5 +1,5 @@
 import createSpyObj = jasmine.createSpyObj;
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventTrigger, HttpError, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
@@ -17,7 +17,7 @@ describe('EventTriggerResolver', () => {
   const CASE_ID = '42';
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(EVENT_TRIGGER_ID, 'Into legacy', CASE_ID, true, []);
-  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = Observable.of(EVENT_TRIGGER);
+  const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = of(EVENT_TRIGGER);
   const ERROR: HttpError = {
     timestamp: '',
     status: 422,
@@ -66,7 +66,7 @@ describe('EventTriggerResolver', () => {
     isCourtAdmin: FUNC
   };
 
-  const PROFILE_OBS: Observable<Profile> = Observable.of(PROFILE);
+  const PROFILE_OBS: Observable<Profile> = of(PROFILE);
   const PROFILE_CACHED: Profile = PROFILE;
 
   beforeEach(() => {
@@ -82,7 +82,7 @@ describe('EventTriggerResolver', () => {
     appConfig.getApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
     httpService = createSpyObj<HttpService>('httpService', ['get']);
-    httpService.get.and.returnValue(Observable.of(MOCK_PROFILE));
+    httpService.get.and.returnValue(of(MOCK_PROFILE));
 
     eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier);
 

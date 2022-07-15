@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseDetails, CaseEventData, CaseView, Draft, HttpError } from '../../domain';
 import { HttpErrorService, HttpService } from '../http';
@@ -64,8 +64,8 @@ describe('Drafts Service', () => {
     };
 
     beforeEach(() => {
-      httpService.post.and.returnValue(Observable.of(DRAFT_RESPONSE));
-      httpService.put.and.returnValue(Observable.of(DRAFT_RESPONSE));
+      httpService.post.and.returnValue(of(DRAFT_RESPONSE));
+      httpService.put.and.returnValue(of(DRAFT_RESPONSE));
     });
 
     it('should create a draft on server', () => {
@@ -144,7 +144,7 @@ describe('Drafts Service', () => {
     };
 
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(CASE_VIEW_DATA));
+      httpService.get.and.returnValue(of(CASE_VIEW_DATA));
     });
 
     it('should get draft on server', () => {
@@ -177,7 +177,7 @@ describe('Drafts Service', () => {
   describe('deleteDraft()', () => {
 
     beforeEach(() => {
-      httpService.delete.and.returnValue(Observable.of());
+      httpService.delete.and.returnValue(of());
     });
 
     it('should delete draft on server', () => {

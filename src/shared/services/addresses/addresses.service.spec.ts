@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../http';
 import { AddressesService } from './addresses.service';
@@ -22,7 +22,7 @@ describe('AddressesService', () => {
     httpService = jasmine.createSpyObj<HttpService>('HttpService', ['get']);
     appConfig.getPostcodeLookupUrl.and.returnValue('http://postcodeUrl/postcode=${postcode}&key=${key}');
     const postCodeResponse = validPostCodeResults;
-    httpService.get.and.returnValue(Observable.of(postCodeResponse));
+    httpService.get.and.returnValue(of(postCodeResponse));
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [AddressesService, {provide: AbstractAppConfig, useValue: appConfig}, {
@@ -76,7 +76,7 @@ describe('AddressesService', () => {
   });
 
   it('should return subscriber error when postcode service returns zero', () => {
-    httpService.get.and.returnValue(Observable.of([]));
+    httpService.get.and.returnValue(of([]));
     const result = addressesService.getAddressesForPostcode(validPostCode);
     result.subscribe(addresses => expect(addresses.length).toBe(1),
                      error => expect(error).toBeTruthy());

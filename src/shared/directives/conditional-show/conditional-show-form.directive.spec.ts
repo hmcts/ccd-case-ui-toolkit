@@ -62,7 +62,7 @@ describe('ConditionalShowFormDirective', () => {
     let fixture: ComponentFixture<TestHostComponent>;
     let de:      DebugElement;
     const el: HTMLElement= null;
-    const elRadioN: HTMLElement = null;
+    let elRadioN: HTMLElement = null;
     let elRadioY: HTMLElement;
     let elMake: HTMLElement;
     let elModel: HTMLElement;

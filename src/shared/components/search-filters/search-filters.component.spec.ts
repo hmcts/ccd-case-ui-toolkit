@@ -2,7 +2,7 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ConditionalShowModule } from '../../directives';
 import { CaseType, Jurisdiction } from '../../domain';
 import { JurisdictionService, OrderService, SearchService, WindowService } from '../../services';
@@ -441,7 +441,7 @@ describe('SearchFiltersComponent', () => {
   it('should update search input when case type is reset', async(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
-    mockSearchService.getSearchInputs.and.returnValue(Observable.of([]));
+    mockSearchService.getSearchInputs.and.returnValue(of([]));
     windowService.getLocalStorage.and.returnValue('{}');
     component.onCaseTypeIdChange();
     expect(mockSearchService.getSearchInputs).toHaveBeenCalledWith(JURISDICTION_2.id, CASE_TYPES_2[2].id);

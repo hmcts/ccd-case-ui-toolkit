@@ -47,8 +47,6 @@
     "test:functional": "yarn --cwd demo  test:functional"
   },
   "dependencies": {
-    "@angular-material-components/datetime-picker": "^2.0.4",
-    "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular/animations": "~11.2.14",
     "@angular/cdk": "^11.2.13",
     "@angular/common": "~11.2.14",
@@ -87,6 +85,8 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1102.19",
+    "@angular-material-components/datetime-picker": "^8.0.0",
+    "@angular-material-components/moment-adapter": "^8.0.0",
     "@angular/cli": "^11.2.19",
     "@angular/compiler-cli": "~11.2.14",
     "@compodoc/compodoc": "^1.1.7",
@@ -117,7 +117,7 @@
     "jasmine-core": "^2.8.0",
     "jasmine-spec-reporter": "^4.2.1",
     "json-loader": "^0.5.4",
-    "karma": "^6.4.0",
+    "karma": "~6.0.0",
     "karma-cli": "^1.0.1",
     "karma-coverage": "^1.0.0",
     "karma-coverage-istanbul-reporter": "^2.0.1",
@@ -187,7 +187,7 @@
     "y18n": "^4.0.1",
     "prismjs": "1.24.1",
     "websocket-extensions": "0.1.4",
-    "socket.io": "^2.4.0",
+    "**/**/socket.io": "^4.5.0",
     "ini": "^2.0.0",
     "browserslist": "^4.16.6",
     "mem": "^8.1.1",

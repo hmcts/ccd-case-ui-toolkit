@@ -2,7 +2,7 @@ import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CasePrintDocument, CaseView } from '../../../domain';
 import { AlertService } from '../../../services';
@@ -10,8 +10,8 @@ import { attr, text } from '../../../test/helpers';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { PaletteUtilsModule } from '../../palette';
 import { CasePrinterComponent } from './case-printer.component';
-import createSpyObj = jasmine.createSpyObj;
 import { PrintUrlPipe } from './pipes/print-url.pipe';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CasePrinterComponent', () => {
 
@@ -57,7 +57,7 @@ describe('CasePrinterComponent', () => {
       url: `${REMOTE_PRINT_SERVICE_URL}/doc2.jpg`
     }
   ];
-  const DOCUMENT_OBS: Observable<CasePrintDocument[]> = Observable.of(DOCUMENTS);
+  const DOCUMENT_OBS: Observable<CasePrintDocument[]> = of(DOCUMENTS);
 
   let fixture: ComponentFixture<CasePrinterComponent>;
   let component: CasePrinterComponent;

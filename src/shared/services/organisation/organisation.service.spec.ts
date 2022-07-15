@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../../services';
 import { Organisation, OrganisationAddress, OrganisationService } from './organisation.service';
@@ -44,7 +44,7 @@ describe('Organisation Service', () => {
 
   describe('organisation service()', () => {
     beforeEach(() => {
-      httpService.get.and.returnValue(Observable.of(ORGANISATIONS));
+      httpService.get.and.returnValue(of(ORGANISATIONS));
     });
     it('should call getActiveOrganisations() ', () => {
       const test = spyOn(organisationService, 'getActiveOrganisations');
