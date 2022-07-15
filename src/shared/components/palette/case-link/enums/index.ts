@@ -1,1 +1,1 @@
-export * from './write-linked-cases-field.enum';
+export * from './linked-cases-field.enum';

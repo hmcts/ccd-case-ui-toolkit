@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
@@ -32,17 +32,24 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
 
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
+
+  public isDisplayContextParameterUpdate: any;
+
   
   // @ViewChildren('collectionItem')
   // private items: QueryList<ElementRef>;
   // private collItems: CollectionItem[] = [];
 
   constructor(private router: Router,
+    private readonly route: ActivatedRoute,
     private readonly linkedCasesService: LinkedCasesService) {
     super();
   }
 
   public ngOnInit(): void {
+
+    this.isDisplayContextParameterUpdate = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
+
     this.formArray = this.registerControl(new FormArray([]), true) as FormArray;
     this.formArray['caseField'] = this.caseField;
     if (!this.hasCaseLinkCollection()) {

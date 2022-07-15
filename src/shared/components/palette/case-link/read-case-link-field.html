@@ -3,5 +3,39 @@
     ''}}</span>
 </a>
 <ng-container *ngIf="hasCaseLinkCollection()">
-  <ccd-read-linked-cases [caseField]="caseField"></ccd-read-linked-cases>
+  {{displayMode}}
+  <ng-container *ngIf="displayMode === dspMode.TABLE">
+    table
+    <ccd-read-linked-cases [caseField]="caseField"></ccd-read-linked-cases>
+  </ng-container>
+  <ng-container *ngIf="displayMode === dspMode.MANAGE">
+    manage {{paletteContext}}
+    <ng-container [ngSwitch]="context">
+      <ng-container *ngSwitchCase="paletteContext.DEFAULT">
+        <ccd-write-linked-cases [formGroup]="formGroup" [caseEditPageComponent]="caseEditPageComponent"
+          (onLinkedCasesSelected)="submitLinkedCases();" [isLinkedCasesJourney]="isLinkedCasesEventTrigger()">
+        </ccd-write-linked-cases>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <ccd-linked-cases-check-your-answers (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)">
+        </ccd-linked-cases-check-your-answers>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>
+<ng-container *ngIf="!hasCaseLinkCollection()">
+  default
+  <div class="form-group">
+    <label [for]="id()">
+      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+    </label>
+    <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
+    <!-- <span class="error-message"
+        *ngIf="caseReferenceControl.errors && (caseReferenceControl.dirty || caseReferenceControl.touched)">{{caseReferenceControl.errors
+        | ccdFirstError:caseField.label}}</span> -->
+    <input class="form-control bottom-30" [id]="id()" type="text" [formControl]="caseReferenceControl">
+  </div>
+  <div class="form-group" *ngIf="containsCaseLinkCollection">
+
+  </div>
 </ng-container>

@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { CaseView, ErrorMessage } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLink, LinkedCasesState } from '../../domain';
-import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
+import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums/linked-cases-field.enum';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 
 @Component({
