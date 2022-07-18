@@ -1,5 +1,5 @@
 import { Component, DebugElement, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -100,7 +100,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
     const LINE_5 = 4;
     const LINE_6 = 5;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
           imports: [
@@ -305,7 +305,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
         }
       ]).withDisplayContextParameter('#TABLE(Name)').build();
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
           imports: [

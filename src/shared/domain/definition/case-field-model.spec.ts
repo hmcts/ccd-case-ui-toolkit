@@ -1,4 +1,4 @@
-import { async } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 import { CaseField } from './case-field.model';
 import { FieldType } from './field-type.model';
 
@@ -9,7 +9,7 @@ describe('CaseField', () => {
     value: {code: 'Code1', label: 'Label 1'}, list_items: [{code: 'Code1', label: 'Label 1'},
       {code: 'Code2', label: 'Label 2'}]
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     component = new CaseField();
   }));
 

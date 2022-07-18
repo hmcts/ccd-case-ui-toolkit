@@ -1,13 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { DebugElement, EventEmitter } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { HttpError } from '../../domain/http';
 import { text } from '../../test/helpers';
 import { CallbackErrorsComponent } from './callback-errors.component';
-import createSpyObj = jasmine.createSpyObj;
 import { CallbackErrorsContext } from './domain/error-context';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CallbackErrorsComponent', () => {
 
@@ -33,7 +33,7 @@ describe('CallbackErrorsComponent', () => {
   let callbackErrorsSubject: any;
   let mockCallbackErrorsContext: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockCallbackErrorsContext = createSpyObj<EventEmitter<any>>('callbackErrorsContext', ['emit']);
 
     callbackErrorsSubject = new Subject();

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DebugElement } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -15,7 +15,7 @@ describe('RemoveDialogComponent', () => {
   let de: DebugElement;
   let matDialogRef: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     matDialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['close']);
 
     TestBed.configureTestingModule({

@@ -1,9 +1,8 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { FieldType } from '../../../domain';
-import { CaseField } from '../../../domain';
+import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
 import { PaletteUtilsModule } from '../utils';
 import { MoneyGbpInputComponent } from './money-gbp-input.component';
@@ -32,7 +31,7 @@ describe('WriteMoneyGbpFieldComponent', () => {
   let de: DebugElement;
   const caseFieldService = new CaseFieldService();
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
         imports: [
@@ -97,7 +96,7 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
   let de: DebugElement;
   const caseFieldService = new CaseFieldService();
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
         imports: [

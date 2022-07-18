@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseViewTrigger } from '../../domain';
@@ -51,7 +51,7 @@ describe('EventTriggerComponent', () => {
   let de: DebugElement;
 
   describe('with multiple triggers', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       orderService = createSpyObj<OrderService>('orderService', ['sort']);
       orderService.sort.and.returnValue(SORTED_TRIGGERS);
 
@@ -180,7 +180,7 @@ describe('EventTriggerComponent', () => {
   });
 
   describe('with a single trigger', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       orderService = createSpyObj<OrderService>('orderService', ['sort']);
       orderService.sort.and.returnValue([ TRIGGERS[0] ]);
 

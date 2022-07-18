@@ -1,4 +1,4 @@
-import { async } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
@@ -17,7 +17,7 @@ describe('PageValidationService', () => {
     data: new FormGroup({ field1: new FormControl('SOME_VALUE') })
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     firstPage.id = 'first page';
     service = new PageValidationService(caseFieldService);
   }));

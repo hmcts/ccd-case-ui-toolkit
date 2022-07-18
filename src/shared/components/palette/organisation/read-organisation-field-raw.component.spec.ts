@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -98,7 +98,7 @@ describe('ReadOrganisationFieldRawComponent', () => {
   }];
   let convertHrefToRouterService: ConvertHrefToRouterService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
 
     TestBed.configureTestingModule({

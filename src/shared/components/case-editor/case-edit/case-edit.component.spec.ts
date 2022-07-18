@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -241,7 +241,7 @@ describe('CaseEditComponent', () => {
       isCourtAdmin: FUNC
     };
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
       cancelHandler.applyFilters.and.returnValue();
 
@@ -1037,7 +1037,7 @@ describe('CaseEditComponent', () => {
 
     const PROFILE_OBS: Observable<Profile> = of(PROFILE);
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
       cancelHandler.applyFilters.and.returnValue();
 

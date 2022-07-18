@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
@@ -138,7 +138,7 @@ describe('ReadComplexFieldTableComponent', () => {
     const LINE_2 = 1;
     const POSTCODE = 2;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
           imports: [
@@ -330,7 +330,7 @@ describe('ReadComplexFieldTableComponent', () => {
     const LINE_2 = 1;
     const POSTCODE = 2;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
           imports: [

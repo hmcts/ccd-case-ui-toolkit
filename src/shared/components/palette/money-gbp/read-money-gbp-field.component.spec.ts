@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { CaseField, FieldType } from '../../../domain';
 import { ReadMoneyGbpFieldComponent } from './read-money-gbp-field.component';
@@ -26,7 +26,7 @@ describe('ReadMoneyGBPFieldComponent', () => {
     let component: ReadMoneyGbpFieldComponent;
     let de: DebugElement;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
           imports: [],
@@ -210,7 +210,7 @@ describe('ReadMoneyGBPFieldComponent', () => {
     let component: ReadMoneyGbpFieldComponent;
     let de: DebugElement;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
           imports: [],

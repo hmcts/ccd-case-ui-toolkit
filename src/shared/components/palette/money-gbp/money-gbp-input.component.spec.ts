@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
@@ -18,7 +18,7 @@ describe('MoneyGbpInputComponent', () => {
   let Input: any;
   let onChange;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     // Input is mocked so that one-way bound inputs can be tested
     Input = MockComponent({ selector: 'input', inputs: [

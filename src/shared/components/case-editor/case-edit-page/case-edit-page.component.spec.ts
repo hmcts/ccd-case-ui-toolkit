@@ -1,5 +1,5 @@
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
@@ -10,7 +10,6 @@ import { PlaceholderService } from '../../../directives/substitutor/services/pla
 import { CaseEventData, CaseEventTrigger, CaseField, Draft, FieldType, HttpError } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import createSpyObj = jasmine.createSpyObj;
 import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValueService } from '../../../services';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -23,6 +22,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
 import { CaseEditPageComponent } from './case-edit-page.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
 
@@ -79,7 +79,7 @@ describe('CaseEditPageComponent', () => {
   };
 
   describe('Save and Resume enabled', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponentStub = {
@@ -345,7 +345,7 @@ describe('CaseEditPageComponent', () => {
   });
 
   describe('Save and Resume disabled', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponentStub = {
@@ -443,7 +443,7 @@ describe('CaseEditPageComponent', () => {
       data: new FormGroup({field1: new FormControl('SOME_VALUE')})
     });
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       firstPage.id = 'first page';
 
       caseEditComponentStub = {
@@ -531,7 +531,7 @@ describe('CaseEditPageComponent', () => {
   });
 
   describe('submit the form', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
       const validateResult = {
@@ -750,7 +750,7 @@ describe('CaseEditPageComponent', () => {
   });
 
   describe('previous the form', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
       const caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
@@ -865,7 +865,7 @@ describe('CaseEditPageComponent', () => {
       value: ''
     }) as CaseField;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
 

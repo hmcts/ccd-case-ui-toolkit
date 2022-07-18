@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -30,7 +30,7 @@ describe('ReadDateFieldComponent', () => {
     let component: ReadDateFieldComponent;
     let de: DebugElement;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
       TestBed
         .configureTestingModule({
@@ -98,7 +98,7 @@ describe('ReadDateFieldComponent', () => {
     let component: ReadDateFieldComponent;
     let de: DebugElement;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
       TestBed
         .configureTestingModule({

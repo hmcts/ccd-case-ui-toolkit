@@ -1,7 +1,6 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { not } from 'rxjs/internal-compatibility';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 import { DashPipe, DatePipe } from '../../utils';
@@ -86,7 +85,7 @@ describe('EventLogDetails', () => {
   let component: EventLogDetailsComponent;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
         imports: [],

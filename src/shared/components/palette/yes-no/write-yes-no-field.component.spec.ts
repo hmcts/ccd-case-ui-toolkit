@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
@@ -7,8 +7,8 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteYesNoFieldComponent } from './write-yes-no-field.component';
-import createSpyObj = jasmine.createSpyObj;
 import { YesNoService } from './yes-no.service';
+import createSpyObj = jasmine.createSpyObj;
 
 const FIELD_ID = 'Billingual';
 const FIELD_TYPE: FieldType = {
@@ -43,7 +43,7 @@ describe('WriteYesNoFieldComponent', () => {
 
   let yesNoService: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     yesNoService = createSpyObj<YesNoService>('yesNoService', ['format']);
     yesNoService.format.and.returnValue(FORMATTED_VALUE);
 

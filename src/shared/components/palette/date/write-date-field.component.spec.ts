@@ -1,9 +1,8 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormModule } from '../../../../components/form/form.module';
-import { FieldType } from '../../../domain';
-import { CaseField } from '../../../domain';
+import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
 import { PaletteUtilsModule } from '../utils';
 import { WriteDateFieldComponent } from './write-date-field.component';
@@ -31,7 +30,7 @@ describe('WriteDateFieldComponent', () => {
   let de: DebugElement;
   const caseFieldService = new CaseFieldService();
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
         imports: [

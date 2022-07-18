@@ -1,5 +1,5 @@
 import { Component, DebugElement, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -67,7 +67,7 @@ describe('FieldReadComponent', () => {
   const formGroup: FormGroup = new FormGroup({});
   const caseFields: CaseField[] = [CASE_FIELD];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
       'getFieldComponentClass'
     ]);

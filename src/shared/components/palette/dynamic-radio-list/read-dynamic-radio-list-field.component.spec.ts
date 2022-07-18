@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { DynamicRadioListPipe } from './dynamic-radio-list.pipe';
@@ -69,7 +69,7 @@ describe('ReadDynamicRadioListFieldComponent', () => {
     let component: ReadDynamicRadioListFieldComponent;
     let de: DebugElement;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
           imports: [],

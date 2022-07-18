@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -39,7 +39,7 @@ describe('CaseEditConfirmComponent', () => {
 
   let convertHrefToRouterService: ConvertHrefToRouterService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
     firstPage.id = 'first page';
     caseEditComponentStub = {
@@ -123,7 +123,7 @@ describe('CaseEditConfirmComponent', () => {
     routerState: {}
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     caseEditCompStub = {
       eventTrigger: {case_fields: []},
     };

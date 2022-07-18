@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import 'rxjs/add/operator/do';
 import { CaseField, CaseState, CaseTypeLite, Jurisdiction, WorkbasketInputModel } from '../../domain';
 import { AlertService, FieldsUtils, JurisdictionService, OrderService, WindowService, WorkbasketInputFilterService } from '../../services';
 

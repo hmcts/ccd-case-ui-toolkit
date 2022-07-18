@@ -1,11 +1,11 @@
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { CaseViewEvent } from '../../../../domain/case-view';
-import createSpyObj = jasmine.createSpyObj;
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 import { DatePipe } from '../../utils';
 import { EventLogComponent } from './event-log.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('EventLogComponent', () => {
 
@@ -82,7 +82,7 @@ describe('EventLogComponent', () => {
   let de: DebugElement;
 
   describe('Standalone use', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
           imports: [],
@@ -160,7 +160,7 @@ describe('EventLogComponent', () => {
   describe('Case timeline use', () => {
 
     let caseHistoryHandler;
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
       caseHistoryHandler = createSpyObj('caseHistoryHandler', ['apply']);
 

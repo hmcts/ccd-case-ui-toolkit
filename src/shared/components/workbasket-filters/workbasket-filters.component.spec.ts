@@ -1,10 +1,9 @@
 import { Component, DebugElement, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import 'rxjs/add/operator/do';
 import {
   AbstractFieldWriteComponent, AlertService, CaseType, FieldTypeEnum, Jurisdiction, JurisdictionService,
   OrderService, WindowService
@@ -182,7 +181,7 @@ describe('WorkbasketFiltersComponent', () => {
 
   describe('Clear localStorage for workbasket filters', () => {
     let windowMockService: WindowService;
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -245,7 +244,7 @@ describe('WorkbasketFiltersComponent', () => {
     }));
   });
   describe('with defaults', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -306,7 +305,7 @@ describe('WorkbasketFiltersComponent', () => {
           fixture.detectChanges();
         });
     }));
-    it('  ', async(() => {
+    it('  ', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = null;
       component.selected.caseState = null;
@@ -316,7 +315,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(button.nativeElement.disabled).toBeTruthy();
     }));
 
-    it('should have an Apply button disabled when case type is not set', async(() => {
+    it('should have an Apply button disabled when case type is not set', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = null;
       component.selected.caseState = null;
@@ -345,7 +344,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.selected.jurisdiction).toBe(JURISDICTION_2);
     });
 
-    it('should update selected jurisdiction', async(() => {
+    it('should update selected jurisdiction', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_1;
       fixture.detectChanges();
 
@@ -380,7 +379,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.selected.caseType).toBe(DEFAULT_CASE_TYPE);
     });
 
-    it('should update selected case type', async(() => {
+    it('should update selected case type', waitForAsync(() => {
       component.selected.caseType = CASE_TYPES_2[2];
       fixture.detectChanges();
 
@@ -417,7 +416,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(orderService.sortAsc).toHaveBeenCalled();
     });
 
-    it('should update selected case state', async(() => {
+    it('should update selected case state', waitForAsync(() => {
       component.selected.caseState = DEFAULT_CASE_TYPE.states[0];
       fixture.detectChanges();
 
@@ -472,7 +471,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(false);
     });
 
-    it('should reset searchFilters when Jurisdiction changes even when Apply button is disabled', async(() => {
+    it('should reset searchFilters when Jurisdiction changes even when Apply button is disabled', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = null;
       component.selected.caseState = null;
@@ -492,7 +491,7 @@ describe('WorkbasketFiltersComponent', () => {
         });
     }));
 
-    it('should have form group details added when apply button is clicked ', async(() => {
+    it('should have form group details added when apply button is clicked ', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.apply(true);
       expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
@@ -502,7 +501,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.selected.formGroup).toEqual(null);
     }));
 
-    it('should have metadata fields added when apply button is clicked', async(() => {
+    it('should have metadata fields added when apply button is clicked', waitForAsync(() => {
       component.workbasketInputs = TEST_WORKBASKET_INPUTS;
 
       component.apply(true);
@@ -510,7 +509,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.selected.metadataFields).toEqual(METADATA_FIELDS);
     }));
 
-    it('should update search input when case type is reset', async(() => {
+    it('should update search input when case type is reset', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = CASE_TYPES_2[1];
       component.selected.caseState = CASE_TYPES_2[1].states[0];
@@ -531,7 +530,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.workbasketInputs.length).toBe(0);
     });
 
-    it('should order search inputs', async(() => {
+    it('should order search inputs', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = CASE_TYPES_2[2];
       component.onCaseTypeIdChange();
@@ -593,7 +592,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(writeFieldInstance.formGroup).toBeTruthy();
     });
 
-    it('should submit filters when apply button is clicked', async(() => {
+    it('should submit filters when apply button is clicked', waitForAsync(() => {
       const control = new FormControl('test');
       control.setValue('anything');
       const formControls = {
@@ -647,7 +646,7 @@ describe('WorkbasketFiltersComponent', () => {
   });
 
   describe('with defaults and CRUD', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -707,7 +706,7 @@ describe('WorkbasketFiltersComponent', () => {
         });
     }));
 
-    it('should populate case types drop down with CRUD filtered case types and sort states', async(() => {
+    it('should populate case types drop down with CRUD filtered case types and sort states', waitForAsync(() => {
       component.onJurisdictionIdChange();
       fixture.detectChanges();
 
@@ -727,14 +726,14 @@ describe('WorkbasketFiltersComponent', () => {
         });
     }));
 
-    it('should select first case type from a case types drop down if default is filtered out due to CRUD', async(() => {
+    it('should select first case type from a case types drop down if default is filtered out due to CRUD', waitForAsync(() => {
       component.selected.caseType = CRUD_FILTERED_CASE_TYPES[0];
       const selector = de.query(By.css('#wb-case-type'));
       expect(selector.nativeElement.selectedIndex).toEqual(0);
       expect(component.selected.caseType).toBe(CRUD_FILTERED_CASE_TYPES[0]);
     }));
 
-    it('should select first state from a states drop down if default is filtered out due to CRUD', async(() => {
+    it('should select first state from a states drop down if default is filtered out due to CRUD', waitForAsync(() => {
       component.selected.caseType = CRUD_FILTERED_CASE_TYPES[0];
       const selector = de.query(By.css('#wb-case-state'));
       component.defaults.state_id = CRUD_FILTERED_CASE_TYPES[0].states[0].id;
@@ -744,7 +743,7 @@ describe('WorkbasketFiltersComponent', () => {
   });
 
   describe('with defaults and CRUD and empty case types', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -805,7 +804,7 @@ describe('WorkbasketFiltersComponent', () => {
           fixture.detectChanges();
         });
     }));
-    it('should disable case type dropdown if default is filtered out due to CRUD and no other case types', async(() => {
+    it('should disable case type dropdown if default is filtered out due to CRUD and no other case types', waitForAsync(() => {
       const caseTypeSelector = de.query(By.css('#wb-case-type'));
       expect(caseTypeSelector.nativeElement.disabled).toBeTruthy();
 
@@ -817,7 +816,7 @@ describe('WorkbasketFiltersComponent', () => {
   });
 
   describe('with defaults and CRUD and type with empty case states', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -878,7 +877,7 @@ describe('WorkbasketFiltersComponent', () => {
         });
     }));
 
-    it('should disable states dropdown if default is filtered out due to CRUD and no other states', async(() => {
+    it('should disable states dropdown if default is filtered out due to CRUD and no other states', waitForAsync(() => {
       const caseTypeSelector = de.query(By.css('#wb-case-type'));
       expect(caseTypeSelector.nativeElement.disabled).toBeFalsy();
       expect(caseTypeSelector.nativeElement.selectedIndex).toEqual(0);
@@ -898,7 +897,7 @@ describe('WorkbasketFiltersComponent', () => {
       [WorkbasketFiltersComponent.PARAM_CASE_STATE]: 'S02'
     };
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -980,7 +979,7 @@ describe('WorkbasketFiltersComponent', () => {
       [WorkbasketFiltersComponent.PARAM_CASE_STATE]: 'S02'
     };
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -1057,7 +1056,7 @@ describe('WorkbasketFiltersComponent', () => {
       caseTypes: CASE_TYPES_1
     };
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -1113,7 +1112,7 @@ describe('WorkbasketFiltersComponent', () => {
           fixture.detectChanges();
         });
     }));
-    it('  ', async(() => {
+    it('  ', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = null;
       component.selected.caseState = null;
@@ -1148,7 +1147,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(selector.nativeElement.selectedIndex).toEqual(-1);
     });
 
-    it('should initialise case type with types from selected jurisdiction and index should be "Select a value" ', async(() => {
+    it('should initialise case type with types from selected jurisdiction and index should be "Select a value" ', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_ONE;
       fixture.detectChanges();
 
@@ -1170,7 +1169,7 @@ describe('WorkbasketFiltersComponent', () => {
         });
     }));
 
-    it('should initialise case state with states from selected case type and index should be first state ', async(() => {
+    it('should initialise case state with states from selected case type and index should be first state ', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_ONE;
       component.onJurisdictionIdChange();
       fixture.detectChanges();
@@ -1195,7 +1194,7 @@ describe('WorkbasketFiltersComponent', () => {
         });
     }));
 
-    it('should remove localStorage and clear selected fields once reset button is clicked', async(() => {
+    it('should remove localStorage and clear selected fields once reset button is clicked', waitForAsync(() => {
       component.reset();
       fixture.detectChanges();
 

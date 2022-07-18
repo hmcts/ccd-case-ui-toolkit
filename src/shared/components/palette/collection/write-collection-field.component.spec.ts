@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
@@ -72,7 +72,7 @@ describe('WriteCollectionFieldComponent', () => {
   let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
     dialogRef.afterClosed.and.returnValue(of());
@@ -320,7 +320,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
     dialogRef.afterClosed.and.returnValue(of());
@@ -435,7 +435,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
     dialogRef.afterClosed.and.returnValue(of());

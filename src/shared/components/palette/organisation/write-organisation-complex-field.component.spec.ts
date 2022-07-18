@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { WriteOrganisationComplexFieldComponent } from './write-organisation-complex-field.component';
 
@@ -6,7 +6,7 @@ describe('WriteOrganisationComplexFieldComponent', () => {
   let component: WriteOrganisationComplexFieldComponent;
   let fixture: ComponentFixture<WriteOrganisationComplexFieldComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WriteOrganisationComplexFieldComponent ]
     })

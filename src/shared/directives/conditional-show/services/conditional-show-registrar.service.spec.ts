@@ -1,9 +1,9 @@
-import { async } from '@angular/core/testing';
-import createSpyObj = jasmine.createSpyObj;
+import { waitForAsync } from '@angular/core/testing';
 import { CaseField } from '../../../domain/definition';
 import { aCaseField } from '../../../fixture';
 import { ConditionalShowFormDirective } from '../conditional-show-form.directive';
 import { ConditionalShowRegistrarService } from './conditional-show-registrar.service';
+import createSpyObj = jasmine.createSpyObj;
 
 let registrarService: ConditionalShowRegistrarService;
 let conditionalShowFormDirective1: any;
@@ -11,7 +11,7 @@ let conditionalShowFormDirective2: any;
 
 describe('ConditionalShowRegistrarService', () => {
 
-  beforeEach( async(() => {
+  beforeEach( waitForAsync(() => {
     registrarService = new ConditionalShowRegistrarService();
     conditionalShowFormDirective1 = createSpyObj<ConditionalShowFormDirective>('conditionalShowFormDirective1', ['ngAfterViewInit']);
     conditionalShowFormDirective2 = createSpyObj<ConditionalShowFormDirective>('conditionalShowFormDirective2', ['ngAfterViewInit']);

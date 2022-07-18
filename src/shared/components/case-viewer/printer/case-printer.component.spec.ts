@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -69,7 +69,7 @@ describe('CasePrinterComponent', () => {
 
   let appConfig: jasmine.SpyObj<AbstractAppConfig>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     appConfig = createSpyObj('AbstractAppConfig', ['getPrintServiceUrl']);
     appConfig.getPrintServiceUrl.and.returnValue(GATEWAY_PRINT_SERVICE_URL);
 

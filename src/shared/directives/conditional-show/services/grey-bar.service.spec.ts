@@ -1,7 +1,7 @@
 import { RendererFactory2 } from '@angular/core';
-import { async } from '@angular/core/testing';
-import createSpyObj = jasmine.createSpyObj;
+import { waitForAsync } from '@angular/core/testing';
 import { GreyBarService } from './grey-bar.service';
+import createSpyObj = jasmine.createSpyObj;
 
 let greyBarService: GreyBarService;
 
@@ -9,7 +9,7 @@ describe('GreyBarService', () => {
 
   const rendererFactory2 = createSpyObj<RendererFactory2>('rendererFactoryMock', ['createRenderer']);
 
-  beforeEach( async(() => {
+  beforeEach( waitForAsync(() => {
     greyBarService = new GreyBarService(rendererFactory2);
   }));
 

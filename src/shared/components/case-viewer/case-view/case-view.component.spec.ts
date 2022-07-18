@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { MockComponent } from 'ng2-mock-component';
@@ -52,7 +52,7 @@ describe('CaseViewComponent', () => {
 
   describe('Case', () => {
     describe('CaseViewComponent successfully resolves case view', () => {
-      beforeEach(async(() => {
+      beforeEach(waitForAsync(() => {
 
         caseNotifier = createSpyObj('caseService', ['announceCase']);
         navigationNotifierService = new NavigationNotifierService();
@@ -102,7 +102,7 @@ describe('CaseViewComponent', () => {
 
       const ERROR_MSG = 'Critical error!';
 
-      beforeEach(async(() => {
+      beforeEach(waitForAsync(() => {
 
         const ERROR: HttpError = new HttpError();
         ERROR.message = ERROR_MSG;
@@ -148,7 +148,7 @@ describe('CaseViewComponent', () => {
 
   describe('Draft', () => {
     describe('CaseViewComponent successfully resolves case view from draft', () => {
-      beforeEach(async(() => {
+      beforeEach(waitForAsync(() => {
 
         caseNotifier = createSpyObj('caseService', ['announceCase']);
         casesService = createSpyObj('casesService', ['getCaseViewV2']);
@@ -196,7 +196,7 @@ describe('CaseViewComponent', () => {
 
       const ERROR_MSG = 'Critical error!';
 
-      beforeEach(async(() => {
+      beforeEach(waitForAsync(() => {
 
         const ERROR: HttpError = new HttpError();
         ERROR.message = ERROR_MSG;

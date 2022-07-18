@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
@@ -93,7 +93,7 @@ describe('CaseTimelineComponent', () => {
 
     const $BACK_TO_TIMELINE_LINK = By.css('div>div>ol>li>a');
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       casesService.getCaseViewV2.and.returnValue(CASE_VIEW_OBS);
@@ -189,7 +189,7 @@ describe('CaseTimelineComponent', () => {
 
     const ERROR_MSG = 'Critical error!';
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
       EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
         'events'

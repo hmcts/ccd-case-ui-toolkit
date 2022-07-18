@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -48,7 +48,7 @@ describe('ReadCollectionFieldComponent', () => {
   let component: ReadCollectionFieldComponent;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
         imports: [],
@@ -173,7 +173,7 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
   let component: ReadCollectionFieldComponent;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
         imports: [],

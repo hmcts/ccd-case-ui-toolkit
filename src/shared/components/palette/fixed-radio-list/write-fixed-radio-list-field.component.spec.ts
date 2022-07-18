@@ -1,10 +1,10 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
-import { attr, text } from '../../../test/helpers';
+import { attr } from '../../../test/helpers';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteFixedRadioListFieldComponent } from './write-fixed-radio-list-field.component';
 
@@ -50,7 +50,7 @@ describe('WriteFixedRadioListFieldComponent', () => {
   let component: WriteFixedRadioListFieldComponent;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
         imports: [

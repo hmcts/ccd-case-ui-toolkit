@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -27,7 +27,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
   };
   let router: Router;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
     casesService.createSpecificAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({

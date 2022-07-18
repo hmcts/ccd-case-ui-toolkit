@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
@@ -71,7 +71,7 @@ describe('ReadComplexFieldComponent', () => {
         expect(componentInstance.context).toBe(expectedContext);
       };
 
-      beforeEach(async(() => {
+      beforeEach(waitForAsync(() => {
         setupComponents();
 
         TestBed
@@ -157,7 +157,7 @@ describe('ReadComplexFieldComponent', () => {
 
       caseField_dsp.display_context_parameter = '#TABLE(AddressLine1, AddressLine2)';
 
-      beforeEach(async(() => {
+      beforeEach(waitForAsync(() => {
         setupComponents();
 
         TestBed
@@ -244,7 +244,7 @@ describe('ReadComplexFieldComponent', () => {
     let component: ReadComplexFieldComponent;
     let de: DebugElement;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       setupComponents();
 
       TestBed

@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField, FieldType } from '../../../domain/definition';
@@ -26,7 +26,7 @@ describe('FieldReadLabelComponent', () => {
   let component: FieldReadLabelComponent;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     TestBed
       .configureTestingModule({

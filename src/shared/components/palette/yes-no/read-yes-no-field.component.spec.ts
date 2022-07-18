@@ -1,11 +1,11 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { ReadYesNoFieldComponent } from './read-yes-no-field.component';
-import createSpyObj = jasmine.createSpyObj;
 import { YesNoService } from './yes-no.service';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('ReadYesNoFieldComponent', () => {
 
@@ -32,7 +32,7 @@ describe('ReadYesNoFieldComponent', () => {
 
     let yesNoService: any;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       yesNoService = createSpyObj<YesNoService>('yesNoService', ['format']);
       yesNoService.format.and.returnValue(FORMATTED_VALUE);
 
@@ -79,7 +79,7 @@ describe('ReadYesNoFieldComponent', () => {
     let de: DebugElement;
     let yesNoService: any;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       yesNoService = createSpyObj<YesNoService>('yesNoService', ['format']);
 
       TestBed

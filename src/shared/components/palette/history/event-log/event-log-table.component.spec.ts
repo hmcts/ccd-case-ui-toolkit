@@ -1,14 +1,13 @@
 import { formatDate } from '@angular/common';
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import createSpyObj = jasmine.createSpyObj;
-import * as moment from 'moment-timezone';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 import { DatePipe } from '../../utils';
 import { EventLogTableComponent } from './event-log-table.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('EventLogTableComponent', () => {
 
@@ -67,7 +66,7 @@ describe('EventLogTableComponent', () => {
   let de: DebugElement;
 
   describe('Standalone use', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
           imports: [RouterTestingModule],
@@ -200,7 +199,7 @@ describe('EventLogTableComponent', () => {
   describe('Case timeline use', () => {
 
     let caseHistoryHandler;
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
       caseHistoryHandler = createSpyObj('caseHistoryHandler', ['apply']);
 

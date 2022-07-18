@@ -1,5 +1,5 @@
 import { DebugElement, Pipe, PipeTransform } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { plainToClassFromExist } from 'class-transformer';
@@ -176,7 +176,7 @@ describe('WriteComplexFieldComponent', () => {
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
 
       prepareTestBed();
@@ -350,7 +350,7 @@ describe('WriteComplexFieldComponent', () => {
     const LINE_2 = 1;
     const POSTCODE = 2;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
 
       prepareTestBed();
@@ -478,7 +478,7 @@ describe('WriteComplexFieldComponent', () => {
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
       prepareTestBed();
 
@@ -622,7 +622,7 @@ describe('WriteComplexFieldComponent', () => {
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
       prepareTestBed();
 
@@ -677,7 +677,7 @@ describe('WriteComplexFieldComponent', () => {
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
       prepareTestBed();
 
@@ -732,7 +732,7 @@ describe('WriteComplexFieldComponent', () => {
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
       prepareTestBed();
 
@@ -788,7 +788,7 @@ describe('WriteComplexFieldComponent', () => {
 
     const FORM_GROUP: FormGroup = new FormGroup({});
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
       prepareTestBed();
 

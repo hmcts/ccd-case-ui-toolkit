@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
@@ -15,7 +15,7 @@ describe('Date input component', function () {
   let onChange;
   const DATE = '2018-04-09T08:02:27.542';
   const INVALIDDATE = 'x';
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     // Input is mocked so that one-way bound inputs can be tested
     Input = MockComponent({
       selector: 'input', inputs: [

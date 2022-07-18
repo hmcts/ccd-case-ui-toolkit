@@ -1,5 +1,5 @@
 import { Component, DebugElement, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
@@ -152,7 +152,7 @@ describe('SearchFiltersComponent', () => {
   let de: DebugElement;
   let jurisdictionService: JurisdictionService;
   let windowService;
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     searchHandler = createSpyObj('searchHandler', ['applyFilters', 'resetFilters']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
@@ -200,7 +200,7 @@ describe('SearchFiltersComponent', () => {
       });
   }));
 
-  it('should select the jurisdiction if there is only one jurisdiction', async(() => {
+  it('should select the jurisdiction if there is only one jurisdiction', waitForAsync(() => {
     resetCaseTypes(JURISDICTION_1, []);
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.jurisdictions = [JURISDICTION_1];
@@ -216,7 +216,7 @@ describe('SearchFiltersComponent', () => {
       });
   }));
 
-  it('should emit on apply if autoApply is true', async(() => {
+  it('should emit on apply if autoApply is true', waitForAsync(() => {
     component.autoApply = true;
     component.ngOnInit();
 
@@ -326,7 +326,7 @@ describe('SearchFiltersComponent', () => {
     expect(juris2.nativeElement.textContent).toEqual(JURISDICTION_2.name);
   });
 
-  it('should update and announce selected jurisdiction', async(() => {
+  it('should update and announce selected jurisdiction', waitForAsync(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     component.selected.jurisdiction = JURISDICTION_1;
     component.onJurisdictionIdChange();
@@ -342,7 +342,7 @@ describe('SearchFiltersComponent', () => {
       });
   }));
 
-  it('should populate case types dropdown with CRUD filtered case types', async(() => {
+  it('should populate case types dropdown with CRUD filtered case types', waitForAsync(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     const selector = de.query(By.css('#s-case-type'));
     expect(selector.children.length).toEqual(0);
@@ -385,7 +385,7 @@ describe('SearchFiltersComponent', () => {
     expect(ct3.nativeElement.textContent).toEqual(CASE_TYPES_2[2].name);
   });
 
-  it('should update selected case type', async(() => {
+  it('should update selected case type', waitForAsync(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selectedJurisdictionCaseTypes = CASE_TYPES_2;
     component.selected.caseType = CASE_TYPES_2[2];
@@ -399,7 +399,7 @@ describe('SearchFiltersComponent', () => {
       });
   }));
 
-  it('should have an apply button enabled when case type is set', async(() => {
+  it('should have an apply button enabled when case type is set', waitForAsync(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
@@ -410,7 +410,7 @@ describe('SearchFiltersComponent', () => {
 
   }));
 
-  it('should have an apply button disabled nor search inputs retrieved when case type is not set', async(() => {
+  it('should have an apply button disabled nor search inputs retrieved when case type is not set', waitForAsync(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     fixture.detectChanges();
 
@@ -419,7 +419,7 @@ describe('SearchFiltersComponent', () => {
     expect(mockSearchService.getSearchInputs).toHaveBeenCalledTimes(0);
   }));
 
-  it('should have form group details added when apply button is clicked ', async(() => {
+  it('should have form group details added when apply button is clicked ', waitForAsync(() => {
     component.selected.jurisdiction = JURISDICTION_3;
     component.selected.metadataFields = METADATA_FIELDS;
     component.apply();
@@ -430,7 +430,7 @@ describe('SearchFiltersComponent', () => {
     expect(component.selected.formGroup.value).toEqual(TEST_FORM_GROUP.value);
   }));
 
-  it('should have metadata fields added when apply button is clicked', async(() => {
+  it('should have metadata fields added when apply button is clicked', waitForAsync(() => {
     component.searchInputs = TEST_SEARCH_INPUTS;
 
     component.apply();
@@ -438,7 +438,7 @@ describe('SearchFiltersComponent', () => {
     expect(component.selected.metadataFields).toEqual(METADATA_FIELDS);
   }));
 
-  it('should update search input when case type is reset', async(() => {
+  it('should update search input when case type is reset', waitForAsync(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
     mockSearchService.getSearchInputs.and.returnValue(of([]));
@@ -447,7 +447,7 @@ describe('SearchFiltersComponent', () => {
     expect(mockSearchService.getSearchInputs).toHaveBeenCalledWith(JURISDICTION_2.id, CASE_TYPES_2[2].id);
   }));
 
-  it('should order search inputs', async(() => {
+  it('should order search inputs', waitForAsync(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
@@ -508,7 +508,7 @@ describe('SearchFiltersComponent', () => {
     expect(writeFieldInstance.formGroup).toBeTruthy();
   });
 
-  it('should submit filters when apply button is clicked', async(() => {
+  it('should submit filters when apply button is clicked', waitForAsync(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     searchHandler.applyFilters.calls.reset();
     component.selected.jurisdiction = JURISDICTION_3;
@@ -547,7 +547,7 @@ describe('Clear localStorage', () => {
   let jurisdictionService: JurisdictionService;
   let windowService: WindowService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     searchHandler = createSpyObj('searchHandler', ['applyFilters', 'applyReset']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
     orderService = createSpyObj('orderService', ['sortAsc']);
@@ -587,7 +587,7 @@ describe('Clear localStorage', () => {
       });
   }));
 
-  it('should emit on reset if reset is clicked', async(() => {
+  it('should emit on reset if reset is clicked', waitForAsync(() => {
     component.reset();
 
     fixture
@@ -597,7 +597,7 @@ describe('Clear localStorage', () => {
       });
   }));
 
-  it('should remove localStorage once reset button is clicked', async(() => {
+  it('should remove localStorage once reset button is clicked', waitForAsync(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
     searchHandler.applyReset.calls.reset();
     component.selected.jurisdiction = JURISDICTION_3;

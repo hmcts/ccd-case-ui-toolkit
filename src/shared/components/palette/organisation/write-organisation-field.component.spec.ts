@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
@@ -89,7 +89,7 @@ describe('WriteOrganisationFieldComponent', () => {
     retain_hidden_value: true
   }) as CaseField;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         MarkdownModule,

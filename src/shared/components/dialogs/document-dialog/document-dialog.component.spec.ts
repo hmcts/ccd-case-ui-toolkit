@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MatDialogRef } from '@angular/material/dialog';
 import { DocumentDialogComponent } from './document-dialog.component';
@@ -8,7 +8,7 @@ describe('DocumentDialogComponent', () => {
   let fixture: ComponentFixture<DocumentDialogComponent>;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DocumentDialogComponent ],
       providers: [

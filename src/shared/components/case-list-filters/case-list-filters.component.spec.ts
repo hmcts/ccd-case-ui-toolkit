@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { of } from 'rxjs';
@@ -114,7 +114,7 @@ describe('CaseListFiltersComponent', () => {
     let fixture: ComponentFixture<CaseListFiltersComponent>;
     let de: DebugElement;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         mockDefinitionsService = createSpyObj('mockDefinitionsService', ['getJurisdictions']);
         mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
         TestBed.configureTestingModule({

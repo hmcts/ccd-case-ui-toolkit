@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -33,7 +33,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   let component: CasePaymentHistoryViewerFieldComponent;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl', 'getRefundsUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);

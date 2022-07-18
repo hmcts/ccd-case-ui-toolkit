@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
@@ -131,7 +131,7 @@ describe('CaseEventTriggerComponent', () => {
   let casesReferencePipe: any;
   let activityPollingService: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
     casesService = createSpyObj<CasesService>('casesService', ['createEvent', 'validateCase']);
     casesService.createEvent.and.returnValue(of());

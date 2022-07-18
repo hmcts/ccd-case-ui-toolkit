@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -84,7 +84,7 @@ describe('TaskRequirementComponent', () => {
   mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
   mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [TaskAssignedComponent],

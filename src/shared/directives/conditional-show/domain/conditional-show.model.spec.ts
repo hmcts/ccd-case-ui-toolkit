@@ -1,4 +1,4 @@
-import { async } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 
 import { CaseField, createFieldType, FieldType } from '../../..';
 import { newCaseField } from '../../../fixture';
@@ -222,7 +222,7 @@ describe('conditional-show', () => {
   });
 
   describe('matchByContextFields when', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       caseField1.value = 's1';
       caseField2.value = 3;
       caseField3.value = 'temmy';
@@ -456,7 +456,7 @@ describe('conditional-show', () => {
   });
 
   describe('not matches ByContextFields when', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       caseField1.value = 's1';
       caseField2.value = 3;
       caseField3.value = 'temmy';
@@ -514,7 +514,7 @@ describe('conditional-show', () => {
   });
 
   describe('multiple AND conditions', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       caseField1.value = 's1';
       caseField2.value = 3;
       caseField3.value = 'temmy';
@@ -575,7 +575,7 @@ describe('conditional-show', () => {
   });
 
   describe('CONTAINS expression variations', () => {
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       caseField1.value = ['s1'];
       caseField2.value = 3;
       caseField3.value = 'temmy';

@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
@@ -93,7 +93,7 @@ describe('CaseHistoryComponent', () => {
     ]
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 

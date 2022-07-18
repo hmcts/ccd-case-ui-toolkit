@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
@@ -526,7 +526,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
   const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
   const ERROR_HEADING_SPECIFIC = 'The callback data failed validation';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 
@@ -967,7 +967,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
 xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 
@@ -1053,7 +1053,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
 
 xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () => {
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 

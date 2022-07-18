@@ -1,5 +1,5 @@
 import { DebugElement, EventEmitter } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -101,7 +101,7 @@ describe('TaskReassignedComponent', () => {
     eventCanBeCompleted: new EventEmitter<boolean>(true)
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(task));
     TestBed.configureTestingModule({

@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
@@ -287,7 +287,7 @@ describe('CreateCaseFiltersComponent', () => {
   const $SELECT_EVENT = By.css('#cc-event');
   const $SELECT_BUTTON = By.css('button');
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockOrderService = createSpyObj<OrderService>('orderService', ['sort']);
     mockOrderService.sort.and.returnValue(SORTED_CASE_EVENTS);
     mockAlertService = createSpyObj<AlertService>('alertService', ['clear']);
@@ -420,7 +420,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(juris2.nativeElement.textContent).toEqual(JURISDICTION_2.name);
   });
 
-  it('should update selected jurisdiction', async(() => {
+  it('should update selected jurisdiction', waitForAsync(() => {
     mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_SINGLE_EVENT]));
     fixture.detectChanges();
     component.ngOnInit();
@@ -434,7 +434,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(component.selected.jurisdiction).toBe(JURISDICTION_SINGLE_EVENT);
   }));
 
-  it('should initialise case type selector with types from selected jurisdiction but no events', async(() => {
+  it('should initialise case type selector with types from selected jurisdiction but no events', waitForAsync(() => {
     mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
@@ -462,7 +462,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(eventSelector.nativeElement.isEnabled).toBeFalsy();
   }));
 
-  it('should update selected case type', async(() => {
+  it('should update selected case type', waitForAsync(() => {
     mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
@@ -476,7 +476,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(selector.nativeElement.value).toBe(CASE_TYPES_2[2].id);
   }));
 
-  it('should disable case type and event if jurisdiction not selected', async(() => {
+  it('should disable case type and event if jurisdiction not selected', waitForAsync(() => {
     mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_1, JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
@@ -504,7 +504,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(eventSelectEvent0.nativeElement.textContent).toEqual('--Select a value--');
   }));
 
-  it('should initialise event selector from case type with no pre states', async(() => {
+  it('should initialise event selector from case type with no pre states', waitForAsync(() => {
     mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
@@ -529,7 +529,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(selectEvent2.nativeElement.textContent).toEqual(EVENT_NAME_3);
   }));
 
-  it('should reset case type back to empty disabled if set before and jurisdiction changed to empty', async(() => {
+  it('should reset case type back to empty disabled if set before and jurisdiction changed to empty', waitForAsync(() => {
     mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
@@ -556,7 +556,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(eventSelector.nativeElement.isEnabled).toBeFalsy();
   }));
 
-  it('should reset event back to default if set before and case type changed', async(() => {
+  it('should reset event back to default if set before and case type changed', waitForAsync(() => {
     mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
@@ -590,7 +590,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   }));
 
-  it('should reset event back to default if set before and jurisdiction changed', async(() => {
+  it('should reset event back to default if set before and jurisdiction changed', waitForAsync(() => {
     mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_2]));
     fixture.detectChanges();
     component.ngOnInit();
@@ -624,7 +624,7 @@ describe('CreateCaseFiltersComponent', () => {
 
   }));
 
-  it('should disable event if case type not selected', async(() => {
+  it('should disable event if case type not selected', waitForAsync(() => {
     component.filterCaseTypeControl.setValue('');
     component.onCaseTypeIdChange();
 
@@ -639,7 +639,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(selectEvent0.nativeElement.textContent).toEqual('--Select a value--');
   }));
 
-  it('should have an Go button disabled when event is not set', async(() => {
+  it('should have an Go button disabled when event is not set', waitForAsync(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
     component.selectedCaseTypeEvents = CASE_TYPE.events;
@@ -653,7 +653,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(button.nativeElement.disabled).toBeTruthy();
   }));
 
-  it('should have an Go button enabled when event is set', async(() => {
+  it('should have an Go button enabled when event is set', waitForAsync(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
     component.selectedCaseTypeEvents = CASE_TYPE.events;
@@ -667,7 +667,7 @@ describe('CreateCaseFiltersComponent', () => {
     expect(button.nativeElement.disabled).toBeFalsy();
   }));
 
-  it('should return selected object when form fields selected and Go button clicked', async(() => {
+  it('should return selected object when form fields selected and Go button clicked', waitForAsync(() => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
     component.selectedCaseTypeEvents = CASE_TYPE.events;

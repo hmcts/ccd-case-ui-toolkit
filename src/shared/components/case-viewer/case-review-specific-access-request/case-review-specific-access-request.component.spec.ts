@@ -1,5 +1,5 @@
 import { DebugElement, Type } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -95,7 +95,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
     ACCESS_MANAGEMENT_REQUEST_REVIEW
   );
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [AlertModule, ReactiveFormsModule, RouterTestingModule],
       declarations: [

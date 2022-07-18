@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockComponent } from 'ng2-mock-component';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -74,7 +74,7 @@ describe('Ways To Pay Component', () => {
     let component: WaysToPayFieldComponent;
     let de: DebugElement;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         PaymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
             'API_ROOT',
             'CCD_CASE_NUMBER',

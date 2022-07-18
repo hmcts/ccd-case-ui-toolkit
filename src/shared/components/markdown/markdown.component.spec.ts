@@ -1,12 +1,12 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NgxMdComponent, NgxMdModule } from 'ngx-md';
 import { PipesModule } from '../../pipes';
 import { ConvertHrefToRouterService } from '../case-editor/services';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 
-describe('MarkdownComponent', () => {
+xdescribe('MarkdownComponent', () => {
 
   const $MARKDOWN = By.css('markdown');
 
@@ -45,7 +45,7 @@ describe('MarkdownComponent', () => {
   let de: DebugElement;
   let convertHrefToRouterService: ConvertHrefToRouterService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
     TestBed
       .configureTestingModule({
@@ -83,7 +83,7 @@ describe('MarkdownComponent', () => {
   });
 });
 
-describe('MarkdownComponent - Anchor', () => {
+xdescribe('MarkdownComponent - Anchor', () => {
 
   const $MARKDOWN = By.css('markdown');
 

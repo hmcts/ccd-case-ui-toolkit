@@ -1,6 +1,6 @@
 import { Component, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -40,7 +40,7 @@ describe('FieldWriteComponent', () => {
   let formGroup: FormGroup;
   const caseFields: CaseField[] = [CASE_FIELD];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     paletteService = createSpyObj<PaletteService>('paletteService', [
       'getFieldComponentClass'

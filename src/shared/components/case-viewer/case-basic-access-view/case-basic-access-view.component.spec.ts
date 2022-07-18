@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { CaseField, CaseView } from '../../../domain';
@@ -44,7 +44,7 @@ describe('CaseBasicAccessViewComponent', () => {
     let de: DebugElement;
     let mockCasesService: any;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         mockCasesService = createSpyObj('casesService', ['getCourtOrHearingCentreName']);
         mockCasesService.getCourtOrHearingCentreName.and.returnValue(of([{building_location_name: 'dummy-location'}]));
 

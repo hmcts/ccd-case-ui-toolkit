@@ -1,11 +1,11 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { Activity, DisplayMode } from '../../domain/activity';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
-import createSpyObj = jasmine.createSpyObj;
 import { ActivityComponent } from './activity.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CcdActivityComponent', () => {
   const BANNER: any = DisplayMode.BANNER;
@@ -91,7 +91,7 @@ describe('CcdActivityComponent', () => {
     inputs: ['description', 'imageLink', 'bannerType']
   });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     activityPollingService = createSpyObj<any>('activityPollingService',
       ['subscribeToActivity', 'unsubscribeFromActivity', 'stopPolling']);
     activityPollingService.subscribeToActivity.and.returnValue();

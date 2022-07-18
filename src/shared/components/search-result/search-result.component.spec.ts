@@ -1,5 +1,5 @@
 import { Component, DebugElement, Input, NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -173,7 +173,7 @@ describe('SearchResultComponent', () => {
     let appConfig: any;
     const caseReferencePipe = new CaseReferencePipe();
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
       activityService.postActivity.and.returnValue(switchMap);
       activityService.isEnabled = true;
@@ -844,7 +844,7 @@ describe('SearchResultComponent', () => {
     let appConfig: any;
     const caseReferencePipe = new CaseReferencePipe();
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
       activityService.postActivity.and.returnValue(switchMap);
       appConfig = createSpyObj('appConfig', ['getPaginationPageSize']);

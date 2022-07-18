@@ -1,5 +1,5 @@
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable, of, throwError } from 'rxjs';
 
@@ -80,7 +80,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
   let alertService: any;
   let eventTriggerService: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
     cancelHandler.applyFilters.and.returnValue();
 
@@ -222,7 +222,7 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
   let alertService: any;
   let eventTriggerService: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
     cancelHandler.applyFilters.and.returnValue();
 
@@ -288,7 +288,7 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
   let alertService: any;
   let eventTriggerService: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
     cancelHandler.applyFilters.and.returnValue();
 
