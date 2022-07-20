@@ -15,7 +15,6 @@ import createSpyObj = jasmine.createSpyObj;
 describe('LinkCasesComponent', () => {
   let component: LinkCasesComponent;
   let fixture: ComponentFixture<LinkCasesComponent>;
-  let nextButton: any;
   let casesService: any;
   let searchService: any;
   let caseLinkedResults: any = [
@@ -119,7 +118,6 @@ describe('LinkCasesComponent', () => {
     casesService.getCaseLinkResponses.and.returnValue(of(linkCaseReasons));
     spyOn(component.linkedCasesStateEmitter, 'emit');
     spyOn(component, 'getAllLinkedCaseInformation').and.returnValue([caseInfo]);
-    nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     fixture.detectChanges();
   });
 

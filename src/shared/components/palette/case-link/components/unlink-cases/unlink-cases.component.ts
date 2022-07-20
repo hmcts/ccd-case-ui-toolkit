@@ -6,7 +6,7 @@ import { CaseLink, LinkedCasesState } from '../../domain';
 import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 
-@Component({
+@Component({    
   selector: 'ccd-unlink-cases',
   templateUrl: './unlink-cases.component.html'
 })

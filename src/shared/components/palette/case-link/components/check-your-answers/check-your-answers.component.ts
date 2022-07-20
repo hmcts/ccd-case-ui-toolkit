@@ -19,8 +19,7 @@ export class CheckYourAnswersComponent implements OnInit {
   public isLinkCasesJourney: boolean;
   public linkedCasesTableCaption: string;
 
-  constructor(private router: Router,
-    private linkedCasesService: LinkedCasesService) {
+  constructor(private linkedCasesService: LinkedCasesService) {
   }
 
   public ngOnInit(): void {
