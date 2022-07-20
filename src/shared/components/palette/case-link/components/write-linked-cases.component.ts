@@ -48,17 +48,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public ngOnInit(): void {
     this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
     this.linkedCasesService.editMode = false;
-    // this.formGroup = this.registerControl(new FormGroup({}, {
-    //   validators: (_: AbstractControl): {[key: string]: boolean} | null => {
-    //     if (!this.isAtFinalPage()) {
-    //       // Return an error to mark the FormGroup as invalid if not at the final page
-    //       return {notAtFinalPage: true};
-    //     }
-    //     return null;
-    //   }
-    // }), true) as FormGroup;
-
-    this.linkedCasesService.caseId = this.caseEditPageComponent.getCaseId();
     const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
       next: reasons => {
