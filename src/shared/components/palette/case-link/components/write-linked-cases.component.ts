@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseView } from '../../../../domain/case-view';
 import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
-import { CaseEditComponent, CaseEditSubmitComponent } from '../../../case-editor';
 import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
+import { CaseEditComponent } from '../../../case-editor/case-edit/case-edit.component';
 import { CasesService } from '../../../case-editor/services/cases.service';
 import { AbstractFieldWriteComponent } from '../../base-field';
 import { CaseLink, LinkedCasesState } from '../domain';
@@ -22,9 +22,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
-
-  @Input()
-  public caseEditSubmitComponent: CaseEditSubmitComponent;
 
   @Output()
   public onLinkedCasesSelected = new EventEmitter<any>();
