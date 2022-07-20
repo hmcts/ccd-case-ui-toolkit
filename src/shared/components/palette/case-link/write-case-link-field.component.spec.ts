@@ -90,7 +90,7 @@ function createCaseField(id: string, value: any, display_context = 'READONLY'): 
 
 
 
-fdescribe('WriteCaseLinkFieldComponent', () => {
+describe('WriteCaseLinkFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
   let caseEditPageComponent: CaseEditPageComponent;
   let formValidatorService: any

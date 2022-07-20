@@ -11,7 +11,7 @@ const $LINK = By.css('a');
 const CASE_REFERENCE_RAW = '1234123412341238';
 const CASE_REFERENCE_FORMATTED = '1234-1234-1234-1238';
 
-fdescribe('ReadCaseLinkFieldComponent', () => {
+describe('ReadCaseLinkFieldComponent', () => {
 
   const FIELD_ID = 'ReadOnlyFieldId';
   const FIELD_TYPE: FieldType = {

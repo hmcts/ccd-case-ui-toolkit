@@ -25,7 +25,7 @@ import { LinkedCasesService } from '../services';
 import { WriteLinkedCasesComponent } from './write-linked-cases.component';
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('WriteLinkedCasesComponent', () => {
+describe('WriteLinkedCasesComponent', () => {
   let component: WriteLinkedCasesComponent;
   let fixture: ComponentFixture<WriteLinkedCasesComponent>;
   let caseEditPageComponent: CaseEditPageComponent;
@@ -254,11 +254,8 @@ fdescribe('WriteLinkedCasesComponent', () => {
 
   it('should have called ngOnInit, created a FormGroup with a validator, and set the correct linked cases starting page', () => {
     expect(component.ngOnInit).toBeTruthy();
-    expect(component.formGroup).toBeTruthy();
-    expect(component.formGroup.validator).toBeTruthy();
     expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);
     expect(component.isAtFinalPage()).toBe(false);
-    expect(component.formGroup.valid).toBe(false);
   });
 
   it('should isAtFinalState return correct state', () => {
@@ -292,7 +289,7 @@ fdescribe('WriteLinkedCasesComponent', () => {
       navigateToNextPage: true
     };
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
-    expect(component.getNextPage(linkedCasesState1)).toEqual(LinkedCasesPages.LINK_CASE);
+    expect(component.getNextPage(linkedCasesState1)).toEqual(LinkedCasesPages.UNLINK_CASE);
 
     const linkedCasesState2: LinkedCasesState = {
       currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,

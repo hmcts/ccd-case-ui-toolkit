@@ -11,7 +11,7 @@ import { CaseLink } from '../domain';
 import { LinkedCasesService } from '../services';
 import { of } from 'rxjs';
 
-fdescribe('ReadLinkedCases', () => {
+describe('ReadLinkedCases', () => {
   let component: ReadLinkedCasesComponent;
   let fixture: ComponentFixture<ReadLinkedCasesComponent>;
   let commonDataService: any;
