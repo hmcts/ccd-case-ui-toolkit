@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseView } from '../../../../domain/case-view';
 import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
-import { CaseEditComponent } from '../../../case-editor';
+import { CaseEditComponent, CaseEditSubmitComponent } from '../../../case-editor';
 import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
 import { CasesService } from '../../../case-editor/services/cases.service';
 import { AbstractFieldWriteComponent } from '../../base-field';
@@ -22,6 +22,10 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
+
+  @Input()
+  public caseEditSubmitComponent: CaseEditSubmitComponent;
+
   @Output()
   public onLinkedCasesSelected = new EventEmitter<any>();
   @Input()
@@ -86,8 +90,13 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);
       this.setContinueButtonValidationErrorMessage();
+      //const updatedFormValue = {...this.caseEdit.form.value, data : {caseLinks : this.linkedCasesService.caseFieldValue}};
+      //(this.caseEdit.form.controls['data'] as any).controls['caseLinks'].value = {caseLinks: this.linkedCasesService.caseFieldValue};
+      //this.caseEdit.form.updateValueAndValidity();
       this.proceedToNextPage();
     } else {
+      //(this.caseEdit.form.controls['data'] as any).controls['caseLinks'].value = {caseLinks: this.linkedCasesService.caseFieldValue};
+      //this.caseEdit.form.updateValueAndValidity();
       linkedCasesState.errorMessages.forEach(errorMessage => {
         this.caseEditPageComponent.validationErrors.push({ id: errorMessage.fieldId, message: errorMessage.description});
       });
@@ -119,6 +128,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       this.formGroup.updateValueAndValidity();
       // update form value
       this.onLinkedCasesSelected.emit();
+      (this.caseEdit.form.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue)});
     }
   }
 

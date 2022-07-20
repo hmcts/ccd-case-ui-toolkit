@@ -158,18 +158,18 @@ export class LinkCasesComponent implements OnInit {
             caseReference: caseView.case_id,
             reasons: this.getSelectedCaseReasons(),
             createdDateTime: new Date().toISOString(),
-            caseType: caseView.case_type.name,
+            caseType: caseView.case_type.id,
             caseState: caseView.state.name,
             caseService: caseView.case_type.jurisdiction.name,
             caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
           };
           const ccdApiCaseLinkData = {
             CaseReference: caseView.case_id,
-            CaseType: caseView.case_type.name,
+            CaseType: caseView.case_type.id,
             CreatedDateTime: new Date().toISOString(),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
           }
-          this.linkedCasesService.caseFieldValue.push({id: '', value: ccdApiCaseLinkData});
+          this.linkedCasesService.caseFieldValue.push({id: caseView.case_id.toString(), value: ccdApiCaseLinkData});
           this.selectedCases.push(caseLink);
           this.initForm();
           this.emitLinkedCasesState(false);

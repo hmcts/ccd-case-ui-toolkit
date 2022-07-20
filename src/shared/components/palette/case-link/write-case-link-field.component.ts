@@ -70,7 +70,10 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
 
   public submitLinkedCases(): void {
     const formGroup = this.formGroup;
-    if (formGroup.value && formGroup.value.caseLinks && this.linkedCasesService.linkedCases) {
+    if (!this.linkedCasesService.isLinkedCasesEventTrigger) {
+      const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
+      this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue.filter(item => unlinkedCaseRefereneIds.indexOf(item.id));
+    } else if (formGroup.value && formGroup.value.caseLinks && this.linkedCasesService.linkedCases) {
       this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
     }
   }
