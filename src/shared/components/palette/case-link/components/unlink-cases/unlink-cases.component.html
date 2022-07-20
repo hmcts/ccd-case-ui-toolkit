@@ -9,7 +9,9 @@
         <div class="govuk-checkboxes__item" *ngFor="let case of linkedCases">
           <input class="govuk-checkboxes__input" id="case-reference-{{case.caseReference}}" formArrayName="linkedCases" name="linkedCases"
             type="checkbox" [value]="case.caseReference" [checked]="case.unlink" (change)="onChange($event.target)">
-          <label class="govuk-label govuk-checkboxes__label" for="{{case.caseReference}}">{{case.caseReference | ccdCaseReference}}</label>
+            <label class="govuk-label govuk-checkboxes__label" for="{{case.caseReference}}">
+              {{case.caseName }} {{case.caseReference | ccdCaseReference}}
+          </label>
         </div>
       </div>
     </div>

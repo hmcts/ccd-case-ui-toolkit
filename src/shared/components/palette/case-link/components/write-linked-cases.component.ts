@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseView } from '../../../../domain/case-view';
 import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
 import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
+import { CaseEditComponent } from '../../../case-editor/case-edit/case-edit.component';
 import { CasesService } from '../../../case-editor/services/cases.service';
 import { AbstractFieldWriteComponent } from '../../base-field';
 import { CaseLink, LinkedCasesState } from '../domain';
@@ -15,23 +16,28 @@ import { LinkedCasesService } from '../services';
   selector: 'ccd-write-linked-cases',
   templateUrl: './write-linked-cases.component.html'
 })
-export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent implements OnInit {
+export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
 
   private static readonly LINKED_CASES_TAB_ID = 'linked_cases_sscs';
 
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
+
   @Output()
   public onLinkedCasesSelected = new EventEmitter<any>();
+  @Input()
+  public isLinkedCasesJourney = false;
 
-  public formGroup: FormGroup;
+  @Input()
+  formGroup: FormGroup;
+
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public linkedCases: CaseLink[] = [];
-  public isLinkedCasesJourney: boolean;
 
   constructor(private readonly router: Router,
+    private caseEdit: CaseEditComponent,
     private readonly appConfig: AbstractAppConfig,
     private commonDataService: CommonDataService,
     private readonly casesService: CasesService,
@@ -40,19 +46,18 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public ngOnInit(): void {
-    this.formGroup = this.registerControl(new FormGroup({}, {
-      validators: (_: AbstractControl): {[key: string]: boolean} | null => {
-        if (!this.isAtFinalPage()) {
-          // Return an error to mark the FormGroup as invalid if not at the final page
-          return {notAtFinalPage: true};
-        }
-        return null;
-      }
-    }), true) as FormGroup;
+    this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
+    this.linkedCasesService.editMode = false;
+    // this.formGroup = this.registerControl(new FormGroup({}, {
+    //   validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+    //     if (!this.isAtFinalPage()) {
+    //       // Return an error to mark the FormGroup as invalid if not at the final page
+    //       return {notAtFinalPage: true};
+    //     }
+    //     return null;
+    //   }
+    // }), true) as FormGroup;
 
-    // Figure out the journey, linked cases or manage linked cases
-    this.isLinkedCasesJourney = this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES);
-    // Store caseId in LinkedCasesService, to be used by child components
     this.linkedCasesService.caseId = this.caseEditPageComponent.getCaseId();
     const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
@@ -62,6 +67,19 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     })
     // Get linked cases
     this.getLinkedCases();
+    this.linkedCasesService.isLinkedCasesEventTrigger =
+            this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
+  }
+
+  public ngAfterViewInit(): void {
+    let labelField = document.getElementsByClassName('govuk-heading-l');
+    if (labelField && labelField.length) {
+      labelField[0].replaceWith('')
+    }
+    labelField = document.getElementsByClassName('heading-h2');
+    if (labelField && labelField.length) {
+      labelField[0].replaceWith('')
+    }
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
@@ -103,6 +121,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       this.formGroup.updateValueAndValidity();
       // update form value
       this.onLinkedCasesSelected.emit();
+      (this.caseEdit.form.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue)});
     }
   }
 
@@ -124,11 +143,9 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
       const linkedCasesTab = caseView.tabs.find(tab => tab.id === WriteLinkedCasesComponent.LINKED_CASES_TAB_ID);
       if (linkedCasesTab) {
-        const linkedCases: CaseLink[] = linkedCasesTab.fields[0].value;
-        // Store linked cases in linked cases service
-        this.linkedCasesService.linkedCases = linkedCases || [];
-        // Initialise the first page to display
-        this.linkedCasesPage = this.isLinkedCasesJourney || (linkedCases && linkedCases.length > 0)
+        const linkedCases: CaseLink[] = this.linkedCasesService.linkedCases;
+      // Initialise the first page to display
+        this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger || (linkedCases && linkedCases.length > 0)
           ? LinkedCasesPages.BEFORE_YOU_START
           : LinkedCasesPages.NO_LINKED_CASES;
         // Initialise the error to be displayed when clicked on Continue button

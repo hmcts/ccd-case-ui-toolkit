@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseField } from '../../../../domain';
@@ -9,7 +9,7 @@ import { LinkedCasesService } from '../services';
   selector: 'ccd-read-linked-cases',
   templateUrl: './read-linked-cases.component.html'
 })
-export class ReadLinkedCasesComponent implements OnInit {
+export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
 
   @Input()
   caseField: CaseField;
@@ -34,6 +34,22 @@ export class ReadLinkedCasesComponent implements OnInit {
         },
         error: error => this.getFailureNotification(error)
       })
+    }
+
+    public ngAfterViewInit(): void {
+      this.linkedCasesService.caseFieldValue = this.caseField.value;
+      let labelField = document.getElementsByClassName('govuk-heading-l');
+      if (labelField && labelField.length) {
+        labelField[0].replaceWith('')
+      }
+      labelField = document.getElementsByClassName('heading-h2');
+      if (labelField && labelField.length) {
+        labelField[0].replaceWith('')
+      }
+      labelField = document.getElementsByClassName('case-viewer-label');
+      if (labelField && labelField.length) {
+        labelField[0].replaceWith('')
+      }
     }
 
   reloadCurrentRoute() {

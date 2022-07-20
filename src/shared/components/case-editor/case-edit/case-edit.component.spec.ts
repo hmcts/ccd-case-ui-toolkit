@@ -18,7 +18,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType, Profile } from '../../../domain';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('CaseEditComponent', () => {
+fdescribe('CaseEditComponent', () => {
 
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     'TEST_TRIGGER',
@@ -348,7 +348,7 @@ describe('CaseEditComponent', () => {
 
       describe('next page', () => {
 
-        it('should navigate to next page when next is called and do not clear READONLY hidden field value', () => {
+        fit('should navigate to next page when next is called and do not clear READONLY hidden field value', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_FIELD_WITH_SHOW_CONDITION];

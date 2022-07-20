@@ -4,8 +4,12 @@ import { CaseLink } from '../domain';
 
 @Injectable()
 export class LinkedCasesService {
+  public caseFieldValue = [];
+  public isLinkedCasesEventTrigger = false;
   public caseId: string;
   public linkCaseReasons: LovRefDataModel[] = [];
   public linkedCases: CaseLink[] = [];
   public preLinkedCases: CaseLink[] = [];
+  public removedLinkedCases: CaseLink[] = [];
+  public editMode = false;
 }
