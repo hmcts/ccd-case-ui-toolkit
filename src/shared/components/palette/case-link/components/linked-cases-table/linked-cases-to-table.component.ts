@@ -115,9 +115,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
             caseService: item.service,
             caseType: item.caseType,
             unlink: false,
-            reasons: item.reasons && item.reasons.map(item => {
+            reasons: item.reasons && item.reasons.map(reason => {
               return {
-                reasonCode: item
+                reasonCode: reason
               } as LinkReason
             }),
           } as CaseLink

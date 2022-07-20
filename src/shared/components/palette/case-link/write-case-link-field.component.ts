@@ -32,10 +32,6 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
 
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
-  
-  // @ViewChildren('collectionItem')
-  // private items: QueryList<ElementRef>;
-  // private collItems: CollectionItem[] = [];
 
   constructor(private router: Router,
     private readonly linkedCasesService: LinkedCasesService) {
@@ -53,7 +49,6 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
       // this.caseLinkGroup = this.registerControl(new FormGroup({
       //   'CaseReference': new FormControl(null, Validators.required),
       // }), true) as FormGroup;
-      
     }
     // this.caseReferenceControl = this.caseLinkGroup.controls['CaseReference'];
     // this.caseReferenceControl.setValidators(this.caseReferenceValidator());

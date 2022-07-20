@@ -33,12 +33,12 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   @Input()
   formGroup: FormGroup;
-  
-  //public formGroup: FormGroup;
+
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public linkedCases: CaseLink[] = [];
+
   constructor(private readonly router: Router,
     private caseEdit: CaseEditComponent,
     private readonly appConfig: AbstractAppConfig,
@@ -70,7 +70,8 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     })
     // Get linked cases
     this.getLinkedCases();
-    this.linkedCasesService.isLinkedCasesEventTrigger = this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;;
+    this.linkedCasesService.isLinkedCasesEventTrigger =
+            this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
   }
 
   public ngAfterViewInit(): void {
@@ -90,13 +91,8 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);
       this.setContinueButtonValidationErrorMessage();
-      //const updatedFormValue = {...this.caseEdit.form.value, data : {caseLinks : this.linkedCasesService.caseFieldValue}};
-      //(this.caseEdit.form.controls['data'] as any).controls['caseLinks'].value = {caseLinks: this.linkedCasesService.caseFieldValue};
-      //this.caseEdit.form.updateValueAndValidity();
       this.proceedToNextPage();
     } else {
-      //(this.caseEdit.form.controls['data'] as any).controls['caseLinks'].value = {caseLinks: this.linkedCasesService.caseFieldValue};
-      //this.caseEdit.form.updateValueAndValidity();
       linkedCasesState.errorMessages.forEach(errorMessage => {
         this.caseEditPageComponent.validationErrors.push({ id: errorMessage.fieldId, message: errorMessage.description});
       });
@@ -151,9 +147,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       const linkedCasesTab = caseView.tabs.find(tab => tab.id === WriteLinkedCasesComponent.LINKED_CASES_TAB_ID);
       if (linkedCasesTab) {
         const linkedCases: CaseLink[] = this.linkedCasesService.linkedCases;
-        // Store linked cases in linked cases service
-        //this.linkedCasesService.linkedCases = linkedCases || [];
-        // Initialise the first page to display
+      // Initialise the first page to display
         this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger || (linkedCases && linkedCases.length > 0)
           ? LinkedCasesPages.BEFORE_YOU_START
           : LinkedCasesPages.NO_LINKED_CASES;

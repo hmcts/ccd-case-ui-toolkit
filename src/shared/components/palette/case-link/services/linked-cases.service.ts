@@ -11,5 +11,5 @@ export class LinkedCasesService {
   public linkedCases: CaseLink[] = [];
   public preLinkedCases: CaseLink[] = [];
   public removedLinkedCases: CaseLink[] = [];
-  public editMode: boolean = false; 
+  public editMode = false;
 }
