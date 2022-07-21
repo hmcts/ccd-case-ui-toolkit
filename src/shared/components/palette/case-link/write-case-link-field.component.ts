@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
@@ -33,8 +32,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
 
-  constructor(private router: Router,
-    private readonly linkedCasesService: LinkedCasesService) {
+  constructor(private readonly linkedCasesService: LinkedCasesService) {
     super();
   }
 
@@ -45,14 +43,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
       this.caseLinkGroup = this.registerControl(new FormGroup({
         'CaseReference': new FormControl(this.caseField.value.CaseReference, Validators.required),
       }), true) as FormGroup;
-    } else {
-      // this.caseLinkGroup = this.registerControl(new FormGroup({
-      //   'CaseReference': new FormControl(null, Validators.required),
-      // }), true) as FormGroup;
     }
-    // this.caseReferenceControl = this.caseLinkGroup.controls['CaseReference'];
-    // this.caseReferenceControl.setValidators(this.caseReferenceValidator());
-
     // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although a CaseLink
     // field uses the Complex type, it is meant to be treated as one field
     if (this.caseField && this.caseField.field_type.type === 'Complex') {

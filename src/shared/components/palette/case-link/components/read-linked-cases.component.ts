@@ -52,14 +52,14 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
       }
     }
 
-  reloadCurrentRoute() {
+  public reloadCurrentRoute() {
     let currentUrl = this.router.url;
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
         this.router.navigate([currentUrl]);
     });
   }
 
-  getFailureNotification(evt) {
+  public getFailureNotification(evt) {
     const errorMessage = 'There has been a system error and your request could not be processed.';
     this.serverError = {
       id: 'backendError', message: errorMessage

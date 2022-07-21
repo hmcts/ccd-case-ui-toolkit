@@ -7,6 +7,7 @@ import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import {
   CaseLink,
+  CCDCaseLinkType,
   ESQueryType,
   LinkCaseReason,
   LinkReason,
@@ -40,7 +41,7 @@ export class LinkCasesComponent implements OnInit {
     private readonly searchService: SearchService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.getAllLinkedCaseInformation();
     this.initForm();
     if (this.linkedCasesService.editMode) {
@@ -48,7 +49,7 @@ export class LinkCasesComponent implements OnInit {
     }
   }
 
-  public initForm() {
+  public initForm(): void {
     this.linkCaseForm = this.fb.group({
       caseNumber: ['', this.validatorsUtils.numberLengthValidator(16)],
       reasonType: this.getReasonTypeFormArray,
@@ -73,7 +74,7 @@ export class LinkCasesComponent implements OnInit {
     );
   }
 
-  public submitCaseInfo() {
+  public submitCaseInfo(): void {
     this.errorMessages = [];
     this.caseReasonError = null;
     this.caseNumberError = null;
@@ -91,7 +92,7 @@ export class LinkCasesComponent implements OnInit {
     }
   }
 
-  isCaseSelected(linkedCases: CaseLink[]): boolean {
+  public isCaseSelected(linkedCases: CaseLink[]): boolean {
     if (linkedCases.length === 0) {
       return false;
     }
@@ -101,11 +102,11 @@ export class LinkCasesComponent implements OnInit {
     );
   }
 
-  isCaseSelectedSameAsCurrentCase(): boolean {
+  private isCaseSelectedSameAsCurrentCase(): boolean {
     return this.linkCaseForm.value.caseNumber === this.linkedCasesService.caseId
   }
 
-  showErrorInfo() {
+  public showErrorInfo() {
     if (this.linkCaseForm.controls.caseNumber.invalid) {
       this.caseNumberError = LinkedCasesErrorMessages.CaseNumberError;
       this.errorMessages.push({
@@ -149,7 +150,7 @@ export class LinkCasesComponent implements OnInit {
     this.emitLinkedCasesState(false);
   }
 
-  getCaseInfo() {
+  public getCaseInfo() {
     this.casesService
       .getCaseViewV2(this.linkCaseForm.value.caseNumber)
       .subscribe(
@@ -163,14 +164,14 @@ export class LinkCasesComponent implements OnInit {
             caseService: caseView.case_type.jurisdiction.name,
             caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
           };
-          const ccdApiCaseLinkData = {
+          const ccdApiCaseLinkData: CCDCaseLinkType = {
             CaseReference: caseView.case_id,
             CaseType: caseView.case_type.id,
             CreatedDateTime: new Date().toISOString(),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
           }
           this.linkedCasesService.caseFieldValue.push({id: caseView.case_id.toString(), value: ccdApiCaseLinkData});
-          this.selectedCases.push(caseLink);
+            this.selectedCases.push(caseLink);
           this.initForm();
           this.emitLinkedCasesState(false);
         },
@@ -198,7 +199,7 @@ export class LinkCasesComponent implements OnInit {
     }, {});
   };
 
-  public mapResponse(esSearchCasesResponse, selectedCase) {
+  public mapResponse(esSearchCasesResponse, selectedCase): CaseLink {
     const mappedValue = {...selectedCase,
       caseName: esSearchCasesResponse.case_fields && esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
       caseReference : esSearchCasesResponse.case_id,
@@ -206,7 +207,7 @@ export class LinkCasesComponent implements OnInit {
       caseService : esSearchCasesResponse.case_fields['[JURISDICTION]'],
       caseState : esSearchCasesResponse.case_fields['[STATE]'],
       reasons: this.mapReason(selectedCase)
-    }
+    } as CaseLink
     return mappedValue;
   }
 
@@ -271,7 +272,7 @@ export class LinkCasesComponent implements OnInit {
   }
 
   // Return linked cases state and error messages to the parent
-  emitLinkedCasesState(isNavigateToNextPage: boolean) {
+  public emitLinkedCasesState(isNavigateToNextPage: boolean) {
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
       errorMessages: this.errorMessages,
@@ -279,7 +280,7 @@ export class LinkCasesComponent implements OnInit {
     });
   }
 
-  getSelectedCaseReasons(): LinkReason[] {
+  public getSelectedCaseReasons(): LinkReason[] {
     let selectedReasons = [];
     this.linkCaseForm.controls.reasonType.value.forEach(
       (selectedReason: LinkCaseReason) => {
@@ -293,7 +294,7 @@ export class LinkCasesComponent implements OnInit {
     return selectedReasons;
   }
 
-  getSelectedCCDTypeCaseReason(): LinkReason[] {
+  public getSelectedCCDTypeCaseReason(): LinkReason[] {
     let selectedReasons = [];
     this.linkCaseForm.controls.reasonType.value.forEach(
       (selectedReason: LinkCaseReason) => {
@@ -309,7 +310,7 @@ export class LinkCasesComponent implements OnInit {
     return selectedReasons;
   }
 
-  onSelectedLinkedCaseRemove(pos, selectedCaseReference) {
+  public onSelectedLinkedCaseRemove(pos, selectedCaseReference) {
     const caseFieldValue = this.linkedCasesService.caseFieldValue || [];
     const updatedItems =  caseFieldValue.filter(item => item.value && item.value.CaseReference !== selectedCaseReference);
     if (updatedItems) {
