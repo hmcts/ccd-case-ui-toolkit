@@ -11,12 +11,14 @@ import { LinkCasesComponent } from './link-cases.component';
 import { PipesModule } from '../../../../../pipes/pipes.module';
 
 import createSpyObj = jasmine.createSpyObj;
+import { By } from '@angular/platform-browser';
 
 describe('LinkCasesComponent', () => {
   let component: LinkCasesComponent;
   let fixture: ComponentFixture<LinkCasesComponent>;
   let casesService: any;
   let searchService: any;
+
   let caseLinkedResults: any = [
     {
       results: [{
@@ -52,7 +54,6 @@ describe('LinkCasesComponent', () => {
       active_flag: 'Y',
       child_nodes: null,
       from: 'exui-default',
-      selected: true,
     },
     {
       key: 'bail',
@@ -83,6 +84,13 @@ describe('LinkCasesComponent', () => {
       from: 'exui-default',
     },
   ];
+  const linkedCasesService = {
+    caseId: '1682374819203471',
+    linkedCases: [],
+    linkCaseReasons: linkCaseReasons,
+    caseFieldValue: []
+  };
+
   beforeEach(async(() => {
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses']);
     searchService = createSpyObj('searchService', ['searchCases']);
@@ -93,7 +101,7 @@ describe('LinkCasesComponent', () => {
         ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        LinkedCasesService,
+        { provide: LinkedCasesService, useValue: linkedCasesService },
         { provide: CasesService, useValue: casesService },
         { provide: SearchService, useValue: searchService }
       ],
@@ -115,7 +123,7 @@ describe('LinkCasesComponent', () => {
     }
     fixture = TestBed.createComponent(LinkCasesComponent);
     component = fixture.componentInstance;
-    casesService.getCaseLinkResponses.and.returnValue(of(linkCaseReasons));
+    spyOn(linkedCasesService, "linkCaseReasons").and.returnValue(of(linkCaseReasons));
     spyOn(component.linkedCasesStateEmitter, 'emit');
     spyOn(component, 'getAllLinkedCaseInformation').and.returnValue([caseInfo]);
     fixture.detectChanges();
@@ -125,31 +133,37 @@ describe('LinkCasesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check submitCaseInfo', () => {
+  it('should create UI with the case number error message ', () => {
     casesService.getCaseViewV2.and.returnValue(throwError({}));
     component.submitCaseInfo();
     expect(component.caseNumberError).toBe(LinkedCasesErrorMessages.CaseNumberError);
-    expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalled();
-    component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
-    component.submitCaseInfo();
-    expect(component.caseNumberError).toBeNull();
   });
 
-  it('should check getCaseInfo', () => {
+  it('should check submitCaseInfo', () => {
     const caseInfo = {
-      case_id: '1682374819203471',
+      case_id: '1231231231231231',
       case_type: {
         name: 'SSCS type',
         jurisdiction: { name: '' }
       }, state: { name: 'With FTA' }
     }
     casesService.getCaseViewV2.and.returnValue(of(caseInfo));
-    component.getCaseInfo();
-    expect(component.caseNumberError).toBe(undefined);
-    searchService.searchCases.and.returnValue(of(caseLinkedResults));
+    component.linkCaseForm.get('caseNumber').setValue('1231231231231231');
+    const reasonOption = fixture.debugElement.query(By.css('input[value="Progressed as part of this lead case"]')).nativeElement;
+    reasonOption.click();
+    fixture.detectChanges();
+    component.submitCaseInfo();
+    expect(component.caseNumberError).toBeNull();
+    expect(component.selectedCases.length).toEqual(1);
     component.onNext();
     component.getAllLinkedCaseInformation();
-    expect((component as any).linkedCasesService.preLinkedCases.length).toBe(0);
+  });
+
+  it('should check various error use cases', () => {
+    component.linkCaseForm.get('caseNumber').setValue('16934389402343');
+    component.submitCaseInfo();
+    expect(component.caseNumberError).not.toBeNull();
+    expect(component.selectedCases.length).toBe(0);
   });
 
   it('should check onNext', () => {

@@ -252,6 +252,22 @@ describe('WriteLinkedCasesComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should have called pre-required datas ', () => {
+    commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
+    const caseInfo = {
+      case_id: '1231231231231231',
+      case_type: {
+        name: 'SSCS type',
+        jurisdiction: { name: '' }
+      }, state: { name: 'With FTA' }
+    }
+    casesService.getCaseViewV2.and.returnValue(of(caseInfo));
+    expect(component.ngOnInit).toBeTruthy();
+    expect(linkedCasesService.linkedCases.length).not.toBeNull();
+    expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);
+    expect(component.isAtFinalPage()).toBe(false);
+  });
+
   it('should have called ngOnInit, created a FormGroup with a validator, and set the correct linked cases starting page', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);

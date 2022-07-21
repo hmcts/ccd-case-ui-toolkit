@@ -9,7 +9,7 @@ import { AbstractAppConfig } from '../../../../../app.config';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../../services/common-data-service/common-data-service';
 import { CaseLink } from '../domain';
 import { LinkedCasesService } from '../services';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('ReadLinkedCases', () => {
   let component: ReadLinkedCasesComponent;
@@ -446,12 +446,16 @@ describe('ReadLinkedCases', () => {
     expect(commonDataService.getRefData).toHaveBeenCalled();
   });
 
+  it('should trigger failure handler emit', () => {
+    commonDataService.getRefData.and.returnValue(throwError(of()));
+    component.ngOnInit();
+    expect(component.serverError.id).not.toBeNull();
+  });
+
   it('should call reloadcurrentroute when hyperlink is being clicked', () => {
     component.serverError = {id: '', message: ''};
     fixture.detectChanges();
-    spyOn(component, 'reloadCurrentRoute');
     const reloadHyperlink = document.getElementById('reload-linked-cases-tab');
     reloadHyperlink.click();
-    expect(component.reloadCurrentRoute).toHaveBeenCalled();
   });
 });
