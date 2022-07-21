@@ -1,27 +1,19 @@
 ## RELEASE NOTES
 
-### Version 4.19.0-manage-linked-cases-integration
+### Version 4.19.2-manage-linked-cases-integration
 **EUI-6191** ### Version 4.19.2-manage-linked-cases-integration
 ### Version 4.17.36-linked-cases-bottom-table-api-integration
 **EUI-5886** ### Version 4.17.36-linked-cases-bottom-table-api-integration
 
-### Version 4.17.32-linked-cases-top-table-integration
-**EUI-5884** ### Version 4.17.32-linked-cases-top-table-integration
+### Version 4.12.1-EUI-5225-organisation-search
+**EUI-5225** Bug fix the organisation search functionality
 
-### Version 4.17.31-link-cases-reason-code
-**EUI-6025** CaseLinking reason code mapping
+### Version 4.12.6-date-year-validation
+**EUI-4606** Enhanced the date year input validation to restrict between 1900-2100
 
-### Version 4.17.29-link-case-reasoncode-api-integration
-**EUI-5931** Display the dummy Case_name
+### Version 4.17.6-EUI-5736-unassigned-cases-pagination
+**EUI-5736** unassigned cases pagination
 
-### Version 4.17.22-CaseLinkingReasonCode-api-integration
-**EUI-5930** Link/Unlink cases- call LoV api to retrieve category CaseLinkingReasonCode from toolkit
-
-### Version 4.17.18-Linked-case-tab Display-(no linked cases)
-**EUI-5639** Link cases- Linked case tab Display (no linked cases)
-
-### Version 4.17.15-linked-cases-unlink-journey-show-hide-table
-**EUI-5565** Add unlink cases journey to linked cases
 
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
@@ -29,8 +21,15 @@
 ### Version 4.12.0
 Add refunds functionality
 
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
+### Version 4.9.16-wcag20-exui-4"
+**FPLA: Accessibility Issues Found in ExUI** FPLA: Accessibility Issues Found in ExUI
+
 ### Version 4.13.8-event-start-task-not-required"
 **EUI-5569** Task not required for event functionality
+
 
 ### Version 4.12.16-task-event-completion"
 **Task event completion and state machine** Task event completion and state machine
