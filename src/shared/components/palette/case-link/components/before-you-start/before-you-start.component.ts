@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
+import { LinkedCasesService } from '../../services/linked-cases.service';
 
 @Component({
   selector: 'ccd-linked-cases-before-you-start',
@@ -11,7 +12,12 @@ export class BeforeYouStartComponent {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
-  constructor() {
+  constructor(
+    private readonly linkedCasesService: LinkedCasesService,
+  ) {}
+
+  public isLinkCasesJourney() {
+    return this.linkedCasesService.isLinkedCasesEventTrigger;
   }
 
   public onNext(): void {

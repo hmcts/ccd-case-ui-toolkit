@@ -170,6 +170,6 @@ describe('LinkCasesComponent', () => {
     expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CaseProposedError);
     (component as any).linkedCasesService.preLinkedCases = selectedCasesInfo;
     component.showErrorInfo();
-    expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CasesLinkedError);
+    expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CaseProposedError);
   });
 });
