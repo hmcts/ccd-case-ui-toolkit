@@ -254,14 +254,14 @@ describe('WriteLinkedCasesComponent', () => {
 
   it('should have called pre-required datas ', () => {
     commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
-    const caseInfo = {
+    const caseDetail = {
       case_id: '1231231231231231',
       case_type: {
         name: 'SSCS type',
         jurisdiction: { name: '' }
       }, state: { name: 'With FTA' }
     }
-    casesService.getCaseViewV2.and.returnValue(of(caseInfo));
+    casesService.getCaseViewV2.and.returnValue(of(caseDetail));
     expect(component.ngOnInit).toBeTruthy();
     expect(linkedCasesService.linkedCases.length).not.toBeNull();
     expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);

@@ -123,7 +123,7 @@ describe('LinkCasesComponent', () => {
     }
     fixture = TestBed.createComponent(LinkCasesComponent);
     component = fixture.componentInstance;
-    spyOn(linkedCasesService, "linkCaseReasons").and.returnValue(of(linkCaseReasons));
+    spyOn(linkedCasesService, 'linkCaseReasons').and.returnValue(of(linkCaseReasons));
     spyOn(component.linkedCasesStateEmitter, 'emit');
     spyOn(component, 'getAllLinkedCaseInformation').and.returnValue([caseInfo]);
     fixture.detectChanges();

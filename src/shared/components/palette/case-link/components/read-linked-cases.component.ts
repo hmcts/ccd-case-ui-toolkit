@@ -53,12 +53,10 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
     }
 
   reloadCurrentRoute() {
-    const currentUrl = this.router.url;
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.router.onSameUrlNavigation = 'reload';
-        this.router.navigate([currentUrl], {
-      queryParams: {refresh: new Date().getTime()}
-   });
+    let currentUrl = this.router.url;
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+        this.router.navigate([currentUrl]);
+    });
   }
 
   getFailureNotification(evt) {
