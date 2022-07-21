@@ -88,8 +88,6 @@ function createCaseField(id: string, value: any, display_context = 'READONLY'): 
   return cf;
 }
 
-
-
 describe('WriteCaseLinkFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
   let caseEditPageComponent: CaseEditPageComponent;
@@ -184,5 +182,4 @@ describe('WriteCaseLinkFieldComponent', () => {
     expect(component.validCaseReference('123456781234567890')).toBeFalsy();
     expect(component.validCaseReference('1234Invalid')).toBeFalsy();
   });
-  
 });

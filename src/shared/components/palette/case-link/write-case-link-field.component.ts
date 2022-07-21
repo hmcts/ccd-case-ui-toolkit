@@ -73,7 +73,6 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-
   public validCaseReference(valueString: string): boolean {
     if (!valueString) {
       return false;
