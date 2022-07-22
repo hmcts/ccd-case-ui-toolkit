@@ -22,10 +22,6 @@ export class FieldsFilterPipe implements PipeTransform {
 
   /**
    * Complex type should have at least on simple field descendant with a value.
-   *
-   * @param field
-   * @param values
-   * @returns {boolean}
    */
   private static isValidComplex(field: CaseField, values?: object): boolean {
     values = values || {};
@@ -81,12 +77,6 @@ export class FieldsFilterPipe implements PipeTransform {
 
   /**
    * Filter out fields having no data to display and harmonise field values coming parent's value.
-   *
-   * @param complexField
-   * @param keepEmpty
-   * @param index
-   * @param stripHidden
-   * @returns {any}
    */
   public transform(complexField: CaseField, keepEmpty?: boolean, index?: number, stripHidden= false): CaseField[] {
     if (!complexField || !complexField.field_type) {

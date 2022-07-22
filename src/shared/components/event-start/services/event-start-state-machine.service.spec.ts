@@ -12,6 +12,7 @@ describe('EventStartStateMachineService', () => {
   let service: EventStartStateMachineService;
   let stateMachine: StateMachine;
   let mockSessionStorageService: any;
+  // tslint:disable-next-line: prefer-const
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
 

@@ -24,7 +24,7 @@ export class CaseListComponent {
   @Input() public caption: string;
   @Input() public firstCellIsHeader = false;
 
-  @Input() public cases: Object[];
+  @Input() public cases: object[];
 
   @Input() public tableConfig: TableConfig = {
     idField: 'id',

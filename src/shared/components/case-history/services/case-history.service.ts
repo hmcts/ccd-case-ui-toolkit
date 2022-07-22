@@ -26,7 +26,7 @@ export class CaseHistoryService {
     return this.httpService
       .get(url, {headers, observe: 'body'})
       .pipe(
-        map((caseHistory: Object) => plainToClass(CaseHistory, caseHistory)),
+        map((caseHistory: object) => plainToClass(CaseHistory, caseHistory)),
         catchError(
         (error: any): any => {
           this.httpErrorService.setError(error);

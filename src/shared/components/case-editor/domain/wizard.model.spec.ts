@@ -179,7 +179,7 @@ describe('wizard.model', () => {
     });
   });
 
-  function buildPage(pageId: string, label: string, order: number, caseFields: CaseField[] = undefined): WizardPage {
+  function buildPage(pageId: string, label: string, order: number, caseFields?: CaseField[]): WizardPage {
     const wp = new WizardPage();
     wp.id = pageId;
     wp.label = label;

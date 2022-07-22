@@ -93,7 +93,7 @@ describe('CaseEditPageComponent', () => {
         next: () => true,
         previous: () => true,
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         validate: (caseEventData: CaseEventData) => of(caseEventData),
         saveDraft: (caseEventData: CaseEventData) => of(someObservable),
         caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
@@ -202,6 +202,7 @@ describe('CaseEditPageComponent', () => {
       comp.currentPage = wizardPage;
       comp.formValuesChanged = false;
       snapshot.queryParamMap.get.and.callFake(key => {
+        // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';
@@ -230,6 +231,7 @@ describe('CaseEditPageComponent', () => {
       comp.currentPage = wizardPage;
       comp.formValuesChanged = true;
       snapshot.queryParamMap.get.and.callFake(key => {
+        // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';
@@ -260,6 +262,7 @@ describe('CaseEditPageComponent', () => {
       comp.currentPage = wizardPage;
       comp.formValuesChanged = true;
       snapshot.queryParamMap.get.and.callFake(key => {
+        // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';
@@ -359,7 +362,7 @@ describe('CaseEditPageComponent', () => {
         next: () => true,
         previous: () => true,
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         validate: (caseEventData: CaseEventData) => of(caseEventData),
         saveDraft: (caseEventData: CaseEventData) => of(someObservable),
         caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: []},
@@ -450,14 +453,14 @@ describe('CaseEditPageComponent', () => {
         form: formGroup,
         wizard: WIZARD,
         data: '',
-        eventTrigger: eventTrigger,
+        eventTrigger,
         hasPrevious: () => true,
         getPage: () => firstPage,
         first: () => true,
         next: () => true,
         previous: () => true,
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         validate: (caseEventData: CaseEventData) => of(caseEventData),
         saveDraft: (caseEventData: CaseEventData) => of(someObservable),
         caseDetails: {
@@ -553,7 +556,7 @@ describe('CaseEditPageComponent', () => {
         next: () => true,
         previous: () => true,
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
         saveDraft: (caseEventData: CaseEventData) => of(someObservable),
         caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
@@ -766,7 +769,7 @@ describe('CaseEditPageComponent', () => {
         next: () => true,
         previous: () => true,
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
         saveDraft: (caseEventData: CaseEventData) => of(someObservable),
         caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
@@ -880,7 +883,7 @@ describe('CaseEditPageComponent', () => {
         next: () => true,
         previous: () => true,
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         validate: (caseEventData: CaseEventData) => of(caseEventData),
         saveDraft: (caseEventData: CaseEventData) => of(someObservable),
         caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: []},

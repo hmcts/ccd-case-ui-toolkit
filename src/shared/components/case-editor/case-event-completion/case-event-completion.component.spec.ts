@@ -32,7 +32,9 @@ describe('CaseEventCompletionComponent', () => {
   let mockJudicialworkerService: JudicialworkerService;
   let eventCompletionStateMachineService: any;
   let parentComponent: any;
+  // tslint:disable-next-line: prefer-const
   let mockRouter: Router;
+  // tslint:disable-next-line: prefer-const
   let mockRoute: ActivatedRoute;
 
   const task: Task = {

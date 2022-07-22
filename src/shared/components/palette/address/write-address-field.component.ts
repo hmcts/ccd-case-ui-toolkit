@@ -67,7 +67,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
             new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
           );
         }, (error) => {
-          console.log(`An error occurred retrieving addresses for postcode ${postcode}. ` + error);
+          console.log(`An error occurred retrieving addresses for postcode ${postcode}. ${error}`);
           this.addressOptions.unshift(
             new AddressOption(undefined, this.defaultLabel(this.addressOptions.length))
           );
@@ -108,7 +108,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     const address = this.writeComplexFieldComponent.complexGroup.value;
     let hasAddress = false;
     if (address) {
-      Object.keys(address).forEach(function (key) {
+      Object.keys(address).forEach((key) => {
         if (address[key] != null) {
           hasAddress = true;
         }

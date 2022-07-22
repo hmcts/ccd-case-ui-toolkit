@@ -4,7 +4,6 @@ import { catchError, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
-import { Task } from '../../../domain/work-allocation/Task';
 import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
@@ -14,8 +13,8 @@ export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 @Injectable()
 export class WorkAllocationService {
 
-  public static IACCaseOfficer = 'caseworker-ia-caseofficer';
-  public static IACAdmOfficer = 'caseworker-ia-admofficer';
+  public static iACCaseOfficer = 'caseworker-ia-caseofficer';
+  public static iACAdmOfficer = 'caseworker-ia-admofficer';
 
   constructor(
     private readonly http: HttpService,
@@ -129,8 +128,8 @@ export class WorkAllocationService {
   public userIsCaseworker(roles: string[]): boolean {
     const lowerCaseRoles = roles.map(role => role.toLowerCase());
     // When/if lib & target permanently change to es2016, replace indexOf with includes
-    return (lowerCaseRoles.indexOf(WorkAllocationService.IACCaseOfficer) !== -1)
-      || (lowerCaseRoles.indexOf(WorkAllocationService.IACAdmOfficer) !== -1);
+    return (lowerCaseRoles.indexOf(WorkAllocationService.iACCaseOfficer) !== -1)
+      || (lowerCaseRoles.indexOf(WorkAllocationService.iACAdmOfficer) !== -1);
   }
 
   /**
@@ -173,9 +172,6 @@ export class WorkAllocationService {
 
   /**
    * Return tasks for case and event.
-   *
-   * @param eventId The ID of the event to find tasks for.
-   * @param caseId The ID of the case to find tasks for.
    */
   public getTasksByCaseIdAndEventId(eventId: string, caseId: string, caseType: string, jurisdiction: string): Observable<TaskPayload> {
     return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}/caseType/${caseType}/jurisdiction/${jurisdiction}`);
@@ -183,8 +179,6 @@ export class WorkAllocationService {
 
  /**
   * Call the API to get a task
-  *
-  * @param {string} taskId
   */
  public getTask(taskId: string): Observable<TaskRespone> {
   return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}`);

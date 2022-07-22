@@ -20,12 +20,14 @@ describe('EventCompletionStateMachineService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
   let service: EventCompletionStateMachineService;
   let stateMachine: StateMachine;
+  // tslint:disable-next-line: prefer-const
   let mockSessionStorageService: SessionStorageService;
   let appConfig: jasmine.SpyObj<AbstractAppConfig>;
   let httpService: HttpService;
   let errorService: HttpErrorService;
   let alertService: AlertService;
   let mockWorkAllocationService: WorkAllocationService;
+  // tslint:disable-next-line: prefer-const
   let mockRoute: ActivatedRoute;
   let mockRouter: any;
   const eventCompletionComponentEmitter: any = {

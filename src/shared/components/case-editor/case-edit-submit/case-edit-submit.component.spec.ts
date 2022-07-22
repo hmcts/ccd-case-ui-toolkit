@@ -375,12 +375,12 @@ describe('CaseEditSubmitComponent', () => {
         data: '',
         eventTrigger:
           {case_fields: [caseField1, caseField2, caseField3], end_button_label: END_BUTTON_LABEL, can_save_draft: false},
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
@@ -674,12 +674,12 @@ describe('CaseEditSubmitComponent', () => {
         form: FORM_GROUP,
         data: '',
         eventTrigger: {case_fields: [], can_save_draft: true},
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [], state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
@@ -739,6 +739,7 @@ describe('CaseEditSubmitComponent', () => {
 
     it('should emit RESUMED_FORM_DISCARD on create event if cancel triggered and originated from view case', () => {
       queryParamMapNoProfile.get.and.callFake(key => {
+        // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return 'viewDraft';
@@ -753,6 +754,7 @@ describe('CaseEditSubmitComponent', () => {
 
     it('should emit NEW_FORM_DISCARD on create event if cancel triggered and originated from create case', () => {
       queryParamMapNoProfile.get.and.callFake(key => {
+        // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
             return '';
@@ -819,12 +821,12 @@ describe('CaseEditSubmitComponent', () => {
         form: FORM_GROUP,
         data: '',
         eventTrigger: {case_fields: [], can_save_draft: true},
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
@@ -1055,14 +1057,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -1197,14 +1199,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [countryMultiSelectField, documentField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -1342,14 +1344,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [countryMultiSelectField, documentField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -1486,14 +1488,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [countryMultiSelectField, documentField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -1636,14 +1638,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [complexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => { mockCaseNotifier.cachedCaseView = null; }
@@ -1828,14 +1830,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [complexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -1965,14 +1967,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [complexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -2101,14 +2103,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [nestedComplexCaseField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -2245,14 +2247,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [nestedComplexCaseField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -2401,14 +2403,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [nestedComplexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -2563,14 +2565,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [nestedComplexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -2706,14 +2708,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [nestedComplexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -2852,14 +2854,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [documentCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -2998,14 +3000,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [documentCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -3143,14 +3145,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [caseFieldRetainHiddenValue, caseField2, caseField3, complexCaseField],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -3293,14 +3295,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [countryMultiSelectField, documentField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -3445,14 +3447,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [complexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -3597,14 +3599,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [complexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -3760,14 +3762,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [nestedComplexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -3922,14 +3924,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [nestedComplexCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -4078,14 +4080,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [documentCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
@@ -4237,14 +4239,14 @@ describe('CaseEditSubmitComponent', () => {
           case_fields: [documentCollectionField, caseField3],
           can_save_draft: true
         },
-        wizard: wizard,
+        wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
           caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
         cancel: () => undefined,
-        cancelled: cancelled,
+        cancelled,
         caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [], state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
         submit: createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one

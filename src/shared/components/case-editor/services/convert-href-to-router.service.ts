@@ -25,6 +25,7 @@ export class ConvertHrefToRouterService {
     if (queryParams) {
       const queryParam = queryParams.split('&');
       if (queryParam[0]) {
+        // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < queryParam.length; i++) {
           const param = queryParam[i].split('=');
           queryParamObj[param[0]] = param[1];

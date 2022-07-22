@@ -47,8 +47,6 @@ export class CasesService {
   public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
 
   /**
-   *
-   * @type {(caseId:string)=>"../../Observable".Observable<Case>}
    * @deprecated Use `CasesService::getCaseView` instead
    */
   public get = this.getCaseView;
@@ -135,7 +133,7 @@ export class CasesService {
           this.errorService.setError(error);
           return throwError(error);
         }),
-        map((p: Object) => plainToClass(CaseEventTrigger, p)),
+        map((p: object) => plainToClass(CaseEventTrigger, p)),
         tap(eventTrigger => this.initialiseEventTrigger(eventTrigger))
       );
   }

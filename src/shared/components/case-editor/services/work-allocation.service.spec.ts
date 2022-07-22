@@ -271,14 +271,14 @@ describe('WorkAllocationService', () => {
 
   describe('userIsCaseworker', () => {
     it('should return true if the user is of caseworker', () => {
-      expect(workAllocationService.userIsCaseworker([WorkAllocationService.IACCaseOfficer])).toBe(true);
-      expect(workAllocationService.userIsCaseworker([WorkAllocationService.IACAdmOfficer])).toBe(true);
+      expect(workAllocationService.userIsCaseworker([WorkAllocationService.iACCaseOfficer])).toBe(true);
+      expect(workAllocationService.userIsCaseworker([WorkAllocationService.iACAdmOfficer])).toBe(true);
 
-      expect(workAllocationService.userIsCaseworker([WorkAllocationService.IACAdmOfficer, 'nonCaseworkerRole'])).toBe(true);
+      expect(workAllocationService.userIsCaseworker([WorkAllocationService.iACAdmOfficer, 'nonCaseworkerRole'])).toBe(true);
     });
 
     it('should return true if the user is of caseworker with casing discrepancies', () => {
-      expect(workAllocationService.userIsCaseworker([WorkAllocationService.IACAdmOfficer.toUpperCase()])).toBe(true);
+      expect(workAllocationService.userIsCaseworker([WorkAllocationService.iACAdmOfficer.toUpperCase()])).toBe(true);
       expect(workAllocationService.userIsCaseworker(['casEworker-iA-caseoFficer'])).toBe(true);
     });
 

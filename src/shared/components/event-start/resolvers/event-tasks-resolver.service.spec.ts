@@ -9,6 +9,7 @@ import { EventTasksResolverService } from './event-tasks-resolver.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('EventTaskResolverService', () => {
+  // tslint:disable-next-line: prefer-const
   let appConfig: any;
   let httpService = createSpyObj<HttpService>('httpService', ['post', 'get']);
   let errorService: any;

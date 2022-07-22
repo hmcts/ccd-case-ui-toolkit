@@ -447,11 +447,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       }
     }]
   };
-  const FORM_GROUP_ID = 'document_url';
-  const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
-  const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
-  const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
 
   const ReadDocumentComponent = MockComponent({
     selector: 'ccd-read-document-field',
@@ -465,9 +461,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let mockFileUploadStateService: any;
   let appConfig;
 
-  let fixtureDialog: ComponentFixture<DocumentDialogComponent>;
-  let componentDialog: DocumentDialogComponent;
-  let deDialog: DebugElement;
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
 

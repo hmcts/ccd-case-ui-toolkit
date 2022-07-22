@@ -23,12 +23,12 @@ import any = jasmine.any;
 
 describe('CaseHistoryComponent', () => {
 
-  const CaseHeaderComponent: any = MockComponent({
+  const caseHeaderComponent: any = MockComponent({
     selector: 'ccd-case-header',
     inputs: ['caseDetails']
   });
 
-  const MarkdownComponent: any = MockComponent({
+  const markdownComponent: any = MockComponent({
     selector: 'ccd-markdown',
     inputs: ['content', 'markdownUseHrefAsRouterLink']
   });
@@ -79,7 +79,8 @@ describe('CaseHistoryComponent', () => {
   let orderService;
   let caseNotifier;
   let caseHistoryService;
-  let alertService;
+  // tslint:disable-next-line: prefer-const
+  let alertService: any;
 
   const FieldReadComponent: any = MockComponent({
     selector: 'ccd-field-read', inputs: [
@@ -114,12 +115,12 @@ describe('CaseHistoryComponent', () => {
           LabelSubstitutorDirective,
           // Mock
           FieldReadComponent,
-          CaseHeaderComponent,
+          caseHeaderComponent,
           LinkComponent,
           CcdTabFieldsPipe,
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
-          MarkdownComponent
+          markdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -143,7 +144,7 @@ describe('CaseHistoryComponent', () => {
   }));
 
   it('should render a case header', () => {
-    const header = de.query(By.directive(CaseHeaderComponent));
+    const header = de.query(By.directive(caseHeaderComponent));
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
   });

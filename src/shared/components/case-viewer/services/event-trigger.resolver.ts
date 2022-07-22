@@ -34,7 +34,8 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
 
   private getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
     const cid = route.parent.paramMap.get(EventTriggerResolver.PARAM_CASE_ID);
-    let caseTypeId;
+    // tslint:disable-next-line: prefer-const
+    let caseTypeId: string;
     const eventTriggerId = route.paramMap.get(EventTriggerResolver.PARAM_EVENT_ID);
     let ignoreWarning = route.queryParamMap.get(EventTriggerResolver.IGNORE_WARNING);
     if (-1 === EventTriggerResolver.IGNORE_WARNING_VALUES.indexOf(ignoreWarning)) {

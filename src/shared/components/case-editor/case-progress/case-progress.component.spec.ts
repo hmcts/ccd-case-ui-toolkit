@@ -12,7 +12,7 @@ import { CaseProgressComponent } from './case-progress.component';
 
 import createSpyObj = jasmine.createSpyObj;
 
-const CaseEditComponent: any = MockComponent({
+const caseEditComponent: any = MockComponent({
   selector: 'ccd-case-edit',
   inputs: ['eventTrigger', 'submit', 'validate', 'caseDetails', 'saveDraft'],
   outputs: ['cancelled', 'submitted']
@@ -97,6 +97,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
   let cancelHandler: any;
   let submitHandler: any;
   let casesService: any;
+  // tslint:disable-next-line: prefer-const
   let alertService: any;
   let eventTriggerService: any;
 
@@ -125,7 +126,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
           CaseProgressComponent,
 
           // mock
-          CaseEditComponent,
+          caseEditComponent,
         ],
         providers: [
           { provide: CasesService, useValue: casesService },
@@ -247,7 +248,7 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
         ],
         schemas: [NO_ERRORS_SCHEMA],
         declarations: [
-          CaseEditComponent,
+          caseEditComponent,
           CaseProgressComponent,
         ],
         providers: [

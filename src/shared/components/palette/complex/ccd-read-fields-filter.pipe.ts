@@ -27,10 +27,6 @@ export class ReadFieldsFilterPipe implements PipeTransform {
 
   /**
    * Complex type should have at least on simple field descendant with a value.
-   *
-   * @param field
-   * @param values
-   * @returns {boolean}
    */
   private static isValidComplex(field: CaseField, values?: object): boolean {
     values = values || {};
@@ -123,14 +119,6 @@ export class ReadFieldsFilterPipe implements PipeTransform {
 
   /**
    * Filter out fields having no data to display and harmonise field values coming parent's value.
-   *
-   * @param complexField A complex field, containing other fields we want to extract
-   * @param keepEmpty Whether or not we should filter out empty fields.
-   * @param index The index within an array.
-   * @param setupHidden Whether or not we should evaluate the show/hide conditions on the fields.
-   * @param formGroup The top-level FormGroup that contains the data for show/hide evaluation.
-   * @param path The current path to this field.
-   * @returns CaseField[]
    */
   public transform(
     complexField: CaseField, keepEmpty?: boolean, index?: number,

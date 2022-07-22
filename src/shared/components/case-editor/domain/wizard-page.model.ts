@@ -29,7 +29,7 @@ export class WizardPage implements Orderable {
     return this.case_fields.filter(f => f.wizardProps.page_column_no === 2);
   }
 
-  public isMultiColumn(): Boolean {
+  public isMultiColumn(): boolean {
     return this.getCol2Fields().length > 0;
   }
 }

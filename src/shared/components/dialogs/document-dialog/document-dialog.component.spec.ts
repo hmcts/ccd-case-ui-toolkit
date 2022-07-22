@@ -6,6 +6,7 @@ import { DocumentDialogComponent } from './document-dialog.component';
 describe('DocumentDialogComponent', () => {
   let component: DocumentDialogComponent;
   let fixture: ComponentFixture<DocumentDialogComponent>;
+  // tslint:disable-next-line: prefer-const
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
 
   beforeEach(waitForAsync(() => {

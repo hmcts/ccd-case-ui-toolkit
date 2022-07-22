@@ -7,7 +7,7 @@ import { PaletteUtilsModule } from '../../../shared/components/palette/utils/uti
 import { DateInputComponent } from './date-input.component';
 import createSpy = jasmine.createSpy;
 
-describe('Date input component', function () {
+describe('Date input component', () => {
   let fixture: ComponentFixture<DateInputComponent>;
   let component: DateInputComponent;
   let de: DebugElement;
@@ -101,7 +101,7 @@ describe('Date input component', function () {
     expect(results).toEqual({ required: 'This field is required' });
   });
 
-  describe('day input component', function () {
+  describe('day input component', () => {
     it('day input should valid for a string value', async () => {
       component.id = 'dayInput';
       component.dayChange('09');
@@ -121,7 +121,8 @@ describe('Date input component', function () {
     });
 
   });
-  describe('month input component', function () {
+
+  describe('month input component', () => {
     it('month input should valid for a string value', async () => {
       component.id = 'monthInput';
       component.monthChange('04');
@@ -139,7 +140,8 @@ describe('Date input component', function () {
       expect(input.value).toBeNull();
     });
   });
-  describe('year input component', function () {
+
+  describe('year input component', () => {
 
     it('year input should null for a null value', async () => {
       component.id = 'yearInput';

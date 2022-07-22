@@ -12,7 +12,7 @@ import { SortOrder } from './sort-order';
 })
 export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadComponent implements OnInit {
 
-  public columns: String[];
+  public columns: string[];
   public columnsVerticalLabel: any;
   public columnsHorizontalLabel: any;
   public columnsAllLabels: any;
