@@ -96,7 +96,7 @@ const JURISDICTION_2: Jurisdiction = {
     caseTypes: CASE_TYPES_2
 };
 
-const WorkbasketFiltersComponent: any = MockComponent({
+const workbasketFiltersComponent: any = MockComponent({
     selector: 'ccd-workbasket-filters',
     inputs: [
         'jurisdictions',
@@ -120,7 +120,7 @@ describe('CaseListFiltersComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 CaseListFiltersComponent,
-                WorkbasketFiltersComponent
+                workbasketFiltersComponent
             ],
             providers: [
                 { provide: DefinitionsService, useValue: mockDefinitionsService }
@@ -152,7 +152,7 @@ describe('CaseListFiltersComponent', () => {
 
     function childComponents(): any[] {
         return fixture.debugElement
-            .queryAll(By.directive(WorkbasketFiltersComponent))
+            .queryAll(By.directive(workbasketFiltersComponent))
             .map(el => el.componentInstance);
     }
 });
