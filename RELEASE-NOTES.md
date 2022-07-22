@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.19.5-manage-linked-cases-integration
+### Version 4.19.6-manage-linked-cases-integration
 **EUI-6191** ### Version 4.19.2-manage-linked-cases-integration
 ### Version 4.17.36-linked-cases-bottom-table-api-integration
 **EUI-5886** ### Version 4.17.36-linked-cases-bottom-table-api-integration
