@@ -158,7 +158,7 @@ describe('LinkCasesComponent', () => {
     component.onSelectedLinkedCaseRemove(0, '1231231231231231');
     expect(component.selectedCases.length).toEqual(0);
     component.onNext();
-    component.getAllLinkedCaseInformation();  
+    component.getAllLinkedCaseInformation();
   });
 
   it('should check various error use cases', () => {
