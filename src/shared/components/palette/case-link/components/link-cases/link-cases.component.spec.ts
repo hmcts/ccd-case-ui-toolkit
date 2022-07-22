@@ -155,8 +155,10 @@ describe('LinkCasesComponent', () => {
     component.submitCaseInfo();
     expect(component.caseNumberError).toBeNull();
     expect(component.selectedCases.length).toEqual(1);
+    component.onSelectedLinkedCaseRemove(0, '1231231231231231');
+    expect(component.selectedCases.length).toEqual(0);
     component.onNext();
-    component.getAllLinkedCaseInformation();
+    component.getAllLinkedCaseInformation();  
   });
 
   it('should check various error use cases', () => {

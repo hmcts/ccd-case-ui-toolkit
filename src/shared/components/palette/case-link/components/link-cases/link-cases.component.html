@@ -33,7 +33,7 @@
           <span class="govuk-visually-hidden">Error:</span> {{caseSelectionError}}
         </span>
 
-        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
+        <button id="propose" type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
           (click)="submitCaseInfo()">Propose case link</button>
       </div>
       <hr>
@@ -67,7 +67,7 @@
               <td class="govuk-table__cell">{{case.caseState}}</td>
               <td class="govuk-table__cell"><span
                   *ngFor="let reason of case.reasons">{{reason.reasonCode | ccdLinkCasesReasonValue}}<br></span></td>
-              <td class="govuk-table__cell"><a (click)="onSelectedLinkedCaseRemove(pos, case.caseReference);"
+              <td class="govuk-table__cell"><a [attr.id]="case.caseReference" (click)="onSelectedLinkedCaseRemove(pos, case.caseReference);"
                   class="govuk-link no-visited-state">Remove</a></td>
             </tr>
             <tr class="govuk-table__row" *ngIf="!selectedCases.length">
