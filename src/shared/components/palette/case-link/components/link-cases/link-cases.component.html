@@ -1,7 +1,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <div>
-      <span class="govuk-caption-l">Link cases to Smith vs Peterson 1234-5678-9012-3456</span>
+      <span class="govuk-caption-l">Link cases to {{caseName}} {{linkedCasesService.caseId | ccdCaseReference}}</span>
       <h1 class="govuk-heading-xl">Select a&nbsp;case you want to link to this case</h1>
       <div class="form-group" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
         <h3 class="govuk-heading-s">Enter case reference</h3>
@@ -33,11 +33,9 @@
           <span class="govuk-visually-hidden">Error:</span> {{caseSelectionError}}
         </span>
 
-        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
+        <button id="propose" type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
           (click)="submitCaseInfo()">Propose case link</button>
       </div>
-      <br><br>
-
       <hr>
       <br><br>
       <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!noSelectedCaseError}">
@@ -68,8 +66,8 @@
               <td class="govuk-table__cell">{{case.caseService}}</td>
               <td class="govuk-table__cell">{{case.caseState}}</td>
               <td class="govuk-table__cell"><span
-                  *ngFor="let reasonInfo of case.reasons">{{reasonInfo.reasonCode | ccdLinkCasesReasonValue}}<br></span></td>
-              <td class="govuk-table__cell"><a (click)="selectedCases.splice(pos, 1);"
+                  *ngFor="let reason of case.reasons">{{reason.reasonCode | ccdLinkCasesReasonValue}}<br></span></td>
+              <td class="govuk-table__cell"><a [attr.id]="case.caseReference" (click)="onSelectedLinkedCaseRemove(pos, case.caseReference);"
                   class="govuk-link no-visited-state">Remove</a></td>
             </tr>
             <tr class="govuk-table__row" *ngIf="!selectedCases.length">

@@ -14,6 +14,13 @@ export class LinkCaseReason {
   selected?: boolean;
 }
 
+export class CCDCaseLinkType {
+  CaseReference: string;
+  CaseType: string;
+  CreatedDateTime: string
+  ReasonForLink: LinkReason[];
+}
+
 export class CaseLink {
   caseReference: string;
   reasons: LinkReason[];

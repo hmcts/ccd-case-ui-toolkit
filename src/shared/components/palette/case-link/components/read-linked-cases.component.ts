@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseField } from '../../../../domain';
@@ -9,7 +9,7 @@ import { LinkedCasesService } from '../services';
   selector: 'ccd-read-linked-cases',
   templateUrl: './read-linked-cases.component.html'
 })
-export class ReadLinkedCasesComponent implements OnInit {
+export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
 
   @Input()
   caseField: CaseField;
@@ -36,16 +36,30 @@ export class ReadLinkedCasesComponent implements OnInit {
       })
     }
 
-  reloadCurrentRoute() {
-    const currentUrl = this.router.url;
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.router.onSameUrlNavigation = 'reload';
-        this.router.navigate([currentUrl], {
-      queryParams: {refresh: new Date().getTime()}
-   });
+    public ngAfterViewInit(): void {
+      this.linkedCasesService.caseFieldValue = this.caseField.value;
+      let labelField = document.getElementsByClassName('govuk-heading-l');
+      if (labelField && labelField.length) {
+        labelField[0].replaceWith('')
+      }
+      labelField = document.getElementsByClassName('heading-h2');
+      if (labelField && labelField.length) {
+        labelField[0].replaceWith('')
+      }
+      labelField = document.getElementsByClassName('case-viewer-label');
+      if (labelField && labelField.length) {
+        labelField[0].replaceWith('')
+      }
+    }
+
+  public reloadCurrentRoute() {
+    let currentUrl = this.router.url;
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+        this.router.navigate([currentUrl]);
+    });
   }
 
-  getFailureNotification(evt) {
+  public getFailureNotification(evt) {
     const errorMessage = 'There has been a system error and your request could not be processed.';
     this.serverError = {
       id: 'backendError', message: errorMessage

@@ -7,6 +7,7 @@ export enum LinkedCasesPages {
 }
 
 export enum LinkedCasesErrorMessages {
+  ProposedCaseWithIn = 'Case can not be linked to the same case',
   CaseNumberError = 'Case numbers must have 16 digits',
   ReasonSelectionError = 'Select a reason why these cases should be linked',
   SomethingWrong = 'Something went wrong, please try again later',
@@ -21,6 +22,6 @@ export enum LinkedCasesErrorMessages {
 }
 
 export enum LinkedCasesEventTriggers {
-  LINK_CASES = 'linkCases',
-  MANAGE_CASE_LINKS = 'manageCaseLinks'
+  LINK_CASES = 'Link cases',
+  MANAGE_CASE_LINKS = 'Manage case links'
 }

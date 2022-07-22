@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 4.19.9-manage-linked-cases-integration
+**EUI-6191** ### Version 4.19.2-manage-linked-cases-integration
+### Version 4.17.36-linked-cases-bottom-table-api-integration
+**EUI-5886** ### Version 4.17.36-linked-cases-bottom-table-api-integration
 
 ### Version 4.12.1-EUI-5225-organisation-search
 **EUI-5225** Bug fix the organisation search functionality

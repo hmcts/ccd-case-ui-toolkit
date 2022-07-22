@@ -14,6 +14,7 @@ import { FieldTypeSanitiser } from '../../../../services/form/field-type-sanitis
 import { FormErrorService } from '../../../../services/form/form-error.service';
 import { FormValueService } from '../../../../services/form/form-value.service';
 import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
+import { CaseEditComponent } from '../../../case-editor/case-edit/case-edit.component';
 import { WizardPage } from '../../../case-editor/domain/wizard-page.model';
 import { Wizard } from '../../../case-editor/domain/wizard.model';
 import { CasesService } from '../../../case-editor/services/cases.service';
@@ -226,7 +227,7 @@ describe('WriteLinkedCasesComponent', () => {
       ],
       providers: [
         { provide: Router, useValue: router },
-        { provide: CaseEditPageComponent, useValue: caseEditPageComponent },
+        { provide: CaseEditComponent, useValue: caseEditComponentStub },
         { provide: CasesService, useValue: casesService },
         { provide: LinkedCasesService, useValue: linkedCasesService },
         { provide: CommonDataService, useValue: commonDataService },
@@ -242,7 +243,8 @@ describe('WriteLinkedCasesComponent', () => {
     casesService.getCaseViewV2.and.returnValue(of(caseInfo));
     component = fixture.componentInstance;
     spyOn(caseEditPageComponent, 'getCaseId').and.returnValue(of('1111222233334444'));
-    component.caseEditPageComponent = caseEditPageComponent;
+    component.caseEditPageComponent = caseEditComponentStub;
+    component.formGroup = FORM_GROUP;
     fixture.detectChanges();
   });
 
@@ -250,13 +252,26 @@ describe('WriteLinkedCasesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have called ngOnInit, created a FormGroup with a validator, and set the correct linked cases starting page', () => {
+  it('should have called pre-required datas ', () => {
+    commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
+    const caseDetail = {
+      case_id: '1231231231231231',
+      case_type: {
+        name: 'SSCS type',
+        jurisdiction: { name: '' }
+      }, state: { name: 'With FTA' }
+    }
+    casesService.getCaseViewV2.and.returnValue(of(caseDetail));
     expect(component.ngOnInit).toBeTruthy();
-    expect(component.formGroup).toBeTruthy();
-    expect(component.formGroup.validator).toBeTruthy();
+    expect(linkedCasesService.linkedCases.length).not.toBeNull();
     expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);
     expect(component.isAtFinalPage()).toBe(false);
-    expect(component.formGroup.valid).toBe(false);
+  });
+
+  it('should have called ngOnInit, created a FormGroup with a validator, and set the correct linked cases starting page', () => {
+    expect(component.ngOnInit).toBeTruthy();
+    expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);
+    expect(component.isAtFinalPage()).toBe(false);
   });
 
   it('should isAtFinalState return correct state', () => {
@@ -290,7 +305,7 @@ describe('WriteLinkedCasesComponent', () => {
       navigateToNextPage: true
     };
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
-    expect(component.getNextPage(linkedCasesState1)).toEqual(LinkedCasesPages.LINK_CASE);
+    expect(component.getNextPage(linkedCasesState1)).toEqual(LinkedCasesPages.UNLINK_CASE);
 
     const linkedCasesState2: LinkedCasesState = {
       currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,

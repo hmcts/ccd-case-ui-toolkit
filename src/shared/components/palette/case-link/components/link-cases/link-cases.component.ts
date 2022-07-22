@@ -1,12 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { forkJoin, throwError } from 'rxjs';
+import { forkJoin, Observable, throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import {
   CaseLink,
+  CCDCaseLinkType,
   ESQueryType,
   LinkCaseReason,
   LinkReason,
@@ -14,6 +15,7 @@ import {
 import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
+import moment = require('moment');
 
 @Component({
   selector: 'ccd-link-cases',
@@ -31,6 +33,8 @@ export class LinkCasesComponent implements OnInit {
   public caseReasonError: string;
   public caseSelectionError: string;
   public noSelectedCaseError: string;
+  public caseName = 'Case name missing';
+  private ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(
     private casesService: CasesService,
@@ -40,13 +44,15 @@ export class LinkCasesComponent implements OnInit {
     private readonly searchService: SearchService
   ) {}
 
-  ngOnInit(): void {
-    this.selectedCases = this.linkedCasesService.linkedCases;
+  public ngOnInit(): void {
     this.getAllLinkedCaseInformation();
     this.initForm();
+    if (this.linkedCasesService.editMode) {
+      this.selectedCases = this.linkedCasesService.linkedCases;
+    }
   }
 
-  public initForm() {
+  public initForm(): void {
     this.linkCaseForm = this.fb.group({
       caseNumber: ['', this.validatorsUtils.numberLengthValidator(16)],
       reasonType: this.getReasonTypeFormArray,
@@ -71,7 +77,7 @@ export class LinkCasesComponent implements OnInit {
     );
   }
 
-  public submitCaseInfo() {
+  public submitCaseInfo(): void {
     this.errorMessages = [];
     this.caseReasonError = null;
     this.caseNumberError = null;
@@ -80,7 +86,8 @@ export class LinkCasesComponent implements OnInit {
     if (
       this.linkCaseForm.valid &&
       !this.isCaseSelected(this.selectedCases) &&
-      !this.isCaseSelected(this.linkedCasesService.preLinkedCases)
+      !this.isCaseSelected(this.linkedCasesService.linkedCases) &&
+      !this.isCaseSelectedSameAsCurrentCase()
     ) {
       this.getCaseInfo();
     } else {
@@ -88,7 +95,7 @@ export class LinkCasesComponent implements OnInit {
     }
   }
 
-  isCaseSelected(linkedCases: CaseLink[]): boolean {
+  public isCaseSelected(linkedCases: CaseLink[]): boolean {
     if (linkedCases.length === 0) {
       return false;
     }
@@ -98,7 +105,11 @@ export class LinkCasesComponent implements OnInit {
     );
   }
 
-  showErrorInfo() {
+  private isCaseSelectedSameAsCurrentCase(): boolean {
+    return this.linkCaseForm.value.caseNumber === this.linkedCasesService.caseId
+  }
+
+  public showErrorInfo(): void {
     if (this.linkCaseForm.controls.caseNumber.invalid) {
       this.caseNumberError = LinkedCasesErrorMessages.CaseNumberError;
       this.errorMessages.push({
@@ -123,7 +134,7 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber',
       });
     }
-    if (this.isCaseSelected(this.linkedCasesService.preLinkedCases)) {
+    if (this.isCaseSelected(this.linkedCasesService.linkedCases)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CasesLinkedError;
       this.errorMessages.push({
         title: 'dummy-case-number',
@@ -131,10 +142,18 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber',
       });
     }
+    if (this.linkCaseForm.value.caseNumber === this.linkedCasesService.caseId) {
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCasesErrorMessages.ProposedCaseWithIn,
+        fieldId: 'caseNumber',
+      });
+    }
+    window.scrollTo(0, 0);
     this.emitLinkedCasesState(false);
   }
 
-  getCaseInfo() {
+  public getCaseInfo(): void {
     this.casesService
       .getCaseViewV2(this.linkCaseForm.value.caseNumber)
       .subscribe(
@@ -142,13 +161,20 @@ export class LinkCasesComponent implements OnInit {
           const caseLink: CaseLink = {
             caseReference: caseView.case_id,
             reasons: this.getSelectedCaseReasons(),
-            createdDateTime: new Date().toISOString(),
-            caseType: caseView.case_type.name,
+            createdDateTime: moment(new Date()).format(this.ISO_FORMAT),
+            caseType: caseView.case_type.id,
             caseState: caseView.state.name,
             caseService: caseView.case_type.jurisdiction.name,
             caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
           };
-          this.selectedCases.push(caseLink);
+          const ccdApiCaseLinkData: CCDCaseLinkType = {
+            CaseReference: caseView.case_id,
+            CaseType: caseView.case_type.id,
+            CreatedDateTime: moment(new Date()).format(this.ISO_FORMAT),
+            ReasonForLink: this.getSelectedCCDTypeCaseReason()
+          }
+          this.linkedCasesService.caseFieldValue.push({id: caseView.case_id.toString(), value: ccdApiCaseLinkData});
+            this.selectedCases.push(caseLink);
           this.initForm();
           this.emitLinkedCasesState(false);
         },
@@ -160,37 +186,51 @@ export class LinkCasesComponent implements OnInit {
             fieldId: 'caseNumber',
           });
           this.emitLinkedCasesState(false);
+          window.scrollTo(0, 0);
           return throwError(error);
         }
       );
   }
 
   public groupByCaseType = (arrObj, key) => {
+    if (!arrObj) {
+      return
+    }
     return arrObj.reduce((rv, x) => {
-      (rv[x[key]] = rv[x[key]] || []).push(x['caseReference']);
+      (rv[x.value[key]] = rv[x.value[key]] || []).push(x.value['CaseReference']);
       return rv;
     }, {});
   };
 
-  public mapResponse(esSearchCasesResponse, selectedCase) {
-    return {...selectedCase,
+  public mapResponse(esSearchCasesResponse, selectedCase): CaseLink {
+    const mappedValue = {...selectedCase,
       caseName: esSearchCasesResponse.case_fields && esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
       caseReference : esSearchCasesResponse.case_id,
       caseType : esSearchCasesResponse.case_fields['[CASE_TYPE]'],
       caseService : esSearchCasesResponse.case_fields['[JURISDICTION]'],
       caseState : esSearchCasesResponse.case_fields['[STATE]'],
-    }
+      reasons: this.mapReason(selectedCase)
+    } as CaseLink
+    return mappedValue;
   }
 
-  public searchCasesByCaseIds(searchCasesResponse: any[]) {
+  public mapReason(selectedCase): LinkReason[] {
+    const reasons = selectedCase.value && selectedCase.value.ReasonForLink &&
+    selectedCase.value.ReasonForLink.map(reason => reason.value && {
+      reasonCode: reason.value.Reason
+    } as LinkReason)
+    return reasons;
+  }
+
+  public searchCasesByCaseIds(searchCasesResponse: any[]): Observable<any> {
     return forkJoin(searchCasesResponse);
   }
   /**
    * TODO: Get all Linked cases information
    * Gets all case information
    */
-  public getAllLinkedCaseInformation() {
-    const linkedCaseIds = this.groupByCaseType(this.selectedCases, 'caseType');
+  public getAllLinkedCaseInformation(): void {
+    const linkedCaseIds = this.groupByCaseType(this.selectedCases, 'CaseType');
     const searchCasesResponse = [];
     Object.keys(linkedCaseIds).forEach((id) => {
       const esQuery = this.constructElasticSearchQuery(linkedCaseIds[id], 100);
@@ -215,16 +255,12 @@ export class LinkCasesComponent implements OnInit {
             });
           });
           this.selectedCases = updatedSelectedCases;
-          this.linkedCasesService.preLinkedCases = updatedSelectedCases;
         }
       );
     }
   }
 
-  public constructElasticSearchQuery(
-    caseIds: any[],
-    size: number
-  ): ESQueryType {
+  public constructElasticSearchQuery(caseIds: any[], size: number): ESQueryType {
     return {
       query: {
         terms: {
@@ -236,7 +272,7 @@ export class LinkCasesComponent implements OnInit {
   }
 
   // Return linked cases state and error messages to the parent
-  emitLinkedCasesState(isNavigateToNextPage: boolean) {
+  public emitLinkedCasesState(isNavigateToNextPage: boolean): void {
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
       errorMessages: this.errorMessages,
@@ -244,16 +280,43 @@ export class LinkCasesComponent implements OnInit {
     });
   }
 
-  getSelectedCaseReasons(): LinkReason[] {
-    let selectedReasons: LinkReason[] = [];
+  public getSelectedCaseReasons(): LinkReason[] {
+    let selectedReasons = [];
     this.linkCaseForm.controls.reasonType.value.forEach(
       (selectedReason: LinkCaseReason) => {
         if (selectedReason.selected) {
-          selectedReasons.push({ reasonCode: selectedReason.key });
+          selectedReasons.push({
+            reasonCode: selectedReason.key
+          } as LinkReason);
         }
       }
     );
     return selectedReasons;
+  }
+
+  public getSelectedCCDTypeCaseReason(): LinkReason[] {
+    let selectedReasons = [];
+    this.linkCaseForm.controls.reasonType.value.forEach(
+      (selectedReason: LinkCaseReason) => {
+        if (selectedReason.selected) {
+          selectedReasons.push({
+            value: {
+              Reason: selectedReason.key,
+            }
+          });
+        }
+      }
+    );
+    return selectedReasons;
+  }
+
+  public onSelectedLinkedCaseRemove(pos, selectedCaseReference): void {
+    const caseFieldValue = this.linkedCasesService.caseFieldValue || [];
+    const updatedItems =  caseFieldValue.filter(item => item.value && item.value.CaseReference !== selectedCaseReference);
+    if (updatedItems) {
+      this.linkedCasesService.caseFieldValue = updatedItems;
+    }
+    this.selectedCases.splice(pos, 1);
   }
 
   public onNext(): void {
