@@ -100,7 +100,6 @@ describe('ReadOrganisationFieldTableComponent', () => {
 
   beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
-
     TestBed.configureTestingModule({
       imports: [
         ConditionalShowModule,

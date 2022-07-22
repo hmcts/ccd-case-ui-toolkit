@@ -36,8 +36,7 @@ describe('CaseEditConfirmComponent', () => {
   const caseField1: CaseField = aCaseField('TetsField1', 'TetsField1', 'Text', 'OPTIONAL', 1);
   const caseField2: CaseField = aCaseField('TetsField2', 'TetsField2', 'Text', 'OPTIONAL', 2);
   const caseField3: CaseField = aCaseField('TetsField3', 'TetsField3', 'Text', 'OPTIONAL', 3);
-
-  let convertHrefToRouterService: ConvertHrefToRouterService;
+  let convertHrefToRouterService;
 
   beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
