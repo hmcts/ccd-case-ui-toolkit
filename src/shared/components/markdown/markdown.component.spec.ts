@@ -6,7 +6,7 @@ import { PipesModule } from '../../pipes';
 import { ConvertHrefToRouterService } from '../case-editor/services';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 
-xdescribe('MarkdownComponent', () => {
+describe('MarkdownComponent - Table', () => {
 
   const $MARKDOWN = By.css('markdown');
 
@@ -73,14 +73,6 @@ xdescribe('MarkdownComponent', () => {
   it('Should render an html table', () => {
     expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
   });
-
-  it('should not call updateHrefLink', () => {
-    component.markdownUseHrefAsRouterLink = true;
-    const event = new MouseEvent('mousedown', {clientX: 50, clientY: 150});
-    component.onMarkdownClick(event);
-    fixture.detectChanges();
-    expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
-  });
 });
 
 xdescribe('MarkdownComponent - Anchor', () => {
@@ -133,54 +125,6 @@ xdescribe('MarkdownComponent - Anchor', () => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(spyMarkdownClick).toHaveBeenCalled();
-      done();
-    });
-  });
-
-  it('should invoke callUpdateHrefLink() and call updateHrefLink', (done) => {
-    const anchor = { pathname: '/case/IA/Asylum/1632395877596617/trigger/addCaseNote'} as HTMLAnchorElement;
-    const event = new MouseEvent('click');
-    component.callUpdateHrefLink(anchor, event);
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      expect(convertHrefToRouterService.updateHrefLink).toHaveBeenCalled();
-      done();
-    });
-  });
-
-  it('should not invoke callUpdateHrefLink() on URL with hash', (done) => {
-    const anchor = { pathname: '/case/IA/Asylum/1599830705879596', hash: 'Hearing%20and%20appointment'} as HTMLAnchorElement;
-    const event = new MouseEvent('click');
-    const returnValue = component.callUpdateHrefLink(anchor, event );
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
-      expect(returnValue).toBeTruthy();
-      done();
-    });
-  });
-
-  it('should not invoke callUpdateHrefLink() on markdownUseHrefAsRouterLink false', (done) => {
-    component.markdownUseHrefAsRouterLink = false;
-    const anchor = { pathname: '/case/IA/Asylum/1599830705879596', hash: 'Hearing%20and%20appointment'} as HTMLAnchorElement;
-    const event = new MouseEvent('click');
-    const returnValue = component.callUpdateHrefLink(anchor, event );
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
-      expect(returnValue).toBeTruthy();
-      done();
-    });
-  });
-
-  it('should not invoke callUpdateHrefLink() on markdownUseHrefAsRouterLink false and external link click', (done) => {
-    component.markdownUseHrefAsRouterLink = false;
-    const anchor = { pathname: 'https://www.bbc.co.uk/news'} as HTMLAnchorElement;
-    const event = new MouseEvent('click');
-    component.callUpdateHrefLink(anchor, event );
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      expect(convertHrefToRouterService.updateHrefLink).not.toHaveBeenCalled();
       done();
     });
   });

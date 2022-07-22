@@ -1498,7 +1498,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
 
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
-    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
     TestBed
@@ -1596,6 +1597,9 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   }));
 
   it('should display overview tab by default', () => {
+
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    componentFixture.detectChanges();
     const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
