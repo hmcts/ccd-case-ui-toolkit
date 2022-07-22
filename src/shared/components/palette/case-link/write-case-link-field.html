@@ -4,12 +4,10 @@
       <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
     </label>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <!-- <span class="error-message"
-      *ngIf="caseReferenceControl.errors && (caseReferenceControl.dirty || caseReferenceControl.touched)">{{caseReferenceControl.errors
-      | ccdFirstError:caseField.label}}</span> -->
     <input class="form-control bottom-30" [id]="id()" type="text" [formControl]="caseReferenceControl">
   </div>
 	<div class="form-group" *ngIf="containsCaseLinkCollection">
-		<ccd-write-linked-cases [formGroup]="formGroup" [caseEditPageComponent]="caseEditPageComponent" (onLinkedCasesSelected)="submitLinkedCases();" [isLinkedCasesJourney]="isLinkedCasesEventTrigger()"></ccd-write-linked-cases>
+		<ccd-write-linked-cases [formGroup]="formGroup" [caseEditPageComponent]="caseEditPageComponent" 
+            (onLinkedCasesSelected)="submitLinkedCases();" [isLinkedCasesJourney]="linkedCasesService.isLinkedCasesEventTrigger"></ccd-write-linked-cases>
 	</div>
 </ng-container>

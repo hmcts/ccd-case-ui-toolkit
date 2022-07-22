@@ -15,19 +15,19 @@ import { LinkedCasesService } from './services';
 export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
   @Input()
-  caseFields: CaseField[] = [];
+  public caseFields: CaseField[] = [];
 
   @Input()
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 
-  formArray: FormArray;
+  public formArray: FormArray;
 
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
 
-  caseReferenceControl: AbstractControl;
-  caseLinkGroup: FormGroup;
-  containsCaseLinkCollection: boolean;
+  public caseReferenceControl: AbstractControl;
+  public caseLinkGroup: FormGroup;
+  public containsCaseLinkCollection: boolean;
 
   @ViewChild('writeComplexFieldComponent')
   writeComplexFieldComponent: WriteComplexFieldComponent;
@@ -78,9 +78,5 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
       this.caseField.field_type.type === 'Collection' &&
       this.caseField.field_type.collection_field_type.id === 'CaseLink'
     );
-  }
-
-  public isLinkedCasesEventTrigger(): boolean {
-    return this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
   }
 }

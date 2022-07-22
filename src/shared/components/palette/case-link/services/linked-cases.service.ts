@@ -10,6 +10,5 @@ export class LinkedCasesService {
   public linkCaseReasons: LovRefDataModel[] = [];
   public linkedCases: CaseLink[] = [];
   public preLinkedCases: CaseLink[] = [];
-  public removedLinkedCases: CaseLink[] = [];
   public editMode = false;
 }
