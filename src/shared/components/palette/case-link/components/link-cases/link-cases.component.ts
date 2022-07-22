@@ -15,6 +15,7 @@ import {
 import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
+import moment = require('moment');
 
 @Component({
   selector: 'ccd-link-cases',
@@ -33,6 +34,7 @@ export class LinkCasesComponent implements OnInit {
   public caseSelectionError: string;
   public noSelectedCaseError: string;
   public caseName = 'Case name missing';
+  private ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(
     private casesService: CasesService,
@@ -159,7 +161,7 @@ export class LinkCasesComponent implements OnInit {
           const caseLink: CaseLink = {
             caseReference: caseView.case_id,
             reasons: this.getSelectedCaseReasons(),
-            createdDateTime: new Date().toISOString(),
+            createdDateTime: moment(new Date()).format(this.ISO_FORMAT),
             caseType: caseView.case_type.id,
             caseState: caseView.state.name,
             caseService: caseView.case_type.jurisdiction.name,
@@ -168,7 +170,7 @@ export class LinkCasesComponent implements OnInit {
           const ccdApiCaseLinkData: CCDCaseLinkType = {
             CaseReference: caseView.case_id,
             CaseType: caseView.case_type.id,
-            CreatedDateTime: new Date().toISOString(),
+            CreatedDateTime: moment(new Date()).format(this.ISO_FORMAT),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
           }
           this.linkedCasesService.caseFieldValue.push({id: caseView.case_id.toString(), value: ccdApiCaseLinkData});
