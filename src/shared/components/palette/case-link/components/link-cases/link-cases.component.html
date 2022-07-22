@@ -1,7 +1,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <div>
-      <span class="govuk-caption-l">Link cases to Smith vs Peterson 1234-5678-9012-3456</span>
+      <span class="govuk-caption-l">Link cases to {{caseName}} {{linkedCasesService.caseId | ccdCaseReference}}</span>
       <h1 class="govuk-heading-xl">Select a&nbsp;case you want to link to this case</h1>
       <div class="form-group" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
         <h3 class="govuk-heading-s">Enter case reference</h3>

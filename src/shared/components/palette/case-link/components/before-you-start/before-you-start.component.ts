@@ -12,12 +12,12 @@ export class BeforeYouStartComponent {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
+  public isLinkCasesJourney = false;
+
   constructor(
     private readonly linkedCasesService: LinkedCasesService,
-  ) {}
-
-  public isLinkCasesJourney() {
-    return this.linkedCasesService.isLinkedCasesEventTrigger;
+  ) {
+    this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
   }
 
   public onNext(): void {

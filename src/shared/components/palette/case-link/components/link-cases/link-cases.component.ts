@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { forkJoin, throwError } from 'rxjs';
+import { forkJoin, Observable, throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
@@ -32,6 +32,7 @@ export class LinkCasesComponent implements OnInit {
   public caseReasonError: string;
   public caseSelectionError: string;
   public noSelectedCaseError: string;
+  public caseName = 'Case name missing';
 
   constructor(
     private casesService: CasesService,
@@ -106,7 +107,7 @@ export class LinkCasesComponent implements OnInit {
     return this.linkCaseForm.value.caseNumber === this.linkedCasesService.caseId
   }
 
-  public showErrorInfo() {
+  public showErrorInfo(): void {
     if (this.linkCaseForm.controls.caseNumber.invalid) {
       this.caseNumberError = LinkedCasesErrorMessages.CaseNumberError;
       this.errorMessages.push({
@@ -150,7 +151,7 @@ export class LinkCasesComponent implements OnInit {
     this.emitLinkedCasesState(false);
   }
 
-  public getCaseInfo() {
+  public getCaseInfo(): void {
     this.casesService
       .getCaseViewV2(this.linkCaseForm.value.caseNumber)
       .subscribe(
@@ -211,7 +212,7 @@ export class LinkCasesComponent implements OnInit {
     return mappedValue;
   }
 
-  public mapReason(selectedCase) {
+  public mapReason(selectedCase): LinkReason[] {
     const reasons = selectedCase.value && selectedCase.value.ReasonForLink &&
     selectedCase.value.ReasonForLink.map(reason => reason.value && {
       reasonCode: reason.value.Reason
@@ -219,14 +220,14 @@ export class LinkCasesComponent implements OnInit {
     return reasons;
   }
 
-  public searchCasesByCaseIds(searchCasesResponse: any[]) {
+  public searchCasesByCaseIds(searchCasesResponse: any[]): Observable<any> {
     return forkJoin(searchCasesResponse);
   }
   /**
    * TODO: Get all Linked cases information
    * Gets all case information
    */
-  public getAllLinkedCaseInformation() {
+  public getAllLinkedCaseInformation(): void {
     const linkedCaseIds = this.groupByCaseType(this.selectedCases, 'CaseType');
     const searchCasesResponse = [];
     Object.keys(linkedCaseIds).forEach((id) => {
@@ -257,10 +258,7 @@ export class LinkCasesComponent implements OnInit {
     }
   }
 
-  public constructElasticSearchQuery(
-    caseIds: any[],
-    size: number
-  ): ESQueryType {
+  public constructElasticSearchQuery(caseIds: any[], size: number): ESQueryType {
     return {
       query: {
         terms: {
@@ -272,7 +270,7 @@ export class LinkCasesComponent implements OnInit {
   }
 
   // Return linked cases state and error messages to the parent
-  public emitLinkedCasesState(isNavigateToNextPage: boolean) {
+  public emitLinkedCasesState(isNavigateToNextPage: boolean): void {
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.LINK_CASE,
       errorMessages: this.errorMessages,
@@ -310,7 +308,7 @@ export class LinkCasesComponent implements OnInit {
     return selectedReasons;
   }
 
-  public onSelectedLinkedCaseRemove(pos, selectedCaseReference) {
+  public onSelectedLinkedCaseRemove(pos, selectedCaseReference): void {
     const caseFieldValue = this.linkedCasesService.caseFieldValue || [];
     const updatedItems =  caseFieldValue.filter(item => item.value && item.value.CaseReference !== selectedCaseReference);
     if (updatedItems) {

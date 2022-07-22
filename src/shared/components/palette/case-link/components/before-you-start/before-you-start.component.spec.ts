@@ -49,14 +49,14 @@ describe('BeforeYouStartComponent', () => {
   });
 
   it('should display correct text content for link cases journey', () => {
-    spyOn(component, 'isLinkCasesJourney').and.returnValue(true);
+    component.isLinkCasesJourney = true;
     fixture.detectChanges();
     const linkCasesJourneyElement = fixture.debugElement.nativeElement.querySelector('#link-cases-journey');
     expect(linkCasesJourneyElement.textContent).not.toBeNull();
   });
 
   it('should display correct text content for manage link cases journey', () => {
-    spyOn(component, 'isLinkCasesJourney').and.returnValue(false);
+    component.isLinkCasesJourney = false;
     fixture.detectChanges();
     const manageLinkCasesJourneyElement = fixture.debugElement.nativeElement.querySelector('#manage-link-cases-journey');
     expect(manageLinkCasesJourneyElement.textContent).toBe(
