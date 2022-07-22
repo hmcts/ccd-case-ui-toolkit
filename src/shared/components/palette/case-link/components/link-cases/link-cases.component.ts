@@ -40,7 +40,7 @@ export class LinkCasesComponent implements OnInit {
     private casesService: CasesService,
     private readonly fb: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
-    private readonly linkedCasesService: LinkedCasesService,
+    public readonly linkedCasesService: LinkedCasesService,
     private readonly searchService: SearchService
   ) {}
 
