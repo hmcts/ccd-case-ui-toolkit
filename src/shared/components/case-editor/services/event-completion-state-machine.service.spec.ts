@@ -90,7 +90,7 @@ describe('EventCompletionStateMachineService', () => {
     component: eventCompletionComponentEmitter
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [

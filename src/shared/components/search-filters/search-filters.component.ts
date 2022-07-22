@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { tap } from 'rxjs/operators';
 import { CaseField, CaseState, CaseTypeLite, Jurisdiction } from '../../domain';
 import { FieldsUtils, JurisdictionService, OrderService, SearchService, WindowService } from '../../services';
 import { SearchInput } from './domain/search-input.model';
@@ -147,11 +148,10 @@ export class SearchFiltersComponent implements OnInit {
     this.searchService.getSearchInputs(
       this.selected.jurisdiction.id,
       this.selected.caseType.id
-    )
-      .do(() => this.searchInputsReady = true)
-      .subscribe(searchInputs => {
-        this.searchInputs = searchInputs
-          .sort(this.orderService.sortAsc);
+    ).pipe(
+      tap(() => this.searchInputsReady = true)
+    ).subscribe(searchInputs => {
+        this.searchInputs = searchInputs.sort(this.orderService.sortAsc);
 
         const formValue = this.windowService.getLocalStorage(FORM_GROUP_VALUE_LOC_STORAGE);
         let formValueObject = null;

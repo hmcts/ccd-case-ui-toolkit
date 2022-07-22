@@ -1,5 +1,5 @@
 import { DebugElement, EventEmitter } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
@@ -20,7 +20,7 @@ describe('TaskCancelledComponent', () => {
     eventCanBeCompleted: new EventEmitter<boolean>(true)
   };
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -31,7 +31,7 @@ describe('TaskCancelledComponent', () => {
       ]
     })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseEventCompletionTaskCancelledComponent);

@@ -1,6 +1,6 @@
 import { PortalModule } from '@angular/cdk/portal';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, SimpleChange } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -102,7 +102,7 @@ describe('CaseEventCompletionComponent', () => {
     eventCanBeCompleted: new EventEmitter<boolean>(true)
   };
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -141,7 +141,7 @@ describe('CaseEventCompletionComponent', () => {
     component.eventCompletionParams = eventCompletionParams;
     de = fixture.debugElement;
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     component.eventCompletionParams = eventCompletionParams;

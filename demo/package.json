@@ -11,8 +11,8 @@
     "test:mock": "nodemon test/nodeMock/app.js --standalone"
   },
   "dependencies": {
-    "@angular-material-components/datetime-picker": "^2.0.4",
-    "@angular-material-components/moment-adapter": "^5.0.0",
+    "@angular-material-components/datetime-picker": "6.0.3",
+    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/animations": "~11.2.14",
     "@angular/cdk": "^11.2.13",
     "@angular/common": "^11.2.14",
@@ -48,8 +48,8 @@
     "json-server": "^0.12.1",
     "jsonpath": "^1.1.1",
     "ncp": "2.0.0",
-    "ngx-md": "^7.0.0",
-    "ngx-pagination": "^3.2.1",
+    "ngx-md": "8.1.6",
+    "ngx-pagination": "5.1.1",
     "rxjs": "^6.6.7",
     "rxjs-compat": "^6.6.7",
     "web-animations-js": "^2.3.2",
