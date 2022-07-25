@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
@@ -1496,6 +1496,20 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
   let convertHrefToRouterService;
+  const prependedTabsList = [
+    {
+      id: 'tasks',
+      label: 'Tasks',
+      fields: [],
+      show_condition: null
+    },
+    {
+      id: 'roles-and-access',
+      label: 'Roles and access',
+      fields: [],
+      show_condition: null
+    }
+  ];
 
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
@@ -1612,6 +1626,13 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
     expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
   });
+
+  it('should add prepended tabs to the existing tab list', () => {
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(4);
+  })
 });
 
 describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {
