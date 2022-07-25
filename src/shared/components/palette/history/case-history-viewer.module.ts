@@ -17,9 +17,6 @@ import { EventLogModule } from './event-log';
   declarations: [
     CaseHistoryViewerFieldComponent
   ],
-  entryComponents: [
-    CaseHistoryViewerFieldComponent,
-  ],
   providers: [
     DatePipe,
     FormatTranslatorService

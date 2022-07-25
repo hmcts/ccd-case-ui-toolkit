@@ -18,10 +18,6 @@ import { WriteMultiSelectListFieldComponent } from './write-multi-select-list-fi
   declarations: [
     ReadMultiSelectListFieldComponent,
     WriteMultiSelectListFieldComponent
-  ],
-  entryComponents: [
-    ReadMultiSelectListFieldComponent,
-    WriteMultiSelectListFieldComponent
   ]
 })
 export class MultiSelectListModule {}

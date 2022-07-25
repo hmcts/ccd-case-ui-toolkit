@@ -1,7 +1,6 @@
 import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
@@ -64,12 +63,6 @@ describe('FieldWriteComponent', () => {
         ]
       })
       .compileComponents();
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [FieldTestComponent]
-      }
-    });
 
     fixture = TestBed.createComponent(FieldWriteComponent);
     component = fixture.componentInstance;

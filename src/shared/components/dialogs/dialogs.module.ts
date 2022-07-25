@@ -18,12 +18,6 @@ import { SaveOrDiscardDialogComponent } from './save-or-discard-dialog';
     SaveOrDiscardDialogComponent,
     RemoveDialogComponent,
   ],
-  entryComponents: [
-    DocumentDialogComponent,
-    DeleteOrCancelDialogComponent,
-    SaveOrDiscardDialogComponent,
-    RemoveDialogComponent,
-  ],
   exports: [
     DocumentDialogComponent,
     DeleteOrCancelDialogComponent,

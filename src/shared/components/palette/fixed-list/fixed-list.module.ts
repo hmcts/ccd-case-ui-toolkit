@@ -20,10 +20,6 @@ import { WriteFixedListFieldComponent } from './write-fixed-list-field.component
     ReadFixedListFieldComponent,
     WriteFixedListFieldComponent
   ],
-  entryComponents: [
-    ReadFixedListFieldComponent,
-    WriteFixedListFieldComponent
-  ],
   exports: [
     FixedListPipe
   ]

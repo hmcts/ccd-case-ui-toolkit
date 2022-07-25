@@ -20,8 +20,6 @@ import { MarkdownModule } from '../markdown/markdown.module';
 import { AddressModule } from './address/address.module';
 import { BaseFieldModule } from './base-field/base-field.module';
 import { CaseLinkModule } from './case-link/case-link.module';
-import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
-import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
@@ -47,8 +45,6 @@ import { ReadNumberFieldComponent } from './number/read-number-field.component';
 import { WriteNumberFieldComponent } from './number/write-number-field.component';
 import { OrderSummaryModule } from './order-summary/order-summary.module';
 import { OrganisationModule } from './organisation/organisation.module';
-import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
-import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerModule } from './payment/case-payment-history-viewer.module';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
@@ -124,35 +120,6 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
-  ],
-  entryComponents: [
-    UnsupportedFieldComponent,
-    LabelFieldComponent,
-    WaysToPayFieldComponent,
-
-    // Read
-    ReadTextFieldComponent,
-    ReadTextAreaFieldComponent,
-    ReadNumberFieldComponent,
-    ReadEmailFieldComponent,
-    ReadPhoneUKFieldComponent,
-    ReadDateFieldComponent,
-    ReadCollectionFieldComponent,
-    ReadCaseLinkFieldComponent,
-    ReadOrganisationFieldComponent,
-
-    // Write
-    WriteCollectionFieldComponent,
-    WriteTextFieldComponent,
-    WriteTextAreaFieldComponent,
-    WritePhoneUKFieldComponent,
-    WriteNumberFieldComponent,
-    WriteEmailFieldComponent,
-    WriteDateFieldComponent,
-    DatetimePickerComponent,
-    WriteCaseLinkFieldComponent,
-    WriteDateContainerFieldComponent,
-    WriteOrganisationFieldComponent
   ],
   exports: [
     BaseFieldModule,

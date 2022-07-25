@@ -19,10 +19,6 @@ import { WriteFixedRadioListFieldComponent } from './write-fixed-radio-list-fiel
     ReadFixedRadioListFieldComponent,
     WriteFixedRadioListFieldComponent
   ],
-  entryComponents: [
-    ReadFixedRadioListFieldComponent,
-    WriteFixedRadioListFieldComponent
-  ],
   exports: [
     FixedRadioListPipe
   ]

@@ -20,9 +20,6 @@ import { WriteAddressFieldComponent } from './write-address-field.component';
   ],
   declarations: [
     WriteAddressFieldComponent
-  ],
-  entryComponents: [
-    WriteAddressFieldComponent,
   ]
 })
 export class AddressModule {}

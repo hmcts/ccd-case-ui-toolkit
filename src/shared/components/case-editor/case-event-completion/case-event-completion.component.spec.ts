@@ -1,8 +1,8 @@
 import { PortalModule } from '@angular/cdk/portal';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, SimpleChange } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '.';
@@ -102,9 +102,10 @@ describe('CaseEventCompletionComponent', () => {
     eventCanBeCompleted: new EventEmitter<boolean>(true)
   };
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
         RouterTestingModule,
         PortalModule
       ],
@@ -119,21 +120,11 @@ describe('CaseEventCompletionComponent', () => {
         { provide: WorkAllocationService, useValue: mockWorkAllocationService },
         { provide: AlertService, useValue: alertService },
         { provide: EventCompletionStateMachineService, useValue: eventCompletionStateMachineService },
-        {provide: CaseworkerService, useValue: mockCaseworkerService},
-        {provide: JudicialworkerService, useValue: mockJudicialworkerService},
-        {provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: parentComponent}
+        { provide: CaseworkerService, useValue: mockCaseworkerService },
+        { provide: JudicialworkerService, useValue: mockJudicialworkerService },
+        { provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: parentComponent }
       ],
     })
-    .overrideModule(BrowserDynamicTestingModule,
-      {
-        set: {
-          entryComponents: [
-            CaseEventCompletionTaskCancelledComponent,
-            CaseEventCompletionTaskReassignedComponent
-          ]
-        }
-      }
-    )
     .compileComponents();
 
     fixture = TestBed.createComponent(CaseEventCompletionComponent);
@@ -141,7 +132,7 @@ describe('CaseEventCompletionComponent', () => {
     component.eventCompletionParams = eventCompletionParams;
     de = fixture.debugElement;
     fixture.detectChanges();
-  });
+  }));
 
   it('should create', () => {
     component.eventCompletionParams = eventCompletionParams;

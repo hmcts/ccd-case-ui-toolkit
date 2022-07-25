@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -60,6 +61,7 @@ describe('CaseEditConfirmComponent', () => {
     TestBed
       .configureTestingModule({
         imports: [
+          HttpClientTestingModule,
           ReactiveFormsModule,
           RouterTestingModule,
           MarkdownModule,

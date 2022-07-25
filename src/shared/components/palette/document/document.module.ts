@@ -16,10 +16,6 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
     ReadDocumentFieldComponent,
     WriteDocumentFieldComponent
   ],
-  entryComponents: [
-    ReadDocumentFieldComponent,
-    WriteDocumentFieldComponent,
-  ],
   exports: [
     DocumentUrlPipe,
   ]

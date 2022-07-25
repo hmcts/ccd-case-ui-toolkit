@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { ConnectableObservable, Observable } from 'rxjs';
-import { Observer } from 'rxjs/Observer';
-import 'rxjs/operator/publish';
+import { ConnectableObservable, Observable, Observer } from 'rxjs';
+import { publish, refCount } from 'rxjs/operators';
 import { AlertLevel } from '../../domain';
 import { Alert } from '../../domain/alert/alert.model';
 
@@ -34,25 +33,33 @@ export class AlertService {
   constructor(private readonly router: Router) {
 
     this.successes = Observable
-      .create(observer => this.successObserver = observer)
-      .publish();
-    this.successes.connect();
+      .create(observer => this.successObserver = observer).pipe(
+        publish(),
+        refCount()
+      );
+    this.successes.subscribe();
 
     this.errors = Observable
-      .create(observer => this.errorObserver = observer)
-      .publish();
-    this.errors.connect();
+      .create(observer => this.errorObserver = observer).pipe(
+        publish(),
+        refCount()
+      );
+    this.errors.subscribe();
 
     this.warnings = Observable
-      .create(observer => this.warningObserver = observer)
-      .publish();
-    this.warnings.connect();
+      .create(observer => this.warningObserver = observer).pipe(
+        publish(),
+        refCount()
+      );
+    this.warnings.subscribe();
 
     // TODO: Remove
     this.alerts = Observable
-      .create(observer => this.alertObserver = observer)
-      .publish();
-    this.alerts.connect();
+      .create(observer => this.alertObserver = observer).pipe(
+        publish(),
+        refCount()
+      );
+    this.alerts.subscribe();
 
     this.router
       .events

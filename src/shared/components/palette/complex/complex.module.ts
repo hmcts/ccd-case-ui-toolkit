@@ -43,10 +43,6 @@ import { WriteComplexFieldComponent } from './write-complex-field.component';
     CcdCollectionTableCaseFieldsFilterPipe,
     CcdCYAPageLabelFilterPipe,
   ],
-  entryComponents: [
-    ReadComplexFieldComponent,
-    WriteComplexFieldComponent,
-  ],
   exports: [
       CcdPageFieldsPipe,
       FieldsFilterPipe,

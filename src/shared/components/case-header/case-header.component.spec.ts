@@ -41,30 +41,28 @@ describe('CaseHeaderComponent', () => {
           PlaceholderService,
           CaseReferencePipe
         ]
-      })
-      .compileComponents()
-      .then(() => {
-        fixture = TestBed.createComponent(CaseHeaderComponent);
-        component = fixture.componentInstance;
-        component.caseDetails = CASE_DETAILS;
-        de = fixture.debugElement;
-        fixture.detectChanges();
-      });
+      }).compileComponents();
+
+    fixture = TestBed.createComponent(CaseHeaderComponent);
+    component = fixture.componentInstance;
+    component.caseDetails = CASE_DETAILS;
+    de = fixture.debugElement;
+    fixture.detectChanges();
   }));
+
+  it('should render', () => {
+    expect(component).toBeTruthy();
+  });
 
   it('should render a header with case reference when title display is empty', () => {
     const header = de.query($HEADING);
-    fixture
-      .whenStable()
-      .then(() => {
-        expect(header).toBeTruthy();
-        expect(text(header)).toEqual('#1234-5678-9012-3456');
-      });
+    expect(header).toBeTruthy();
+    expect(text(header)).toEqual('#1234-5678-9012-3456');
   });
 
   it('should render a header with markdown element when title display is not empty', () => {
     component.caseDetails.state.title_display = 'Title';
-    component.ngOnInit();
+
     fixture.detectChanges();
 
     const header = de.query($MARKDOWN);

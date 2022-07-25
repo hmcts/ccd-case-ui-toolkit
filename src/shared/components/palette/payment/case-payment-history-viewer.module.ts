@@ -14,9 +14,6 @@ import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-v
   ],
   declarations: [
     CasePaymentHistoryViewerFieldComponent
-  ],
-  entryComponents: [
-    CasePaymentHistoryViewerFieldComponent,
   ]
 })
 export class CasePaymentHistoryViewerModule {}

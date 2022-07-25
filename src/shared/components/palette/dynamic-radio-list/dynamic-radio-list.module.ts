@@ -19,10 +19,6 @@ import { WriteDynamicRadioListFieldComponent } from './write-dynamic-radio-list-
     ReadDynamicRadioListFieldComponent,
     WriteDynamicRadioListFieldComponent
   ],
-  entryComponents: [
-    ReadDynamicRadioListFieldComponent,
-    WriteDynamicRadioListFieldComponent
-  ],
   exports: [
     DynamicRadioListPipe
   ]

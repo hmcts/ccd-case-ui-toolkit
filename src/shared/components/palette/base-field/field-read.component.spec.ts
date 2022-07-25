@@ -2,7 +2,6 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../../domain/definition';
 import { PaletteService } from '../palette.service';
@@ -91,12 +90,6 @@ describe('FieldReadComponent', () => {
         ]
       })
       .compileComponents();
-
-    TestBed.overrideModule(BrowserDynamicTestingModule, {
-      set: {
-        entryComponents: [FieldTestComponent]
-      }
-    });
 
     fixture = TestBed.createComponent(FieldReadComponent);
     component = fixture.componentInstance;

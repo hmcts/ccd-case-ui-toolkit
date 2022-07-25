@@ -19,10 +19,6 @@ import { WriteMoneyGbpFieldComponent } from './write-money-gbp-field.component';
     WriteMoneyGbpFieldComponent,
     MoneyGbpInputComponent
   ],
-  entryComponents: [
-    ReadMoneyGbpFieldComponent,
-    WriteMoneyGbpFieldComponent
-  ],
   exports: [
     ReadMoneyGbpFieldComponent
   ]

@@ -18,10 +18,6 @@ import { YesNoService } from './yes-no.service';
     ReadYesNoFieldComponent,
     WriteYesNoFieldComponent
   ],
-  entryComponents: [
-    ReadYesNoFieldComponent,
-    WriteYesNoFieldComponent
-  ],
   providers: [
     YesNoService
   ]

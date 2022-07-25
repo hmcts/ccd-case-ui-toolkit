@@ -20,11 +20,6 @@ import { WriteOrderSummaryFieldComponent } from './write-order-summary-field.com
     WriteOrderSummaryFieldComponent,
     ReadOrderSummaryFieldComponent,
     ReadOrderSummaryRowComponent,
-  ],
-  entryComponents: [
-    WriteOrderSummaryFieldComponent,
-    ReadOrderSummaryFieldComponent,
-    ReadOrderSummaryRowComponent,
-  ],
+  ]
 })
 export class OrderSummaryModule {}

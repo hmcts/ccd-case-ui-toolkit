@@ -20,10 +20,6 @@ import { WriteDynamicListFieldComponent } from './write-dynamic-list-field.compo
     ReadDynamicListFieldComponent,
     WriteDynamicListFieldComponent
   ],
-  entryComponents: [
-    ReadDynamicListFieldComponent,
-    WriteDynamicListFieldComponent
-  ],
   exports: [
     DynamicListPipe
   ]

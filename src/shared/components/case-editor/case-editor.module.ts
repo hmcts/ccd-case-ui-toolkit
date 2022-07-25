@@ -78,10 +78,6 @@ import { CaseworkerService } from './services/case-worker.service';
         CaseProgressComponent,
         LoadingSpinnerComponent
     ],
-    entryComponents: [
-      CaseEventCompletionTaskCancelledComponent,
-      CaseEventCompletionTaskReassignedComponent,
-    ],
     exports: [
         CaseEditConfirmComponent,
         CaseEditComponent,
