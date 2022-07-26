@@ -118,20 +118,22 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   ngOnDestroy() {
-    if (this.activitySubscription && this.activityPollingService.isEnabled) {
-      this.activitySubscription.unsubscribe();
-    }
     if (this.callbackErrorsSubject) {
       this.callbackErrorsSubject.unsubscribe();
     }
-    if (!this.route.snapshot.data.case && this.caseSubscription) {
-      this.caseSubscription.unsubscribe();
-    }
-    if (this.errorSubscription) {
-      this.errorSubscription.unsubscribe();
-    }
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    if (this.activityPollingService.isEnabled) {
+      this.unsubscribe(this.activitySubscription);
+    };
+    if (!this.route.snapshot.data.case) {
+      this.unsubscribe(this.caseSubscription);
+    };
+    this.unsubscribe(this.errorSubscription);
+    this.unsubscribe(this.subscription);
+  }
+
+  public unsubscribe(subscription: Subscription) {
+    if (subscription) {
+      subscription.unsubscribe();
     }
   }
 
