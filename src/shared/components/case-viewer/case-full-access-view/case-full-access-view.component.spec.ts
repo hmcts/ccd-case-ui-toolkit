@@ -1658,6 +1658,20 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     caseViewerComponent.organiseTabPosition();
     expect(navigationNotifierService.announceNavigation).not.toHaveBeenCalled();
   });
+
+  it('should return tabs', () => {
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.hasTabsPresent).toBeTruthy();
+  })
+
+  it('should navigate to roles and access tab', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
+  });
+
 });
 
 describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {
@@ -1803,5 +1817,11 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
   it('should unsubscribe', () => {
     caseViewerComponent.unsubscribe(subscriptionMock);
     expect(subscribeSpy).toHaveBeenCalled();
+  });
+
+  it('should not unsubscribe', () => {
+    subscriptionMock = null;
+    caseViewerComponent.unsubscribe(subscriptionMock);
+    expect(subscribeSpy).not.toHaveBeenCalled();
   });
 });
