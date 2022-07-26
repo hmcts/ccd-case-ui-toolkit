@@ -1652,13 +1652,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect(caseViewerComponent.prependedTabs).toEqual([]);
   });
 
-  it('should not navigate to event trigger', () => {
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/hearings');
-    componentFixture.detectChanges();
-    caseViewerComponent.organiseTabPosition();
-    expect(navigationNotifierService.announceNavigation).not.toHaveBeenCalled();
-  });
-
   it('should return tabs', () => {
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
     componentFixture.detectChanges();
