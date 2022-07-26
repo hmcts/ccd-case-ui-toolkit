@@ -1514,7 +1514,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
-
+    navigationNotifierService = new NavigationNotifierService();
+    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
     TestBed
@@ -1593,6 +1594,14 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     componentFixture = TestBed.createComponent(CaseFullAccessViewComponent);
     caseViewerComponent = componentFixture.componentInstance;
     caseViewerComponent.caseDetails = WORK_ALLOCATION_CASE_VIEW;
+    caseViewerComponent.appendedTabs = [
+      {
+        id: 'hearings',
+        label: 'Hearings',
+        fields: [],
+        show_condition: null
+      }
+    ];
     caseViewerComponent.prependedTabs = [
       {
         id: 'tasks',
@@ -1612,7 +1621,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   }));
 
   it('should display overview tab by default', () => {
-
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     componentFixture.detectChanges();
     const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
@@ -1625,13 +1633,30 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect((<HTMLElement>tasksTab2.querySelector('.mat-tab-label-content')).innerText).toBe('Overview');
     const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
     expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
+    const tasksTab4: HTMLElement = matTabHTMLElement.children[4] as HTMLElement;
+    expect((<HTMLElement>tasksTab4.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
   });
 
-  it('should add prepended tabs to the existing tab list', () => {
+  it('should add prepended & appended tabs to the existing tab list', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
     componentFixture.detectChanges();
-    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(4);
+    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(5);
+  });
+
+  it('should return blank array when pretended tabs are null', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330');
+    componentFixture.detectChanges();
+    caseViewerComponent.prependedTabs = null;
+    caseViewerComponent.organiseTabPosition();
+    expect(caseViewerComponent.prependedTabs).toEqual([]);
+  });
+
+  it('should not navigate to event trigger', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/hearings');
+    componentFixture.detectChanges();
+    caseViewerComponent.organiseTabPosition();
+    expect(navigationNotifierService.announceNavigation).not.toHaveBeenCalled();
   });
 });
 
