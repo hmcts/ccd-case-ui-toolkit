@@ -123,10 +123,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
     if (this.activityPollingService.isEnabled) {
       this.unsubscribe(this.activitySubscription);
-    };
+    }
     if (!this.route.snapshot.data.case) {
       this.unsubscribe(this.caseSubscription);
-    };
+    }
     this.unsubscribe(this.errorSubscription);
     this.unsubscribe(this.subscription);
   }

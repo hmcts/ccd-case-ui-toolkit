@@ -1653,6 +1653,11 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
+    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
+    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
+    alertService.success.and.returnValue(Observable.of({}));
+    alertService.warning.and.returnValue(Observable.of({}));
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -1745,6 +1750,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     ];
     debugElement = componentFixture.debugElement;
     componentFixture.detectChanges();
+    de = componentFixture.debugElement;
   }));
 
   it('should not call callAngularRouter() on initial (default) value', (done) => {
@@ -1755,6 +1761,18 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
       expect(convertHrefToRouterService.callAngularRouter).not.toHaveBeenCalled();
       done();
     });
+  });
+
+  it('should clear errors and warnings', () => {
+    let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
+    componentFixture.detectChanges();
+    caseViewerComponent.clearErrorsAndWarnings();
+    let error = de.query($ERROR_SUMMARY);
+    expect(error).toBeFalsy();
+    expect(caseViewerComponent.error).toBeFalsy();
+    expect(caseViewerComponent.ignoreWarning).toBeFalsy();
   });
 
   it('should unsubscribe', () => {
