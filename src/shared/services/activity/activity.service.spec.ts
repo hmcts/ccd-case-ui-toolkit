@@ -1,5 +1,5 @@
 
-import { Observable, of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../';
 import { HttpService } from '../../services/http';
 import { SessionStorageService } from '../session/session-storage.service';
@@ -66,7 +66,7 @@ describe('ActivityService', () => {
     const error = {
       status: 403
     };
-    httpService.get.and.returnValue(Observable.throw(error));
+    httpService.get.and.returnValue(throwError(error));
 
     activityService.verifyUserIsAuthorized();
 
@@ -77,7 +77,7 @@ describe('ActivityService', () => {
     const error = {
       status: 400
     };
-    httpService.get.and.returnValue(Observable.throw(error));
+    httpService.get.and.returnValue(throwError(error));
 
     activityService.verifyUserIsAuthorized();
 

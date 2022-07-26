@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpErrorService, HttpService } from '../../../services';
@@ -30,7 +30,7 @@ export class CaseHistoryService {
         catchError(
         (error: any): any => {
           this.httpErrorService.setError(error);
-          return Observable.throw(error);
+          return throwError(error);
         }
       )) as Observable<CaseHistory>;
   }

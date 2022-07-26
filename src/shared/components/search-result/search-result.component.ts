@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
@@ -13,9 +13,10 @@ import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory 
 @Component({
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
-  styleUrls: ['./search-result.component.scss']
+  styleUrls: ['./search-result.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchResultComponent implements OnChanges, OnInit {
+export class SearchResultComponent implements OnChanges, AfterViewInit {
 
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
@@ -106,7 +107,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     private readonly activityService: ActivityService,
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly placeholderService: PlaceholderService,
-    private readonly browserService: BrowserService
+    private readonly browserService: BrowserService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -121,7 +123,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     return maximumResultReached ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
-  public ngOnInit(): void {
+  public ngAfterViewInit(): void {
     if (this.preSelectedCases) {
       for (const preSelectedCase of this.preSelectedCases) {
         if (this.selectedCases && !this.selectedCases.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
@@ -151,9 +153,12 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
+
+      this.cdr.detectChanges();
     }
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
+      this.cdr.detectChanges();
     }
   }
 
@@ -423,10 +428,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
     }
   }
 
-  private isSortAscending(column: SearchResultViewColumn): boolean {
+  public isSortAscending(column: SearchResultViewColumn): boolean {
     const currentSortOrder = this.currentSortOrder(column);
 
     return currentSortOrder === SortOrder.UNSORTED || currentSortOrder === SortOrder.DESCENDING;
+  }
+
+  public sortLabelText(label: string, isAscending: boolean): string {
+    return `Sort by ${label} ${ isAscending ? 'ascending' : 'descending'}`;
   }
 
   private currentSortOrder(column: SearchResultViewColumn): SortOrder {

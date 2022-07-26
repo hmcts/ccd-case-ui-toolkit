@@ -1,4 +1,4 @@
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -116,7 +116,7 @@ describe('CaseEditPageComponent', () => {
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
           {provide: FormErrorService, useValue: formErrorService},
@@ -385,7 +385,7 @@ describe('CaseEditPageComponent', () => {
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
           {provide: FormErrorService, useValue: formErrorService},
@@ -483,7 +483,7 @@ describe('CaseEditPageComponent', () => {
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
           {provide: FormErrorService, useValue: formErrorService},
@@ -590,7 +590,7 @@ describe('CaseEditPageComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
           {provide: FormErrorService, useValue: formErrorService},
@@ -615,6 +615,8 @@ describe('CaseEditPageComponent', () => {
       comp.currentPage = wizardPage;
 
       de = fixture.debugElement;
+
+      comp.ngOnInit();
       fixture.detectChanges();
     });
 
@@ -794,7 +796,7 @@ describe('CaseEditPageComponent', () => {
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
           {provide: FormErrorService, useValue: formErrorService},
@@ -906,7 +908,7 @@ describe('CaseEditPageComponent', () => {
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
           {provide: FormErrorService, useValue: formErrorService},

@@ -1,4 +1,4 @@
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable, of, throwError } from 'rxjs';
@@ -121,7 +121,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
       .configureTestingModule({
         imports: [
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           CaseProgressComponent,
 
@@ -246,7 +246,7 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
       .configureTestingModule({
         imports: [
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
           caseEditComponent,
           CaseProgressComponent,

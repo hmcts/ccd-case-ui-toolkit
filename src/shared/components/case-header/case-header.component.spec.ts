@@ -17,7 +17,7 @@ describe('CaseHeaderComponent', () => {
     inputs: ['content', 'markdownUseHrefAsRouterLink']
   });
 
-  const $HEADING = By.css('h1');
+  const $HEADING = By.css('.heading-h1');
   const $MARKDOWN = By.css('dl>dt ccd-markdown');
   const CASE_DETAILS = createCaseView();
 
@@ -47,6 +47,8 @@ describe('CaseHeaderComponent', () => {
     component = fixture.componentInstance;
     component.caseDetails = CASE_DETAILS;
     de = fixture.debugElement;
+
+    component.ngOnInit();
     fixture.detectChanges();
   }));
 
@@ -54,14 +56,20 @@ describe('CaseHeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render a header with case reference when title display is empty', () => {
-    const header = de.query($HEADING);
-    expect(header).toBeTruthy();
-    expect(text(header)).toEqual('#1234-5678-9012-3456');
+  it('should render a header with case reference when title display is empty', async () => {
+    component.ngOnInit();
+
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      const header = de.query($HEADING);
+      expect(header).toBeTruthy();
+      expect(text(header)).toEqual('#1234-5678-9012-3456');
+    });
   });
 
-  it('should render a header with markdown element when title display is not empty', () => {
+  it('should render a header with markdown element when title display is not empty', async() => {
     component.caseDetails.state.title_display = 'Title';
+    component.ngOnInit();
 
     fixture.detectChanges();
 

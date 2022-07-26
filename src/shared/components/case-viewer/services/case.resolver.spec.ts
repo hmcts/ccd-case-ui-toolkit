@@ -1,5 +1,5 @@
 import { NavigationEnd } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { CaseView } from '../../../domain';
 import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
 import { CaseResolver } from './case.resolver';
@@ -151,7 +151,7 @@ describe('CaseResolver', () => {
     });
 
     it('should redirect to error page when case cannot be retrieved', () => {
-      casesService.getCaseViewV2.and.returnValue(Observable.throw('Failed'));
+      casesService.getCaseViewV2.and.returnValue(throwError('Failed'));
 
       caseResolver
         .resolve(route)
@@ -168,7 +168,7 @@ describe('CaseResolver', () => {
       const error = {
         status: 404
       };
-      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+      casesService.getCaseViewV2.and.returnValue(throwError(error));
 
       router = {
         navigate: jasmine.createSpy('navigate'),
@@ -192,7 +192,7 @@ describe('CaseResolver', () => {
       const error = {
         status: 404
       };
-      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+      casesService.getCaseViewV2.and.returnValue(throwError(error));
 
       router = {
         navigate: jasmine.createSpy('navigate'),

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CommonModule } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MockComponent } from 'ng2-mock-component';
 import { of } from 'rxjs';
@@ -104,6 +105,7 @@ describe('ReadOrganisationFieldRawComponent', () => {
       imports: [
         ConditionalShowModule,
         CommonModule,
+        HttpClientTestingModule,
         ReactiveFormsModule,
         MarkdownModule,
         PaletteUtilsModule
