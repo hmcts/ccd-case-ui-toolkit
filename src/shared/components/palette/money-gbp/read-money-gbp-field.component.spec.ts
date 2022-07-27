@@ -97,7 +97,9 @@ describe('ReadMoneyGBPFieldComponent', () => {
       });
 
       it('should render undefined value as empty string', () => {
+        component.amount = null;
         component.caseField.value = undefined;
+        fixture.detectChanges();
         component.ngOnInit();
         fixture.detectChanges();
 
@@ -105,7 +107,9 @@ describe('ReadMoneyGBPFieldComponent', () => {
       });
 
       it('should render null value as empty string', () => {
+        component.amount = null;
         component.caseField.value = null;
+        fixture.detectChanges();
         component.ngOnInit();
         fixture.detectChanges();
 

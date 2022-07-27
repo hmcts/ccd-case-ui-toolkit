@@ -1,7 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
-import createSpyObj = jasmine.createSpyObj;
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -11,10 +10,11 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { DocumentManagementService } from '../../../services/document-management';
 import { WindowService } from '../../../services/window';
 import { attr, text } from '../../../test/helpers';
-import any = jasmine.any;
 import { CasesService } from '../../case-editor/services/cases.service';
 import { DocumentUrlPipe } from './document-url.pipe';
 import { ReadDocumentFieldComponent } from './read-document-field.component';
+import createSpyObj = jasmine.createSpyObj;
+import any = jasmine.any;
 
 describe('ReadDocumentFieldComponent', () => {
 

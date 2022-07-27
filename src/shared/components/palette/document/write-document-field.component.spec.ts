@@ -12,10 +12,10 @@ import { DocumentManagementService } from '../../../services/document-management
 import { CaseNotifier } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import { FieldLabelPipe } from '../utils';
-import createSpyObj = jasmine.createSpyObj;
-import any = jasmine.any;
 import { FileUploadStateService } from './file-upload-state.service';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
+import createSpyObj = jasmine.createSpyObj;
+import any = jasmine.any;
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -160,11 +160,11 @@ describe('WriteDocumentFieldComponent', () => {
     component.formGroup = FORM_GROUP;
 
     de = fixture.debugElement;
+    component.ngOnInit();
     fixture.detectChanges();
   });
 
   it('should be valid for the initial component state.', () => {
-    console.log('component.caseField', component.caseField);
     expect(component.valid).toBeTruthy();
   });
 
