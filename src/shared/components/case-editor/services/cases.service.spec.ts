@@ -1,4 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
+import { fakeAsync, tick } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -136,13 +137,14 @@ describe('CasesService', () => {
       expect(loadingService.register).toHaveBeenCalled();
     });
 
-    it('should unregister loading token when finished', () => {
+    it('should unregister loading token when finished', fakeAsync(() => {
       casesService
         .getCaseView(JID, CTID, CASE_ID)
-        .subscribe(() => {
+        .subscribe()
+        .add(() => {
           expect(loadingService.unregister).toHaveBeenCalled();
         });
-    });
+    }));
   });
 
   describe('getCaseViewV2()', () => {
@@ -197,7 +199,8 @@ describe('CasesService', () => {
     it('should unregister loading token when finished', () => {
       casesService
         .getCaseViewV2(CASE_ID)
-        .subscribe(() => {
+        .subscribe()
+        .add(() => {
           expect(loadingService.unregister).toHaveBeenCalled();
         });
     });

@@ -42,7 +42,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   private caseDetails: CaseView;
   private uploadedDocument: FormGroup;
-  private readonly dialogConfig: MatDialogConfig;
+  private dialogConfig: MatDialogConfig;
   private secureModeOn: boolean;
 
   constructor(
@@ -68,7 +68,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
-    initDialog(this.dialogConfig);
+    this.dialogConfig = initDialog();
     // EUI-3403. The field was not being registered when there was no value and the field
     // itself was not mandatory, which meant that show_conditions would not be evaluated.
     // I've cleaned up the logic and it's now always registered.
