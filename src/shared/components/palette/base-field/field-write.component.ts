@@ -22,7 +22,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   @Input()
   public caseFields: CaseField[] = [];
 
-  @ViewChild('fieldContainer', /* TODO: add static flag */ { read: ViewContainerRef })
+  @ViewChild('fieldContainer', { static: true, read: ViewContainerRef })
   public fieldContainer: ViewContainerRef;
 
   constructor(private readonly resolver: ComponentFactoryResolver,
@@ -32,9 +32,15 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
 
   public ngOnInit(): void {
     const componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
+    const injectorOptions = {
+      providers: [],
+      parent: this.fieldContainer?.injector
+    };
 
-    const injector = Injector.create([], this.fieldContainer.parentInjector);
-    const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+    const injector = Injector.create(injectorOptions);
+
+    const factory = this.resolver.resolveComponentFactory(componentClass);
+    const component = this.fieldContainer.createComponent(factory, 0, injector);
 
     // Only Fixed list use plainToClassFromExist
     // Better performance
