@@ -1,5 +1,5 @@
 import createSpyObj = jasmine.createSpyObj;
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventTrigger, HttpError, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
@@ -190,7 +190,7 @@ describe('EventTriggerResolver', () => {
   });
 
   it('should create error alert when event trigger cannot be retrieved', done => {
-    casesService.getEventTrigger.and.returnValue(Observable.throw(ERROR));
+    casesService.getEventTrigger.and.returnValue(throwError(ERROR));
     profileService.get.and.returnValue(PROFILE_OBS);
 
     eventTriggerResolver

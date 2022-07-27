@@ -1,4 +1,4 @@
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -406,7 +406,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueService},
@@ -706,7 +706,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueService},
@@ -849,7 +849,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueService},
@@ -1090,7 +1090,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -1232,7 +1232,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -1377,7 +1377,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -1521,7 +1521,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -1671,7 +1671,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -1863,7 +1863,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -2000,7 +2000,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -2136,7 +2136,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -2280,7 +2280,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -2436,7 +2436,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -2598,7 +2598,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -2741,7 +2741,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -2887,7 +2887,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -3033,7 +3033,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -3178,7 +3178,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -3328,7 +3328,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -3480,7 +3480,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -3632,7 +3632,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -3795,7 +3795,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -3957,7 +3957,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -4113,7 +4113,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},
@@ -4272,7 +4272,7 @@ describe('CaseEditSubmitComponent', () => {
           CaseReferencePipe,
           CcdCaseTitlePipe
         ],
-        schemas: [NO_ERRORS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditComponent},
           {provide: FormValueService, useValue: formValueServiceReal},

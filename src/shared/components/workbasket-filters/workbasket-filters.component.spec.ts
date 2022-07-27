@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import {
   AbstractFieldWriteComponent, AlertService, CaseType, FieldTypeEnum, Jurisdiction, JurisdictionService,
   OrderService, WindowService
@@ -459,7 +459,7 @@ describe('WorkbasketFiltersComponent', () => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = CASE_TYPES_2[1];
       component.selected.caseState = CASE_TYPES_2[1].states[0];
-      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(Observable.throw(new Error('Response expired')));
+      workbasketInputFilterService.getWorkbasketInputs.and.returnValue(throwError(new Error('Response expired')));
 
       component.onCaseTypeIdChange();
       expect(component.workbasketInputsReady).toBeFalsy();

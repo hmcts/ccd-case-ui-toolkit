@@ -2,7 +2,7 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { ConditionalShowModule } from '../../directives';
 import { CaseType, Jurisdiction } from '../../domain';
 import { JurisdictionService, OrderService, SearchService, WindowService } from '../../services';
@@ -308,7 +308,7 @@ describe('SearchFiltersComponent', () => {
     component.selected.jurisdiction = JURISDICTION_1;
     component.selected.caseType = CASE_TYPE_1;
     component.jurisdictions = [JURISDICTION_1];
-    mockSearchService.getSearchInputs.and.returnValue(Observable.throw(new Error('Response expired')));
+    mockSearchService.getSearchInputs.and.returnValue(throwError(new Error('Response expired')));
     component.onJurisdictionIdChange();
     expect(component.searchInputsReady).toBeFalsy();
     expect(component.searchInputs.length).toBe(0);
@@ -553,6 +553,7 @@ describe('Clear localStorage', () => {
     orderService = createSpyObj('orderService', ['sortAsc']);
     jurisdictionService = new JurisdictionService();
     windowService = createSpyObj('windowService', ['clearLocalStorage', 'locationAssign', 'getLocalStorage', 'removeLocalStorage']);
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -571,23 +572,22 @@ describe('Clear localStorage', () => {
         ]
       })
       .compileComponents()
-      .then(() => {
-        fixture = TestBed.createComponent(SearchFiltersComponent);
-        component = fixture.componentInstance;
 
-        component.formGroup = TEST_FORM_GROUP;
-        component.jurisdictions = [
-          JURISDICTION_1,
-          JURISDICTION_2
-        ];
-        component.onReset.subscribe(searchHandler.applyReset);
+    fixture = TestBed.createComponent(SearchFiltersComponent);
+    component = fixture.componentInstance;
 
-        de = fixture.debugElement;
-        fixture.detectChanges();
-      });
+    component.formGroup = TEST_FORM_GROUP;
+    component.jurisdictions = [
+      JURISDICTION_1,
+      JURISDICTION_2
+    ];
+    component.onReset.subscribe(searchHandler.applyReset);
+
+    de = fixture.debugElement;
+    fixture.detectChanges();
   }));
 
-  it('should emit on reset if reset is clicked', waitForAsync(() => {
+  it('should emit on reset if reset is clicked', () => {
     component.reset();
 
     fixture
@@ -595,7 +595,7 @@ describe('Clear localStorage', () => {
       .then(() => {
         expect(searchHandler.applyReset).toHaveBeenCalled();
       });
-  }));
+  });
 
   it('should remove localStorage once reset button is clicked', waitForAsync(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));

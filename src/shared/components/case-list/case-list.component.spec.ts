@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -55,7 +55,7 @@ describe('CaseListComponent', () => {
     TestBed.configureTestingModule({
       imports: [ RouterModule ],
       declarations: [ CaseListComponent, PaginatePipe ],
-      schemas: [NO_ERRORS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [ PaginationService, BrowserService ]
     })
     .compileComponents();

@@ -51,8 +51,7 @@ describe('AlertService', () => {
     expect(alertService.successes.subscribe).toBeTruthy();
   });
 
-  it('should publish alert to observable when respective methods used', done => {
-    // set up all observables with expected results
+  it('should publish alert to observable when errors method used', done => {
     alertService
       .errors
       .subscribe(alert => {
@@ -60,6 +59,10 @@ describe('AlertService', () => {
         done();
       });
 
+    alertService.error(ERROR_MESSAGE);
+  });
+
+  it('should publish alert to observable when successes method used', done => {
     alertService
       .successes
       .subscribe(alert => {
@@ -67,6 +70,10 @@ describe('AlertService', () => {
         done();
       });
 
+    alertService.success(SUCCESS_MESSAGE);
+  });
+
+  it('should publish alert to observable when warnings method used', done => {
     alertService
       .warnings
       .subscribe(alert => {
@@ -74,13 +81,10 @@ describe('AlertService', () => {
         done();
       });
 
-    // set the respective methods
-    alertService.error(ERROR_MESSAGE);
-    alertService.success(SUCCESS_MESSAGE);
     alertService.warning(WARNING_MESSAGE);
   });
 
-  it('should publish null to observable when clear method used', done => {
+  it('should publish null to errors observable when clear method used', done => {
     // set up all observables with expected null values
     alertService
       .errors
@@ -89,6 +93,11 @@ describe('AlertService', () => {
         done();
       });
 
+    // all observables cleared via this method
+    alertService.clear();
+  });
+
+  it('should publish null to successes observable when clear method used', done => {
     alertService
       .successes
       .subscribe(alert => {
@@ -96,6 +105,11 @@ describe('AlertService', () => {
         done();
       });
 
+    // all observables cleared via this method
+    alertService.clear();
+  });
+
+  it('should publish null to warnings observable when clear method used', done => {
     alertService
       .warnings
       .subscribe(alert => {
@@ -140,11 +154,9 @@ describe('AlertService', () => {
     expect(alertService.clear).not.toHaveBeenCalled();
   });
 
-  it('should be a hot alert observable', done => {
+  it('should be a hot alert errors observable', done => {
     // set an original message
     alertService.error(WARNING_MESSAGE);
-    alertService.success(WARNING_MESSAGE);
-    alertService.warning(A_MESSAGE);
 
     alertService
       .errors
@@ -153,12 +165,26 @@ describe('AlertService', () => {
         done();
       });
 
+    // set the new message
+    alertService.error(ERROR_MESSAGE);
+  });
+  it('should be a hot alert successes observable', done => {
+    // set an original message
+    alertService.success(WARNING_MESSAGE);
+
     alertService
       .successes
       .subscribe(alert => {
         expect(alert).toEqual(SUCCESS_ALERT);
         done();
       });
+
+    // set the new message
+    alertService.success(SUCCESS_MESSAGE);
+  });
+  it('should be a hot alert warnings observable', done => {
+    // set an original message
+    alertService.warning(A_MESSAGE);
 
     alertService
       .warnings
@@ -168,8 +194,6 @@ describe('AlertService', () => {
       });
 
     // set the new message
-    alertService.error(ERROR_MESSAGE);
-    alertService.success(SUCCESS_MESSAGE);
     alertService.warning(WARNING_MESSAGE);
   });
 

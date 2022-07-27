@@ -1,7 +1,7 @@
 import createSpyObj = jasmine.createSpyObj;
 import { HttpHeaders } from '@angular/common/http';
 import { classToPlain } from 'class-transformer';
-import { Observable, of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError } from '../../../domain';
 import { createCaseHistory } from '../../../fixture';
@@ -64,7 +64,7 @@ describe('CaseHistoryService', () => {
     });
 
     it('should set error when error is thrown', () => {
-      httpService.get.and.returnValue(Observable.throw(ERROR));
+      httpService.get.and.returnValue(throwError(ERROR));
 
       caseHistoryService
         .get(CASE_ID, EVENT_ID)
