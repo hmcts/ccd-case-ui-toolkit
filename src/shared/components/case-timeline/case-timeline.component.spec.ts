@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
@@ -93,7 +93,7 @@ describe('CaseTimelineComponent', () => {
 
     const $BACK_TO_TIMELINE_LINK = By.css('div>div>ol>li>a');
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(async() => {
 
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       casesService.getCaseViewV2.and.returnValue(CASE_VIEW_OBS);
@@ -128,7 +128,7 @@ describe('CaseTimelineComponent', () => {
 
       de = fixture.debugElement;
       fixture.detectChanges();
-    }));
+    });
 
     it('should render in case timeline view mode as default', () => {
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_REFERENCE);
@@ -189,7 +189,7 @@ describe('CaseTimelineComponent', () => {
 
     const ERROR_MSG = 'Critical error!';
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(async() => {
 
       EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
         'events'
@@ -226,7 +226,7 @@ describe('CaseTimelineComponent', () => {
 
       de = fixture.debugElement;
       fixture.detectChanges();
-    }));
+    });
 
     it('should call alert service and not render event log component', () => {
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_REFERENCE);

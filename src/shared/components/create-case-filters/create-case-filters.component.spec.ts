@@ -287,7 +287,7 @@ describe('CreateCaseFiltersComponent', () => {
   const $SELECT_EVENT = By.css('#cc-event');
   const $SELECT_BUTTON = By.css('button');
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     mockOrderService = createSpyObj<OrderService>('orderService', ['sort']);
     mockOrderService.sort.and.returnValue(SORTED_CASE_EVENTS);
     mockAlertService = createSpyObj<AlertService>('alertService', ['clear']);
@@ -322,7 +322,7 @@ describe('CreateCaseFiltersComponent', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
     component.initControls();
-  }));
+  });
 
   it('should select the jurisdiction if there is only one jurisdiction', () => {
     mockDefinitionsService.getJurisdictions.and.returnValue(of([JURISDICTION_1]));

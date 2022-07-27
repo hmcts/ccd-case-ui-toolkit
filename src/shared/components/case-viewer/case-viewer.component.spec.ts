@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, Type } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -144,7 +144,7 @@ describe('CaseViewerComponent', () => {
   mockAppConfig.getAccessManagementMode.and.returnValue(false);
   mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({active: false});
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [CaseViewerComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -159,10 +159,13 @@ describe('CaseViewerComponent', () => {
     component = fixture.componentInstance;
     de = fixture.debugElement;
     fixture.detectChanges();
-  }));
+  });
 
   describe('isDataLoaded()', () => {
     it('should return false if caseDetails is null', () => {
+      component.caseDetails = undefined;
+      fixture.detectChanges();
+
       expect(component.isDataLoaded()).toBeFalsy();
     });
 
@@ -195,6 +198,7 @@ describe('CaseViewerComponent', () => {
 
   describe('hasStandardAccess()', () => {
     it('should return true if feature toggling is false', () => {
+      mockAppConfig.getAccessManagementMode.and.returnValue(false);
       expect(component.hasStandardAccess()).toBeTruthy();
     });
 
