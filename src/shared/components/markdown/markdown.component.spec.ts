@@ -7,7 +7,7 @@ import { PipesModule } from '../../pipes';
 import { ConvertHrefToRouterService } from '../case-editor/services';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 
-fdescribe('MarkdownComponent - Table', () => {
+describe('MarkdownComponent - Table', () => {
 
   const $MARKDOWN = By.css('markdown');
 
