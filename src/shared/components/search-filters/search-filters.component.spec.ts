@@ -145,6 +145,7 @@ const METADATA_FIELDS = ['PersonLastName'];
 const searchfiltervalue = `{\"PersonLastName\":null,\"PersonFirstName\":\"CaseFirstName\",`
   + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\":null,\"AddressLine3\":null,`
   + `\"PostTown\":null,\"County\":null,\"PostCode\":null,\"Country\":null}}`;
+
 describe('SearchFiltersComponent', () => {
 
   let fixture: ComponentFixture<SearchFiltersComponent>;

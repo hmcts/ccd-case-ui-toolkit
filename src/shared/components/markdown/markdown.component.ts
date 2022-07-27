@@ -1,5 +1,4 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { ConvertHrefToRouterService } from '../case-editor/services';
 
 @Component({
   selector: 'ccd-markdown',
@@ -11,7 +10,7 @@ export class MarkdownComponent implements OnInit {
   @Input()
   public markdownUseHrefAsRouterLink!: boolean;
 
-  constructor(private readonly convertHrefToRouterService: ConvertHrefToRouterService) {}
+  constructor() {}
 
   public ngOnInit(): void {
     this.content = this.content.replace(/  \n/g, '<br>');
