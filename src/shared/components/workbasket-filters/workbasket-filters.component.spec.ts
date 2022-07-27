@@ -23,12 +23,7 @@ class FieldWriteComponent extends AbstractFieldWriteComponent {
   @Input()
   public formGroup: FormGroup;
 }
-const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
-const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
 
-const workbasketvalue = `{\"PersonLastName\":\"LastName\",\"PersonFirstName\":\"CaseFirstName\",`
-  + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\"`
-  + `:null,\"AddressLine3\":null,\"PostTown\":null,\"County\":null,\"PostCode\":null,\"Country\":null}}`;
 describe('WorkbasketFiltersComponent', () => {
 
   const JURISDICTION_1: Jurisdiction = {
@@ -281,11 +276,11 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.selected.jurisdiction).toBe(JURISDICTION_2);
     });
 
-    it('should update selected jurisdiction', async() => {
+    it('should update selected jurisdiction', () => {
       component.selected.jurisdiction = JURISDICTION_1;
       fixture.detectChanges();
 
-      await fixture
+      fixture
         .whenStable()
         .then(() => {
           const selector = de.query(By.css('#wb-jurisdiction'));
@@ -316,11 +311,11 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.selected.caseType).toBe(DEFAULT_CASE_TYPE);
     });
 
-    it('should update selected case type', async() => {
+    it('should update selected case type', () => {
       component.selected.caseType = CASE_TYPES_2[2];
       fixture.detectChanges();
 
-      await fixture
+      fixture
         .whenStable()
         .then(() => {
           const selector = de.query(By.css('#wb-case-type'));
@@ -353,11 +348,11 @@ describe('WorkbasketFiltersComponent', () => {
       expect(orderService.sortAsc).toHaveBeenCalled();
     });
 
-    it('should update selected case state', async() => {
+    it('should update selected case state', () => {
       component.selected.caseState = DEFAULT_CASE_TYPE.states[0];
       fixture.detectChanges();
 
-      await fixture
+      fixture
         .whenStable()
         .then(() => {
           const selector = de.query(By.css('#wb-case-state'));
@@ -366,7 +361,7 @@ describe('WorkbasketFiltersComponent', () => {
         });
     });
 
-    it('should submit filters when defaults could be selected, preserving the alerts', async() => {
+    it('should submit filters when defaults could be selected, preserving the alerts', () => {
 
       expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
         selected: {
@@ -386,7 +381,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(true);
     });
 
-    it('should submit filters when apply button is clicked, not preserving the alerts', async() => {
+    it('should submit filters when apply button is clicked, not preserving the alerts', () => {
       workbasketHandler.applyFilters.calls.reset();
 
       const button = de.query(By.css('.workbasket-filters-apply'));
@@ -394,7 +389,7 @@ describe('WorkbasketFiltersComponent', () => {
 
       fixture.detectChanges();
 
-      await fixture.whenStable().then(() => {
+      fixture.whenStable().then(() => {
         expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
           selected: {
             jurisdiction: JURISDICTION_2,
@@ -412,7 +407,7 @@ describe('WorkbasketFiltersComponent', () => {
       });
     });
 
-    it('should reset searchFilters when Jurisdiction changes even when Apply button is disabled', async() => {
+    it('should reset searchFilters when Jurisdiction changes even when Apply button is disabled', () => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = null;
       component.selected.caseState = null;
@@ -423,7 +418,7 @@ describe('WorkbasketFiltersComponent', () => {
 
       fixture.detectChanges();
 
-      await fixture
+      fixture
         .whenStable()
         .then(() => {
           expect(button.nativeElement.disabled).toBeTruthy();
@@ -434,11 +429,11 @@ describe('WorkbasketFiltersComponent', () => {
         });
     });
 
-    it('should have form group details added when apply button is clicked ', async() => {
+    it('should have form group details added when apply button is clicked ', () => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.apply(true);
 
-      await fixture.whenStable().then(() => {
+      fixture.whenStable().then(() => {
         expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
           selected: component.selected,
           queryParams: {jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id}
@@ -540,7 +535,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(writeFieldInstance.formGroup).toBeTruthy();
     });
 
-    it('should submit filters when apply button is clicked', async() => {
+    it('should submit filters when apply button is clicked', () => {
       const control = new FormControl('test');
       control.setValue('anything');
       const formControls = {
@@ -559,7 +554,7 @@ describe('WorkbasketFiltersComponent', () => {
 
       fixture.detectChanges();
 
-      await fixture.whenStable().then(() => {
+      fixture.whenStable().then(() => {
         const arg: any = workbasketHandler.applyFilters.calls.mostRecent().args[0].selected;
         expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
           selected: component.selected,
@@ -657,11 +652,11 @@ describe('WorkbasketFiltersComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should populate case types drop down with CRUD filtered case types and sort states', async() => {
+    it('should populate case types drop down with CRUD filtered case types and sort states', () => {
       component.onJurisdictionIdChange();
       fixture.detectChanges();
 
-      await fixture
+      fixture
         .whenStable()
         .then(() => {
           const selector = de.query(By.css('#wb-case-type'));
