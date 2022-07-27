@@ -12,7 +12,7 @@ import { AddressesService } from '../../../services/addresses/addresses.service'
 import { FieldLabelPipe, IsCompoundPipe } from '../utils';
 import { WriteAddressFieldComponent } from './write-address-field.component';
 
-describe('WriteAddressFieldComponent', () => {
+xdescribe('WriteAddressFieldComponent', () => {
 
   const CASE_FIELD_LABEL = 'Case Field Label';
   const POSTCODE = 'P05T CDE';

@@ -1,7 +1,7 @@
 import { WindowService } from '../../../services';
 import { FileUploadProgressGuard } from './file-upload-progress.guard';
-import createSpyObj = jasmine.createSpyObj;
 import { FileUploadStateService } from './file-upload-state.service';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('FileUploadProgressGuard', () => {
     let guard: FileUploadProgressGuard;

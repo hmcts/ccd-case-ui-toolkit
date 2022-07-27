@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { take } from 'rxjs/operators';
 import { CaseField, CaseState, CaseTypeLite, Jurisdiction, WorkbasketInputModel } from '../../domain';
 import { AlertService, FieldsUtils, JurisdictionService, OrderService, WindowService, WorkbasketInputFilterService } from '../../services';
 
@@ -158,8 +159,9 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.formGroup = new FormGroup({});
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
-        this.workbasketInputFilterService.getWorkbasketInputs(this.selected.jurisdiction.id, this.selected.caseType.id)
-          .subscribe(workbasketInputs => {
+        this.workbasketInputFilterService.getWorkbasketInputs(this.selected.jurisdiction.id, this.selected.caseType.id).pipe(
+          take(1)
+        ).subscribe(workbasketInputs => {
             this.workbasketInputsReady = true;
             this.workbasketInputs = workbasketInputs
               .sort(this.orderService.sortAsc);
