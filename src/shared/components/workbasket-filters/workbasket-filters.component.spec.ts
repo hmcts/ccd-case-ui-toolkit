@@ -433,6 +433,8 @@ describe('WorkbasketFiltersComponent', () => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.apply(true);
 
+      fixture.detectChanges();
+
       fixture.whenStable().then(() => {
         expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
           selected: component.selected,

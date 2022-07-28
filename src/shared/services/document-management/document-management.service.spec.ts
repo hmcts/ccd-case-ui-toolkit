@@ -70,7 +70,7 @@ describe('DocumentManagementService', () => {
       expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), jasmine.any(Object));
     });
 
-    it('should set Content-Type header to null', () => {
+    it('should set Content-Type header to null', async() => {
       documentManagementService.uploadFile(new FormData()).subscribe(() => {
 
         const headers = httpService.post.calls.mostRecent().args[2].headers;

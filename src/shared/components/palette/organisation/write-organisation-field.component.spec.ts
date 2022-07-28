@@ -173,7 +173,7 @@ describe('WriteOrganisationFieldComponent', () => {
     expect(component.organisationIDFormControl.valid).toBeTruthy();
   });
 
-  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', () => {
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', async() => {
     component.caseField = new CaseField();
     component.caseField.field_type = {
       ...FIELD_TYPE,
@@ -183,7 +183,7 @@ describe('WriteOrganisationFieldComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
-    component.selectedOrg$.toPromise().then(selectedOrg => {
+    await component.selectedOrg$.toPromise().then(selectedOrg => {
       expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
     });
   });

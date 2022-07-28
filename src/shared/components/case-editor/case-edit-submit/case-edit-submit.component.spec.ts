@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -364,7 +364,7 @@ describe('CaseEditSubmitComponent', () => {
     ];
     const firstPage = pages[0];
     const wizard: Wizard = new Wizard(pages);
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       orderService = new OrderService();
       spyOn(orderService, 'sort').and.callThrough();
 
@@ -423,12 +423,11 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
+
+      comp.ngOnInit();
       fixture.detectChanges();
     });
 
@@ -665,7 +664,7 @@ describe('CaseEditSubmitComponent', () => {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
     };
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       orderService = new OrderService();
       spyOn(orderService, 'sort').and.callThrough();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
@@ -723,9 +722,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -813,7 +809,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit']);
@@ -866,9 +862,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -1029,7 +1022,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       caseFieldRetainHiddenValue.show_condition = FIELD_3_SHOW_CONDITION;
       caseFieldRetainHiddenValue.value = FIELD_1_VALUE_RETAINED;
       caseFieldRetainHiddenValue.formatted_value = FIELD_1_VALUE_RETAINED;
@@ -1107,9 +1100,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -1179,7 +1169,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       countryMultiSelectField.show_condition = FIELD_3_SHOW_CONDITION;
       countryMultiSelectField.value = [MULTI_SELECT_FIELD_VALUE_1, MULTI_SELECT_FIELD_VALUE_2];
       documentField.show_condition = FIELD_3_SHOW_CONDITION;
@@ -1249,9 +1239,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -1316,7 +1303,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       countryMultiSelectField.retain_hidden_value = true;
       countryMultiSelectField.show_condition = FIELD_3_SHOW_CONDITION;
       countryMultiSelectField.value = [MULTI_SELECT_FIELD_VALUE_1, MULTI_SELECT_FIELD_VALUE_2];
@@ -1394,9 +1381,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -1466,7 +1450,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       countryMultiSelectField.retain_hidden_value = false;
       countryMultiSelectField.show_condition = FIELD_3_SHOW_CONDITION;
       countryMultiSelectField.value = [MULTI_SELECT_FIELD_VALUE_1, MULTI_SELECT_FIELD_VALUE_2];
@@ -1538,9 +1522,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -1607,7 +1588,8 @@ describe('CaseEditSubmitComponent', () => {
     CASE_CACHED.case_id = 'CACHED_CASE_ID_1';
     mockCaseNotifier = new CaseNotifier();
     mockCaseNotifier.cachedCaseView = CASE_CACHED;
-    beforeEach(waitForAsync(() => {
+
+    beforeEach(() => {
       complexCollectionField.retain_hidden_value = true;
       complexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       complexCollectionField.value = [{
@@ -1688,9 +1670,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -1802,7 +1781,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       complexCollectionField.retain_hidden_value = true;
       complexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       complexCollectionField.value = [{
@@ -1880,9 +1859,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -1945,7 +1921,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       complexCollectionField.retain_hidden_value = false;
       complexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       complexCollectionField.value = [{
@@ -2017,9 +1993,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -2082,7 +2055,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       nestedComplexCaseField.show_condition = FIELD_3_SHOW_CONDITION;
       nestedComplexCaseField.value = {
         [complexCaseField.id]: {
@@ -2153,9 +2126,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -2225,7 +2195,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       nestedComplexCaseField.retain_hidden_value = false;
       nestedComplexCaseField.show_condition = FIELD_3_SHOW_CONDITION;
       nestedComplexCaseField.value = {
@@ -2297,9 +2267,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -2363,7 +2330,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       nestedComplexCollectionField.retain_hidden_value = true;
       nestedComplexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       nestedComplexCollectionField.value = [{
@@ -2453,9 +2420,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -2529,7 +2493,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       nestedComplexCollectionField.retain_hidden_value = true;
       nestedComplexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       nestedComplexCollectionField.value = [{
@@ -2615,9 +2579,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -2680,7 +2641,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       nestedComplexCollectionField.retain_hidden_value = false;
       nestedComplexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       nestedComplexCollectionField.value = [{
@@ -2758,9 +2719,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -2823,7 +2781,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       documentCollectionField.retain_hidden_value = true;
       documentCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       documentCollectionField.value = [{
@@ -2904,9 +2862,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -2977,7 +2932,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       documentCollectionField.retain_hidden_value = false;
       documentCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       documentCollectionField.value = [{
@@ -3050,9 +3005,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -3117,7 +3069,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       caseFieldRetainHiddenValue.show_condition = FIELD_3_SHOW_CONDITION;
       caseFieldRetainHiddenValue.value = FIELD_1_VALUE_RETAINED;
       caseFieldRetainHiddenValue.formatted_value = FIELD_1_VALUE_RETAINED_ORIGINAL;
@@ -3195,9 +3147,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -3267,7 +3216,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       countryMultiSelectField.retain_hidden_value = true;
       countryMultiSelectField.show_condition = FIELD_3_SHOW_CONDITION;
       countryMultiSelectField.value = [MULTI_SELECT_FIELD_VALUE_1, MULTI_SELECT_FIELD_VALUE_2];
@@ -3345,9 +3294,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -3416,7 +3362,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       complexCollectionField.retain_hidden_value = true;
       complexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       complexCollectionField.value = [{
@@ -3497,9 +3443,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -3571,7 +3514,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       complexCollectionField.retain_hidden_value = true;
       complexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       complexCollectionField.value = [{
@@ -3649,9 +3592,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -3722,7 +3662,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       nestedComplexCollectionField.retain_hidden_value = true;
       nestedComplexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       nestedComplexCollectionField.value = [{
@@ -3812,9 +3752,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -3888,7 +3825,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       nestedComplexCollectionField.retain_hidden_value = true;
       nestedComplexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       nestedComplexCollectionField.value = [{
@@ -3974,9 +3911,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -4049,7 +3983,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       documentCollectionField.retain_hidden_value = true;
       documentCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       documentCollectionField.value = [{
@@ -4130,9 +4064,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
@@ -4205,7 +4136,7 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
       documentCollectionField.retain_hidden_value = true;
       documentCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
       documentCollectionField.value = [{
@@ -4289,9 +4220,6 @@ describe('CaseEditSubmitComponent', () => {
           {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
       comp = fixture.componentInstance;
       de = fixture.debugElement;
