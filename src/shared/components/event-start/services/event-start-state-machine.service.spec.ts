@@ -122,7 +122,7 @@ describe('EventStartStateMachineService', () => {
     sessionStorageService: mockSessionStorageService
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
