@@ -9,86 +9,85 @@ import { CaseNotifier, CasesService } from '../case-editor';
 import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('CaseTimelineComponent', () => {
-
-  const CASE_EVENTS: CaseViewEvent[] = [
-    {
-      id: 5,
-      timestamp: '2017-05-10T10:00:00.000',
-      summary: 'Case updated again!',
-      comment: 'Latest update',
-      event_id: 'updateCase',
-      event_name: 'Update a case',
-      state_id: 'CaseUpdated',
-      state_name: 'Case Updated',
-      user_id: 0,
-      user_last_name: 'smith',
-      user_first_name: 'justin',
-      significant_item: {
-        type: 'DOCUMENT',
-        description: 'First document description',
-        url: 'https://google.com'
-      }
-    },
-    {
-      id: 4,
-      timestamp: '2017-05-09T16:07:03.973',
-      summary: 'Case updated!',
-      comment: 'Plop plop',
-      event_id: 'updateCase',
-      event_name: 'Update a case',
-      state_id: 'CaseUpdated',
-      state_name: 'Case Updated',
-      user_id: 0,
-      user_last_name: 'chan',
-      user_first_name: 'phillip',
-      significant_item: {
-        type: 'NON-DOCUMENT',
-        description: 'Second document description',
-        url: 'https://google.com'
-      }
+const CASE_EVENTS: CaseViewEvent[] = [
+  {
+    id: 5,
+    timestamp: '2017-05-10T10:00:00.000',
+    summary: 'Case updated again!',
+    comment: 'Latest update',
+    event_id: 'updateCase',
+    event_name: 'Update a case',
+    state_id: 'CaseUpdated',
+    state_name: 'Case Updated',
+    user_id: 0,
+    user_last_name: 'smith',
+    user_first_name: 'justin',
+    significant_item: {
+      type: 'DOCUMENT',
+      description: 'First document description',
+      url: 'https://google.com'
     }
-  ];
-  const CASE_REFERENCE = '1234123412341234';
-  const CASE_VIEW: CaseView = {
-    case_id: CASE_REFERENCE,
-    case_type: {
-      id: 'TestAddressBookCase',
-      name: 'Test Address Book Case',
-      jurisdiction: {
-        id: 'TEST',
-        name: 'Test',
-      }
-    },
-    channels: [],
-    state: {
-      id: 'CaseCreated',
-      name: 'Case created'
-    },
-    tabs: [],
-    triggers: [],
-    events: CASE_EVENTS
-  };
-  const CASE_VIEW_OBS: Observable<CaseView> = of(CASE_VIEW);
+  },
+  {
+    id: 4,
+    timestamp: '2017-05-09T16:07:03.973',
+    summary: 'Case updated!',
+    comment: 'Plop plop',
+    event_id: 'updateCase',
+    event_name: 'Update a case',
+    state_id: 'CaseUpdated',
+    state_name: 'Case Updated',
+    user_id: 0,
+    user_last_name: 'chan',
+    user_first_name: 'phillip',
+    significant_item: {
+      type: 'NON-DOCUMENT',
+      description: 'Second document description',
+      url: 'https://google.com'
+    }
+  }
+];
+const CASE_REFERENCE = '1234123412341234';
+const CASE_VIEW: CaseView = {
+  case_id: CASE_REFERENCE,
+  case_type: {
+    id: 'TestAddressBookCase',
+    name: 'Test Address Book Case',
+    jurisdiction: {
+      id: 'TEST',
+      name: 'Test',
+    }
+  },
+  channels: [],
+  state: {
+    id: 'CaseCreated',
+    name: 'Case created'
+  },
+  tabs: [],
+  triggers: [],
+  events: CASE_EVENTS
+};
+const CASE_VIEW_OBS: Observable<CaseView> = of(CASE_VIEW);
 
-  let EventLogComponent;
-  let CaseHistoryComponent;
-  let caseNotifier;
-  let casesService;
-  let alertService: any;
+let EventLogComponent;
+let CaseHistoryComponent;
+let caseNotifier;
+let casesService;
+let alertService: any;
 
-  let fixture: ComponentFixture<CaseTimelineComponent>;
-  let component: CaseTimelineComponent;
-  let de: DebugElement;
+let fixture: ComponentFixture<CaseTimelineComponent>;
+let component: CaseTimelineComponent;
+let de: DebugElement;
 
-  EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
-    'events'
-  ]});
+EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
+  'events'
+]});
 
-  CaseHistoryComponent = MockComponent({ selector: 'ccd-case-history', inputs: [
-    'event'
-  ]});
+CaseHistoryComponent = MockComponent({ selector: 'ccd-case-history', inputs: [
+  'event'
+]});
 
+describe('CaseTimelineComponent', () => {
   describe('CaseTimelineComponent successfully resolves case view', () => {
 
     const $BACK_TO_TIMELINE_LINK = By.css('div>div>ol>li>a');
@@ -186,28 +185,29 @@ describe('CaseTimelineComponent', () => {
   });
 
   describe('CaseTimelineComponent fails to resolve case view', () => {
-
     const ERROR_MSG = 'Critical error!';
-
+  
     beforeEach(async() => {
-
       EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
         'events'
       ]});
-
+  
       const ERROR: HttpError = new HttpError();
       ERROR.message = ERROR_MSG;
       const ERROR_OBS: Observable<HttpError> = throwError(ERROR);
+
+      casesService = createSpyObj('casesService', ['getCaseViewV2']);
       casesService.getCaseViewV2.and.returnValue(ERROR_OBS);
-
+  
       alertService = createSpyObj('alertService', ['error']);
-
+      alertService.error.and.returnValue(of({}));
+  
       TestBed
         .configureTestingModule({
           imports: [],
           declarations: [
             CaseTimelineComponent,
-
+  
             // Mocks
             EventLogComponent,
             CaseHistoryComponent,
@@ -219,23 +219,22 @@ describe('CaseTimelineComponent', () => {
           ]
         })
         .compileComponents();
-
+  
       fixture = TestBed.createComponent(CaseTimelineComponent);
       component = fixture.componentInstance;
       component.case = CASE_REFERENCE;
-
+  
       de = fixture.debugElement;
       fixture.detectChanges();
     });
-
+  
     it('should call alert service and not render event log component', () => {
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_REFERENCE);
       const eventLogDe = de.query(By.directive(EventLogComponent));
-
+  
       expect(eventLogDe).toBeNull();
       expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);
       expect(component.events).toBeUndefined();
-
     });
-  });
+  });  
 });
