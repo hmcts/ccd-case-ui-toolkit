@@ -1,12 +1,17 @@
 import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { LinkedCasesService } from '../../components/palette/case-link/services';
+import { JurisdictionService } from '../../components/palette/case-link/services/jurisdiction.service';
 import { LovRefDataByServiceModel } from '../../services/common-data-service/common-data-service';
 import { LinkCasesReasonValuePipe } from './ccd-link-cases-reason-code.pipe';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('LinkCasesReasonValuePipe', () => {
 
   let linkCasesReasonValuePipe: LinkCasesReasonValuePipe;
-  const linkedCasesService = new LinkedCasesService();
+  let jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of());
+  const linkedCasesService = new LinkedCasesService(jurisdictionService);
 
   const linkCaseReasons: LovRefDataByServiceModel = {
     list_of_values: [
@@ -56,7 +61,9 @@ describe('LinkCasesReasonValuePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{provide: LinkedCasesService, useValue: linkedCasesService}]
+      providers: [
+        {provide: LinkedCasesService, useValue: linkedCasesService},
+      ]
     });
     linkCasesReasonValuePipe = new LinkCasesReasonValuePipe(linkedCasesService);
     linkedCasesService.linkCaseReasons = linkCaseReasons.list_of_values;

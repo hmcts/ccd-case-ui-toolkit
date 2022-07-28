@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { CaseView } from '../../../../domain/case-view';
 import { Jurisdiction } from '../../../../domain/definition/jurisdiction.model';
 import { LovRefDataModel } from '../../../../services/common-data-service/common-data-service';
-import { JurisdictionService } from '../../../../services/jurisdiction';
 import { CaseLink } from '../domain';
+import { JurisdictionService } from './jurisdiction.service';
 
 @Injectable()
 export class LinkedCasesService {
@@ -19,13 +19,14 @@ export class LinkedCasesService {
 
   constructor(private readonly jurisdictionService: JurisdictionService) {
     this.jurisdictionService.getJurisdictions().subscribe((jurisdictions) => {
-        this.jurisdictionsResponse = jurisdictions; 
+        this.jurisdictionsResponse = jurisdictions;
     });
   }
 
   public mapLookupIDToValueFromJurisdictions(fieldName, fieldValue): string {
     const selectedCaseJurisdictionId = this.caseDetails && this.caseDetails.case_type.jurisdiction.id || null;
-    const selectedJurisdiction = this.jurisdictionsResponse && this.jurisdictionsResponse.find(item => item.id === selectedCaseJurisdictionId);
+    const selectedJurisdiction = this.jurisdictionsResponse &&
+                                this.jurisdictionsResponse.find(item => item.id === selectedCaseJurisdictionId);
     const selectedCaseType = selectedJurisdiction.caseTypes.find(item => item.id === this.caseDetails.case_type.id);
     switch (fieldName) {
       case 'JURISDICTION':

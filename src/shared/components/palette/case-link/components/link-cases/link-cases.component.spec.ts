@@ -88,7 +88,8 @@ describe('LinkCasesComponent', () => {
     caseId: '1682374819203471',
     linkedCases: [],
     linkCaseReasons: linkCaseReasons,
-    caseFieldValue: []
+    caseFieldValue: [],
+    mapLookupIDToValueFromJurisdictions() {},
   };
 
   beforeEach(async(() => {

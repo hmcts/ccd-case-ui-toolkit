@@ -164,7 +164,7 @@ export class LinkCasesComponent implements OnInit {
             reasons: this.getSelectedCaseReasons(),
             createdDateTime: moment(new Date()).format(this.ISO_FORMAT),
             caseType: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('CASE_TYPE', caseView.case_type.id),
-            caseState: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE',caseView.state.name),
+            caseState: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE', caseView.state.name),
             caseService: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION', caseView.case_type.jurisdiction.name),
             caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
           };
