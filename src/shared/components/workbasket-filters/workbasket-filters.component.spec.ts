@@ -1,5 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, Input } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -175,7 +175,7 @@ describe('WorkbasketFiltersComponent', () => {
   const TEST_FORM_GROUP = new FormGroup({});
 
   describe('with defaults', () => {
-    beforeEach(async() => {
+    beforeEach(waitForAsync(() => {
       workbasketHandler = createSpyObj('workbasketHandler', ['applyFilters']);
       router = createSpyObj<Router>('router', ['navigate']);
       router.navigate.and.returnValue(Promise.resolve('someResult'));
@@ -235,7 +235,7 @@ describe('WorkbasketFiltersComponent', () => {
 
       de = fixture.debugElement;
       fixture.detectChanges();
-    });
+    }));
 
     it('should disable the button', () => {
       component.selected.jurisdiction = JURISDICTION_2;
