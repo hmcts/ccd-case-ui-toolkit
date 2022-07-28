@@ -1,4 +1,5 @@
 import { HttpParams } from '@angular/common/http';
+import { waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { Banner } from '../../domain';
@@ -46,22 +47,22 @@ describe('Banner service', () => {
         expect(appConfig.getBannersUrl).toHaveBeenCalled();
       });
 
-      it('should retrieve banners data', () => {
+      it('should retrieve banners data', waitForAsync(() => {
         bannerService
           .getBanners(JID)
-          .subscribe(
-            banner => expect(banner).toBe(MOCK_BANNER1.banners)
-          );
-      });
+          .subscribe().add(banner => {
+            expect(banner).toBe(MOCK_BANNER1.banners)
+          });
+      }));
 
-      it('should retrieve banners with empty ', () => {
+      it('should retrieve banners with empty', waitForAsync(() => {
         httpService.get.and.returnValue(of());
         bannerService
           .getBanners(JID)
-          .subscribe(
-            banner => expect(banner).toBeUndefined()
-          );
-      });
+          .subscribe(banner => banner).add(banner => {
+            expect(banner).toBeUndefined()
+          });
+      }));
 
     });
 

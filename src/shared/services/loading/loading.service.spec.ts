@@ -34,7 +34,7 @@ describe('LoadingService', () => {
 
   });
 
-  it('should return observable of false when all tokens are unregistered', async (done) => {
+  it('should return observable of false when all tokens are unregistered', async () => {
     let token1: string;
     let token2: string;
     setTimeout(() => token1 = loadingService.register(), 1);
@@ -42,9 +42,8 @@ describe('LoadingService', () => {
     setTimeout(() => {
       loadingService.unregister(token1);
       loadingService.unregister(token2);
-      subscription = loadingService.isLoading.subscribe(value => {
+      subscription = loadingService.isLoading.subscribe().add(value => {
         expect(value).toBeFalsy();
-        done();
       });
     }, 5);
   });

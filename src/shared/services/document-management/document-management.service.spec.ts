@@ -1,5 +1,6 @@
 import createSpyObj = jasmine.createSpyObj;
 import { HttpHeaders } from '@angular/common/http';
+import { waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseField, DocumentData, FieldType } from '../../domain';
@@ -74,10 +75,12 @@ describe('DocumentManagementService', () => {
       });
     });
 
-    it('should return document metadata', () => {
+    it('should return document metadata', waitForAsync(() => {
       documentManagementService.uploadFile(new FormData())
-        .subscribe(documentMetadata => expect(documentMetadata).toEqual(RESPONSE));
-    });
+        .subscribe().add(documentMetadata => {
+          expect(documentMetadata).toEqual(RESPONSE)
+        });
+    }));
   });
 
   describe('Media viewer', () => {

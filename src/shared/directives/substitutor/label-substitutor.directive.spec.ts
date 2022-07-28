@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
@@ -63,8 +63,11 @@ describe('LabelSubstitutorDirective', () => {
     placeholderService = createSpyObj<PlaceholderService>('placeholderService', ['resolvePlaceholders']);
 
     TestBed.configureTestingModule({
+      imports: [FormsModule, ReactiveFormsModule],
       declarations: [LabelSubstitutorDirective, TestHostComponent],
-      providers: [FieldsUtils, FormatTranslatorService,
+      providers: [
+        FieldsUtils,
+        FormatTranslatorService,
         {provide: PlaceholderService, useValue: placeholderService}]
     }).compileComponents();
 

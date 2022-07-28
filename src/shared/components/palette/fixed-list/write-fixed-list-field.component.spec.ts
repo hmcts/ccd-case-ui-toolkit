@@ -98,14 +98,14 @@ describe('WriteFixedListFieldComponent', () => {
     expect(options[3].nativeElement.textContent).toEqual('Other');
   });
 
-  it('should link select element to formControl', () => {
+  it('should link select element to formControl', waitForAsync(() => {
     component.fixedListFormControl.setValue('M');
     fixture.detectChanges();
     fixture
-        .whenStable()
-        .then(() => {
-          const select = de.query($SELECT);
-          expect(select.nativeElement.selectedIndex).toEqual(1);
-        });
-  });
+      .whenStable()
+      .then(() => {
+        const select = de.query($SELECT);
+        expect(select.nativeElement.selectedIndex).toEqual(1);
+      });
+  }));
 });

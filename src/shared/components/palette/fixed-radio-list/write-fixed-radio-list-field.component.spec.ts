@@ -86,7 +86,6 @@ describe('WriteFixedRadioListFieldComponent', () => {
     const options = de.queryAll($RADIO);
 
     expect(options.length).toEqual(3);
-    console.log('Radio', options);
     expect(attr(options[0], 'id')).toEqual('MarritalStatus-M');
     expect(attr(options[1], 'id')).toEqual('MarritalStatus-F');
     expect(attr(options[2], 'id')).toEqual('MarritalStatus-O');
