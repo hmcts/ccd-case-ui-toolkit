@@ -173,7 +173,7 @@ describe('WriteOrganisationFieldComponent', () => {
     expect(component.organisationIDFormControl.valid).toBeTruthy();
   });
 
-  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', async() => {
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', waitForAsync(() => {
     component.caseField = new CaseField();
     component.caseField.field_type = {
       ...FIELD_TYPE,
@@ -182,11 +182,12 @@ describe('WriteOrganisationFieldComponent', () => {
     component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
     component.ngOnInit();
     fixture.detectChanges();
+
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
-    await component.selectedOrg$.toPromise().then(selectedOrg => {
+    component.selectedOrg$.subscribe((selectedOrg) => {
       expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
-    });
-  });
+    })
+  }));
 
   it('should pre-select organisation when PrepopulateToUsersOrganisationControl is NO but it has selected the org', () => {
     const prepopulateToUsersOrganisationControl = new FormControl('NO');
@@ -207,20 +208,22 @@ describe('WriteOrganisationFieldComponent', () => {
     expect(component.organisationIDFormControl.invalid).toBeTruthy();
   });
 
-  it('should not search org if enter characters less than 2', () => {
+  it('should not search org if enter characters less than 2', waitForAsync(() => {
     component.onSearchOrg('a');
-    component.simpleOrganisations$.toPromise().then(orgs => {
+
+    component.simpleOrganisations$.subscribe(orgs => {
       expect(orgs.length).toEqual(0);
     });
-  });
+  }));
 
-  it('should search org if enter characters equal and greater than 2', () => {
+  it('should search org if enter characters equal and greater than 2', waitForAsync(() => {
     component.organisations$ = of(ORGANISATIONS);
     component.onSearchOrg('SN');
-    component.simpleOrganisations$.toPromise().then(orgs => {
+
+    component.simpleOrganisations$.subscribe(orgs => {
       expect(orgs.length).toEqual(2);
     });
-  });
+  }));
 
   it('should replace space', () => {
     const postCode = component.trimAll('L15 5AA');
