@@ -9,7 +9,7 @@ import { RequestOptionsBuilder } from '../request';
 import { SearchService } from './search.service';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('SearchService', () => {
+fdescribe('SearchService', () => {
 
   const JID = 'TEST';
   const CTID = 'TestAddressBookCase';
@@ -238,8 +238,9 @@ describe('SearchService', () => {
     it('should unregister loading token when finished', () => {
       searchService
         .search(JID, CTID, {}, {})
-        .subscribe(() => {
-          expect(loadingService.unregister).toHaveBeenCalled();
+        .subscribe()
+        .add(() => {
+          expect(loadingService.unregister).toHaveBeenCalled()
         });
     });
 
@@ -334,8 +335,9 @@ describe('SearchService', () => {
     it('should unregister loading token when finished', () => {
       searchService
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
-        .subscribe(() => {
-          expect(loadingService.unregister).toHaveBeenCalled();
+        .subscribe()
+        .add(() => {
+          expect(loadingService.unregister).toHaveBeenCalled()
         });
     });
   });
