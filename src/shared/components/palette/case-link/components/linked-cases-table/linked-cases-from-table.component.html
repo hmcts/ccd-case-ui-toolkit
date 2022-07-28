@@ -5,23 +5,23 @@
   <table *ngIf="(getLinkedCasesResponse && showHideLinkText === 'Hide') || noLinkedCases" aria-describedby="table to display cases linked from">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Case name and number</th>
-        <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Case type </th>
-        <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Service</th>
-        <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">State</th>
-        <th scope="col" class="govuk-table__header case-table-column" style="min-width: 200px;max-width: 200px">Reasons for case link</th>
+        <th scope="col" class="govuk-table__header case-table-column width-20">Case name and number</th>
+        <th scope="col" class="govuk-table__header case-table-column width-20">Case type </th>
+        <th scope="col" class="govuk-table__header case-table-column width-20">Service</th>
+        <th scope="col" class="govuk-table__header case-table-column width-20">State</th>
+        <th scope="col" class="govuk-table__header case-table-column width-20">Reasons for case link</th>
       </tr>
     </thead>
     <tbody class="govuk-table__body" *ngIf="getLinkedCasesResponse">
-      <tr class="govuk-table__row" *ngFor="let case of getLinkedCasesResponse.linkedCases">
-        <td class="govuk-table__cell case-table-column">
+      <tr class="govuk-table__row" *ngFor="let case of getLinkedCasesResponse">
+        <td >
           <p class="govuk-body"><a target="_blank" class="govuk-link" href="cases/case-details/{{case.caseReference}}" rel="noopener"><span>{{case.caseReference | ccdCaseReference}} <br>
             {{case.caseNameHmctsInternal}}</span></a></p>
         </td>
-        <td class="govuk-table__cell case-table-column"><span>{{case.ccdCaseType}}</span></td>
-        <td class="govuk-table__cell case-table-column"><span>{{case.ccdJurisdiction}}</span></td>
-        <td class="govuk-table__cell case-table-column"><span>{{case.state}}</span></td>
-        <td class="govuk-table__cell case-table-column" *ngFor="let details of case.linkDetails">
+        <td><span>{{case.ccdCaseType}}</span></td>
+        <td><span>{{case.ccdJurisdiction}}</span></td>
+        <td><span>{{case.state}}</span></td>
+        <td  *ngFor="let details of case.linkDetails">
           <span *ngFor="let reason of details.reasons; let i = index; let isLast = last">
             {{reason.reasonCode | ccdLinkCasesReasonValue}} <br>
           </span>

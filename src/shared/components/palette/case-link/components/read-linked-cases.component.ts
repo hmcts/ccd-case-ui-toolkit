@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseField } from '../../../../domain';
 import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
@@ -21,8 +21,7 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
   constructor(private router: Router,
     private readonly linkedCasesService: LinkedCasesService,
     private readonly appConfig: AbstractAppConfig,
-    private commonDataService: CommonDataService,
-
+    private readonly commonDataService: CommonDataService,
     ) {}
 
     public ngOnInit(): void {
@@ -33,7 +32,7 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
           this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
         },
         error: error => this.getFailureNotification(error)
-      })
+      });
     }
 
     public ngAfterViewInit(): void {

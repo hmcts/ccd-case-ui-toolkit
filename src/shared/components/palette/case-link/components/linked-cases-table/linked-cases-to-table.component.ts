@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CaseField } from '../../../../../domain/definition';
+import { CaseField, Jurisdiction } from '../../../../../domain/definition';
 import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../../domain';
 import { ActivatedRoute } from '@angular/router';
@@ -31,11 +31,13 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public tableHeading = 'Linked cases';
   public tableSubHeading = 'This case is linked to';
+  public subHeading = 'This case is linked to';
 
   public caseDetails: CaseView;
   public isLoaded: boolean;
   public linkedCasesFromResponse: LinkedCasesResponse[] = [];
   public caseId: string;
+  public jurisdictionsResponse: Jurisdiction[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -56,6 +58,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     this.caseId = this.route.snapshot && this.route.snapshot.data && this.route.snapshot.data.case.case_id;
     this.getAllLinkedCaseInformation()
+   if (this.route.snapshot.data.case) {
+      this.linkedCasesService.caseDetails = this.route.snapshot.data.case;
+    }
   }
 
   public groupLinkedCasesByCaseType = (arrObj, key) => {
@@ -142,14 +147,13 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     return caseInfo && {
       caseReference: esSearchCasesResponse.case_id,
       caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
-      caseType: esSearchCasesResponse.case_fields['[CASE_TYPE]'],
-      service: esSearchCasesResponse.case_fields['[JURISDICTION]'],
-      state: esSearchCasesResponse.case_fields['[STATE]'],
+      caseType: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('CASE_TYPE', esSearchCasesResponse.case_fields['[CASE_TYPE]']),
+      service: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION',  esSearchCasesResponse.case_fields['[JURISDICTION]']),
+      state: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE', esSearchCasesResponse.case_fields['[STATE]']),
       reasons: caseInfo.value && caseInfo.value.ReasonForLink &&
               caseInfo.value.ReasonForLink.map(reason => reason.value && reason.value.Reason),
     } as LinkedCasesResponse
   }
-
   public constructElasticSearchQuery(caseIds: any[], size: number): ESQueryType {
     return {
         query: {

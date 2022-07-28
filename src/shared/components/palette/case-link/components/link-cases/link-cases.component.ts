@@ -158,13 +158,14 @@ export class LinkCasesComponent implements OnInit {
       .getCaseViewV2(this.linkCaseForm.value.caseNumber)
       .subscribe(
         (caseView: CaseView) => {
+          this.linkedCasesService.caseDetails = caseView;
           const caseLink: CaseLink = {
             caseReference: caseView.case_id,
             reasons: this.getSelectedCaseReasons(),
             createdDateTime: moment(new Date()).format(this.ISO_FORMAT),
-            caseType: caseView.case_type.id,
-            caseState: caseView.state.name,
-            caseService: caseView.case_type.jurisdiction.name,
+            caseType: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('CASE_TYPE', caseView.case_type.id),
+            caseState: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE',caseView.state.name),
+            caseService: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION', caseView.case_type.jurisdiction.name),
             caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
           };
           const ccdApiCaseLinkData: CCDCaseLinkType = {
