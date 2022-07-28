@@ -1,4 +1,5 @@
 import createSpyObj = jasmine.createSpyObj;
+import { HttpHeaders } from '@angular/common/http';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseField, DocumentData, FieldType } from '../../domain';
@@ -67,14 +68,9 @@ describe('DocumentManagementService', () => {
     it('should use HttpService.post with the correct URL', () => {
       documentManagementService.uploadFile(new FormData()).subscribe();
 
-      expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), jasmine.any(Object));
-    });
-
-    it('should set Content-Type header to null', async() => {
-      documentManagementService.uploadFile(new FormData()).subscribe(() => {
-
-        const headers = httpService.post.calls.mostRecent().args[2].headers;
-        expect(headers.get('Content-Type')).toBe(null);
+      expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), {
+        headers: new HttpHeaders(),
+        observe: 'body'
       });
     });
 

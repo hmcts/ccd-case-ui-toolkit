@@ -416,15 +416,16 @@ describe('WorkbasketFiltersComponent', () => {
       windowService.getLocalStorage.and.returnValue(formValue);
       const button = de.query($APPLY_BUTTON);
 
-      fixture.detectChanges();
-
       fixture
         .whenStable()
         .then(() => {
+          fixture.detectChanges();
           expect(button.nativeElement.disabled).toBeTruthy();
 
           component.selected.jurisdiction = JURISDICTION_1;
           component.onJurisdictionIdChange();
+
+          fixture.detectChanges();
           expect(component.workbasketInputsReady).toBeFalsy();
         });
     });
