@@ -2138,6 +2138,9 @@ describe('CaseEditSubmitComponent', () => {
 
       // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
       comp.submit();
+
+      fixture.detectChanges();
+
       expect(caseEditComponent.submit).toHaveBeenCalledWith({
         data: {
           nestedComplexField1: {
