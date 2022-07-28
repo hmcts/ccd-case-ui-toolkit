@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { delay } from 'rxjs/internal/operators';
+import { delay } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { DocumentData } from '../../domain/document/document-data.model';
 import { HttpService } from '../http';

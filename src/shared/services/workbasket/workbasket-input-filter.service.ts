@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
+import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { WorkbasketInputModel } from '../../domain';
 import { HttpService } from '../http/http.service';
@@ -32,20 +32,22 @@ export class WorkbasketInputFilterService {
     this.currentCaseType = caseTypeId;
     return this.httpService
       .get(url, {headers, observe: 'body'})
-      .map(body => {
-        const workbasketInputs = body.workbasketInputs;
-        if (this.isDataValid(jurisdictionId, caseTypeId)) {
-          workbasketInputs.forEach(item => {
-            item.field.label = item.label;
-            if (item.display_context_parameter) {
-              item.field.display_context_parameter = item.display_context_parameter;
-            }
-          });
-        } else {
-          throw new Error('Response expired');
-        }
-        return workbasketInputs;
-      });
+      .pipe(
+        map(body => {
+          const workbasketInputs = body.workbasketInputs;
+          if (this.isDataValid(jurisdictionId, caseTypeId)) {
+            workbasketInputs.forEach(item => {
+              item.field.label = item.label;
+              if (item.display_context_parameter) {
+                item.field.display_context_parameter = item.display_context_parameter;
+              }
+            });
+          } else {
+            throw new Error('Response expired');
+          }
+          return workbasketInputs;
+        })
+      );
   }
 
   public isDataValid(jurisdictionId: string, caseTypeId: string): boolean {

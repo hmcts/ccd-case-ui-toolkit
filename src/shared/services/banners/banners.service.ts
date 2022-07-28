@@ -1,7 +1,7 @@
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
+import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { Banner } from '../../domain';
 import { HttpService } from '../http/http.service';
@@ -23,6 +23,8 @@ export class BannersService {
     jurisdictionReferences.forEach(reference => params = params.append('ids', reference));
     return this.httpService
       .get(url, {params, headers, observe: 'body'})
-      .map(body => body.banners);
+      .pipe(
+        map(body => body.banners)
+      );
   }
 }

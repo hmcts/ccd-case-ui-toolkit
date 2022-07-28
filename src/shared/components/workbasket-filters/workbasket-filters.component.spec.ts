@@ -237,6 +237,10 @@ describe('WorkbasketFiltersComponent', () => {
       fixture.detectChanges();
     }));
 
+    afterAll(() => {
+      TestBed.resetTestingModule();
+    });
+
     it('should disable the button', () => {
       component.selected.jurisdiction = JURISDICTION_2;
       component.selected.caseType = null;
@@ -655,6 +659,10 @@ describe('WorkbasketFiltersComponent', () => {
         fixture.detectChanges();
     });
 
+    afterAll(() => {
+      TestBed.resetTestingModule();
+    });
+
     it('should populate case types drop down with CRUD filtered case types and sort states', () => {
       component.onJurisdictionIdChange();
       fixture.detectChanges();
@@ -752,6 +760,11 @@ describe('WorkbasketFiltersComponent', () => {
       de = fixture.debugElement;
       fixture.detectChanges();
     });
+
+    afterAll(() => {
+      TestBed.resetTestingModule();
+    });
+
     it('should disable case type dropdown if default is filtered out due to CRUD and no other case types', () => {
       const caseTypeSelector = de.query(By.css('#wb-case-type'));
       expect(caseTypeSelector.nativeElement.disabled).toBeTruthy();
@@ -822,6 +835,10 @@ describe('WorkbasketFiltersComponent', () => {
 
       de = fixture.debugElement;
       fixture.detectChanges();
+    });
+
+    afterAll(() => {
+      TestBed.resetTestingModule();
     });
 
     it('should disable states dropdown if default is filtered out due to CRUD and no other states', () => {
@@ -901,6 +918,10 @@ describe('WorkbasketFiltersComponent', () => {
 
       de = fixture.debugElement;
       fixture.detectChanges();
+    });
+
+    afterAll(() => {
+      TestBed.resetTestingModule();
     });
 
     it('should initially select jurisdiction based on query parameter', () => {
@@ -985,6 +1006,10 @@ describe('WorkbasketFiltersComponent', () => {
       fixture.detectChanges();
     });
 
+    afterAll(() => {
+      TestBed.resetTestingModule();
+    });
+
     it('should initially NOT select anything if jurisdiction is invalid and no case types', () => {
       expect(component.selected.jurisdiction).toBeUndefined();
       expect(component.selected.caseType).toBeUndefined();
@@ -1055,6 +1080,10 @@ describe('WorkbasketFiltersComponent', () => {
 
       de = fixture.debugElement;
       fixture.detectChanges();
+    });
+
+    afterAll(() => {
+      TestBed.resetTestingModule();
     });
 
     it('should have disabled button', () => {
