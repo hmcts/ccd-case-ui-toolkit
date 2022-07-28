@@ -9,7 +9,7 @@ import { RequestOptionsBuilder } from '../request';
 import { SearchService } from './search.service';
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('SearchService', () => {
+describe('SearchService', () => {
 
   const JID = 'TEST';
   const CTID = 'TestAddressBookCase';
