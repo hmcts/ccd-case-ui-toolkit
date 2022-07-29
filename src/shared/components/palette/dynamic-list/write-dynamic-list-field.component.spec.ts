@@ -99,7 +99,7 @@ describe('WriteDynamicListFieldComponent', () => {
     expect(options[3].nativeElement.textContent).toEqual('Other');
   });
 
-  it('should link select element to formControl', () => {
+  it('should link select element to formControl', waitForAsync(() => {
     component.dynamicListFormControl.setValue('M');
     fixture.detectChanges();
     fixture
@@ -108,5 +108,5 @@ describe('WriteDynamicListFieldComponent', () => {
           const select = de.query($SELECT);
           expect(select.nativeElement.selectedIndex).toEqual(1);
         });
-  });
+  }));
 });
