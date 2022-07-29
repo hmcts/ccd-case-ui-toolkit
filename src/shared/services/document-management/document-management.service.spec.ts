@@ -66,19 +66,19 @@ describe('DocumentManagementService', () => {
       httpService.post.and.returnValue(of(RESPONSE));
     });
 
-    it('should use HttpService.post with the correct URL', () => {
-      documentManagementService.uploadFile(new FormData()).subscribe();
-
-      expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), {
-        headers: new HttpHeaders(),
-        observe: 'body'
+    it('should use HttpService.post with the correct URL', waitForAsync(() => {
+      documentManagementService.uploadFile(new FormData()).subscribe().add(() => {
+        expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), {
+          headers: new HttpHeaders(),
+          observe: 'body'
+        });
       });
-    });
+    }));
 
     it('should return document metadata', waitForAsync(() => {
       documentManagementService.uploadFile(new FormData())
         .subscribe().add(documentMetadata => {
-          expect(documentMetadata).toEqual(RESPONSE)
+          expect(documentMetadata).toEqual(RESPONSE);
         });
     }));
   });
