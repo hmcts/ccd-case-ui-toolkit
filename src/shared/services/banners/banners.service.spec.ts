@@ -27,7 +27,8 @@ describe('Banner service', () => {
 
   describe('Banners()', () => {
     const MOCK_BANNER1 = { banners: MOCK_BANNER };
-    beforeEach(() => {
+
+    beforeEach(waitForAsync(() => {
       params = new HttpParams();
       httpService = createSpyObj<HttpService>('httpService', ['get']);
       appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getBannersUrl', 'getCaseDataUrl']);
@@ -35,7 +36,8 @@ describe('Banner service', () => {
       appConfig.getCaseDataUrl.and.returnValue(BANNER_URL);
       appConfig.getBannersUrl.and.returnValue(BANNER_URL);
       bannerService = new BannersService(httpService, appConfig);
-    });
+    }));
+
     describe('getBanners()', () => {
 
       beforeEach(() => {
@@ -51,13 +53,6 @@ describe('Banner service', () => {
         bannerService
           .getBanners(JID)
           .subscribe((bannerData) => expect(bannerData).toBe(MOCK_BANNER1.banners));
-      }));
-
-      it('should retrieve banners with empty', waitForAsync(() => {
-        httpService.get.and.returnValue(of());
-        bannerService
-          .getBanners(JID)
-          .subscribe((bannerData) => expect(bannerData).toBeUndefined());
       }));
 
     });
