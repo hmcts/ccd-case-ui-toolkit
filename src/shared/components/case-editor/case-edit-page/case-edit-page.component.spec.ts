@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -114,6 +114,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'next');
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
+        imports: [FormsModule, ReactiveFormsModule],
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -257,7 +258,7 @@ describe('CaseEditPageComponent', () => {
       expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
     });
 
-    it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
+    it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', waitForAsync(() => {
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       comp.formValuesChanged = true;
@@ -272,12 +273,14 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       comp.cancel();
+
+      fixture.detectChanges();
       expect(cancelled.emit)
         .toHaveBeenCalledWith({
           status: CaseEditPageComponent.RESUMED_FORM_SAVE,
           data: {data: {field1: 'SOME_VALUE'}}
         });
-    });
+    }));
 
     it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
       wizardPage.isMultiColumn = () => false;
@@ -505,6 +508,8 @@ describe('CaseEditPageComponent', () => {
       wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
       comp.wizard = new Wizard([wizardPage]);
       comp.editForm = FORM_GROUP;
+
+      fixture.detectChanges();
     });
 
     it('should update CaseEventTrigger field value from the MidEvent callback', () => {
@@ -520,6 +525,8 @@ describe('CaseEditPageComponent', () => {
       };
       comp.currentPage = wizardPage;
       comp.updateFormData(jsonData);
+
+      fixture.detectChanges();
 
       expect(eventTrigger.case_fields.filter(element => element.id === id).pop().value).toBe(updatedValue);
     });

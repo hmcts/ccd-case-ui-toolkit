@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { FieldType } from '../../domain/definition';
 import { CaseField } from '../../domain/definition/case-field.model';
@@ -75,6 +75,7 @@ describe('ConditionalShowFormDirective', () => {
 
     beforeEach( waitForAsync(() => {
       TestBed.configureTestingModule({
+          imports: [ FormsModule, ReactiveFormsModule ],
           declarations: [ ConditionalShowFormDirective, TestHostComponent ],
           providers:    [
             FieldsUtils,

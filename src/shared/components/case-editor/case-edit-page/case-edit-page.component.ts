@@ -138,7 +138,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   // Adding validation message to show it as Error Summary
   public generateErrorMessage(fields: CaseField[], container?: AbstractControl, path?: string): void {
     const group: AbstractControl = container || this.editForm.controls['data'];
-    fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+    fields?.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
       .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path))
       .forEach(casefield => {
         const fieldElement = group.get(casefield.id);

@@ -1,4 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
+import { waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { WorkbasketInput, WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
@@ -29,26 +30,28 @@ describe('DefinitionsService', () => {
       httpService.get.and.returnValue(of(jsonResponse()));
     });
 
-    it('should use HttpService::get with correct url', () => {
+    it('should use HttpService::get with correct url', waitForAsync(() => {
       workbasketInputFilterService
         .getWorkbasketInputs(JurisdictionId, CaseTypeId)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          expect(httpService.get).toHaveBeenCalledWith(CASE_TYPES_URL, {
+            headers: new HttpHeaders()
+              .set('experimental', 'true')
+              .set('Accept', WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS)
+              .set('Content-Type', 'application/json'),
+            observe: 'body'
+          });
+        });
+    }));
 
-      expect(httpService.get).toHaveBeenCalledWith(CASE_TYPES_URL, {
-        headers: new HttpHeaders()
-          .set('experimental', 'true')
-          .set('Accept', WorkbasketInputFilterService.V2_MEDIATYPE_WORKBASKET_INPUT_DETAILS)
-          .set('Content-Type', 'application/json'),
-        observe: 'body'
-      });
-    });
-
-    it('should retrieve workbasketInput array from server', () => {
+    it('should retrieve workbasketInput array from server', waitForAsync(() => {
       workbasketInputFilterService
         .getWorkbasketInputs(JurisdictionId, CaseTypeId)
-        .subscribe(workbasketInputs => expect(workbasketInputs).toEqual(createWorkbasketInputs())
-        );
-    });
+        .subscribe(workbasketInputs => {
+          expect(workbasketInputs).toEqual(createWorkbasketInputs())
+        });
+    }));
 
     function jsonResponse(): WorkbasketInput {
       return { workbasketInputs: createWorkbasketInputs()};

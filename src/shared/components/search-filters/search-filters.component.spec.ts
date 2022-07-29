@@ -129,10 +129,7 @@ class FieldWriteComponent extends AbstractFieldWriteComponent {
 }
 
 function createObservableFrom<T>(param: T): Observable<T> {
-  return Observable.create(observer => {
-    observer.next(param);
-    observer.complete();
-  });
+  return of(param);
 }
 
 let searchHandler;
@@ -154,7 +151,6 @@ describe('SearchFiltersComponent', () => {
   let jurisdictionService: JurisdictionService;
   let windowService;
   beforeEach(waitForAsync(() => {
-
     searchHandler = createSpyObj('searchHandler', ['applyFilters', 'resetFilters']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
     orderService = createSpyObj('orderService', ['sortAsc']);

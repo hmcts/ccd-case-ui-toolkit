@@ -1,3 +1,4 @@
+import { waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../../services';
@@ -53,24 +54,25 @@ describe('Organisation Service', () => {
       expect(organisationService.getActiveOrganisations).toHaveBeenCalledWith();
 
     });
-    it('should validate organisation data', () => {
-      organisationService.getActiveOrganisations().subscribe(organisation => {
-        organisation.forEach(org => {
-          expect(ORGANISATIONS[0].organisationIdentifier).toBe(org.organisationIdentifier);
-
-          expect(ORGANISATIONS[0].name).toBe(org.name);
-
-          expect(ORGANISATIONS[0].contactInformation[0].addressLine1).toBe(org.addressLine1);
-
-          expect(ORGANISATIONS[0].contactInformation[0].addressLine2).toBe(org.addressLine2);
-
-          expect(ORGANISATIONS[0].contactInformation[0].addressLine3).toBe(org.addressLine3);
-
-          expect(ORGANISATIONS[0].contactInformation[0].townCity).toBe(org.townCity);
-
-          expect(ORGANISATIONS[0].contactInformation[0].postCode).toBe(org.postCode);
-        });
+    it('should validate organisation data', waitForAsync(() => {
+      organisationService.getActiveOrganisations()
+        .subscribe(organisation => {
+          organisation.forEach(org => {
+            expect(ORGANISATIONS[0].organisationIdentifier).toBe(org.organisationIdentifier);
+  
+            expect(ORGANISATIONS[0].name).toBe(org.name);
+  
+            expect(ORGANISATIONS[0].contactInformation[0].addressLine1).toBe(org.addressLine1);
+  
+            expect(ORGANISATIONS[0].contactInformation[0].addressLine2).toBe(org.addressLine2);
+  
+            expect(ORGANISATIONS[0].contactInformation[0].addressLine3).toBe(org.addressLine3);
+  
+            expect(ORGANISATIONS[0].contactInformation[0].townCity).toBe(org.townCity);
+  
+            expect(ORGANISATIONS[0].contactInformation[0].postCode).toBe(org.postCode);
+          });
       });
-    });
+    }));
   });
 });

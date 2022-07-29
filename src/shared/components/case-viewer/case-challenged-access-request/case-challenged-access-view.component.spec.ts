@@ -32,7 +32,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
     casesService = createSpyObj<CasesService>('casesService', ['createChallengedAccessRequest']);
     casesService.createChallengedAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({
-      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule ],
+      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule.withRoutes([]) ],
       declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent ],
       providers: [
         FormBuilder,

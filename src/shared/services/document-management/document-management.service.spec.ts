@@ -67,17 +67,21 @@ describe('DocumentManagementService', () => {
     });
 
     it('should use HttpService.post with the correct URL', waitForAsync(() => {
-      documentManagementService.uploadFile(new FormData()).subscribe().add(() => {
-        expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), {
+      documentManagementService.uploadFile(new FormData())
+        .subscribe()
+        .add(() => {
+          expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), {
           headers: new HttpHeaders(),
           observe: 'body'
-        });
-      });
+          });
+        }); 
     }));
 
     it('should return document metadata', waitForAsync(() => {
       documentManagementService.uploadFile(new FormData())
-        .subscribe((documentMetadata) => expect(documentMetadata).toEqual(RESPONSE));
+        .subscribe(documentMetadata => {
+          expect(documentMetadata).toEqual(RESPONSE);
+        });
     }));
   });
 

@@ -173,7 +173,7 @@ describe('SearchResultComponent', () => {
     let appConfig: any;
     const caseReferencePipe = new CaseReferencePipe();
 
-    beforeEach(() => {
+    beforeEach(waitForAsync(() => {
       activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
       activityService.postActivity.and.returnValue(switchMap);
       activityService.isEnabled = true;
@@ -231,7 +231,7 @@ describe('SearchResultComponent', () => {
 
       de = fixture.debugElement;
       fixture.detectChanges();
-    });
+    }));
 
     it('should render pagination header', () => {
       const pagination = de.query(By.css('div.pagination-top'));
