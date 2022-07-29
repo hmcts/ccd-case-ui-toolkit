@@ -187,7 +187,7 @@ describe('LinkCasesFromTableComponent', () => {
   });
 
   it('should render the none as table row when no linked cases to be displayed', () => {
-    casesService.getLinkedCases.and.returnValue(of([]));
+    casesService.getLinkedCases.and.returnValue(of({linkedCases: []}));
     component.ngOnInit();
     fixture.detectChanges();
     expect(
