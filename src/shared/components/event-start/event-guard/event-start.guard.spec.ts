@@ -8,7 +8,7 @@ import { EventStartGuard } from './event-start.guard';
 
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('EventStartGuard', () => {
+describe('EventStartGuard', () => {
   const WORK_ALLOCATION_1_API_URL = 'workallocation';
   const WORK_ALLOCATION_2_API_URL = 'workallocation2';
   const tasks: any[] = [
