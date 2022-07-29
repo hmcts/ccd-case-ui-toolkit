@@ -1,3 +1,4 @@
+import { waitForAsync } from '@angular/core/testing';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -7,7 +8,7 @@ import { EventStartGuard } from './event-start.guard';
 
 import createSpyObj = jasmine.createSpyObj;
 
-describe('EventStartGuard', () => {
+fdescribe('EventStartGuard', () => {
   const WORK_ALLOCATION_1_API_URL = 'workallocation';
   const WORK_ALLOCATION_2_API_URL = 'workallocation2';
   const tasks: any[] = [
@@ -35,7 +36,8 @@ describe('EventStartGuard', () => {
   const service = createSpyObj('service', ['getTasksByCaseIdAndEventId']);
   const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl']);
   const sessionStorageService = createSpyObj('sessionStorageService', ['getItem', 'removeItem', 'setItem']);
-  it('canActivate should return false', () => {
+
+  it('canActivate should return false', waitForAsync(() => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_2_API_URL);
     const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
     const payload: TaskPayload = {
@@ -44,18 +46,16 @@ describe('EventStartGuard', () => {
     };
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
 
-    spyOn(guard, 'canActivate').and.callThrough();
-    const canActivate$ = guard.canActivate(route);
-    canActivate$.subscribe(canActivate => {
+    guard.canActivate(route).subscribe(canActivate => {
       expect(canActivate).toEqual(false);
     });
-  });
+  }));
 
-  it('canActivate should return true', () => {
+  it('canActivate should return true', waitForAsync(() => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_2_API_URL);
 
-    sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
-    
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA' }));
+
     const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
     const payload: TaskPayload = {
       task_required_for_event: false,
@@ -67,18 +67,18 @@ describe('EventStartGuard', () => {
     canActivate$.subscribe(canActivate => {
       expect(canActivate).toEqual(true);
     });
-  });
+  }));
 
-  it('canActivate should return true for work allocation 1', () => {
+  it('canActivate should return true for work allocation 1', waitForAsync(() => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_1_API_URL);
-    sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA' }));
     const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
     spyOn(guard, 'canActivate').and.callThrough();
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
       expect(canActivate).toEqual(true);
     });
-  });
+  }));
 
   function getExampleUserInfo(): UserInfo {
     return {
@@ -100,20 +100,20 @@ describe('EventStartGuard', () => {
     const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
 
     it('should return true if there are no tasks in the payload', () => {
-      const mockEmptyPayload: TaskPayload = {task_required_for_event: false, tasks: []};
+      const mockEmptyPayload: TaskPayload = { task_required_for_event: false, tasks: [] };
       expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null)).toBe(true);
     });
 
     it('should return true if there are no tasks assigned to the user', () => {
       tasks[0].assignee = '2x2';
-      const mockPayload: TaskPayload = {task_required_for_event: false, tasks: [tasks[0]]};
+      const mockPayload: TaskPayload = { task_required_for_event: false, tasks: [tasks[0]] };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
     });
 
     it('should return true and navigate to event trigger if one task is assigned to user', () => {
       tasks[0].assignee = '1';
-      const mockPayload: TaskPayload = {task_required_for_event: false, tasks: [tasks[0]]};
+      const mockPayload: TaskPayload = { task_required_for_event: false, tasks: [tasks[0]] };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));
@@ -122,7 +122,7 @@ describe('EventStartGuard', () => {
     it('should return false with error navigation if there are more than 1 tasks assigned to the user', () => {
       tasks[0].assignee = '1';
       tasks.push(tasks[0]);
-      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      const mockPayload: TaskPayload = { task_required_for_event: false, tasks };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(false);
       expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
@@ -131,7 +131,7 @@ describe('EventStartGuard', () => {
     it('should return true and navigate to event trigger if navigated to via task next steps', () => {
       tasks[0].assignee = '1';
       tasks.push(tasks[0]);
-      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      const mockPayload: TaskPayload = { task_required_for_event: false, tasks };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
       expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));
