@@ -50,18 +50,14 @@ describe('Banner service', () => {
       it('should retrieve banners data', waitForAsync(() => {
         bannerService
           .getBanners(JID)
-          .subscribe().add(banner => {
-            expect(banner).toBe(MOCK_BANNER1.banners)
-          });
+          .subscribe((bannerData) => expect(bannerData).toBe(MOCK_BANNER1.banners));
       }));
 
       it('should retrieve banners with empty', waitForAsync(() => {
         httpService.get.and.returnValue(of());
         bannerService
           .getBanners(JID)
-          .subscribe(banner => banner).add(banner => {
-            expect(banner).toBeUndefined()
-          });
+          .subscribe((bannerData) => expect(bannerData).toBeUndefined());
       }));
 
     });
