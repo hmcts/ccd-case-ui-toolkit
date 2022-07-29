@@ -117,14 +117,6 @@ describe('LinkCasesToTableComponent', () => {
     component.caseField.value = mockCaseLinkResponse;
   });
 
-  it('should create component/headers', () => {
-    component.ngOnInit();
-    fixture.detectChanges();
-    const tableHeading = document.getElementsByTagName('h1');
-    expect(component).toBeTruthy();
-    expect(tableHeading).not.toBeNull();
-  });
-
   it('should call searchCasesByCaseIds by casetype', () => {
     component.ngOnInit();
     fixture.detectChanges();
