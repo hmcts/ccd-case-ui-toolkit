@@ -66,16 +66,6 @@ describe('FieldsUtils', () => {
       expect(caseFields['caseCreationDate']).toBe('1 Feb 1999');
     });
 
-    it('should merge simple MoneyGBP field', () => {
-      const formFieldsData = {
-        someText: 'This is test.',
-        caseAmountToPay: '1245'
-      };
-
-      const caseFields = fieldUtils
-        .mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], formFieldsData);
-    });
-
     it('should handle numeric zero in MoneyGBP field', () => {
       const data = { someText: 'Test', caseAmountToPay: 0 };
       const caseFields = fieldUtils.mergeLabelCaseFieldsAndFormFields([textField, caseAmountToPay], data);

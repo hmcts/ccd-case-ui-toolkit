@@ -140,13 +140,11 @@ describe('ReadOrganisationFieldTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should read selected organisation', () => {
-    component.selectedOrg$.toPromise().then(
-      selectedOrg => {
-        expect(selectedOrg.organisationIdentifier).toEqual('O333333');
-        expect(selectedOrg.name).toEqual('The Ethical solicitor');
-        expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
-      }
-    );
-  });
+  it('should read selected organisation', waitForAsync(() => {
+    component.selectedOrg$.subscribe((selectedOrg) => {
+      expect(selectedOrg.organisationIdentifier).toEqual('O333333');
+      expect(selectedOrg.name).toEqual('The Ethical solicitor');
+      expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
+    });
+  }));
 });

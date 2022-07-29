@@ -588,7 +588,7 @@ describe('Clear localStorage', () => {
     fixture.detectChanges();
   }));
 
-  it('should emit on reset if reset is clicked', () => {
+  it('should emit on reset if reset is clicked', waitForAsync(() => {
     component.reset();
 
     fixture
@@ -596,7 +596,7 @@ describe('Clear localStorage', () => {
       .then(() => {
         expect(searchHandler.applyReset).toHaveBeenCalled();
       });
-  });
+  }));
 
   it('should remove localStorage once reset button is clicked', waitForAsync(() => {
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom(TEST_SEARCH_INPUTS));
