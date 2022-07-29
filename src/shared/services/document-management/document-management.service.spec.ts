@@ -77,9 +77,7 @@ describe('DocumentManagementService', () => {
 
     it('should return document metadata', waitForAsync(() => {
       documentManagementService.uploadFile(new FormData())
-        .subscribe().add(documentMetadata => {
-          expect(documentMetadata).toEqual(RESPONSE);
-        });
+        .subscribe((documentMetadata) => expect(documentMetadata).toEqual(RESPONSE));
     }));
   });
 
