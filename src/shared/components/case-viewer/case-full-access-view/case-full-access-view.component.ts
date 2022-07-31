@@ -262,7 +262,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   private init(): void {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
-    this.caseFields = this.getTabFields();  
+    this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
 
