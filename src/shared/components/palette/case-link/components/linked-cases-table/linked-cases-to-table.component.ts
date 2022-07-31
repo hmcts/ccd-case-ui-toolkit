@@ -80,12 +80,12 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     const data = this.caseField && this.caseField.value || [];
     data.forEach((item: any) => {
       const reasons = item && item.value && item.value.ReasonForLink || [];
-      const progressedStateReason = reasons.find(reason => reason.value.Reason === 'CLRCO16') // PROGRESSED AS A LEAD CASE
-      const consolidatedStateReason = reasons.find(reason => reason.value.Reason === 'CLRCO15') // CASE CONSOLIDATED
+      const consolidatedStateReason = reasons.map(x => x).find(item=>item.value.Reason === 'CLRC015')
+      const progressedStateReason = reasons.map(x => x).find(item=>item.value.Reason === 'CLRC016')
       let arrayItem;
       if (progressedStateReason) {
-        arrayItem = {...item.value};
-        topLevelresultArray.push(arrayItem)
+        arrayItem = {...item.value};  
+        topLevelresultArray.push(arrayItem);
       } else if (consolidatedStateReason) {
         arrayItem = {...item.value};
         secondLevelresultArray = [{...item.value}, ...secondLevelresultArray ]

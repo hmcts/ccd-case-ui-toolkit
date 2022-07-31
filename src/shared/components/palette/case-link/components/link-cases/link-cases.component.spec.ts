@@ -19,18 +19,6 @@ describe('LinkCasesComponent', () => {
   let casesService: any;
   let searchService: any;
 
-  let caseLinkedResults: any = [
-    {
-      results: [{
-        case_id: '16934389402343',
-        '[CASE_TYPE]': 'SSCS',
-        '[CREATED_DATE]': '12-12-2022',
-        '[STATE]': 'state',
-        '[JURISDICTION]': 'Tribunal'
-      }]
-    }
-  ];
-
   const selectedCasesInfo: CaseLink[] = [{
       caseReference: '1682374819203471',
       reasons: [],
@@ -131,6 +119,7 @@ describe('LinkCasesComponent', () => {
   });
 
   it('should create component', () => {
+    component.ngOnInit();
     expect(component).toBeTruthy();
   });
 

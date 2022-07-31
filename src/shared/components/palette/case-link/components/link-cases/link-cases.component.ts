@@ -49,6 +49,8 @@ export class LinkCasesComponent implements OnInit {
     this.initForm();
     if (this.linkedCasesService.editMode) {
       this.selectedCases = this.linkedCasesService.linkedCases;
+    } else {
+      this.linkedCasesService.linkedCases = [];
     }
   }
 

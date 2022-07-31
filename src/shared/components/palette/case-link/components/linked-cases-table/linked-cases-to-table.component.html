@@ -2,14 +2,16 @@
 <h2 class="heading-h2">{{subHeading}}</h2>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
+    <h2 class="heading-h2">{{subHeading}}</h2>
+
     <table *ngIf="linkedCasesFromResponse">
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header case-table-column width-20">Case name and number</th>
-          <th scope="col" class="govuk-table__header case-table-column width-20">Case type </th>
-          <th scope="col" class="govuk-table__header case-table-column width-20">Service</th>
-          <th scope="col" class="govuk-table__header case-table-column width-20">State</th>
-          <th scope="col" class="govuk-table__header case-table-column width-20">Reasons for case link</th>
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">Case name and number</th>
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">Case type </th>
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">Service</th>
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">State</th>
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">Reasons for case link</th>
         </tr>
       </thead>
       <tbody class="govuk-table__body">
