@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { CaseField } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
@@ -59,6 +60,8 @@ describe('ReadOrganisationFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
+        FormsModule,
+        ReactiveFormsModule,
         MarkdownModule
       ],
       declarations: [

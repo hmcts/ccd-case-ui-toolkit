@@ -79,6 +79,8 @@ describe('CaseEditPageComponent', () => {
   };
 
   describe('Save and Resume enabled', () => {
+    const eventTrigger = {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true};
+
     beforeEach(waitForAsync(() => {
       firstPage.id = 'first page';
       cancelled = createSpyObj('cancelled', ['emit']);
@@ -86,7 +88,7 @@ describe('CaseEditPageComponent', () => {
         form: FORM_GROUP,
         wizard: WIZARD,
         data: '',
-        eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+        eventTrigger,
         hasPrevious: () => true,
         getPage: () => firstPage,
         first: () => true,
@@ -130,14 +132,11 @@ describe('CaseEditPageComponent', () => {
           PlaceholderService,
         ]
       }).compileComponents();
-    }));
-
-    beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
-    });
+    }));
 
     it('should display a page with two columns when wizard page is multicolumn', () => {
       wizardPage.isMultiColumn = () => true;
@@ -199,6 +198,7 @@ describe('CaseEditPageComponent', () => {
     });
 
     it('should emit RESUMED_FORM_DISCARD on create event if discard triggered with no value changed', () => {
+      comp.eventTrigger = eventTrigger as CaseEventTrigger;
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       comp.formValuesChanged = false;
@@ -209,6 +209,7 @@ describe('CaseEditPageComponent', () => {
             return 'viewDraft';
         }
       });
+
       fixture.detectChanges();
 
       comp.cancel();
@@ -218,8 +219,10 @@ describe('CaseEditPageComponent', () => {
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
       wizardPage.isMultiColumn = () => false;
+      comp.eventTrigger = eventTrigger as CaseEventTrigger;
       comp.currentPage = wizardPage;
       comp.formValuesChanged = false;
+
       fixture.detectChanges();
 
       comp.cancel();
@@ -248,8 +251,10 @@ describe('CaseEditPageComponent', () => {
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
       wizardPage.isMultiColumn = () => false;
+      comp.eventTrigger = eventTrigger as CaseEventTrigger;
       comp.currentPage = wizardPage;
       comp.formValuesChanged = true;
+
       fixture.detectChanges();
       matDialogRef.afterClosed.and.returnValue(of('Discard'));
 
@@ -258,8 +263,9 @@ describe('CaseEditPageComponent', () => {
       expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
     });
 
-    it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', waitForAsync(() => {
+    it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
       wizardPage.isMultiColumn = () => false;
+      comp.eventTrigger = eventTrigger as CaseEventTrigger;
       comp.currentPage = wizardPage;
       comp.formValuesChanged = true;
       snapshot.queryParamMap.get.and.callFake(key => {
@@ -270,17 +276,16 @@ describe('CaseEditPageComponent', () => {
         }
       });
       matDialogRef.afterClosed.and.returnValue(of('Save'));
+
       fixture.detectChanges();
 
       comp.cancel();
-
-      fixture.detectChanges();
-      expect(cancelled.emit)
-        .toHaveBeenCalledWith({
-          status: CaseEditPageComponent.RESUMED_FORM_SAVE,
-          data: {data: {field1: 'SOME_VALUE'}}
-        });
-    }));
+      
+      expect(cancelled.emit).toHaveBeenCalledWith({
+        status: CaseEditPageComponent.RESUMED_FORM_SAVE,
+        data: {data: {field1: 'SOME_VALUE'}}
+      });
+    });
 
     it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
       wizardPage.isMultiColumn = () => false;
@@ -659,18 +664,15 @@ describe('CaseEditPageComponent', () => {
       } as HttpError;
 
       fixture.detectChanges();
+      const error = de.query($SELECT_ERROR_SUMMARY);
+      expect(error).toBeTruthy();
 
-      fixture.whenStable().then(() => {
-        const error = de.query($SELECT_ERROR_SUMMARY);
-        expect(error).toBeTruthy();
+      const errorHeading = error.query($SELECT_ERROR_HEADING_GENERIC);
+      expect(text(errorHeading)).toBe(ERROR_HEADING_GENERIC);
 
-        const errorHeading = error.query($SELECT_ERROR_HEADING_GENERIC);
-        expect(text(errorHeading)).toBe(ERROR_HEADING_GENERIC);
-
-        const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
-        expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
-        expect(comp.showSpinner).toBeFalsy();
-      });
+      const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
+      expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
+      expect(comp.showSpinner).toBeFalsy();
     });
 
     it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
@@ -692,25 +694,22 @@ describe('CaseEditPageComponent', () => {
       } as HttpError;
 
       fixture.detectChanges();
+      const error = de.query($SELECT_ERROR_SUMMARY);
+      expect(error).toBeTruthy();
 
-      fixture.whenStable().then(() => {
-        const error = de.query($SELECT_ERROR_SUMMARY);
-        expect(error).toBeTruthy();
+      const errorHeading = error.query($SELECT_ERROR_HEADING_SPECIFIC);
+      expect(text(errorHeading)).toBe(ERROR_HEADING_SPECIFIC);
 
-        const errorHeading = error.query($SELECT_ERROR_HEADING_SPECIFIC);
-        expect(text(errorHeading)).toBe(ERROR_HEADING_SPECIFIC);
+      const errorMessage = error.query($SELECT_ERROR_MESSAGE_SPECIFIC);
+      expect(text(errorMessage)).toBe(ERROR_MESSAGE_SPECIFIC);
 
-        const errorMessage = error.query($SELECT_ERROR_MESSAGE_SPECIFIC);
-        expect(text(errorMessage)).toBe(ERROR_MESSAGE_SPECIFIC);
-
-        const fieldErrorList = de.query($SELECT_CALLBACK_DATA_FIELD_ERROR_LIST);
-        expect(fieldErrorList).toBeTruthy();
-        const firstFieldError = fieldErrorList.query($SELECT_FIRST_FIELD_ERROR);
-        expect(text(firstFieldError)).toBe('First field error');
-        const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
-        expect(text(secondFieldError)).toBe('Second field error');
-        expect(comp.showSpinner).toBeFalsy();
-      });
+      const fieldErrorList = de.query($SELECT_CALLBACK_DATA_FIELD_ERROR_LIST);
+      expect(fieldErrorList).toBeTruthy();
+      const firstFieldError = fieldErrorList.query($SELECT_FIRST_FIELD_ERROR);
+      expect(text(firstFieldError)).toBe('First field error');
+      const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
+      expect(text(secondFieldError)).toBe('Second field error');
+      expect(comp.showSpinner).toBeFalsy();
     });
 
     it('should not display generic error heading and message when there are specific callback errors', () => {
@@ -981,7 +980,7 @@ describe('CaseEditPageComponent', () => {
     return cf;
   }
 
-  function createWizardPage(fields: CaseField[], isMultiColumn = false, order = 0): WizardPage {
+  function createWizardPage(fields: CaseField[] = [], isMultiColumn = false, order = 0): WizardPage {
     const wp: WizardPage = new WizardPage();
     wp.case_fields = fields;
     wp.label = 'Test Label';

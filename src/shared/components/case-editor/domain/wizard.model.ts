@@ -25,7 +25,7 @@ export class Wizard {
 
   public findWizardPage(caseFieldId: string): WizardPage {
     return this.pages.find(wizardPage => wizardPage.case_fields &&
-        wizardPage.case_fields.filter(caseField => caseField.id === caseFieldId).length > 0);
+        wizardPage.case_fields?.filter(caseField => caseField.id === caseFieldId).length > 0);
   }
 
   public nextPage(pageId: string, canShow: Predicate<WizardPage>): WizardPage {

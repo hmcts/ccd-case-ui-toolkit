@@ -22,14 +22,14 @@ export class WizardPage implements Orderable {
   public parsedShowCondition: ShowCondition;
 
   public getCol1Fields(): CaseField[] {
-    return this.case_fields.filter(f =>
+    return this.case_fields?.filter(f =>
       !f.wizardProps.page_column_no || f.wizardProps.page_column_no === 1);
   }
   public getCol2Fields(): CaseField[] {
-    return this.case_fields.filter(f => f.wizardProps.page_column_no === 2);
+    return this.case_fields?.filter(f => f.wizardProps.page_column_no === 2);
   }
 
   public isMultiColumn(): boolean {
-    return this.getCol2Fields().length > 0;
+    return this.getCol2Fields()?.length > 0;
   }
 }

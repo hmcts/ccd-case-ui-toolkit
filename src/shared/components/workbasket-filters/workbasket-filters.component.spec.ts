@@ -280,7 +280,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.selected.jurisdiction).toBe(JURISDICTION_2);
     });
 
-    it('should update selected jurisdiction', () => {
+    it('should update selected jurisdiction', waitForAsync(() => {
       component.selected.jurisdiction = JURISDICTION_1;
       fixture.detectChanges();
 
@@ -291,7 +291,7 @@ describe('WorkbasketFiltersComponent', () => {
           expect(selector.nativeElement.selectedIndex).toEqual(0);
           expect(component.selected.jurisdiction).toBe(JURISDICTION_1);
         });
-    });
+    }));
 
     it('should initialise case type selector with types from selected jurisdiction', () => {
       const selector = de.query(By.css('#wb-case-type'));
@@ -315,18 +315,16 @@ describe('WorkbasketFiltersComponent', () => {
       expect(component.selected.caseType).toBe(DEFAULT_CASE_TYPE);
     });
 
-    it('should update selected case type', () => {
+    it('should update selected case type', waitForAsync(() => {
       component.selected.caseType = CASE_TYPES_2[2];
       fixture.detectChanges();
 
-      fixture
-        .whenStable()
-        .then(() => {
-          const selector = de.query(By.css('#wb-case-type'));
-          expect(selector.nativeElement.selectedIndex).toEqual(2);
-          expect(component.selected.caseType).toBe(CASE_TYPES_2[2]);
-        });
-    });
+      fixture.whenStable().then(() => {
+        const selector = de.query(By.css('#wb-case-type'));
+        expect(selector.nativeElement.selectedIndex).toEqual(2);
+        expect(component.selected.caseType).toBe(CASE_TYPES_2[2]);
+      });
+    }));
 
     it('should initialise case state selector with states from selected case type', () => {
       const selector = de.query(By.css('#wb-case-state'));
@@ -352,7 +350,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(orderService.sortAsc).toHaveBeenCalled();
     });
 
-    it('should update selected case state', () => {
+    it('should update selected case state', waitForAsync(() => {
       component.selected.caseState = DEFAULT_CASE_TYPE.states[0];
       fixture.detectChanges();
 
@@ -363,7 +361,7 @@ describe('WorkbasketFiltersComponent', () => {
           expect(selector.nativeElement.selectedIndex).toEqual(1);
           expect(component.selected.caseState).toBe(DEFAULT_CASE_TYPE.states[0]);
         });
-    });
+    }));
 
     it('should submit filters when defaults could be selected, preserving the alerts', () => {
 
@@ -385,7 +383,7 @@ describe('WorkbasketFiltersComponent', () => {
       expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(true);
     });
 
-    it('should submit filters when apply button is clicked, not preserving the alerts', () => {
+    it('should submit filters when apply button is clicked, not preserving the alerts', waitForAsync(() => {
       workbasketHandler.applyFilters.calls.reset();
 
       const button = de.query(By.css('.workbasket-filters-apply'));
@@ -409,7 +407,7 @@ describe('WorkbasketFiltersComponent', () => {
         expect(workbasketHandler.applyFilters).toHaveBeenCalledTimes(1);
         expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(false);
       });
-    });
+    }));
 
     it('should reset searchFilters when Jurisdiction changes even when Apply button is disabled', () => {
       component.selected.jurisdiction = JURISDICTION_2;
@@ -420,18 +418,16 @@ describe('WorkbasketFiltersComponent', () => {
       windowService.getLocalStorage.and.returnValue(formValue);
       const button = de.query($APPLY_BUTTON);
 
-      fixture
-        .whenStable()
-        .then(() => {
-          fixture.detectChanges();
-          expect(button.nativeElement.disabled).toBeTruthy();
+      fixture.detectChanges();
+      expect(button.nativeElement.disabled).toBeTruthy();
 
-          component.selected.jurisdiction = JURISDICTION_1;
-          component.onJurisdictionIdChange();
+      component.selected.jurisdiction = JURISDICTION_1;
+      fixture.detectChanges();
+      
+      component.onJurisdictionIdChange();
 
-          fixture.detectChanges();
-          expect(component.workbasketInputsReady).toBeFalsy();
-        });
+      fixture.detectChanges();
+      expect(component.workbasketInputsReady).toBeFalsy();
     });
 
     it('should have form group details added when apply button is clicked ', () => {
@@ -440,15 +436,11 @@ describe('WorkbasketFiltersComponent', () => {
 
       fixture.detectChanges();
 
-      fixture.whenStable().then(() => {
-        expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
-          selected: component.selected,
-          queryParams: {jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id}
-        });
-        expect(component.selected.formGroup).toEqual(null);
+      expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
+        selected: component.selected,
+        queryParams: {jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id}
       });
-
-      
+      expect(component.selected.formGroup).toEqual(null);
     });
 
     it('should have metadata fields added when apply button is clicked', () => {
@@ -663,7 +655,7 @@ describe('WorkbasketFiltersComponent', () => {
       TestBed.resetTestingModule();
     });
 
-    it('should populate case types drop down with CRUD filtered case types and sort states', () => {
+    it('should populate case types drop down with CRUD filtered case types and sort states', waitForAsync(() => {
       component.onJurisdictionIdChange();
       fixture.detectChanges();
 
@@ -681,7 +673,7 @@ describe('WorkbasketFiltersComponent', () => {
 
           expect(orderService.sortAsc).toHaveBeenCalled();
         });
-    });
+    }));
 
     it('should select first case type from a case types drop down if default is filtered out due to CRUD', () => {
       component.selected.caseType = CRUD_FILTERED_CASE_TYPES[0];

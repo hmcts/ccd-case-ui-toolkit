@@ -138,6 +138,10 @@ describe('WriteCollectionFieldComponent', () => {
     fixture.detectChanges();
   }));
 
+  afterEach(() => {
+    fixture.destroy();
+  });
+
   it('should render a row with a write field for each items', () => {
     const writeFields = de.queryAll($WRITE_FIELDS);
 
@@ -194,22 +198,24 @@ describe('WriteCollectionFieldComponent', () => {
     expect(addedField.caseField.field_type.type).toEqual(SIMPLE_FIELD_TYPE.collection_field_type.type);
   });
 
-  it('should scroll when item added with top button', () => {
+  it('should scroll when item added with top button', waitForAsync(() => {
     const addButton = de.query($ADD_BUTTON_TOP);
 
     addButton.nativeElement.dispatchEvent(new Event('click'));
 
     const writeFields = de.queryAll($WRITE_FIELDS);
-    const lastIndex = writeFields.length - 1;
+    const lastIndex = writeFields.length;
 
     fixture.detectChanges();
 
-    expect(scrollToService.scrollTo).toHaveBeenCalledWith({
-      target: `${FIELD_ID}_${lastIndex}`,
-      duration: 1000,
-      offset: -150,
+    fixture.whenStable().then(() => {
+      expect(scrollToService.scrollTo).toHaveBeenCalledWith({
+        target: `${FIELD_ID}_${lastIndex}`,
+        duration: 1000,
+        offset: -150,
+      });
     });
-  });
+  }));
 
   it('should NOT scroll when item added with bottom button', waitForAsync(() => {
     const addButton = de.query($ADD_BUTTON_BOTTOM);

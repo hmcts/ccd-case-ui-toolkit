@@ -88,7 +88,7 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
   }]
 };
 
-xdescribe('WriteDocumentFieldComponent', () => {
+describe('WriteDocumentFieldComponent', () => {
 
   const FORM_GROUP_ID = 'document_url';
   const FORM_GROUP = new FormGroup({});

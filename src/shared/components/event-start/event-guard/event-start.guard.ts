@@ -32,6 +32,7 @@ export class EventStartGuard implements CanActivate {
           if (isComplete) {
             return of(true);
           }
+
           return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction).pipe(
             switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
           );
@@ -58,6 +59,7 @@ export class EventStartGuard implements CanActivate {
     const tasksAssignedToUser = payload.tasks.filter(x =>
       x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
     );
+
     if (tasksAssignedToUser.length === 0) {
       // if no tasks assigned to user carry on
       return true;

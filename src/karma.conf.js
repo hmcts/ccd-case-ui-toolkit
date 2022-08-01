@@ -9,21 +9,33 @@ module.exports = function (config) {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
-      require('karma-coverage-istanbul-reporter'),
+      require('karma-coverage'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      jasmine:{
+        random: false,
+      },
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
     },
-    coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, '../coverage/rpx-xui-common-lib'),
-      reports: ['html', 'lcovonly', 'text-summary'],
-      fixWebpackSourcePaths: true
+    jasmineHtmlReporter: {
+      suppressAll: true // removes the duplicated traces
+    },
+    coverageReporter: {
+      dir: require('path').join(__dirname, './coverage/angular.io-example'),
+      subdir: '.',
+      reporters: [
+        { type: 'html' },
+        { type: 'text-summary' }
+      ]
     },
     defaultTimeoutInterval: 60000,
     browserNoActivityTimeout: 60000,
     browserDisconnectTimeout: 60000,
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['progress', 'coverage'],
+    preprocessors: {
+      'src/**/*.ts': ['coverage']
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

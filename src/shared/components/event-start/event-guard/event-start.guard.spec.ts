@@ -36,19 +36,43 @@ describe('EventStartGuard', () => {
   const service = createSpyObj('service', ['getTasksByCaseIdAndEventId']);
   const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl']);
   const sessionStorageService = createSpyObj('sessionStorageService', ['getItem', 'removeItem', 'setItem']);
-  it('canActivate should return false', waitForAsync(() => {
-    appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_2_API_URL);
-    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
-    const payload: TaskPayload = {
-      task_required_for_event: true,
-      tasks
-    };
-    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
 
+  const caseId = '1234567890';
+
+  afterEach(() => {
+    tasks[0].assignee = null;
+    tasks.push(tasks[0]);
+  });
+
+  function getExampleUserInfo(): UserInfo {
+    return {
+      id: '1',
+      forename: 'T',
+      surname: 'Testing',
+      email: 'testing@mail.com',
+      active: true,
+      roles: [],
+      roleCategories: []
+    };
+  }
+  
+  it('canActivate should return false', waitForAsync(() => {
+    const cid = '1620409659381330';
+    appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_2_API_URL);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid, caseType: 'caseType', jurisdiction: 'IA' }));
+
+    tasks[0].assignee = '1';
+    tasks.push(tasks[0]);
+    const mockPayload: TaskPayload = { task_required_for_event: true, tasks };
+
+    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(mockPayload));
     spyOn(guard, 'canActivate').and.callThrough();
-    
-    guard.canActivate(route).subscribe(canActivate => {
-      expect(canActivate).toEqual(false);
+
+    const canActivate$ = guard.canActivate(route);
+
+    canActivate$.subscribe((canActivate) => {
+      expect(canActivate).toBeFalsy();
     });
   }));
 
@@ -80,18 +104,6 @@ describe('EventStartGuard', () => {
       expect(canActivate).toEqual(true);
     });
   }));
-
-  function getExampleUserInfo(): UserInfo {
-    return {
-      id: '1',
-      forename: 'T',
-      surname: 'Testing',
-      email: 'testing@mail.com',
-      active: true,
-      roles: [],
-      roleCategories: []
-    };
-  }
 
   describe('checkTaskInEventNotRequired', () => {
 

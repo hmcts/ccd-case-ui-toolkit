@@ -136,9 +136,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // Adding validation message to show it as Error Summary
-  public generateErrorMessage(fields: CaseField[], container?: AbstractControl, path?: string): void {
+  public generateErrorMessage(fields: CaseField[] = [], container?: AbstractControl, path?: string): void {
     const group: AbstractControl = container || this.editForm.controls['data'];
-    fields?.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+    fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
       .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path))
       .forEach(casefield => {
         const fieldElement = group.get(casefield.id);
@@ -242,8 +242,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   public updateEventTriggerCaseFields(caseFieldId: string, jsonData: CaseEventData, eventTrigger: CaseEventTrigger) {
     if (eventTrigger.case_fields) {
-      eventTrigger.case_fields
-        .filter(element => element.id === caseFieldId)
+      eventTrigger.case_fields?.filter(element => element.id === caseFieldId)
         .forEach(element => element.value = jsonData.data[caseFieldId]);
     }
   }
@@ -288,7 +287,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   public cancel(): void {
-    if (this.eventTrigger.can_save_draft) {
+    if (this.eventTrigger?.can_save_draft) {
       if (this.formValuesChanged) {
         const dialogRef = this.dialog.open(SaveOrDiscardDialogComponent, this.dialogConfig);
         dialogRef.afterClosed().subscribe(result => {
@@ -325,11 +324,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   public getCancelText(): string {
-    return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Cancel';
+    return this.eventTrigger?.can_save_draft ? 'Return to case list' : 'Cancel';
   }
 
   private getTriggerText(): string {
-    return this.eventTrigger && this.eventTrigger.can_save_draft
+    return this.eventTrigger?.can_save_draft
       ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
       : CaseEditPageComponent.TRIGGER_TEXT_START;
   }
@@ -360,7 +359,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   private saveDraft() {
-    if (this.eventTrigger.can_save_draft) {
+    if (this.eventTrigger?.can_save_draft) {
       const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
       draftCaseEventData.event_token = this.eventTrigger.event_token;
       draftCaseEventData.ignore_warning = this.ignoreWarning;
