@@ -280,7 +280,7 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       comp.cancel();
-      
+
       expect(cancelled.emit).toHaveBeenCalledWith({
         status: CaseEditPageComponent.RESUMED_FORM_SAVE,
         data: {data: {field1: 'SOME_VALUE'}}

@@ -444,7 +444,6 @@ describe('SearchResultComponent', () => {
       fixture.detectChanges();
 
       assertOrder(new Array(2, 0, 1, 3));
-      
 
       // sortFirstNameLink.triggerEventHandler('click', null);
       // fixture.detectChanges();

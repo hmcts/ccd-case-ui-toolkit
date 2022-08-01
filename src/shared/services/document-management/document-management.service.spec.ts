@@ -74,7 +74,7 @@ describe('DocumentManagementService', () => {
           headers: new HttpHeaders(),
           observe: 'body'
           });
-        }); 
+        });
     }));
 
     it('should return document metadata', waitForAsync(() => {

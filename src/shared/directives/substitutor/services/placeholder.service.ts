@@ -36,7 +36,7 @@ ___
         private fieldIdToSubstitute: string;
         private startSubstitutionIndex: number;
         private isCollecting: boolean;
-        private resolvedFormValues = [];
+        private readonly resolvedFormValues = [];
         private readonly pageFormFields: object;
         private readonly originalStringToResolve: string;
 
@@ -64,7 +64,7 @@ ___
                                 this.appendCharacter();
                             }
                         }
-                        this.scanIndex++
+                        this.scanIndex++;
                     }
                     this.appendOriginalStringIfCollectionItemAsPlaceholder();
                 }
@@ -183,7 +183,7 @@ ___
             let pageFormFieldsClone = FieldsUtils.cloneObject(this.pageFormFields);
             let numberCollectionItemsAsPlaceholder = 1;
 
-            for (let index = 0; index < fieldIds.length; index++) {
+            for (const index of fieldIds) {
                 if (FieldsUtils.isCollection(pageFormFieldsClone)) {
                     numberCollectionItemsAsPlaceholder = pageFormFieldsClone.length;
                     break;
@@ -226,5 +226,5 @@ ___
         private resetScanIndexAfterSubstitution(): void {
             this.scanIndex = this.startSubstitutionIndex + this.getSubstitutionValueLengthOrZero();
         }
-    };
+    }
 }

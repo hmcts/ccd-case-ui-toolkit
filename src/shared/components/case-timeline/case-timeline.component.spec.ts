@@ -186,28 +186,28 @@ describe('CaseTimelineComponent', () => {
 
   describe('CaseTimelineComponent fails to resolve case view', () => {
     const ERROR_MSG = 'Critical error!';
-  
+
     beforeEach(async() => {
       EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
         'events'
       ]});
-  
+
       const ERROR: HttpError = new HttpError();
       ERROR.message = ERROR_MSG;
       const ERROR_OBS: Observable<HttpError> = throwError(ERROR);
 
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       casesService.getCaseViewV2.and.returnValue(ERROR_OBS);
-  
+
       alertService = createSpyObj('alertService', ['error']);
       alertService.error.and.returnValue(of({}));
-  
+
       TestBed
         .configureTestingModule({
           imports: [],
           declarations: [
             CaseTimelineComponent,
-  
+
             // Mocks
             EventLogComponent,
             CaseHistoryComponent,
@@ -219,22 +219,22 @@ describe('CaseTimelineComponent', () => {
           ]
         })
         .compileComponents();
-  
+
       fixture = TestBed.createComponent(CaseTimelineComponent);
       component = fixture.componentInstance;
       component.case = CASE_REFERENCE;
-  
+
       de = fixture.debugElement;
       fixture.detectChanges();
     });
-  
+
     it('should call alert service and not render event log component', () => {
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_REFERENCE);
       const eventLogDe = de.query(By.directive(EventLogComponent));
-  
+
       expect(eventLogDe).toBeNull();
       expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);
       expect(component.events).toBeUndefined();
     });
-  });  
+  });
 });

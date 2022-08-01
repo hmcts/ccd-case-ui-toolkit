@@ -217,7 +217,7 @@ describe('WorkbasketFiltersComponent', () => {
           schemas: [CUSTOM_ELEMENTS_SCHEMA]
         })
         .compileComponents();
-        
+
       fixture = TestBed.createComponent(WorkbasketFiltersComponent);
       component = fixture.componentInstance;
 
@@ -423,7 +423,7 @@ describe('WorkbasketFiltersComponent', () => {
 
       component.selected.jurisdiction = JURISDICTION_1;
       fixture.detectChanges();
-      
+
       component.onJurisdictionIdChange();
 
       fixture.detectChanges();

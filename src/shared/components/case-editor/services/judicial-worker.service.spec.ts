@@ -51,7 +51,7 @@ describe('JudicialworkerService', () => {
     httpService.post.and.returnValue(throwError(ERROR));
     judicialworkerService.getJudicialworkers(userIds, serviceId)
       .subscribe(
-        () => {}, 
+        () => {},
         err => {
         expect(err).toEqual(ERROR);
         expect(errorService.setError).toHaveBeenCalledWith(ERROR);

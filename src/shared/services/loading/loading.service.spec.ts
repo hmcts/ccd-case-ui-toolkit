@@ -25,15 +25,15 @@ describe('LoadingService', () => {
   }));
 
   it('should return observable of false when all tokens are unregistered', waitForAsync(() => {
-    let token1 = loadingService.register();
-    let token2 = loadingService.register();
+    const token1 = loadingService.register();
+    const token2 = loadingService.register();
 
     loadingService.unregister(token1);
     loadingService.unregister(token2);
 
     loadingService.isLoading.subscribe(value => {
       expect(value).toBeFalsy();
-    });;
+    });
   }));
 
   it('should return observable of true when multiple tokens are registered, yet one is unregistered', waitForAsync(() => {

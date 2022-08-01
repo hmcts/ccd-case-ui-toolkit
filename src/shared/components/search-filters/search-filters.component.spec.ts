@@ -568,7 +568,7 @@ describe('Clear localStorage', () => {
           { provide: WindowService, useValue: windowService }
         ]
       })
-      .compileComponents()
+      .compileComponents();
 
     fixture = TestBed.createComponent(SearchFiltersComponent);
     component = fixture.componentInstance;

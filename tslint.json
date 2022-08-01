@@ -69,7 +69,6 @@
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
-    "directive-class-suffix": true,
     "no-attribute-decorator": true,
 
     "variable-name": {

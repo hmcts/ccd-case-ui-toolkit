@@ -82,7 +82,7 @@ describe('SearchService', () => {
       searchService
         .search(JID, CTID, {}, {})
         .subscribe()
-        .add(() => { 
+        .add(() => {
           expect(httpService.get).toHaveBeenCalledWith(SEARCH_URL, {params, observe: 'body'});
         });
     }));

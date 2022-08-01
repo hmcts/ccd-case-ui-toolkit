@@ -141,7 +141,7 @@ export class WorkbasketFiltersComponent implements OnInit {
       } else {
         this.selected.caseType = null;
       }
-      
+
       this.selected.caseState = null;
       this.clearWorkbasketInputs();
 

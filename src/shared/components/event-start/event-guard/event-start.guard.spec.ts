@@ -55,7 +55,7 @@ describe('EventStartGuard', () => {
       roleCategories: []
     };
   }
-  
+
   it('canActivate should return false', waitForAsync(() => {
     const cid = '1620409659381330';
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_2_API_URL);
@@ -107,28 +107,28 @@ describe('EventStartGuard', () => {
 
   describe('checkTaskInEventNotRequired', () => {
 
-    const caseId = '1234567890';
+    const cId = '1234567890';
     const eventId = 'testEvent';
 
     const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
 
     it('should return true if there are no tasks in the payload', () => {
       const mockEmptyPayload: TaskPayload = { task_required_for_event: false, tasks: [] };
-      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, cId, null)).toBe(true);
     });
 
     it('should return true if there are no tasks assigned to the user', () => {
       tasks[0].assignee = '2x2';
       const mockPayload: TaskPayload = { task_required_for_event: false, tasks: [tasks[0]] };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, null)).toBe(true);
     });
 
     it('should return true and navigate to event trigger if one task is assigned to user', () => {
       tasks[0].assignee = '1';
       const mockPayload: TaskPayload = { task_required_for_event: false, tasks: [tasks[0]] };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, null)).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));
     });
 
@@ -137,8 +137,8 @@ describe('EventStartGuard', () => {
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = { task_required_for_event: false, tasks };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(false);
-      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, null)).toBe(false);
+      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${cId}/multiple-tasks-exist`]);
     });
 
     it('should return true and navigate to event trigger if navigated to via task next steps', () => {
@@ -146,7 +146,7 @@ describe('EventStartGuard', () => {
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = { task_required_for_event: false, tasks };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));
     });
 
