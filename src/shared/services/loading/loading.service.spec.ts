@@ -36,7 +36,7 @@ describe('LoadingService', () => {
     });;
   }));
 
-  xit('should return observable of true when multiple tokens are registered, yet one is unregistered', waitForAsync(() => {
+  it('should return observable of true when multiple tokens are registered, yet one is unregistered', waitForAsync(() => {
     let index = 0;
     let tokenToRemove: string;
     let interval = setInterval(() => {

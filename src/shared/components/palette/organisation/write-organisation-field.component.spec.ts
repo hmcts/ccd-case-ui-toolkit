@@ -92,8 +92,8 @@ describe('WriteOrganisationFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        MarkdownModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MarkdownModule
       ],
       declarations: [
         WriteOrganisationFieldComponent,
@@ -173,22 +173,25 @@ describe('WriteOrganisationFieldComponent', () => {
     expect(component.organisationIDFormControl.valid).toBeTruthy();
   });
 
-  xit('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', waitForAsync(() => {
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', waitForAsync(() => {
+    component.organisations$ = of(ORGANISATIONS);
+
+    mockOrganisationService.getActiveOrganisations.and.returnValue(of([ORGANISATIONS[2]]));
+
     component.caseField = new CaseField();
     component.caseField.field_type = {
       ...FIELD_TYPE,
       complex_fields: [ORGANISATION_ID, ORGANISATION_NAME]
     };
-    component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
-    component.ngOnInit();
-    fixture.detectChanges();
+    component.caseField.value = { OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor' };
 
-    fixture.whenStable().then(() => {
-      expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
-      component.selectedOrg$.subscribe((selectedOrg) => {
-        expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
-      });
-    });    
+    component.ngOnInit();
+
+    expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
+    component.selectedOrg$.subscribe((selectedOrg) => {
+      console.log(selectedOrg);
+      expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
+    });
   }));
 
   it('should pre-select organisation when PrepopulateToUsersOrganisationControl is NO but it has selected the org', () => {

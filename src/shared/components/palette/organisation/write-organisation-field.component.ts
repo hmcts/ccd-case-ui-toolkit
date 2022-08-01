@@ -151,10 +151,14 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   }
 
   private preSelectDefaultOrg(): void {
+    console.log('preSelectDefaultOrg');
     this.instantiateOrganisationFormGroup(this.caseField.value.OrganisationID, this.caseField.value.OrganisationName);
     this.selectedOrg$ = this.organisations$.pipe(
       map(organisations =>
-        organisations.filter(findOrg => findOrg.organisationIdentifier === this.caseField.value.OrganisationID)
+        organisations.filter(findOrg => {
+          console.log(findOrg.organisationIdentifier, this.caseField.value.OrganisationID);
+          return findOrg.organisationIdentifier === this.caseField.value.OrganisationID;
+        })
           .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))[0]),
     );
     if (this.caseField.value && this.caseField.value.OrganisationID) {

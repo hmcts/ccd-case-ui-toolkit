@@ -18,6 +18,7 @@ export class OrganisationConverter {
   }
 
   public toSimpleOrganisationModel(organisationModel: OrganisationVm): SimpleOrganisationModel {
+    console.log('toSimpleOrganisationModel');
     return {
       organisationIdentifier: organisationModel.organisationIdentifier,
       name: organisationModel.name,

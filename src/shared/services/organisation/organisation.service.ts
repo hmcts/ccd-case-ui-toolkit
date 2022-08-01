@@ -76,6 +76,8 @@ export class OrganisationService {
     }
 
     public getActiveOrganisations(): Observable<OrganisationVm[]> {
+        console.log('getActiveOrganisations', this.organisations$);
+
         if (!this.organisations$) {
             const url = this.appconfig.getPrdUrl();
             const cacheTimeOut = this.appconfig.getCacheTimeOut();
