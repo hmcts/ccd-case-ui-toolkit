@@ -46,8 +46,8 @@ const VALUES = [
   }
 ];
 const $WRITE_FIELDS = By.css('ccd-field-write');
-const $ADD_BUTTON_TOP = By.css('.form-group>.panel>.button:nth-of-type(1)');
-const $ADD_BUTTON_BOTTOM = By.css('.form-group>.panel>.button:nth-of-type(2)');
+const $ADD_BUTTON_TOP = By.css('.write-collection-add-item__top');
+const $ADD_BUTTON_BOTTOM = By.css('.write-collection-add-item__bottom');
 const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 const FieldWriteComponent = MockComponent({
@@ -194,36 +194,31 @@ describe('WriteCollectionFieldComponent', () => {
     expect(addedField.caseField.field_type.type).toEqual(SIMPLE_FIELD_TYPE.collection_field_type.type);
   });
 
-  it('should scroll when item added with top button', done => {
+  it('should scroll when item added with top button', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
 
-    addButton.nativeElement.click();
-    fixture.detectChanges();
+    addButton.nativeElement.dispatchEvent(new Event('click'));
 
     const writeFields = de.queryAll($WRITE_FIELDS);
     const lastIndex = writeFields.length - 1;
 
-    setTimeout(() => {
-      expect(scrollToService.scrollTo).toHaveBeenCalledWith({
-        target: `${FIELD_ID}_${lastIndex}`,
-        duration: 1000,
-        offset: -150,
-      });
-      done();
+    fixture.detectChanges();
+
+    expect(scrollToService.scrollTo).toHaveBeenCalledWith({
+      target: `${FIELD_ID}_${lastIndex}`,
+      duration: 1000,
+      offset: -150,
     });
   });
 
-  it('should NOT scroll when item added with bottom button', done => {
+  it('should NOT scroll when item added with bottom button', waitForAsync(() => {
     const addButton = de.query($ADD_BUTTON_BOTTOM);
 
     addButton.nativeElement.click();
     fixture.detectChanges();
 
-    setTimeout(() => {
-      expect(scrollToService.scrollTo).not.toHaveBeenCalled();
-      done();
-    });
-  });
+    expect(scrollToService.scrollTo).not.toHaveBeenCalled();
+  }));
 
   it('should have 1 Remove button per item', () => {
     const removeButtons = de.queryAll($REMOVE_BUTTONS);

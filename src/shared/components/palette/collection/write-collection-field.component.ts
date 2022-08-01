@@ -4,7 +4,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { FieldType } from '../../../domain';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -257,7 +257,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
     const dialogRef = this.dialog.open(RemoveDialogComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
       if (result === 'Remove') {
         this.removeItem(i);
       }

@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 import { Task } from '../../../domain/work-allocation/Task';
@@ -68,7 +68,7 @@ describe('EventTaskResolverService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should resolve to get tasks by case id and event id', (done) => {
+  it('should resolve to get tasks by case id and event id', waitForAsync(() => {
     const service: EventTasksResolverService = TestBed.inject(EventTasksResolverService);
     spyOn(workAllocationService, 'getTasksByCaseIdAndEventId').and.returnValue(of(taskPayload));
     const activatedRoute = new ActivatedRouteSnapshot();
@@ -76,10 +76,10 @@ describe('EventTaskResolverService', () => {
       caseId: 'case-123',
       eventId: 'event-123'
     };
-    service.resolve(activatedRoute).subscribe((value: Task[]) => {
-      expect(value).toEqual(taskPayload.tasks);
-      done();
-    });
-    expect(workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
-  });
+    service.resolve(activatedRoute)
+      .subscribe((value: Task[]) => {
+        expect(value).toEqual(taskPayload.tasks);
+        expect(workAllocationService.getTasksByCaseIdAndEventId).toHaveBeenCalled();
+      });
+  }));
 });

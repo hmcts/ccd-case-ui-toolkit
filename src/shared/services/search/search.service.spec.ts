@@ -1,4 +1,5 @@
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { SearchInput } from '../../components/search-filters';
@@ -77,43 +78,47 @@ describe('SearchService', () => {
       searchService = new SearchService(appConfig, httpService, requestOptionsBuilder, loadingService);
     });
 
-    it('should call httpService with right URL, authorization, meta and case criteria and http method for search', () => {
+    it('should call httpService with right URL, authorization, meta and case criteria and http method for search', waitForAsync(() => {
       searchService
         .search(JID, CTID, {}, {})
-        .subscribe();
+        .subscribe()
+        .add(() => { 
+          expect(httpService.get).toHaveBeenCalledWith(SEARCH_URL, {params, observe: 'body'});
+        });
+    }));
 
-      expect(httpService.get).toHaveBeenCalledWith(SEARCH_URL, {params, observe: 'body'});
-    });
-
-    it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', () => {
+    it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', waitForAsync(() => {
       const metaCriteria = { caseState: 'testState'};
       const caseCriteria = { firstName: 'testFirstName', lastName: 'testLastName'};
 
       searchService
         .search(JID, CTID, metaCriteria, caseCriteria)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria);
+        });
+    }));
 
-      expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria);
-    });
-
-    it('should set `view` param if required', () => {
+    it('should set `view` param if required', waitForAsync(() => {
       searchService
         .search(JID, CTID, {}, {}, SearchService.VIEW_WORKBASKET)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          params.set('view', SearchService.VIEW_WORKBASKET);
+          expect(httpService.get).toHaveBeenCalledWith(SEARCH_URL, {params, observe: 'body'});
+        });
+    }));
 
-      params.set('view', SearchService.VIEW_WORKBASKET);
-      expect(httpService.get).toHaveBeenCalledWith(SEARCH_URL, {params, observe: 'body'});
-    });
-
-    it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
+    it('should call requestOptionsBuilder with right meta, case criteria and view arguments', waitForAsync(() => {
       const metaCriteria = { caseState: 'testState'};
       const caseCriteria = { firstName: 'testFirstName', lastName: 'testLastName'};
       searchService
         .search(JID, CTID, metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET)
-        .subscribe();
-
-      expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
-    });
+        .subscribe()
+        .add(() => {
+          expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
+        });
+    }));
 
     // FIXME
     xit('should set criteria params if passed', () => {
@@ -201,23 +206,24 @@ describe('SearchService', () => {
         });
     });
 
-    it('should call backend with right URL, authorization and method for search input', () => {
+    it('should call backend with right URL, authorization and method for search input', waitForAsync(() => {
       httpService.get.and.returnValue(of(SEARCH_INPUTS));
 
       searchService
         .getSearchInputs(TEST_JURISTICTION_ID, TEST_CASE_TYPE_ID)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          expect(httpService.get).toHaveBeenCalledWith(SEARCH_INPUT_URL, {
+            headers: new HttpHeaders()
+              .set('experimental', 'true')
+              .set('Accept', SearchService.V2_MEDIATYPE_SEARCH_INPUTS)
+              .set('Content-Type', 'application/json'),
+            observe: 'body'
+          });
+        });
+    }));
 
-      expect(httpService.get).toHaveBeenCalledWith(SEARCH_INPUT_URL, {
-        headers: new HttpHeaders()
-          .set('experimental', 'true')
-          .set('Accept', SearchService.V2_MEDIATYPE_SEARCH_INPUTS)
-          .set('Content-Type', 'application/json'),
-        observe: 'body'
-      });
-    });
-
-    it('should return search input results', () => {
+    it('should return search input results', waitForAsync(() => {
       httpService.get.and.returnValue(of(SEARCH_INPUTS));
 
       searchService
@@ -225,24 +231,25 @@ describe('SearchService', () => {
         .subscribe(resultInputModel => {
           expect(resultInputModel[0].field.id).toEqual(SEARCH_INPUTS.searchInputs[0].field.id);
         });
-    });
+    }));
 
-    it('should register loading token when called', () => {
+    it('should register loading token when called', waitForAsync(() => {
       searchService
       .search(JID, CTID, {}, {})
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          expect(loadingService.register).toHaveBeenCalled();
+        });
+    }));
 
-      expect(loadingService.register).toHaveBeenCalled();
-    });
-
-    it('should unregister loading token when finished', () => {
+    it('should unregister loading token when finished', waitForAsync(() => {
       searchService
         .search(JID, CTID, {}, {})
         .subscribe()
         .add(() => {
           expect(loadingService.unregister).toHaveBeenCalled()
         });
-    });
+    }));
 
   });
 
@@ -276,69 +283,75 @@ describe('SearchService', () => {
       searchService = new SearchService(appConfig, httpService, requestOptionsBuilder, loadingService);
     });
 
-    it('should call httpService with right URL, authorization, meta and case criteria and http method for search', () => {
+    it('should call httpService with right URL, authorization, meta and case criteria and http method for search', waitForAsync(() => {
       searchService
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params, observe: 'body'});
+        });
+    }));
 
-      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params, observe: 'body'});
-    });
-
-    it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', () => {
+    it('should call requestOptionsBuilder with right meta, case criteria and no view arguments', waitForAsync(() => {
       const metaCriteria = { caseState: 'testState'};
       const caseCriteria = { firstName: 'testFirstName', lastName: 'testLastName'};
 
       searchService
         .searchCases(CTID, metaCriteria, caseCriteria)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria);
+        });
+    }));
 
-      expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria);
-    });
-
-    it('should set `view` param if required', () => {
+    it('should set `view` param if required', waitForAsync(() => {
       searchService
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          params.set('view', SearchService.VIEW_WORKBASKET);
+          expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params, observe: 'body'});
+        });
+    }));
 
-      params.set('view', SearchService.VIEW_WORKBASKET);
-      expect(httpService.post).toHaveBeenCalledWith(SEARCH_CASES_URL, { sort: undefined, size: 25 }, {params, observe: 'body'});
-    });
-
-    it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
+    it('should call requestOptionsBuilder with right meta, case criteria and view arguments', waitForAsync(() => {
       const metaCriteria = { caseState: 'testState'};
       const caseCriteria = { firstName: 'testFirstName', lastName: 'testLastName'};
       searchService
         .searchCases(CTID, metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
+        });
+    }));
 
-      expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
-    });
-
-    it('should call requestOptionsBuilder with right meta, case criteria and view arguments', () => {
+    it('should call requestOptionsBuilder with right meta, case criteria and view arguments', waitForAsync(() => {
       const metaCriteria = { page: 1 };
       const caseCriteria = { preferredDQPilotCourt: 'Sunderland County, Family, Magistrates’ and Tribunal Hearings' };
       searchService
         .searchCases(CTID, metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
+        });
+    }));
 
-      expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria, SearchService.VIEW_WORKBASKET);
-    });
-
-    it('should register loading token when called', () => {
+    it('should register loading token when called', waitForAsync(() => {
       searchService
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
-        .subscribe();
+        .subscribe()
+        .add(() => {
+          expect(loadingService.register).toHaveBeenCalled();
+        });
+    }));
 
-      expect(loadingService.register).toHaveBeenCalled();
-    });
-
-    it('should unregister loading token when finished', () => {
+    it('should unregister loading token when finished', waitForAsync(() => {
       searchService
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
         .subscribe()
         .add(() => {
           expect(loadingService.unregister).toHaveBeenCalled()
         });
-    });
+    }));
   });
 });

@@ -5,7 +5,7 @@
     <h2 class="heading-h2 error-spacing">
       {{caseField | ccdFieldLabel}}
     </h2>
-    <button class="button" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()">Add new</button>
+    <button class="button write-collection-add-item__top" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()">Add new</button>
     <h2 class="heading-h2 error-spacing" *ngIf="caseField.hint_text || formArray.errors">
       <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text}}</span>
       <span *ngIf="formArray.errors" class="error-message">{{formArray.errors | ccdFirstError:caseField.label}}</span>
@@ -37,7 +37,7 @@
 
     </div>
 
-    <button class="button" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()" *ngIf="caseField.value && caseField.value.length">Add new</button>
+    <button class="button write-collection-add-item__bottom" type="button" (click)="addItem(false)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()" *ngIf="caseField.value && caseField.value.length">Add new</button>
 
   </div>
 

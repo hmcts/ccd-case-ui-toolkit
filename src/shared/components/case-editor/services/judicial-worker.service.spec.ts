@@ -1,3 +1,4 @@
+import { waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError } from '../../../domain';
@@ -33,26 +34,27 @@ describe('JudicialworkerService', () => {
     judicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
   });
 
-  it('should call post with correct parameters', () => {
+  it('should call post with correct parameters', waitForAsync(() => {
     const userIds = ['1234-1234-1234-1234'];
     const serviceId = 'IA';
     httpService.post.and.returnValue(of([JUDICIAL_WORKER_1]));
-    judicialworkerService.getJudicialworkers(userIds, serviceId).subscribe();
-    expect(httpService.post).toHaveBeenCalledWith(JUDICIAL_WORKER_URL, {userIds, services: [serviceId]});
-  });
+    judicialworkerService.getJudicialworkers(userIds, serviceId)
+      .subscribe()
+      .add(() => {
+        expect(httpService.post).toHaveBeenCalledWith(JUDICIAL_WORKER_URL, {userIds, services: [serviceId]});
+      });
+  }));
 
-  it('should set error service error when the call fails', (done) => {
+  it('should set error service error when the call fails', waitForAsync(() => {
     const userIds = ['1234-1234-1234-1234'];
     const serviceId = 'IA';
     httpService.post.and.returnValue(throwError(ERROR));
     judicialworkerService.getJudicialworkers(userIds, serviceId)
-      .subscribe(() => {
-        // Should not get here... so if we do, make sure it fails.
-        done.fail('Get judicial workers instead of erroring');
-      }, err => {
+      .subscribe(
+        () => {}, 
+        err => {
         expect(err).toEqual(ERROR);
         expect(errorService.setError).toHaveBeenCalledWith(ERROR);
-        done();
       });
-  });
+  }));
 });

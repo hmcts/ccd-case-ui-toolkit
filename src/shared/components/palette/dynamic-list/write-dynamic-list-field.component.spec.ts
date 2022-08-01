@@ -52,9 +52,9 @@ describe('WriteDynamicListFieldComponent', () => {
     TestBed
       .configureTestingModule({
         imports: [
+          FormsModule,
           ReactiveFormsModule,
-          PaletteUtilsModule,
-          FormsModule
+          PaletteUtilsModule
         ],
         declarations: [
           WriteDynamicListFieldComponent,

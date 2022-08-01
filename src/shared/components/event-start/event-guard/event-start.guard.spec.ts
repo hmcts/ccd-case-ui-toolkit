@@ -36,7 +36,6 @@ describe('EventStartGuard', () => {
   const service = createSpyObj('service', ['getTasksByCaseIdAndEventId']);
   const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl']);
   const sessionStorageService = createSpyObj('sessionStorageService', ['getItem', 'removeItem', 'setItem']);
-
   it('canActivate should return false', waitForAsync(() => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_2_API_URL);
     const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
@@ -46,6 +45,8 @@ describe('EventStartGuard', () => {
     };
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
 
+    spyOn(guard, 'canActivate').and.callThrough();
+    
     guard.canActivate(route).subscribe(canActivate => {
       expect(canActivate).toEqual(false);
     });

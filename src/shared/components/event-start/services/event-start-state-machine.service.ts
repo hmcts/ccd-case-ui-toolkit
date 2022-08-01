@@ -198,7 +198,8 @@ export class EventStartStateMachineService {
 
   public finalAction(state: State): void {
     // Final actions can be performed here, the state machine finished running
-    console.log('FINAL', state);
+    // console.log('FINAL', state);
+    return;
   }
 
   public addTransitionsForStateCheckForMatchingTasks(): void {
