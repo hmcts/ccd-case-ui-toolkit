@@ -7,10 +7,9 @@ export class JurisdictionService {
 
   private selectedJurisdictionSource = new Subject<Jurisdiction>();
 
-  selectedJurisdiction = this.selectedJurisdictionSource.asObservable();
+  public selectedJurisdiction = this.selectedJurisdictionSource.asObservable();
 
-  announceSelectedJurisdiction(jurisdiction: Jurisdiction) {
+  public announceSelectedJurisdiction(jurisdiction: Jurisdiction): void {
     this.selectedJurisdictionSource.next(jurisdiction);
   }
-
 }

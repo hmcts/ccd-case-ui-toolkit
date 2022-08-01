@@ -1,9 +1,11 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PipesModule } from '../../../../../pipes';
 import { CaseLink } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
+import { JurisdictionService } from '../../services/jurisdiction.service';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { CheckYourAnswersComponent } from './check-your-answers.component';
 
@@ -91,11 +93,14 @@ describe('CheckYourAnswersComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        PipesModule
+        PipesModule,
+        HttpClientTestingModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CheckYourAnswersComponent],
-      providers: [LinkedCasesService]
+      providers: [LinkedCasesService,
+                  JurisdictionService,
+      ]
     })
     .compileComponents();
   }));

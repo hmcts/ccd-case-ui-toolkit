@@ -19,18 +19,6 @@ describe('LinkCasesComponent', () => {
   let casesService: any;
   let searchService: any;
 
-  let caseLinkedResults: any = [
-    {
-      results: [{
-        case_id: '16934389402343',
-        '[CASE_TYPE]': 'SSCS',
-        '[CREATED_DATE]': '12-12-2022',
-        '[STATE]': 'state',
-        '[JURISDICTION]': 'Tribunal'
-      }]
-    }
-  ];
-
   const selectedCasesInfo: CaseLink[] = [{
       caseReference: '1682374819203471',
       reasons: [],
@@ -88,7 +76,8 @@ describe('LinkCasesComponent', () => {
     caseId: '1682374819203471',
     linkedCases: [],
     linkCaseReasons: linkCaseReasons,
-    caseFieldValue: []
+    caseFieldValue: [],
+    mapLookupIDToValueFromJurisdictions() {},
   };
 
   beforeEach(async(() => {
@@ -125,11 +114,11 @@ describe('LinkCasesComponent', () => {
     component = fixture.componentInstance;
     spyOn(linkedCasesService, 'linkCaseReasons').and.returnValue(of(linkCaseReasons));
     spyOn(component.linkedCasesStateEmitter, 'emit');
-    spyOn(component, 'getAllLinkedCaseInformation').and.returnValue([caseInfo]);
     fixture.detectChanges();
   });
 
   it('should create component', () => {
+    component.ngOnInit();
     expect(component).toBeTruthy();
   });
 
@@ -158,7 +147,6 @@ describe('LinkCasesComponent', () => {
     component.onSelectedLinkedCaseRemove(0, '1231231231231231');
     expect(component.selectedCases.length).toEqual(0);
     component.onNext();
-    component.getAllLinkedCaseInformation();
   });
 
   it('should check various error use cases', () => {

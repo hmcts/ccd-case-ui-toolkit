@@ -2,9 +2,11 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import { CaseField } from '../../../../../domain/definition';
 import { CaseView } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { LinkedCasesResponse } from '../../domain/linked-cases.model';
+import { CaseLinkResponse, LinkedCasesResponse } from '../../domain/linked-cases.model';
 import { ActivatedRoute } from '@angular/router';
 import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
+import { Observable } from 'rxjs';
+import { LinkedCasesService } from '../../services';
 
 export enum PageType {
   LINKEDCASESTABLBEVIEW = 'linkedCasesTableView',
@@ -30,7 +32,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   public caseDetails: CaseView;
   public parentUrl: string;
   public isLoaded: boolean;
-  public getLinkedCasesResponse: LinkedCasesResponse;
+  public getLinkedCasesResponse: CaseLinkResponse[] = [];
   public linkedCaseReasons: LovRefDataModel[];
 
   public caseId: string;
@@ -40,6 +42,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private readonly casesService: CasesService,
+    private readonly linkedCasesService: LinkedCasesService,
     ) {
   }
 
@@ -52,21 +55,34 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
     this.fetchPageData();
+    if (this.route.snapshot.data.case) {
+      this.linkedCasesService.caseDetails = this.route.snapshot.data.case;
+    }
   }
 
   public fetchPageData() {
     this.caseId = this.route.snapshot.data.case.case_id;
     this.getLinkedCases().subscribe(
       response => {
-        this.getLinkedCasesResponse = response;
-        this.noLinkedCases = !this.getLinkedCasesResponse.linkedCases || !this.getLinkedCasesResponse.linkedCases.length;
+        this.getLinkedCasesResponse = response.linkedCases && response.linkedCases.map(item => {
+          const mappedCasetype = this.mapLookupIDToValueFromJurisdictions('CASE_TYPE', item.ccdCaseType);
+          const mappedCaseState = this.mapLookupIDToValueFromJurisdictions('STATE', item.state);
+          const mappedCaseService = this.mapLookupIDToValueFromJurisdictions('JURISDICTION', item.ccdJurisdiction);
+          return {...item, ccdCaseType: mappedCasetype, ccdJurisdiction: mappedCaseService,
+            state: mappedCaseState, caseNameHmctsInternal: item.caseNameHmctsInternal ||  'Case name missing'}
+        })
+        this.noLinkedCases = !response.linkedCases || !response.linkedCases.length;
       },
       () => this.notifyAPIFailure.emit(true)
       );
   }
 
-  public getLinkedCases() {
+  public getLinkedCases(): Observable<LinkedCasesResponse> {
     return this.casesService.getLinkedCases(this.caseId);
+  }
+
+  public mapLookupIDToValueFromJurisdictions(fieldName, fieldValue): string {
+    return this.linkedCasesService.mapLookupIDToValueFromJurisdictions(fieldName, fieldValue);
   }
 
   public onClick(): void {

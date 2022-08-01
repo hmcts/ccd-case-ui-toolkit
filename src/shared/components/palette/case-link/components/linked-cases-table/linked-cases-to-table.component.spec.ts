@@ -33,6 +33,23 @@ describe('LinkCasesToTableComponent', () => {
   linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases: mocklinkedCases,
+    jurisdictionsResponse: [
+      {
+        id: 'SSCS',
+        name: 'Tribunals',
+        description: 'Social Security and Child Support',
+        caseTypes: [
+          {
+            id: 'SSCS_ExceptionRecord',
+            description: 'Bulkscanning Exception',
+            version: null,
+            name: 'SSCS Bulkscanning',
+          },
+        ],
+        states: [{}],
+      },
+    ],
+    mapLookupIDToValueFromJurisdictions() {}
   };
 
   let mockRouter: any;

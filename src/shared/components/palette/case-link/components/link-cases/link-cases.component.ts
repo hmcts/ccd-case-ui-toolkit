@@ -2,7 +2,6 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { forkJoin, Observable, throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
-import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import {
@@ -40,15 +39,14 @@ export class LinkCasesComponent implements OnInit {
     private casesService: CasesService,
     private readonly fb: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
-    public readonly linkedCasesService: LinkedCasesService,
-    private readonly searchService: SearchService
-  ) {}
+    public readonly linkedCasesService: LinkedCasesService  ) {}
 
   public ngOnInit(): void {
-    this.getAllLinkedCaseInformation();
     this.initForm();
     if (this.linkedCasesService.editMode) {
       this.selectedCases = this.linkedCasesService.linkedCases;
+    } else {
+      this.linkedCasesService.linkedCases = [];
     }
   }
 
@@ -158,13 +156,14 @@ export class LinkCasesComponent implements OnInit {
       .getCaseViewV2(this.linkCaseForm.value.caseNumber)
       .subscribe(
         (caseView: CaseView) => {
+          this.linkedCasesService.caseDetails = caseView;
           const caseLink: CaseLink = {
             caseReference: caseView.case_id,
             reasons: this.getSelectedCaseReasons(),
             createdDateTime: moment(new Date()).format(this.ISO_FORMAT),
-            caseType: caseView.case_type.id,
-            caseState: caseView.state.name,
-            caseService: caseView.case_type.jurisdiction.name,
+            caseType: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('CASE_TYPE', caseView.case_type.id),
+            caseState: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE', caseView.state.name),
+            caseService: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION', caseView.case_type.jurisdiction.name),
             caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
           };
           const ccdApiCaseLinkData: CCDCaseLinkType = {
@@ -224,40 +223,6 @@ export class LinkCasesComponent implements OnInit {
 
   public searchCasesByCaseIds(searchCasesResponse: any[]): Observable<any> {
     return forkJoin(searchCasesResponse);
-  }
-  /**
-   * TODO: Get all Linked cases information
-   * Gets all case information
-   */
-  public getAllLinkedCaseInformation(): void {
-    const linkedCaseIds = this.groupByCaseType(this.selectedCases, 'CaseType');
-    const searchCasesResponse = [];
-    Object.keys(linkedCaseIds).forEach((id) => {
-      const esQuery = this.constructElasticSearchQuery(linkedCaseIds[id], 100);
-      const query = this.searchService.searchCasesByIds(
-        id,
-        esQuery,
-        SearchService.VIEW_WORKBASKET
-      );
-      searchCasesResponse.push(query);
-    });
-    if (searchCasesResponse.length) {
-      this.searchCasesByCaseIds(searchCasesResponse).subscribe(
-        (searchCases: any) => {
-          let updatedSelectedCases = [];
-          this.linkedCasesService.preLinkedCases = [];
-          searchCases.forEach((response) => {
-            response.results.forEach((result: any) => {
-              let caseInfo = this.selectedCases.find(element => element.caseReference = result.case_id);
-              if (caseInfo) {
-                updatedSelectedCases.push(this.mapResponse(result, caseInfo));
-              }
-            });
-          });
-          this.selectedCases = updatedSelectedCases;
-        }
-      );
-    }
   }
 
   public constructElasticSearchQuery(caseIds: any[], size: number): ESQueryType {

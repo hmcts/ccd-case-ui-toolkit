@@ -18,6 +18,7 @@ import { UnLinkCasesComponent } from './components/unlink-cases/unlink-cases.com
 import { ReadLinkedCasesComponent } from './components/read-linked-cases.component';
 import { CommonDataService } from '../../../services/common-data-service/common-data-service';
 import { NoLinkedCasesComponent } from './components/no-linked-cases/no-linked-cases.component';
+import { JurisdictionService } from './services/jurisdiction.service';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { NoLinkedCasesComponent } from './components/no-linked-cases/no-linked-c
     CaseEditPageComponent,
     ChangeDetectorRef as Provider,
     LinkedCasesService,
-    CommonDataService
+    CommonDataService,
+    JurisdictionService,
   ],
   declarations: [
     ReadCaseLinkFieldComponent,

@@ -39,13 +39,13 @@ export class LinkReason {
 }
 
 export class LinkedCasesResponse {
-  linkedCases: [];
+  linkedCases: CaseLinkResponse[];
 }
 
 export class CaseLinkResponse {
   caseNameHmctsInternal: string;
   caseReference: string;
-  ccdCaseTyp: string;
+  ccdCaseType: string;
   ccdJurisdiction: string;
   state: string;
   linkDetails: [LinkDetails];
