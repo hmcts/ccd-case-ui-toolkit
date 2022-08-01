@@ -185,7 +185,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
           offset: -150,
         })
           .pipe(finalize(() => this.focusLastItem()))
-          .subscribe(null, console.error);
+          .subscribe(() => {}, console.error);
       });
     } else {
       setTimeout(() => this.focusLastItem());
