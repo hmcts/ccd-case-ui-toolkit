@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AbstractAppConfig } from '../../../../../app.config';
+import { CaseField, ErrorMessage } from '../../../../domain';
 import { CaseView } from '../../../../domain/case-view';
 import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
 import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
@@ -21,6 +22,9 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   private static readonly LINKED_CASES_TAB_ID = 'linked_cases_sscs';
 
   @Input()
+  caseField: CaseField;
+  
+  @Input()
   public caseEditPageComponent: CaseEditPageComponent;
 
   @Output()
@@ -35,6 +39,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public linkedCases: CaseLink[] = [];
+  public errorMessages: ErrorMessage[] = [];
 
   constructor(private readonly router: Router,
     private caseEdit: CaseEditComponent,
@@ -46,6 +51,17 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public ngOnInit(): void {
+    this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
+    this.formGroup = this.registerControl(new FormGroup({}, {
+      validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+        if (!this.isAtFinalState()) {
+          // Return an error to mark the FormGroup as invalid if not at the final state
+          return {notAtFinalState: true};
+        }
+        return null;
+      }
+    }), true) as FormGroup;
+
     this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
     this.linkedCasesService.editMode = false;
     const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
@@ -72,6 +88,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
+    this.errorMessages = [];
     this.caseEditPageComponent.validationErrors = [];
 
     if (linkedCasesState.navigateToNextPage) {
@@ -85,10 +102,14 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     }
   }
 
+  public isAtFinalState(): boolean {
+    return this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
+  }
+
   public setContinueButtonValidationErrorMessage(): void {
     const errorMessage = this.linkedCasesService.linkedCases.length === 0
       ? LinkedCasesErrorMessages.BackNavigationError
-      : this.router && this.router.url && this.router.url.includes(LinkedCasesEventTriggers.LINK_CASES)
+      : this.linkedCasesService.isLinkedCasesEventTrigger
         ? LinkedCasesErrorMessages.LinkCasesNavigationError
         : LinkedCasesErrorMessages.UnlinkCasesNavigationError;
 
@@ -115,7 +136,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public isAtFinalPage(): boolean {
-    return this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
+    return this.linkedCasesPage && this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
   }
 
   public getNextPage(linkedCasesState: LinkedCasesState): number {

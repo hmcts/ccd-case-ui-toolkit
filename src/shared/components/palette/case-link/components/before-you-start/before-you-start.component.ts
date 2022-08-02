@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ErrorMessage } from '../../../../../domain';
 import { LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
@@ -14,6 +15,8 @@ export class BeforeYouStartComponent {
 
   public isLinkCasesJourney = false;
 
+  public errorMessages: ErrorMessage[];
+
   constructor(
     private readonly linkedCasesService: LinkedCasesService,
   ) {
@@ -23,6 +26,7 @@ export class BeforeYouStartComponent {
   public onNext(): void {
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
+      errorMessages: this.errorMessages,
       navigateToNextPage: true
     });
   }
