@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { CaseEventTrigger } from '../../../domain';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class EventTriggerService {
 
   public eventTriggerSource = new Subject<CaseEventTrigger>();

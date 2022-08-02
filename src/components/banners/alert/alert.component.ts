@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-enum AlertMessageType {
+export enum AlertMessageType {
   WARNING = 'warning',
   SUCCESS = 'success',
   ERROR = 'error',
@@ -24,9 +24,9 @@ export class AlertComponent {
 
   @Input()
   public type: AlertMessageType;
-  public alertMessageType = AlertMessageType;
 
   @Input()
   public showIcon = true;
 
+  public alertMessageType = AlertMessageType;
 }

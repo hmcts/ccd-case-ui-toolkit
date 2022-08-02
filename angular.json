@@ -50,13 +50,15 @@
           "builder": "@storybook/angular:start-storybook",
           "options": {
             "browserTarget": "angular-cli:build",
-            "port": 6006
+            "port": 6006,
+            "styles": ["./storybook/storybook.styles.scss"]
           }
         },
         "build-storybook": {
           "builder": "@storybook/angular:build-storybook",
           "options": {
-            "browserTarget": "angular-cli:build"
+            "browserTarget": "angular-cli:build",
+            "styles": ["./storybook/storybook.styles.scss"]
           }
         },
         "serve": {

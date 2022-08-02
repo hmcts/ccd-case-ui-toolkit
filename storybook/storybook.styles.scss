@@ -1,0 +1,13 @@
+
+// @import '../node_modules/@angular/material/prebuilt-themes/indigo-pink.css';
+
+// $govuk-compatibility-govukfrontendtoolkit: true;
+// @import "../node_modules/govuk-frontend/govuk/all";
+
+// @import "~@hmcts/frontend/all";
+
+.form-control {
+    background-color: red;
+    color: blue;
+    border: 6px solid green;
+}
