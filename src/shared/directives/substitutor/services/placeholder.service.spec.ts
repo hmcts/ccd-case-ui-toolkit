@@ -271,7 +271,7 @@ nested value3 and tripple nested9`);
 
       const actual = placeholderService.resolvePlaceholders(pageFormFields, stringToResolve);
 
-      expect(actual).toBe(`nested value1 and tripple nested7
+      expect(actual).toEqual(`nested value1 and tripple nested7
 ___
  and tripple nested8
 ___

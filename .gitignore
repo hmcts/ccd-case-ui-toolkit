@@ -56,4 +56,8 @@ demo/reports
 # package-lock
 package-lock.json
 
+# storybook
+.storybook/
+storybook-static
+
 .DS_Store

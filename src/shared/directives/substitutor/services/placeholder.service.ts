@@ -9,6 +9,8 @@ export class PlaceholderService {
 
     public resolvePlaceholders(pageFormFields: object, stringToResolve: string): string {
         const ps = new PlaceholderService.PlaceholderSubstitutor({pageFormFields, stringToResolve});
+
+        console.log(ps.resolvePlaceholders());
         return ps.resolvePlaceholders();
     }
 
@@ -183,7 +185,8 @@ ___
             let pageFormFieldsClone = FieldsUtils.cloneObject(this.pageFormFields);
             let numberCollectionItemsAsPlaceholder = 1;
 
-            for (const index of fieldIds) {
+            // tslint:disable-next-line
+            for (let index = 0; index < fieldIds.length; index++) {
                 if (FieldsUtils.isCollection(pageFormFieldsClone)) {
                     numberCollectionItemsAsPlaceholder = pageFormFieldsClone.length;
                     break;

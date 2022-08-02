@@ -14,10 +14,14 @@
     "stripInternal": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "lib": ["es2018", "dom"]
+    "lib": [
+      "es2018",
+      "dom"
+    ]
   },
   "exclude": [
     "test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "**/*.stories.*"
   ]
 }
