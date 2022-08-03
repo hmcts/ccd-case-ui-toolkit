@@ -286,7 +286,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
     const caseFlagsTab = this.caseDetails.tabs
       ? (this.caseDetails.tabs).filter(
-        tab => tab.fields && tab.fields.some(caseField => caseField.field_type.type === 'FlagLauncher'))[0]
+        tab => tab.fields && tab.fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
       : null;
 
     if (caseFlagsTab) {
@@ -294,12 +294,13 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       this.isCaseFlagSubmission = true;
 
       // Get the active case flags count
+      // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
+      // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
+      // (or sub-fields of Complex fields in a collection)
       const activeCaseFlags = caseFlagsTab.fields
-        .filter(caseField => FieldsUtils.isFlagsCaseField(caseField) && caseField.value && caseField.value.details)
+        .filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.value)
         .reduce((active, caseFlag) => {
-          (caseFlag.value.details as any[])
-          .forEach(detail => active = detail.value.status === CaseFlagStatus.ACTIVE ? active + 1 : active);
-          return active;
+          return FieldsUtils.countActiveFlagsInCaseField(active, caseFlag);
         }, 0);
 
       if (activeCaseFlags > 0) {

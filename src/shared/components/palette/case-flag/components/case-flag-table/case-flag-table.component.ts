@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Flags } from '../../domain';
+import { FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagStatus } from '../../enums';
 
 @Component({
@@ -10,7 +10,7 @@ import { CaseFlagStatus } from '../../enums';
 export class CaseFlagTableComponent {
 
   @Input() public tableCaption: string;
-  @Input() public flagData: Flags;
+  @Input() public flagData: FlagsWithFormGroupPath;
   @Input() public firstColumnHeader: string;
 
   public get caseFlagStatus(): typeof CaseFlagStatus {

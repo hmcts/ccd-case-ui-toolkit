@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.18.10-flags-field-in-complex-and-collection-types
+**EUI-6438** Ensure Flags fields can be stored and amended as sub-fields of a Complex field, including a collection of that type, and as instances within a collection of type "Flags"
+
 ### Version 4.18.6-case-flags-table-styling-changes
 **EUI-6198** Increase table caption font size and width of first column
 

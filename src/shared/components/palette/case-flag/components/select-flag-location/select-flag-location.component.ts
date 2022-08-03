@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
-import { CaseFlagState, Flags } from '../../domain';
+import { CaseFlagState, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagLocationErrorMessage } from '../../enums';
 
 @Component({
@@ -11,14 +11,14 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagLocationErrorMes
 export class SelectFlagLocationComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
-  @Input() public flagsData: Flags[];
+  @Input() public flagsData: FlagsWithFormGroupPath[];
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public flagLocationTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
   public flagLocationNotSelectedErrorMessage: SelectFlagLocationErrorMessage = null;
-  public filteredFlagsData: Flags[];
+  public filteredFlagsData: FlagsWithFormGroupPath[];
   public caseFlagsConfigError = false;
   public readonly selectedLocationControlName = 'selectedLocation';
   public readonly caseLevelFlagLabel = 'Case level';
@@ -31,7 +31,7 @@ export class SelectFlagLocationComponent implements OnInit {
     // is expected not to have a party name)
     if (this.flagsData) {
       this.filteredFlagsData =
-        this.flagsData.filter(f => f.partyName != null || f.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId);
+        this.flagsData.filter(f => f.flags.partyName != null || f.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
     }
 
     // Add a FormControl for the selected flag location if there is at least one flags instance remaining after filtering
@@ -48,12 +48,13 @@ export class SelectFlagLocationComponent implements OnInit {
   public onNext(): void {
     // Validate flag location selection
     this.validateSelection();
-    // Return case flag field state, error messages, and selected Flags instance (i.e. flag location) to the parent
+    // Return case flag field state, error messages, and selected FlagsWithFormGroupPath instance (i.e. flag location) to
+    // the parent
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
       errorMessages: this.errorMessages,
       selectedFlagsLocation: this.formGroup.get(this.selectedLocationControlName).value
-        ? this.formGroup.get(this.selectedLocationControlName).value as Flags
+        ? this.formGroup.get(this.selectedLocationControlName).value as FlagsWithFormGroupPath
         : null
     });
   }

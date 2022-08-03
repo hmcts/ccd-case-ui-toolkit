@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FlagDetail, FlagDetailDisplay } from '../../domain';
+import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
 
@@ -30,13 +30,19 @@ describe('UpdateFlagComponent', () => {
     status: 'Inactive'
   } as FlagDetail;
   const selectedFlag1 = {
-    partyName: 'Rose Bank',
-    flagDetail: activeFlag,
-  } as FlagDetailDisplay;
+    flagDetailDisplay: {
+      partyName: 'Rose Bank',
+      flagDetail: activeFlag,
+    },
+    pathToFlagsFormGroup: ''
+  } as FlagDetailDisplayWithFormGroupPath;
   const selectedFlag2 = {
-    partyName: 'Rose Bank',
-    flagDetail: inactiveFlag
-  } as FlagDetailDisplay;
+    flagDetailDisplay: {
+      partyName: 'Rose Bank',
+      flagDetail: inactiveFlag
+    },
+    pathToFlagsFormGroup: ''
+  } as FlagDetailDisplayWithFormGroupPath;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -147,7 +153,7 @@ describe('UpdateFlagComponent', () => {
       errorMessages: component.errorMessages,
       selectedFlag: component.selectedFlag
     });
-    expect(component.selectedFlag.flagDetail.flagComment).toEqual(textarea.value);
-    expect(component.selectedFlag.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
+    expect(component.selectedFlag.flagDetailDisplay.flagDetail.flagComment).toEqual(textarea.value);
+    expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
   });
 });
