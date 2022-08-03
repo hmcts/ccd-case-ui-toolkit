@@ -10,12 +10,12 @@
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <tr *ngIf="!flagData.details || (flagData.details && flagData.details.length === 0)">
+    <tr *ngIf="!flagData.flags.details || (flagData.flags.details && flagData.flags.details.length === 0)">
       <td colspan="5">None</td>
     </tr>
   </tbody>
-  <tbody class="govuk-table__body" *ngIf="flagData.details && flagData.details.length > 0">
-    <tr scope="row" class="govuk-table__row" *ngFor="let flagDetail of flagData.details">
+  <tbody class="govuk-table__body" *ngIf="flagData.flags.details && flagData.flags.details.length > 0">
+    <tr scope="row" class="govuk-table__row" *ngFor="let flagDetail of flagData.flags.details">
       <td class="govuk-table__cell">
         <div>{{flagDetail.name}}</div>
         <div>{{flagDetail.otherDescription}}</div>

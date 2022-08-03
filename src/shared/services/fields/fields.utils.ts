@@ -2,9 +2,10 @@ import { CurrencyPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
-
 import { WizardPage } from '../../components/case-editor/domain';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
+import { FlagDetail, FlagsWithFormGroupPath } from '../../components/palette/case-flag/domain';
+import { CaseFlagStatus } from '../../components/palette/case-flag/enums';
 import { DatePipe } from '../../components/palette/utils';
 import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
@@ -333,10 +334,7 @@ export class FieldsUtils {
       return false;
     }
 
-    // Note: This implementation supports the dummy field type ID of "CaseFlag" for testing and the real field type
-    // ID of "Flags"
-    return (caseField.field_type.type === 'Complex' &&
-      (caseField.field_type.id === 'CaseFlag' || caseField.field_type.id === 'Flags'));
+    return this.isFlagsFieldType(caseField.field_type);
   }
 
   public static isFlagLauncherCaseField(caseField: CaseField): boolean {
@@ -345,6 +343,256 @@ export class FieldsUtils {
     }
 
     return caseField.field_type.type === 'FlagLauncher';
+  }
+
+  public static isFlagsFieldType(fieldType: FieldType): boolean {
+    if (!fieldType) {
+      return false;
+    }
+
+    // Note: This implementation supports the dummy field type ID of "CaseFlag" for testing and the real field type
+    // ID of "Flags"
+    return (fieldType.type === 'Complex' && (fieldType.id === 'CaseFlag' || fieldType.id === 'Flags'));
+  }
+
+  /**
+   * Extract flags data from a `CaseField` instance, recursing and iterating through sub-fields of a Complex field or
+   * each field in a Collection field.
+   *
+   * @param flags An array for accumulating extracted flags data and derived `FormGroup` paths
+   * @param caseField A `CaseField` instance from which to extract the flags data
+   * @param pathToFlagsFormGroup A (dot-delimited) string for concatenating the name of each control that forms the path
+   * to the `FormGroup` for the `Flags` instance
+   * @param topLevelCaseField The top-level `CaseField` that contains the value property. This is required because _only
+   * top-level_ `CaseField`s contain actual values and a reference needs to be maintained to such a field
+   * @param currentValue The current value object of a `CaseField` that is a sub-field of a non root-level Complex field.
+   * Required for mapping the `CaseField` value to a `Flags` object if it is a "Flags" `CaseField`. (For Complex types,
+   * only the _root-level_ `CaseField` contains a value property - all sub-fields, including any nested Complex fields,
+   * do *not* contain any values themselves.)
+   * @returns An array of `FlagsWithFormGroupPath`, each instance comprising a `Flags` object derived from a `CaseField`
+   * of type "Flags", and the dot-delimited path string to the corresponding `FormGroup`
+   */
+  public static extractFlagsDataFromCaseField(flags: FlagsWithFormGroupPath[], caseField: CaseField,
+    pathToFlagsFormGroup: string, topLevelCaseField: CaseField, currentValue?: object): FlagsWithFormGroupPath[] {
+      const fieldType = caseField.field_type;
+      switch (fieldType.type) {
+        case 'Complex':
+          // If the field is a Flags CaseField (these are implemented as Complex types), it can be mapped to a Flags
+          // object immediately
+          if (FieldsUtils.isFlagsCaseField(caseField)) {
+            // If the Flags CaseField has a value, it is a root-level Complex field; if it does not, it is a Flags
+            // CaseField that is a sub-field within another Complex field, so use the currentValue value (if any) instead
+            if (caseField.value && FieldsUtils.isNonEmptyObject(caseField.value)) {
+              flags.push(this.mapCaseFieldToFlagsWithFormGroupPathObject(caseField, pathToFlagsFormGroup));
+            } else if (currentValue && FieldsUtils.isNonEmptyObject(currentValue)) {
+              pathToFlagsFormGroup += `.${caseField.id}`;
+              flags.push(this.mapValueToFlagsWithFormGroupPathObject(
+                caseField.id, currentValue, pathToFlagsFormGroup, topLevelCaseField));
+            }
+          } else if (fieldType.complex_fields && fieldType.complex_fields.length > 0) {
+            fieldType.complex_fields.reduce((flagsOfComplexField, subField) => {
+              if (caseField.value && FieldsUtils.isNonEmptyObject(caseField.value)) {
+                flagsOfComplexField = this.extractFlagsDataFromCaseField(
+                  flagsOfComplexField,
+                  subField,
+                  pathToFlagsFormGroup,
+                  topLevelCaseField,
+                  caseField.value[subField.id]
+                );
+              } else if (currentValue && FieldsUtils.isNonEmptyObject(currentValue)) {
+                flagsOfComplexField = this.extractFlagsDataFromCaseField(
+                  flagsOfComplexField,
+                  subField,
+                  pathToFlagsFormGroup,
+                  topLevelCaseField,
+                  currentValue[subField.id]
+                );
+              }
+              return flagsOfComplexField;
+            }, flags);
+          }
+          break;
+        // For a Collection field, the values are stored directly as key-value pairs in the CaseField's value property
+        // as an array, unless the collection is a sub-field of a Complex type - sub-fields never contain values
+        case 'Collection':
+          // If this is a collection of Flags CaseFields, these can be mapped to Flags objects immediately
+          if (FieldsUtils.isFlagsFieldType(fieldType.collection_field_type)) {
+            // If the Collection CaseField has a value (an array), it is a root-level Collection field; if it does not,
+            // it is a Collection CaseField that is a sub-field within a Complex field, so use the currentValue value
+            // (if any) instead
+            const pathFragment = pathToFlagsFormGroup += '.index.value';
+            if (caseField.value && caseField.value.length > 0) {
+              caseField.value.forEach((item: { id: string; value: object; }, index: number) => {
+                // At each iteration, replace the "index" placeholder with the actual index
+                pathToFlagsFormGroup = pathFragment.replace('index', index.toString(10));
+                flags.push(
+                  this.mapValueToFlagsWithFormGroupPathObject(item.id, item.value, pathToFlagsFormGroup, caseField));
+              });
+            } else if (currentValue && (currentValue as []).length > 0) {
+              (currentValue as []).forEach((item: { id: string; value: object; }, index: number) => {
+                pathToFlagsFormGroup = pathFragment.replace('index', index.toString(10));
+                flags.push(this.mapValueToFlagsWithFormGroupPathObject(item.id, item.value, pathToFlagsFormGroup, topLevelCaseField));
+              });
+            }
+          } else if (fieldType.collection_field_type.type === 'Complex' &&
+                    fieldType.collection_field_type.complex_fields &&
+                    fieldType.collection_field_type.complex_fields.length > 0) {
+            if (caseField.value && caseField.value.length > 0) {
+              // Perform a reduction over each Complex field's sub-fields (similar to what is done above for non-Flags
+              // Complex fields)
+              // (Cannot just call this function recursively for each Complex field in the collection because the CaseField
+              // for each one is not part of the collection)
+              const pathFragment = pathToFlagsFormGroup += '.index.value';
+              caseField.value.forEach((item: { id: string; value: object; }, index: number) => {
+                // At each iteration, replace the "index" placeholder with the actual index
+                pathToFlagsFormGroup = pathFragment.replace('index', index.toString(10));
+                fieldType.collection_field_type.complex_fields.reduce((flagsOfComplexField, subField) => {
+                  flagsOfComplexField = this.extractFlagsDataFromCaseField(
+                    flagsOfComplexField, subField, pathToFlagsFormGroup, topLevelCaseField, item.value[subField.id]);
+                  return flagsOfComplexField;
+                }, flags);
+              });
+            }
+          }
+          break;
+        default:
+          // Ignore all other field types
+      }
+      return flags;
+  }
+
+  private static mapCaseFieldToFlagsWithFormGroupPathObject(caseField: CaseField,
+    pathToFlagsFormGroup: string): FlagsWithFormGroupPath {
+      return this.mapValueToFlagsWithFormGroupPathObject(caseField.id, caseField.value, pathToFlagsFormGroup, caseField);
+  }
+
+  private static mapValueToFlagsWithFormGroupPathObject(id: string, value: object,
+    pathToFlagsFormGroup: string, caseField: CaseField): FlagsWithFormGroupPath {
+      return {
+        flags: {
+          flagsCaseFieldId: id,
+          partyName: value['partyName'],
+          roleOnCase: value['roleOnCase'],
+          details: value['details'] && value['details'].length > 0
+            ? (value['details'] as any[]).map(detail => {
+              return Object.assign({}, ...Object.keys(detail.value).map(k => {
+                // The id property set below will be null for a new case flag, and a unique id returned from CCD when
+                // updating an existing flag
+                switch (k) {
+                  // These two fields are date-time fields
+                  case 'dateTimeModified':
+                  case 'dateTimeCreated':
+                    return {[k]: detail.value[k] ? new Date(detail.value[k]) : null, 'id': detail.id};
+                  // This field is a "yes/no" field
+                  case 'hearingRelevant':
+                    return detail.value[k].toUpperCase() === 'YES' ? {[k]: true, 'id': detail.id} : {[k]: false, 'id': detail.id};
+                  default:
+                    return {[k]: detail.value[k], 'id': detail.id};
+                }
+              }));
+            }) as FlagDetail[]
+            : null
+        },
+        pathToFlagsFormGroup,
+        caseField
+      };
+  }
+
+  /**
+   * Count active flags in a `CaseField` instance, recursing and iterating through sub-fields of a Complex field or each
+   * field in a Collection field.
+   *
+   * @param activeCount An accumulation of the total number of active flags
+   * @param caseField A `CaseField` instance for which to count the active flags
+   * @param currentValue The current value object of a `CaseField` that is a sub-field of a non root-level Complex field.
+   * (For Complex types, only the _root-level_ `CaseField` contains a value property - all sub-fields, including any
+   * nested Complex fields, do *not* contain any values themselves.)
+   * @returns The count of active flags
+   */
+  public static countActiveFlagsInCaseField(activeCount: number, caseField: CaseField, currentValue?: object): number {
+      const fieldType = caseField.field_type;
+      switch (fieldType.type) {
+        case 'Complex':
+          if (FieldsUtils.isFlagsCaseField(caseField)) {
+            // If the Flags CaseField has a value, it is a root-level Complex field; if it does not, it is a Flags
+            // CaseField that is a sub-field within another Complex field, so use the currentValue value (if any) instead
+            if (caseField.value && FieldsUtils.isNonEmptyObject(caseField.value)) {
+              activeCount = caseField.value.details.reduce(
+                (count, detail) => count = detail.value.status === CaseFlagStatus.ACTIVE ? count + 1 : count,
+                activeCount
+              );
+            } else if (currentValue && FieldsUtils.isNonEmptyObject(currentValue)) {
+              activeCount = currentValue['details'].reduce(
+                (count, detail) => count = detail.value.status === CaseFlagStatus.ACTIVE ? count + 1 : count,
+                activeCount
+              );
+            }
+          } else if (fieldType.complex_fields && fieldType.complex_fields.length > 0) {
+            activeCount = fieldType.complex_fields.reduce((activeFlagsCountOfComplexField, subField) => {
+              if (caseField.value && FieldsUtils.isNonEmptyObject(caseField.value)) {
+                activeFlagsCountOfComplexField = this.countActiveFlagsInCaseField(
+                  activeFlagsCountOfComplexField,
+                  subField,
+                  caseField.value[subField.id]
+                );
+              } else if (currentValue && FieldsUtils.isNonEmptyObject(currentValue)) {
+                activeFlagsCountOfComplexField = this.countActiveFlagsInCaseField(
+                  activeFlagsCountOfComplexField,
+                  subField,
+                  currentValue[subField.id]
+                );
+              }
+              return activeFlagsCountOfComplexField;
+            }, activeCount);
+          }
+          break;
+        // For a Collection field, the values are stored directly as key-value pairs in the CaseField's value property
+        // as an array, unless the collection is a sub-field of a Complex type - sub-fields never contain values
+        case 'Collection':
+          if (FieldsUtils.isFlagsFieldType(fieldType.collection_field_type)) {
+            // If the Collection CaseField has a value (an array), it is a root-level Collection field; if it does not,
+            // it is a Collection CaseField that is a sub-field within a Complex field, so use the currentValue value
+            // (if any) instead
+            if (caseField.value && caseField.value.length > 0) {
+              caseField.value.forEach((item: { id: string; value: object; }) => {
+                activeCount = item.value['details'].reduce(
+                  (count, detail) => count = detail.value.status === CaseFlagStatus.ACTIVE ? count + 1 : count,
+                  activeCount
+                );
+              });
+            } else if (currentValue && (currentValue as []).length > 0) {
+              (currentValue as []).forEach((item: { id: string; value: object; }) => {
+                activeCount = item.value['details'].reduce(
+                  (count, detail) => count = detail.value.status === CaseFlagStatus.ACTIVE ? count + 1 : count,
+                  activeCount
+                );
+              });
+            }
+          } else if (fieldType.collection_field_type.type === 'Complex' &&
+                    fieldType.collection_field_type.complex_fields &&
+                    fieldType.collection_field_type.complex_fields.length > 0) {
+            if (caseField.value && caseField.value.length > 0) {
+              // Perform a reduction over each Complex field's sub-fields (similar to what is done above for non-Flags
+              // Complex fields)
+              // (Cannot just call this function recursively for each Complex field in the collection because the CaseField
+              // for each one is not part of the collection)
+              caseField.value.forEach((item: { id: string; value: object; }) => {
+                activeCount = fieldType.collection_field_type.complex_fields.reduce(
+                  (activeFlagsCountOfComplexField, subField) => {
+                    activeFlagsCountOfComplexField = this.countActiveFlagsInCaseField(activeFlagsCountOfComplexField,
+                      subField, item.value[subField.id]);
+                    return activeFlagsCountOfComplexField;
+                  },
+                  activeCount
+                );
+              });
+            }
+          }
+          break;
+        default:
+          // Ignore all other field types
+      }
+      return activeCount;
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {

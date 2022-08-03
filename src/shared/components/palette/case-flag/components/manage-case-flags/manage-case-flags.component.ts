@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ErrorMessage } from '../../../../../domain';
-import { CaseFlagState, FlagDetail, FlagDetailDisplay, Flags } from '../../domain';
+import { CaseField, ErrorMessage } from '../../../../../domain';
+import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 
 @Component({
@@ -11,14 +11,14 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } f
 export class ManageCaseFlagsComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
-  @Input() public flagsData: Flags[];
+  @Input() public flagsData: FlagsWithFormGroupPath[];
   @Input() public caseTitle: string;
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public manageCaseFlagTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
   public manageCaseFlagSelectedErrorMessage: SelectFlagErrorMessage = null;
-  public flagsDisplayData: FlagDetailDisplay[];
+  public flagsDisplayData: FlagDetailDisplayWithFormGroupPath[];
   public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
@@ -29,16 +29,17 @@ export class ManageCaseFlagsComponent implements OnInit {
     // Map flags instances to objects for display
     if (this.flagsData) {
       this.flagsDisplayData = this.flagsData.reduce((displayData, flagsInstance) => {
-        if (flagsInstance.details && flagsInstance.details.length > 0) {
+        if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
           displayData = [
             ...displayData,
-            ...flagsInstance.details.map(detail =>
-              this.mapFlagDetailForDisplay(detail, flagsInstance.partyName, flagsInstance.flagsCaseFieldId)
+            ...flagsInstance.flags.details.map(detail =>
+              this.mapFlagDetailForDisplay(detail, flagsInstance.flags.partyName, flagsInstance.pathToFlagsFormGroup,
+                flagsInstance.caseField)
             )
           ];
         }
         return displayData;
-      }, []) as FlagDetailDisplay[];
+      }, []);
     }
 
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
@@ -51,22 +52,27 @@ export class ManageCaseFlagsComponent implements OnInit {
     }
   }
 
-  public mapFlagDetailForDisplay(flagDetail: FlagDetail, partyName: string, flagsCaseFieldId: string): FlagDetailDisplay {
-    return {
-      partyName,
-      flagDetail,
-      flagsCaseFieldId
-    };
+  public mapFlagDetailForDisplay(flagDetail: FlagDetail, partyName: string,
+    pathToFlagsFormGroup: string, caseField: CaseField): FlagDetailDisplayWithFormGroupPath {
+      return {
+        flagDetailDisplay: {
+          partyName,
+          flagDetail,
+          flagsCaseFieldId: caseField.id
+        },
+        pathToFlagsFormGroup,
+        caseField
+      };
   }
 
-  public processLabel(flagDisplay: FlagDetailDisplay): string {
-    const partyName = flagDisplay.flagsCaseFieldId && flagDisplay.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId
+  public processLabel(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
+    const partyName = flagDisplay.pathToFlagsFormGroup && flagDisplay.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId
       ? `${this.caseTitle} - `
-      : flagDisplay.partyName
-        ? `${flagDisplay.partyName} - `
+      : flagDisplay.flagDetailDisplay.partyName
+        ? `${flagDisplay.flagDetailDisplay.partyName} - `
         :  '';
 
-    const flagDetail = flagDisplay.flagDetail;
+    const flagDetail = flagDisplay.flagDetailDisplay.flagDetail;
 
     const flagPathOrName = flagDetail && flagDetail.path && flagDetail.path.length > 1
       ? flagDetail.path[1].value
@@ -99,7 +105,7 @@ export class ManageCaseFlagsComponent implements OnInit {
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: this.errorMessages,
       selectedFlag: this.formGroup.get(this.selectedControlName).value
-        ? this.formGroup.get(this.selectedControlName).value as FlagDetailDisplay
+        ? this.formGroup.get(this.selectedControlName).value as FlagDetailDisplayWithFormGroupPath
         : null
     });
   }

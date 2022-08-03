@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FlagDetail, Flags } from '../../domain';
+import { FlagDetail, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
 import { SelectFlagLocationComponent } from './select-flag-location.component';
 
@@ -10,75 +10,69 @@ describe('SelectFlagLocationComponent', () => {
   let fixture: ComponentFixture<SelectFlagLocationComponent>;
   const flagsData = [
     {
-      flagsCaseFieldId: 'Party1Flags',
-      partyName: 'Rose Bank',
-      details: [
-        {
-          name: 'Flag 1',
-          flagComment: 'First flag',
-          dateTimeCreated: new Date(),
-          path: [{ id: null, value: 'Reasonable adjustment' }],
-          hearingRelevant: false,
-          flagCode: 'FL1',
-          status: 'Active'
-        },
-        {
-          name: 'Flag 2',
-          flagComment: 'Rose\'s second flag',
-          dateTimeCreated: new Date(),
-          path: [{ id: null, value: 'Reasonable adjustment' }],
-          hearingRelevant: false,
-          flagCode: 'FL2',
-          status: 'Inactive'
-        }
-      ] as FlagDetail[]
+      flags: {
+        flagsCaseFieldId: 'Party1Flags',
+        partyName: 'Rose Bank',
+        details: [
+          {
+            name: 'Flag 1',
+            flagComment: 'First flag',
+            dateTimeCreated: new Date(),
+            path: [{ id: null, value: 'Reasonable adjustment' }],
+            hearingRelevant: false,
+            flagCode: 'FL1',
+            status: 'Active'
+          },
+          {
+            name: 'Flag 2',
+            flagComment: 'Rose\'s second flag',
+            dateTimeCreated: new Date(),
+            path: [{ id: null, value: 'Reasonable adjustment' }],
+            hearingRelevant: false,
+            flagCode: 'FL2',
+            status: 'Inactive'
+          }
+        ] as FlagDetail[]
+      },
+      pathToFlagsFormGroup: ''
     },
     {
-      flagsCaseFieldId: 'Party2Flags',
-      partyName: 'Tom Atin',
-      details: [
-        {
-          name: 'Flag 3',
-          flagComment: 'First flag',
-          dateTimeCreated: new Date(),
-          path: [{ id: null, value: 'Reasonable adjustment' }],
-          hearingRelevant: false,
-          flagCode: 'FL1',
-          status: 'Active'
-        }
-      ] as FlagDetail[]
+      flags: {
+        flagsCaseFieldId: 'Party2Flags',
+        partyName: 'Tom Atin',
+        details: [
+          {
+            name: 'Flag 3',
+            flagComment: 'First flag',
+            dateTimeCreated: new Date(),
+            path: [{ id: null, value: 'Reasonable adjustment' }],
+            hearingRelevant: false,
+            flagCode: 'FL1',
+            status: 'Active'
+          }
+        ] as FlagDetail[]
+      },
+      pathToFlagsFormGroup: ''
     },
     {
-      flagsCaseFieldId: 'caseFlags',
-      partyName: null,
-      details: [
-        {
-          name: 'Flag 4',
-          flagComment: 'Case-level flag',
-          dateTimeCreated: new Date(),
-          path: [{ id: null, value: 'Reasonable adjustment' }],
-          hearingRelevant: false,
-          flagCode: 'FL1',
-          status: 'Active'
-        }
-      ] as FlagDetail[]
-    },
-    {
-      flagsCaseFieldId: 'caseFlags',
-      partyName: null,
-      details: [
-        {
-          name: 'Flag 4',
-          flagComment: 'Case-level flag',
-          dateTimeCreated: new Date(),
-          path: [{ id: null, value: 'Reasonable adjustment' }],
-          hearingRelevant: false,
-          flagCode: 'FL1',
-          status: 'Active'
-        }
-      ] as FlagDetail[]
+      flags: {
+        flagsCaseFieldId: 'caseFlags',
+        partyName: null,
+        details: [
+          {
+            name: 'Flag 4',
+            flagComment: 'Case-level flag',
+            dateTimeCreated: new Date(),
+            path: [{ id: null, value: 'Reasonable adjustment' }],
+            hearingRelevant: false,
+            flagCode: 'FL1',
+            status: 'Active'
+          }
+        ] as FlagDetail[]
+      },
+      pathToFlagsFormGroup: 'caseFlags'
     }
-  ] as Flags[];
+  ] as FlagsWithFormGroupPath[];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -137,8 +131,8 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[2]);
     const radioButtonLabelElements = nativeElement.querySelectorAll('.govuk-radios__label');
     expect(radioButtonLabelElements.length).toBe(3);
-    expect(radioButtonLabelElements[0].textContent).toEqual(flagsData[0].partyName);
-    expect(radioButtonLabelElements[1].textContent).toEqual(flagsData[1].partyName);
+    expect(radioButtonLabelElements[0].textContent).toEqual(flagsData[0].flags.partyName);
+    expect(radioButtonLabelElements[1].textContent).toEqual(flagsData[1].flags.partyName);
     expect(radioButtonLabelElements[2].textContent).toEqual(component.caseLevelFlagLabel);
   });
 

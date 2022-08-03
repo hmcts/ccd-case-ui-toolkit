@@ -1,3 +1,5 @@
+import { CaseField } from '../../../../domain';
+
 export interface FlagPath {
   id?: string;
   value: string;
@@ -19,6 +21,8 @@ export interface FlagDetail {
 }
 
 export interface Flags {
+  // The flagsCaseFieldId property could be removed in future, given that the full path is now available through the
+  // FlagsWithFormGroupPath interface
   flagsCaseFieldId?: string;
   partyName?: string;
   roleOnCase?: string;
@@ -28,5 +32,25 @@ export interface Flags {
 export interface FlagDetailDisplay {
   partyName: string;
   flagDetail: FlagDetail;
-  flagsCaseFieldId?: string;
+  // The flagsCaseFieldId property could be removed in future, given that the full path is now available through the
+  // FlagDetailDisplayWithFormGroupPath interface
+  flagsCaseFieldId: string;
+}
+
+/**
+ * Wrapper interface for Flags that adds the path to the corresponding FormGroup, and the CaseField
+ */
+export interface FlagsWithFormGroupPath {
+  flags: Flags;
+  pathToFlagsFormGroup: string;
+  caseField: CaseField
+}
+
+/**
+ * Wrapper interface for FlagDetailDisplay that adds the path to the corresponding FormGroup, and the CaseField
+ */
+export interface FlagDetailDisplayWithFormGroupPath {
+  flagDetailDisplay: FlagDetailDisplay;
+  pathToFlagsFormGroup: string;
+  caseField: CaseField
 }

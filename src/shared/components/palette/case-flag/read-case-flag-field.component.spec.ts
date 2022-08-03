@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField } from '../../../domain/definition';
 import { PaletteContext } from '../base-field';
-import { FlagDetail, FlagDetailDisplay } from './domain';
+import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
@@ -220,8 +220,18 @@ describe('ReadCaseFlagFieldComponent', () => {
         caseField: flagLauncherCaseField,
         component: new WriteCaseFlagFieldComponent(null)
       }
+    },
+    get: (controlName: string) => {
+      return formGroup.controls[controlName];
     }
   } as unknown as FormGroup;
+  const selectedFlagsLocation = {
+    flags: null,
+    pathToFlagsFormGroup: caseFlag2FieldId,
+    caseField: formGroup.controls[caseFlag2FieldId]['caseField']
+  } as FlagsWithFormGroupPath
+  const createMode = '#ARGUMENT(CREATE)';
+  const updateMode = '#ARGUMENT(UPDATE)';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -250,30 +260,30 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.flagsData).toBeTruthy();
     expect(component.flagsData.length).toBe(3);
-    expect(component.flagsData[0].flagsCaseFieldId).toEqual(caseFlag1FieldId);
-    expect(component.flagsData[0].partyName).toEqual(caseFlag1PartyName);
-    expect(component.flagsData[0].roleOnCase).toEqual(caseFlag1RoleOnCase);
-    expect(component.flagsData[0].details.length).toBe(2);
-    expect(component.flagsData[0].details[0].name).toEqual(caseFlag1DetailsValue1.name);
-    expect(component.flagsData[0].details[0].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
-    expect(component.flagsData[0].details[0].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
-    expect(component.flagsData[0].details[0].hearingRelevant).toBe(false);
-    expect(component.flagsData[1].flagsCaseFieldId).toEqual(caseFlag2FieldId);
-    expect(component.flagsData[1].partyName).toEqual(caseFlag2PartyName);
-    expect(component.flagsData[1].roleOnCase).toEqual(caseFlag2RoleOnCase);
-    expect(component.flagsData[1].details.length).toBe(2);
-    expect(component.flagsData[1].details[1].name).toEqual(caseFlag2DetailsValue2.name);
-    expect(component.flagsData[1].details[1].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
-    expect(component.flagsData[1].details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
-    expect(component.flagsData[1].details[1].hearingRelevant).toBe(true);
-    expect(component.flagsData[2].flagsCaseFieldId).toEqual(caseFlagsFieldId);
-    expect(component.flagsData[2].partyName).toBeUndefined();
-    expect(component.flagsData[2].roleOnCase).toBeUndefined();
-    expect(component.flagsData[2].details.length).toBe(1);
-    expect(component.flagsData[2].details[0].name).toEqual(caseLevelFlagDetailsValue.name);
-    expect(component.flagsData[2].details[0].dateTimeModified).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeModified));
-    expect(component.flagsData[2].details[0].dateTimeCreated).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeCreated));
-    expect(component.flagsData[2].details[0].hearingRelevant).toBe(true);
+    expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
+    expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
+    expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag1RoleOnCase);
+    expect(component.flagsData[0].flags.details.length).toBe(2);
+    expect(component.flagsData[0].flags.details[0].name).toEqual(caseFlag1DetailsValue1.name);
+    expect(component.flagsData[0].flags.details[0].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
+    expect(component.flagsData[0].flags.details[0].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
+    expect(component.flagsData[0].flags.details[0].hearingRelevant).toBe(false);
+    expect(component.flagsData[1].flags.flagsCaseFieldId).toEqual(caseFlag2FieldId);
+    expect(component.flagsData[1].flags.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagsData[1].flags.roleOnCase).toEqual(caseFlag2RoleOnCase);
+    expect(component.flagsData[1].flags.details.length).toBe(2);
+    expect(component.flagsData[1].flags.details[1].name).toEqual(caseFlag2DetailsValue2.name);
+    expect(component.flagsData[1].flags.details[1].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
+    expect(component.flagsData[1].flags.details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
+    expect(component.flagsData[1].flags.details[1].hearingRelevant).toBe(true);
+    expect(component.flagsData[2].flags.flagsCaseFieldId).toEqual(caseFlagsFieldId);
+    expect(component.flagsData[2].flags.partyName).toBeUndefined();
+    expect(component.flagsData[2].flags.roleOnCase).toBeUndefined();
+    expect(component.flagsData[2].flags.details.length).toBe(1);
+    expect(component.flagsData[2].flags.details[0].name).toEqual(caseLevelFlagDetailsValue.name);
+    expect(component.flagsData[2].flags.details[0].dateTimeModified).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeModified));
+    expect(component.flagsData[2].flags.details[0].dateTimeCreated).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeCreated));
+    expect(component.flagsData[2].flags.details[0].hearingRelevant).toBe(true);
     expect(component.caseEditPageComponent.getCaseTitle).toHaveBeenCalled();
   });
 
@@ -290,16 +300,20 @@ describe('ReadCaseFlagFieldComponent', () => {
     TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value.details = null;
     TestBed.get(ActivatedRoute).snapshot.data.case.tabs[2].fields[2].value.details = undefined;
     component.ngOnInit();
-    expect(component.flagsData[0].partyName).toEqual(caseFlag1PartyName);
-    expect(component.flagsData[0].roleOnCase).toEqual(caseFlag1RoleOnCase);
-    expect(component.flagsData[0].details).toBeNull();
-    expect(component.flagsData[1].partyName).toEqual(caseFlag2PartyName);
-    expect(component.flagsData[1].roleOnCase).toEqual(caseFlag2RoleOnCase);
-    expect(component.flagsData[1].details).toBeNull();
+    expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
+    expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag1RoleOnCase);
+    expect(component.flagsData[0].flags.details).toBeNull();
+    expect(component.flagsData[1].flags.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagsData[1].flags.roleOnCase).toEqual(caseFlag2RoleOnCase);
+    expect(component.flagsData[1].flags.details).toBeNull();
   });
 
   it('should select the correct (i.e. new) flag to display on the summary page, as part of the Create Case Flag journey', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+      display_context_parameter: createMode
+    };
+    formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
@@ -311,13 +325,18 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Case Flags journey', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+      display_context_parameter: updateMode
+    };
     component.formGroup = formGroup;
     // Simulate presence of selected flag
     formGroup.controls[flagLauncherCaseField.id]['component'].selectedFlag = {
-      partyName: caseFlag2PartyName,
-      flagDetail: caseFlag2DetailsValue1,
-      flagsCaseFieldId: caseFlag2FieldId
-    } as FlagDetailDisplay;
+      flagDetailDisplay: {
+        partyName: caseFlag2PartyName,
+        flagDetail: caseFlag2DetailsValue1,
+        flagsCaseFieldId: caseFlag2FieldId
+      } as FlagDetailDisplay
+    };
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
