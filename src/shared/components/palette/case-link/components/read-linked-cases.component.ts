@@ -36,7 +36,7 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-      this.linkedCasesService.caseFieldValue = this.caseField.value;
+      this.linkedCasesService.caseFieldValue = this.caseField.value || [];
       let labelField = document.getElementsByClassName('govuk-heading-l');
       if (labelField && labelField.length) {
         labelField[0].replaceWith('')

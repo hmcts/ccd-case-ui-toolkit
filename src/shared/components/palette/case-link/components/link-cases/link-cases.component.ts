@@ -42,11 +42,12 @@ export class LinkCasesComponent implements OnInit {
     public readonly linkedCasesService: LinkedCasesService  ) {}
 
   public ngOnInit(): void {
+    if (!this.linkedCasesService.caseFieldValue) {
+      this.linkedCasesService.caseFieldValue = [];
+    }
     this.initForm();
     if (this.linkedCasesService.editMode) {
       this.selectedCases = this.linkedCasesService.linkedCases;
-    } else {
-      this.linkedCasesService.linkedCases = [];
     }
   }
 
