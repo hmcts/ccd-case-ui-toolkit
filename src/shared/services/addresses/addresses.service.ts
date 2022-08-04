@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { AddressModel } from '../../domain/addresses';
