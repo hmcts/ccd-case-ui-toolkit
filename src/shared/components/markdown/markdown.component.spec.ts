@@ -73,19 +73,6 @@ describe('MarkdownComponent - Table', () => {
   it('Should render an html table', () => {
     expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
   });
-});
-
-describe('MarkdownComponent - Anchor', () => {
-
-  const $MARKDOWN = By.css('markdown');
-
-  let CONTENT = `[Add case note](/case/IA/Asylum/1632395877596617/trigger/addCaseNote)`;
-  let EXPECTED_CONTENT = `<p><a href="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">Add case note</a></p>`;
-
-  let fixture: ComponentFixture<CCDMarkDownComponent>;
-  let component: CCDMarkDownComponent;
-  let de: DebugElement;
-  let convertHrefToRouterService: ConvertHrefToRouterService;
 
   it('should not call updateHrefLink', () => {
     component.markdownUseHrefAsRouterLink = true;
