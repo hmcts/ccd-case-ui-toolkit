@@ -7,8 +7,6 @@ import { CaseNotifier, CasesService } from '../../case-editor';
 import { DraftService, NavigationOrigin } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
-import { CaseFlagStatus } from '../../palette/case-flag/enums';
-import { Flags } from '../../palette/case-flag/domain';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {

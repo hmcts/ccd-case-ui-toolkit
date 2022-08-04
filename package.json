@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.18.10-flags-field-in-complex-and-collection-types",
+  "version": "4.18.10-flags-field-in-complex-and-collection-types_1",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

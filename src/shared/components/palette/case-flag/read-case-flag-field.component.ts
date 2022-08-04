@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
