@@ -23,7 +23,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   @Input()
   caseField: CaseField;
-  
+
   @Input()
   public caseEditPageComponent: CaseEditPageComponent;
 

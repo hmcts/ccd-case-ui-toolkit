@@ -50,8 +50,9 @@ export class PageValidationService {
   }
 
   private checkCaseLinksCollectionField(caseField: CaseField, theControl: AbstractControl): boolean {
-    if (caseField && caseField.id === "caseLinks")
+    if (caseField && caseField.id === 'caseLinks') {
       return theControl && theControl.value;
+    }
     return true;
   }
 }
