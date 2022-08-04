@@ -18,7 +18,7 @@ import {
   OrderService
 } from '../../services';
 import { ActivityModule } from '../activity';
-import { ConvertHrefToRouterService, CaseEditorModule, CaseNotifier } from '../case-editor';
+import { CaseEditorModule, CaseNotifier, ConvertHrefToRouterService } from '../case-editor';
 import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { ErrorMessageComponent } from '../error-message/error-message.component';

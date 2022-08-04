@@ -510,17 +510,26 @@ export class FormValueService {
   }
 
   /**
-   * Populate the flag details data for each Flags field, from the data held in its corresponding CaseField.
+   * Populate the flag data for each Flags field, from the data held in its corresponding CaseField.
    *
    * @param data The object tree of form values on which to perform the data population
    * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
    */
   public populateFlagDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
     if (data && caseFields && caseFields.length > 0) {
-      caseFields.filter(caseField => FieldsUtils.isFlagsCaseField(caseField))
-        .forEach(flagsField => {
-          if (data[flagsField.id]) {
-            data[flagsField.id].details = flagsField.value.details;
+      // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
+      // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
+      // (or sub-fields of Complex fields in a collection)
+      caseFields.filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField))
+        .forEach(caseField => {
+          if (data[caseField.id]) {
+            // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+            // Flags field within a Complex field or a collection of Complex fields) is copied across
+            Object.keys(data[caseField.id]).forEach(key => {
+              if (caseField.value.hasOwnProperty(key)) {
+                data[caseField.id][key] = caseField.value[key];
+              }
+            });
           }
         });
     }

@@ -1,9 +1,9 @@
 import { ErrorMessage } from '../../../../domain';
-import { FlagDetailDisplay, FlagPath, Flags } from './case-flag.model';
+import { FlagDetailDisplayWithFormGroupPath, FlagPath, FlagsWithFormGroupPath } from './case-flag.model';
 
 export interface CaseFlagState {
   currentCaseFlagFieldState: number;
-  selectedFlagsLocation?: Flags;
+  selectedFlagsLocation?: FlagsWithFormGroupPath;
   isParentFlagType?: boolean;
   errorMessages: ErrorMessage[];
   flagName?: string;
@@ -11,5 +11,5 @@ export interface CaseFlagState {
   hearingRelevantFlag?: boolean;
   flagCode?: string;
   listOfValues?: { key: string, value: string }[];
-  selectedFlag?: FlagDetailDisplay;
+  selectedFlag?: FlagDetailDisplayWithFormGroupPath;
 }

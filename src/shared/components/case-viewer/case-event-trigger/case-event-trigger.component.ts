@@ -105,7 +105,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
           this.alertService.warning(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name} `
             + `but the callback service cannot be completed`);
         } else {
-          this.alertService.success(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name}`);
+          this.alertService.success(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name}`, true);
         }
     });
   }

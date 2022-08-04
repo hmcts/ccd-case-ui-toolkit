@@ -7,34 +7,38 @@ describe('CaseFlagTableComponent', () => {
   let component: CaseFlagTableComponent;
   let fixture: ComponentFixture<CaseFlagTableComponent>;
   const flagData = {
-    partyName: 'John Smith',
-    roleOnCase: '',
-    details: [{
-      name: 'Wheel chair access',
-      subTypeValue: '',
-      subTypeKey: '',
-      otherDescription: '',
-      flagComment: '',
-      dateTimeModified: new Date('2021-09-09 00:00:00'),
-      dateTimeCreated: new Date('2021-09-09 00:00:00'),
-      path: [],
-      hearingRelevant: false,
-      flagCode: '',
-      status: CaseFlagStatus.ACTIVE
+    flags: {
+      partyName: 'John Smith',
+      roleOnCase: '',
+      details: [{
+        name: 'Wheel chair access',
+        subTypeValue: '',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.ACTIVE
+      },
+      {
+        name: 'Sign language',
+        subTypeValue: 'British Sign Language (BSL)',
+        subTypeKey: '',
+        otherDescription: '',
+        flagComment: '',
+        dateTimeModified: new Date('2021-09-09 00:00:00'),
+        dateTimeCreated: new Date('2021-09-09 00:00:00'),
+        path: [],
+        hearingRelevant: false,
+        flagCode: '',
+        status: CaseFlagStatus.ACTIVE
+      }]
     },
-    {
-      name: 'Sign language',
-      subTypeValue: 'British Sign Language (BSL)',
-      subTypeKey: '',
-      otherDescription: '',
-      flagComment: '',
-      dateTimeModified: new Date('2021-09-09 00:00:00'),
-      dateTimeCreated: new Date('2021-09-09 00:00:00'),
-      path: [],
-      hearingRelevant: false,
-      flagCode: '',
-      status: CaseFlagStatus.ACTIVE
-    }]
+    pathToFlagsFormGroup: '',
+    caseField: null
   };
 
   beforeEach(async(() => {

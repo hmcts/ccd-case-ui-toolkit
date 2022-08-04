@@ -1,12 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { CaseField, CaseTab } from '../../../domain';
+import { CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
-import { FlagDetail, FlagDetailDisplay, Flags } from './domain';
+import { FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagSummaryListDisplayMode } from './enums';
 
 @Component({
@@ -18,15 +17,17 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
 
   @Input() public caseEditPageComponent: CaseEditPageComponent;
 
-  public flagsData: Flags[];
-  public partyLevelCaseFlagData: Flags[];
-  public caseLevelCaseFlagData: Flags;
+  public flagsData: FlagsWithFormGroupPath[];
+  public partyLevelCaseFlagData: FlagsWithFormGroupPath[];
+  public caseLevelCaseFlagData: FlagsWithFormGroupPath;
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
   public caseLevelFirstColumnHeader: string;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
+  private readonly createMode = '#ARGUMENT(CREATE)';
+  private readonly updateMode = '#ARGUMENT(UPDATE)';
 
   constructor(
     private readonly route: ActivatedRoute
@@ -45,44 +46,41 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         .filter(tab => tab.fields && tab.fields
           .some(caseField => caseField.field_type.type === 'FlagLauncher'))
         [0].fields.reduce((flags, caseField) => {
-          if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
-            flags.push(this.mapCaseFieldToFlagsObject(caseField));
-          }
-          return flags;
-        }, []) as Flags[];
+          return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
+        }, []);
       }
 
       // Separate the party-level and case-level flags
       this.partyLevelCaseFlagData = this.flagsData.filter(
-        flagsInstance => flagsInstance.flagsCaseFieldId !== this.caseLevelCaseFlagsFieldId);
+        instance => instance.pathToFlagsFormGroup !== this.caseLevelCaseFlagsFieldId);
       // There will be only one case-level flags instance containing all case-level flag details
       this.caseLevelCaseFlagData = this.flagsData.find(
-        flagsInstance => flagsInstance.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId);
+        instance => instance.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
     } else if (this.context === PaletteContext.CHECK_YOUR_ANSWER) {
       // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the FormGroup.
-      // Determine which Flags instance to display on the summary page by looking for a child FormGroup whose controls
-      // include one called "flagType", which will have been added during the Create Case Flag journey (hence denoting
-      // a new flag) - there should be only one such child FormGroup because only one flag can be created at a time
-
-      // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to the currently selected flag
-      // (selectedFlag) if one exists. If it does, this means the component is in "update" mode; if not, then the
-      // component is in "create" mode
+      // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to:
+      // i) the parent FormGroup for the Flags instance where changes have been made;
+      // ii) the currently selected flag (selectedFlag) if one exists
       const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
-        controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.controls[controlName]['caseField']));
-      if (flagLauncherControlName && this.formGroup.controls[flagLauncherControlName]['component'] &&
-          this.formGroup.controls[flagLauncherControlName]['component'].selectedFlag) {
-        this.flagForSummaryDisplay = this.formGroup.controls[flagLauncherControlName]['component'].selectedFlag;
-        // Set the display mode for the "Review flag details" summary page
-        this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
-      } else {
-        const keyOfFormGroupWithNewFlag = Object.keys(this.formGroup.controls).filter(
-          controlName => Object.keys(
-            (this.formGroup.controls[controlName] as FormGroup).controls).indexOf('flagType') > -1);
-        if (keyOfFormGroupWithNewFlag.length > 0) {
-          this.flagForSummaryDisplay = this.mapNewFlagFormGroupToFlagDetailDisplayObject(
-            this.formGroup.controls[keyOfFormGroupWithNewFlag[0]] as FormGroup);
-          // Set the display mode for the "Review flag details" summary page
-          this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+        controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.get(controlName)['caseField']));
+      if (flagLauncherControlName && this.formGroup.get(flagLauncherControlName)['component']) {
+        const flagLauncherComponent = this.formGroup.get(flagLauncherControlName)['component'];
+        // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
+        // which the new flag has been added
+        if (flagLauncherComponent.caseField.display_context_parameter === this.createMode &&
+          flagLauncherComponent.selectedFlagsLocation) {
+            this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
+              flagLauncherComponent.selectedFlagsLocation);
+            // Set the display mode for the "Review flag details" summary page
+            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+        // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
+        // Manage Case Flags journey
+        } else if (flagLauncherComponent.caseField.display_context_parameter === this.updateMode &&
+          flagLauncherComponent.selectedFlag) {
+            this.flagForSummaryDisplay =
+              this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
+            // Set the display mode for the "Review flag details" summary page
+            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
         }
       }
     }
@@ -92,37 +90,20 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       : this.caseNameMissing;
   }
 
-  private mapCaseFieldToFlagsObject(caseField: CaseField): Flags {
-    return {
-      flagsCaseFieldId: caseField.id,
-      partyName: caseField.value['partyName'],
-      roleOnCase: caseField.value['roleOnCase'],
-      details: caseField.value['details'] && caseField.value['details'].length > 0
-        ? ((caseField.value['details']) as any[]).map(detail => {
-          return Object.assign({}, ...Object.keys(detail.value).map(k => {
-            switch (k) {
-              // These two fields are date-time fields
-              case 'dateTimeModified':
-              case 'dateTimeCreated':
-                return {[k]: detail.value[k] ? new Date(detail.value[k]) : null};
-              // This field is a "yes/no" field
-              case 'hearingRelevant':
-                return detail.value[k].toUpperCase() === 'YES' ? {[k]: true} : {[k]: false};
-              default:
-                return {[k]: detail.value[k]};
-            }
-          }))
-        }) as FlagDetail[]
-        : null
+  private extractNewFlagToFlagDetailDisplayObject(selectedFlagsLocation: FlagsWithFormGroupPath): FlagDetailDisplay {
+    // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
+    // CaseField value containing the new flag
+    let flagsCaseFieldValue = selectedFlagsLocation.caseField.value;
+    const path = selectedFlagsLocation.pathToFlagsFormGroup;
+    // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
+    if (path.indexOf('.') > -1) {
+      path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
     }
-  }
-
-  private mapNewFlagFormGroupToFlagDetailDisplayObject(formGroup: FormGroup): FlagDetailDisplay {
-    if (formGroup && formGroup['caseField']) {
+    if (flagsCaseFieldValue) {
       return {
-        partyName: formGroup['caseField'].value.partyName,
+        partyName: flagsCaseFieldValue.partyName,
         // Look in the details array for the object that does *not* have an id - this indicates it is the new flag
-        flagDetail: formGroup['caseField'].value.details.find(element => !element.hasOwnProperty('id')).value
+        flagDetail: flagsCaseFieldValue.details.find(element => !element.hasOwnProperty('id')).value
       } as FlagDetailDisplay;
     }
 

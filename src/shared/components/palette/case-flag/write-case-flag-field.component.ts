@@ -5,7 +5,7 @@ import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { CaseFlagState, FlagDetail, FlagDetailDisplay, FlagPath, Flags } from './domain';
+import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 
 @Component({
@@ -22,8 +22,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];
   public createFlagCaption: CaseFlagText;
-  public flagsData: Flags[];
-  public selectedFlag: FlagDetailDisplay;
+  public flagsData: FlagsWithFormGroupPath[];
+  public selectedFlag: FlagDetailDisplayWithFormGroupPath;
+  public selectedFlagsLocation: FlagsWithFormGroupPath;
   public caseFlagParentFormGroup = new FormGroup({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
@@ -75,36 +76,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     if (this.route.snapshot.data.eventTrigger && this.route.snapshot.data.eventTrigger.case_fields) {
       this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
         .reduce((flags, caseField) => {
-          if (FieldsUtils.isFlagsCaseField(caseField) && caseField.value) {
-            flags.push(
-              {
-                flagsCaseFieldId: caseField.id,
-                partyName: caseField.value.partyName,
-                roleOnCase: caseField.value.roleOnCase,
-                details: caseField.value.details && caseField.value.details.length > 0
-                  ? ((caseField.value.details) as any[]).map(detail => {
-                    return Object.assign({}, ...Object.keys(detail.value).map(k => {
-                      // The id property set below will be null for new case flag
-                      // and will be unique id returned from CCD for update existing flag
-                      switch (k) {
-                        // These two fields are date-time fields
-                        case 'dateTimeModified':
-                        case 'dateTimeCreated':
-                          return {[k]: detail.value[k] ? new Date(detail.value[k]) : null, 'id': detail.id};
-                        // This field is a "yes/no" field
-                        case 'hearingRelevant':
-                          return detail.value[k].toUpperCase() === 'YES' ? {[k]: true, 'id': detail.id} : {[k]: false, 'id': detail.id};
-                        default:
-                          return {[k]: detail.value[k], 'id': detail.id};
-                      }
-                    }));
-                  }) as FlagDetail[]
-                  : null
-              }
-            );
-          }
-          return flags;
-        }, []) as Flags[];
+          return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
+        }, []);
 
       this.isDisplayContextParameterUpdate = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
         .some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)
@@ -121,11 +94,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
     // If the current state is CaseFlagFieldState.FLAG_LOCATION and a flag location (a Flags instance) has been selected,
-    // set the parent Case Flag FormGroup for this component's children by using the provided flagsCaseFieldId
+    // set the parent Case Flag FormGroup for this component's children by using the provided pathToFlagsFormGroup, and
+    // set the selected flag location on this component
     if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_LOCATION
       && caseFlagState.selectedFlagsLocation
-      && caseFlagState.selectedFlagsLocation.flagsCaseFieldId) {
-      this.setCaseFlagParentFormGroup(caseFlagState.selectedFlagsLocation.flagsCaseFieldId);
+      && caseFlagState.selectedFlagsLocation.pathToFlagsFormGroup) {
+      this.setCaseFlagParentFormGroup(caseFlagState.selectedFlagsLocation.pathToFlagsFormGroup);
+      this.selectedFlagsLocation = caseFlagState.selectedFlagsLocation;
     }
     // If the current state is CaseFlagFieldState.FLAG_TYPE, cache the flag name, path, hearing relevant indicator, code,
     // and "list of values" (currently applicable to language flag types)
@@ -137,11 +112,11 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       this.listOfValues = caseFlagState.listOfValues;
     }
     // If the current state is CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS and a flag has been selected, set the parent
-    // Case Flag FormGroup for this component's children by using the provided flagsCaseFieldId
+    // Case Flag FormGroup for this component's children by using the provided pathToFlagsFormGroup
     if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS
       && caseFlagState.selectedFlag
-      && caseFlagState.selectedFlag.flagsCaseFieldId) {
-      this.setCaseFlagParentFormGroup(caseFlagState.selectedFlag.flagsCaseFieldId);
+      && caseFlagState.selectedFlag.pathToFlagsFormGroup) {
+      this.setCaseFlagParentFormGroup(caseFlagState.selectedFlag.pathToFlagsFormGroup);
     }
 
     // Clear validation errors from the parent CaseEditPageComponent (given the "Next" button in a child component has
@@ -190,67 +165,98 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public addFlagToCollection(): void {
-    const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
+    // Ensure no more than one new flag is being added at a time, by iterating through each Flags case field and removing
+    // any previous entry from the details array where that entry has no id (hence it is new - and there should be only
+    // one such entry). (This scenario occurs if the user repeats the Case Flag creation journey by using the "Change"
+    // link and selects either the same flag location as before or a different one.)
+    this.flagsData.forEach(instance => {
+      // Use the pathToFlagsFormGroup property for each Flags case field to drill down to the correct part of the
+      // CaseField value to remove the new value from
+      let value = instance.caseField.value;
+      const pathToValue = instance.pathToFlagsFormGroup;
+      // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
+      if (pathToValue.indexOf('.') > -1) {
+        pathToValue.slice(pathToValue.indexOf('.') + 1).split('.').forEach(part => value = value[part]);
+      }
+      if (value && value.details && value.details.length > 0) {
+        const indexOfNewFlagDetail = value.details.findIndex(element => !element.hasOwnProperty('id'));
+        if (indexOfNewFlagDetail > -1) {
+          value.details.splice(indexOfNewFlagDetail, 1);
+        }
+      }
+    });
+    let flagsCaseFieldValue = this.selectedFlagsLocation.caseField.value;
+    // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
+    // CaseField value to apply changes to
+    const path = this.selectedFlagsLocation.pathToFlagsFormGroup;
+    // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
+    if (path.indexOf('.') > -1) {
+      path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
+    }
     if (flagsCaseFieldValue) {
-      // Ensure no more than one new flag is being added at a time, by iterating through each Flags case field and removing
-      // any previous entry from the details array where that entry has no id (hence it is new - and there should be only
-      // one such entry). (This scenario occurs if the user repeats the Case Flag creation journey by using the "Change"
-      // link and selects either the same flag location as before or a different one.)
-      Object.keys(this.caseFlagParentFormGroup.parent.controls).filter(
-        controlName => FieldsUtils.isFlagsCaseField(this.caseFlagParentFormGroup.parent.controls[controlName]['caseField']))
-        .forEach(flagsFieldControlName => {
-          const caseFieldValue = this.caseFlagParentFormGroup.parent.controls[flagsFieldControlName]['caseField'].value;
-          if (caseFieldValue && caseFieldValue.details && caseFieldValue.details.length > 0) {
-            const indexOfNewFlagDetail = caseFieldValue.details.findIndex(element => !element.hasOwnProperty('id'));
-            if (indexOfNewFlagDetail > -1) {
-              caseFieldValue.details.splice(indexOfNewFlagDetail, 1);
-            }
-          }
-        });
-
       // Create a details array if one does not exist
       if (!flagsCaseFieldValue.hasOwnProperty('details')) {
         flagsCaseFieldValue.details = [];
       }
-      // Populate new FlagDetail instance and add to the Flags data within the CaseField instance
+      // Populate new FlagDetail instance and add to the Flags data within the CaseField instance of the selected flag
+      // location
       flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
     }
   }
 
   public updateFlagInCollection(): void {
-    const flagsCaseFieldValue = this.caseFlagParentFormGroup['caseField'].value;
-    if (flagsCaseFieldValue) {
-      // Ensure no more than one flag is being updated at a time, by iterating through each Flags case field and resetting
-      // the comments, status, and date/time modified (if present) for each entry in the details array, with original values
-      // from the corresponding caseField object. (This scenario occurs if the user repeats the Manage Case Flag journey by
-      // using the "Change" link and selects a different flag to update.)
-      Object.keys(this.caseFlagParentFormGroup.parent.controls).filter(
-        controlName => FieldsUtils.isFlagsCaseField(this.caseFlagParentFormGroup.parent.controls[controlName]['caseField']))
-        .forEach(flagsFieldControlName => {
-          const caseField = this.caseFlagParentFormGroup.parent.controls[flagsFieldControlName]['caseField'];
-          if (caseField && caseField.value && caseField.value.details && caseField.value.details.length > 0) {
-            caseField.value.details.forEach(flagDetail => {
-              const originalFlagDetail = caseField.formatted_value.details.find(detail => detail.id === flagDetail.id);
-              if (originalFlagDetail) {
-                flagDetail.value.flagComment = originalFlagDetail.value.flagComment
-                  ? originalFlagDetail.value.flagComment
-                  : null;
-                flagDetail.value.status = originalFlagDetail.value.status;
-                flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified
-                  ? originalFlagDetail.value.dateTimeModified
-                  : null;
-              }
-            });
+    // Ensure no more than one flag is being updated at a time, by iterating through each Flags case field and resetting
+    // the comments, status, and date/time modified (if present) for each entry in the details array, with original values
+    // from the corresponding formatted_value property. (This scenario occurs if the user repeats the Manage Case Flag
+    // journey by using the "Change" link and selects a different flag to update.)
+    this.flagsData.forEach(instance => {
+      // Use the pathToFlagsFormGroup property for each Flags case field to drill down to the correct part of the
+      // CaseField value for which to restore the original values
+      let value = instance.caseField.value;
+      let formattedValue = instance.caseField.formatted_value;
+      const pathToValue = instance.pathToFlagsFormGroup;
+      // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
+      if (pathToValue.indexOf('.') > -1) {
+        pathToValue.slice(pathToValue.indexOf('.') + 1).split('.').forEach(part => {
+          value = value[part];
+          if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
+            formattedValue = formattedValue[part];
           }
         });
+      }
+      if (value && value.details && value.details.length > 0 && formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
+        value.details.forEach(flagDetail => {
+          const originalFlagDetail = formattedValue.details.find(detail => detail.id === flagDetail.id);
+          if (originalFlagDetail) {
+            flagDetail.value.flagComment = originalFlagDetail.value.flagComment
+              ? originalFlagDetail.value.flagComment
+              : null;
+            flagDetail.value.status = originalFlagDetail.value.status;
+            flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified
+              ? originalFlagDetail.value.dateTimeModified
+              : null;
+          }
+        });
+      }
+    });
+    let flagsCaseFieldValue = this.selectedFlag.caseField.value;
+    // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
+    // CaseField value to apply changes to
+    const path = this.selectedFlag.pathToFlagsFormGroup;
+    // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
+    if (path.indexOf('.') > -1) {
+      path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
     }
-    const flagDetailToUpdate = flagsCaseFieldValue.details.find(detail => detail.id === this.selectedFlag.flagDetail.id);
-    if (flagDetailToUpdate) {
-      flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value.flagComments
-        ? this.caseFlagParentFormGroup.value.flagComments
-        : null;
-      flagDetailToUpdate.value.status = this.selectedFlag.flagDetail.status;
-      flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
+    if (flagsCaseFieldValue) {
+      const flagDetailToUpdate = flagsCaseFieldValue.details.find(
+        detail => detail.id === this.selectedFlag.flagDetailDisplay.flagDetail.id);
+      if (flagDetailToUpdate) {
+        flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value.flagComments
+          ? this.caseFlagParentFormGroup.value.flagComments
+          : null;
+        flagDetailToUpdate.value.status = this.selectedFlag.flagDetailDisplay.flagDetail.status;
+        flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
+      }
     }
   }
 
@@ -280,10 +286,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
    * expected) because this component is not expected to have a value, given it is used for the empty `FlagLauncher` base
    * field type.
    *
-   * @param flagsCaseFieldId ID of the CaseField instance that contains `Flags` data for a given party or case
+   * @param pathToFlagsFormGroup The dot-delimited string that is the path to the `FormGroup` for a `Flags` instance
    */
-  public setCaseFlagParentFormGroup(flagsCaseFieldId: string): void {
-    this.caseFlagParentFormGroup = this.formGroup.parent.controls[flagsCaseFieldId];
+  public setCaseFlagParentFormGroup(pathToFlagsFormGroup: string): void {
+    this.caseFlagParentFormGroup = this.formGroup.parent.get(pathToFlagsFormGroup) as FormGroup;
   }
 
   public populateNewFlagDetailInstance(): FlagDetail {

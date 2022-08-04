@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.18.10-flags-field-in-complex-and-collection-types
+**EUI-6438** Ensure Flags fields can be stored and amended as sub-fields of a Complex field, including a collection of that type, and as instances within a collection of type "Flags"
+
 ### Version 4.18.6-case-flags-table-styling-changes
 **EUI-6198** Increase table caption font size and width of first column
 
@@ -116,11 +119,39 @@ caching previous data when the user elects to change the case flag being created
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
 
+### Version 4.17.12-EUI-5743-Mandatory-field-validation-in-collection
+**EUI-5743** Bug fix for the Mandatory field validation in collection
+
+### Version 4.17.6-EUI-5736-unassigned-cases-pagination
+**EUI-5736** unassigned cases pagination
+
+### Version 4.12.1-EUI-5682-complex-table-collection-1
+**EUI-5682** Bug fix for the complex collection table view
+
+### Version 4.12.1-EUI-5225-organisation-search
+**EUI-5225** Bug fix the organisation search functionality
+
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
+### Version 4.12.6-date-year-validation
+**EUI-4606** Enhanced the date year input validation to restrict between 1900-2100
+
+### Version 4.17.6-EUI-5736-unassigned-cases-pagination
+**EUI-5736** unassigned cases pagination
+
+
+### Version 4.14.1-EUI-5305-change-link-accessibility-update
+**EUI-5305** Accessibility improvement for 'Change' links
+
 ### Version 4.12.0
 Add refunds functionality
 
-### Version 4.13.8-event-start-task-not-required"
-**EUI-5569** Task not required for event functionality
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
+### Version 4.9.16-wcag20-exui-4"
+**FPLA: Accessibility Issues Found in ExUI** FPLA: Accessibility Issues Found in ExUI
 
 ### Version 4.13.8-event-start-task-not-required"
 **EUI-5569** Task not required for event functionality

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
-import { CaseFlagState, FlagDetailDisplay } from '../../domain';
+import { CaseFlagState, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
 
 @Component({
@@ -11,7 +11,7 @@ import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlag
 export class UpdateFlagComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
-  @Input() public selectedFlag: FlagDetailDisplay;
+  @Input() public selectedFlag: FlagDetailDisplayWithFormGroupPath;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -29,13 +29,14 @@ export class UpdateFlagComponent implements OnInit {
     this.updateFlagCharLimitInfo = UpdateFlagStep.CHARACTER_LIMIT_INFO;
     this.formGroup.addControl(this.updateFlagControlName, new FormControl(''));
 
-    if (this.selectedFlag && this.selectedFlag.flagDetail) {
+    if (this.selectedFlag && this.selectedFlag.flagDetailDisplay && this.selectedFlag.flagDetailDisplay.flagDetail) {
+      const flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
       // Populate flag comments text area with existing comments
-      this.formGroup.get(this.updateFlagControlName).setValue(this.selectedFlag.flagDetail.flagComment);
-      if (this.selectedFlag.flagDetail.name) {
+      this.formGroup.get(this.updateFlagControlName).setValue(flagDetail.flagComment);
+      if (flagDetail.name) {
         this.updateFlagTitle =
-          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${this.selectedFlag.flagDetail.name}${this.selectedFlag.flagDetail.subTypeValue
-            ? `, ${this.selectedFlag.flagDetail.subTypeValue}"`
+          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${flagDetail.subTypeValue
+            ? `, ${flagDetail.subTypeValue}"`
             : '"'}`;
       }
     }
@@ -46,7 +47,9 @@ export class UpdateFlagComponent implements OnInit {
     this.validateTextEntry();
     // If validation has passed, update the flag details with the comments entered
     if (this.errorMessages.length === 0) {
-      this.selectedFlag.flagDetail = {...this.selectedFlag.flagDetail, flagComment: this.formGroup.get(this.updateFlagControlName).value};
+      this.selectedFlag.flagDetailDisplay.flagDetail = {
+        ...this.selectedFlag.flagDetailDisplay.flagDetail, flagComment: this.formGroup.get(this.updateFlagControlName).value
+      };
     }
     // Return case flag field state, error messages, and selected flag detail to the parent. The selected flag must be
     // re-emitted because the parent component repopulates this on handling this EventEmitter
@@ -58,9 +61,11 @@ export class UpdateFlagComponent implements OnInit {
   }
 
   public onChangeStatus(): void {
-    this.selectedFlag.flagDetail = {
-      ...this.selectedFlag.flagDetail,
-      status: this.selectedFlag.flagDetail.status === CaseFlagStatus.ACTIVE ? CaseFlagStatus.INACTIVE : CaseFlagStatus.ACTIVE
+    this.selectedFlag.flagDetailDisplay.flagDetail = {
+      ...this.selectedFlag.flagDetailDisplay.flagDetail,
+      status: this.selectedFlag.flagDetailDisplay.flagDetail.status === CaseFlagStatus.ACTIVE
+        ? CaseFlagStatus.INACTIVE
+        : CaseFlagStatus.ACTIVE
     };
   }
 

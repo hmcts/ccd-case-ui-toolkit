@@ -1,5 +1,5 @@
 import { CaseTab, CaseView } from '../../domain/case-view';
-import { CaseField } from '../../domain/definition';
+import { CaseField, FieldType } from '../../domain/definition';
 import { aCaseField } from '../../fixture/shared.test.fixture';
 import { FieldsUtils } from './fields.utils';
 
@@ -588,6 +588,36 @@ describe('FieldsUtils', () => {
     it('should return true if case field is of type FlagLauncher', () => {
       const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
       expect(FieldsUtils.isFlagLauncherCaseField(caseField)).toBe(true);
+    });
+  });
+
+  describe('isFlagsFieldType() function test', () => {
+    it('should return false if field type is null', () => {
+      expect(FieldsUtils.isFlagsFieldType(null)).toBe(false);
+    });
+
+    it('should return false if field type ID is not "Flags"', () => {
+      const fieldType = {
+        id: 'flags',
+        type: 'Complex'
+      } as FieldType;
+      expect(FieldsUtils.isFlagsFieldType(fieldType)).toBe(false);
+    });
+
+    it('should return false if field type ID is "Flags" but field type is not Complex', () => {
+      const fieldType = {
+        id: 'Flags',
+        type: 'Flags'
+      } as FieldType;
+      expect(FieldsUtils.isFlagsFieldType(fieldType)).toBe(false);
+    });
+
+    it('should return true if field type ID is "Flags" and field type is Complex', () => {
+      const fieldType = {
+        id: 'Flags',
+        type: 'Complex'
+      } as FieldType;
+      expect(FieldsUtils.isFlagsFieldType(fieldType)).toBe(true);
     });
   });
 });

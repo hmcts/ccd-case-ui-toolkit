@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { Component, DebugElement, ViewChild } from '@angular/core';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 import { NgxMdModule, NgxMdComponent } from 'ngx-md';
 import { By } from '@angular/platform-browser';
 import { PipesModule } from '../../pipes';
 import { ConvertHrefToRouterService } from '../case-editor/services';
 
-describe('MarkdownComponent', () => {
+describe('MarkdownComponent - Table', () => {
 
   const $MARKDOWN = By.css('markdown');
 

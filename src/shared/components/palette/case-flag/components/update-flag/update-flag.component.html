@@ -29,14 +29,14 @@
     <div class="govuk-grid-column-one-half">
       <p>Flag status:
         <span>
-          <strong class="govuk-tag" [ngClass]="{'govuk-tag--grey': selectedFlag.flagDetail.status === 'Inactive'}">
-            {{selectedFlag.flagDetail.status}}
+          <strong class="govuk-tag" [ngClass]="{'govuk-tag--grey': selectedFlag.flagDetailDisplay.flagDetail.status === 'Inactive'}">
+            {{selectedFlag.flagDetailDisplay.flagDetail.status}}
           </strong>
         </span>
       </p>
     </div>
     <div class="govuk-grid-column-one-half">
-      <button class="button button-secondary" type="button" (click)="onChangeStatus()" *ngIf="selectedFlag.flagDetail.status === 'Active'">
+      <button class="button button-secondary" type="button" (click)="onChangeStatus()" *ngIf="selectedFlag.flagDetailDisplay.flagDetail.status === 'Active'">
         Make inactive
       </button>
     </div>
