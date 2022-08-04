@@ -9,6 +9,8 @@ export class FixedListPipe implements PipeTransform {
   private static readonly EMPTY = '';
 
   public transform(value: string, items: FixedListItem[]): any {
+    console.log(value);
+
     if (!!items) {
       const item = items.find(i => i.code === value);
       return item ? item.label : FixedListPipe.EMPTY;

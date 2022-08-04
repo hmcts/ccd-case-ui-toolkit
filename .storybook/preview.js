@@ -1,4 +1,3 @@
-import '../storybook/storybook.styles.scss';
 import { setCompodocJson } from "@storybook/addon-docs/angular";
 import docJson from "../documentation.json";
 

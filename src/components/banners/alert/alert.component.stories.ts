@@ -1,22 +1,27 @@
-// also exported from '@storybook/angular' if you can deal with breaking changes in 6.1
+import { componentWrapperDecorator, moduleMetadata } from '@storybook/angular';
 import { Meta, Story } from '@storybook/angular/types-6-0';
+import { StorybookComponent } from 'storybook/storybook.component';
 import { AlertComponent, AlertMessageType } from './alert.component';
 
-// More on default export: https://storybook.js.org/docs/angular/writing-stories/introduction#default-export
 export default {
   title: 'components/banners/alert/AlertComponent',
   component: AlertComponent,
-
+  decorators: [
+    moduleMetadata({
+        declarations: [
+            StorybookComponent
+        ]
+    }),
+    componentWrapperDecorator(story => `<storybook-wrapper>${story}</storybook-wrapper>`),
+]
 } as Meta;
 
-// More on component templates: https://storybook.js.org/docs/angular/writing-stories/introduction#using-args
-const Template: Story<AlertComponent> = (args: AlertComponent) => ({
+const template: Story<AlertComponent> = (args: AlertComponent) => ({
   props: args,
 });
 
-export const Default = Template.bind({});
-// More on args: https://storybook.js.org/docs/angular/writing-stories/args
-Default.args = {
+export const standard = template.bind({});
+standard.args = {
     type: AlertMessageType.INFORMATION,
     showIcon: true
 };
