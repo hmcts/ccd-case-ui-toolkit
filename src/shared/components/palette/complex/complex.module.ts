@@ -5,7 +5,6 @@ import { MarkdownModule } from '../../markdown';
 import { BaseFieldModule } from '../base-field';
 import { CaseLinkModule } from '../case-link/case-link.module';
 import { IsCompoundPipe, PaletteUtilsModule } from '../utils';
-import { CcdCYAPageLabelFilterPipe } from './ccd-cyapage-label-filter.pipe';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 import { CcdTabFieldsPipe } from './ccd-tab-fields.pipe';
 import { CcdPageFieldsPipe } from './cdd-page-fields.pipe';
@@ -15,6 +14,7 @@ import { ReadComplexFieldRawComponent } from './read-complex-field-raw.component
 import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
 import { ReadComplexFieldComponent } from './read-complex-field.component';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
+import { CcdCYAPageLabelFilterPipe } from './ccd-cyapage-label-filter.pipe';
 import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
 
 @NgModule({

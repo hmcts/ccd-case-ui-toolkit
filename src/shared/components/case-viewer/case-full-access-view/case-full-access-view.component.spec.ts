@@ -1764,6 +1764,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   }));
 
   it('should display overview tab by default', () => {
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    componentFixture.detectChanges();
     const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;

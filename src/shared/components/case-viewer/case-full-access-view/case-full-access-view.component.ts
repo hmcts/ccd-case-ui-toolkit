@@ -28,7 +28,6 @@ import { ConvertHrefToRouterService } from '../../case-editor/services';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
-import { CaseFlagStatus } from '../../palette/case-flag/enums';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -133,7 +132,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     if (this.errorSubscription) {
       this.errorSubscription.unsubscribe();
     }
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   public postViewActivity(): Observable<Activity[]> {
