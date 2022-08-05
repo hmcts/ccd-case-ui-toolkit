@@ -137,7 +137,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public isAtFinalPage(): boolean {
-    return this.linkedCasesPage && this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
+    return this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
   }
 
   public getNextPage(linkedCasesState: LinkedCasesState): number {
