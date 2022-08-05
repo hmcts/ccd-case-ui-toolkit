@@ -192,49 +192,12 @@ export class LinkCasesComponent implements OnInit {
       );
   }
 
-  public groupByCaseType = (arrObj, key) => {
-    if (!arrObj) {
-      return
-    }
-    return arrObj.reduce((rv, x) => {
-      (rv[x.value[key]] = rv[x.value[key]] || []).push(x.value['CaseReference']);
-      return rv;
-    }, {});
-  };
-
-  public mapResponse(esSearchCasesResponse, selectedCase): CaseLink {
-    const mappedValue = {...selectedCase,
-      caseName: esSearchCasesResponse.case_fields && esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
-      caseReference : esSearchCasesResponse.case_id,
-      caseType : esSearchCasesResponse.case_fields['[CASE_TYPE]'],
-      caseService : esSearchCasesResponse.case_fields['[JURISDICTION]'],
-      caseState : esSearchCasesResponse.case_fields['[STATE]'],
-      reasons: this.mapReason(selectedCase)
-    } as CaseLink
-    return mappedValue;
-  }
-
   public mapReason(selectedCase): LinkReason[] {
     const reasons = selectedCase.value && selectedCase.value.ReasonForLink &&
     selectedCase.value.ReasonForLink.map(reason => reason.value && {
       reasonCode: reason.value.Reason
     } as LinkReason)
     return reasons;
-  }
-
-  public searchCasesByCaseIds(searchCasesResponse: any[]): Observable<any> {
-    return forkJoin(searchCasesResponse);
-  }
-
-  public constructElasticSearchQuery(caseIds: any[], size: number): ESQueryType {
-    return {
-      query: {
-        terms: {
-          reference: caseIds,
-        },
-      },
-      size,
-    };
   }
 
   // Return linked cases state and error messages to the parent
