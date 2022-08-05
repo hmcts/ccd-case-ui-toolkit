@@ -4,7 +4,6 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
-import { LinkedCasesEventTriggers } from './enums';
 import { LinkedCasesService } from './services';
 
 @Component({
@@ -39,6 +38,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   public ngOnInit(): void {
     this.formArray = this.registerControl(new FormArray([]), true) as FormArray;
     this.formArray['caseField'] = this.caseField;
+
     if (!this.hasCaseLinkCollection()) {
       this.caseLinkGroup = this.registerControl(new FormGroup({
         'CaseReference': new FormControl(this.caseField.value.CaseReference, Validators.required),

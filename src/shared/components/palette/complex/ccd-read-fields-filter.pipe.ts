@@ -80,6 +80,11 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   }
 
   private static keepField(field: CaseField, value?: object, ignoreLabels = false): boolean {
+    // We should always render the caselinks tables from and to regardless whether it has valid value or not
+    if (field.id === 'caseLinks') {
+      return true;
+    }
+
     // We shouldn't ditch labels.
     if (!ignoreLabels && field.field_type.type === 'Label' && (field.label || '').length > 0) {
       return true;
