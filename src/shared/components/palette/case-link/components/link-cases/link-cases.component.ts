@@ -42,9 +42,6 @@ export class LinkCasesComponent implements OnInit {
     public readonly linkedCasesService: LinkedCasesService  ) {}
 
   public ngOnInit(): void {
-    if (!this.linkedCasesService.caseFieldValue) {
-      this.linkedCasesService.caseFieldValue = [];
-    }
     this.initForm();
     if (this.linkedCasesService.editMode) {
       this.selectedCases = this.linkedCasesService.linkedCases;
@@ -173,8 +170,11 @@ export class LinkCasesComponent implements OnInit {
             CreatedDateTime: moment(new Date()).format(this.ISO_FORMAT),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
           }
+          if (!this.linkedCasesService.caseFieldValue) {
+            this.linkedCasesService.caseFieldValue = [];
+          }
           this.linkedCasesService.caseFieldValue.push({id: caseView.case_id.toString(), value: ccdApiCaseLinkData});
-            this.selectedCases.push(caseLink);
+          this.selectedCases.push(caseLink);
           this.initForm();
           this.emitLinkedCasesState(false);
         },

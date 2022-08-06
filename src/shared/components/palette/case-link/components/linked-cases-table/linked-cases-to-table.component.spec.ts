@@ -146,7 +146,7 @@ describe('LinkCasesToTableComponent', () => {
   it('should render linkedcases top table', () => {
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.linkedCasesFromResponse.length).toEqual(2);
+    expect(component.linkedCasesFromResponse.length).toEqual(1);
   });
 
   it('should render the failure panel when api returns non 200', () => {
@@ -162,7 +162,6 @@ describe('LinkCasesToTableComponent', () => {
   it('should render the none as table row when no linked cases to be displayed', () => {
     fixture = TestBed.createComponent(LinkedCasesToTableComponent);
     component = fixture.componentInstance;
-    component.linkedCasesFromResponse = [];
     component.ngOnInit();
     fixture.detectChanges();
     expect(
