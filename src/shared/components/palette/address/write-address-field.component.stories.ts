@@ -12,12 +12,12 @@ import { WriteAddressFieldComponent } from './write-address-field.component';
 const addressesService = new AddressesService(null, null);
 const CASE_FIELD_LABEL = 'Solicitor Address';
 
-function caseField(address: AddressModel) {
+function caseField(addressModel: AddressModel) {
     const field = new CaseField();
     field.id = 'caseFieldId';
     field.label = CASE_FIELD_LABEL;
     field.field_type = createFieldType('FieldTypeId', 'Complex');
-    field.value = address;
+    field.value = addressModel;
     return field;
 }
 
