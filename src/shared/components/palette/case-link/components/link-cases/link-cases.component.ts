@@ -192,14 +192,6 @@ export class LinkCasesComponent implements OnInit {
       );
   }
 
-  public mapReason(selectedCase): LinkReason[] {
-    const reasons = selectedCase.value && selectedCase.value.ReasonForLink &&
-    selectedCase.value.ReasonForLink.map(reason => reason.value && {
-      reasonCode: reason.value.Reason
-    } as LinkReason)
-    return reasons;
-  }
-
   // Return linked cases state and error messages to the parent
   public emitLinkedCasesState(isNavigateToNextPage: boolean): void {
     this.linkedCasesStateEmitter.emit({
