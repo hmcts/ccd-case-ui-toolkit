@@ -165,6 +165,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           } else if (fieldElement.hasError('maxlength')) {
             this.validationErrors.push({ id, message: `${label} exceeds the maximum length` });
             fieldElement.markAsDirty();
+          } else if (this.caseLinkError && FieldsUtils.isLinkedCasesCaseField(casefield)) {
+            this.validationErrors.push({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
               this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
