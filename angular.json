@@ -17,7 +17,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": ["@hmcts/ccd-case-ui-toolkit"],
-            "outputPath": "/Users/jaydavis/Developer/rpx-xui-webapp/node_modules/@hmcts/ccd-case-ui-toolkit/dist",
+            "outputPath": "dist/ccd-case-ui-toolkit",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
