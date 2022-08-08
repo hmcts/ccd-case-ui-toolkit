@@ -189,7 +189,6 @@ describe('WriteOrganisationFieldComponent', () => {
 
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
     component.selectedOrg$.subscribe((selectedOrg) => {
-      console.log(selectedOrg);
       expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
     });
   }));

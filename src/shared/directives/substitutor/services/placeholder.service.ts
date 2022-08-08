@@ -9,8 +9,6 @@ export class PlaceholderService {
 
     public resolvePlaceholders(pageFormFields: object, stringToResolve: string): string {
         const ps = new PlaceholderService.PlaceholderSubstitutor({pageFormFields, stringToResolve});
-
-        console.log(ps.resolvePlaceholders());
         return ps.resolvePlaceholders();
     }
 

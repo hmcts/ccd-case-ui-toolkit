@@ -155,7 +155,6 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.selectedOrg$ = this.organisations$.pipe(
       map(organisations =>
         organisations.filter(findOrg => {
-          console.log(findOrg.organisationIdentifier, this.caseField.value.OrganisationID);
           return findOrg.organisationIdentifier === this.caseField.value.OrganisationID;
         })
           .map(organisation => this.organisationConverter.toSimpleOrganisationModel(organisation))[0]),

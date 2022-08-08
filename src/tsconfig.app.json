@@ -13,7 +13,7 @@
     "pretty": true,
     "stripInternal": true,
     "skipLibCheck": true,
-    "outDir": "dist",
+    "outDir": "/Users/jaydavis/Developer/rpx-xui-webapp/node_modules/@hmcts/ccd-case-ui-toolkit/dist",
     "lib": [
       "es2018",
       "dom"
