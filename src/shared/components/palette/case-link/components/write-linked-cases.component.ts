@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../../../app.config';
 import { CaseField, ErrorMessage } from '../../../../domain';
 import { CaseView } from '../../../../domain/case-view';
@@ -50,9 +50,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public ngOnInit(): void {
-    this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
-
-    (this.caseEdit.form.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(null)});
     this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
     this.linkedCasesService.editMode = false;
     const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';

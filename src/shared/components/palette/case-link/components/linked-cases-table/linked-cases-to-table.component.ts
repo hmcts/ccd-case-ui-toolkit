@@ -32,7 +32,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public tableHeading = 'Linked cases';
   public tableSubHeading = 'This case is linked to';
   public subHeading = 'This case is linked to';
-
+  public caseConsolidatedReasonCode = 'CLRC015';
+  public caseProgressedReasonCode = 'CLRC016';
+  public caseNameMissingText = 'Case name missing';
   public caseDetails: CaseView;
   public isLoaded: boolean;
   public linkedCasesFromResponse: LinkedCasesResponse[] = [];
@@ -65,7 +67,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public groupLinkedCasesByCaseType = (arrObj, key) => {
     return arrObj.reduce((rv, x) =>   {
-      (rv[x[key]] = rv[x[key]] || []).push(x['CaseReference']);
+      (rv[x.value[key]] = rv[x.value[key]] || []).push(x.value['CaseReference']);
       return rv;
     }, {});
   };
@@ -74,24 +76,23 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     return caseRef.slice(this.caseId.length - 4);
   }
 
-  public sortLinkedCasesByReasonCode() {
+  public sortLinkedCasesByReasonCode(searchCasesResponse) {
     const topLevelresultArray = [];
     let secondLevelresultArray = [];
-    const data = this.caseField && this.caseField.value || [];
-    data.forEach((item: any) => {
-      const reasons = item && item.value && item.value.ReasonForLink || [];
-      const consolidatedStateReason = reasons.map(x => x).find(reason => reason.value.Reason === 'CLRC015');
-      const progressedStateReason = reasons.map(x => x).find(reason => reason.value.Reason === 'CLRC016');
+    searchCasesResponse.forEach((item: any) => {
+      const reasons = item && item.reasons || [];
+      const consolidatedStateReason = reasons.map(x => x).find(reason => reason === this.caseConsolidatedReasonCode);
+      const progressedStateReason = reasons.map(x => x).find(reason => reason === this.caseProgressedReasonCode);
       let arrayItem;
       if (progressedStateReason) {
-        arrayItem = {...item.value};
+        arrayItem = {...item};
         topLevelresultArray.push(arrayItem);
       } else if (consolidatedStateReason) {
-        arrayItem = {...item.value};
-        secondLevelresultArray = [{...item.value}, ...secondLevelresultArray ]
+        arrayItem = {...item};
+        secondLevelresultArray = [{...item}, ...secondLevelresultArray ]
       } else {
-        arrayItem = {...item.value};
-        secondLevelresultArray.push({...item.value})
+        arrayItem = {...item};
+        secondLevelresultArray.push({...item});
       }
     })
     return topLevelresultArray.concat(secondLevelresultArray)
@@ -99,8 +100,8 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public getAllLinkedCaseInformation() {
     const searchCasesResponse = [];
-    const sortedCasesList = this.sortLinkedCasesByReasonCode();
-    const linkedCaseIds = this.groupLinkedCasesByCaseType(sortedCasesList, 'CaseType');
+    const caseFieldValue = this.caseField ? this.caseField.value : [];
+    const linkedCaseIds = this.groupLinkedCasesByCaseType(caseFieldValue, 'CaseType');
     Object.keys(linkedCaseIds).forEach(key => {
       const esQuery = this.constructElasticSearchQuery(linkedCaseIds[key], 100)
       const query = this.searchService.searchCasesByIds(key, esQuery, SearchService.VIEW_WORKBASKET);
@@ -108,10 +109,12 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     });
     if (searchCasesResponse.length) {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
+          const casesResponse = [];
           searchCases.forEach(response => {
-          response.results.forEach((result: any) =>
-            this.linkedCasesFromResponse.push(this.mapResponse(result)));
+            response.results.forEach((result: any) =>
+            casesResponse.push(this.mapResponse(result)));
         });
+        this.linkedCasesFromResponse = this.sortLinkedCasesByReasonCode(casesResponse);
         this.isLoaded = true;
         const caseLinks = this.linkedCasesFromResponse.map(item => {
           return {
@@ -139,14 +142,14 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   }
 
   public hasLeadCaseOrConsolidated(reasonCode: string) {
-    return reasonCode === 'CLRC016' || reasonCode === 'CLRC015';
+    return reasonCode === this.caseProgressedReasonCode || reasonCode === this.caseConsolidatedReasonCode;
   }
 
   public mapResponse(esSearchCasesResponse) {
     const caseInfo = this.caseField.value.find(item => item.value && item.value.CaseReference === esSearchCasesResponse.case_id);
     return caseInfo && {
       caseReference: esSearchCasesResponse.case_id,
-      caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  'Case name missing',
+      caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  this.caseNameMissingText,
       caseType: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('CASE_TYPE', esSearchCasesResponse.case_fields['[CASE_TYPE]']),
       service: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION',  esSearchCasesResponse.case_fields['[JURISDICTION]']),
       state: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE', esSearchCasesResponse.case_fields['[STATE]']),

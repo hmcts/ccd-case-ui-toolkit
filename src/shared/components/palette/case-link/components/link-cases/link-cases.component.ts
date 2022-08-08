@@ -42,9 +42,6 @@ export class LinkCasesComponent implements OnInit {
     public readonly linkedCasesService: LinkedCasesService  ) {}
 
   public ngOnInit(): void {
-    if (!this.linkedCasesService.caseFieldValue) {
-      this.linkedCasesService.caseFieldValue = [];
-    }
     this.initForm();
     if (this.linkedCasesService.editMode) {
       this.selectedCases = this.linkedCasesService.linkedCases;
@@ -173,8 +170,11 @@ export class LinkCasesComponent implements OnInit {
             CreatedDateTime: moment(new Date()).format(this.ISO_FORMAT),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
           }
+          if (!this.linkedCasesService.caseFieldValue) {
+            this.linkedCasesService.caseFieldValue = [];
+          }
           this.linkedCasesService.caseFieldValue.push({id: caseView.case_id.toString(), value: ccdApiCaseLinkData});
-            this.selectedCases.push(caseLink);
+          this.selectedCases.push(caseLink);
           this.initForm();
           this.emitLinkedCasesState(false);
         },
@@ -190,14 +190,6 @@ export class LinkCasesComponent implements OnInit {
           return throwError(error);
         }
       );
-  }
-
-  public mapReason(selectedCase): LinkReason[] {
-    const reasons = selectedCase.value && selectedCase.value.ReasonForLink &&
-    selectedCase.value.ReasonForLink.map(reason => reason.value && {
-      reasonCode: reason.value.Reason
-    } as LinkReason)
-    return reasons;
   }
 
   // Return linked cases state and error messages to the parent
