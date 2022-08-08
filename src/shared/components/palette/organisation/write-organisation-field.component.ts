@@ -50,7 +50,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.searchOrgValue$.subscribe(value => this.onSearchOrg(value));
 
     this.organisationFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
-    if (this.parent.controls && this.parent.controls.hasOwnProperty(WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION)
+    if (this.parent && this.parent.controls && this.parent.controls.hasOwnProperty(WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION)
       && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value
       && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value.toUpperCase()
       === WriteOrganisationFieldComponent.YES) {
@@ -151,7 +151,6 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   }
 
   private preSelectDefaultOrg(): void {
-    console.log('preSelectDefaultOrg');
     this.instantiateOrganisationFormGroup(this.caseField.value.OrganisationID, this.caseField.value.OrganisationName);
     this.selectedOrg$ = this.organisations$.pipe(
       map(organisations =>
