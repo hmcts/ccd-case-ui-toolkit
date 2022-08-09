@@ -1,6 +1,6 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { createCaseField, createFieldType } from 'src/shared/fixture/shared.test.fixture';
 import { StorybookComponent } from 'storybook/storybook.component';
+import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { PaletteModule } from '../palette.module';
 import { MoneyGbpModule } from './money-gbp.module';
 import { ReadMoneyGbpFieldComponent } from './read-money-gbp-field.component';

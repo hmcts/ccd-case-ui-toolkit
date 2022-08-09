@@ -1,10 +1,10 @@
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { ConditionalShowModule, FocusElementModule } from 'src/shared/directives';
-import { AddressModel, CaseField } from 'src/shared/domain';
-import { createFieldType } from 'src/shared/fixture';
-import { AddressesService, FormValidatorsService } from 'src/shared/services';
 import { StorybookComponent } from 'storybook/storybook.component';
+import { ConditionalShowModule, FocusElementModule } from '../../../../shared/directives';
+import { AddressModel, CaseField } from '../../../../shared/domain';
+import { createFieldType } from '../../../../shared/fixture';
+import { AddressesService, FormValidatorsService } from '../../../../shared/services';
 import { WriteComplexFieldComponent } from '../complex';
 import { FieldLabelPipe, IsCompoundPipe } from '../utils';
 import { WriteAddressFieldComponent } from './write-address-field.component';

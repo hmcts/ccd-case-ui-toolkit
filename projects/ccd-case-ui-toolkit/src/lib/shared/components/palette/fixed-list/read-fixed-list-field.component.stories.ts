@@ -1,7 +1,7 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { CaseField } from 'src/shared/domain/definition/case-field.model';
-import { FieldType } from 'src/shared/domain/definition/field-type.model';
 import { StorybookComponent } from 'storybook/storybook.component';
+import { CaseField } from '../../../../shared/domain/definition/case-field.model';
+import { FieldType } from '../../../../shared/domain/definition/field-type.model';
 import { FixedListPipe } from './fixed-list.pipe';
 import { ReadFixedListFieldComponent } from './read-fixed-list-field.component';
 

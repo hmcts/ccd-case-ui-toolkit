@@ -1,9 +1,9 @@
-import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { createCaseField, createFieldType } from 'src/shared/fixture/shared.test.fixture';
-import { StorybookComponent } from 'storybook/storybook.component';
-import { WriteTextAreaFieldComponent } from './write-text-area-field.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
+import { StorybookComponent } from 'storybook/storybook.component';
+import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { PaletteUtilsModule } from '../utils/utils.module';
+import { WriteTextAreaFieldComponent } from './write-text-area-field.component';
 
 const caseFieldType = createFieldType('textArea', 'TextArea');
 const caseField = createCaseField('textArea', 'Write message', 'Write your message', caseFieldType, 'MANDATORY');

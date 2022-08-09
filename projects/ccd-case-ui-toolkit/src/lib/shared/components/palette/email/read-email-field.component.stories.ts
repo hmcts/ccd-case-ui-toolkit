@@ -1,7 +1,7 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { createCaseField, createFieldType } from 'src/shared/fixture/shared.test.fixture';
 import { StorybookComponent } from 'storybook/storybook.component';
 import { PaletteModule } from '..';
+import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { ReadEmailFieldComponent } from './read-email-field.component';
 
 const caseFieldType = createFieldType('email', 'Email');

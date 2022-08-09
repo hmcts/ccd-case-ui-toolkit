@@ -1,13 +1,13 @@
-import { NGX_MAT_DATE_FORMATS, NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
+import { NgxMatDateAdapter, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { FormControl } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { createCaseField, createFieldType } from 'src/shared/fixture/shared.test.fixture';
-import { CaseFieldService } from 'src/shared/services';
-import { FormatTranslatorService } from 'src/shared/services/case-fields/format-translator.service';
 import { StorybookComponent } from 'storybook/storybook.component';
 import { PaletteModule } from '..';
+import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
+import { CaseFieldService } from '../../../../shared/services';
+import { FormatTranslatorService } from '../../../../shared/services/case-fields/format-translator.service';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { DatetimePickerComponent } from './datetime-picker.component';
 

@@ -1,9 +1,9 @@
-import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { createCaseField, createFieldType } from 'src/shared/fixture/shared.test.fixture';
-import { StorybookComponent } from 'storybook/storybook.component';
-import { ReadPhoneUKFieldComponent } from './read-phone-uk-field.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
+import { StorybookComponent } from 'storybook/storybook.component';
+import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { PaletteUtilsModule } from '../utils/utils.module';
+import { ReadPhoneUKFieldComponent } from './read-phone-uk-field.component';
 
 const caseFieldType = createFieldType('phoneUK', 'PhoneUK');
 const caseField = createCaseField('phoneUK', 'Phone number', 'Add phone number eg. 08000000000', caseFieldType, 'MANDATORY');

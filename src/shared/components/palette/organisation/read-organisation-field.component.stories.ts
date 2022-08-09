@@ -1,17 +1,16 @@
-import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { createCaseField, createFieldType } from 'src/shared/fixture/shared.test.fixture';
-import { StorybookComponent } from 'storybook/storybook.component';
-import { ReadOrganisationFieldComponent } from './read-organisation-field.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { OrganisationService } from 'src/shared/services/organisation/organisation.service';
-import { OrganisationConverter } from 'src/shared/domain/organisation/organisation-converter';
-import { WindowService } from 'src/shared/services/window/window.service';
-import { PaletteUtilsModule } from '../utils';
+import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
 import { MockProvider } from 'ng-mocks';
-import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
-import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
+import { StorybookComponent } from 'storybook/storybook.component';
+import { OrganisationConverter } from '../../../../shared/domain/organisation/organisation-converter';
+import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
+import { OrganisationService } from '../../../../shared/services/organisation/organisation.service';
 import { MarkdownModule } from '../../markdown/markdown.module';
 import { PaletteService } from '../palette.service';
+import { PaletteUtilsModule } from '../utils';
+import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
+import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
+import { ReadOrganisationFieldComponent } from './read-organisation-field.component';
 
 const caseFieldType = createFieldType('organisationName', 'Text');
 const caseField = createCaseField('organisationName', 'New Organisation', 'Add new organisation name', caseFieldType, 'MANDATORY');
@@ -19,7 +18,7 @@ const caseField = createCaseField('organisationName', 'New Organisation', 'Add n
 caseField.value = {
     OrganisationID: 'Org1234',
     OrganisationName: 'Waffles Ltd'
-}
+};
 caseField.display_context_parameter = 'test';
 
 export default {
