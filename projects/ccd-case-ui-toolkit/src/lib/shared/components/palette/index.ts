@@ -6,6 +6,7 @@ export * from './base-field';
 export * from './collection';
 export * from './complex';
 export * from './date';
+export * from './datetime-picker';
 export * from './document';
 export * from './email';
 export * from './fixed-list';

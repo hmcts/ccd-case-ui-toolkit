@@ -15,4 +15,5 @@ export * from './search-filters';
 export * from './pagination';
 export * from './workbasket-filters';
 export * from './case-list-filters';
+export * from './loading-spinner';
 export * from './search-result';

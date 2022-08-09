@@ -6,3 +6,4 @@ export * from './is-compound.pipe';
 export * from './is-mandatory.pipe';
 export * from './is-read-only.pipe';
 export * from './utils.module';
+export * from './is-read-only-and-not-collection.pipe';

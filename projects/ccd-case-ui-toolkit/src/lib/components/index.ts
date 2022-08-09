@@ -3,3 +3,4 @@ export * from './header';
 export * from './body';
 export * from './form';
 export * from './banners';
+export * from './tabs';

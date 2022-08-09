@@ -79,7 +79,8 @@ import { CaseResolver, EventTriggerResolver } from './services';
   ],
   exports: [
     CaseViewerComponent,
-    CaseViewComponent
+    CaseViewComponent,
+    
   ],
   providers: [
     CaseNotifier,

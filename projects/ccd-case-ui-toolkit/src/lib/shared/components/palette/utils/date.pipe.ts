@@ -22,7 +22,7 @@ export class DatePipe implements PipeTransform {
   constructor(private readonly formatTrans: FormatTranslatorService) {
   }
 
-  public transform(value: string, zone: string, format: string): string {
+  public transform(value: string, zone?: string, format?: string): string {
     let resultDate = null;
     const ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
     if (value) {
