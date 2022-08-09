@@ -26,6 +26,12 @@
       ],
       "gov-ui/*": [
         "dist/gov-ui/*"
+      ],
+      "ccd-case-ui-toolkit": [
+        "dist/ccd-case-ui-toolkit"
+      ],
+      "ccd-case-ui-toolkit/*": [
+        "dist/ccd-case-ui-toolkit/*"
       ]
     }
   },

@@ -16,7 +16,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["@hmcts/ccd-case-ui-toolkit"],
+            "allowedCommonJsDependencies": [
+              "@hmcts/ccd-case-ui-toolkit"
+            ],
             "outputPath": "dist/ccd-case-ui-toolkit",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -54,14 +56,18 @@
           "options": {
             "browserTarget": "angular-cli:build",
             "port": 6006,
-            "styles": ["./storybook/storybook.styles.scss"]
+            "styles": [
+              "./storybook/storybook.styles.scss"
+            ]
           }
         },
         "build-storybook": {
           "builder": "@storybook/angular:build-storybook",
           "options": {
             "browserTarget": "angular-cli:build",
-            "styles": ["./storybook/storybook.styles.scss"]
+            "styles": [
+              "./storybook/storybook.styles.scss"
+            ]
           }
         },
         "serve": {
@@ -89,7 +95,7 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": [],
-            "scripts": [],  
+            "scripts": [],
             "assets": [
               "src/favicon.ico"
             ],
@@ -133,6 +139,51 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ccd-case-ui-toolkit-lib": {
+      "root": "projects/ccd-case-ui-toolkit",
+      "sourceRoot": "projects/ccd-case-ui-toolkit/src",
+      "projectType": "library",
+      "prefix": "xuilib",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.lib.json",
+            "project": "projects/ccd-case-ui-toolkit/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ccd-case-ui-toolkit/src/test.ts",
+            "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.spec.json",
+            "karmaConfig": "projects/ccd-case-ui-toolkit/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ccd-case-ui-toolkit/tsconfig.lib.json",
+              "projects/ccd-case-ui-toolkit/tsconfig.spec.json"
+            ],
             "exclude": [
               "**/node_modules/**"
             ]

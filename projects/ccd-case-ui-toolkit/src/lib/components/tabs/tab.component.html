@@ -1,0 +1,11 @@
+<div
+  class="tabs-panel"
+  [id]="id"
+  role="tabpanel"
+  [ngClass]="{
+          'js-hidden': !selected
+        }"
+  [attr.aria-hidden]="!selected"
+>
+  <ng-content></ng-content>
+</div>
