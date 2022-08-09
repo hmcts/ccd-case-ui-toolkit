@@ -1,0 +1,18 @@
+<ccpay-payment-lib
+    [API_ROOT]="getBaseURL()"
+    [CCD_CASE_NUMBER]="caseReference"
+    [BULKSCAN_API_ROOT]="getPayBulkScanBaseURL()"
+    [SELECTED_OPTION]="'CCDorException'"
+    [ISBSENABLE]="'true'"
+    [LOGGEDINUSEREMAIL]="getUserEmail()"
+    [LOGGEDINUSERROLES]="getUserRoles()"
+    [REFUNDS_API_ROOT]="getRefundsUrl()"
+    [VIEW]="'case-transactions'"
+    [REFUNDS_API_ROOT]="getRefundsUrl()"
+    [TAKEPAYMENT]="false"
+    [SERVICEREQUEST]="false"
+    [PAYMENT_GROUP_REF]="null"
+    [EXC_REFERENCE]="caseReference"
+    [DCN_NUMBER]="null"
+    [LOGGEDINUSERROLES]="getUserRoles()"
+></ccpay-payment-lib>

@@ -16,28 +16,126 @@ import { PhaseComponent } from './components/header/phase/phase.component';
 import { TabComponent } from './components/tabs/tab.component';
 import { TabsComponent } from './components/tabs/tabs.component';
 import { TabsModule } from './components/tabs/tabs.module';
+import {
+  BaseFieldModule,
+  CaseReferencePipe,
+  CaseViewComponent,
+  CaseViewerComponent,
+  ConditionalShowModule,
+  FocusElementDirective,
+  FocusElementModule,
+  LabelFieldComponent,
+  LabelSubstitutorDirective,
+  LabelSubstitutorModule,
+  LoadingModule,
+  MarkdownComponent,
+  MarkdownModule,
+  PaginationComponent,
+  PaginationModule,
+  PaletteUtilsModule,
+  PipesModule,
+  ReadCollectionFieldComponent,
+  ReadDateFieldComponent,
+  ReadEmailFieldComponent,
+  ReadNumberFieldComponent,
+  ReadPhoneUKFieldComponent,
+  ReadTextAreaFieldComponent,
+  ReadTextFieldComponent,
+  SearchFiltersModule,
+  UnsupportedFieldComponent,
+  WriteCollectionFieldComponent,
+  WriteDateFieldComponent,
+  WriteEmailFieldComponent,
+  WriteNumberFieldComponent,
+  WritePhoneUKFieldComponent,
+  WriteTextAreaFieldComponent,
+  WriteTextFieldComponent
+} from './shared';
+import { CaseCreateComponent } from './shared/components/case-editor/case-create/case-create.component';
+import { CaseEditComponent } from './shared/components/case-editor/case-edit/case-edit.component';
+import { CaseEditorModule } from './shared/components/case-editor/case-editor.module';
+import { CaseProgressComponent } from './shared/components/case-editor/case-progress/case-progress.component';
+import { CaseHistoryModule } from './shared/components/case-history';
+import { CaseViewerModule } from './shared/components/case-viewer/case-viewer.module';
+import { DeleteOrCancelDialogComponent } from './shared/components/dialogs/delete-or-cancel-dialog/delete-or-cancel-dialog.component';
+import { DialogsModule } from './shared/components/dialogs/dialogs.module';
+import { DocumentDialogComponent } from './shared/components/dialogs/document-dialog/document-dialog.component';
+import { RemoveDialogComponent } from './shared/components/dialogs/remove-dialog/remove-dialog.component';
+import { SaveOrDiscardDialogComponent } from './shared/components/dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
+import { CallbackErrorsComponent } from './shared/components/error/callback-errors.component';
+import { PaletteModule } from './shared/components/palette/palette.module';
 
 @NgModule({
     imports: [
-      // BannersModule,
-      // HeadersModule,
+      BannersModule,
+      HeadersModule,
       FootersModule,
-      // BodyModule,
-      // TabsModule,
-      // PortalModule,
-      // FormModule
+      BodyModule,
+      TabsModule,
+      CaseEditorModule,
+      CaseViewerModule,
+      CaseHistoryModule,
+      PaletteModule,
+      DialogsModule,
+      PipesModule,
+      MarkdownModule,
+      ConditionalShowModule,
+      LabelSubstitutorModule,
+      SearchFiltersModule,
+      FocusElementModule,
+      LoadingModule,
+      PaginationModule,
+      PortalModule,
+      FormModule
     ],
     exports: [
-      // AlertComponent,
-      // PhaseComponent,
-      // HeaderBarComponent,
-      // NavigationComponent,
-      // NavigationItemComponent,
+      AlertComponent,
+      PhaseComponent,
+      HeaderBarComponent,
+      NavigationComponent,
+      NavigationItemComponent,
       FooterComponent,
-      // BodyComponent,
-      // TabsComponent,
-      // TabComponent,
-      // PaginatePipe
+      BodyComponent,
+      TabsComponent,
+      TabComponent,
+      CaseEditComponent,
+      CaseCreateComponent,
+      CaseProgressComponent,
+      CaseViewComponent,
+      CaseViewerComponent,
+      CallbackErrorsComponent,
+      DocumentDialogComponent,
+      DeleteOrCancelDialogComponent,
+      SaveOrDiscardDialogComponent,
+      RemoveDialogComponent,
+      CaseReferencePipe,
+      MarkdownComponent,
+      PaginationComponent,
+      BaseFieldModule,
+      PaletteUtilsModule,
+      UnsupportedFieldComponent,
+      LabelFieldComponent,
+
+      // Read
+      ReadTextFieldComponent,
+      ReadTextAreaFieldComponent,
+      ReadNumberFieldComponent,
+      ReadEmailFieldComponent,
+      ReadPhoneUKFieldComponent,
+      ReadDateFieldComponent,
+      ReadCollectionFieldComponent,
+
+      // Write
+      WriteCollectionFieldComponent,
+      WriteTextFieldComponent,
+      WriteTextAreaFieldComponent,
+      WritePhoneUKFieldComponent,
+      WriteNumberFieldComponent,
+      WriteEmailFieldComponent,
+      WriteDateFieldComponent,
+      LabelSubstitutorDirective,
+      FocusElementDirective,
+      PaginatePipe
     ]
 })
 export class CaseUIToolkitModule {}

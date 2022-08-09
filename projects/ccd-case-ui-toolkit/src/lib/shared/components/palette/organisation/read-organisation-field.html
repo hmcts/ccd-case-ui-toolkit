@@ -1,0 +1,19 @@
+<ng-container [ngSwitch]="context">
+  <ccd-read-organisation-field-raw
+    *ngSwitchCase="paletteContext.CHECK_YOUR_ANSWER"
+    [caseField]="caseField"
+    [context]="context"
+  ></ccd-read-organisation-field-raw>
+  <ccd-read-organisation-field-table
+    *ngSwitchCase="paletteContext.TABLE_VIEW"
+    [caseField]="caseField"
+    [caseFields]="caseFields"
+    [context]="context"
+  ></ccd-read-organisation-field-table>
+  <ccd-read-organisation-field-table
+    *ngSwitchDefault
+    [caseField]="caseField"
+    [caseFields]="caseFields"
+    [context]="context"
+  ></ccd-read-organisation-field-table>
+</ng-container>

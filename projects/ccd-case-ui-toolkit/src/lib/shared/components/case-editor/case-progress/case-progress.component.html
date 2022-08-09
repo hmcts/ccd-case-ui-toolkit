@@ -1,0 +1,8 @@
+<div *ngIf="isDataLoaded()">
+    <ccd-case-edit [submit]="submit()"
+                   [validate]="validate()"
+                   [caseDetails]="caseDetails"
+                   [eventTrigger]="eventTrigger"
+                   (cancelled)="emitCancelled($event)"
+                   (submitted)="emitSubmitted($event)"></ccd-case-edit>
+</div>

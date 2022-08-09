@@ -1,0 +1,27 @@
+<form  (ngSubmit)="apply()">
+  <div class="form-group">
+    <label class="form-label" for="cc-jurisdiction">Jurisdiction</label>
+    <select class="form-control ccd-dropdown" id="cc-jurisdiction" name="jurisdiction" [formControl]="filterJurisdictionControl" (change)="onJurisdictionIdChange()">
+      <option value="">--Select a value--</option>
+      <option *ngFor="let j of jurisdictions" [value]="j.id">{{j.name}}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="cc-case-type">Case type</label>
+    <select class="form-control ccd-dropdown" id="cc-case-type" name="case-type" [formControl]="filterCaseTypeControl" (change)="onCaseTypeIdChange()">
+      <option value="">--Select a value--</option>
+      <option *ngFor="let ct of selectedJurisdictionCaseTypes" [value]="ct.id">{{ct.name}}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="cc-event">Event</label>
+    <select class="form-control ccd-dropdown" id="cc-event" name="event" [formControl]="filterEventControl" (change)="onEventIdChange()">
+      <option value="">--Select a value--</option>
+      <option *ngFor="let e of selectedCaseTypeEvents" [value]="e.id">{{e.name}}</option>
+    </select>
+  </div>
+
+  <button type="submit" class="button" [disabled]="!isCreatable()">{{startButtonText}}</button>
+</form>
