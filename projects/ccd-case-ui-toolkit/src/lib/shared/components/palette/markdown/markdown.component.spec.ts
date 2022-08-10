@@ -3,8 +3,8 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NgxMdComponent, NgxMdModule } from 'ngx-md';
-import { PipesModule } from '../../pipes';
-import { ConvertHrefToRouterService } from '../case-editor/services';
+import { PipesModule } from '../../../pipes/pipes.module';
+import { ConvertHrefToRouterService } from '../../case-editor';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 
 describe('MarkdownComponent - Table', () => {
