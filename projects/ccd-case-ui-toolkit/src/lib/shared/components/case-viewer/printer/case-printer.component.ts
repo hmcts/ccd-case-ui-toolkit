@@ -10,7 +10,7 @@ import { CaseNotifier, CasesService } from '../../case-editor';
 })
 export class CasePrinterComponent implements OnInit, OnDestroy {
 
-  private static readonly ERROR_MESSAGE = 'No documents to print';
+  private readonly ERROR_MESSAGE = 'No documents to print';
 
   public caseDetails: CaseView;
   public documents: CasePrintDocument[];
@@ -32,7 +32,7 @@ export class CasePrinterComponent implements OnInit, OnDestroy {
 
             if (!documents || !documents.length) {
               const error = new HttpError();
-              error.message = CasePrinterComponent.ERROR_MESSAGE;
+              error.message = this.ERROR_MESSAGE;
               throw error;
             }
 

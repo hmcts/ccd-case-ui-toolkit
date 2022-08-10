@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { PipesModule } from '../../pipes';
 import { PaletteModule } from '../palette';
 import { CaseHeaderComponent } from './case-header.component';
 
@@ -9,8 +8,7 @@ import { CaseHeaderComponent } from './case-header.component';
     imports: [
         CommonModule,
         RouterModule,
-        PaletteModule,
-        PipesModule,
+        PaletteModule
     ],
     declarations: [
         CaseHeaderComponent,

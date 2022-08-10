@@ -15,7 +15,7 @@ import {
   SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
-import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
+import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
@@ -73,7 +73,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public task: Task;
   public eventCompletionParams: EventCompletionParams;
   public eventCompletionChecksRequired = false;
-  public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
+  public readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
     const bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
 
@@ -176,9 +176,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public cancel(): void {
     if (this.eventTrigger.can_save_draft) {
       if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+        this.caseEdit.cancelled.emit({status: CaseEditPageText.RESUMED_FORM_DISCARD});
       } else {
-        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+        this.caseEdit.cancelled.emit({status: CaseEditPageText.NEW_FORM_DISCARD});
       }
     } else {
       this.caseEdit.cancelled.emit();
@@ -465,7 +465,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   private sortFieldsByShowSummaryContent(fields: CaseField[]): CaseField[] {
     return this.orderService
-      .sort(fields, CaseEditSubmitComponent.SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION)
+      .sort(fields, this.SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION)
       .filter(cf => cf.show_summary_content_option);
   }
 

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
-import { CaseHeaderModule } from '../case-header';
-import { ComplexModule, PaletteModule } from '../palette';
+import { ConditionalShowModule } from '../../directives';
+import { CaseHeaderModule } from '../case-header/case-header.module';
+import { PaletteModule } from '../palette';
 import { CaseHistoryComponent } from './case-history.component';
 import { CaseHistoryService } from './services';
 
@@ -11,11 +11,8 @@ import { CaseHistoryService } from './services';
     imports: [
         CommonModule,
         RouterModule,
-        PaletteModule,
         CaseHeaderModule,
         ConditionalShowModule,
-        LabelSubstitutorModule,
-        ComplexModule,
     ],
     declarations: [
         CaseHistoryComponent,

@@ -22,6 +22,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
 import { CaseEditPageComponent } from './case-edit-page.component';
+import { CaseEditPageText } from './case-edit-page-text.enum';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent', () => {
@@ -214,7 +215,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
     });
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
@@ -227,7 +228,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
     });
 
     it('should emit RESUMED_FORM_DISCARD on create event if discard triggered with value changed', () => {
@@ -246,7 +247,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
     });
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
@@ -260,7 +261,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
     });
 
     it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
@@ -282,7 +283,7 @@ describe('CaseEditPageComponent', () => {
       comp.cancel();
 
       expect(cancelled.emit).toHaveBeenCalledWith({
-        status: CaseEditPageComponent.RESUMED_FORM_SAVE,
+        status: CaseEditPageText.RESUMED_FORM_SAVE,
         data: {data: {field1: 'SOME_VALUE'}}
       });
     });
@@ -296,7 +297,7 @@ describe('CaseEditPageComponent', () => {
 
       comp.cancel();
       expect(cancelled.emit).toHaveBeenCalledWith({
-        status: CaseEditPageComponent.NEW_FORM_SAVE,
+        status: CaseEditPageText.NEW_FORM_SAVE,
         data: {data: {field1: 'SOME_VALUE'}}
       });
     });
@@ -430,10 +431,10 @@ describe('CaseEditPageComponent', () => {
       comp.cancel();
 
       expect(cancelled.emit).toHaveBeenCalled();
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_SAVE});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_SAVE});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_SAVE});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_SAVE});
     });
   });
 
@@ -742,20 +743,20 @@ describe('CaseEditPageComponent', () => {
 
     it('should change button label when callback warnings notified ', () => {
       const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-      callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_START;
+      callbackErrorsContext.trigger_text = CaseEditPageText.TRIGGER_TEXT_START;
       comp.callbackErrorsNotify(callbackErrorsContext);
 
       fixture.detectChanges();
       const button = de.query($SELECT_SUBMIT_BUTTON);
-      expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_START);
+      expect(button.nativeElement.textContent).toEqual(CaseEditPageText.TRIGGER_TEXT_START);
       expect(comp.ignoreWarning).toBeFalsy();
 
       callbackErrorsContext.ignore_warning = true;
-      callbackErrorsContext.trigger_text = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
+      callbackErrorsContext.trigger_text = CaseEditPageText.TRIGGER_TEXT_CONTINUE;
       comp.callbackErrorsNotify(callbackErrorsContext);
 
       fixture.detectChanges();
-      expect(button.nativeElement.textContent).toEqual(CaseEditPageComponent.TRIGGER_TEXT_CONTINUE);
+      expect(button.nativeElement.textContent).toEqual(CaseEditPageText.TRIGGER_TEXT_CONTINUE);
       expect(comp.ignoreWarning).toBeTruthy();
     });
   });

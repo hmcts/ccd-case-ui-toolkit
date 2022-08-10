@@ -13,9 +13,7 @@ import { CaseHistoryService } from './services';
         RouterModule,
         PaletteModule,
         CaseHeaderModule,
-        ConditionalShowModule,
-        LabelSubstitutorModule,
-        ComplexModule,
+        ConditionalShowModule
     ],
     declarations: [
         CaseHistoryComponent,

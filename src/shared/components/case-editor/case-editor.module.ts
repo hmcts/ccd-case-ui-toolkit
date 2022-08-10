@@ -26,7 +26,7 @@ import { ProfileService } from '../../services/profile/profile.service';
 import { RouterHelperService } from '../../services/router';
 import { ErrorsModule } from '../error/errors.module';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-import { ComplexModule, PaletteModule } from '../palette';
+import { PaletteModule } from '../palette';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
 import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component';
@@ -54,15 +54,12 @@ import { CaseworkerService } from './services/case-worker.service';
     imports: [
         CommonModule,
         RouterModule,
-        PipesModule,
         MarkdownModule,
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
         ConditionalShowModule,
-        LabelSubstitutorModule,
         ErrorsModule,
-        ComplexModule,
         PortalModule
     ],
     declarations: [
@@ -107,7 +104,6 @@ import { CaseworkerService } from './services/case-worker.service';
         AddressesService,
         DocumentManagementService,
         RouterHelperService,
-        ProfileService,
         CaseEditWizardGuard,
         WorkAllocationService,
         JudicialworkerService,

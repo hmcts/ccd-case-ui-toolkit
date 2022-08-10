@@ -18,7 +18,6 @@ export default {
                 CommonModule,
                 RouterModule,
                 PaletteModule,
-                PipesModule,
             ],
             declarations: [
                 StorybookComponent

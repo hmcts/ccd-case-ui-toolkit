@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { MarkdownModule } from '../../palette/markdown.module';
 import { CallbackErrorsComponent } from '../../components/error';
 import { ConditionalShowModule } from '../../directives/conditional-show';
 import {
   ConditionalShowRegistrarService
 } from '../../directives/conditional-show/services/conditional-show-registrar.service';
-import { LabelSubstitutorModule } from '../../directives/substitutor';
-import { PipesModule } from '../../pipes/pipes.module';
 import { HttpService, SessionStorageService } from '../../services';
 import { AddressesService } from '../../services/addresses';
 import { CaseFieldService } from '../../services/case-fields/case-field.service';
@@ -53,12 +52,11 @@ import { CaseworkerService } from './services/case-worker.service';
     imports: [
         CommonModule,
         RouterModule,
-        PipesModule,
+        MarkdownModule,
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
         ConditionalShowModule,
-        LabelSubstitutorModule,
         ErrorsModule,
         PortalModule
     ],

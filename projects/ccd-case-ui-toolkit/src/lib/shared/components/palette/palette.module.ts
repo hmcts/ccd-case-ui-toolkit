@@ -108,7 +108,9 @@ import { WaysToPayFieldComponent } from './waystopay';
   exports: [
     // BaseFieldModule,
     LabelSubstitutorModule,
+    TabsModule,
     PaletteUtilsModule,
+    PipesModule,
     UnsupportedFieldComponent,
     LabelFieldComponent,
     DatetimePickerComponent,

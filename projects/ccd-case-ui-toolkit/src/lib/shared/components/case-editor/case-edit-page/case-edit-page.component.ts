@@ -19,6 +19,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
+import { CaseEditPageText } from './case-edit-page-text.enum';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -38,14 +39,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     private readonly caseFieldService: CaseFieldService
   ) { }
 
-  public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
-  public static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
-  public static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
-  public static readonly RESUMED_FORM_SAVE = 'RESUMED_FORM_SAVE';
-  public static readonly TRIGGER_TEXT_START = 'Continue';
-  public static readonly TRIGGER_TEXT_SAVE = 'Save and continue';
-  public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
-
   public eventTrigger: CaseEventTrigger;
   public editForm: FormGroup;
   public wizard: Wizard;
@@ -54,8 +47,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public error: HttpError;
   public callbackErrorsSubject: Subject<any> = new Subject();
   public ignoreWarning = false;
-  public triggerTextStart = CaseEditPageComponent.TRIGGER_TEXT_START;
-  public triggerTextIgnoreWarnings = CaseEditPageComponent.TRIGGER_TEXT_CONTINUE;
+  public triggerTextStart = CaseEditPageText.TRIGGER_TEXT_START;
+  public triggerTextIgnoreWarnings = CaseEditPageText.TRIGGER_TEXT_CONTINUE;
   public triggerText: string;
   public isSubmitting = false;
   public formValuesChanged = false;
@@ -296,9 +289,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           } else if (result === 'Save') {
             const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
             if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData });
+              this.caseEdit.cancelled.emit({ status: CaseEditPageText.RESUMED_FORM_SAVE, data: draftCaseEventData });
             } else {
-              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData });
+              this.caseEdit.cancelled.emit({ status: CaseEditPageText.NEW_FORM_SAVE, data: draftCaseEventData });
             }
           }
         });
@@ -329,15 +322,15 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   private getTriggerText(): string {
     return this.eventTrigger?.can_save_draft
-      ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
-      : CaseEditPageComponent.TRIGGER_TEXT_START;
+      ? CaseEditPageText.TRIGGER_TEXT_SAVE
+      : CaseEditPageText.TRIGGER_TEXT_START;
   }
 
   private discard(): void {
     if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-      this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
+      this.caseEdit.cancelled.emit({ status: CaseEditPageText.RESUMED_FORM_DISCARD });
     } else {
-      this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
+      this.caseEdit.cancelled.emit({ status: CaseEditPageText.NEW_FORM_DISCARD });
     }
   }
 

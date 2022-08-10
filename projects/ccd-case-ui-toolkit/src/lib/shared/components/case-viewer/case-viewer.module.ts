@@ -4,9 +4,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { AlertModule } from '../../../components/banners/alert';
-import { TabsModule } from '../../../components/tabs';
-import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
-import { CaseReferencePipe, PipesModule } from '../../pipes';
+import { ConditionalShowModule } from '../../directives';
+import { CaseReferencePipe } from '../../pipes';
 import {
   ActivityPollingService,
   ActivityService,
@@ -24,7 +23,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 import { ErrorsModule } from '../error/errors.module';
 import { EventStartModule } from '../event-start/event-start.module';
 import { EventTriggerModule } from '../event-trigger';
-import { ComplexModule, EventLogModule, PaletteModule } from '../palette';
+import { EventLogModule, PaletteModule } from '../palette';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basic-access-view.component';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success/case-challenged-access-success.component';
@@ -48,15 +47,12 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseHeaderModule,
     EventStartModule,
     EventTriggerModule,
-    TabsModule,
     PaletteModule,
-    LabelSubstitutorModule,
     CaseEditorModule,
     ConditionalShowModule,
     CaseHistoryModule,
     EventLogModule,
     MatTabsModule,
-    ComplexModule,
     ReactiveFormsModule,
     AlertModule
   ],

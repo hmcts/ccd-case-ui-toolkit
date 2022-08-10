@@ -11,8 +11,8 @@ import { CaseNotifier } from '../case-editor';
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
 
-  public static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
-  public static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
+  public readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
+  public readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -57,7 +57,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.setMockData(caseDetails);
     if (caseDetails && Array.isArray(caseDetails.metadataFields)) {
       const access_process = caseDetails.metadataFields.find(metadataField =>
-        metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
+        metadataField.id === this.METADATA_FIELD_ACCESS_PROCEES_ID);
       this.userAccessType = access_process ? access_process.value : null;
     }
   }
@@ -68,7 +68,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   public hasStandardAccess(): boolean {
     const featureToggleOn = this.appConfig.getAccessManagementMode();
-    return featureToggleOn ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true;
+    return featureToggleOn ? this.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true;
   }
 
   // remove once Access management goes live
@@ -76,13 +76,13 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     const accessManagementBasicViewMock = this.appConfig.getAccessManagementBasicViewMock();
     if (accessManagementBasicViewMock && accessManagementBasicViewMock.active && !caseDetails.basicFields) {
       const access_process_index = caseDetails.metadataFields.findIndex(metadataField =>
-        metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
+        metadataField.id === this.METADATA_FIELD_ACCESS_PROCEES_ID);
 
       if (access_process_index > -1) {
         caseDetails.metadataFields[access_process_index].value = accessManagementBasicViewMock.accessProcess;
       } else {
         const access_process: CaseField = new CaseField();
-        access_process.id = CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID;
+        access_process.id = this.METADATA_FIELD_ACCESS_PROCEES_ID;
         access_process.value = accessManagementBasicViewMock.accessProcess;
         access_process.field_type = {
           id: '',
