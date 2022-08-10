@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { NgxMdModule } from 'ngx-md';
+import { ReadMoneyGbpFieldComponent } from 'src/shared';
 
 import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
@@ -15,10 +16,12 @@ import { BodyModule } from '../../../components/body/body.module';
 import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
 
+import { PaletteUtilsModule } from './utils';
+
 import { LabelSubstitutorModule } from '../../directives';
 import { PipesModule } from '../../pipes/pipes.module';
 import { FormValidatorsService } from '../../services';
-import { FieldReadComponent } from './base-field';
+import { FieldReadComponent, FieldReadLabelComponent } from './base-field';
 
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
@@ -29,35 +32,25 @@ import { FileUploadStateService } from './document/file-upload-state.service';
 import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
 import { LabelFieldComponent } from './label';
 import { MarkdownComponent } from './markdown';
+import { WriteMoneyGbpFieldComponent } from './money-gbp';
 import { ReadNumberFieldComponent, WriteNumberFieldComponent } from './number';
+import { ReadOrderSummaryFieldComponent, ReadOrderSummaryRowComponent, WriteOrderSummaryFieldComponent } from './order-summary';
+import { ReadOrganisationFieldComponent, ReadOrganisationFieldRawComponent, ReadOrganisationFieldTableComponent, WriteOrganisationComplexFieldComponent, WriteOrganisationFieldComponent } from './organisation';
 import { PaletteService } from './palette.service';
+import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
-import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
+import { ReadYesNoFieldComponent, WriteYesNoFieldComponent } from './yes-no';
 
 @NgModule({
   imports: [
     CommonModule,
-    // BaseFieldModule,
-    // FixedListModule,
-    // DynamicListModule,
-    // DynamicRadioListModule,
-    // FixedRadioListModule,
-    // YesNoModule,
-    // ComplexModule,
-    // MultiSelectListModule,
-    // MoneyGbpModule,
     FormsModule,
     ReactiveFormsModule,
     PaletteUtilsModule,
-    // DocumentModule,
-    // AddressModule,
-    // OrderSummaryModule,
-    // CasePaymentHistoryViewerModule,
-    // CaseHistoryViewerModule,
     PipesModule,
     BannersModule,
     HeadersModule,
@@ -66,8 +59,6 @@ import { WaysToPayFieldComponent } from './waystopay';
     FormModule,
     TabsModule,
     LabelSubstitutorModule,
-    // CaseLinkModule,
-    // OrganisationModule,
     NgxMdModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
@@ -75,13 +66,17 @@ import { WaysToPayFieldComponent } from './waystopay';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    PaymentLibModule
+    PaymentLibModule,
   ],
   declarations: [
     UnsupportedFieldComponent,
     LabelFieldComponent,
     DatetimePickerComponent,
     WaysToPayFieldComponent,
+    MarkdownComponent,
+    FieldReadComponent,
+    FieldReadLabelComponent,
+    CasePaymentHistoryViewerFieldComponent,
 
     // // Read
     ReadTextFieldComponent,
@@ -91,6 +86,14 @@ import { WaysToPayFieldComponent } from './waystopay';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+
+    ReadYesNoFieldComponent,
+    ReadOrganisationFieldComponent,
+    ReadOrganisationFieldTableComponent,
+    ReadOrganisationFieldRawComponent,
+    ReadOrderSummaryFieldComponent,
+    ReadOrderSummaryRowComponent,
+    ReadMoneyGbpFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -102,15 +105,17 @@ import { WaysToPayFieldComponent } from './waystopay';
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
 
-    MarkdownComponent,
-    FieldReadComponent
+    WriteYesNoFieldComponent,
+    WriteOrganisationFieldComponent,
+    WriteOrganisationComplexFieldComponent,
+    WriteOrderSummaryFieldComponent,
+    WriteMoneyGbpFieldComponent,
+    WriteDateContainerFieldComponent
   ],
   exports: [
-    // BaseFieldModule,
     LabelSubstitutorModule,
     TabsModule,
     PaletteUtilsModule,
-    ComplexModule,
     PipesModule,
     UnsupportedFieldComponent,
     LabelFieldComponent,
