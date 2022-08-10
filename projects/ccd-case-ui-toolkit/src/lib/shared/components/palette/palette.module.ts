@@ -110,6 +110,7 @@ import { WaysToPayFieldComponent } from './waystopay';
     LabelSubstitutorModule,
     TabsModule,
     PaletteUtilsModule,
+    ComplexModule,
     PipesModule,
     UnsupportedFieldComponent,
     LabelFieldComponent,
