@@ -1,4 +1,3 @@
-export * from './organisation.module';
 export * from './read-organisation-field.component';
 export * from './read-organisation-field-raw.component';
 export * from './read-organisation-field-table.component';

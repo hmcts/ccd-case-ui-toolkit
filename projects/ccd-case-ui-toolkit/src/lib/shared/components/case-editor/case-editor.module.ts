@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CallbackErrorsComponent } from '../../components/error';
-import { MarkdownModule } from '../../components/markdown/markdown.module';
 import { ConditionalShowModule } from '../../directives/conditional-show';
 import {
   ConditionalShowRegistrarService
@@ -26,7 +25,7 @@ import { ProfileService } from '../../services/profile/profile.service';
 import { RouterHelperService } from '../../services/router';
 import { ErrorsModule } from '../error/errors.module';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-import { ComplexModule, PaletteModule } from '../palette';
+import { PaletteModule } from '../palette';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
 import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component';
@@ -55,14 +54,12 @@ import { CaseworkerService } from './services/case-worker.service';
         CommonModule,
         RouterModule,
         PipesModule,
-        MarkdownModule,
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
         ConditionalShowModule,
         LabelSubstitutorModule,
         ErrorsModule,
-        ComplexModule,
         PortalModule
     ],
     declarations: [

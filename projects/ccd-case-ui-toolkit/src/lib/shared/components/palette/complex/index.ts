@@ -1,4 +1,3 @@
-export * from './complex.module';
 export * from './fields-filter.pipe';
 export * from './read-complex-field-raw.component';
 export * from './read-complex-field-table.component';

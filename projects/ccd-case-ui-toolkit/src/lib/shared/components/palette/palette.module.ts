@@ -1,83 +1,63 @@
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { NgxMdModule } from 'ngx-md';
+
+import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
 import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
-import { HeadersModule } from '../../../components/header/headers.module';
-import { TabsModule } from '../../../components/tabs/tabs.module';
-import { LabelSubstitutorModule } from '../../directives/substitutor/label-substitutor.module';
+
+import { LabelSubstitutorModule } from '../../directives';
 import { PipesModule } from '../../pipes/pipes.module';
-import { FormValidatorsService } from '../../services/form/form-validators.service';
-import { MarkdownModule } from '../markdown/markdown.module';
-import { AddressModule } from './address/address.module';
-import { BaseFieldModule } from './base-field/base-field.module';
-import { CaseLinkModule } from './case-link/case-link.module';
+import { FormValidatorsService } from '../../services';
+import { FieldReadComponent } from './base-field';
+
+import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
-import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
-import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
-import { ComplexModule } from './complex/complex.module';
-import { ReadDateFieldComponent } from './date/read-date-field.component';
-import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
-import { WriteDateFieldComponent } from './date/write-date-field.component';
-import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
-import { DocumentModule } from './document/document.module';
+import { ReadDateFieldComponent, WriteDateContainerFieldComponent, WriteDateFieldComponent } from './date';
+import { DatetimePickerComponent } from './datetime-picker';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
-import { DynamicListModule } from './dynamic-list/dynamic-list.module';
-import { DynamicRadioListModule } from './dynamic-radio-list/dynamic-radio-list.module';
-import { ReadEmailFieldComponent } from './email/read-email-field.component';
-import { WriteEmailFieldComponent } from './email/write-email-field.component';
-import { FixedListModule } from './fixed-list/fixed-list.module';
-import { FixedRadioListModule } from './fixed-radio-list/fixed-radio-list.module';
-import { CaseHistoryViewerModule } from './history/case-history-viewer.module';
-import { LabelFieldComponent } from './label/label-field.component';
-import { MoneyGbpModule } from './money-gbp/money-gbp.module';
-import { MultiSelectListModule } from './multi-select-list/multi-select-list.module';
-import { ReadNumberFieldComponent } from './number/read-number-field.component';
-import { WriteNumberFieldComponent } from './number/write-number-field.component';
-import { OrderSummaryModule } from './order-summary/order-summary.module';
-import { OrganisationModule } from './organisation/organisation.module';
+import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
+import { LabelFieldComponent } from './label';
+import { MarkdownComponent } from './markdown';
+import { ReadNumberFieldComponent, WriteNumberFieldComponent } from './number';
 import { PaletteService } from './palette.service';
-import { CasePaymentHistoryViewerModule } from './payment/case-payment-history-viewer.module';
-import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
-import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
-import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
-import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
-import { ReadTextFieldComponent } from './text/read-text-field.component';
-import { WriteTextFieldComponent } from './text/write-text-field.component';
+import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
+import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
+import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
-import { PaletteUtilsModule } from './utils/utils.module';
-import { WaysToPayFieldComponent } from './waystopay/waystopay-field.component';
-import { YesNoModule } from './yes-no/yes-no.module';
+import { PaletteUtilsModule } from './utils';
+import { WaysToPayFieldComponent } from './waystopay';
 
 @NgModule({
   imports: [
     CommonModule,
-    BaseFieldModule,
-    FixedListModule,
-    DynamicListModule,
-    DynamicRadioListModule,
-    FixedRadioListModule,
-    YesNoModule,
-    ComplexModule,
-    MultiSelectListModule,
-    MoneyGbpModule,
+    // BaseFieldModule,
+    // FixedListModule,
+    // DynamicListModule,
+    // DynamicRadioListModule,
+    // FixedRadioListModule,
+    // YesNoModule,
+    // ComplexModule,
+    // MultiSelectListModule,
+    // MoneyGbpModule,
+    FormsModule,
     ReactiveFormsModule,
     PaletteUtilsModule,
-    DocumentModule,
-    AddressModule,
-    MarkdownModule,
-    OrderSummaryModule,
-    CasePaymentHistoryViewerModule,
-    CaseHistoryViewerModule,
+    // DocumentModule,
+    // AddressModule,
+    // OrderSummaryModule,
+    // CasePaymentHistoryViewerModule,
+    // CaseHistoryViewerModule,
     PipesModule,
     BannersModule,
     HeadersModule,
@@ -86,8 +66,9 @@ import { YesNoModule } from './yes-no/yes-no.module';
     FormModule,
     TabsModule,
     LabelSubstitutorModule,
-    CaseLinkModule,
-    OrganisationModule,
+    // CaseLinkModule,
+    // OrganisationModule,
+    NgxMdModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
@@ -102,7 +83,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     DatetimePickerComponent,
     WaysToPayFieldComponent,
 
-    // Read
+    // // Read
     ReadTextFieldComponent,
     ReadTextAreaFieldComponent,
     ReadNumberFieldComponent,
@@ -120,18 +101,20 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+
+    MarkdownComponent,
+    FieldReadComponent
   ],
   exports: [
-    BaseFieldModule,
+    // BaseFieldModule,
     LabelSubstitutorModule,
     PaletteUtilsModule,
-    PipesModule,
     UnsupportedFieldComponent,
     LabelFieldComponent,
     DatetimePickerComponent,
     WaysToPayFieldComponent,
 
-    // Read
+    // // Read
     ReadTextFieldComponent,
     ReadTextAreaFieldComponent,
     ReadNumberFieldComponent,
@@ -140,7 +123,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
 
-    // Write
+    // // Write
     WriteCollectionFieldComponent,
     WriteTextFieldComponent,
     WriteTextAreaFieldComponent,
@@ -148,7 +131,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
-    WriteDateContainerFieldComponent,
+    WriteDateContainerFieldComponent
   ],
   providers: [
     CollectionCreateCheckerService,

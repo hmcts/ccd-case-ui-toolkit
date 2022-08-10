@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { Wizard, WizardPage, WizardPageField } from '../../components';
+import { Wizard, WizardPage, WizardPageField } from '../../components/case-editor';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
 import { CaseEventTrigger } from '../../domain';
 import { CaseField, FieldTypeEnum } from '../../domain/definition';

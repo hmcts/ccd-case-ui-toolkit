@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
+import { PaletteContext } from 'src/shared/components/palette';
 import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
@@ -14,7 +15,6 @@ import {
   SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
-import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
