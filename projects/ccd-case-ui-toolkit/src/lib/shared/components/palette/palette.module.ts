@@ -22,7 +22,7 @@ import { PipesModule } from '../../pipes/pipes.module';
 import { FormValidatorsService } from '../../services';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 
-import { ReadFixedListFieldComponent, WriteFixedListFieldComponent } from 'src/shared';
+import { BrowserModule } from '@angular/platform-browser';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -30,9 +30,13 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
 import { CcdCollectionTableCaseFieldsFilterPipe, CcdCYAPageLabelFilterPipe, CcdPageFieldsPipe, CcdTabFieldsPipe, FieldsFilterPipe, ReadComplexFieldCollectionTableComponent, ReadComplexFieldComponent, ReadComplexFieldRawComponent, ReadComplexFieldTableComponent, ReadFieldsFilterPipe, WriteComplexFieldComponent } from './complex';
 import { ReadDateFieldComponent, WriteDateContainerFieldComponent, WriteDateFieldComponent } from './date';
 import { DatetimePickerComponent } from './datetime-picker';
+import { DocumentUrlPipe } from './document';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
+import { DynamicListPipe } from './dynamic-list';
+import { DynamicRadioListPipe } from './dynamic-radio-list';
 import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
+import { FixedListPipe, ReadFixedListFieldComponent, WriteFixedListFieldComponent } from './fixed-list';
 import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioListFieldComponent } from './fixed-radio-list';
 import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComponent, EventLogTableComponent } from './history';
 import { LabelFieldComponent } from './label';
@@ -50,11 +54,6 @@ import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { FixedListPipe } from './fixed-list';
-import { DynamicListPipe } from './dynamic-list';
-import { DynamicRadioListPipe } from './dynamic-radio-list';
-import { DocumentUrlPipe } from './document';
-import { BrowserModule } from '@angular/platform-browser';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -94,9 +93,9 @@ const PALETTE_COMPONENTS = [
     ReadFixedRadioListFieldComponent,
     ReadCaseLinkFieldComponent,
     ReadComplexFieldComponent,
-    ReadComplexFieldCollectionTableComponent,
     ReadComplexFieldRawComponent,
     ReadComplexFieldTableComponent,
+    ReadComplexFieldCollectionTableComponent,
 
     // Write
     WriteComplexFieldComponent,
