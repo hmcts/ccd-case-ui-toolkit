@@ -52,7 +52,6 @@ import { CaseResolver, EventTriggerResolver } from './services';
     PaletteModule,
     LabelSubstitutorModule,
     CaseEditorModule,
-    PipesModule,
     ConditionalShowModule,
     CaseHistoryModule,
     EventLogModule,
@@ -79,8 +78,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
   ],
   exports: [
     CaseViewerComponent,
-    CaseViewComponent,
-    
+    CaseViewComponent
   ],
   providers: [
     CaseNotifier,

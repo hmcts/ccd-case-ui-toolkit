@@ -125,6 +125,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     BaseFieldModule,
     LabelSubstitutorModule,
     PaletteUtilsModule,
+    PipesModule,
     UnsupportedFieldComponent,
     LabelFieldComponent,
     DatetimePickerComponent,
