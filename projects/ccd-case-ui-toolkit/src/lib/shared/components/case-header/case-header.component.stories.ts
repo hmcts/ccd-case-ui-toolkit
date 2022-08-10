@@ -3,7 +3,6 @@ import { RouterModule } from '@angular/router';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
 import { StorybookComponent } from 'storybook/storybook.component';
 import { createCaseView } from '../../../shared/fixture/case-view.test.fixture';
-import { PipesModule } from '../../../shared/pipes';
 import { PaletteModule } from '../palette';
 import { CaseHeaderComponent } from './case-header.component';
 

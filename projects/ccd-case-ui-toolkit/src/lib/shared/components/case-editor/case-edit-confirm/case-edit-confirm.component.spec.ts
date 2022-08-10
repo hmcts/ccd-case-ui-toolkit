@@ -5,12 +5,12 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MarkdownComponent } from '../../../components/palette/markdown/markdown.component';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 import { CaseField } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { PipesModule } from '../../../pipes';
 import { FieldsUtils } from '../../../services/fields';
-import { MarkdownModule } from '../../markdown/markdown.module';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { ConvertHrefToRouterService } from '../services';
@@ -64,11 +64,11 @@ describe('CaseEditConfirmComponent', () => {
           HttpClientTestingModule,
           ReactiveFormsModule,
           RouterTestingModule,
-          MarkdownModule,
           PipesModule,
         ],
         declarations: [
-          CaseEditConfirmComponent
+          CaseEditConfirmComponent,
+          MarkdownComponent
         ],
         providers: [
           { provide: CaseEditComponent, useValue: caseEditComponentStub },
@@ -133,11 +133,11 @@ describe('CaseEditConfirmComponent', () => {
         imports: [
           ReactiveFormsModule,
           RouterTestingModule,
-          MarkdownModule,
           PipesModule
         ],
         declarations: [
           CaseEditConfirmComponent,
+          MarkdownComponent
           // Mock
         ],
         providers: [
