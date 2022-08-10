@@ -22,7 +22,6 @@ import {
   CaseViewComponent,
   CaseViewerComponent,
   ConditionalShowModule,
-  FocusElementDirective,
   FocusElementModule,
   LabelFieldComponent,
   LabelSubstitutorDirective,
@@ -134,7 +133,6 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       WriteEmailFieldComponent,
       WriteDateFieldComponent,
       LabelSubstitutorDirective,
-      FocusElementDirective,
       PaginatePipe
     ]
 })

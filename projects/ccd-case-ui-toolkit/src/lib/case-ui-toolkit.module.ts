@@ -5,7 +5,6 @@ import { AlertComponent } from './components/banners/alert/alert.component';
 import { BannersModule } from './components/banners/banners.module';
 import { BodyComponent } from './components/body/body.component';
 import { BodyModule } from './components/body/body.module';
-import { FocusElementDirective } from './shared/directives/focus-element/focus-element.directive';
 import { FooterComponent } from './components/footer/footer.component';
 import { FootersModule } from './components/footer/footers.module';
 import { FormModule } from './components/form/form.module';
@@ -128,7 +127,6 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       WriteEmailFieldComponent,
       WriteDateFieldComponent,
       LabelSubstitutorDirective,
-      FocusElementDirective,
       PaginatePipe
     ]
 })
