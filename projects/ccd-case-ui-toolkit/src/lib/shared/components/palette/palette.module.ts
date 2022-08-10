@@ -19,10 +19,11 @@ import { PaletteUtilsModule } from './utils';
 
 import { LabelSubstitutorModule } from '../../directives';
 import { PipesModule } from '../../pipes/pipes.module';
-import { FormValidatorsService } from '../../services';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 
 import { BrowserModule } from '@angular/platform-browser';
+import { FormValidatorsService } from '../../services/form/form-validators.service';
+import { WindowService } from '../../services/window';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -54,6 +55,7 @@ import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { RouterModule } from '@angular/router';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -125,6 +127,7 @@ const PALETTE_COMPONENTS = [
   imports: [
     CommonModule,
     BrowserModule,
+    RouterModule,
     FormsModule,
     ReactiveFormsModule,
     PaletteUtilsModule,
@@ -161,17 +164,9 @@ const PALETTE_COMPONENTS = [
     ...PALETTE_COMPONENTS
   ],
   exports: [
-    LabelSubstitutorModule,
     TabsModule,
     PaletteUtilsModule,
     PipesModule,
-
-    CcdCollectionTableCaseFieldsFilterPipe,
-    CcdCYAPageLabelFilterPipe,
-    CcdTabFieldsPipe,
-    ReadFieldsFilterPipe,
-    FieldsFilterPipe,
-    CcdPageFieldsPipe,
 
     ...PALETTE_COMPONENTS
   ],
@@ -182,6 +177,7 @@ const PALETTE_COMPONENTS = [
     FormValidatorsService,
     FileUploadStateService,
     FileUploadProgressGuard,
+    WindowService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ]
 })
