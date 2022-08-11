@@ -10,11 +10,11 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { OrganisationService } from '../../../services/organisation';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
-import { MarkdownModule } from '../../markdown';
 import { FieldsFilterPipe } from '../complex';
 import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils';
 import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
+import { MarkdownComponent } from '../markdown/markdown.component';
 
 describe('ReadOrganisationFieldRawComponent', () => {
   let component: ReadOrganisationFieldRawComponent;
@@ -107,10 +107,10 @@ describe('ReadOrganisationFieldRawComponent', () => {
         CommonModule,
         HttpClientTestingModule,
         ReactiveFormsModule,
-        MarkdownModule,
         PaletteUtilsModule
       ],
       declarations: [
+        MarkdownComponent,
         ReadOrganisationFieldRawComponent,
         FieldsFilterPipe,
         FieldReadComponent

@@ -1,6 +1,6 @@
 
 import { of, throwError } from 'rxjs';
-import { AbstractAppConfig } from '../../../';
+import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../../services/http';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivityService } from './activity.service';

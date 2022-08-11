@@ -5,7 +5,7 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { OrganisationService } from '../../../services/organisation';
 import { WindowService } from '../../../services/window';
-import { MarkdownModule } from '../../markdown';
+import { MarkdownComponent } from '../markdown/markdown.component';
 import { WriteOrganisationComplexFieldComponent } from './write-organisation-complex-field.component';
 import { WriteOrganisationFieldComponent } from './write-organisation-field.component';
 
@@ -92,10 +92,10 @@ describe('WriteOrganisationFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        ReactiveFormsModule,
-        MarkdownModule
+        ReactiveFormsModule
       ],
       declarations: [
+        MarkdownComponent,
         WriteOrganisationFieldComponent,
         WriteOrganisationComplexFieldComponent
       ],

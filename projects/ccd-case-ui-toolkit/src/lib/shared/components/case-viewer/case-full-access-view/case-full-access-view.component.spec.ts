@@ -11,6 +11,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
 import { of, Subject } from 'rxjs';
+import { ComplexModule } from 'src/shared/components/palette/complex/complex.module';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
 import { DeleteOrCancelDialogComponent } from '../../../components/dialogs';
@@ -39,7 +40,7 @@ import { DraftService } from '../../../services/draft';
 import { OrderService } from '../../../services/order';
 import { attr, text } from '../../../test/helpers';
 import { CaseNotifier, ConvertHrefToRouterService } from '../../case-editor';
-import { ComplexModule, PaletteModule } from '../../palette';
+import { PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -1156,7 +1157,6 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
         imports: [
           PaletteUtilsModule,
           MatTabsModule,
-          ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,

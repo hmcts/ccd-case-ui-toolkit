@@ -10,9 +10,10 @@ import {
   UrlSegment
 } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { CaseNotifier } from '..';
-import { CaseField } from '../..';
-import { AbstractAppConfig, CaseView } from '../../..';
+import { AbstractAppConfig } from '../../../app.config';
+import { CaseView } from '../../domain/case-view/case-view.model';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { CaseNotifier } from '../case-editor/services/case.notifier';
 import { CaseViewerComponent } from './case-viewer.component';
 import createSpyObj = jasmine.createSpyObj;
 

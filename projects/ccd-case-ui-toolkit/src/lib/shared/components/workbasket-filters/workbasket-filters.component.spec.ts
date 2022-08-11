@@ -4,13 +4,17 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
-import {
-  AbstractFieldWriteComponent, AlertService, CaseType, FieldTypeEnum, Jurisdiction, JurisdictionService,
-  OrderService, WindowService
-} from '../..';
 import { ConditionalShowModule } from '../../directives';
+import { CaseType } from '../../domain/definition/case-type.model';
+import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
+import { AlertService } from '../../services/alert/alert.service';
+import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
+import { OrderService } from '../../services/order/order.service';
+import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { AbstractFieldWriteComponent } from '../palette/base-field/abstract-field-write.component';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 import createSpyObj = jasmine.createSpyObj;
 

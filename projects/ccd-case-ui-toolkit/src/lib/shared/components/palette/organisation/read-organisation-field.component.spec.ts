@@ -4,8 +4,8 @@ import { of } from 'rxjs';
 import { CaseField } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { OrganisationService } from '../../../services/organisation';
-import { MarkdownModule } from '../../markdown';
 import { PaletteContext } from '../base-field';
+import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteService } from '../palette.service';
 import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
 import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
@@ -62,9 +62,9 @@ describe('ReadOrganisationFieldComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        MarkdownModule
       ],
       declarations: [
+        MarkdownComponent,
         ReadOrganisationFieldComponent,
         ReadOrganisationFieldRawComponent,
         ReadOrganisationFieldTableComponent

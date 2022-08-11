@@ -26,6 +26,7 @@ import { CallbackErrorsContext } from '../../error';
 import { CcdPageFieldsPipe, FieldsFilterPipe, ReadFieldsFilterPipe } from '../../palette/complex';
 import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
+import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { aWizardPage } from '../case-edit.spec';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
@@ -744,8 +745,8 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
 
       comp.cancel();
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
     });
 
     it('should emit NEW_FORM_DISCARD on create event if cancel triggered and originated from create case', () => {
@@ -759,8 +760,8 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
 
       comp.cancel();
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageComponent.NEW_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
     });
 
     it('should return "Return to case list" text label for cancel button when save and resume enabled', () => {

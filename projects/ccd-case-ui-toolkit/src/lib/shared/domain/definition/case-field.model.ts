@@ -33,7 +33,7 @@ export class CaseField implements Orderable {
   @Type(() => WizardPageField)
   public wizardProps?: WizardPageField;
 
-  private _value: any;
+  public _value: any;
   private _list_items: any = [];
 
   @Expose()

@@ -77,7 +77,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public task: Task;
   public eventCompletionParams: EventCompletionParams;
   public eventCompletionChecksRequired = false;
-  public readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
+  public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
     const bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
 
@@ -469,7 +469,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   private sortFieldsByShowSummaryContent(fields: CaseField[]): CaseField[] {
     return this.orderService
-      .sort(fields, this.SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION)
+      .sort(fields, CaseEditSubmitComponent.SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION)
       .filter(cf => cf.show_summary_content_option);
   }
 
