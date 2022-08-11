@@ -58,6 +58,8 @@ import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { WriteDocumentFieldComponent } from './document/write-document-field.component'
+import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
+import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -104,7 +106,10 @@ const PALETTE_COMPONENTS = [
     // Write
     WriteAddressFieldComponent,
     WriteComplexFieldComponent,
+    WriteOrganisationComplexFieldComponent,
     WriteDocumentFieldComponent,
+    WriteDynamicListFieldComponent,
+    WriteDynamicRadioListFieldComponent,
     WriteTextFieldComponent,
     WriteDateContainerFieldComponent,
     WriteTextAreaFieldComponent,
