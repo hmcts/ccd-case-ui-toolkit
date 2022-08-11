@@ -60,6 +60,7 @@ import { WriteAddressFieldComponent } from './address/write-address-field.compon
 import { WriteDocumentFieldComponent } from './document/write-document-field.component'
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
+import { ReadDocumentFieldComponent } from './document/read-document-field.component';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -85,6 +86,7 @@ const PALETTE_COMPONENTS = [
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadDocumentFieldComponent,
 
     // new
     ReadYesNoFieldComponent,
