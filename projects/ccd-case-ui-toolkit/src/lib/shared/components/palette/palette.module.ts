@@ -56,6 +56,8 @@ import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { WriteDocumentFieldComponent } from './document/write-document-field.component'
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -100,7 +102,9 @@ const PALETTE_COMPONENTS = [
     ReadComplexFieldCollectionTableComponent,
 
     // Write
+    WriteAddressFieldComponent,
     WriteComplexFieldComponent,
+    WriteDocumentFieldComponent,
     WriteTextFieldComponent,
     WriteDateContainerFieldComponent,
     WriteTextAreaFieldComponent,
