@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConditionalShowModule } from '../../directives/conditional-show/conditional-show.module';
-import { DefinitionsModule } from '../../services/definitions/definitions.module';
+import { DefinitionsService } from '../../services/definitions/definitions.service';
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { OrderService } from '../../services/order/order.service';
 import { SearchService } from '../../services/search/search.service';
@@ -18,7 +18,6 @@ import { SearchFiltersComponent } from './search-filters.component';
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
-        DefinitionsModule,
         ConditionalShowModule
     ],
     declarations: [
@@ -26,13 +25,13 @@ import { SearchFiltersComponent } from './search-filters.component';
         SearchFiltersWrapperComponent
     ],
     exports: [
-        SearchFiltersComponent,
         SearchFiltersWrapperComponent
     ],
     providers: [
         SearchService,
         OrderService,
         JurisdictionService,
+        DefinitionsService,
         WindowService
     ]
 })

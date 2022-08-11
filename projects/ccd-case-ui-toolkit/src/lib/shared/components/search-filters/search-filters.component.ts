@@ -11,8 +11,6 @@ import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.se
 import { OrderService } from '../../services/order/order.service';
 import { SearchService } from '../../services/search/search.service';
 import { WindowService } from '../../services/window/window.service';
-
-
 import { SearchInput } from './domain/search-input.model';
 
 const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';

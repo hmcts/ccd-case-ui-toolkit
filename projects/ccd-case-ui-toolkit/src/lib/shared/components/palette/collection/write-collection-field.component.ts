@@ -42,7 +42,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   @ViewChildren('collectionItem')
   private readonly items: QueryList<ElementRef>;
-  private readonly collItems: CollectionItem[] = [];
+  public readonly collItems: CollectionItem[] = [];
 
   constructor(private readonly dialog: MatDialog,
               private readonly scrollToService: ScrollToService,

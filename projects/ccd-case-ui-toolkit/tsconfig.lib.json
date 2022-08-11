@@ -20,7 +20,7 @@
     "baseUrl": "../../node_modules"
   },
   "angularCompilerOptions": {
-    "compilationMode": "partial",
+    // "compilationMode": "partial",
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
     "fullTemplateTypeCheck": true,
