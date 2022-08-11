@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { FormValueService } from '../../../services';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { FormValueService } from '../../../services/form/form-value.service';
 
 // @dynamic
 @Injectable()

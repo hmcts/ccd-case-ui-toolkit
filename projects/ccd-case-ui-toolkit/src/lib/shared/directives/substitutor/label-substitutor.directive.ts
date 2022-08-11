@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
-import { PlaceholderService } from './services';
+import { PlaceholderService } from './services/placeholder.service';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**

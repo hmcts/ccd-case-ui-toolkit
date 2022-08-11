@@ -3,10 +3,11 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { BrowserService, SearchResultViewItemComparatorFactory } from '../../services';
-import { ActivityModule } from '../activity';
+import { BrowserService } from '../../services/browser/browser.service';
+import { SearchResultViewItemComparatorFactory } from '../../services/search-result/sorting/search-result-view-item-comparator-factory';
+import { ActivityModule } from '../activity/activity.module';
 import { PaginationModule } from '../pagination/pagination.module';
-import { PaletteModule } from '../palette';
+import { PaletteModule } from '../palette/palette.module';
 import { SearchResultComponent } from './search-result.component';
 
 @NgModule({
