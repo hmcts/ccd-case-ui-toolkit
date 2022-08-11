@@ -150,7 +150,7 @@ export class CaseField implements Orderable {
       && this.field_type.id === 'CaseLink'
       && this.field_type.complex_fields.some(cf => cf.id === 'CaseReference');
   }
-  private extractBracketValue(fmt: string, paramName: string, leftBracket= '(', rightBracket= ')' ): string {
+  public extractBracketValue(fmt: string, paramName: string, leftBracket= '(', rightBracket= ')' ): string {
       fmt = fmt.split(',')
         .find(a => a.trim().startsWith(paramName));
       if (fmt) {
