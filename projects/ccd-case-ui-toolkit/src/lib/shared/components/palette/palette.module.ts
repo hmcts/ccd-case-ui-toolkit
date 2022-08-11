@@ -35,8 +35,8 @@ import { DatetimePickerComponent } from './datetime-picker';
 import { DocumentUrlPipe } from './document';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
-import { DynamicListPipe } from './dynamic-list';
-import { DynamicRadioListPipe } from './dynamic-radio-list';
+import { DynamicListPipe, ReadDynamicListFieldComponent } from './dynamic-list';
+import { DynamicRadioListPipe, ReadDynamicRadioListFieldComponent } from './dynamic-radio-list';
 import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
 import { FixedListPipe, ReadFixedListFieldComponent, WriteFixedListFieldComponent } from './fixed-list';
 import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioListFieldComponent } from './fixed-radio-list';
@@ -97,8 +97,10 @@ const PALETTE_COMPONENTS = [
     ReadOrderSummaryRowComponent,
     ReadMoneyGbpFieldComponent,
     ReadMultiSelectListFieldComponent,
+    ReadDynamicListFieldComponent,
     ReadFixedListFieldComponent,
     ReadFixedRadioListFieldComponent,
+    ReadDynamicRadioListFieldComponent,
     ReadCaseLinkFieldComponent,
     ReadComplexFieldComponent,
     ReadComplexFieldRawComponent,
