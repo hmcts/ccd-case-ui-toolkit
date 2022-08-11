@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { CaseEventTrigger } from '../../../domain';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 
 @Injectable({
   providedIn: 'root',

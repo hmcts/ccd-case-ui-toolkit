@@ -3,7 +3,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { PaletteContext } from '../../../components/palette/base-field/palette-context.enum';
-import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
+import { CaseEventData } from '../../../domain/case-event-data.model';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { HttpError } from '../../../domain/http/http-error.model';
+import { Profile } from '../../../domain/profile/profile.model';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
@@ -17,8 +21,10 @@ import {
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
 import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { Confirmation, Wizard, WizardPage } from '../domain';
+import { Confirmation } from '../domain/confirmation.model';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
+import { WizardPage } from '../domain/wizard-page.model';
+import { Wizard } from '../domain/wizard.model';
 import { CaseNotifier } from '../services';
 
 // @dynamic

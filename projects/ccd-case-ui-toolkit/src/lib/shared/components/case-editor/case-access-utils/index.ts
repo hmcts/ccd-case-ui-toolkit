@@ -1,4 +1,6 @@
-import { ChallengedAccessRequest, RoleCategory, RoleGrantTypeCategory, RoleRequestPayload, SpecificAccessRequest } from '../../../domain';
+import { ChallengedAccessRequest } from "../../../domain/case-view/challenged-access-request.model";
+import { RoleCategory, RoleGrantTypeCategory, RoleRequestPayload } from "../../../domain/case-view/role-request.model";
+import { SpecificAccessRequest } from "../../../domain/case-view/specific-access-request.model";
 
 export class CaseAccessUtils {
     // User role mapping

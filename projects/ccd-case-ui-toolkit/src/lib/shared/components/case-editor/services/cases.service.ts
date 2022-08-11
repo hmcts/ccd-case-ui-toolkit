@@ -6,14 +6,15 @@ import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
-import {
-  CaseEventData,
-  CaseEventTrigger, CasePrintDocument,
-  CaseView,
-  ChallengedAccessRequest, Draft, RoleAssignmentResponse,
-  RoleCategory,
-  RoleRequestPayload, SpecificAccessRequest
-} from '../../../domain';
+import { CaseEventData } from '../../../domain/case-event-data.model';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { CasePrintDocument } from '../../../domain/case-view/case-print-document.model';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { ChallengedAccessRequest } from '../../../domain/case-view/challenged-access-request.model';
+import { RoleAssignmentResponse } from '../../../domain/case-view/role-assignment-response.model';
+import { RoleCategory, RoleRequestPayload } from '../../../domain/case-view/role-request.model';
+import { SpecificAccessRequest } from '../../../domain/case-view/specific-access-request.model';
+import { Draft } from '../../../domain/draft.model';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
 import { CaseAccessUtils } from '../case-access-utils';

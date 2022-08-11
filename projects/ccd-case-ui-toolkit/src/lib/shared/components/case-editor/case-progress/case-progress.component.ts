@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
+import { CaseEventData } from '../../../domain/case-event-data.model';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { HttpError } from '../../../domain/http/http-error.model';
 
-import { CaseEventData, CaseEventTrigger, CaseView, HttpError } from '../../../domain';
 import { AlertService } from '../../../services';
 import { CasesService, EventTriggerService } from '../services';
 

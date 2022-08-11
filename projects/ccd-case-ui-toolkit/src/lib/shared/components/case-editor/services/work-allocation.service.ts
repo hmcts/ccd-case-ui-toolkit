@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
-import { TaskSearchParameter } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
 import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
+import { TaskSearchParameter } from '../../../domain/work-allocation/task-search-parameter.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { AlertService, HttpErrorService, HttpService } from '../../../services';
 

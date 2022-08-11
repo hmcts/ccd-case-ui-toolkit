@@ -16,8 +16,6 @@ import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 
-
-
 @Component({
   selector: 'ccd-case-edit',
   templateUrl: 'case-edit.component.html',

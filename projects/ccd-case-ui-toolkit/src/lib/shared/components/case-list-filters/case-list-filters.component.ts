@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Jurisdiction } from '../../domain';
 import { READ_ACCESS } from '../../domain/case-view/access-types.model';
-import { DefinitionsService } from '../../services';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
+import { DefinitionsService } from '../../services/definitions/definitions.service';
 
 @Component({
   selector: 'ccd-case-list-filters',

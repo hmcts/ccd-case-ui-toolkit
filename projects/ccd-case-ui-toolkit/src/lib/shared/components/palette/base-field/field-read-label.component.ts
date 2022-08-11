@@ -3,7 +3,6 @@ import { plainToClassFromExist } from 'class-transformer';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
-import { AbstractFormFieldComponent } from './abstract-form-field.component';
 
 @Component({
   selector: 'ccd-field-read-label',

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ShowCondition } from '../../../directives/conditional-show/domain';
-import { CaseField } from '../../../domain';
-import { WizardPageField } from '../domain';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { ComplexFieldOverride } from '../domain/wizard-page-field-complex-override.model';
+import { WizardPageField } from '../domain/wizard-page-field.model';
 
 @Injectable({
   providedIn: 'root',

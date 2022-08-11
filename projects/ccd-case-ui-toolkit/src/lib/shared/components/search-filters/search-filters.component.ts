@@ -25,9 +25,9 @@ const CASE_TYPE_LOC_STORAGE = 'search-caseType';
 })
 
 export class SearchFiltersComponent implements OnInit {
-  public static readonly PARAM_JURISDICTION = 'jurisdiction';
-  public static readonly PARAM_CASE_TYPE = 'case-type';
-  public static readonly PARAM_CASE_STATE = 'case-state';
+  public readonly PARAM_JURISDICTION = 'jurisdiction';
+  public readonly PARAM_CASE_TYPE = 'case-type';
+  public readonly PARAM_CASE_STATE = 'case-state';
   public caseFields: CaseField[];
 
   @Input()
@@ -192,13 +192,13 @@ export class SearchFiltersComponent implements OnInit {
     // Save filters as query parameters for current route
     const queryParams = {};
     if (this.selected.jurisdiction) {
-      queryParams[SearchFiltersComponent.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
+      queryParams[this.PARAM_JURISDICTION] = this.selected.jurisdiction.id;
     }
     if (this.selected.caseType) {
-      queryParams[SearchFiltersComponent.PARAM_CASE_TYPE] = this.selected.caseType.id;
+      queryParams[this.PARAM_CASE_TYPE] = this.selected.caseType.id;
     }
     if (this.selected.caseState) {
-      queryParams[SearchFiltersComponent.PARAM_CASE_STATE] = this.selected.caseState.id;
+      queryParams[this.PARAM_CASE_STATE] = this.selected.caseState.id;
     }
     return queryParams;
   }
