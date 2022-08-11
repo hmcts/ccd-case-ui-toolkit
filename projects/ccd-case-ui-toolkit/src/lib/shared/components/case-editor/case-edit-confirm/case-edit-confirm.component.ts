@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { CaseField } from '../../../domain/definition';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation } from '../domain/confirmation.model';

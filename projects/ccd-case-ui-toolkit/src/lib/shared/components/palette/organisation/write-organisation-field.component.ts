@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { CaseField } from '../../../domain/definition';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/organisation';
-import { WindowService } from '../../../services';
 import { OrganisationService, OrganisationVm } from '../../../services/organisation';
+import { WindowService } from '../../../services/window/index';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({

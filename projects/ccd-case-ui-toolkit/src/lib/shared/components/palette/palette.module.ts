@@ -17,11 +17,12 @@ import { FormModule } from '../../../components/form/form.module';
 
 import { PaletteUtilsModule } from './utils';
 
-import { LabelSubstitutorModule } from '../../directives';
 import { PipesModule } from '../../pipes/pipes.module';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 
 import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { WindowService } from '../../services/window';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -55,7 +56,6 @@ import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { RouterModule } from '@angular/router';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,

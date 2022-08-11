@@ -1,8 +1,9 @@
 import { Directive, Input } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
-import { CaseField } from '../../../domain';
-import { FieldsUtils } from '../../../services';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
+
 
 type FormContainer = FormGroup | FormArray;
 

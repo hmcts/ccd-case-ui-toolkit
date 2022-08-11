@@ -3,10 +3,17 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 
-import { WizardPage } from '../../components/case-editor/domain';
+import { WizardPage } from '../../components/case-editor/domain/wizard-page.model';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
-import { DatePipe } from '../../components/palette/utils';
-import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
+import { DatePipe } from '../../components/palette/utils/date.pipe';
+import { CaseEventTrigger } from '../../domain/case-view/case-event-trigger.model';
+import { CaseTab } from '../../domain/case-view/case-tab.model';
+import { CaseView } from '../../domain/case-view/case-view.model';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
+import { FieldType } from '../../domain/definition/field-type.model';
+import { FixedListItem } from '../../domain/definition/fixed-list-item.model';
+import { Predicate } from '../../domain/predicate.model';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
 
 // @dynamic

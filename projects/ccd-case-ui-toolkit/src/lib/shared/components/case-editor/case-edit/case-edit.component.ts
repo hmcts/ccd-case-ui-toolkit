@@ -3,11 +3,20 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
-import { CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
-import { FieldsPurger, FieldsUtils } from '../../../services';
-import { Confirmation, Wizard, WizardPage } from '../domain';
-import { WizardFactoryService } from '../services';
+import { ConditionalShowRegistrarService } from '../../../directives/conditional-show/services/conditional-show-registrar.service';
+import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { Draft } from '../../../domain/draft.model';
+import { Profile } from '../../../domain/profile/profile.model';
+import { FieldsPurger } from '../../../services/fields/fields.purger';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { Confirmation } from '../domain/confirmation.model';
+import { WizardPage } from '../domain/wizard-page.model';
+import { Wizard } from '../domain/wizard.model';
+import { WizardFactoryService } from '../services/wizard-factory.service';
+
+
 
 @Component({
   selector: 'ccd-case-edit',

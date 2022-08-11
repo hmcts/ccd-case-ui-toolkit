@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { SearchInput } from '../../components/search-filters';
-import { SearchResultView } from '../../domain/search';
+import { SearchResultView } from '../../domain/search/search-result-view.model';
 import { HttpService, OptionsType } from '../http';
 import { LoadingService } from '../loading';
 import { RequestOptionsBuilder, SearchView } from '../request';

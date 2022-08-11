@@ -2,8 +2,8 @@ import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild
 import { AbstractControl } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 
-import { CaseField } from '../../../domain/definition';
-import { FormValidatorsService } from '../../../services/form';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FormValidatorsService } from '../../../services/form/form-validators.service';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 

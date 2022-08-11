@@ -5,12 +5,13 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
-import { FieldType } from '../../../domain';
+import { FieldType } from '../../../domain/definition/field-type.model';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
-import { Profile } from '../../../domain/profile';
-import { FieldsUtils, ProfileNotifier } from '../../../services';
+import { Profile } from '../../../domain/profile/profile.model';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { ProfileNotifier } from '../../../services/profile/profile.notifier';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 

@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { Wizard, WizardPage, WizardPageField } from '../../components/case-editor';
+
+import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
+import { WizardPage } from '../../components/case-editor/domain/wizard-page.model';
+import { Wizard } from '../../components/case-editor/domain/wizard.model';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
-import { CaseEventTrigger } from '../../domain';
-import { CaseField, FieldTypeEnum } from '../../domain/definition';
+import { CaseEventTrigger } from '../../domain/case-view/case-event-trigger.model';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 import { FieldsUtils } from './fields.utils';
 
 // @dynamic

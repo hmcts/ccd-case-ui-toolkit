@@ -1,8 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { tap } from 'rxjs/operators';
-import { CaseField, CaseState, CaseTypeLite, Jurisdiction } from '../../domain';
-import { FieldsUtils, JurisdictionService, OrderService, SearchService, WindowService } from '../../services';
+
+import { CaseField } from '../../domain/definition/case-field.model';
+import { CaseState } from '../../domain/definition/case-state.model';
+import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
+import { FieldsUtils } from '../../services/fields/fields.utils';
+import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
+import { OrderService } from '../../services/order/order.service';
+import { SearchService } from '../../services/search/search.service';
+import { WindowService } from '../../services/window/window.service';
+
+
 import { SearchInput } from './domain/search-input.model';
 
 const JURISDICTION_LOC_STORAGE = 'search-jurisdiction';

@@ -7,7 +7,7 @@ import { AbstractFieldWriteComponent } from '../../components/palette/base-field
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
-import { ShowCondition } from './domain';
+import { ShowCondition } from './domain/conditional-show.model';
 
 @Directive({ selector: '[ccdConditionalShowForm]' })
 /** Hides and shows all fields in a form. Works on read only fields and form fields.

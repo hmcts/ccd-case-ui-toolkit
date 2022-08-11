@@ -1,9 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
+import { CaseEventData } from '../../../domain/case-event-data.model';
 
-import { CaseEventData, CaseEventTrigger, Draft, HttpError } from '../../../domain';
-import { AlertService, DraftService } from '../../../services';
-import { CasesService, EventTriggerService } from '../services';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { Draft } from '../../../domain/draft.model';
+import { HttpError } from '../../../domain/http/http-error.model';
+import { AlertService } from '../../../services/alert/alert.service';
+import { DraftService } from '../../../services/draft/draft.service';
+import { CasesService } from '../services/cases.service';
+import { EventTriggerService } from '../services/event-trigger.service';
 
 @Component({
   selector: 'ccd-case-create',
