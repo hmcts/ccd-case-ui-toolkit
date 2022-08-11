@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
-import { CaseEventData, CaseView, Draft, DRAFT_PREFIX } from '../../domain';
+import { CaseEventData } from '../../domain/case-event-data.model';
+import { CaseView } from '../../domain/case-view/case-view.model';
+import { Draft, DRAFT_PREFIX } from '../../domain/draft.model';
 import { HttpErrorService, HttpService } from '../http';
 
 @Injectable()

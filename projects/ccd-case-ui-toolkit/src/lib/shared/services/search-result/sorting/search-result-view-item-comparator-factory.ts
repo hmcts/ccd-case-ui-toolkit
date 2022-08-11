@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { isUndefined } from 'util';
-import { SearchResultViewColumn, SearchResultViewItem, SearchResultViewItemComparator } from '../../../domain';
+import { SearchResultViewColumn } from '../../../domain/search/search-result-view-column.model';
+import { SearchResultViewItem } from '../../../domain/search/search-result-view-item.model';
+import { SearchResultViewItemComparator } from '../../../domain/search/sorting/search-result-view-item-comparator';
 
 @Injectable()
 export class SearchResultViewItemComparatorFactory {

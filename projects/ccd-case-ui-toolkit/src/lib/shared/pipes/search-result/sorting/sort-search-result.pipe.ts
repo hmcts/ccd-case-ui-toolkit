@@ -1,6 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { isUndefined } from 'util';
-import { SearchResultViewItem, SortOrder, SortParameters } from '../../../domain';
+import { SortOrder } from '../../../components/palette/complex/sort-order';
+import { SearchResultViewItem } from '../../../domain/search/search-result-view-item.model';
+import { SortParameters } from '../../../domain/search/sorting/sort-parameters';
 
 @Pipe({
   name: 'ccdSortSearchResult'

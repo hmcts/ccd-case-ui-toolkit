@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../app.config';
-import { Activity } from '../../domain/activity';
-import { HttpError } from '../../domain/http';
+import { Activity } from '../../domain/activity/activity.model';
+import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService, HttpService, OptionsType } from '../http';
 import { SessionStorageService } from '../session';
 

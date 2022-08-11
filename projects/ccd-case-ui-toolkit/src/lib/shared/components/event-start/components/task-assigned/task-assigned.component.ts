@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Task } from '../../../../domain/work-allocation/Task';
-import { CaseworkerService, JudicialworkerService } from '../../../case-editor/services';
+import { CaseworkerService } from '../../../case-editor/services/case-worker.service';
+import { JudicialworkerService } from '../../../case-editor/services/judicial-worker.service';
 
 @Component({
   selector: 'app-task-assigned',

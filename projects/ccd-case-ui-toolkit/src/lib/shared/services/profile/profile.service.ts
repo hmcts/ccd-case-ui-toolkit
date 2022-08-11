@@ -4,8 +4,8 @@ import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
-import { Profile } from '../../domain';
-import { HttpService } from '../http';
+import { Profile } from '../../domain/profile/profile.model';
+import { HttpService } from '../http/http.service';
 
 @Injectable()
 export class ProfileService {

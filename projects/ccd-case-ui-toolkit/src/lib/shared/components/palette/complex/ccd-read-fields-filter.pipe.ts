@@ -2,9 +2,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 
 import { plainToClassFromExist } from 'class-transformer';
-import { ShowCondition } from '../../../directives';
-import { CaseField } from '../../../domain';
-import { FieldsUtils } from '../../../services/fields';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 @Pipe({
   name: 'ccdReadFieldsFilter'

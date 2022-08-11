@@ -1,4 +1,5 @@
-import { CaseField, CaseView } from '../domain';
+import { CaseView } from '../domain/case-view/case-view.model';
+import { CaseField } from '../domain/definition/case-field.model';
 import { createCaseTabArray } from './case-tab.test.fixture';
 
 export let createCaseView = () => {

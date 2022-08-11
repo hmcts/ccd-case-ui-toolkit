@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ActivityPollingService, ActivityService } from '../../services';
+import { ActivityPollingService } from '../../services/activity/activity.polling.service';
+import { ActivityService } from '../../services/activity/activity.service';
 import { SessionStorageService } from '../../services/session/session-storage.service';
 import { ActivityBannerComponent } from './activity-banner';
 import { ActivityIconComponent } from './activity-icon';

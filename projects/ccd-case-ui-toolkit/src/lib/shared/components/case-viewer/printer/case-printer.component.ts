@@ -1,9 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { CasePrintDocument, CaseView, HttpError } from '../../../domain';
-import { AlertService } from '../../../services';
-import { CaseNotifier, CasesService } from '../../case-editor';
+import { CasePrintDocument } from '../../../domain/case-view/case-print-document.model';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { HttpError } from '../../../domain/http/http-error.model';
+import { AlertService } from '../../../services/alert/alert.service';
+import { CaseNotifier } from '../../case-editor/services/case.notifier';
+import { CasesService } from '../../case-editor/services/cases.service';
 
 @Component({
   templateUrl: './case-printer.html'

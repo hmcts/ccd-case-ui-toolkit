@@ -2,8 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-
-import { HttpError } from '../../domain/http';
+import { HttpError } from '../../domain/http/http-error.model';
 import { HttpErrorService } from './http-error.service';
 
 @Injectable()

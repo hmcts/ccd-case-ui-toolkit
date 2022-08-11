@@ -1,5 +1,5 @@
 import { CaseTab, CaseView } from '../../domain/case-view';
-import { CaseField } from '../../domain/definition';
+import { CaseField } from '../../domain/definition/case-field.model';
 import { aCaseField } from '../../fixture/shared.test.fixture';
 import { FieldsUtils } from './fields.utils';
 

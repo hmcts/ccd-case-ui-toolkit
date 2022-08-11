@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Task } from '../../../domain/work-allocation/Task';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { SessionStorageService } from '../../../services';
-import { WorkAllocationService } from '../../case-editor';
+import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { WorkAllocationService } from '../../case-editor/services/work-allocation.service';
 
 @Injectable()
 export class EventTasksResolverService implements Resolve<Task[]> {

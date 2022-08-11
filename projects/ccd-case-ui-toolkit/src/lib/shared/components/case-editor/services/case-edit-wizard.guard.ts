@@ -6,7 +6,7 @@ import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.m
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { Predicate } from '../../../domain/predicate.model';
 import { AlertService } from '../../../services/alert/alert.service';
-import { FieldsUtils } from '../../../services/fields';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { RouterHelperService } from '../../../services/router/router-helper.service';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';

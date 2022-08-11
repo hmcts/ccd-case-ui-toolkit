@@ -1,14 +1,24 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
-import { PlaceholderService } from '../../directives';
-import {
-  CaseField, CaseState, CaseType, DisplayMode,
-  DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
-  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
-} from '../../domain';
-import { CaseReferencePipe } from '../../pipes';
-import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory } from '../../services';
+import { PlaceholderService } from '../../directives/substitutor/services/placeholder.service';
+import { DisplayMode } from '../../domain/activity/activity.model';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { CaseState } from '../../domain/definition/case-state.model';
+import { CaseType } from '../../domain/definition/case-type.model';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
+import { DRAFT_PREFIX } from '../../domain/draft.model';
+import { PaginationMetadata } from '../../domain/pagination-metadata.model';
+import { SearchResultViewColumn } from '../../domain/search/search-result-view-column.model';
+import { SearchResultViewItem } from '../../domain/search/search-result-view-item.model';
+import { SearchResultView } from '../../domain/search/search-result-view.model';
+import { SearchResultViewItemComparator } from '../../domain/search/sorting/search-result-view-item-comparator';
+import { SortOrder } from '../../domain/search/sorting/sort-order';
+import { SortParameters } from '../../domain/search/sorting/sort-parameters';
+import { CaseReferencePipe } from '../../pipes/case-reference/case-reference.pipe';
+import { ActivityService } from '../../services/activity/activity.service';
+import { BrowserService } from '../../services/browser/browser.service';
+import { SearchResultViewItemComparatorFactory } from '../../services/search-result/sorting/search-result-view-item-comparator-factory';
 
 @Component({
   selector: 'ccd-search-result',

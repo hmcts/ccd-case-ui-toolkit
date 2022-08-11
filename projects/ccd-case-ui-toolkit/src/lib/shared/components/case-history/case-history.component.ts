@@ -9,7 +9,7 @@ import { CaseView } from '../../domain/case-view/case-view.model';
 import { HttpError } from '../../domain/http/http-error.model';
 import { AlertService } from '../../services/alert/alert.service';
 import { OrderService } from '../../services/order/order.service';
-import { CaseNotifier } from '../case-editor';
+import { CaseNotifier } from '../case-editor/services/case.notifier';
 import { CaseHistoryService } from './services/case-history.service';
 
 @Component({

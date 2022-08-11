@@ -3,10 +3,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-
 import { Constants } from '../../../commons/constants';
-import { DocumentData, FormDocument } from '../../../domain';
+
+
 import { CaseView } from '../../../domain/case-view/case-view.model';
+import { DocumentData, FormDocument } from '../../../domain/document/document-data.model';
 import { HttpError } from '../../../domain/http/http-error.model';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';

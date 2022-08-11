@@ -16,9 +16,14 @@ import { RoleCategory, RoleRequestPayload } from '../../../domain/case-view/role
 import { SpecificAccessRequest } from '../../../domain/case-view/specific-access-request.model';
 import { Draft } from '../../../domain/draft.model';
 import { UserInfo } from '../../../domain/user/user-info.model';
-import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { HttpErrorService } from '../../../services/http/http-error.service';
+import { HttpService } from '../../../services/http/http.service';
+import { LoadingService } from '../../../services/loading/loading.service';
+import { OrderService } from '../../../services/order/order.service';
+import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { CaseAccessUtils } from '../case-access-utils';
-import { WizardPage } from '../domain';
+import { WizardPage } from '../domain/wizard-page.model';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
 

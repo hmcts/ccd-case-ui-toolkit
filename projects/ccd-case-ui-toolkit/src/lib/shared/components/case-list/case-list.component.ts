@@ -1,6 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BrowserService } from '../../services';
+import { BrowserService } from '../../services/browser/browser.service';
 
 export class DateTimeFormatUtils {
   public static formatDateAtTime(date: Date, is24Hour: boolean): string {

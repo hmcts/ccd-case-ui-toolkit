@@ -4,10 +4,10 @@ import { FormControl } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
 import { StorybookComponent } from 'storybook/storybook.component';
-import { PaletteModule } from '..';
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
-import { CaseFieldService } from '../../../../shared/services';
 import { FormatTranslatorService } from '../../../../shared/services/case-fields/format-translator.service';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { PaletteModule } from '../palette.module';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { DatetimePickerComponent } from './datetime-picker.component';
 

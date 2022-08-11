@@ -1,4 +1,5 @@
-import { Field, Orderable } from '../../../domain';
+import { Orderable } from "../../../domain/order/orderable.model";
+import { Field } from "../../../domain/search/field.model";
 
 export class SearchInput implements Orderable {
     constructor(

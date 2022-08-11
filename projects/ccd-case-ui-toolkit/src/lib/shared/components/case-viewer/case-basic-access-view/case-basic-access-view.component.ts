@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { CaseView } from '../../../domain';
+import { CaseView } from '../../../domain/case-view/case-view.model';
 import { CasesService } from '../../case-editor/services/cases.service';
 
 @Component({

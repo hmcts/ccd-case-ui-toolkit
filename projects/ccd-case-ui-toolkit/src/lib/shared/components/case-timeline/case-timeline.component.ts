@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CaseViewEvent, HttpError } from '../../domain';
-import { AlertService } from '../../services';
+import { CaseViewEvent } from '../../domain/case-view/case-view-event.model';
+import { HttpError } from '../../domain/http/http-error.model';
+import { AlertService } from '../../services/alert/alert.service';
 import { CaseNotifier, CasesService } from '../case-editor';
 
 export enum CaseTimelineDisplayMode {

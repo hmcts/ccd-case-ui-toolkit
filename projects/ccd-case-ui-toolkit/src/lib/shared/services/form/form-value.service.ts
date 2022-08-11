@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-
-import { CaseField } from '../../domain';
-import { FieldsUtils } from '../fields';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { FieldsUtils } from '../fields/fields.utils';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()

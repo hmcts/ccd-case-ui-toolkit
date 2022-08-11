@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { CaseField } from '../../../domain/definition';
-import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/organisation';
-import { OrganisationService, OrganisationVm } from '../../../services/organisation';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { OrganisationConverter } from '../../../domain/organisation/organisation-converter';
+import { SimpleOrganisationModel } from '../../../domain/organisation/simple-organisation.model';
+import { OrganisationService, OrganisationVm } from '../../../services/organisation/organisation.service';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 
 @Component({

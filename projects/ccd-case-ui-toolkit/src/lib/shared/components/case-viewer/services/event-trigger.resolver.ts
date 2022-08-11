@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { CaseEventTrigger, Profile } from '../../../domain';
-import { AlertService, ProfileNotifier, ProfileService } from '../../../services';
-import { CasesService } from '../../case-editor';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { Profile } from '../../../domain/profile/profile.model';
+import { AlertService } from '../../../services/alert/alert.service';
+import { ProfileNotifier } from '../../../services/profile/profile.notifier';
+import { ProfileService } from '../../../services/profile/profile.service';
+import { CasesService } from '../../case-editor/services/cases.service';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {

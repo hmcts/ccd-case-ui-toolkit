@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Jurisdiction } from '../../domain';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 
 @Injectable()
 export class JurisdictionService {

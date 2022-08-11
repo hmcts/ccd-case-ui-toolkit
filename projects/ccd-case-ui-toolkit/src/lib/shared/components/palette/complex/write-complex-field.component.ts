@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
-
 import { Constants } from '../../../commons/constants';
-import { CaseField } from '../../../domain/definition';
-import { FieldsUtils, FormValidatorsService } from '../../../services';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { FormValidatorsService } from '../../../services/form/form-validators.service';
+
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';

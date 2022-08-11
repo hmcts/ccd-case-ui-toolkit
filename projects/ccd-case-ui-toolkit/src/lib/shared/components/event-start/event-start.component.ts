@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateMachine } from '@edium/fsm';
 import { Task } from '../../domain/work-allocation/Task';
-import { SessionStorageService } from '../../services';
-import { EventStartStateMachineContext } from './models';
-import { EventStartStateMachineService } from './services';
+import { SessionStorageService } from '../../services/session/session-storage.service';
+import { EventStartStateMachineContext } from './models/event-start-state-machine-context.model';
+import { EventStartStateMachineService } from './services/event-start-state-machine.service';
 
 @Component({
   selector: 'ccd-event-start',

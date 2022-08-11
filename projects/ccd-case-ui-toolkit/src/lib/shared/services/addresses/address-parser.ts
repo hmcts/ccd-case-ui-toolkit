@@ -1,4 +1,4 @@
-import { AddressModel } from '../../domain';
+import { AddressModel } from '../../domain/addresses/address.model';
 import { AddressesService } from './addresses.service';
 
 /**

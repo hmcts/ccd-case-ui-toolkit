@@ -3,7 +3,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseworkersByService } from '../../../domain/work-allocation/case-worker.model';
-import { HttpErrorService, HttpService } from '../../../services';
+import { HttpErrorService } from '../../../services/http/http-error.service';
+import { HttpService } from '../../../services/http/http.service';
 
 @Injectable()
 export class CaseworkerService {

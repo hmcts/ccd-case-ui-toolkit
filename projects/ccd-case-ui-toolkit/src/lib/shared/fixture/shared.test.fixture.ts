@@ -1,10 +1,13 @@
-import { WizardPage, WizardPageField } from '../components/case-editor/domain';
 import { ComplexFieldOverride } from '../components/case-editor/domain/wizard-page-field-complex-override.model';
-import { ShowCondition } from '../directives/conditional-show/domain';
-import { FieldType, FieldTypeEnum } from '../domain';
+import { WizardPageField } from '../components/case-editor/domain/wizard-page-field.model';
+import { WizardPage } from '../components/case-editor/domain/wizard-page.model';
+import { ShowCondition } from '../directives/conditional-show/domain/conditional-show.model';
 import { CaseEventTrigger } from '../domain/case-view/case-event-trigger.model';
-import { CaseField, FixedListItem } from '../domain/definition';
 import { AccessControlList } from '../domain/definition/access-control-list.model';
+import { CaseField } from '../domain/definition/case-field.model';
+import { FieldTypeEnum } from '../domain/definition/field-type-enum.model';
+import { FieldType } from '../domain/definition/field-type.model';
+import { FixedListItem } from '../domain/definition/fixed-list-item.model';
 import { CaseFieldBuilder } from './case-field-builder';
 
 export const textFieldType = (): FieldType => {

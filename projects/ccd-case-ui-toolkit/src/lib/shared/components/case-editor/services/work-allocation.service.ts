@@ -6,7 +6,9 @@ import { UserDetails } from '../../../domain/user/user-details.model';
 import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
 import { TaskSearchParameter } from '../../../domain/work-allocation/task-search-parameter.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { AlertService, HttpErrorService, HttpService } from '../../../services';
+import { AlertService } from '../../../services/alert/alert.service';
+import { HttpErrorService } from '../../../services/http/http-error.service';
+import { HttpService } from '../../../services/http/http.service';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 

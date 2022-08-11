@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
-import { Banner } from '../../domain';
+import { Banner } from '../../domain/definition/banner.model';
 import { HttpService } from '../http/http.service';
 
 @Injectable()

@@ -5,9 +5,9 @@ import { StorybookComponent } from 'storybook/storybook.component';
 import { OrganisationConverter } from '../../../../shared/domain/organisation/organisation-converter';
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { OrganisationService } from '../../../../shared/services/organisation/organisation.service';
-import { MarkdownModule } from '../../markdown/markdown.module';
+import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteService } from '../palette.service';
-import { PaletteUtilsModule } from '../utils';
+import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
 import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
 import { ReadOrganisationFieldComponent } from './read-organisation-field.component';
@@ -29,11 +29,10 @@ export default {
       imports: [
         PaletteUtilsModule,
         FormsModule,
-        ReactiveFormsModule,
-        MarkdownModule
+        ReactiveFormsModule
       ],
       declarations: [
-        ReadOrganisationFieldRawComponent, ReadOrganisationFieldTableComponent, StorybookComponent
+        MarkdownComponent, ReadOrganisationFieldRawComponent, ReadOrganisationFieldTableComponent, StorybookComponent
       ],
       providers: [
         MockProvider(OrganisationService),

@@ -4,9 +4,11 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseView } from '../../../domain/case-view/case-view.model';
 import { HttpError } from '../../../domain/http/http-error.model';
+import { AlertService } from '../../../services/alert/alert.service';
+import { CasesService } from '../services/cases.service';
+import { EventTriggerService } from '../services/event-trigger.service';
 
-import { AlertService } from '../../../services';
-import { CasesService, EventTriggerService } from '../services';
+
 
 @Component({
   selector: 'ccd-case-progress',

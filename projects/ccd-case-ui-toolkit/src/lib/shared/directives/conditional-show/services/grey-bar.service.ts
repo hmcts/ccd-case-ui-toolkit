@@ -1,5 +1,5 @@
 import { ElementRef, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { CaseField } from '../../../domain';
+import { CaseField } from '../../../domain/definition/case-field.model';
 
 /** Keeps track of initially hidden fields that toggle to show on the page (parent page).
  *  Used to decide whether to redisplay the grey bar when returning to the page during

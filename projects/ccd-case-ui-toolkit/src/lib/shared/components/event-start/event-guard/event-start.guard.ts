@@ -4,8 +4,8 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { SessionStorageService } from '../../../services';
-import { WorkAllocationService } from '../../case-editor';
+import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { WorkAllocationService } from '../../case-editor/services/work-allocation.service';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {

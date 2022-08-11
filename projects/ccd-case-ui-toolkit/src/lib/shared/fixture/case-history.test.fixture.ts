@@ -1,4 +1,4 @@
-import { CaseHistory, CaseHistoryCaseType } from '../components/case-history/domain';
+import { CaseHistory, CaseHistoryCaseType } from '../components/case-history/domain/case-history.model';
 import { createCaseTabArray } from './case-tab.test.fixture';
 import { createCaseViewEvent } from './case-view-event.test.fixture';
 import { createJurisdiction } from './jurisdiction.test.fixture';

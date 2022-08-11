@@ -6,22 +6,26 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { initDialog } from 'src/shared/components/helpers/init-dialog-helper';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
+import { Activity, DisplayMode } from '../../../domain/activity/activity.model';
+import { CaseTab } from '../../../domain/case-view/case-tab.model';
+import { CaseViewTrigger } from '../../../domain/case-view/case-view-trigger.model';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { Draft, DRAFT_QUERY_PARAM } from '../../../domain/draft.model';
+import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
+import { AlertService } from '../../../services/alert/alert.service';
+import { DraftService } from '../../../services/draft/draft.service';
+import { ErrorNotifierService } from '../../../services/error/error-notifier.service';
+import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
+import { NavigationOrigin } from '../../../services/navigation/navigation-origin.model';
+import { OrderService } from '../../../services/order/order.service';
+import { ConvertHrefToRouterService } from '../../case-editor/services/convert-href-to-router.service';
+import { DeleteOrCancelDialogComponent } from '../../dialogs/delete-or-cancel-dialog/delete-or-cancel-dialog.component';
+import { CallbackErrorsContext } from '../../error/domain/error-context';
 
-import { ShowCondition } from '../../../directives';
-import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
-import {
-  ActivityPollingService,
-  AlertService,
-  DraftService,
-  ErrorNotifierService,
-  NavigationNotifierService,
-  NavigationOrigin,
-  OrderService
-} from '../../../services';
-import { ConvertHrefToRouterService } from '../../case-editor/services';
-import { DeleteOrCancelDialogComponent } from '../../dialogs';
-import { CallbackErrorsContext } from '../../error';
-import { initDialog } from '../../helpers';
+
 
 @Component({
   selector: 'ccd-case-full-access-view',

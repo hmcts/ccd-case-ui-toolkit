@@ -3,9 +3,11 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import { OrganisationConverter, SimpleOrganisationModel } from '../../../domain/organisation';
-import { OrganisationService, OrganisationVm } from '../../../services/organisation';
-import { WindowService } from '../../../services/window/index';
+import { OrganisationConverter } from '../../../domain/organisation/organisation-converter';
+import { SimpleOrganisationModel } from '../../../domain/organisation/simple-organisation.model';
+import { OrganisationService, OrganisationVm } from '../../../services/organisation/organisation.service';
+import { WindowService } from '../../../services/window/window.service';
+
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({

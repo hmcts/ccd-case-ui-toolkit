@@ -9,15 +9,13 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { HttpError } from '../../../domain/http/http-error.model';
 import { Profile } from '../../../domain/profile/profile.model';
 import { Task } from '../../../domain/work-allocation/Task';
-import {
-  CaseFieldService,
-  FieldsUtils,
-  FormErrorService,
-  FormValueService,
-  OrderService,
-  ProfileNotifier,
-  SessionStorageService
-} from '../../../services';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { FormErrorService } from '../../../services/form/form-error.service';
+import { FormValueService } from '../../../services/form/form-value.service';
+import { OrderService } from '../../../services/order/order.service';
+import { ProfileNotifier } from '../../../services/profile/profile.notifier';
+import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
 import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
@@ -25,7 +23,7 @@ import { Confirmation } from '../domain/confirmation.model';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
-import { CaseNotifier } from '../services';
+import { CaseNotifier } from '../services/case.notifier';
 
 // @dynamic
 @Component({

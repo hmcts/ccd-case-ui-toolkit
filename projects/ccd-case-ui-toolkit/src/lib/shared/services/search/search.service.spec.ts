@@ -3,10 +3,11 @@ import { waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { SearchInput } from '../../components/search-filters';
-import { Field, FieldType } from '../../domain';
-import { HttpService, OptionsType } from '../http';
-import { LoadingService } from '../loading';
-import { RequestOptionsBuilder } from '../request';
+import { FieldType } from '../../domain/definition/field-type.model';
+import { Field } from '../../domain/search/field.model';
+import { HttpService, OptionsType } from '../http/http.service';
+import { LoadingService } from '../loading/loading.service';
+import { RequestOptionsBuilder } from '../request/request.options.builder';
 import { SearchService } from './search.service';
 import createSpyObj = jasmine.createSpyObj;
 

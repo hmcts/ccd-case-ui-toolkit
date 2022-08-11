@@ -2,11 +2,14 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { plainToClassFromExist } from 'class-transformer';
 import { Observable, Subscription, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CaseView, Draft } from '../../../domain';
-import { AlertService } from '../../../services';
-import { DraftService } from '../../../services';
-import { NavigationNotifierService } from '../../../services';
-import { CaseNotifier, CasesService } from '../../case-editor';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { Draft } from '../../../domain/draft.model';
+import { AlertService } from '../../../services/alert/alert.service';
+import { DraftService } from '../../../services/draft/draft.service';
+import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
+import { CaseNotifier } from '../../case-editor/services/case.notifier';
+import { CasesService } from '../../case-editor/services/cases.service';
+
 
 @Component({
   selector: 'ccd-case-view',

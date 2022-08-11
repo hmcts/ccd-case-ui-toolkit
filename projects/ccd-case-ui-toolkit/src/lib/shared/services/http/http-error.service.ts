@@ -1,9 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
+import { HttpError } from '../../domain/http/http-error.model';
+import { AuthService } from '../auth/auth.service';
 
-import { HttpError } from '../../domain/http';
-import { AuthService } from '../auth';
 
 @Injectable()
 export class HttpErrorService {

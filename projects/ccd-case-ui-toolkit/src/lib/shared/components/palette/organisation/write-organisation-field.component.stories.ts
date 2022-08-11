@@ -6,7 +6,7 @@ import { OrganisationConverter } from '../../../../shared/domain/organisation/or
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { OrganisationService } from '../../../../shared/services/organisation/organisation.service';
 import { WindowService } from '../../../../shared/services/window/window.service';
-import { MarkdownModule } from '../../markdown/markdown.module';
+import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteUtilsModule } from '../utils';
 import { WriteOrganisationComplexFieldComponent } from './write-organisation-complex-field.component';
 import { WriteOrganisationFieldComponent } from './write-organisation-field.component';
@@ -26,11 +26,10 @@ export default {
     moduleMetadata({
       imports: [
         PaletteUtilsModule,
-        ReactiveFormsModule,
-        MarkdownModule
+        ReactiveFormsModule
       ],
       declarations: [
-        WriteOrganisationComplexFieldComponent, StorybookComponent
+        MarkdownComponent, WriteOrganisationComplexFieldComponent, StorybookComponent
       ],
       providers: [
         MockProvider(OrganisationService),

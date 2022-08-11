@@ -1,11 +1,17 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
+import { Activity, DisplayMode } from '../../../domain/activity/activity.model';
+import { CaseEventData } from '../../../domain/case-event-data.model';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
+import { AlertService } from '../../../services/alert/alert.service';
+import { EventStatusService } from '../../../services/eventStatusService/event-status.service';
+import { CaseNotifier } from '../../case-editor/services/case.notifier';
+import { CasesService } from '../../case-editor/services/cases.service';
 
-import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
-import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, EventStatusService } from '../../../services';
-import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
   selector: 'ccd-case-event-trigger',

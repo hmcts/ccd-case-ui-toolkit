@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
-import { CaseTypeLite, Jurisdiction } from '../../domain';
+import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { HttpService } from '../http/http.service';
 
 @Injectable()

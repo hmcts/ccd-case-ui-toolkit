@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { ConnectableObservable, Observable, Observer } from 'rxjs';
 import { publish, refCount } from 'rxjs/operators';
-import { AlertLevel } from '../../domain';
+import { AlertLevel } from '../../domain/alert/alert-level.model';
 import { Alert } from '../../domain/alert/alert.model';
 
 @Injectable()

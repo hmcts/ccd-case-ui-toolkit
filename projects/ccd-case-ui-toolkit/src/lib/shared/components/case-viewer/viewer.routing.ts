@@ -20,8 +20,8 @@ import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-
 import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
 import { CaseSpecificAccessSuccessComponent } from './case-specific-access-success';
-import { CasePrinterComponent } from './printer';
-import { EventTriggerResolver } from './services';
+import { CasePrinterComponent } from './printer/case-printer.component';
+import { EventTriggerResolver } from './services/event-trigger.resolver';
 
 export const viewerRouting: Routes = [
   {

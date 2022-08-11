@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
-import { WindowService } from '../../../services';
+import { WindowService } from '../../../services/window/window.service';
 import { FileUploadStateService } from './file-upload-state.service';
 
 @Injectable()
