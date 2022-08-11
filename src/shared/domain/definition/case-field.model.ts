@@ -34,7 +34,7 @@ export class CaseField implements Orderable {
   public wizardProps?: WizardPageField;
 
   public _value: any;
-  private _list_items: any = [];
+  public _list_items: any = [];
 
   @Expose()
   public get value(): any {
