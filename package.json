@@ -15,9 +15,9 @@
     "url": "https://github.com/hmcts/ccd-case-ui-toolkit.git"
   },
   "scripts": {
-    "build": "npm run build:umd",
+    "build": "npm run build:library",
     "build:library": "ng build ccd-case-ui-toolkit-lib",
-    "build:umd:watch": "npm run build:umd -- --watch",
+    "build:library:watch": "npm run build:library -- --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
     "clean:all": "npm run clean:tmp && rimraf node_modules",
