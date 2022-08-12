@@ -61,6 +61,7 @@ import { WriteDocumentFieldComponent } from './document/write-document-field.com
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -160,6 +161,7 @@ const PALETTE_COMPONENTS = [
     MatInputModule,
     MatDatepickerModule,
     PaymentLibModule,
+    ScrollToModule.forRoot()
   ],
   declarations: [
     CcdCollectionTableCaseFieldsFilterPipe,
