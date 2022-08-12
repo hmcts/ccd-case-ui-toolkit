@@ -1,4 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { waitForAsync } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 
 import { HttpError } from '../../domain';
@@ -42,7 +43,7 @@ describe('HttpService', () => {
   let catchObservable: jasmine.SpyObj<Observable<any>>;
   const realHttpErrorService = new HttpErrorService(null);
 
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
     catchObservable = createSpyObj<Observable<any>>('observable', ['pipe']);
     catchObservable.pipe.and.returnValue(EXPECTED_RESPONSE);
 
@@ -59,18 +60,18 @@ describe('HttpService', () => {
 
     spyOn(realHttpErrorService, 'handle').and.callThrough();
     spyOn(HttpError, 'from').and.callThrough();
-  });
+  }));
 
   describe('get', () => {
 
-    it('should forward simple call to Angular Http service', () => {
+    it('should forward simple call to Angular Http service', waitForAsync(() => {
       const response = httpService.get(URL);
 
       expect(httpMock.get).toHaveBeenCalledWith(URL, any(Object));
       expect(response).toBe(EXPECTED_RESPONSE);
-    });
+    }));
 
-    it('should forward headers to Angular Http service', () => {
+    it('should forward headers to Angular Http service', waitForAsync(() => {
       const options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
@@ -80,9 +81,9 @@ describe('HttpService', () => {
       httpService.get(URL, options);
 
       expect(httpMock.get).toHaveBeenCalledWith(URL, options);
-    });
+    }));
 
-    it('should sanitise headers when provided', () => {
+    it('should sanitise headers when provided', waitForAsync(() => {
       const options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
@@ -92,7 +93,7 @@ describe('HttpService', () => {
       httpService.get(URL, options);
 
       expectHeadersToBeSanitized(httpMock.get.calls.mostRecent().args[1]);
-    });
+    }));
 
     it('should return same header properties when `headers` is defined', () => {
       const options: OptionsType = {
@@ -104,7 +105,7 @@ describe('HttpService', () => {
       expect(returnOptions.headers).toEqual(options.headers);
     });
 
-    it('should not add `content-type` and `accept` headers when defined', () => {
+    it('should not add `content-type` and `accept` headers when defined', waitForAsync(() => {
       const options: OptionsType = {
         headers: HEADERS_WITH_CONTENT_TYPE_DEFINED,
         withCredentials: true,
@@ -116,9 +117,9 @@ describe('HttpService', () => {
       const headers = httpMock.get.calls.mostRecent().args[1].headers;
       expect(headers.get('Content-Type')).toEqual(CONTENT_TYPE_HEADER_VALUE);
       expect(headers.get('Accept')).toEqual(ACCEPT_HEADER_VALUE);
-    });
+    }));
 
-    it('should define headers when not defined', () => {
+    it('should define headers when not defined', waitForAsync(() => {
       const options: OptionsType = {
         headers: null,
         withCredentials: true,
@@ -128,9 +129,9 @@ describe('HttpService', () => {
       httpService.get(URL, options);
 
       expect(options.headers).toBeDefined();
-    });
+    }));
 
-    it('should add `content-type` and `accept` headers when not defined', () => {
+    it('should add `content-type` and `accept` headers when not defined', waitForAsync(() => {
       const options: OptionsType = {
         headers: null,
         withCredentials: true,
@@ -142,15 +143,15 @@ describe('HttpService', () => {
       const headers = httpMock.get.calls.mostRecent().args[1].headers;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
-    });
+    }));
 
-    it('should catch with http-error service', () => {
+    it('should catch with http-error service', waitForAsync(() => {
       httpMock.get.and.returnValue(throwError(error));
       httpService.get(URL).subscribe(() => {}, () => {});
       expect(httpErrorService.handle).toHaveBeenCalledWith(error, true);
-    });
+    }));
 
-    it('should catch with http-error service and map HttpErrorResponse to HttpError object', () => {
+    it('should catch with http-error service and map HttpErrorResponse to HttpError object', waitForAsync(() => {
       httpMock.get.and.returnValue(throwError(httpErrorResponse));
       // Switch to real HttpErrorService to check handle() function calls HttpError.from(), which maps
       // HttpErrorResponse "error" object properties to HttpError instance
@@ -158,9 +159,9 @@ describe('HttpService', () => {
       httpService.get(URL).subscribe(() => {}, () => {});
       expect(realHttpErrorService.handle).toHaveBeenCalledWith(httpErrorResponse, true);
       expect(HttpError.from).toHaveBeenCalledWith(httpErrorResponse);
-    });
+    }));
 
-    it('should call the supplied errorHandler method if provided', () => {
+    it('should call the supplied errorHandler method if provided', waitForAsync(() => {
       const errorHandlerCalls = [];
       const errorHandler = (response: HttpErrorResponse): HttpError => {
         errorHandlerCalls.push(response);
@@ -174,19 +175,19 @@ describe('HttpService', () => {
       expect(errorHandlerCalls.length).toEqual(1);
       expect(errorHandlerCalls[0]).toEqual(httpErrorResponse);
       expect(realHttpErrorService.handle).toHaveBeenCalledWith(null, false);
-    });
+    }));
   });
 
   describe('post', () => {
 
-    it('should forward simple call to Angular Http service', () => {
+    it('should forward simple call to Angular Http service', waitForAsync(() => {
       const response = httpService.post(URL, BODY);
 
       expect(httpMock.post).toHaveBeenCalledWith(URL, BODY, any(Object));
       expect(response).toBe(EXPECTED_RESPONSE);
-    });
+    }));
 
-    it('should forward headers to Angular Http service', () => {
+    it('should forward headers to Angular Http service', waitForAsync(() => {
       const options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
@@ -196,9 +197,9 @@ describe('HttpService', () => {
       httpService.post(URL, BODY, options);
 
       expect(httpMock.post).toHaveBeenCalledWith(URL, BODY, options);
-    });
+    }));
 
-    it('should sanitise headers when provided', () => {
+    it('should sanitise headers when provided', waitForAsync(() => {
       const options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
@@ -208,9 +209,9 @@ describe('HttpService', () => {
       httpService.post(URL, BODY, options);
 
       expectHeadersToBeSanitized(httpMock.post.calls.mostRecent().args[2]);
-    });
+    }));
 
-    it('should add `content-type` and `accept` headers when not defined', () => {
+    it('should add `content-type` and `accept` headers when not defined', waitForAsync(() => {
       const options: OptionsType = {
         headers: null,
         withCredentials: true,
@@ -222,15 +223,15 @@ describe('HttpService', () => {
       const headers = httpMock.post.calls.mostRecent().args[2].headers;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
-    });
+    }));
 
-    it('should catch with http-error service', () => {
+    it('should catch with http-error service', waitForAsync(() => {
       httpMock.post.and.returnValue(throwError(error));
       httpService.post(URL, BODY).subscribe(() => {}, () => {});
       expect(httpErrorService.handle).toHaveBeenCalledWith(error, true);
-    });
+    }));
 
-    it('should catch with http-error service and map HttpErrorResponse to HttpError object', () => {
+    it('should catch with http-error service and map HttpErrorResponse to HttpError object', waitForAsync(() => {
       httpMock.post.and.returnValue(throwError(httpErrorResponse));
       // Switch to real HttpErrorService to check handle() function calls HttpError.from(), which maps
       // HttpErrorResponse "error" object properties to HttpError instance
@@ -238,19 +239,19 @@ describe('HttpService', () => {
       httpService.post(URL, BODY).subscribe(() => {}, () => {});
       expect(realHttpErrorService.handle).toHaveBeenCalledWith(httpErrorResponse, true);
       expect(HttpError.from).toHaveBeenCalledWith(httpErrorResponse);
-    });
+    }));
   });
 
   describe('put', () => {
 
-    it('should forward simple call to Angular Http service', () => {
+    it('should forward simple call to Angular Http service', waitForAsync(() => {
       const response = httpService.put(URL, BODY);
 
       expect(httpMock.put).toHaveBeenCalledWith(URL, BODY, any(Object));
       expect(response).toBe(EXPECTED_RESPONSE);
-    });
+    }));
 
-    it('should forward headers to Angular Http service', () => {
+    it('should forward headers to Angular Http service', waitForAsync(() => {
       const options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
@@ -260,9 +261,9 @@ describe('HttpService', () => {
       httpService.put(URL, BODY, options);
 
       expect(httpMock.put).toHaveBeenCalledWith(URL, BODY, options);
-    });
+    }));
 
-    it('should sanitise headers when provided', () => {
+    it('should sanitise headers when provided', waitForAsync(() => {
       const options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
@@ -272,9 +273,9 @@ describe('HttpService', () => {
       httpService.put(URL, BODY, options);
 
       expectHeadersToBeSanitized(httpMock.put.calls.mostRecent().args[2]);
-    });
+    }));
 
-    it('should add `content-type` and `accept` headers when not defined', () => {
+    it('should add `content-type` and `accept` headers when not defined', waitForAsync(() => {
       const options: OptionsType = {
         headers: null,
         withCredentials: true,
@@ -286,15 +287,15 @@ describe('HttpService', () => {
       const headers = httpMock.put.calls.mostRecent().args[2].headers;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
-    });
+    }));
 
-    it('should catch with http-error service', () => {
+    it('should catch with http-error service', waitForAsync(() => {
       httpMock.put.and.returnValue(throwError(error));
       httpService.put(URL, BODY).subscribe(() => {}, () => {});
       expect(httpErrorService.handle).toHaveBeenCalledWith(error);
-    });
+    }));
 
-    it('should catch with http-error service and map HttpErrorResponse to HttpError object', () => {
+    it('should catch with http-error service and map HttpErrorResponse to HttpError object', waitForAsync(() => {
       httpMock.put.and.returnValue(throwError(httpErrorResponse));
       // Switch to real HttpErrorService to check handle() function calls HttpError.from(), which maps
       // HttpErrorResponse "error" object properties to HttpError instance
@@ -302,19 +303,19 @@ describe('HttpService', () => {
       httpService.put(URL, BODY).subscribe(() => {}, () => {});
       expect(realHttpErrorService.handle).toHaveBeenCalledWith(httpErrorResponse);
       expect(HttpError.from).toHaveBeenCalledWith(httpErrorResponse);
-    });
+    }));
   });
 
   describe('delete', () => {
 
-    it('should forward simple call to Angular Http service', () => {
+    it('should forward simple call to Angular Http service', waitForAsync(() => {
       const response = httpService.delete(URL);
 
       expect(httpMock.delete).toHaveBeenCalledWith(URL, any(Object));
       expect(response).toBe(EXPECTED_RESPONSE);
-    });
+    }));
 
-    it('should forward headers to Angular Http service', () => {
+    it('should forward headers to Angular Http service', waitForAsync(() => {
       const options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
@@ -324,9 +325,9 @@ describe('HttpService', () => {
       httpService.delete(URL, options);
 
       expect(httpMock.delete).toHaveBeenCalledWith(URL, options);
-    });
+    }));
 
-    it('should sanitise headers when provided', () => {
+    it('should sanitise headers when provided', waitForAsync(() => {
       const options: OptionsType = {
         headers: HEADERS,
         withCredentials: true,
@@ -336,9 +337,9 @@ describe('HttpService', () => {
       httpService.delete(URL, options);
 
       expectHeadersToBeSanitized(httpMock.delete.calls.mostRecent().args[1]);
-    });
+    }));
 
-    it('should add `content-type` and `accept` headers when not defined', () => {
+    it('should add `content-type` and `accept` headers when not defined', waitForAsync(() => {
       const options: OptionsType = {
         headers: null,
         withCredentials: true,
@@ -350,15 +351,15 @@ describe('HttpService', () => {
       const headers = httpMock.delete.calls.mostRecent().args[1].headers;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
-    });
+    }));
 
-    it('should catch with http-error service', () => {
+    it('should catch with http-error service', waitForAsync(() => {
       httpMock.delete.and.returnValue(throwError(error));
       httpService.delete(URL).subscribe(() => {}, () => {});
       expect(httpErrorService.handle).toHaveBeenCalledWith(error);
-    });
+    }));
 
-    it('should catch with http-error service and map HttpErrorResponse to HttpError object', () => {
+    it('should catch with http-error service and map HttpErrorResponse to HttpError object', waitForAsync(() => {
       httpMock.delete.and.returnValue(throwError(httpErrorResponse));
       // Switch to real HttpErrorService to check handle() function calls HttpError.from(), which maps
       // HttpErrorResponse "error" object properties to HttpError instance
@@ -366,7 +367,7 @@ describe('HttpService', () => {
       httpService.delete(URL).subscribe(() => {}, () => {});
       expect(realHttpErrorService.handle).toHaveBeenCalledWith(httpErrorResponse);
       expect(HttpError.from).toHaveBeenCalledWith(httpErrorResponse);
-    });
+    }));
   });
 
   function expectHeadersToBeSanitized(options) {

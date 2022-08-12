@@ -11,7 +11,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
 import { of, Subject } from 'rxjs';
-import { ComplexModule } from 'src/shared/components/palette/complex/complex.module';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
 import { DeleteOrCancelDialogComponent } from '../../../components/dialogs';
@@ -1276,7 +1275,6 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
         imports: [
           PaletteUtilsModule,
           MatTabsModule,
-          ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,
@@ -1400,7 +1398,6 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
         imports: [
           PaletteUtilsModule,
           MatTabsModule,
-          ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
           RouterTestingModule.withRoutes([
@@ -1506,7 +1503,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
         imports: [
           PaletteUtilsModule,
           MatTabsModule,
-          ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,
@@ -1631,7 +1627,6 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
         imports: [
           PaletteUtilsModule,
           MatTabsModule,
-          ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,

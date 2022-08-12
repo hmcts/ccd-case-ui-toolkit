@@ -22,7 +22,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, '../coverage'),
+      dir: require('path').join(__dirname, '../coverage/ccd-case-ui-toolkit'),
       subdir: '.',
       reporters: [
         { type: 'html' },
@@ -34,9 +34,6 @@ module.exports = function (config) {
     browserNoActivityTimeout: 60000,
     browserDisconnectTimeout: 60000,
     reporters: ['progress', 'coverage'],
-    preprocessors: {
-      'src/**/*.ts': ['coverage']
-    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

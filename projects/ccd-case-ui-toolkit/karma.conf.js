@@ -35,7 +35,7 @@ module.exports = function (config) {
       browserDisconnectTimeout: 60000,
       reporters: ['progress', 'coverage'],
       preprocessors: {
-        'src/**/*.ts': ['coverage']
+        'projects/ccd-case-ui-toolkit/**/*.ts': ['coverage']
       },
       port: 9876,
       colors: true,

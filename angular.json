@@ -99,10 +99,7 @@
             "assets": [
               "src/favicon.ico"
             ],
-            "codeCoverage": true,
-            "codeCoverageExclude": [
-              "demo/**/*"
-            ]
+            "codeCoverage": true
           }
         },
         "lint": {

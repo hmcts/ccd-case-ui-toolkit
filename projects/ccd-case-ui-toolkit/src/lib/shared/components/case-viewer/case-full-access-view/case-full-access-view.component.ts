@@ -6,7 +6,7 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { initDialog } from 'src/shared/components/helpers/init-dialog-helper';
+import { initDialog } from '../../../components/helpers/init-dialog-helper';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { Activity, DisplayMode } from '../../../domain/activity/activity.model';
 import { CaseTab } from '../../../domain/case-view/case-tab.model';

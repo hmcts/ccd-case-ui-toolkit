@@ -2,10 +2,10 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { MoneyGbpModule } from 'src/shared/components/palette/money-gbp/money-gbp.module';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { text } from '../../../test/helpers';
+import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent } from '../money-gbp';
 import { OrderSummary } from './order-summary.model';
 import { ReadOrderSummaryFieldComponent } from './read-order-summary-field.component';
 import { ReadOrderSummaryRowComponent } from './read-order-summary-row.component';
@@ -77,9 +77,10 @@ describe('ReadOrderSummaryFieldComponent', () => {
         .configureTestingModule({
           imports: [
             ReactiveFormsModule,
-            MoneyGbpModule
           ],
           declarations: [
+            ReadMoneyGbpFieldComponent,
+            MoneyGbpInputComponent,
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
           ]
@@ -136,9 +137,10 @@ describe('ReadOrderSummaryFieldComponent', () => {
         .configureTestingModule({
           imports: [
             ReactiveFormsModule,
-            MoneyGbpModule
           ],
           declarations: [
+            ReadMoneyGbpFieldComponent,
+            MoneyGbpInputComponent,
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
           ]
@@ -182,9 +184,9 @@ describe('ReadOrderSummaryFieldComponent', () => {
         .configureTestingModule({
           imports: [
             ReactiveFormsModule,
-            MoneyGbpModule
           ],
           declarations: [
+            MoneyGbpInputComponent,
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
           ]

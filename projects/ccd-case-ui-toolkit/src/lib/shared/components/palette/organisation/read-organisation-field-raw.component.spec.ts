@@ -15,6 +15,7 @@ import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils';
 import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
 import { MarkdownComponent } from '../markdown/markdown.component';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 
 describe('ReadOrganisationFieldRawComponent', () => {
   let component: ReadOrganisationFieldRawComponent;
@@ -110,6 +111,7 @@ describe('ReadOrganisationFieldRawComponent', () => {
         PaletteUtilsModule
       ],
       declarations: [
+        CaseReferencePipe,
         MarkdownComponent,
         ReadOrganisationFieldRawComponent,
         FieldsFilterPipe,

@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { CaseHistory } from 'src/shared/components/case-history/domain/case-history.model';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpErrorService } from '../../../services/http/http-error.service';
 import { HttpService } from '../../../services/http/http.service';
+import { CaseHistory } from '../domain/case-history.model';
 
 @Injectable()
 export class CaseHistoryService {
