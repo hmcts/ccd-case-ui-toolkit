@@ -65,6 +65,7 @@ import { RemoveDialogComponent } from './shared/components/dialogs/remove-dialog
 import { SaveOrDiscardDialogComponent } from './shared/components/dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CallbackErrorsComponent } from './shared/components/error/callback-errors.component';
 import { PaletteModule } from './shared/components/palette/palette.module';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @NgModule({
     imports: [
@@ -87,7 +88,8 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       FocusElementModule,
       LoadingModule,
       PaginationModule,
-      PortalModule
+      PortalModule,
+      RpxTranslationModule.forChild()
     ],
     exports: [
       AlertComponent,

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.18.10",
+  "version": "4.18.11-welsh-release-part1",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -47,7 +47,7 @@
     "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
     "demo": "yarn && yarn build:esm && yarn build:demo && yarn start",
     "build:test:functional": "yarn && yarn build:esm && yarn --cwd demo  test:functional",
-    "test:functional":"yarn --cwd demo  test:functional"
+    "test:functional": "yarn --cwd demo  test:functional"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "^2.0.4",
@@ -68,6 +68,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
     "npm-registry-fetch": "^4.0.5",
+    "rpx-xui-translation": "^0.1.0",
     "rx-polling": "1.1.0",
     "typescript": "3.1.1",
     "underscore": "^1.9.1",
