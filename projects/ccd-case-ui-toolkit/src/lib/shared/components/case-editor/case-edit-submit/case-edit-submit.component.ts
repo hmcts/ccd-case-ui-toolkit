@@ -319,7 +319,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Traverse *all* values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), replacing the
+   * Traverse *all* values of a FormGroup, including those for disabled fields (i.e. hidden ones), replacing the
    * value of any that are hidden AND have `retain_hidden_value` set to `true` in the corresponding `CaseField`, with
    * the *original* value held in the `CaseField` object.
    *
@@ -331,7 +331,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
    *
    * * For Collection field types, including collections of Complex and Document field types, the replacement is
    * performed for all fields in the collection.
-   * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
+   * returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
    */
   private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFields: CaseField[], parentField?: CaseField): object {
     // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
@@ -401,9 +401,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   /**
    * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
    * all its sub-fields and descendants are `null` or `undefined`.
-   *
-   * @param data The object tree representing all the form field data
-   * @returns The form field data modified accordingly
    */
   private replaceEmptyComplexFieldValues(data: object): object {
     Object.keys(data).forEach((key) => {
