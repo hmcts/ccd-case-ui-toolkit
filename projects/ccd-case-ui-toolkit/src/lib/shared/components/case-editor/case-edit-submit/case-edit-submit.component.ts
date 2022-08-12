@@ -110,8 +110,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   /**
    * Handler function for event completion
-   *
-   * @memberof CaseEditSubmitComponent
    */
   public submit(): void {
     this.isSubmitting = true;
@@ -141,9 +139,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   /**
    * Handler function for event emitted from case event completion component
-   *
-   * @param {boolean} eventCanBeCompleted
-   * @memberof CaseEditSubmitComponent
    */
   public onEventCanBeCompleted(eventCanBeCompleted: boolean): void {
     if (eventCanBeCompleted) {
@@ -166,7 +161,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public summaryCaseField(field: CaseField): CaseField {
-    if (null == this.editForm.get('data').get(field.id)) {
+    if (!this.editForm.get('data').get(field.id)) {
       // If not in form, return field itself
       return field;
     }
@@ -272,9 +267,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   /**
    * Function to generate and return case event data for completing the event
-   *
-   * @return {*}  {CaseEventData}
-   * @memberof CaseEditSubmitComponent
    */
   private generateCaseEventData(): CaseEventData {
     const caseEventData: CaseEventData = {
@@ -301,9 +293,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   /**
    * Function to complete the event
-   *
-   * @param {CaseEventData} caseEventData
-   * @memberof CaseEditSubmitComponent
    */
   private caseSubmit(caseEventData: CaseEventData): void {
     this.caseEdit.submit(caseEventData)
@@ -342,11 +331,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
    *
    * * For Collection field types, including collections of Complex and Document field types, the replacement is
    * performed for all fields in the collection.
-   *
-   * @param formGroup The `FormGroup` instance whose raw values are to be traversed
-   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `formGroup`
-   * @param parentField Reference to the parent `CaseField`. Used for retrieving the sub-field values of a Complex field
-   * to perform recursive replacement - the sub-field `CaseField`s themselves do *not* contain any values
    * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
    */
   private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFields: CaseField[], parentField?: CaseField): object {
@@ -381,9 +365,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       if (caseField && caseField.retain_hidden_value &&
         (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
         if (caseField.field_type.type === 'Complex') {
-          // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
-          // handle both null and undefined values
-          if (caseField.value != null) {
+          if (caseField.value !== null && caseField.value !== undefined) {
             // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
             // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
             // parent)
