@@ -89,7 +89,7 @@ import { RpxTranslationModule } from 'rpx-xui-translation';
       LoadingModule,
       PaginationModule,
       PortalModule,
-      RpxTranslationModule.forChild()
+      RpxTranslationModule
     ],
     exports: [
       AlertComponent,
