@@ -273,7 +273,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   /**
    * Function to generate and return case event data for completing the event
    *
-   * @private
    * @return {*}  {CaseEventData}
    * @memberof CaseEditSubmitComponent
    */
@@ -303,7 +302,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   /**
    * Function to complete the event
    *
-   * @private
    * @param {CaseEventData} caseEventData
    * @memberof CaseEditSubmitComponent
    */

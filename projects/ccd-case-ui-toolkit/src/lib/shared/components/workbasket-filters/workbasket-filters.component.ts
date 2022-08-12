@@ -222,7 +222,6 @@ export class WorkbasketFiltersComponent implements OnInit {
    * Has been implemented for 'Region and FRC filters' and can be extended
    * in future to incorporate other dynamic filters.
    *
-   * @private
    * @memberof WorkbasketFiltersComponent
    */
    public updateFormGroupFilters(): void {
