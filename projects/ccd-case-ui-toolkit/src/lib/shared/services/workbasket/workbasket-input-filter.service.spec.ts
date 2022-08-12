@@ -7,7 +7,7 @@ import { HttpService } from '../http/http.service';
 import { WorkbasketInputFilterService } from './workbasket-input-filter.service';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('DefinitionsService', () => {
+describe('WorkbasketInputFilterService', () => {
   const API_DATA_URL = 'http://data.ccd.reform/aggregated';
   const JurisdictionId = 'PROBATE';
   const CaseTypeId = 'TestAddressBookCase';
@@ -26,9 +26,9 @@ describe('DefinitionsService', () => {
   });
 
   describe('getWorkbasketInputs()', () => {
-    beforeEach(() => {
+    beforeEach(waitForAsync(() => {
       httpService.get.and.returnValue(of(jsonResponse()));
-    });
+    }));
 
     it('should use HttpService::get with correct url', waitForAsync(() => {
       workbasketInputFilterService

@@ -35,8 +35,7 @@ export class DocumentManagementService {
     const headers = new HttpHeaders();
     return this.http
       .post(url, formData, {headers, observe: 'body'})
-      .pipe(delay(DocumentManagementService.RESPONSE_DELAY))
-      .pipe();
+      .pipe(delay(DocumentManagementService.RESPONSE_DELAY));
   }
 
   public getMediaViewerInfo(documentFieldValue: any): string {

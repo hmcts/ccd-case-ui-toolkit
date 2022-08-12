@@ -18,7 +18,7 @@ describe('DocumentManagementService', () => {
 
   let documentManagementService: DocumentManagementService;
 
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
       'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl',
       'getHrsUrl', 'getRemoteHrsUrl',
@@ -32,7 +32,7 @@ describe('DocumentManagementService', () => {
 
     httpService = createSpyObj<HttpService>('httpService', ['post']);
     documentManagementService = new DocumentManagementService(httpService, appConfig);
-  });
+  }));
 
   describe('uploadFile', () => {
     const RESPONSE: DocumentData = {
@@ -68,7 +68,8 @@ describe('DocumentManagementService', () => {
 
     it('should use HttpService.post with the correct URL', waitForAsync(() => {
       documentManagementService.uploadFile(new FormData())
-        .subscribe(() => {
+        .subscribe()
+        .add(() => {
           expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), {
           headers: new HttpHeaders(),
           observe: 'body'
