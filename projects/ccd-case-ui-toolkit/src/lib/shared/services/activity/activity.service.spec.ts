@@ -1,4 +1,5 @@
 
+import { waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { HttpService } from '../../services/http';
@@ -16,7 +17,7 @@ const response = {
 
 describe('ActivityService', () => {
 
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
     appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getActivityUrl']);
     appConfig.getActivityUrl.and.returnValue('someUrl');
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
@@ -26,7 +27,7 @@ describe('ActivityService', () => {
     sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"');
 
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);
-  });
+  }));
 
   it('should access AppConfig and HttpService for getActivities', () => {
     activityService.getActivities('1111');

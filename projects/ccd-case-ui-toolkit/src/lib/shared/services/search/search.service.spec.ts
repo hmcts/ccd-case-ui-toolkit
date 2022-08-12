@@ -256,7 +256,7 @@ describe('SearchService', () => {
 
   describe('post()', () => {
 
-    beforeEach(() => {
+    beforeEach(waitForAsync(() => {
       function matchCall(value: any, expected: any): boolean {
         return expected === value ||
             JSON.stringify(expected) === JSON.stringify(value) ||
@@ -282,7 +282,7 @@ describe('SearchService', () => {
       loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
 
       searchService = new SearchService(appConfig, httpService, requestOptionsBuilder, loadingService);
-    });
+    }));
 
     it('should call httpService with right URL, authorization, meta and case criteria and http method for search', waitForAsync(() => {
       searchService
@@ -299,8 +299,7 @@ describe('SearchService', () => {
 
       searchService
         .searchCases(CTID, metaCriteria, caseCriteria)
-        .subscribe()
-        .add(() => {
+        .subscribe(() => {
           expect(requestOptionsBuilder.buildOptions).toHaveBeenCalledWith(metaCriteria, caseCriteria);
         });
     }));

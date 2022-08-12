@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
-import { fakeAsync, tick } from '@angular/core/testing';
+import { fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -317,12 +317,12 @@ describe('CasesService', () => {
     const HEADERS = new HttpHeaders()
       .set('content-type', CasesService.V2_MEDIATYPE_CREATE_EVENT);
 
-    beforeEach(() => {
+    beforeEach(waitForAsync(() => {
       httpService.post.and.returnValue(of({
         headers: HEADERS,
         body: EVENT_RESPONSE
       }));
-    });
+    }));
 
     it('should use HttpService::post with correct url', () => {
       casesService
@@ -391,9 +391,9 @@ describe('CasesService', () => {
 
     const EVENT_RESPONSE = { id: 5 };
 
-    beforeEach(() => {
+    beforeEach(waitForAsync(() => {
       httpService.post.and.returnValue(of(EVENT_RESPONSE));
-    });
+    }));
 
     it('should use HttpService::post with correct url', () => {
       casesService

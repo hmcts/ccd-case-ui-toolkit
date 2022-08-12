@@ -22,21 +22,15 @@ module.exports = function (config) {
         suppressAll: true // removes the duplicated traces
       },
       coverageReporter: {
-        dir: require('path').join(__dirname, '../coverage/ccd-case-ui-toolkit'),
+        dir: require('path').join(__dirname, 'coverage/ccd-case-ui-toolkit'),
         subdir: '.',
-        reporters: [
-          { type: 'html' },
-          { type: 'text-summary' },
-          { type: 'lcov' }
-        ]
+        reports: ['html', 'lcovonly'],
+        fixWebpackSourcePaths: true
       },
       defaultTimeoutInterval: 60000,
       browserNoActivityTimeout: 60000,
       browserDisconnectTimeout: 60000,
       reporters: ['progress', 'coverage'],
-      preprocessors: {
-        'projects/ccd-case-ui-toolkit/**/*.ts': ['coverage']
-      },
       port: 9876,
       colors: true,
       logLevel: config.LOG_INFO,

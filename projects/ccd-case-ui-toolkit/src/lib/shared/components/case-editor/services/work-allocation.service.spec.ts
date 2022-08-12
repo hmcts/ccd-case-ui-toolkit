@@ -1,3 +1,4 @@
+import { waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError, TaskSearchParameter } from '../../../domain';
@@ -203,9 +204,9 @@ describe('WorkAllocationService', () => {
 
   describe('completeTask', () => {
 
-    beforeEach(() => {
+    beforeEach(waitForAsync(() => {
       httpService.post.and.returnValue(of({}));
-    });
+    }));
 
     it('should call post with the correct parameters', () => {
       workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
@@ -231,9 +232,9 @@ describe('WorkAllocationService', () => {
 
   describe('assignAndCompleteTask', () => {
 
-    beforeEach(() => {
+    beforeEach(waitForAsync(() => {
       httpService.post.and.returnValue(of({}));
-    });
+    }));
 
     it('should call post with the correct parameters', () => {
       workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();

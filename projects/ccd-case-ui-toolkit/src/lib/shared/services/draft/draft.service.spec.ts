@@ -1,4 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
+import { waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseDetails, CaseEventData, CaseView, Draft, HttpError } from '../../domain';
@@ -63,10 +64,10 @@ describe('Drafts Service', () => {
       updated: '23-04-2019'
     };
 
-    beforeEach(() => {
+    beforeEach(waitForAsync(() => {
       httpService.post.and.returnValue(of(DRAFT_RESPONSE));
       httpService.put.and.returnValue(of(DRAFT_RESPONSE));
-    });
+    }));
 
     it('should create a draft on server', () => {
       const UNDEFINED_DRAFT_ID = null;
