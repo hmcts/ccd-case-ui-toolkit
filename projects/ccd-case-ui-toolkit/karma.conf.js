@@ -22,7 +22,7 @@ module.exports = function (config) {
         suppressAll: true // removes the duplicated traces
       },
       coverageReporter: {
-        dir: require('path').join(__dirname, 'coverage/ccd-case-ui-toolkit'),
+        dir: require('path').join(__dirname, '../../coverage/ccd-case-ui-toolkit'),
         subdir: '.',
         reports: ['html', 'lcovonly'],
         fixWebpackSourcePaths: true
