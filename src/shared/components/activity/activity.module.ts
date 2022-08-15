@@ -6,11 +6,13 @@ import { ActivityComponent } from './activity.component';
 import { ActivityBannerComponent } from './activity-banner';
 import { ActivityIconComponent } from './activity-icon';
 import { SessionStorageService } from '../../services/session/session-storage.service';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @NgModule({
     imports: [
         CommonModule,
         RouterModule,
+        RpxTranslationModule.forChild()
     ],
     declarations: [
         ActivityComponent,

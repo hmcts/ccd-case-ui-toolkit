@@ -5,13 +5,15 @@ import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 import { PaletteModule } from '../palette';
 import { WorkbasketInputFilterService, OrderService, JurisdictionService, AlertService, WindowService } from '../../services';
 import { ConditionalShowModule } from '../../directives/conditional-show';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
-        ConditionalShowModule
+        ConditionalShowModule,
+        RpxTranslationModule.forChild()
     ],
     declarations: [
         WorkbasketFiltersComponent,

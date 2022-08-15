@@ -95,7 +95,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    PaymentLibModule
+    PaymentLibModule,
   ],
   declarations: [
     UnsupportedFieldComponent,

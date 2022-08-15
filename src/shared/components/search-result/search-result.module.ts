@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivityModule } from '../activity';
 import { LabelSubstitutorModule } from '../../directives';
 import { PaginationModule } from '../pagination/pagination.module';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { PaginationModule } from '../pagination/pagination.module';
     PaletteModule,
     ActivityModule,
     LabelSubstitutorModule,
-    PaginationModule
+    PaginationModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     SearchResultComponent,
