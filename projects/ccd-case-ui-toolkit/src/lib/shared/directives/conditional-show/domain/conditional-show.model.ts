@@ -296,7 +296,7 @@ export class ShowCondition {
   }
 
   private unquoted(str: string): string {
-    return str.replace(/^"|"$/g, '');
+    return str.replace(/(?:^")|(?:"$)/g, '');
   }
 
   private removeStarChar(str: string): string {

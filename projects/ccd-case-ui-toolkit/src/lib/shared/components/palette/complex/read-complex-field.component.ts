@@ -23,7 +23,7 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
         this.context = PaletteContext.DEFAULT;
     }
     if (this.caseField.field_type) {
-      this.caseField.field_type.complex_fields.map(field => {
+      this.caseField.field_type.complex_fields.forEach(field => {
         if (field.isDynamic()) {
           field.list_items = this.caseField.value[field.id].list_items;
           field.value = {

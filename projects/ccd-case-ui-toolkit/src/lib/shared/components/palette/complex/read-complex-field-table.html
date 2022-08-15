@@ -15,7 +15,7 @@
         </ng-container>
         <ng-template #SimpleRow>
           <tr class="complex-panel-simple-field" [hidden]="field.hidden">
-            <th><span class="text-16">{{field.label}}</span></th>
+            <th class="complex-panel-simple-field-label"><span class="text-16">{{field.label}}</span></th>
             <td>
                 <span class="text-16">
                   <ccd-field-read [topLevelFormGroup]="topLevelFormGroup"
