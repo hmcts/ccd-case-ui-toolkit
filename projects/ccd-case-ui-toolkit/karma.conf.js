@@ -24,7 +24,10 @@ module.exports = function (config) {
       coverageReporter: {
         dir: require('path').join(__dirname, '../../coverage/ccd-case-ui-toolkit'),
         subdir: '.',
-        reports: ['html', 'lcovonly'],
+        reporters: [
+          { type: 'html', subdir: 'html-report' },
+          { type: 'lcov', subdir: 'lcov-report' }
+        ],
         fixWebpackSourcePaths: true
       },
       defaultTimeoutInterval: 60000,
