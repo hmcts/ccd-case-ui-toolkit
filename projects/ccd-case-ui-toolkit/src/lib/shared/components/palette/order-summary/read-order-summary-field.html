@@ -6,6 +6,7 @@
     <tbody>
         <tr ccdReadOrderSummaryRow *ngFor="let feeValue of getFees()" [feeValue]="feeValue"></tr>
         <tr>
+            <th style="display: none;"></th>
             <td></td>
             <td class="payment-total">Total</td>
             <td><ccd-read-money-gbp-field [amount]="getPaymentTotal()"></ccd-read-money-gbp-field></td>
