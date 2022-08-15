@@ -25,10 +25,8 @@ jobs:
       - run: yarn lint
       - run: yarn build
       - run: yarn test
-      - name: Create code coverage report
-        run: yarn test:coverage
       - name: Change Report Path
-        run: sed -i 's+/home/runner/work/ccd-case-ui-toolkit+/github/workspace+g' coverage/ccd-case-ui-toolkit/lcov.info
+        run: sed -i 's+/home/runner/work/ccd-case-ui-toolkit/ccd-case-ui-toolkit+/github/workspace+g' coverage/ccd-case-ui-toolkit/lcov.info
       - name: Archive code coverage results
         uses: actions/upload-artifact@v1
         with:
