@@ -25,11 +25,6 @@ jobs:
       - run: yarn lint
       - run: yarn build
       - run: yarn test
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v1
-        with:
-          name: code-coverage-report
-          path: coverage 
 
   sonarcloud:
     needs: build
