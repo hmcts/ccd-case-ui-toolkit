@@ -47,7 +47,7 @@
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="tab.fields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
-                      <th class="case-viewer-label-header">
+                      <th id="case-viewer-label-header">
                         <div class="case-viewer-label">{{field.label}}</div>
                       </th>
                       <td>

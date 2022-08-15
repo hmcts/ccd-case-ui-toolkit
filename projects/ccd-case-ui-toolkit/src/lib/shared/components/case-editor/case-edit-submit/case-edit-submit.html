@@ -76,7 +76,7 @@
           <ng-container *ngFor="let field of this.showSummaryFields">
               <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                 <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                  <th class="summary-field-label">{{field.label}}</th>
+                  <th id="summary-field-label">{{field.label}}</th>
                   <td class="form-cell">
                     <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
                   </td>

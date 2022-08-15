@@ -36,6 +36,7 @@
       <th *ngFor="let col of resultView.columns">
         <table class="search-result-column-header"
           [attr.aria-label]="sortLabelText(col.label, isSortAscending(col))">
+          <th style="display: none;"></th>
           <tr>
             <div class="search-result-column-label" (click)="sort(col)">{{col.label}}</div>
             <div *ngIf="comparator(col)" class="search-result-column-sort">
