@@ -13,4 +13,10 @@ export class ValidatorsUtils {
       return control.value.every((option) => !option.selected) ? { isValid: false } : null;
     };
   }
+  public regexPattern(regexPattern: string): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const regex = new RegExp(regexPattern);
+      return regex.test(control.value) ? null : { isValid: false };
+    };
+  }
 }
