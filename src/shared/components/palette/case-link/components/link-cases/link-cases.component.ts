@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { forkJoin, Observable, throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
@@ -11,7 +11,7 @@ import {
   LinkCaseReason,
   LinkReason,
 } from '../../domain/linked-cases.model';
-import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums';
+import { LinkedCasesErrorMessages, LinkedCasesPages, Patterns } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
 import moment = require('moment');
@@ -39,7 +39,7 @@ export class LinkCasesComponent implements OnInit {
     private casesService: CasesService,
     private readonly fb: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
-    public readonly linkedCasesService: LinkedCasesService  ) {}
+    public readonly linkedCasesService: LinkedCasesService) { }
 
   public ngOnInit(): void {
     this.initForm();
@@ -50,7 +50,7 @@ export class LinkCasesComponent implements OnInit {
 
   public initForm(): void {
     this.linkCaseForm = this.fb.group({
-      caseNumber: ['', this.validatorsUtils.numberLengthValidator(16)],
+      caseNumber: ['', [Validators.minLength(16), this.validatorsUtils.regexPattern(Patterns.CASE_REF)]],
       reasonType: this.getReasonTypeFormArray,
     });
   }
@@ -162,7 +162,7 @@ export class LinkCasesComponent implements OnInit {
             caseType: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('CASE_TYPE', caseView.case_type.id),
             caseState: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE', caseView.state.name),
             caseService: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION', caseView.case_type.jurisdiction.name),
-            caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] ||  'Case name missing',
+            caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] || 'Case name missing',
           };
           const ccdApiCaseLinkData: CCDCaseLinkType = {
             CaseReference: caseView.case_id,
@@ -173,7 +173,7 @@ export class LinkCasesComponent implements OnInit {
           if (!this.linkedCasesService.caseFieldValue) {
             this.linkedCasesService.caseFieldValue = [];
           }
-          this.linkedCasesService.caseFieldValue.push({id: caseView.case_id.toString(), value: ccdApiCaseLinkData});
+          this.linkedCasesService.caseFieldValue.push({ id: caseView.case_id.toString(), value: ccdApiCaseLinkData });
           this.selectedCases.push(caseLink);
           this.initForm();
           this.emitLinkedCasesState(false);
@@ -233,7 +233,7 @@ export class LinkCasesComponent implements OnInit {
 
   public onSelectedLinkedCaseRemove(pos, selectedCaseReference): void {
     const caseFieldValue = this.linkedCasesService.caseFieldValue || [];
-    const updatedItems =  caseFieldValue.filter(item => item.value && item.value.CaseReference !== selectedCaseReference);
+    const updatedItems = caseFieldValue.filter(item => item.value && item.value.CaseReference !== selectedCaseReference);
     if (updatedItems) {
       this.linkedCasesService.caseFieldValue = updatedItems;
     }

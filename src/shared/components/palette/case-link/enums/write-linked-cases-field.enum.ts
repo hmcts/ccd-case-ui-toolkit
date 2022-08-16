@@ -25,3 +25,7 @@ export enum LinkedCasesEventTriggers {
   LINK_CASES = 'Link cases',
   MANAGE_CASE_LINKS = 'Manage case links'
 }
+
+export enum Patterns {
+  CASE_REF = '((([0-9]{4})(?: |-)?)){4}'
+}
