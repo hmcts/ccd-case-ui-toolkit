@@ -1,4 +1,4 @@
-<table *ngIf="caseField.value && caseField.value.length " class="collection-field-table">
+<table *ngIf="caseField.value && caseField.value.length " class="collection-field-table" aria-describedby="collection table">
   <ng-container [ngSwitch]="isDisplayContextParameterAvailable">
     <tbody *ngSwitchCase="true">
     <tr>

@@ -50,7 +50,7 @@
         </mat-tab>
         <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
           <ng-template matTabContent>
-            <table [class]="tab.id">
+            <table [class]="tab.id" aria-describedby="case viewer table">
               <tbody>
               <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup.controls['data']">
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">

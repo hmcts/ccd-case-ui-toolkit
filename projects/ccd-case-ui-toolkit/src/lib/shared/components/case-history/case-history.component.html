@@ -8,7 +8,7 @@
     <div class="column-full">
       <div>
         <h2 class="heading-h2">Event Details</h2>
-        <table class="EventDetails">
+        <table class="EventDetails" aria-describedby="event details table">
           <tbody>
           <tr>
             <th>Date</th>
@@ -42,7 +42,7 @@
         <ng-container *ngFor="let tab of tabs">
           <div class="caseHistorySection">
             <h3 class="heading-h3">{{tab.label}}</h3>
-            <table class="CaseHistory" id="{{tab.id}}">
+            <table class="CaseHistory" id="{{tab.id}}" aria-describedby="case history table">
               <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true">
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="tab.fields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">

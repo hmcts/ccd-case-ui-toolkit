@@ -3,7 +3,7 @@
     <dt><span class="text-16">{{caseField.label}}</span></dt>
     <dd></dd>
   </dl>
-  <table class="complex-panel-table">
+  <table class="complex-panel-table" aria-describedby="complex panel table">
     <tbody>
     <!-- <COMPLEX table field header>-->
     <tr>
@@ -35,7 +35,7 @@
         </ng-container>
         <td>
           <div style="float: right;">
-            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" class="accordion-image"/></a>
+            <a href="javascript:void(0)"> <img src="{{ getImage(i) }}" alt="image" class="accordion-image"/></a>
           </div>
         </td>
       </tr>
@@ -43,7 +43,7 @@
       <!-- <COMPLEX table expanded view>-->
       <tr [hidden]="isHidden[i]">
         <td [colSpan]="columns.length + 1">
-          <table class="complex-panel-table">
+          <table class="complex-panel-table" aria-describedby="complex panel table expanded">
             <tbody>
             <ng-container
               *ngFor="let vLabel of columnsVerticalLabel | keyvalue: keepOriginalOrder | ccdCollectionTableCaseFieldsFilter: caseField: rows[i] | ccdReadFieldsFilter:true :undefined :true">

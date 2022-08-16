@@ -1,6 +1,6 @@
 <div class="complex-panel">
   <dl class="complex-panel-title"><dt><span class="text-16">{{caseField.label}}</span></dt><dd></dd></dl>
-  <table class="complex-panel-table">
+  <table class="complex-panel-table" aria-describedby="complex field table">
     <tbody>
       <ng-container *ngFor="let field of caseField | ccdReadFieldsFilter:false :undefined :true">
         <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
