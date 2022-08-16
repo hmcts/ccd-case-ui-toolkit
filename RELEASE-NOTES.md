@@ -1,10 +1,34 @@
 ## RELEASE NOTES
 
+
+### Version 4.12.1-EUI-5225-organisation-search
+**EUI-5225** Bug fix the organisation search functionality
+
+### Version 4.12.6-date-year-validation
+**EUI-4606** Enhanced the date year input validation to restrict between 1900-2100
+
+### Version 4.17.6-EUI-5736-unassigned-cases-pagination
+**EUI-5736** unassigned cases pagination
+
+
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
 
 ### Version 4.12.0
 Add refunds functionality
+
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
+### Version 4.9.16-wcag20-exui-4"
+**FPLA: Accessibility Issues Found in ExUI** FPLA: Accessibility Issues Found in ExUI
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+
+
+### Version 4.12.16-task-event-completion"
+**Task event completion and state machine** Task event completion and state machine
 
 ### Version 4.12.6-limit-search-results-10k-400-5"
 **Limit search results to 10k / 400 pages** Limit search results to 10k / 400 pages
@@ -25,6 +49,7 @@ Add refunds functionality
 **EUI-4562** Case details Active tasks tab on success not returning to active tasks page
 
 ### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details 
 **EUI-4441** Add hearings tab in case details
 
 ### Version 4.7.6-hearings-tab

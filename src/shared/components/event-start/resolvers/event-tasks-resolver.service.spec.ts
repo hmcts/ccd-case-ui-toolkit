@@ -6,6 +6,7 @@ import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { HttpErrorService, HttpService } from '../../../services';
 import { WorkAllocationService } from '../../case-editor';
 import { EventTasksResolverService } from './event-tasks-resolver.service';
+import { SessionStorageService } from '../../../services'
 import createSpyObj = jasmine.createSpyObj;
 
 describe('EventTaskResolverService', () => {
@@ -51,11 +52,14 @@ describe('EventTaskResolverService', () => {
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
   workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+  const sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
+  sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       EventTasksResolverService,
-      { provide: WorkAllocationService, useValue: workAllocationService }
+      { provide: WorkAllocationService, useValue: workAllocationService },
+      { provide: SessionStorageService, useValue: sessionStorageService }
     ]
   }));
 
