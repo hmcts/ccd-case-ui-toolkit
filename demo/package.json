@@ -30,6 +30,7 @@
     "@angular/router": "~7.0.3",
     "@angular/upgrade": "~7.0.3",
     "@hmcts/ccd-case-ui-toolkit": "2.73.0",
+    "@hmcts/ccpay-web-component": "^5.0.7",
     "@hmcts/frontend": "0.0.39-alpha",
     "@nicky-lenaers/ngx-scroll-to": "^1.0.0",
     "angular2-router-loader": "^0.3.4",
