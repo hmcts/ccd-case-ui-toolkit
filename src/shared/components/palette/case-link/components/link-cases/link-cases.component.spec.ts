@@ -172,7 +172,6 @@ describe('LinkCasesComponent', () => {
     component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
     expect(component.isCaseSelected(selectedCasesInfo)).toBe(true);
   });
-  
 
   it('should check showErrorInfo', () => {
     component.selectedCases = selectedCasesInfo;
