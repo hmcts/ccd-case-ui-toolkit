@@ -104,10 +104,10 @@ describe('WriteOrderSummaryFieldComponent', () => {
 
     it('render provided order summary as a table', () => {
       const headRow = de.query($HEAD_ROW);
-      expect(headRow.children.length).toBe(3);
-      expect(text(headRow.children[0])).toBe('Code');
-      expect(text(headRow.children[1])).toBe('Description');
-      expect(text(headRow.children[2])).toBe('Amount');
+      expect(headRow.children.length).toBe(4);
+      expect(text(headRow.children[1])).toBe('Code');
+      expect(text(headRow.children[2])).toBe('Description');
+      expect(text(headRow.children[3])).toBe('Amount');
 
       const body = de.query($BODY);
       expect(body.children.length).toEqual(VALUE.Fees.length + 1);
@@ -164,10 +164,10 @@ describe('WriteOrderSummaryFieldComponent', () => {
 
     it('render undefined case field value as empty table with column headers and Total rows only', () => {
       const headRow = de.query($HEAD_ROW);
-      expect(headRow.children.length).toBe(3);
-      expect(text(headRow.children[0])).toBe('Code');
-      expect(text(headRow.children[1])).toBe('Description');
-      expect(text(headRow.children[2])).toBe('Amount');
+      expect(headRow.children.length).toBe(4);
+      expect(text(headRow.children[1])).toBe('Code');
+      expect(text(headRow.children[2])).toBe('Description');
+      expect(text(headRow.children[3])).toBe('Amount');
 
       const body = de.query($BODY);
       expect(body.children.length).toBe(1);
@@ -213,10 +213,10 @@ describe('WriteOrderSummaryFieldComponent', () => {
 
     it('render null case field value as empty table with column headers and Total rows only', () => {
       const headRow = de.query($HEAD_ROW);
-      expect(headRow.children.length).toBe(3);
-      expect(text(headRow.children[0])).toBe('Code');
-      expect(text(headRow.children[1])).toBe('Description');
-      expect(text(headRow.children[2])).toBe('Amount');
+      expect(headRow.children.length).toBe(4);
+      expect(text(headRow.children[1])).toBe('Code');
+      expect(text(headRow.children[2])).toBe('Description');
+      expect(text(headRow.children[3])).toBe('Amount');
 
       const body = de.query($BODY);
 

@@ -1,7 +1,7 @@
 <div class="order-summary-title">Order Summary</div>
 <table>
     <thead>
-      <tr><td>Code</td><td>Description</td><td>Amount</td></tr>
+      <tr><th style="display: none;"></th><td>Code</td><td>Description</td><td>Amount</td></tr>
     </thead>
     <tbody>
         <tr ccdReadOrderSummaryRow *ngFor="let feeValue of getFees()" [feeValue]="feeValue"></tr>
