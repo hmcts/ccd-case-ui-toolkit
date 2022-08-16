@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../storybook/storybook.component';
 import { createCaseView } from '../../../shared/fixture/case-view.test.fixture';
 import { PaletteModule } from '../palette';
 import { CaseHeaderComponent } from './case-header.component';

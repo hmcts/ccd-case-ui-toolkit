@@ -1,13 +1,18 @@
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { ConditionalShowModule, FocusElementModule } from '../../../../shared/directives';
 import { AddressModel, CaseField } from '../../../../shared/domain';
 import { createFieldType } from '../../../../shared/fixture';
 import { AddressesService } from '../../../services/addresses/addresses.service';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { FieldReadLabelComponent } from '../base-field/field-read-label.component';
+import { FieldReadComponent } from '../base-field/field-read.component';
+import { FieldWriteComponent } from '../base-field/field-write.component';
 import { WriteComplexFieldComponent } from '../complex';
-import { FieldLabelPipe, IsCompoundPipe } from '../utils';
+import { PaletteModule } from '../palette.module';
+import { FieldLabelPipe, IsCompoundPipe, IsReadOnlyPipe } from '../utils';
 import { WriteAddressFieldComponent } from './write-address-field.component';
 
 const addressesService = new AddressesService(null, null);
@@ -42,14 +47,15 @@ export default {
                 ConditionalShowModule,
                 ReactiveFormsModule,
                 FocusElementModule,
+                PaletteModule
             ],
             declarations: [
                 StorybookComponent,
-                FieldLabelPipe,
-                WriteComplexFieldComponent
             ],
             providers: [
                 IsCompoundPipe,
+                IsReadOnlyPipe,
+                CaseFieldService,
                 FormValidatorsService,
                 { provide: AddressesService, useValue: addressesService }]
         }),

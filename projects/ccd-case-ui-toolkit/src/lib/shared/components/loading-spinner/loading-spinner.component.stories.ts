@@ -1,5 +1,5 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../storybook/storybook.component';
 import { LoadingSpinnerComponent } from './loading-spinner.component';
 
 export default {

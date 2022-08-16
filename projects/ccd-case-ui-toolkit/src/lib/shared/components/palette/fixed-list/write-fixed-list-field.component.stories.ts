@@ -1,6 +1,6 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { CaseField } from '../../../../shared/domain/definition/case-field.model';
 import { FieldType } from '../../../../shared/domain/definition/field-type.model';
 import { PaletteUtilsModule } from '../utils';

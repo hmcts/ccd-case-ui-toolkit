@@ -1,6 +1,6 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
 import { userEvent } from '@storybook/testing-library';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { PaletteModule } from '..';
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { WriteEmailFieldComponent } from './write-email-field.component';

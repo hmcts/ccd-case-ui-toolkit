@@ -3,7 +3,7 @@ import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter
 import { FormControl } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { FormatTranslatorService } from '../../../../shared/services/case-fields/format-translator.service';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';

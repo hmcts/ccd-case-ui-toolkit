@@ -1,5 +1,5 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { PaletteModule } from '../palette.module';
 import { MoneyGbpInputComponent } from './money-gbp-input.component';
@@ -15,7 +15,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [PaletteModule],
-      declarations: [MoneyGbpInputComponent, StorybookComponent]
+      declarations: [StorybookComponent]
     }),
     componentWrapperDecorator(story => `<storybook-wrapper>${story}</storybook-wrapper>`),
   ]

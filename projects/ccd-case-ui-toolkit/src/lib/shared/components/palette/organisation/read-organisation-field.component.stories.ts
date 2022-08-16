@@ -1,10 +1,12 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
 import { MockProvider } from 'ng-mocks';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { PaletteModule } from '..';
+import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { OrganisationConverter } from '../../../../shared/domain/organisation/organisation-converter';
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { OrganisationService } from '../../../../shared/services/organisation/organisation.service';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils/utils.module';
@@ -27,12 +29,13 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [
+        PaletteModule,
         PaletteUtilsModule,
         FormsModule,
         ReactiveFormsModule
       ],
       declarations: [
-        MarkdownComponent, ReadOrganisationFieldRawComponent, ReadOrganisationFieldTableComponent, StorybookComponent
+        StorybookComponent
       ],
       providers: [
         MockProvider(OrganisationService),

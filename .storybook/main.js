@@ -1,7 +1,7 @@
 module.exports = {
   "stories": [
-    "../src/**/*.stories.mdx",
-    "../src/**/*.stories.@(js|jsx|ts|tsx)"
+    "../projects/ccd-case-ui-toolkit/src/**/*.stories.mdx",
+    "../projects/ccd-case-ui-toolkit/src/**/*.stories.@(js|jsx|ts|tsx)"
   ],
   "addons": [
     "@storybook/addon-links",

@@ -1,6 +1,6 @@
 import { componentWrapperDecorator, moduleMetadata } from '@storybook/angular';
 import { Meta, Story } from '@storybook/angular/types-6-0';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../storybook/storybook.component';
 import { FooterComponent } from './footer.component';
 
 export default {

@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { MarkdownComponent } from '../markdown/markdown.component';
+import { PaletteModule } from '../palette.module';
 import { PaletteUtilsModule } from '../utils';
 import { ReadYesNoFieldComponent } from './read-yes-no-field.component';
 import { WriteYesNoFieldComponent } from './write-yes-no-field.component';
@@ -21,12 +22,10 @@ export default {
         imports: [
             CommonModule,
             ReactiveFormsModule,
+            PaletteModule,
             PaletteUtilsModule
           ],
           declarations: [
-            MarkdownComponent,
-            ReadYesNoFieldComponent,
-            WriteYesNoFieldComponent,
             StorybookComponent
           ],
           providers: [

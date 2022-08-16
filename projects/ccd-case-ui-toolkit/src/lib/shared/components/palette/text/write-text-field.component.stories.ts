@@ -1,6 +1,6 @@
 import { ReactiveFormsModule } from '@angular/forms';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { createCaseField, createFieldType } from '../../../fixture/shared.test.fixture';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteTextFieldComponent } from './write-text-field.component';

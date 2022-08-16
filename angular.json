@@ -51,25 +51,6 @@
             }
           }
         },
-        "storybook": {
-          "builder": "@storybook/angular:start-storybook",
-          "options": {
-            "browserTarget": "angular-cli:build",
-            "port": 6006,
-            "styles": [
-              "./storybook/storybook.styles.scss"
-            ]
-          }
-        },
-        "build-storybook": {
-          "builder": "@storybook/angular:build-storybook",
-          "options": {
-            "browserTarget": "angular-cli:build",
-            "styles": [
-              "./storybook/storybook.styles.scss"
-            ]
-          }
-        },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
@@ -165,6 +146,26 @@
             }
           }
         },
+
+        "storybook": {
+          "builder": "@storybook/angular:start-storybook",
+          "options": {
+            "browserTarget": "angular-cli:build",
+            "port": 6006,
+            "styles": [
+              "./storybook/storybook.styles.scss"
+            ]
+          }
+        },
+        "build-storybook": {
+          "builder": "@storybook/angular:build-storybook",
+          "options": {
+            "browserTarget": "angular-cli:build",
+            "styles": [
+              "./storybook/storybook.styles.scss"
+            ]
+          }
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -189,5 +190,5 @@
       }
     }
   },
-  "defaultProject": "ccd-case-ui-toolkit"
+  "defaultProject": "ccd-case-ui-toolkit-lib"
 }

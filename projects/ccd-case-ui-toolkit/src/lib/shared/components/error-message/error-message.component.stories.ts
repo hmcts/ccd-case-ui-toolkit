@@ -1,5 +1,6 @@
+import { RouterModule } from '@angular/router';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { StorybookComponent } from 'storybook/storybook.component';
+import { StorybookComponent } from '../../../../../../../storybook/storybook.component';
 import { ErrorMessage } from '../../domain';
 import { ErrorMessageComponent } from './error-message.component';
 
@@ -13,6 +14,7 @@ export default {
     component: ErrorMessageComponent,
     decorators: [
         moduleMetadata({
+            imports: [ RouterModule ],
             declarations: [
                 StorybookComponent
             ]
