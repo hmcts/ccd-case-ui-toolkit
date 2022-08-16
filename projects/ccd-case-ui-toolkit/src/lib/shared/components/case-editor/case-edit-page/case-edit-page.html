@@ -62,6 +62,7 @@
 <div class="width-50">
   <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
     <fieldset id="fieldset-case-data">
+      <legend style="display: none;"></legend>
       <!-- single column -->
       <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()"
                           [formGroup]="editForm.controls['data']" [caseFields]="caseFields"
