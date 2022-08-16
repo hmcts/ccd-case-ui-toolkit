@@ -1,12 +1,12 @@
 <div>
     <div class="govuk-!-margin-bottom-2">
         <h1 class="heading-h1">Linked cases</h1>
-        <label style="font-size: 24px;font-weight: bold;">This case is linked to</label>
+        <label class="table-sub-heading">This case is linked to</label>
         <ccd-linked-cases-to-table [caseField]="caseField" (notifyAPIFailure)="getFailureNotification($event)"
             reloadPage="reload"></ccd-linked-cases-to-table>
     </div>
     <div class="govuk-!-margin-top-8">
-        <label style="font-size: 24px;font-weight: bold;">This case is linked from</label>
+        <label class="table-sub-heading">This case is linked from</label>
         <ccd-linked-cases-from-table [caseField]="caseField" (notifyAPIFailure)="getFailureNotification($event)"
             reloadPage="reload"></ccd-linked-cases-from-table>
     </div>

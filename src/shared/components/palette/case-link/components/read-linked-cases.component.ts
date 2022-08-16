@@ -7,7 +7,8 @@ import { LinkedCasesService } from '../services';
 
 @Component({
   selector: 'ccd-read-linked-cases',
-  templateUrl: './read-linked-cases.component.html'
+  templateUrl: './read-linked-cases.component.html',
+  styleUrls: ['./read-linked-cases.component.scss']
 })
 export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
 
