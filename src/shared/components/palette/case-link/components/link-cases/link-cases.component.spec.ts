@@ -73,6 +73,7 @@ describe('LinkCasesComponent', () => {
     },
   ];
   const linkedCasesService = {
+    editMode: true,
     caseId: '1682374819203471',
     linkedCases: [],
     linkCaseReasons: linkCaseReasons,
@@ -162,13 +163,8 @@ describe('LinkCasesComponent', () => {
   });
 
   it('should check isCaseSelected', () => {
-    component.linkedCasesService.editMode = true;
     component.linkedCasesService.caseFieldValue = [];
     expect(component.isCaseSelected(selectedCasesInfo)).toBe(false);
-    component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
-    expect(component.isCaseSelected(selectedCasesInfo)).toBe(true);
-    component.selectedCases = [];
-    component.linkedCasesService.linkedCases = selectedCasesInfo;
     component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
     expect(component.isCaseSelected(selectedCasesInfo)).toBe(true);
   });

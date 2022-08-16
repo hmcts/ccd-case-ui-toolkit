@@ -268,6 +268,12 @@ describe('WriteLinkedCasesComponent', () => {
     expect(component.isAtFinalPage()).toBe(false);
   });
 
+  it('should validate the page state', () => {
+    const navState: LinkedCasesState = {navigateToNextPage : true, currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS}
+    component.onLinkedCasesStateEmitted(navState);
+    expect(component).toBeTruthy()
+  });
+
   it('should have called ngOnInit, created a FormGroup with a validator, and set the correct linked cases starting page', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.linkedCasesPage).toBe(LinkedCasesPages.BEFORE_YOU_START);
