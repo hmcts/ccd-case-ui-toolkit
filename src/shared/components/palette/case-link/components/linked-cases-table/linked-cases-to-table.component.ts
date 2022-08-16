@@ -28,10 +28,6 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   @Output()
   public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
-
-  public tableHeading = 'Linked cases';
-  public tableSubHeading = 'This case is linked to';
-  public subHeading = 'This case is linked to';
   public caseConsolidatedReasonCode = 'CLRC015';
   public caseProgressedReasonCode = 'CLRC016';
   public caseNameMissingText = 'Case name missing';

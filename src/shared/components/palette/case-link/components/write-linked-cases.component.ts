@@ -84,12 +84,15 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       this.setContinueButtonValidationErrorMessage();
       this.proceedToNextPage();
     } else {
-      linkedCasesState.errorMessages.forEach(errorMessage => {
+      if (linkedCasesState.errorMessages && linkedCasesState.errorMessages.length) {
+        linkedCasesState.errorMessages.forEach((errorMessage, index) => {
+          this.caseEditPageComponent.validationErrors.push({ id: errorMessage.fieldId, message: errorMessage.description});
+        });
+      } else {
         this.errorMessages.push({  title: 'case-selection',
         description: LinkedCasesErrorMessages.UnlinkCaseSelectionError,
-        fieldId: `case-reference-${this.linkedCases[0].caseReference}`});
-        this.caseEditPageComponent.validationErrors.push({ id: errorMessage.fieldId, message: errorMessage.description});
-      });
+        fieldId: `link-page`});
+      }
     }
   }
 
