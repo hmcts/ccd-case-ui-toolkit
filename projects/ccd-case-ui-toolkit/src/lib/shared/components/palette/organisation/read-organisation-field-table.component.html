@@ -1,5 +1,5 @@
 <div class="complex-panel">
-  <table class="complex-field-table">
+  <table class="complex-field-table" aria-describedby="complex organisation field table">
     <tbody>
       <tr>
         <th class="complex-field-title">
@@ -8,7 +8,7 @@
           </dl>
         </th>
         <td>
-          <table class="complex-field-table" *ngIf="(selectedOrg$ | async) as selectedOrg">
+          <table class="complex-field-table" *ngIf="(selectedOrg$ | async) as selectedOrg" aria-describedby="complex selected organisation field table">
             <tr class="complex-panel-compound-field">
               <th style="display: none;"></th>
               <td class="label-width-medium"><span class="text-16">Name:</span></td>
