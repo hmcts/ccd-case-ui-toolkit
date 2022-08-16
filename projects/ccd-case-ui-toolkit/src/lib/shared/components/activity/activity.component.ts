@@ -97,6 +97,6 @@ export class ActivityComponent implements OnInit, OnDestroy {
   }
 
   private replaceLastCommaWithAnd(str: string): string {
-    return str.replace(/(.*)\,(.*?)$/, '$1 and$2');
+    return str.trim().replace(/,([^,]*)$/, ' and $1').split('  ').join(' ');
   }
 }
