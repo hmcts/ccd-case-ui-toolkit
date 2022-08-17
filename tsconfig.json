@@ -21,12 +21,6 @@
       "dom"
     ],
     "paths": {
-      "gov-ui": [
-        "dist/gov-ui"
-      ],
-      "gov-ui/*": [
-        "dist/gov-ui/*"
-      ],
       "ccd-case-ui-toolkit": [
         "dist/ccd-case-ui-toolkit"
       ],
