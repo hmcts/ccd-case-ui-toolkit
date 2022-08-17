@@ -1,5 +1,5 @@
-import { CaseField } from '../../../domain';
-import { newCaseField, textFieldType } from '../../../fixture';
+import { CaseField } from '../../domain';
+import { newCaseField, textFieldType } from '../../fixture';
 import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
 
 describe('CcdCollectionTableCaseFieldsFilterPipe', () => {

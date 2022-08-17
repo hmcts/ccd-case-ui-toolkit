@@ -5,11 +5,11 @@ import { ConditionalShowModule } from '../../../directives/conditional-show/cond
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { createFieldType, newCaseField, textFieldType } from '../../../fixture';
+import { CcdCollectionTableCaseFieldsFilterPipe } from '../../../pipes/complex/ccd-collection-table-value-case-fields.pipe';
+import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
-import { CcdCollectionTableCaseFieldsFilterPipe } from './ccd-collection-table-value-case-fields.pipe';
-import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
-import { FieldsFilterPipe } from './fields-filter.pipe';
 import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-collection-table.component';
 
 @Component({

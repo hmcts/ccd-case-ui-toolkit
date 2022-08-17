@@ -10,12 +10,12 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { OrganisationService } from '../../../services/organisation';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
-import { FieldsFilterPipe } from '../complex';
 import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils';
 import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
 import { MarkdownComponent } from '../markdown/markdown.component';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 
 describe('ReadOrganisationFieldTableComponent', () => {
   let component: ReadOrganisationFieldTableComponent;

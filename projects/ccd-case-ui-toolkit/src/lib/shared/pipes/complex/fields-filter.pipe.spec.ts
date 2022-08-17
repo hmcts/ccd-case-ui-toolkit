@@ -1,4 +1,4 @@
-import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsFilterPipe } from './fields-filter.pipe';
 
 describe('FieldsFilterPipe', () => {

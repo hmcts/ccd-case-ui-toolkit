@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
+import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
 
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { FieldsUtils } from '../../services/fields/fields.utils';
 
 @Pipe({
   name: 'ccdFieldsFilter'

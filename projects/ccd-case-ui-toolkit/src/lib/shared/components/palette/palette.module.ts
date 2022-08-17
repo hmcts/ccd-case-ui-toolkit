@@ -29,7 +29,7 @@ import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.com
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
-import { CcdCollectionTableCaseFieldsFilterPipe, CcdCYAPageLabelFilterPipe, CcdPageFieldsPipe, CcdTabFieldsPipe, FieldsFilterPipe, ReadComplexFieldCollectionTableComponent, ReadComplexFieldComponent, ReadComplexFieldRawComponent, ReadComplexFieldTableComponent, ReadFieldsFilterPipe, WriteComplexFieldComponent } from './complex';
+import { ReadComplexFieldCollectionTableComponent, ReadComplexFieldComponent, ReadComplexFieldRawComponent, ReadComplexFieldTableComponent, WriteComplexFieldComponent } from './complex';
 import { ReadDateFieldComponent, WriteDateContainerFieldComponent, WriteDateFieldComponent } from './date';
 import { DatetimePickerComponent } from './datetime-picker';
 import { DocumentUrlPipe } from './document';
@@ -164,12 +164,6 @@ const PALETTE_COMPONENTS = [
     ScrollToModule.forRoot()
   ],
   declarations: [
-    CcdCollectionTableCaseFieldsFilterPipe,
-    CcdCYAPageLabelFilterPipe,
-    CcdTabFieldsPipe,
-    ReadFieldsFilterPipe,
-    FieldsFilterPipe,
-    CcdPageFieldsPipe,
     FixedListPipe,
     FixedRadioListPipe,
     DynamicListPipe,
@@ -182,7 +176,6 @@ const PALETTE_COMPONENTS = [
     TabsModule,
     PaletteUtilsModule,
     PipesModule,
-
     ...PALETTE_COMPONENTS
   ],
   providers: [

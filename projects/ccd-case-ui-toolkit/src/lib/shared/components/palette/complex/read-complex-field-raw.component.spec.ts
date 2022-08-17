@@ -3,9 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 
-import { FieldsFilterPipe, ReadFieldsFilterPipe } from '.';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { CaseField, FieldType } from '../../../domain';
+import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { text } from '../../../test/helpers';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';

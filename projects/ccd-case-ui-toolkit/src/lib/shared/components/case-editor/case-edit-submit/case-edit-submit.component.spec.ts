@@ -11,6 +11,10 @@ import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { aCaseField, createCaseField, createFieldType, createMultiSelectListFieldType } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { CcdCaseTitlePipe } from '../../../pipes/case-title/ccd-case-title.pipe';
+import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
+import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
+import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import {
   CaseFieldService,
   FieldsPurger,
@@ -23,11 +27,8 @@ import {
 } from '../../../services';
 import { text } from '../../../test/helpers';
 import { CallbackErrorsContext } from '../../error';
-import { CcdPageFieldsPipe, FieldsFilterPipe, ReadFieldsFilterPipe } from '../../palette/complex';
-import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
-import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { aWizardPage } from '../case-edit.spec';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage, WizardPageField } from '../domain';

@@ -6,9 +6,9 @@ import { MockComponent } from 'ng2-mock-component';
 
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { CaseField, FieldType } from '../../../domain/definition';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
-import { FieldsFilterPipe } from './fields-filter.pipe';
 import { ReadComplexFieldComponent } from './read-complex-field.component';
 
 const inputs: string[] = ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix'];

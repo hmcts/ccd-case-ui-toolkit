@@ -1,4 +1,4 @@
-import { CaseField } from './../../../domain/definition/case-field.model';
+import { CaseField } from '../../domain/definition/case-field.model';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
 function buildCaseField(id: string, properties: object, value?: any): CaseField {

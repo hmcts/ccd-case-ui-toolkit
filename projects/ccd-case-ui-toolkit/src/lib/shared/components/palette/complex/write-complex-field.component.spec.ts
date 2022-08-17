@@ -7,9 +7,9 @@ import { MockComponent } from 'ng2-mock-component';
 
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { CaseField, FieldType } from '../../../domain/definition';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
 import { IsCompoundPipe, IsReadOnlyPipe, PaletteUtilsModule } from '../utils';
-import { FieldsFilterPipe } from './fields-filter.pipe';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
 
 import createSpyObj = jasmine.createSpyObj;

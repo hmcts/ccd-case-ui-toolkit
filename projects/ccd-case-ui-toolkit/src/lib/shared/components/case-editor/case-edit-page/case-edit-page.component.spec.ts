@@ -16,14 +16,15 @@ import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
-import { CcdPageFieldsPipe, FieldsFilterPipe } from '../../palette/complex';
-import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
 import { CaseEditPageComponent } from './case-edit-page.component';
 import { CaseEditPageText } from './case-edit-page-text.enum';
 import createSpyObj = jasmine.createSpyObj;
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
+import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
+import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
 
 describe('CaseEditPageComponent', () => {
 

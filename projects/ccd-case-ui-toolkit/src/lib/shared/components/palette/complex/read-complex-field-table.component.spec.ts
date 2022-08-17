@@ -7,11 +7,11 @@ import { ConditionalShowRegistrarService } from '../../../directives/conditional
 import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
-import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
-import { FieldsFilterPipe } from './fields-filter.pipe';
 import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
 
 describe('ReadComplexFieldTableComponent', () => {

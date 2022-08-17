@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
 
-import { CaseTab } from '../../../domain/case-view';
-import { CaseField } from '../../../domain/definition';
+import { CaseTab } from '../../domain/case-view';
+import { CaseField } from '../../domain/definition';
 
 @Pipe({
   name: 'ccdTabFields'

@@ -8,6 +8,7 @@ import { ConditionalShowModule } from '../../directives/conditional-show';
 import {
   ConditionalShowRegistrarService
 } from '../../directives/conditional-show/services/conditional-show-registrar.service';
+import { LabelSubstitutorModule } from '../../directives/substitutor/label-substitutor.module';
 import { AddressesService } from '../../services/addresses';
 import { CaseFieldService } from '../../services/case-fields/case-field.service';
 import { DocumentManagementService } from '../../services/document-management';
@@ -55,6 +56,7 @@ import { CaseworkerService } from './services/case-worker.service';
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
+        LabelSubstitutorModule,
         ConditionalShowModule,
         ErrorsModule,
         PortalModule

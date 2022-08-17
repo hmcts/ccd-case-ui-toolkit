@@ -45,7 +45,7 @@
         <ng-container *ngFor="let page of this.wizard.pages">
           <ng-container *ngIf="isShown(page)">
             <ng-container *ngFor="let field of page
-            | ccdPageFields: editForm.controls['data']
+            | ccdPageFields: editForm
             | ccdReadFieldsFilter: false :undefined :true : editForm.controls['data']
             | ccdCYAPageLabelFilter">
               <ng-container *ngIf="canShowFieldInCYA(field)">

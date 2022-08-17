@@ -1,4 +1,4 @@
-import { CaseField } from '../../../domain';
+import { CaseField } from '../../domain';
 import { CcdCYAPageLabelFilterPipe } from './ccd-cyapage-label-filter.pipe';
 
 describe('CcdCYAPageLabelFilterPipe', () => {

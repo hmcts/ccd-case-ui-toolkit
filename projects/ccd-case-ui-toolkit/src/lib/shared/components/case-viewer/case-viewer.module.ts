@@ -5,7 +5,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { EventLogDetailsComponent } from '../palette/history/event-log/event-log-details.component';
 import { AlertModule } from '../../../components/banners/alert';
-import { ConditionalShowModule } from '../../directives';
+import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CaseReferencePipe } from '../../pipes';
 import {
   ActivityPollingService,
@@ -55,7 +55,8 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseHistoryModule,
     MatTabsModule,
     ReactiveFormsModule,
-    AlertModule
+    AlertModule,
+    LabelSubstitutorModule
   ],
   declarations: [
     CaseEventTriggerComponent,

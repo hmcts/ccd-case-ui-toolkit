@@ -3,13 +3,13 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
 
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
-import { FieldsFilterPipe } from './fields-filter.pipe';
 
 const ADDRESS_FIELD_TYPES = [ 'AddressUK', 'AddressGlobalUK', 'AddressGlobal' ];
 

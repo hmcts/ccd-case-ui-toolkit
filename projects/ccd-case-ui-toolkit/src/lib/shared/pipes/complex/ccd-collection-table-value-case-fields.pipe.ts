@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
-import { CaseField } from '../../../domain/definition';
+import { CaseField } from '../../domain/definition/case-field.model';
 
 @Pipe({
   name: 'ccdCollectionTableCaseFieldsFilter'
