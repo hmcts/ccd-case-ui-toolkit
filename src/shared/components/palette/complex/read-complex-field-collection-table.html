@@ -69,10 +69,10 @@
                       <ng-template #SimpleRow>
                         <tr class="complex-panel-nested-field" [hidden]="caseField.hidden">
                           <th scope="col"><span class="text-16">{{caseField.label}}</span></th>
-                          <td *ngIf="!item[vLabel.id].hasOwnProperty('CaseReference')">
+                          <td *ngIf="!item[vLabel.id]?.hasOwnProperty('CaseReference')">
                             <span class="text-16"><ccd-field-read [caseField]="caseField" [context]="context"></ccd-field-read></span>
                           </td>
-                          <td *ngIf="item[vLabel.id].hasOwnProperty('CaseReference')">
+                          <td *ngIf="item[vLabel.id]?.hasOwnProperty('CaseReference')">
                             <ccd-read-case-link-field [caseField]="addCaseReferenceValue(caseField, item[vLabel.id].CaseReference)" [context]="context"></ccd-read-case-link-field>
                           </td>
                         </tr>
