@@ -15,7 +15,6 @@ import { CaseHistoryService } from './services/case-history.service';
     ],
     declarations: [
         CaseHistoryComponent
-        
     ],
     providers: [
         CaseHistoryService,
