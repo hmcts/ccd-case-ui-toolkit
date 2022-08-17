@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import { CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
-import { FieldsPurger, FieldsUtils, ProfileNotifier, ProfileService } from '../../../services';
+import { FieldsPurger, FieldsUtils } from '../../../services';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { WizardFactoryService } from '../services';
 
@@ -55,8 +55,6 @@ export class CaseEditComponent implements OnInit {
     private fieldsPurger: FieldsPurger,
     private registrarService: ConditionalShowRegistrarService,
     private wizardFactory: WizardFactoryService,
-    private profileService: ProfileService,
-    private profileNotifier: ProfileNotifier,
   ) {}
 
   ngOnInit(): void {
