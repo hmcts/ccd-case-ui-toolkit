@@ -25,10 +25,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   @Output()
   public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
-
-  pageType = PageType;
-  public tableSubHeading = 'This case is linked from';
-
+  public pageType = PageType;
   public caseDetails: CaseView;
   public parentUrl: string;
   public isLoaded: boolean;

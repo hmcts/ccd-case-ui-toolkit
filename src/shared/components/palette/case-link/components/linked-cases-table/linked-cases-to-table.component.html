@@ -1,11 +1,7 @@
-<h1 class="heading-h1">{{tableHeading}}</h1>
-<h2 class="heading-h2">{{subHeading}}</h2>
-<div class="govuk-grid-row">
+<div class="govuk-grid-row govuk-!-margin-bottom-2">
   <div class="govuk-grid-column-full">
-    <h2 class="heading-h2">{{subHeading}}</h2>
-
     <table *ngIf="linkedCasesFromResponse" aria-describedby="table to display cases linked TO">
-      <thead class="govuk-table__head">
+      <thead>
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header case-table-column" width="20%">Case name and number</th>
           <th scope="col" class="govuk-table__header case-table-column" width="20%">Case type </th>
@@ -39,6 +35,7 @@
             None
           </td>
         </tr>
+      </tbody>
     </table>
   </div>
 </div>
