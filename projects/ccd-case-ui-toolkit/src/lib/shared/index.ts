@@ -1,5 +1,3 @@
-// export * from './components';
-export * from './components';
 export * from './directives';
 export * from './domain';
 export * from './fixture/shared.test.fixture';
