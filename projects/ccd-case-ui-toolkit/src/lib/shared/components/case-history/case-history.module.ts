@@ -14,7 +14,8 @@ import { CaseHistoryService } from './services/case-history.service';
         ConditionalShowModule,
     ],
     declarations: [
-        CaseHistoryComponent,
+        CaseHistoryComponent
+        
     ],
     providers: [
         CaseHistoryService,

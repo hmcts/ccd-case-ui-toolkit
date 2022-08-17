@@ -20,8 +20,8 @@ import { ActivityModule } from '../activity';
 import { CaseEditorModule, CaseNotifier, ConvertHrefToRouterService } from '../case-editor';
 import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
-import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { ErrorsModule } from '../error/errors.module';
+import { EventMessageModule } from '../error-message/error-message.module';
 import { EventStartModule } from '../event-start/event-start.module';
 import { EventTriggerModule } from '../event-trigger';
 import { PaletteModule } from '../palette';
@@ -48,6 +48,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseHeaderModule,
     EventStartModule,
     EventTriggerModule,
+    EventMessageModule,
     PaletteModule,
     CaseEditorModule,
     ConditionalShowModule,
@@ -63,12 +64,10 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseBasicAccessViewComponent,
     CaseFullAccessViewComponent,
     CaseViewComponent,
-    EventLogDetailsComponent,
     PrintUrlPipe,
     CaseChallengedAccessRequestComponent,
     CaseSpecificAccessRequestComponent,
     CaseReviewSpecificAccessRequestComponent,
-    ErrorMessageComponent,
     CaseChallengedAccessSuccessComponent,
     CaseSpecificAccessSuccessComponent,
     CaseReviewSpecificAccessRejectComponent
