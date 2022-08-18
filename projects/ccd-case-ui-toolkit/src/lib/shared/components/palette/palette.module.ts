@@ -173,6 +173,9 @@ const PALETTE_COMPONENTS = [
     ...PALETTE_COMPONENTS
   ],
   exports: [
+    NgxMatDatetimePickerModule,
+    NgxMatNativeDateModule,
+    NgxMatTimepickerModule,
     TabsModule,
     PaletteUtilsModule,
     PipesModule,

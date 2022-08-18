@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.10-angular11-upgrade",
+  "version": "5.0.11-angular11-upgrade",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
@@ -54,6 +54,8 @@
     "@angular/material": "^11.2.13",
     "@angular/platform-browser": "~11.2.14",
     "@angular/platform-browser-dynamic": "~11.2.14",
+    "@angular-material-components/datetime-picker": "6.0.0",
+    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/router": "~11.2.14",
     "@angular/upgrade": "~11.2.14",
     "@edium/fsm": "^2.1.2",
@@ -84,8 +86,6 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1102.19",
-    "@angular-material-components/datetime-picker": "6.0.0",
-    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/cli": "^11.2.19",
     "@angular/compiler-cli": "~11.2.14",
     "@babel/core": "^7.18.10",

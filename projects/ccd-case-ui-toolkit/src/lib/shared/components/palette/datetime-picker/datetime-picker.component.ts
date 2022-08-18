@@ -1,8 +1,9 @@
 import {
   NgxMatDateAdapter,
   NgxMatDateFormats,
-  NgxMatDatetimePicker, NGX_MAT_DATE_FORMATS
+  NGX_MAT_DATE_FORMATS
 } from '@angular-material-components/datetime-picker';
+import type { NgxMatDatetimePicker } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
