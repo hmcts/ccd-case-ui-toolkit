@@ -24,7 +24,7 @@ export class FieldTypeSanitiser {
    * @param caseFields The CaseFields to assess.
    * @param data The data in the form.
    */
-   public sanitiseLists(caseFields: CaseField[], data: any) {
+  public sanitiseLists(caseFields: CaseField[], data: any) {
     if (!data || !caseFields) {
       return;
     }
@@ -34,7 +34,7 @@ export class FieldTypeSanitiser {
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST:
           this.convertArrayToDynamicListOutput(caseField, data);
           break;
-        
+
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_RADIO_LIST:
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST:
           this.convertStringToDynamicListOutput(caseField, data);
