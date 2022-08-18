@@ -31,6 +31,7 @@ import { DocumentModule } from './document/document.module';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
 import { DynamicListModule } from './dynamic-list/dynamic-list.module';
+import { DynamicMultiSelectListModule } from './dynamic-multi-select-list';
 import { DynamicRadioListModule } from './dynamic-radio-list/dynamic-radio-list.module';
 import { ReadEmailFieldComponent } from './email/read-email-field.component';
 import { WriteEmailFieldComponent } from './email/write-email-field.component';
@@ -66,6 +67,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     FixedListModule,
     DynamicListModule,
     DynamicRadioListModule,
+    DynamicMultiSelectListModule,
     FixedRadioListModule,
     YesNoModule,
     ComplexModule,

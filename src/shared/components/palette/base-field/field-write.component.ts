@@ -7,7 +7,7 @@ import { FormValidatorsService } from '../../../services/form';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 
-const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
+const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList', 'DynamicMultiSelectList' ];
 
 @Component({
   selector: 'ccd-field-write',

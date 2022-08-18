@@ -8,6 +8,7 @@ export class FieldTypeSanitiser {
   public static readonly FIELD_TYPE_COLLECTION: FieldTypeEnum = 'Collection';
   public static readonly FIELD_TYPE_DYNAMIC_LIST: FieldTypeEnum = 'DynamicList';
   public static readonly FIELD_TYPE_DYNAMIC_RADIO_LIST: FieldTypeEnum = 'DynamicRadioList';
+  public static readonly FIELD_TYPE_DYNAMIC_MULTISELECT_LIST: FieldTypeEnum = 'DynamicMultiSelectList';
 
   /**
    * This method finds dynamiclists in a form and replaces their string
@@ -30,6 +31,10 @@ export class FieldTypeSanitiser {
     caseFields.forEach(caseField => {
 
       switch (caseField.field_type.type) {
+        case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST:
+          this.convertArrayToDynamicListOutput(caseField, data);
+          break;
+        
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_RADIO_LIST:
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_LIST:
           this.convertStringToDynamicListOutput(caseField, data);
@@ -49,6 +54,20 @@ export class FieldTypeSanitiser {
       }
 
     });
+  }
+
+  private convertArrayToDynamicListOutput(field: CaseField, data: any): void {
+    const values = data[field.id];
+
+    if (Array.isArray(values)) {
+      const listItems = this.getListItems(field);
+      const matches = listItems.filter(item => values.map(v => v.code).indexOf(item.code) !== -1);
+
+      data[field.id] = {
+        value: matches,
+        list_items: listItems
+      };
+    }
   }
 
   private convertStringToDynamicListOutput(field: CaseField, data: any): void {
