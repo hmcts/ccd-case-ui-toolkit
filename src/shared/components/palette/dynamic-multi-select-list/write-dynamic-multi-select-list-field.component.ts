@@ -47,7 +47,7 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
 
     if (!target || !target.value) {
       return;
-    };
+    }
 
     const selectedListItem: object = this.getValueListItem(target.value);
 
@@ -59,7 +59,6 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
       this.checkboxes.controls.forEach((ctrl: FormControl, i) => {
         if (ctrl.value.code === target.value) {
           this.checkboxes.removeAt(i);
-          return;
         }
       });
     }
