@@ -30,7 +30,7 @@ describe('CaseHistoryComponent', () => {
 
   const MarkdownComponent: any = MockComponent({
     selector: 'ccd-markdown',
-    inputs: ['content']
+    inputs: ['content', 'markdownUseHrefAsRouterLink']
   });
 
   // Page object selectors

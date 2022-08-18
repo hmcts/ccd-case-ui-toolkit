@@ -40,6 +40,14 @@ export class CaseListComponent {
 
   @Input() public selectedCases: any[] = [];
 
+  @Input() public currentPageNo: number;
+
+  @Input() public totalResultsCount?: number;
+
+  @Input() public pageSize?: number;
+
+  @Output() public pageChange = new EventEmitter();
+
   constructor(private browserService: BrowserService) { }
 
   public formatDate(date: Date): string {
@@ -108,6 +116,11 @@ export class CaseListComponent {
         this.changeSelection(aCase);
       }
     }
+  }
+
+  public goToPage(pageNumber: number) {
+    this.currentPageNo = pageNumber;
+    this.pageChange.emit(pageNumber);
   }
 }
 
