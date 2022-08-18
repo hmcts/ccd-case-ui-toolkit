@@ -22,9 +22,11 @@ import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from
 
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { WindowService } from '../../services/window';
+import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -35,8 +37,12 @@ import { DatetimePickerComponent } from './datetime-picker';
 import { DocumentUrlPipe } from './document';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
+import { ReadDocumentFieldComponent } from './document/read-document-field.component';
+import { WriteDocumentFieldComponent } from './document/write-document-field.component'
 import { DynamicListPipe, ReadDynamicListFieldComponent } from './dynamic-list';
+import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
 import { DynamicRadioListPipe, ReadDynamicRadioListFieldComponent } from './dynamic-radio-list';
+import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
 import { FixedListPipe, ReadFixedListFieldComponent, WriteFixedListFieldComponent } from './fixed-list';
 import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioListFieldComponent } from './fixed-radio-list';
@@ -56,12 +62,8 @@ import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { WriteAddressFieldComponent } from './address/write-address-field.component';
-import { WriteDocumentFieldComponent } from './document/write-document-field.component'
-import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
-import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
-import { ReadDocumentFieldComponent } from './document/read-document-field.component';
-import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
+import { ReadDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list/read-dynamic-multi-select-list-field.component';
+import { WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list/write-dynamic-multi-select-list-field.component';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -102,6 +104,7 @@ const PALETTE_COMPONENTS = [
     ReadFixedListFieldComponent,
     ReadFixedRadioListFieldComponent,
     ReadDynamicRadioListFieldComponent,
+    ReadDynamicMultiSelectListFieldComponent,
     ReadCaseLinkFieldComponent,
     ReadComplexFieldComponent,
     ReadComplexFieldRawComponent,
@@ -115,6 +118,7 @@ const PALETTE_COMPONENTS = [
     WriteDocumentFieldComponent,
     WriteDynamicListFieldComponent,
     WriteDynamicRadioListFieldComponent,
+    WriteDynamicMultiSelectListFieldComponent,
     WriteTextFieldComponent,
     WriteDateContainerFieldComponent,
     WriteTextAreaFieldComponent,

@@ -1,6 +1,9 @@
 ## RELEASE NOTES
 
 
+### Version 5.0.8-2831-dynamic-multiselect
+**EUI-2831** Dynamic Multi Select list feature
+
 ### Version 4.12.1-EUI-5225-organisation-search
 **EUI-5225** Bug fix the organisation search functionality
 

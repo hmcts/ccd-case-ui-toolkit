@@ -14,6 +14,9 @@ import { ChallengedAccessRequest } from '../../../domain/case-view/challenged-ac
 import { RoleAssignmentResponse } from '../../../domain/case-view/role-assignment-response.model';
 import { RoleCategory, RoleRequestPayload } from '../../../domain/case-view/role-request.model';
 import { SpecificAccessRequest } from '../../../domain/case-view/specific-access-request.model';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldTypeEnum } from '../../../domain/definition/field-type-enum.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { Draft } from '../../../domain/draft.model';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -52,6 +55,10 @@ export class CasesService {
 
   public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
 
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicMultiSelectList'];
+
   /**
    * @deprecated Use `CasesService::getCaseView` instead
    */
@@ -88,6 +95,56 @@ export class CasesService {
         }),
         finalize(() => this.loadingService.unregister(loadingToken))
       );
+  }
+
+  private setDynamicListDefinition(caseField: CaseField, caseFieldType: FieldType, rootCaseField: CaseField) {
+    if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
+
+      caseFieldType.complex_fields.forEach(field => {
+        try {
+          const isDynamicField = CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE.indexOf(field.field_type.type) !== -1;
+
+          if (isDynamicField) {
+            const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
+            if (dynamicListValue) {
+              const list_items = dynamicListValue.list_items;
+              const value = dynamicListValue.value;
+              field.value = {
+                list_items: list_items,
+                value: value ? value : undefined
+              };
+              field.formatted_value = {
+                ...field.formatted_value,
+                ...field.value
+              };
+            }
+          } else {
+            this.setDynamicListDefinition(field, field.field_type, rootCaseField);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    } else if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
+      if (caseFieldType.collection_field_type) {
+        this.setDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
+      }
+    }
+  }
+
+  private getDynamicListValue(jsonBlock: any, key: string) {
+
+    if (jsonBlock[key]) {
+      return jsonBlock[key];
+    } else {
+      for (const elementKey in jsonBlock) {
+        if (typeof jsonBlock === 'object' && jsonBlock.hasOwnProperty(elementKey)) {
+          return this.getDynamicListValue(jsonBlock[elementKey], key);
+        }
+      }
+    }
+
+    return null;
   }
 
   public getCaseViewV2(caseId: string): Observable<CaseView> {

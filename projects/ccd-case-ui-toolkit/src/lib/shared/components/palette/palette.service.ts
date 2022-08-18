@@ -13,6 +13,8 @@ import { ReadDocumentFieldComponent } from './document/read-document-field.compo
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { ReadDynamicListFieldComponent } from './dynamic-list/read-dynamic-list-field.component';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
+import { ReadDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list/read-dynamic-multi-select-list-field.component';
+import { WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list/write-dynamic-multi-select-list-field.component';
 import { ReadDynamicRadioListFieldComponent } from './dynamic-radio-list/read-dynamic-radio-list-field.component';
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { ReadEmailFieldComponent } from './email/read-email-field.component';
@@ -74,6 +76,8 @@ export class PaletteService {
         return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
       case 'DynamicRadioList':
         return write ? WriteDynamicRadioListFieldComponent : ReadDynamicRadioListFieldComponent;
+      case 'DynamicMultiSelectList':
+        return write ? WriteDynamicMultiSelectListFieldComponent : ReadDynamicMultiSelectListFieldComponent;
       case 'FixedRadioList':
         return write ? WriteFixedRadioListFieldComponent : ReadFixedRadioListFieldComponent;
       case 'Complex':
