@@ -97,56 +97,6 @@ export class CasesService {
       );
   }
 
-  private setDynamicListDefinition(caseField: CaseField, caseFieldType: FieldType, rootCaseField: CaseField) {
-    if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COMPLEX) {
-
-      caseFieldType.complex_fields.forEach(field => {
-        try {
-          const isDynamicField = CasesService.SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE.indexOf(field.field_type.type) !== -1;
-
-          if (isDynamicField) {
-            const dynamicListValue = this.getDynamicListValue(rootCaseField.value, field.id);
-            if (dynamicListValue) {
-              const list_items = dynamicListValue.list_items;
-              const value = dynamicListValue.value;
-              field.value = {
-                list_items: list_items,
-                value: value ? value : undefined
-              };
-              field.formatted_value = {
-                ...field.formatted_value,
-                ...field.value
-              };
-            }
-          } else {
-            this.setDynamicListDefinition(field, field.field_type, rootCaseField);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      });
-    } else if (caseFieldType.type === CasesService.SERVER_RESPONSE_FIELD_TYPE_COLLECTION) {
-      if (caseFieldType.collection_field_type) {
-        this.setDynamicListDefinition(caseField, caseFieldType.collection_field_type, rootCaseField);
-      }
-    }
-  }
-
-  private getDynamicListValue(jsonBlock: any, key: string) {
-
-    if (jsonBlock[key]) {
-      return jsonBlock[key];
-    } else {
-      for (const elementKey in jsonBlock) {
-        if (typeof jsonBlock === 'object' && jsonBlock.hasOwnProperty(elementKey)) {
-          return this.getDynamicListValue(jsonBlock[elementKey], key);
-        }
-      }
-    }
-
-    return null;
-  }
-
   getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
     const headers = new HttpHeaders()

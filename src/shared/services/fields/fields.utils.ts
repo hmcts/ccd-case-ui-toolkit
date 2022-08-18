@@ -21,7 +21,7 @@ export class FieldsUtils {
   // Handling of Dynamic Lists in Complex Types
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
-  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
+  public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList', 'DynamicMultiSelectList'];
 
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {
