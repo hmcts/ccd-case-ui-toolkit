@@ -54,7 +54,8 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         'EXC_REFERENCE',
         'DCN_NUMBER',
         'LOGGEDINUSERROLES',
-        'LOGGEDINUSEREMAIL'
+        'LOGGEDINUSEREMAIL',
+        'ISPAYMENTSTATUSENABLED'
       ]});
 
     TestBed
