@@ -470,9 +470,8 @@ const CASE_VIEW: CaseView = {
           id: 'CaseFlag1',
           label: 'First Case Flag',
           display_context: null,
-          // Temporary field type; will need to be changed over to "Flags" field type in future
           field_type: {
-            id: 'CaseFlag',
+            id: 'Flags',
             type: 'Complex'
           },
           value: {

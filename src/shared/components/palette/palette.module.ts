@@ -26,8 +26,8 @@ import { CollectionCreateCheckerService } from './collection/collection-create-c
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { ComplexModule } from './complex/complex.module';
-import { WriteDateContainerFieldComponent } from './date';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
+import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { WriteDateFieldComponent } from './date/write-date-field.component';
 import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
 import { DocumentModule } from './document/document.module';
