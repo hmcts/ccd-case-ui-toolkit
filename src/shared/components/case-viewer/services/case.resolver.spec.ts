@@ -307,5 +307,15 @@ describe('CaseResolver', () => {
       expect(draftService.getDraft).not.toHaveBeenCalled();
       expect(caseNotifier.cachedCaseView).toBe(DRAFT);
     });
+
+    it('should make sevice call when cached case view is not exists', () => {
+      DRAFT.case_id = 'DRAFT42';
+      caseResolver
+        .resolve(route)
+        .then(caseData => {
+          expect(caseData).toEqual(DRAFT);
+        });
+      expect(draftService.getDraft).toHaveBeenCalled();
+    });
   });
 });
