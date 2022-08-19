@@ -31,6 +31,7 @@ import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summa
 import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-summary-field.component';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
 import { WriteDateContainerFieldComponent } from '.';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 
 describe('PaletteService', () => {
 
@@ -199,6 +200,14 @@ describe('PaletteService', () => {
     it('should get CasePaymentHistoryViewerFieldComponent component class for CasePaymentHistoryViewer regardless of read/write', () => {
       assertComponent('CasePaymentHistoryViewer', true, CasePaymentHistoryViewerFieldComponent, 'AnID');
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
+    });
+
+    it('should get WriteDynamicMultiSelectList component class for input', () => {
+      assertComponent('DynamicMultiSelectList', true, WriteDynamicMultiSelectListFieldComponent, 'AnID');
+    });
+
+    it('should get ReadDynamicMultiSelectList component class for input', () => {
+      assertComponent('DynamicMultiSelectList', false, ReadDynamicMultiSelectListFieldComponent, 'AnID');
     });
 
   });
