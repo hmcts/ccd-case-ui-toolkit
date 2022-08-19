@@ -11,7 +11,6 @@ import {
   FormValueService,
   OrderService,
   ProfileNotifier,
-  ProfileService,
   SessionStorageService
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
@@ -78,7 +77,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly orderService: OrderService,
-    private readonly profileService: ProfileService,
     private readonly profileNotifier: ProfileNotifier,
     private readonly sessionStorageService: SessionStorageService
   ) {
@@ -440,12 +438,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public isSolicitor(): boolean {
     return this.profile.isSolicitor();
-  }
-
-  private announceProfile(route: ActivatedRoute): void {
-    route.snapshot.pathFromRoot[1].data.profile ?
-      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
-    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
   }
 
   private buildConfirmation(response: object): Confirmation {

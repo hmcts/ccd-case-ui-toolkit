@@ -101,8 +101,14 @@ caching previous data when the user elects to change the case flag being created
 **EUI-4836** Add case flags tab to case details
 **EUI-4897** Add banner message to case details
 
+### Version 4.12.1-EUI-5682-complex-table-collection-1
+**EUI-5682** Bug fix for the complex collection table view
+
 ### Version 4.12.1-EUI-5225-organisation-search
 **EUI-5225** Bug fix the organisation search functionality
+
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
 
 ### Version 4.12.6-date-year-validation
 **EUI-4606** Enhanced the date year input validation to restrict between 1900-2100
@@ -117,6 +123,11 @@ caching previous data when the user elects to change the case flag being created
 ### Version 4.12.0
 Add refunds functionality
 
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
 ### Version 4.12.1-EUI-5877-repeating-label
 **EUI-5877** Bug fix for repeating label
 
