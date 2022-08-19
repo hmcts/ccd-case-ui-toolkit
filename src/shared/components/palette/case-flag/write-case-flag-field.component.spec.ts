@@ -297,22 +297,6 @@ describe('WriteCaseFlagFieldComponent', () => {
     '2022-02-15T00:00:00.000';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.status = CaseFlagStatus.ACTIVE;
 
-  const flagDetail = {
-    id: '1234234134214123',
-    value: {
-      name: 'Wheelchair access',
-      dateTimeModified: '2022-02-13T00:00:00.000',
-      dateTimeCreated: '2022-02-11T00:00:00.000',
-      path: [
-        { id: null, value: 'Party' },
-        { id: null, value: 'Reasonable adjustment' },
-        { id: null, value: 'Mobility support' }
-      ],
-      hearingRelevant: 'No',
-      flagCode: 'WCA',
-      status: CaseFlagStatus.ACTIVE
-    } as FlagDetail
-  };
   const selectedFlag = {
     flagDetailDisplay: {
       partyName: caseFlag1PartyName,

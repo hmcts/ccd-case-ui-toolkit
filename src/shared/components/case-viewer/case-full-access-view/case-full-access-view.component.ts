@@ -28,7 +28,6 @@ import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
-import { CaseFlagStatus } from '../../palette/case-flag/enums';
 
 @Component({
   selector: 'ccd-case-full-access-view',
