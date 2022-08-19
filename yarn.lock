@@ -2016,12 +2016,10 @@
     enhanced-resolve "5.7.0"
     webpack-sources "2.2.0"
 
-"@nicky-lenaers/ngx-scroll-to@^1.0.0":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@nicky-lenaers/ngx-scroll-to/-/ngx-scroll-to-1.1.1.tgz#0ed2681c321b8f357c8e4f45300fec379ca82467"
-  integrity sha512-dCE5SxspmR6zttZ6T894ZHB/WqCibrencyeISbYIcVqk3a89C2O8KoX04GpUtFbOZfKkvWfu2vGlvnUd0kRizA==
-  dependencies:
-    tslib "^1.9.0"
+"@nicky-lenaers/ngx-scroll-to@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@nicky-lenaers/ngx-scroll-to/-/ngx-scroll-to-9.0.0.tgz#c8b455e9968a6116323862d081762880f3492efc"
+  integrity sha512-eS0vyx8qX4UTMluRYc+sQF/vJHCnAKiufWrwQRme0VURwp+RdOoZDZpYrOPTxPfx6CVj72arTeV9auDYa0WKtA==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

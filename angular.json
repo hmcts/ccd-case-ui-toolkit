@@ -16,9 +16,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": [
-              "@hmcts/ccd-case-ui-toolkit"
-            ],
             "outputPath": "dist/ccd-case-ui-toolkit",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -42,7 +39,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
