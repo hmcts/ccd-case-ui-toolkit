@@ -13,7 +13,7 @@ export class LinkedCasesService {
   public caseId: string;
   public linkCaseReasons: LovRefDataModel[] = [];
   public linkedCases: CaseLink[] = [];
-  public preLinkedCases: CaseLink[] = [];
+  public initialCaseLinks: CaseLink[] = [];
   public editMode = false;
   public jurisdictionsResponse: Jurisdiction[] = [];
 

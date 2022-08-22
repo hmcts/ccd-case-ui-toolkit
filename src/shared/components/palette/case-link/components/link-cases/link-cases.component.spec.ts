@@ -174,7 +174,6 @@ describe('LinkCasesComponent', () => {
     component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
     component.showErrorInfo();
     expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CaseProposedError);
-    (component as any).linkedCasesService.preLinkedCases = selectedCasesInfo;
     component.showErrorInfo();
     expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CaseProposedError);
   });

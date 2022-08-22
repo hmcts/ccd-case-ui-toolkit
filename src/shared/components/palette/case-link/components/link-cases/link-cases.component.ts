@@ -1,13 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { forkJoin, Observable, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import {
   CaseLink,
   CCDCaseLinkType,
-  ESQueryType,
   LinkCaseReason,
   LinkReason,
 } from '../../domain/linked-cases.model';
@@ -44,7 +43,10 @@ export class LinkCasesComponent implements OnInit {
   public ngOnInit(): void {
     this.initForm();
     if (this.linkedCasesService.editMode) {
+      // this may have includes the currently added one but yet to be submitted.
       this.selectedCases = this.linkedCasesService.linkedCases;
+    } else if (this.linkedCasesService.initialCaseLinks.length !== this.linkedCasesService.caseFieldValue.length) {
+      this.linkedCasesService.linkedCases = this.linkedCasesService.initialCaseLinks;
     }
   }
 
@@ -114,7 +116,7 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber',
       });
     }
-    if (this.linkCaseForm.controls.reasonType.invalid) {
+     if (this.linkCaseForm.controls.reasonType.invalid) {
       this.caseReasonError = LinkedCasesErrorMessages.ReasonSelectionError;
       this.errorMessages.push({
         title: 'dummy-case-reason',
@@ -122,7 +124,7 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseReason',
       });
     }
-    if (this.isCaseSelected(this.selectedCases)) {
+     if (this.isCaseSelected(this.selectedCases)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CaseProposedError;
       this.errorMessages.push({
         title: 'dummy-case-number',
@@ -130,7 +132,7 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber',
       });
     }
-    if (this.isCaseSelected(this.linkedCasesService.linkedCases)) {
+     if (this.isCaseSelected(this.linkedCasesService.linkedCases)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CasesLinkedError;
       this.errorMessages.push({
         title: 'dummy-case-number',
@@ -150,8 +152,9 @@ export class LinkCasesComponent implements OnInit {
   }
 
   public getCaseInfo(): void {
+    const caseNumberData = this.linkCaseForm.value.caseNumber.replace(/[- ]/g, '');
     this.casesService
-      .getCaseViewV2(this.linkCaseForm.value.caseNumber)
+      .getCaseViewV2(caseNumberData)
       .subscribe(
         (caseView: CaseView) => {
           this.linkedCasesService.caseDetails = caseView;

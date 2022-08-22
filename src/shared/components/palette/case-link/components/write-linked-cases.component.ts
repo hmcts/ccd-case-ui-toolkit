@@ -88,10 +88,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
         linkedCasesState.errorMessages.forEach((errorMessage, index) => {
           this.caseEditPageComponent.validationErrors.push({ id: errorMessage.fieldId, message: errorMessage.description});
         });
-      } else {
-        this.errorMessages.push({  title: 'case-selection',
-        description: LinkedCasesErrorMessages.UnlinkCaseSelectionError,
-        fieldId: `link-page`});
       }
     }
   }
