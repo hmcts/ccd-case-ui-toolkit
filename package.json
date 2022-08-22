@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.20.12-linked-cases-validation-fix",
+  "version": "4.20.13-linked-cases-validation-fix",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
