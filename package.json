@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.13-angular11-upgrade",
+  "version": "5.0.13-angular11-upgrade-with-paymentstatus",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
@@ -59,7 +59,7 @@
     "@angular/router": "~11.2.14",
     "@angular/upgrade": "~11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "5.0.4",
+    "@hmcts/ccpay-web-component": "5.0.7",
     "@hmcts/frontend": "^0.0.50-alpha",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
     "braces": "^2.3.1",

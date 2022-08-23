@@ -89,7 +89,8 @@ describe('Ways To Pay Component', () => {
             'EXC_REFERENCE',
             'DCN_NUMBER',
             'LOGGEDINUSERROLES',
-            'CARDPAYMENTRETURNURL'
+            'CARDPAYMENTRETURNURL',
+            'ISPAYMENTSTATUSENABLED'
           ]});
 
         TestBed
