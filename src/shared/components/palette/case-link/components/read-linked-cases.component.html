@@ -2,13 +2,31 @@
     <div class="govuk-!-margin-bottom-2">
         <h1 class="heading-h1">Linked cases</h1>
         <label class="table-sub-heading">This case is linked to</label>
-        <ccd-linked-cases-to-table [caseField]="caseField" (notifyAPIFailure)="getFailureNotification($event)"
+        <ccd-linked-cases-to-table [caseField]="caseField" (notifyAPIFailure)="getFailureLinkedToNotification($event)"
             reloadPage="reload"></ccd-linked-cases-to-table>
+        <ng-container *ngIf="serverLinkedToError && !serverError">
+          <div class="govuk-main-wrapper">
+              <p class="govuk-body">{{serverLinkedToError.message}}</p>
+              <span class="govuk-body align-left">
+                  <a href="javascript:void(0)" (click)="reloadCurrentRoute()" id="reload-linked-cases-tab"
+                      class="govuk-link">Reload the Linked cases tab</a>
+              </span>
+          </div>
+        </ng-container>
     </div>
     <div class="govuk-!-margin-top-8">
         <label class="table-sub-heading">This case is linked from</label>
-        <ccd-linked-cases-from-table [caseField]="caseField" (notifyAPIFailure)="getFailureNotification($event)"
+        <ccd-linked-cases-from-table [caseField]="caseField" (notifyAPIFailure)="getFailureLinkedFromNotification($event)"
             reloadPage="reload"></ccd-linked-cases-from-table>
+        <ng-container *ngIf="serverLinkedFromError && !serverError">
+          <div class="govuk-main-wrapper">
+              <p class="govuk-body">{{serverLinkedFromError.message}}</p>
+              <span class="govuk-body align-left">
+                  <a href="javascript:void(0)" (click)="reloadCurrentRoute()" id="reload-linked-cases-tab"
+                      class="govuk-link">Reload the Linked cases tab</a>
+              </span>
+          </div>
+        </ng-container>
     </div>
 </div>
 <div class="govuk-width-container" *ngIf="serverError">

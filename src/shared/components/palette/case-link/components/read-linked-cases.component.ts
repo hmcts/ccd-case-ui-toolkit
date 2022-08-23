@@ -18,51 +18,71 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
   public reasonListLoaded = false;
   public reload = false
   public serverError: { id: string, message: string } = null;
+  public serverLinkedToError: { id: string, message: string } = null;
+  public serverLinkedFromError: { id: string, message: string } = null;
 
   constructor(private router: Router,
     private readonly linkedCasesService: LinkedCasesService,
     private readonly appConfig: AbstractAppConfig,
     private readonly commonDataService: CommonDataService,
-    ) {}
+  ) { }
 
-    public ngOnInit(): void {
-      const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
-      this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
-        next: reasons => {
-          this.reasonListLoaded = true;
-          this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
-        },
-        error: error => this.getFailureNotification(error)
-      });
-    }
-
-    public ngAfterViewInit(): void {
-      this.linkedCasesService.caseFieldValue = this.caseField.value || [];
-      let labelField = document.getElementsByClassName('govuk-heading-l');
-      if (labelField && labelField.length) {
-        labelField[0].replaceWith('')
-      }
-      labelField = document.getElementsByClassName('heading-h2');
-      if (labelField && labelField.length) {
-        labelField[0].replaceWith('')
-      }
-      labelField = document.getElementsByClassName('case-viewer-label');
-      if (labelField && labelField.length) {
-        labelField[0].replaceWith('')
-      }
-    }
-
-  public reloadCurrentRoute() {
-    let currentUrl = this.router.url;
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-        this.router.navigate([currentUrl]);
+  public ngOnInit(): void {
+    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
+      next: reasons => {
+        this.reasonListLoaded = true;
+        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
+      },
+      error: error => this.getFailureNotification(error)
     });
   }
 
-  public getFailureNotification(evt) {
-    const errorMessage = 'There has been a system error and your request could not be processed.';
-    this.serverError = {
+  public ngAfterViewInit(): void {
+    this.linkedCasesService.caseFieldValue = this.caseField.value || [];
+    let labelField = document.getElementsByClassName('govuk-heading-l');
+    if (labelField && labelField.length) {
+      labelField[0].replaceWith('')
+    }
+    labelField = document.getElementsByClassName('heading-h2');
+    if (labelField && labelField.length) {
+      labelField[0].replaceWith('')
+    }
+    labelField = document.getElementsByClassName('case-viewer-label');
+    if (labelField && labelField.length) {
+      labelField[0].replaceWith('')
+    }
+  }
+
+  public reloadCurrentRoute() {
+    let currentUrl = this.router.url;
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([currentUrl]);
+    });
+  }
+
+  public getFailureLinkedToNotification(evt) {
+    const errorMessage = 'Some case information is not available at the moment';
+    this.serverLinkedToError = {
       id: 'backendError', message: errorMessage
     };
+    this.getFailureNotification(evt);
+  }
+
+  public getFailureLinkedFromNotification(evt) {
+    const errorMessage = 'Some case information is not available at the moment';
+    this.serverLinkedFromError = {
+      id: 'backendError', message: errorMessage
+    };
+    this.getFailureNotification(evt);
+  }
+
+  public getFailureNotification(evt) {
+    if (this.serverLinkedToError && this.serverLinkedFromError) {
+      const errorMessage = 'There has been a system error and your request could not be processed.';
+      this.serverError = {
+        id: 'backendError', message: errorMessage
+      };
+    }
   }
 }
