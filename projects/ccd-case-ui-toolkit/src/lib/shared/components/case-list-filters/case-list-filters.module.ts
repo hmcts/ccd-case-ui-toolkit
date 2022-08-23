@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { AlertService, DefinitionsModule, JurisdictionService, OrderService, WindowService,
     WorkbasketInputFilterService } from '../../services';
 import { PaletteModule } from '../palette';
@@ -14,7 +15,8 @@ import { CaseListFiltersComponent } from './case-list-filters.component';
         ReactiveFormsModule,
         PaletteModule,
         DefinitionsModule,
-        WorkbasketFiltersModule
+        WorkbasketFiltersModule,
+        RpxTranslationModule.forChild()
     ],
     declarations: [
         CaseListFiltersComponent,

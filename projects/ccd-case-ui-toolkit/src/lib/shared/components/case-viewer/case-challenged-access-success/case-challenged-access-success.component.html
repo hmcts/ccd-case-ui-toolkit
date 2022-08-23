@@ -3,24 +3,28 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">
-          Access successful<br><br>
+          {{'Access successful' | rpxTranslate}}<br><br>
           <div class="govuk-panel__body">
-            Case reference:<br>
+            {{'Case reference:' | rpxTranslate}}<br>
             {{caseId}}
           </div>
         </h1>
       </div>
-      <h2 class="govuk-heading-m ">What happens next</h2>
+      <h2 class="govuk-heading-m">{{'What happens next' | rpxTranslate}}</h2>
       <p class="govuk-body">
-        You can access this case file until midnight tonight.
+        {{'You can access this case file until midnight tonight.' | rpxTranslate}}
       </p>
       <p class="govuk-body">
-        You'll need to request access again once this expires.
+        {{"You'll need to request access again once this expires." | rpxTranslate}}
       </p>
       <p class="govuk-body">
-        Your request will be logged for auditing purposes.
+        {{"Your request will be logged for auditing purposes." | rpxTranslate}}
       </p>
-      <p class="govuk-body"><a href="cases/case-details/{{caseId}}">View case file</a>.</p>
+      <p class="govuk-body">
+        <a href="cases/case-details/{{caseId}}">
+          {{"View case file" | rpxTranslate}}
+        </a>.
+      </p>
     </div>
   </div>
 </div>

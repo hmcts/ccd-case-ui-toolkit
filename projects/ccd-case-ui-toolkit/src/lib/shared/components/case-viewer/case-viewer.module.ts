@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { EventLogDetailsComponent } from '../palette/history/event-log/event-log-details.component';
 import { AlertModule } from '../../../components/banners/alert';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CaseReferencePipe } from '../../pipes';
@@ -38,6 +37,7 @@ import { CaseViewComponent } from './case-view';
 import { CaseViewerComponent } from './case-viewer.component';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseResolver, EventTriggerResolver } from './services';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @NgModule({
   imports: [
@@ -56,7 +56,8 @@ import { CaseResolver, EventTriggerResolver } from './services';
     MatTabsModule,
     ReactiveFormsModule,
     AlertModule,
-    LabelSubstitutorModule
+    LabelSubstitutorModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     CaseEventTriggerComponent,
