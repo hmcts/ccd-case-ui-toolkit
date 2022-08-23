@@ -65,7 +65,7 @@ export class UpdateFlagComponent implements OnInit {
       ...this.selectedFlag.flagDetailDisplay.flagDetail,
       status: this.selectedFlag.flagDetailDisplay.flagDetail.status === CaseFlagStatus.ACTIVE
         ? CaseFlagStatus.INACTIVE
-        : CaseFlagStatus.ACTIVE
+        : this.selectedFlag.flagDetailDisplay.flagDetail.status
     };
   }
 

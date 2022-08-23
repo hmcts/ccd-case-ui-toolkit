@@ -135,26 +135,6 @@ describe('UpdateFlagComponent', () => {
     expect(statusElement.getAttribute('class')).toContain('govuk-tag--grey');
   });
 
-  it('should update the flag comments', () => {
-    spyOn(component, 'onChangeStatus').and.callThrough();
-    spyOn(component, 'onNext').and.callThrough();
-    spyOn(component.caseFlagStateEmitter, 'emit');
-    // Edit existing flag comments
-    textarea.value = 'Edited comment';
-    textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
-    fixture.detectChanges();
-    expect(component.onChangeStatus).not.toHaveBeenCalled();
-    expect(component.onNext).toHaveBeenCalled();
-    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
-      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
-      errorMessages: component.errorMessages,
-      selectedFlag: component.selectedFlag
-    });
-    expect(component.selectedFlag.flagDetailDisplay.flagDetail.flagComment).toEqual(textarea.value);
-    expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.ACTIVE);
-  });
-
   it('should update the flag comments and status', () => {
     spyOn(component, 'onChangeStatus').and.callThrough();
     spyOn(component, 'onNext').and.callThrough();
@@ -174,6 +154,12 @@ describe('UpdateFlagComponent', () => {
       selectedFlag: component.selectedFlag
     });
     expect(component.selectedFlag.flagDetailDisplay.flagDetail.flagComment).toEqual(textarea.value);
+    expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
+  });
+
+  it('should not change an inactive flag status to active', () => {
+    component.selectedFlag = selectedFlag2;
+    component.onChangeStatus();
     expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
   });
 });
