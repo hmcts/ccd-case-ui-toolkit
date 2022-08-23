@@ -79,9 +79,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
           return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
         }, []);
 
-      this.isDisplayContextParameterUpdate = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
-        .some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)
-          && caseField.display_context_parameter === this.updateMode);
+      // Set boolean indicating the display_context_parameter is "update"
+      this.isDisplayContextParameterUpdate =
+        this.setDisplayContextParameterUpdate((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
 
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
@@ -90,6 +90,11 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         ? this.caseEditPageComponent.getCaseTitle()
         : this.caseNameMissing;
     }
+  }
+
+  public setDisplayContextParameterUpdate(caseFields: CaseField[]): boolean {
+    return caseFields.some(
+      caseField => FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.display_context_parameter === this.updateMode);
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {

@@ -1,11 +1,10 @@
-import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable } from 'rxjs';
 
-import { CaseEventData, CaseEventTrigger, CaseField, CaseView, HttpError } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService } from '../../../services';
@@ -68,7 +67,6 @@ describe('CaseEventTriggerComponent', () => {
 
   let fixture: ComponentFixture<CaseEventTriggerComponent>;
   let component: CaseEventTriggerComponent;
-  let de: DebugElement;
 
   let CaseEditComponent: any = MockComponent({
     selector: 'ccd-case-edit',
@@ -178,7 +176,6 @@ describe('CaseEventTriggerComponent', () => {
     fixture = TestBed.createComponent(CaseEventTriggerComponent);
     component = fixture.componentInstance;
 
-    de = fixture.debugElement;
     fixture.detectChanges();
   }));
 
@@ -230,5 +227,32 @@ describe('CaseEventTriggerComponent', () => {
     component.cancel();
 
     expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path]);
+  });
+
+  it('should bypass validation if the CaseEventData data object contains a FlagLauncher field', (done) => {
+    CASE_DETAILS.tabs = [
+      {
+        id: 'caseFlagTab',
+        label: 'Tab for Case Flags',
+        fields: [
+          {
+            id: 'caseFlagLauncherField1',
+            field_type: {
+              id: 'FlagLauncher',
+              type: 'FlagLauncher'
+            } as FieldType
+          }
+        ]
+      } as CaseTab
+    ];
+    SANITISED_EDIT_FORM.data = {
+      caseFlagLauncherField1: null
+    };
+
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+      expect(result).toBeNull();
+      done();
+    });
+    expect(casesService.validateCase).not.toHaveBeenCalled();
   });
 });

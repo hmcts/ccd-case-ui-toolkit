@@ -3,11 +3,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, FieldType } from '../../../domain/definition';
-import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
+import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import createSpy = jasmine.createSpy;
 
 describe('WriteCaseFlagFieldComponent', () => {
   let component: WriteCaseFlagFieldComponent;
@@ -200,7 +201,7 @@ describe('WriteCaseFlagFieldComponent', () => {
                 details: []
               }
             }
-          ]
+          ] as CaseField[]
         }
       }
     }
@@ -307,6 +308,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     caseField: null
   } as FlagDetailDisplayWithFormGroupPath;
 
+  const updateMode = '#ARGUMENT(UPDATE)';
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
@@ -323,6 +326,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     fixture = TestBed.createComponent(WriteCaseFlagFieldComponent);
     component = fixture.componentInstance;
     component.caseEditPageComponent = createSpyObj('caseEditPageComponent', ['submit', 'getCaseTitle']);
+    spyOn(component, 'setDisplayContextParameterUpdate').and.callThrough();
     component.formGroup = parentFormGroup;
     component.caseField = flagLauncherCaseField;
     fixture.detectChanges();
@@ -343,7 +347,31 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.isAtFinalState()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
     expect(component.formGroup.errors).not.toBeNull();
+    expect(component.setDisplayContextParameterUpdate).toHaveBeenCalledWith(mockRoute.snapshot.data.eventTrigger.case_fields);
+  });
+
+  it('should set isDisplayContextParameterUpdate boolean correctly', () => {
+    const caseFields: CaseField[] = [
+      flagLauncherCaseField
+    ];
+    caseFields[0].display_context_parameter = updateMode;
+    expect(component.setDisplayContextParameterUpdate(caseFields)).toBe(true);
+  });
+
+  it('should set the correct Case Flag field starting state for the Manage Case Flags journey', () => {
+    // Spy on setDisplayContextParameterUpdate() function and return true (cannot alter display_context_parameter for the
+    // flagLauncherCaseField in case_fields of the mock route because this is locked down by compileComponents())
+    component.setDisplayContextParameterUpdate = createSpy().and.returnValue(true);
+    component.ngOnInit();
+    expect(component.setDisplayContextParameterUpdate).toHaveBeenCalled();
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS);
+  });
+
+  it('should set the case title if it is available', () => {
+    component.caseEditPageComponent.getCaseTitle = createSpy().and.returnValue('Dummy case title');
+    component.ngOnInit();
     expect(component.caseEditPageComponent.getCaseTitle).toHaveBeenCalled();
+    expect(component.caseTitle).toEqual('Dummy case title');
   });
 
   // TODO: Need to re-visit later as the next button has been moved to the child components
@@ -486,5 +514,280 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[1].value.flagComment).toEqual('Original new comment 2');
     expect(component.flagsData[1].caseField.value.details[1].value.dateTimeModified).toEqual('2022-02-15T00:00:00.000');
     expect(component.flagsData[1].caseField.value.details[1].value.status).toEqual(CaseFlagStatus.ACTIVE);
+  });
+
+  it('should handle the caseFlagStateEmitter when the state is FLAG_LOCATION', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
+      selectedFlagsLocation: {
+        flags: null,
+        pathToFlagsFormGroup: caseFlag1FieldId,
+        caseField: null
+      },
+      errorMessages: []
+    };
+    spyOn(component, 'setCaseFlagParentFormGroup').and.callThrough();
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.setCaseFlagParentFormGroup).toHaveBeenCalledWith(caseFlagState.selectedFlagsLocation.pathToFlagsFormGroup);
+    expect(component.caseFlagParentFormGroup).toEqual(parentFormGroup.get(caseFlag1FieldId) as FormGroup);
+    expect(component.selectedFlagsLocation).toEqual(caseFlagState.selectedFlagsLocation);
+  });
+
+  it('should handle the caseFlagStateEmitter when the state is FLAG_TYPE', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
+      flagName: 'Other',
+      flagPath: [
+        {
+          id: '123',
+          value: 'Test'
+        }
+      ],
+      hearingRelevantFlag: false,
+      flagCode: 'OT0001',
+      listOfValues: [
+        {
+          key: 'Abc',
+          value: 'Value1'
+        }
+      ],
+      errorMessages: []
+    };
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.flagName).toEqual(caseFlagState.flagName);
+    expect(component.flagPath).toEqual(caseFlagState.flagPath);
+    expect(component.hearingRelevantFlag).toBe(caseFlagState.hearingRelevantFlag);
+    expect(component.flagCode).toEqual(caseFlagState.flagCode);
+    expect(component.listOfValues).toEqual(caseFlagState.listOfValues);
+  });
+
+  it('should handle the caseFlagStateEmitter when the state is FLAG_MANAGE_CASE_FLAGS', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
+      selectedFlag: {
+        flagDetailDisplay: null,
+        pathToFlagsFormGroup: caseFlag1FieldId,
+        caseField: null
+      },
+      errorMessages: []
+    };
+    spyOn(component, 'setCaseFlagParentFormGroup').and.callThrough();
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.setCaseFlagParentFormGroup).toHaveBeenCalledWith(caseFlagState.selectedFlag.pathToFlagsFormGroup);
+    expect(component.caseFlagParentFormGroup).toEqual(parentFormGroup.get(caseFlag1FieldId) as FormGroup);
+    expect(component.selectedFlag).toEqual(caseFlagState.selectedFlag);
+  });
+
+  it('should move to the final review stage if there are no validation errors and the current state is FLAG_COMMENTS', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_COMMENTS,
+      errorMessages: []
+    };
+    spyOn(component, 'moveToFinalReviewStage');
+    spyOn(component, 'proceedToNextState');
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.moveToFinalReviewStage).toHaveBeenCalled();
+    expect(component.proceedToNextState).not.toHaveBeenCalled();
+  });
+
+  it('should move to the final review stage if there are no validation errors and the current state is FLAG_UPDATE', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: []
+    };
+    spyOn(component, 'moveToFinalReviewStage');
+    spyOn(component, 'proceedToNextState');
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.moveToFinalReviewStage).toHaveBeenCalled();
+    expect(component.proceedToNextState).not.toHaveBeenCalled();
+  });
+
+  it('should proceed to next state if no validation errors, state not FLAG_COMMENTS or FLAG_UPDATE, and non-parent flag type', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
+      errorMessages: []
+    };
+    spyOn(component, 'moveToFinalReviewStage');
+    spyOn(component, 'proceedToNextState');
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.moveToFinalReviewStage).not.toHaveBeenCalled();
+    expect(component.proceedToNextState).toHaveBeenCalled();
+  });
+
+  it('should not proceed to next state if the flag type is a parent', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
+      isParentFlagType: true,
+      errorMessages: []
+    };
+    spyOn(component, 'moveToFinalReviewStage');
+    spyOn(component, 'proceedToNextState');
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.moveToFinalReviewStage).not.toHaveBeenCalled();
+    expect(component.proceedToNextState).not.toHaveBeenCalled();
+  });
+
+  it('should not move to the final review stage if there is a validation error', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_COMMENTS,
+      errorMessages: [
+        {
+          title: 'Error',
+          description: 'An error occurred'
+        }
+      ]
+    };
+    spyOn(component, 'moveToFinalReviewStage');
+    spyOn(component, 'proceedToNextState');
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.moveToFinalReviewStage).not.toHaveBeenCalled();
+    expect(component.proceedToNextState).not.toHaveBeenCalled();
+  });
+
+  it('should not proceed to next state if there is a validation error', () => {
+    const caseFlagState: CaseFlagState = {
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
+      errorMessages: [
+        {
+          title: 'Error',
+          description: 'An error occurred'
+        }
+      ]
+    };
+    spyOn(component, 'moveToFinalReviewStage');
+    spyOn(component, 'proceedToNextState');
+    component.onCaseFlagStateEmitted(caseFlagState);
+    expect(component.moveToFinalReviewStage).not.toHaveBeenCalled();
+    expect(component.proceedToNextState).not.toHaveBeenCalled();
+  });
+
+  it('should skip the "language interpreter" state if the current state is FLAG_TYPE and there is no "list of values"', () => {
+    component.fieldState = CaseFlagFieldState.FLAG_TYPE;
+    component.proceedToNextState();
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
+  });
+
+  it('should move to the next state', () => {
+    component.fieldState = CaseFlagFieldState.FLAG_TYPE;
+    component.listOfValues = [
+      {
+        key: 'Abc',
+        value: 'Value1'
+      }
+    ];
+    component.proceedToNextState();
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER);
+  });
+
+  it('should not move to the next state if already at the final state for the Create Case Flag journey', () => {
+    component.isDisplayContextParameterUpdate = false;
+    component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
+    component.proceedToNextState();
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
+  });
+
+  it('should not move to the next state if already at the final state for the Manage Case Flags journey', () => {
+    component.isDisplayContextParameterUpdate = true;
+    component.fieldState = CaseFlagFieldState.FLAG_UPDATE;
+    component.proceedToNextState();
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_UPDATE);
+  });
+
+  it('should handle the flagCommentsOptionalEmitter', () => {
+    component.onFlagCommentsOptionalEmitted('Dummy');
+    expect(component.flagCommentsOptional).toBe(true);
+  });
+
+  it('should set the CaseField value for the Flags object at the end of the Create Case Flag journey', () => {
+    spyOn(component, 'setFlagsCaseFieldValue').and.callThrough();
+    spyOn(component, 'addFlagToCollection');
+    spyOn(component, 'updateFlagInCollection');
+    spyOn(component.formGroup, 'updateValueAndValidity');
+    component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
+    component.moveToFinalReviewStage();
+    expect(component.setFlagsCaseFieldValue).toHaveBeenCalled();
+    expect(component.addFlagToCollection).toHaveBeenCalled();
+    expect(component.updateFlagInCollection).not.toHaveBeenCalled();
+    expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
+    expect(component.caseEditPageComponent.submit).toHaveBeenCalled();
+  });
+
+  it('should set the CaseField value for the Flags object at the end of the Manage Case Flags journey', () => {
+    spyOn(component, 'setFlagsCaseFieldValue').and.callThrough();
+    spyOn(component, 'addFlagToCollection');
+    spyOn(component, 'updateFlagInCollection');
+    spyOn(component.formGroup, 'updateValueAndValidity');
+    component.fieldState = CaseFlagFieldState.FLAG_UPDATE;
+    component.moveToFinalReviewStage();
+    expect(component.setFlagsCaseFieldValue).toHaveBeenCalled();
+    expect(component.addFlagToCollection).not.toHaveBeenCalled();
+    expect(component.updateFlagInCollection).toHaveBeenCalled();
+    expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
+    expect(component.caseEditPageComponent.submit).toHaveBeenCalled();
+  });
+
+  it('should populate a new FlagDetail instance with data held by the component', () => {
+    component.flagName = 'Other',
+    component.caseFlagParentFormGroup = new FormGroup({
+      languageSearchTerm: new FormControl(),
+      manualLanguageEntry: new FormControl(),
+      otherFlagTypeDescription: new FormControl(),
+      flagComments: new FormControl()
+    });
+    component.caseFlagParentFormGroup.setValue(
+      {
+        languageSearchTerm: {
+          key: 'BSL',
+          value: 'British Sign Language'
+        },
+        manualLanguageEntry: null,
+        otherFlagTypeDescription: 'A flag type',
+        flagComments: 'Some comments'
+      }
+    );
+    component.flagCode = 'OT0001',
+    component.flagPath = [
+      {
+        id: '123',
+        value: 'Reasonable adjustment'
+      }
+    ];
+    component.hearingRelevantFlag = true;
+    const newFlagDetailInstance = component.populateNewFlagDetailInstance();
+    expect(newFlagDetailInstance.name).toEqual(component.flagName);
+    expect(newFlagDetailInstance.subTypeValue).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.value);
+    expect(newFlagDetailInstance.subTypeKey).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.key);
+    expect(newFlagDetailInstance.otherDescription).toEqual(component.caseFlagParentFormGroup.value.otherFlagTypeDescription);
+    expect(newFlagDetailInstance.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
+    expect(newFlagDetailInstance.dateTimeCreated).toBeTruthy();
+    expect(newFlagDetailInstance.path).toEqual(component.flagPath);
+    expect(newFlagDetailInstance.hearingRelevant).toEqual('Yes');
+    expect(newFlagDetailInstance.flagCode).toEqual(component.flagCode);
+    expect(newFlagDetailInstance.status).toBe(CaseFlagStatus.ACTIVE);
+    component.caseFlagParentFormGroup.setValue(
+      {
+        languageSearchTerm: null,
+        manualLanguageEntry: 'TypeScript',
+        otherFlagTypeDescription: null,
+        flagComments: null
+      }
+    );
+    component.hearingRelevantFlag = false;
+    const newFlagDetailInstance2 = component.populateNewFlagDetailInstance();
+    expect(newFlagDetailInstance2.subTypeValue).toEqual(component.caseFlagParentFormGroup.value.manualLanguageEntry);
+    expect(newFlagDetailInstance2.subTypeKey).toBeNull();
+    expect(newFlagDetailInstance2.otherDescription).toBeNull();
+    expect(newFlagDetailInstance2.flagComment).toBeNull();
+    expect(newFlagDetailInstance2.hearingRelevant).toEqual('No');
+    component.caseFlagParentFormGroup.setValue(
+      {
+        languageSearchTerm: null,
+        manualLanguageEntry: null,
+        otherFlagTypeDescription: null,
+        flagComments: null
+      }
+    );
+    const newFlagDetailInstance3 = component.populateNewFlagDetailInstance();
+    expect(newFlagDetailInstance3.subTypeValue).toBeNull();
   });
 });

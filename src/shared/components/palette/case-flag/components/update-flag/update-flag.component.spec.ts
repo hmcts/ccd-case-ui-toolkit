@@ -156,4 +156,24 @@ describe('UpdateFlagComponent', () => {
     expect(component.selectedFlag.flagDetailDisplay.flagDetail.flagComment).toEqual(textarea.value);
     expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
   });
+
+  it('should update the flag comments', () => {
+    spyOn(component, 'onChangeStatus').and.callThrough();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    // Edit existing flag comments
+    textarea.value = 'Edited comment';
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onChangeStatus).not.toHaveBeenCalled();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.selectedFlag.flagDetailDisplay.flagDetail.flagComment).toEqual(textarea.value);
+    expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.ACTIVE);
+  });
 });
