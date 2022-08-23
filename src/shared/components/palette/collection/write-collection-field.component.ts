@@ -248,23 +248,23 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         this.collItems[i].caseField.id = i.toString();
       }
 
-      const Id_prefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
-      const Id_prefix1_current = Id_prefix1.replace('_' + i.toString(), '_' + counter.toString());
+      const idPrefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
+      const idPrefix1Current = idPrefix1.replace('_' + i.toString(), '_' + counter.toString());
 
-      if (this.collItems[i].prefix && this.collItems[i].prefix === Id_prefix1_current) {
-        this.collItems[i].prefix = Id_prefix1;
+      if (this.collItems[i].prefix && this.collItems[i].prefix === idPrefix1Current) {
+        this.collItems[i].prefix = idPrefix1;
       }
 
-      const Id_prefix2 = this.collItems[i]['container'] && this.collItems[i]['container']['component']
+      const idPrefix2 = this.collItems[i]['container'] && this.collItems[i]['container']['component']
         && this.collItems[i]['container']['component']['idPrefix']
         && this.collItems[i]['container']['component']['idPrefix'] ?
               this.collItems[i].prefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
-      const Id_prefix2_current = Id_prefix2.replace('_' + i.toString(), '_' + counter.toString());
+      const idPrefix2current = idPrefix2.replace('_' + i.toString(), '_' + counter.toString());
 
       if (this.collItems[i]['container'] && this.collItems[i]['container']['component']
         && this.collItems[i]['container']['component']['idPrefix']
-        && this.collItems[i]['container']['component']['idPrefix'] === Id_prefix2_current) {
-          this.collItems[i]['container']['component']['idPrefix'] = Id_prefix2
+        && this.collItems[i]['container']['component']['idPrefix'] === idPrefix2current) {
+          this.collItems[i]['container']['component']['idPrefix'] = idPrefix2
       }
     }
   }
