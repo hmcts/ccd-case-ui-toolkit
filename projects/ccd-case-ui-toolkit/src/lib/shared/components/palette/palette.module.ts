@@ -20,7 +20,6 @@ import { PaletteUtilsModule } from './utils';
 import { PipesModule } from '../../pipes/pipes.module';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 
-import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
@@ -140,7 +139,6 @@ const PALETTE_COMPONENTS = [
 @NgModule({
   imports: [
     CommonModule,
-    BrowserModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
