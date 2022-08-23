@@ -449,18 +449,8 @@ describe('ReadLinkedCases', () => {
 
   it('should trigger failure handler errors', () => {
     component.getFailureLinkedToNotification({});
-    expect(component.serverLinkedToError).not.toBeNull();
-    component.getFailureLinkedFromNotification({});
-    expect(component.serverLinkedFromError).not.toBeNull();
     commonDataService.getRefData.and.returnValue(throwError(of()));
     component.ngOnInit();
     expect(component.serverError.id).not.toBeNull();
-  });
-
-  it('should call reloadcurrentroute when hyperlink is being clicked', () => {
-    component.serverError = { id: '', message: '' };
-    fixture.detectChanges();
-    const reloadHyperlink = document.getElementById('reload-linked-cases-tab');
-    reloadHyperlink.click();
   });
 });

@@ -18,8 +18,11 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
   public reasonListLoaded = false;
   public reload = false
   public serverError: { id: string, message: string } = null;
-  public serverLinkedToError: { id: string, message: string } = null;
-  public serverLinkedFromError: { id: string, message: string } = null;
+  public serverLinkedApiError: { id: string, message: string } = null;
+  public isServerReasonCodeError = false;
+  public isServerJurisdictionError = false;
+  public isServerLinkedFromError = false;
+  public isServerLinkedToError = false;
 
   constructor(private router: Router,
     private readonly linkedCasesService: LinkedCasesService,
@@ -28,14 +31,23 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
   ) { }
 
   public ngOnInit(): void {
+    this.isServerJurisdictionError = this.linkedCasesService.serverJurisdictionError || false;
     const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
       next: reasons => {
         this.reasonListLoaded = true;
         this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
       },
-      error: error => this.getFailureNotification(error)
+      error: error => {
+        this.isServerReasonCodeError = true;
+      }
     });
+    this.serverLinkedApiError = {
+      id: 'backendError', message: 'Some case information is not available at the moment'
+    };
+    this.serverError = {
+      id: 'backendError', message: 'There has been a system error and your request could not be processed.'
+    };
   }
 
   public ngAfterViewInit(): void {
@@ -62,27 +74,10 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
   }
 
   public getFailureLinkedToNotification(evt) {
-    const errorMessage = 'Some case information is not available at the moment';
-    this.serverLinkedToError = {
-      id: 'backendError', message: errorMessage
-    };
-    this.getFailureNotification(evt);
+    this.isServerLinkedToError = true;
   }
 
   public getFailureLinkedFromNotification(evt) {
-    const errorMessage = 'Some case information is not available at the moment';
-    this.serverLinkedFromError = {
-      id: 'backendError', message: errorMessage
-    };
-    this.getFailureNotification(evt);
-  }
-
-  public getFailureNotification(evt) {
-    if (this.serverLinkedToError && this.serverLinkedFromError) {
-      const errorMessage = 'There has been a system error and your request could not be processed.';
-      this.serverError = {
-        id: 'backendError', message: errorMessage
-      };
-    }
+    this.isServerLinkedFromError = true;
   }
 }

@@ -35,34 +35,35 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public isLoaded: boolean;
   public linkedCasesFromResponse: LinkedCasesResponse[] = [];
   public caseId: string;
+  public isServerError = false;
   public jurisdictionsResponse: Jurisdiction[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private readonly linkedCasesService: LinkedCasesService,
-    private readonly searchService: SearchService) {}
+    private readonly searchService: SearchService) { }
 
-    public ngAfterViewInit(): void {
-      let labelField = document.getElementsByClassName('govuk-heading-l');
-      if (labelField && labelField.length) {
-        labelField[0].replaceWith('')
-      }
-      labelField = document.getElementsByClassName('heading-h2');
-      if (labelField && labelField.length) {
-        labelField[0].replaceWith('')
-      }
+  public ngAfterViewInit(): void {
+    let labelField = document.getElementsByClassName('govuk-heading-l');
+    if (labelField && labelField.length) {
+      labelField[0].replaceWith('')
     }
+    labelField = document.getElementsByClassName('heading-h2');
+    if (labelField && labelField.length) {
+      labelField[0].replaceWith('')
+    }
+  }
 
   public ngOnInit(): void {
     this.caseId = this.route.snapshot && this.route.snapshot.data && this.route.snapshot.data.case.case_id;
     this.getAllLinkedCaseInformation()
-   if (this.route.snapshot.data.case) {
+    if (this.route.snapshot.data.case) {
       this.linkedCasesService.caseDetails = this.route.snapshot.data.case;
     }
   }
 
   public groupLinkedCasesByCaseType = (arrObj, key) => {
-    return arrObj.reduce((rv, x) =>   {
+    return arrObj.reduce((rv, x) => {
       (rv[x.value[key]] = rv[x.value[key]] || []).push(x.value['CaseReference']);
       return rv;
     }, {});
@@ -81,14 +82,14 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       const progressedStateReason = reasons.map(x => x).find(reason => reason === this.caseProgressedReasonCode);
       let arrayItem;
       if (progressedStateReason) {
-        arrayItem = {...item};
+        arrayItem = { ...item };
         topLevelresultArray.push(arrayItem);
       } else if (consolidatedStateReason) {
-        arrayItem = {...item};
-        secondLevelresultArray = [{...item}, ...secondLevelresultArray ]
+        arrayItem = { ...item };
+        secondLevelresultArray = [{ ...item }, ...secondLevelresultArray]
       } else {
-        arrayItem = {...item};
-        secondLevelresultArray.push({...item});
+        arrayItem = { ...item };
+        secondLevelresultArray.push({ ...item });
       }
     })
     return topLevelresultArray.concat(secondLevelresultArray)
@@ -105,9 +106,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     });
     if (searchCasesResponse.length) {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
-          const casesResponse = [];
-          searchCases.forEach(response => {
-            response.results.forEach((result: any) =>
+        const casesResponse = [];
+        searchCases.forEach(response => {
+          response.results.forEach((result: any) =>
             casesResponse.push(this.mapResponse(result)));
         });
         this.linkedCasesFromResponse = this.sortLinkedCasesByReasonCode(casesResponse);
@@ -128,7 +129,10 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
         });
         this.linkedCasesService.linkedCases = caseLinks;
       },
-      err => this.notifyAPIFailure.emit(true)
+        err => {
+          this.isServerError = true;
+          this.notifyAPIFailure.emit(true)
+        }
       );
     }
   }
@@ -145,22 +149,22 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     const caseInfo = this.caseField.value.find(item => item.value && item.value.CaseReference === esSearchCasesResponse.case_id);
     return caseInfo && {
       caseReference: esSearchCasesResponse.case_id,
-      caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal ||  this.caseNameMissingText,
+      caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal || this.caseNameMissingText,
       caseType: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('CASE_TYPE', esSearchCasesResponse.case_fields['[CASE_TYPE]']),
-      service: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION',  esSearchCasesResponse.case_fields['[JURISDICTION]']),
+      service: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION', esSearchCasesResponse.case_fields['[JURISDICTION]']),
       state: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE', esSearchCasesResponse.case_fields['[STATE]']),
       reasons: caseInfo.value && caseInfo.value.ReasonForLink &&
-              caseInfo.value.ReasonForLink.map(reason => reason.value && reason.value.Reason),
+        caseInfo.value.ReasonForLink.map(reason => reason.value && reason.value.Reason),
     } as LinkedCasesResponse
   }
   public constructElasticSearchQuery(caseIds: any[], size: number): ESQueryType {
     return {
-        query: {
-          terms: {
-            reference: caseIds,
-          },
+      query: {
+        terms: {
+          reference: caseIds,
         },
-        size,
+      },
+      size,
     };
   }
 }
