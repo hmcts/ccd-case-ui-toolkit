@@ -1,6 +1,6 @@
 <div *ngIf="!eventCompletionChecksRequired">
   <!-- Event trigger name -->
-  <h1 class="govuk-heading-l">{{ eventTrigger.name}}</h1>
+  <h1 class="govuk-heading-l">{{ eventTrigger.name | rpxTranslate}}</h1>
 
   <!--Case ID or Title -->
   <div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
@@ -14,21 +14,21 @@
   <!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
   <div *ngIf="error && (!(error.callbackErrors || error.callbackWarnings || error.details) && !error.message)" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
     <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
-      Something went wrong
+      {{'Something went wrong' | rpxTranslate}}
     </h1>
     <div class="govuk-error-summary__body" id="edit-case-event_error-summary-body">
-      <p>We're working to fix the problem. Try again shortly.</p>
-      <p><a href="get-help" target="_blank">Contact us</a> if you're still having problems.</p>
+      <p>{{"We're working to fix the problem. Try again shortly." | rpxTranslate}}</p>
+      <p><a href="get-help" target="_blank">{{'Contact us' | rpxTranslate}}</a> {{"if you're still having problems" | rpxTranslate}}.</p>
     </div>
   </div>
   <!-- Event error heading and error message to be displayed if there are specific error details -->
   <div *ngIf="error && (error.details || error.message)" class="error-summary" role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
     <h3 class="heading-h3 error-summary-heading" id="edit-case-event_error-summary-heading">
-      The event could not be created
+      {{"The event could not be created" | rpxTranslate}}
     </h3>
     <p>{{error.message}}</p>
     <ul *ngIf="error.details?.field_errors" class="error-summary-list">
-      <li *ngFor="let fieldError of error.details.field_errors" class="ccd-error-summary-li">{{fieldError.message}}</li>
+      <li *ngFor="let fieldError of error.details.field_errors" class="ccd-error-summary-li">{{fieldError.message | rpxTranslate}}</li>
     </ul>
   </div>
   <ccd-callback-errors [callbackErrorsSubject]="callbackErrorsSubject"
@@ -37,10 +37,10 @@
   <form class="check-your-answers" [formGroup]="editForm" (submit)="submit()">
     <ng-container *ngIf="checkYourAnswerFieldsToDisplayExists()">
 
-      <h2 class="heading-h2">Check your answers</h2>
-      <span class="text-16">Check the information below carefully.</span>
+      <h2 class="heading-h2">{{'Check your answers' | rpxTranslate}}</h2>
+      <span class="text-16">{{'Check the information below carefully.' | rpxTranslate}}</span>
 
-      <table class="form-table" aria-describedby="check your answers table">
+      <table class="form-table" aria-describedby="{{'check your answers table' | rpxTranslate}}">
         <tbody>
         <ng-container *ngFor="let page of this.wizard.pages">
           <ng-container *ngIf="isShown(page)">
@@ -51,7 +51,7 @@
               <ng-container *ngIf="canShowFieldInCYA(field)">
                 <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
                     [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                  <th *ngIf="!isLabel(field)" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
+                  <th *ngIf="!isLabel(field)" class="valign-top case-field-label"><span class="text-16">{{field.label | rpxTranslate}}</span></th>
                   <td class="form-cell case-field-content" [attr.colspan]="isLabel(field) ? '2' : '1'">
                     <ccd-field-read
                       [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
@@ -59,7 +59,11 @@
                   </td>
                   <td class="valign-top check-your-answers__change case-field-change">
                     <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id)"
-                      href="javascript:void(0)"><span class="text-16" attr.aria-label="Change {{ field.label }}">Change</span></a>
+                      href="javascript:void(0)">
+                      <span class="text-16" attr.aria-label="{{'Change | rpxTranslate}} {{ field.label | rpxTranslate }}">
+                        {{'Change' | rpxTranslate}}
+                      </span>
+                    </a>
                   </td>
                 </tr>
               </ng-container>
@@ -71,12 +75,12 @@
     </ng-container>
     <ng-container *ngIf="readOnlySummaryFieldsToDisplayExists()">
 
-      <table class="summary-fields" aria-describedby="summary fields table">
+      <table class="summary-fields" aria-describedby="{{'summary fields table' | rpxTranslate}}">
         <tbody>
           <ng-container *ngFor="let field of this.showSummaryFields">
               <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                 <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                  <th id="summary-field-label">{{field.label}}</th>
+                  <th id="summary-field-label">{{field.label | rpxTranslate}}</th>
                   <td class="form-cell">
                     <ccd-field-read [formGroup]="editForm.controls['data']" [caseField]="summaryCaseField(field)"></ccd-field-read>
                   </td>
@@ -96,23 +100,32 @@
         <legend style="display: none;"></legend>
         <div class="form-group">
           <label for="field-trigger-summary" class="form-label">
-            Event summary (optional)
-            <span class="form-hint">A few words describing the purpose of the event.</span>
+            {{'Event summary (optional)' | rpxTranslate}}
+            <span class="form-hint">{{'A few words describing the purpose of the event.' | rpxTranslate}}</span>
           </label>
           <input type="text" id="field-trigger-summary" class="form-control bottom-30 width-50" formControlName="summary" maxlength="1024">
         </div>
         <div class="form-group">
-          <label for="field-trigger-description" class="form-label">Event description (optional)</label>
+          <label for="field-trigger-description" class="form-label">{{'Event description(optional)' | rpxTranslate}}</label>
           <textarea id="field-trigger-description" class="form-control bottom-30 width-50" formControlName="description"
-                    maxlength="65536"></textarea>
+                    maxlength="65536">
+          </textarea>
         </div>
       </fieldset>
     </ng-container>
     <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || isSubmitting" (click)="previous()">Previous</button>
-      <button type="submit" [disabled]="isDisabled" class="button">{{triggerText}}</button>
+      <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || isSubmitting" (click)="previous()">
+        {{'Previous' | rpxTranslate}}
+      </button>
+      <button type="submit" [disabled]="isDisabled" class="button">
+        {{triggerText | rpxTranslate}}
+      </button>
     </div>
-    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)" [class.disabled]="isSubmitting">{{getCancelText()}}</a></p>
+    <p class="cancel">
+      <a (click)="cancel()" href="javascript:void(0)" [class.disabled]="isSubmitting">
+        {{getCancelText() | rpxTranslate}}
+      </a>
+    </p>
   </form>
 </div>
 <ccd-case-event-completion *ngIf="eventCompletionChecksRequired"
