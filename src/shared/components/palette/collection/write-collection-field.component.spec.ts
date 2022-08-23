@@ -273,6 +273,29 @@ describe('WriteCollectionFieldComponent', () => {
     expect(component.formArray.controls[0].value).toEqual(VALUES[1]);
   });
 
+  it('should remove item from collection when remove button is clicked and update the index', () => {
+    const tempCaseField = <CaseField>({
+      ...caseField,
+      display_context_parameter: '#COLLECTION(allowInsert,allowDelete)'
+    });
+    component.caseField = tempCaseField;
+    component.caseFields = [tempCaseField];
+    fixture.detectChanges();
+    // Confirm removal through mock dialog
+    dialogRef.afterClosed.and.returnValue(of('Remove'));
+
+    let removeButtons = de.queryAll($REMOVE_BUTTONS);
+
+    let removeFirstButton = removeButtons[0];
+    removeFirstButton.nativeElement.click();
+    fixture.detectChanges();
+
+    let writeFields = de.queryAll($WRITE_FIELDS);
+    expect(writeFields.length).toBe(VALUES.length - 1);
+    expect(component.formArray.controls.length).toBe(1);
+    expect(component.formArray['component'].collItems[0].index).toEqual(0);
+  });
+
   it('should NOT remove item from collection when remove button is clicked and declined', () => {
     // Declined removal through mock dialog
     dialogRef.afterClosed.and.returnValue(of('Cancel'));

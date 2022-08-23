@@ -231,8 +231,42 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   private removeItem(index: number): void {
     this.collItems.splice(index, 1);
+    this.resetIds(index);
     this.caseField.value.splice(index, 1);
     this.formArray.removeAt(index);
+  }
+
+  private resetIds(index: number) {
+    for (let i = index; i < this.collItems.length; i++) {
+      const counter = i  + 1;
+      if (this.collItems[i].index && this.collItems[i].index === counter) {
+        this.collItems[i].index = i;
+      }
+
+      if (this.collItems[i].caseField && this.collItems[i].caseField.id
+        && this.collItems[i].caseField.id === counter.toString()) {
+        this.collItems[i].caseField.id = i.toString();
+      }
+
+      const Id_prefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
+      const Id_prefix1_current = Id_prefix1.replace('_' + i.toString(), '_' + counter.toString());
+
+      if (this.collItems[i].prefix && this.collItems[i].prefix === Id_prefix1_current) {
+        this.collItems[i].prefix = Id_prefix1;
+      }
+
+      const Id_prefix2 = this.collItems[i]['container'] && this.collItems[i]['container']['component']
+        && this.collItems[i]['container']['component']['idPrefix']
+        && this.collItems[i]['container']['component']['idPrefix'] ?
+              this.collItems[i].prefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
+      const Id_prefix2_current = Id_prefix2.replace('_' + i.toString(), '_' + counter.toString());
+
+      if (this.collItems[i]['container'] && this.collItems[i]['container']['component']
+        && this.collItems[i]['container']['component']['idPrefix']
+        && this.collItems[i]['container']['component']['idPrefix'] === Id_prefix2_current) {
+          this.collItems[i]['container']['component']['idPrefix'] = Id_prefix2
+      }
+    }
   }
 
   itemLabel(index: number) {
