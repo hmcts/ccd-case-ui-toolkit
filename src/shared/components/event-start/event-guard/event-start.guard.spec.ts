@@ -8,7 +8,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { UserInfo } from '../../../domain/user/user-info.model';
 
 describe('EventStartGuard', () => {
-  const WORK_ALLOCATION_API_URL = 'workallocation';
+  const WORK_ALLOCATION_API_URL = 'workallocation2';
   const tasks: any[] = [
     {
       assignee: null,
