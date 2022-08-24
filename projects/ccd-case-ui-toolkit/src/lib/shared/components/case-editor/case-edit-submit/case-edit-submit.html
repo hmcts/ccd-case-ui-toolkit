@@ -40,7 +40,7 @@
       <h2 class="heading-h2">{{'Check your answers' | rpxTranslate}}</h2>
       <span class="text-16">{{'Check the information below carefully.' | rpxTranslate}}</span>
 
-      <table class="form-table" aria-describedby="{{'check your answers table' | rpxTranslate}}">
+      <table class="form-table" [attr.aria-describedby]="'check your answers table' | rpxTranslate">
         <tbody>
         <ng-container *ngFor="let page of this.wizard.pages">
           <ng-container *ngIf="isShown(page)">
@@ -75,7 +75,7 @@
     </ng-container>
     <ng-container *ngIf="readOnlySummaryFieldsToDisplayExists()">
 
-      <table class="summary-fields" aria-describedby="{{'summary fields table' | rpxTranslate}}">
+      <table class="summary-fields" [attr.aria-describedby]="'summary fields table' | rpxTranslate">
         <tbody>
           <ng-container *ngFor="let field of this.showSummaryFields">
               <ng-container [ngSwitch]="!(field | ccdIsCompound)">

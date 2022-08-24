@@ -1,7 +1,7 @@
 <div *ngIf="isDataLoaded()">
   <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
   <h2 class="heading-h2">{{'Print' | rpxTranslate}}</h2>
-  <table aria-describedby="{{'case print table' | rpxTranslate}}">
+  <table [attr.aria-describedby]="'case print table' | rpxTranslate">
     <thead>
       <tr>
         <th>{{'Name' | rpxTranslate}}</th>

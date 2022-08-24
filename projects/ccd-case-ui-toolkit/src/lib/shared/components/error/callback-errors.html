@@ -1,5 +1,6 @@
 <div *ngIf="hasErrors() || hasWarnings()" class="error-summary" role="group"
-     aria-label="{{'Cannot continue because the service reported one or more errors or warnings' | rpxTranslate}}" tabindex="-1">
+     [attr.aria-label]="'Cannot continue because the service reported one or more errors or warnings' | rpxTranslate"
+     tabindex="-1">
   <ng-container *ngIf="hasErrors()">
     <h3 class="heading-h3 error-summary-heading">
       {{'Errors' | rpxTranslate}}
