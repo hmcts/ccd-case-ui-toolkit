@@ -236,7 +236,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.formArray.removeAt(index);
   }
 
-  private resetIds(index: number) {
+  private resetIds(index: number): void {
     for (let i = index; i < this.collItems.length; i++) {
       const counter = i  + 1;
       if (this.collItems[i].index && this.collItems[i].index === counter) {
