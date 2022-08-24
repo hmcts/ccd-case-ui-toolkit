@@ -16,17 +16,20 @@ export class LinkedCasesService {
   public preLinkedCases: CaseLink[] = [];
   public editMode = false;
   public jurisdictionsResponse: Jurisdiction[] = [];
+  public serverJurisdictionError: boolean;
 
   constructor(private readonly jurisdictionService: JurisdictionService) {
     this.jurisdictionService.getJurisdictions().subscribe((jurisdictions) => {
-        this.jurisdictionsResponse = jurisdictions;
+      this.jurisdictionsResponse = jurisdictions;
+    }, (error) => {
+      this.serverJurisdictionError = true;
     });
   }
 
   public mapLookupIDToValueFromJurisdictions(fieldName, fieldValue): string {
     const selectedCaseJurisdictionId = this.caseDetails && this.caseDetails.case_type.jurisdiction.id || null;
     const selectedJurisdiction = this.jurisdictionsResponse &&
-                                this.jurisdictionsResponse.find(item => item.id === selectedCaseJurisdictionId);
+      this.jurisdictionsResponse.find(item => item.id === selectedCaseJurisdictionId);
     const selectedCaseType = selectedJurisdiction.caseTypes.find(item => item.id === this.caseDetails.case_type.id);
     switch (fieldName) {
       case 'JURISDICTION':
