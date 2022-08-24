@@ -37,7 +37,6 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   public noLinkedCases = true;
   public isServerError = false;
 
-
   constructor(
     private route: ActivatedRoute,
     private readonly casesService: CasesService,
