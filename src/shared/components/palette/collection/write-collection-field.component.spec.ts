@@ -273,8 +273,6 @@ describe('WriteCollectionFieldComponent', () => {
     expect(component.formArray.controls[0].value).toEqual(VALUES[1]);
   });
 
-
-
   it('should NOT remove item from collection when remove button is clicked and declined', () => {
     // Declined removal through mock dialog
     dialogRef.afterClosed.and.returnValue(of('Cancel'));
@@ -523,7 +521,7 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
   let caseField: CaseField;
   let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
-  
+
   beforeEach(async(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
@@ -610,7 +608,6 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
     let writeFields = de.queryAll($WRITE_FIELDS);
     expect(writeFields.length).toBe(VALUES.length - 1);
     expect(component.formArray.controls.length).toBe(1);
-    
     expect(component.formArray['component'].collItems[0].index).toEqual(0);
     expect(component.formArray['component'].collItems[0].caseField.id).toEqual('0');
     expect(component.formArray['component'].collItems[0].prefix).toEqual('Values_0_');
