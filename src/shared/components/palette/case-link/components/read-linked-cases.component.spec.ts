@@ -448,7 +448,11 @@ describe('ReadLinkedCases', () => {
   });
 
   it('should trigger failure handler errors', () => {
+    component.ngAfterViewInit();
     component.getFailureLinkedToNotification({});
+    component.getFailureLinkedFromNotification({});
+    expect(component.isServerLinkedToError).toBeTruthy();
+    expect(component.isServerLinkedFromError).toBeTruthy();
     commonDataService.getRefData.and.returnValue(throwError(of()));
     component.ngOnInit();
     expect(component.serverError.id).not.toBeNull();
