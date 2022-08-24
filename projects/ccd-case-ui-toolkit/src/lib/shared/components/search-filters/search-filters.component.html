@@ -1,20 +1,20 @@
-<h2 class="heading-h2" aria-label="Filters">Filters</h2>
+<h2 class="heading-h2" aria-label="Filters">{{'Filters' | rpxTranslate}}</h2>
 <form class="global-display">
   <div class="form-group" style="margin-top: 13px;">
-    <label class="form-label" for="s-jurisdiction">Jurisdiction*</label>
+    <label class="form-label" for="s-jurisdiction">{{'Jurisdiction' | rpxTranslate}}*</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="s-jurisdiction"
             name="jurisdiction" [(ngModel)]="selected.jurisdiction" aria-controls="search-result"
             (change)="onJurisdictionIdChange()">
-      <option *ngFor="let j of jurisdictions" [ngValue]="j">{{j.name}}</option>
+      <option *ngFor="let j of jurisdictions" [ngValue]="j">{{j.name | rpxTranslate}}</option>
     </select>
   </div>
 
   <div class="form-group">
-    <label class="form-label" for="s-case-type">Case type*</label>
+    <label class="form-label" for="s-case-type">{{'Case type*' | rpxTranslate}}</label>
     <select [disabled]="isJurisdictionSelected()" class="form-control form-control-3-4 ccd-dropdown"
             id="s-case-type" name="case-type" [(ngModel)]="selected.caseType" aria-controls="search-result"
             (change)="onCaseTypeIdChange()">
-      <option *ngFor="let ct of selectedJurisdictionCaseTypes" [ngValue]="ct">{{ct.name}}</option>
+      <option *ngFor="let ct of selectedJurisdictionCaseTypes" [ngValue]="ct">{{ct.name | rpxTranslate}}</option>
     </select>
   </div>
 
@@ -26,6 +26,12 @@
     </div>
   </ng-container>
 
-  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="button" (click)="apply()" (keyup.enter)="apply()" title="Apply filter" aria-label="Apply filter">Apply</button> &nbsp;&nbsp;&nbsp;
-  <button id="reset" type="button" (click)="reset()" class="button button-secondary" title="Reset filter" aria-label="Reset filter">Reset</button>
+  <button [disabled]="!isSearchableAndSearchInputsReady()" type="button" class="button" (click)="apply()" (keyup.enter)="apply()" [title]="'Apply filter' | rpxTranslate"
+          [attr.aria-label]="'Apply filter' | rpxTranslate">
+    {{'Apply' | rpxTranslate}}
+  </button> &nbsp;&nbsp;&nbsp;
+  <button id="reset" type="button" (click)="reset()" class="button button-secondary"
+          [title]="'Reset filter' | rpxTranslate" [attr.aria-label]="'Reset filter' | rpxTranslate">
+    {{'Reset' | rpxTranslate}}
+  </button>
 </form>

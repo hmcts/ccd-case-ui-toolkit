@@ -163,7 +163,7 @@ const PALETTE_COMPONENTS = [
     MatDatepickerModule,
     PaymentLibModule,
     ScrollToModule.forRoot(),
-    RpxTranslationModule.forChild()
+    RpxTranslationModule.forChild(),
   ],
   declarations: [
     FixedListPipe,
