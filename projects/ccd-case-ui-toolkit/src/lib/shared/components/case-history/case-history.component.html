@@ -7,48 +7,48 @@
   <div class="grid-row">
     <div class="column-full">
       <div>
-        <h2 class="heading-h2">Event Details</h2>
+        <h2 class="heading-h2">{{'Event Details' | rpxTranslate}}</h2>
         <table class="EventDetails" aria-describedby="event details table">
           <tbody>
           <tr>
-            <th>Date</th>
+            <th>{{'Date' | rpxTranslate}}</th>
             <td>{{caseHistory.event.timestamp | ccdDate}}</td>
           </tr>
           <tr>
-            <th>Author</th>
-            <td>{{caseHistory.event.user_first_name | titlecase}} {{caseHistory.event.user_last_name | uppercase}}</td>
+            <th>{{'Authorv</th>
+            <td>{{caseHistory.event.user_first_name | titlecase | rpxTranslate}} {{caseHistory.event.user_last_name | uppercase | rpxTranslate}}</td>
           </tr>
           <tr>
-            <th>End state</th>
-            <td>{{caseHistory.event.state_name}}</td>
+            <th>{{'End state' | rpxTranslate}}</th>
+            <td>{{caseHistory.event.state_name | rpxTranslate}}</td>
           </tr>
           <tr>
-            <th>Event</th>
-            <td>{{caseHistory.event.event_name}}</td>
+            <th>{{'Event' | rpxTranslate}}</th>
+            <td>{{caseHistory.event.event_name | rpxTranslate}}</td>
           </tr>
           <tr>
-            <th>Summary</th>
-            <td>{{caseHistory.event.summary | ccdDash}}</td>
+            <th>{{'Summary</th>
+            <td>{{caseHistory.event.summary | ccdDash | rpxTranslate}}</td>
           </tr>
           <tr>
-            <th>Comment</th>
-            <td>{{caseHistory.event.comment | ccdDash}}</td>
+            <th>{{'Comment' | rpxTranslate}}</th>
+            <td>{{caseHistory.event.comment | ccdDash | rpxTranslate}}</td>
           </tr>
           </tbody>
         </table>
       </div>
       <div>
-        <h2 class="heading-h2">Case Details</h2>
+        <h2 class="heading-h2">{{'Case Details' | rpxTranslate}}</h2>
         <ng-container *ngFor="let tab of tabs">
           <div class="caseHistorySection">
-            <h3 class="heading-h3">{{tab.label}}</h3>
+            <h3 class="heading-h3">{{tab.label | rpxTranslate}}</h3>
             <table class="CaseHistory" id="{{tab.id}}" aria-describedby="case history table">
               <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true">
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="tab.fields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
                       <th id="case-viewer-label-header">
-                        <div class="case-viewer-label">{{field.label}}</div>
+                        <div class="case-viewer-label">{{field.label | rpxTranslate}}</div>
                       </th>
                       <td>
                         <ccd-field-read [caseField]="field" [caseReference]="caseHistory.case_id"></ccd-field-read>
