@@ -23,59 +23,115 @@ describe('ReadLinkedCases', () => {
     'label': 'Linked cases',
     'hidden': false,
     '_value': [
-        {
-            'id': '1651226230511462',
-            'value': {
-                'CaseType': 'Benefit_Xui',
-                'CaseReference': '1651226230511462',
-                'ReasonForLink': [
-                    {
-                        'id': '417eeb92-4b98-475a-8536-6e844719f09a',
-                        'value': {
-                            'Reason': 'CLRC007'
-                        }
-                    }
-                ],
-                'CreatedDateTime': '2022-07-20T18:48:37.079Z'
+      {
+        'id': '1651226230511462',
+        'value': {
+          'CaseType': 'Benefit_Xui',
+          'CaseReference': '1651226230511462',
+          'ReasonForLink': [
+            {
+              'id': '417eeb92-4b98-475a-8536-6e844719f09a',
+              'value': {
+                'Reason': 'CLRC007'
+              }
             }
+          ],
+          'CreatedDateTime': '2022-07-20T18:48:37.079Z'
         }
+      }
     ],
     'metadata': false,
     'hint_text': null,
     'field_type': {
-        'id': 'caseLinks-388e9201-5198-4417-a0b3-49c9fa7bc0e5',
-        'type': 'Collection',
+      'id': 'caseLinks-388e9201-5198-4417-a0b3-49c9fa7bc0e5',
+      'type': 'Collection',
+      'min': null,
+      'max': null,
+      'regular_expression': null,
+      'fixed_list_items': [],
+      'complex_fields': [],
+      'collection_field_type': {
+        'id': 'CaseLink',
+        'type': 'Complex',
         'min': null,
         'max': null,
         'regular_expression': null,
         'fixed_list_items': [],
-        'complex_fields': [],
-        'collection_field_type': {
-            'id': 'CaseLink',
-            'type': 'Complex',
-            'min': null,
-            'max': null,
-            'regular_expression': null,
-            'fixed_list_items': [],
-            'complex_fields': [
-                {
+        'complex_fields': [
+          {
+            '_list_items': [],
+            'id': 'CaseReference',
+            'label': 'Case Reference',
+            'hidden': null,
+            'order': null,
+            'metadata': false,
+            'case_type_id': null,
+            'hint_text': null,
+            'field_type': {
+              'id': 'TextCaseReference',
+              'type': 'Text',
+              'min': null,
+              'max': null,
+              'regular_expression': '(?:^[0-9]{16}$|^\\d{4}-\\d{4}-\\d{4}-\\d{4}$)',
+              'fixed_list_items': [],
+              'complex_fields': [],
+              'collection_field_type': null
+            },
+            'security_classification': 'PUBLIC',
+            'live_from': null,
+            'live_until': null,
+            'show_condition': null,
+            'acls': null,
+            'complexACLs': [],
+            'display_context': null,
+            'display_context_parameter': null,
+            'retain_hidden_value': null,
+            'formatted_value': null,
+            'category_id': null
+          },
+          {
+            '_list_items': [],
+            'id': 'ReasonForLink',
+            'label': 'ReasonForLink',
+            'hidden': null,
+            'order': null,
+            'metadata': false,
+            'case_type_id': null,
+            'hint_text': null,
+            'field_type': {
+              'id': 'ReasonForLinkList',
+              'type': 'Collection',
+              'min': null,
+              'max': null,
+              'regular_expression': null,
+              'fixed_list_items': [],
+              'complex_fields': [],
+              'collection_field_type': {
+                'id': 'LinkReason',
+                'type': 'Complex',
+                'min': null,
+                'max': null,
+                'regular_expression': null,
+                'fixed_list_items': [],
+                'complex_fields': [
+                  {
                     '_list_items': [],
-                    'id': 'CaseReference',
-                    'label': 'Case Reference',
+                    'id': 'Reason',
+                    'label': 'Reason',
                     'hidden': null,
                     'order': null,
                     'metadata': false,
                     'case_type_id': null,
                     'hint_text': null,
                     'field_type': {
-                        'id': 'TextCaseReference',
-                        'type': 'Text',
-                        'min': null,
-                        'max': null,
-                        'regular_expression': '(?:^[0-9]{16}$|^\\d{4}-\\d{4}-\\d{4}-\\d{4}$)',
-                        'fixed_list_items': [],
-                        'complex_fields': [],
-                        'collection_field_type': null
+                      'id': 'Text',
+                      'type': 'Text',
+                      'min': null,
+                      'max': null,
+                      'regular_expression': null,
+                      'fixed_list_items': [],
+                      'complex_fields': [],
+                      'collection_field_type': null
                     },
                     'security_classification': 'PUBLIC',
                     'live_from': null,
@@ -88,97 +144,25 @@ describe('ReadLinkedCases', () => {
                     'retain_hidden_value': null,
                     'formatted_value': null,
                     'category_id': null
-                },
-                {
+                  },
+                  {
                     '_list_items': [],
-                    'id': 'ReasonForLink',
-                    'label': 'ReasonForLink',
+                    'id': 'OtherDescription',
+                    'label': 'OtherDescription',
                     'hidden': null,
                     'order': null,
                     'metadata': false,
                     'case_type_id': null,
                     'hint_text': null,
                     'field_type': {
-                        'id': 'ReasonForLinkList',
-                        'type': 'Collection',
-                        'min': null,
-                        'max': null,
-                        'regular_expression': null,
-                        'fixed_list_items': [],
-                        'complex_fields': [],
-                        'collection_field_type': {
-                            'id': 'LinkReason',
-                            'type': 'Complex',
-                            'min': null,
-                            'max': null,
-                            'regular_expression': null,
-                            'fixed_list_items': [],
-                            'complex_fields': [
-                                {
-                                    '_list_items': [],
-                                    'id': 'Reason',
-                                    'label': 'Reason',
-                                    'hidden': null,
-                                    'order': null,
-                                    'metadata': false,
-                                    'case_type_id': null,
-                                    'hint_text': null,
-                                    'field_type': {
-                                        'id': 'Text',
-                                        'type': 'Text',
-                                        'min': null,
-                                        'max': null,
-                                        'regular_expression': null,
-                                        'fixed_list_items': [],
-                                        'complex_fields': [],
-                                        'collection_field_type': null
-                                    },
-                                    'security_classification': 'PUBLIC',
-                                    'live_from': null,
-                                    'live_until': null,
-                                    'show_condition': null,
-                                    'acls': null,
-                                    'complexACLs': [],
-                                    'display_context': null,
-                                    'display_context_parameter': null,
-                                    'retain_hidden_value': null,
-                                    'formatted_value': null,
-                                    'category_id': null
-                                },
-                                {
-                                    '_list_items': [],
-                                    'id': 'OtherDescription',
-                                    'label': 'OtherDescription',
-                                    'hidden': null,
-                                    'order': null,
-                                    'metadata': false,
-                                    'case_type_id': null,
-                                    'hint_text': null,
-                                    'field_type': {
-                                        'id': 'Text',
-                                        'type': 'Text',
-                                        'min': null,
-                                        'max': null,
-                                        'regular_expression': null,
-                                        'fixed_list_items': [],
-                                        'complex_fields': [],
-                                        'collection_field_type': null
-                                    },
-                                    'security_classification': 'PUBLIC',
-                                    'live_from': null,
-                                    'live_until': null,
-                                    'show_condition': null,
-                                    'acls': null,
-                                    'complexACLs': [],
-                                    'display_context': null,
-                                    'display_context_parameter': null,
-                                    'retain_hidden_value': null,
-                                    'formatted_value': null,
-                                    'category_id': null
-                                }
-                            ],
-                            'collection_field_type': null
-                        }
+                      'id': 'Text',
+                      'type': 'Text',
+                      'min': null,
+                      'max': null,
+                      'regular_expression': null,
+                      'fixed_list_items': [],
+                      'complex_fields': [],
+                      'collection_field_type': null
                     },
                     'security_classification': 'PUBLIC',
                     'live_from': null,
@@ -191,93 +175,109 @@ describe('ReadLinkedCases', () => {
                     'retain_hidden_value': null,
                     'formatted_value': null,
                     'category_id': null
-                },
-                {
-                    '_list_items': [],
-                    'id': 'CreatedDateTime',
-                    'label': 'Created Date Time',
-                    'hidden': null,
-                    'order': null,
-                    'metadata': false,
-                    'case_type_id': null,
-                    'hint_text': null,
-                    'field_type': {
-                        'id': 'DateTime',
-                        'type': 'DateTime',
-                        'min': null,
-                        'max': null,
-                        'regular_expression': null,
-                        'fixed_list_items': [],
-                        'complex_fields': [],
-                        'collection_field_type': null
-                    },
-                    'security_classification': 'PUBLIC',
-                    'live_from': null,
-                    'live_until': null,
-                    'show_condition': null,
-                    'acls': null,
-                    'complexACLs': [],
-                    'display_context': null,
-                    'display_context_parameter': null,
-                    'retain_hidden_value': null,
-                    'formatted_value': null,
-                    'category_id': null
-                },
-                {
-                    '_list_items': [],
-                    'id': 'CaseType',
-                    'label': 'Case Type',
-                    'hidden': null,
-                    'order': null,
-                    'metadata': false,
-                    'case_type_id': null,
-                    'hint_text': null,
-                    'field_type': {
-                        'id': 'Text',
-                        'type': 'Text',
-                        'min': null,
-                        'max': null,
-                        'regular_expression': null,
-                        'fixed_list_items': [],
-                        'complex_fields': [],
-                        'collection_field_type': null
-                    },
-                    'security_classification': 'PUBLIC',
-                    'live_from': null,
-                    'live_until': null,
-                    'show_condition': null,
-                    'acls': null,
-                    'complexACLs': [],
-                    'display_context': null,
-                    'display_context_parameter': null,
-                    'retain_hidden_value': null,
-                    'formatted_value': null,
-                    'category_id': null
-                }
-            ],
-            'collection_field_type': null
-        }
+                  }
+                ],
+                'collection_field_type': null
+              }
+            },
+            'security_classification': 'PUBLIC',
+            'live_from': null,
+            'live_until': null,
+            'show_condition': null,
+            'acls': null,
+            'complexACLs': [],
+            'display_context': null,
+            'display_context_parameter': null,
+            'retain_hidden_value': null,
+            'formatted_value': null,
+            'category_id': null
+          },
+          {
+            '_list_items': [],
+            'id': 'CreatedDateTime',
+            'label': 'Created Date Time',
+            'hidden': null,
+            'order': null,
+            'metadata': false,
+            'case_type_id': null,
+            'hint_text': null,
+            'field_type': {
+              'id': 'DateTime',
+              'type': 'DateTime',
+              'min': null,
+              'max': null,
+              'regular_expression': null,
+              'fixed_list_items': [],
+              'complex_fields': [],
+              'collection_field_type': null
+            },
+            'security_classification': 'PUBLIC',
+            'live_from': null,
+            'live_until': null,
+            'show_condition': null,
+            'acls': null,
+            'complexACLs': [],
+            'display_context': null,
+            'display_context_parameter': null,
+            'retain_hidden_value': null,
+            'formatted_value': null,
+            'category_id': null
+          },
+          {
+            '_list_items': [],
+            'id': 'CaseType',
+            'label': 'Case Type',
+            'hidden': null,
+            'order': null,
+            'metadata': false,
+            'case_type_id': null,
+            'hint_text': null,
+            'field_type': {
+              'id': 'Text',
+              'type': 'Text',
+              'min': null,
+              'max': null,
+              'regular_expression': null,
+              'fixed_list_items': [],
+              'complex_fields': [],
+              'collection_field_type': null
+            },
+            'security_classification': 'PUBLIC',
+            'live_from': null,
+            'live_until': null,
+            'show_condition': null,
+            'acls': null,
+            'complexACLs': [],
+            'display_context': null,
+            'display_context_parameter': null,
+            'retain_hidden_value': null,
+            'formatted_value': null,
+            'category_id': null
+          }
+        ],
+        'collection_field_type': null
+      }
     },
     'validation_expr': null,
     'security_label': 'PUBLIC',
     'order': 1,
     'formatted_value': [
-        {
-            'id': '1651226230511462',
-            'value': {
-                'CaseType': 'Benefit_Xui',
-                'CaseReference': '1651226230511462',
-                'ReasonForLink': [
-                    {
-                        'id': '417eeb92-4b98-475a-8536-6e844719f09a',
-                        'value': {
-                            'Reason': 'CLRC007'
-                        }
-                    }
-                ],
-                'CreatedDateTime': '2022-07-20T18:48:37.079Z'
+      {
+        'id': '1651226230511462',
+        'value': {
+          'CaseType': 'Benefit_Xui',
+          'CaseReference': '1651226230511462',
+          'ReasonForLink': [
+            {
+              'id': '417eeb92-4b98-475a-8536-6e844719f09a',
+              'value': {
+                'Reason': 'CLRC007'
+              }
             }
+          ],
+          'CreatedDateTime': '2022-07-20T18:48:37.079Z'
         }
+      }
     ],
     'display_context': 'READONLY',
     'display_context_parameter': null,
@@ -288,54 +288,54 @@ describe('ReadLinkedCases', () => {
     'publish': null,
     'publish_as': null,
     'acls': [
-        {
-            'create': true,
-            'read': true,
-            'update': true,
-            'delete': true,
-            'role': 'caseworker-sscs'
-        },
-        {
-            'create': true,
-            'read': true,
-            'update': true,
-            'delete': true,
-            'role': 'caseworker-sscs-systemupdate'
-        },
-        {
-            'create': true,
-            'read': true,
-            'update': true,
-            'delete': true,
-            'role': 'caseworker-sscs-superuser'
-        },
-        {
-            'create': true,
-            'read': true,
-            'update': true,
-            'delete': true,
-            'role': 'caseworker-sscs-dwpresponsewriter'
-        }
+      {
+        'create': true,
+        'read': true,
+        'update': true,
+        'delete': true,
+        'role': 'caseworker-sscs'
+      },
+      {
+        'create': true,
+        'read': true,
+        'update': true,
+        'delete': true,
+        'role': 'caseworker-sscs-systemupdate'
+      },
+      {
+        'create': true,
+        'read': true,
+        'update': true,
+        'delete': true,
+        'role': 'caseworker-sscs-superuser'
+      },
+      {
+        'create': true,
+        'read': true,
+        'update': true,
+        'delete': true,
+        'role': 'caseworker-sscs-dwpresponsewriter'
+      }
     ],
     'value': [
-        {
-            'id': '1651226230511462',
-            'value': {
-                'CaseType': 'Benefit_Xui',
-                'CaseReference': '1651226230511462',
-                'ReasonForLink': [
-                    {
-                        'id': '417eeb92-4b98-475a-8536-6e844719f09a',
-                        'value': {
-                            'Reason': 'CLRC007'
-                        }
-                    }
-                ],
-                'CreatedDateTime': '2022-07-20T18:48:37.079Z'
+      {
+        'id': '1651226230511462',
+        'value': {
+          'CaseType': 'Benefit_Xui',
+          'CaseReference': '1651226230511462',
+          'ReasonForLink': [
+            {
+              'id': '417eeb92-4b98-475a-8536-6e844719f09a',
+              'value': {
+                'Reason': 'CLRC007'
+              }
             }
+          ],
+          'CreatedDateTime': '2022-07-20T18:48:37.079Z'
         }
+      }
     ]
-}
+  }
 
   let mockRouter: any;
   mockRouter = {
@@ -390,49 +390,50 @@ describe('ReadLinkedCases', () => {
 
   const linkCaseReasons: LovRefDataByServiceModel = {
     list_of_values: [
-    {
-      key: 'progressed',
-      value_en: 'Progressed as part of this lead case',
-      value_cy: '',
-      hint_text_en: 'Progressed as part of this lead case',
-      hint_text_cy: '',
-      lov_order: 1,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-    {
-      key: 'bail',
-      value_en: 'Bail',
-      value_cy: '',
-      hint_text_en: 'Bail',
-      hint_text_cy: '',
-      lov_order: 2,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-    {
-      key: 'other',
-      value_en: 'Other',
-      value_cy: '',
-      hint_text_en: 'Other',
-      hint_text_cy: '',
-      lov_order: 3,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-  ]};
+      {
+        key: 'progressed',
+        value_en: 'Progressed as part of this lead case',
+        value_cy: '',
+        hint_text_en: 'Progressed as part of this lead case',
+        hint_text_cy: '',
+        lov_order: 1,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+      {
+        key: 'bail',
+        value_en: 'Bail',
+        value_cy: '',
+        hint_text_en: 'Bail',
+        hint_text_cy: '',
+        lov_order: 2,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+      {
+        key: 'other',
+        value_en: 'Other',
+        value_cy: '',
+        hint_text_en: 'Other',
+        hint_text_cy: '',
+        lov_order: 3,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+    ]
+  };
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ReadLinkedCasesComponent);
@@ -446,16 +447,14 @@ describe('ReadLinkedCases', () => {
     expect(commonDataService.getRefData).toHaveBeenCalled();
   });
 
-  it('should trigger failure handler emit', () => {
+  it('should trigger failure handler errors', () => {
+    component.ngAfterViewInit();
+    component.getFailureLinkedToNotification({});
+    component.getFailureLinkedFromNotification({});
+    expect(component.isServerLinkedToError).toBeTruthy();
+    expect(component.isServerLinkedFromError).toBeTruthy();
     commonDataService.getRefData.and.returnValue(throwError(of()));
     component.ngOnInit();
     expect(component.serverError.id).not.toBeNull();
-  });
-
-  it('should call reloadcurrentroute when hyperlink is being clicked', () => {
-    component.serverError = {id: '', message: ''};
-    fixture.detectChanges();
-    const reloadHyperlink = document.getElementById('reload-linked-cases-tab');
-    reloadHyperlink.click();
   });
 });
