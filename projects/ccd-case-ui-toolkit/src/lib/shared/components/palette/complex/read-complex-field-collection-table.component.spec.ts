@@ -1,6 +1,7 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -105,8 +106,16 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
         .configureTestingModule({
           imports: [
             PaletteUtilsModule,
-            ConditionalShowModule
-          ],
+            ConditionalShowModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }
+            })
+            ],
           declarations: [
             ReadComplexFieldCollectionTableComponent,
             FieldsFilterPipe,
@@ -310,7 +319,15 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
         .configureTestingModule({
           imports: [
             PaletteUtilsModule,
-            ConditionalShowModule
+            ConditionalShowModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }
+            })
           ],
           declarations: [
             ReadComplexFieldCollectionTableComponent,

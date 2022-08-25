@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of, Subscription, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, FieldType } from '../../../domain/definition';
@@ -132,7 +133,16 @@ describe('WriteDocumentFieldComponent', () => {
 
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }            
+          })
+        ],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,
@@ -482,7 +492,16 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           WriteDocumentFieldComponent,
           FieldLabelPipe,

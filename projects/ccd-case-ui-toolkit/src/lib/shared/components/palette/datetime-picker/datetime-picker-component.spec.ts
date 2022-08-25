@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
@@ -52,7 +53,15 @@ describe('DatetimePickerComponent', () => {
             MatInputModule,
             MatDatepickerModule,
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }            
+            })  
           ],
           declarations: [
             DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe

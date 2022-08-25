@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { PaletteContext } from '../base-field/palette-context.enum';
@@ -51,7 +52,16 @@ describe('ReadCollectionFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           ReadCollectionFieldComponent,
 
@@ -176,7 +186,16 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           ReadCollectionFieldComponent,
           // Mock

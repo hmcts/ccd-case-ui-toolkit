@@ -1,6 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { FormModule } from '../../../../components/form/form.module';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
@@ -37,6 +38,14 @@ describe('WriteDateFieldComponent', () => {
           ReactiveFormsModule,
           PaletteUtilsModule,
           FormModule,
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
         ],
         declarations: [
           WriteDateFieldComponent,

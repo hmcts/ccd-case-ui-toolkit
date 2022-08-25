@@ -7,7 +7,7 @@
         <ccd-field-read
           [caseField]="{
             id: caseField.label,
-            label: caseField.label,
+            label: caseField.label | rpxTranslate,
             field_type: caseField.field_type.collection_field_type,
             display_context_parameter: caseField.display_context_parameter,
             value: caseField.value,
@@ -25,7 +25,7 @@
         <ccd-field-read
           [caseField]="{
             id: i,
-            label: caseField.label + ' ' + (i + 1),
+            label: caseField.label + ' ' + (i + 1) | rpxTranslate,
             field_type: caseField.field_type.collection_field_type,
             value: item.value,
             hidden: caseField.hidden

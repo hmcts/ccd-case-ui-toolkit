@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ import { FileUploadStateService } from './file-upload-state.service';
   selector: 'ccd-write-document-field',
   templateUrl: './write-document-field.html'
 })
-export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
+export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy, AfterContentChecked {
   public static readonly DOCUMENT_URL = 'document_url';
   public static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
   public static readonly DOCUMENT_FILENAME = 'document_filename';
@@ -50,6 +50,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     private readonly documentManagement: DocumentManagementService,
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
+    private readonly ref: ChangeDetectorRef
   ) {
     super();
   }
@@ -82,6 +83,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (this.appConfig.getDocumentSecureMode()) {
       this.subscribeToCaseDetails();
     }
+  }
+
+  public ngAfterContentChecked(): void {
+    this.ref.detectChanges();
   }
 
   public ngOnDestroy(): void {

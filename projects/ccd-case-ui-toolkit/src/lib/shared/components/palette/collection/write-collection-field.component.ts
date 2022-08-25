@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -28,7 +28,7 @@ type CollectionItem = {
   templateUrl: './write-collection-field.html',
   styleUrls: ['./collection-field.scss']
 })
-export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
+export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy, AfterContentChecked {
   @Input()
   public caseFields: CaseField[] = [];
 
@@ -46,7 +46,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   constructor(private readonly dialog: MatDialog,
               private readonly scrollToService: ScrollToService,
-              private readonly profileNotifier: ProfileNotifier
+              private readonly profileNotifier: ProfileNotifier,
+              private readonly ref: ChangeDetectorRef
   ) {
     super();
   }
@@ -73,6 +74,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.profileSubscription) {
       this.profileSubscription.unsubscribe();
     }
+  }
+
+  public ngAfterContentChecked(): void {
+    this.ref.detectChanges();
   }
 
   public buildCaseField(item, index: number, isNew = false): CaseField {

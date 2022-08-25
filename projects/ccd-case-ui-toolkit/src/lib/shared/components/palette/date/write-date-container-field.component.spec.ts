@@ -6,6 +6,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 import { FormModule } from '../../../../components/form/form.module';
 import { CaseField, FieldType } from '../../../domain';
@@ -53,7 +54,15 @@ describe('WriteDateContainerFieldComponent', () => {
           ReactiveFormsModule,
           PaletteUtilsModule,
           FormModule,
-        ],
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+      ],
         declarations: [
           WriteDateContainerFieldComponent, WriteDateFieldComponent, DatetimePickerComponent
         ],

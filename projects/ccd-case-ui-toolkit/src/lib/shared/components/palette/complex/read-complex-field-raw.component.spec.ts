@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { CaseField, FieldType } from '../../../domain';
@@ -21,7 +22,15 @@ const initTests = (caseField, mocks) => {
     .configureTestingModule({
       imports: [
         PaletteUtilsModule,
-        ConditionalShowModule
+        ConditionalShowModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          testMode: true,
+          validity: {
+            days: 1
+          }
+        })
       ],
       declarations: [
         ReadComplexFieldRawComponent,

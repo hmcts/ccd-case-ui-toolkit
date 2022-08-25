@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { Constants } from '../../../commons/constants';
@@ -18,7 +18,7 @@ const ADDRESS_FIELD_TYPES = [ 'AddressUK', 'AddressGlobalUK', 'AddressGlobal' ];
   templateUrl: './write-complex-field.html',
   styleUrls: ['./read-complex-field-table.scss']
 })
-export class WriteComplexFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class WriteComplexFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterContentChecked {
   @Input()
   public caseFields: CaseField[] = [];
 
@@ -35,7 +35,9 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   public complexFields: CaseField[];
 
-  constructor(private readonly isCompoundPipe: IsCompoundPipe, private readonly formValidatorsService: FormValidatorsService) {
+  constructor(private readonly isCompoundPipe: IsCompoundPipe, 
+              private readonly formValidatorsService: FormValidatorsService,
+              private readonly ref: ChangeDetectorRef) {
     super();
     this.complexGroup = new FormGroup({});
   }
@@ -52,6 +54,10 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
     this.formValidatorsService.addValidators(this.caseField, this.complexGroup);
     this.setupFields();
     this.complexGroup.updateValueAndValidity({ emitEvent: true });
+  }
+
+  public ngAfterContentChecked(): void {
+    this.ref.detectChanges();
   }
 
   public buildField(caseField: CaseField): CaseField {
