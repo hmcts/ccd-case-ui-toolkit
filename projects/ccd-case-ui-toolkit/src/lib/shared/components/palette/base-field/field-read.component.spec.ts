@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { plainToClassFromExist } from 'class-transformer';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseField } from '../../../domain/definition';
 import { PaletteService } from '../palette.service';
 import { FieldReadComponent } from './field-read.component';
@@ -76,7 +77,15 @@ describe('FieldReadComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          FormsModule
+          FormsModule,
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
         ],
         declarations: [
           FieldReadComponent,
