@@ -62,6 +62,7 @@ import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -161,7 +162,8 @@ const PALETTE_COMPONENTS = [
     MatInputModule,
     MatDatepickerModule,
     PaymentLibModule,
-    ScrollToModule.forRoot()
+    ScrollToModule.forRoot(),
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     FixedListPipe,
