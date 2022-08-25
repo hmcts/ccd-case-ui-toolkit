@@ -119,7 +119,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     if (this.errorSubscription) {
       this.errorSubscription.unsubscribe();
     }
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   public postViewActivity(): Observable<Activity[]> {
