@@ -35,8 +35,7 @@ export class DocumentManagementService {
     const headers = new HttpHeaders();
     return this.http
       .post(url, formData, {headers, observe: 'body'})
-      .pipe(delay(DocumentManagementService.RESPONSE_DELAY))
-      .pipe();
+      .pipe(delay(DocumentManagementService.RESPONSE_DELAY));
   }
 
   public getMediaViewerInfo(documentFieldValue: any): string {
@@ -100,7 +99,12 @@ export class DocumentManagementService {
     const remoteHrsPattern = new RegExp(this.appConfig.getRemoteHrsUrl());
     documentBinaryUrl = documentBinaryUrl.replace(remoteHrsPattern, this.appConfig.getHrsUrl());
     const remoteDocumentManagementPattern = new RegExp(this.appConfig.getRemoteDocumentManagementUrl());
-    return documentBinaryUrl.replace(remoteDocumentManagementPattern, this.getDocStoreUrl());
+
+    const docStoreUrl = this.getDocStoreUrl();
+
+    const getDocStoreUrlParts = docStoreUrl.split('/');
+
+    return documentBinaryUrl.replace(remoteDocumentManagementPattern, getDocStoreUrlParts[getDocStoreUrlParts.length - 1]);
   }
 
   private getDocStoreUrl(): string {
