@@ -1,39 +1,47 @@
 <div>
-  <cut-alert type="information">This case requires {{accessType | lowercase}} access.<br />
-    <ng-container *ngIf="accessType === 'CHALLENGED'">This is because the case is outside your work area. If you request access to the case, it will be logged for auditing purposes.</ng-container>
-    <ng-container *ngIf="accessType === 'SPECIFIC'">This means it's outside your jurisdiction and requires authorisation. If you request access to the case, it will be logged for auditing purposes.</ng-container>
+  <cut-alert type="information">{{'This case requires' | rpxTranslate}} {{accessType | rpxTranslate | lowercase}} {{'access' | rpxTranslate}}.<br />
+    <ng-container *ngIf="accessType === 'CHALLENGED'">
+      {{'This is because the case is outside your work area. If you request access to the case, it will be logged for auditing purposes.' | rpxTranslate}}
+    </ng-container>
+    <ng-container *ngIf="accessType === 'SPECIFIC'">
+      {{"This means it's outside your jurisdiction and requires authorisation. If you request access to the case, it will be logged for auditing purposes." | rpxTranslate}}
+    </ng-container>
   </cut-alert>
   <h1 class="heading-h1">#{{ caseDetails.case_id | ccdCaseReference}}</h1>
-  <h2 class="govuk-heading-m">Case details</h2>
+  <h2 class="govuk-heading-m">{{'Case details' | rpxTranslate}}</h2>
   <dl class="govuk-summary-list">
     <div class="govuk-summary-list__row" *ngIf="caseDetails.basicFields?.caseNameHmctsInternal">
-      <dt class="govuk-summary-list__key summary-key">Case name</dt>
-      <dd class="govuk-summary-list__value">{{caseDetails.basicFields.caseNameHmctsInternal}}</dd>
+      <dt class="govuk-summary-list__key summary-key">{{'Case name' | rpxTranslate}}</dt>
+      <dd class="govuk-summary-list__value">{{caseDetails.basicFields.caseNameHmctsInternal | rpxTranslate}}</dd>
     </div>
     <div class="govuk-summary-list__row" *ngIf="caseDetails.case_type?.jurisdiction?.name">
-      <dt class="govuk-summary-list__key summary-key">Service</dt>
-      <dd class="govuk-summary-list__value">{{caseDetails.case_type.jurisdiction.name}}</dd>
+      <dt class="govuk-summary-list__key summary-key">{{'Service' | rpxTranslate}}</dt>
+      <dd class="govuk-summary-list__value">{{caseDetails.case_type.jurisdiction.name | rpxTranslate}}</dd>
     </div>
     <div class="govuk-summary-list__row" *ngIf="caseDetails.state?.description">
-      <dt class="govuk-summary-list__key summary-key">State</dt>
-      <dd class="govuk-summary-list__value">{{caseDetails.state.description}}</dd>
+      <dt class="govuk-summary-list__key summary-key">{{'State' | rpxTranslate}}</dt>
+      <dd class="govuk-summary-list__value">{{caseDetails.state.description | rpxTranslate}}</dd>
     </div>
     <div class="govuk-summary-list__row" *ngIf="courtOrHearingCentre">
-      <dt class="govuk-summary-list__key summary-key">Court or hearing centre</dt>
-      <dd class="govuk-summary-list__value">{{courtOrHearingCentre | titlecase}}</dd>
+      <dt class="govuk-summary-list__key summary-key">{{'Court or hearing centre' | rpxTranslate}}</dt>
+      <dd class="govuk-summary-list__value">{{courtOrHearingCentre | rpxTranslate | titlecase}}</dd>
     </div>
 
     <div class="govuk-summary-list__row" *ngIf="accessType">
-      <dt class="govuk-summary-list__key summary-key">Access</dt>
-      <dd class="govuk-summary-list__value">{{accessType | titlecase}}</dd>
+      <dt class="govuk-summary-list__key summary-key">{{'Access' | rpxTranslate}}</dt>
+      <dd class="govuk-summary-list__value">{{accessType | titlecase | rpxTranslate}}</dd>
     </div>
   </dl>
 </div>
 <div class="govuk-button-group">
-  <button class="govuk-button govuk-!-margin-right-3" [routerLink]="getRequestUrl(accessType)"> Request access </button>
+  <button class="govuk-button govuk-!-margin-right-3" [routerLink]="getRequestUrl(accessType)">
+    {{'Request access' | rpxTranslate}}
+  </button>
   <div class="govuk-grid-column-full govuk-!-padding-left-0">
     <p>
-      <a class="govuk-body" (click)="onCancel()" href="javascript:void(0)"> Cancel </a>
+      <a class="govuk-body" (click)="onCancel()" href="javascript:void(0)">
+        {{'Cancel' | rpxTranslate}}
+      </a>
     </p>
   </div>
 </div>

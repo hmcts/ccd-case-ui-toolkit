@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CallbackErrorsComponent } from '../../components/error';
 import { ConditionalShowModule } from '../../directives/conditional-show';
 import {
@@ -59,7 +60,8 @@ import { CaseworkerService } from './services/case-worker.service';
         LabelSubstitutorModule,
         ConditionalShowModule,
         ErrorsModule,
-        PortalModule
+        PortalModule,
+        RpxTranslationModule.forChild()
     ],
     declarations: [
         CaseEditConfirmComponent,
