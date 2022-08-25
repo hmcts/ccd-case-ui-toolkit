@@ -15237,10 +15237,10 @@ rollup@^2.37.0:
   optionalDependencies:
     fsevents "~2.3.2"
 
-rpx-xui-translation@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/rpx-xui-translation/-/rpx-xui-translation-0.1.1.tgz#aa02639806f641737d9d2d43915adc3c93888ff4"
-  integrity sha512-F+/K0u+1+jnUK+9SnkPpBFWwYU9p4YtXgTlokcqwUlKEyStuVzi8ctb78shK3Et2ic1OY1I3GrF9Fb4Zj56Frg==
+rpx-xui-translation@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/rpx-xui-translation/-/rpx-xui-translation-0.1.2.tgz#db0c1b9f0d799bbbda55580ff08d6f3eb656e221"
+  integrity sha512-ubuFrwRENeZLnKMXb9CVtyvd+ahczjoge4pPO5C3f+VXuR+NF+bwoByz7qybR/gMsxESLojqrnKawzegk2dxaA==
   dependencies:
     dexie "^3.2.2"
     luxon "^2.4.0"
