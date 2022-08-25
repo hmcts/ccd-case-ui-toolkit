@@ -114,11 +114,20 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     return ReadFieldsFilterPipe.isEmpty(field.value) ? value : field.value;
   }
 
-  private static evaluateConditionalShow(field: CaseField, formValue: any, path?: string): CaseField {
+  private static evaluateConditionalShow(field: CaseField, formValue: any, path?: string,
+    formGroupAvaliable?: boolean, fieldId?: string): CaseField {
     if (field.display_context === 'HIDDEN') {
       field.hidden = true;
     } else if (field.show_condition) {
-      const cond = ShowCondition.getInstance(field.show_condition);
+      let cond: ShowCondition;
+      if (fieldId && field.show_condition.indexOf(fieldId) > -1 && !formGroupAvaliable && !!Object.keys(formValue).length) {
+        const search = fieldId + '.';
+        const searchRegExp = new RegExp(search, 'g');
+        const replaceWith = '';
+        cond = ShowCondition.getInstance(field.show_condition.replace(searchRegExp, replaceWith));
+      } else {
+        cond = ShowCondition.getInstance(field.show_condition);
+      }
       field.hidden = !cond.match(formValue, path);
     } else {
       field.hidden = false;
@@ -147,8 +156,10 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     const fields = complexField.field_type.complex_fields || [];
     const values = complexField.value || {};
     let checkConditionalShowAgainst: any = values;
+    let formGroupAvailable = false;
     if (formGroup) {
       checkConditionalShowAgainst = formGroup.value;
+      formGroupAvailable = true;
     }
 
     return fields
@@ -165,7 +176,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
           f.display_context = complexField.display_context;
         }
         if (setupHidden) {
-          ReadFieldsFilterPipe.evaluateConditionalShow(f, checkConditionalShowAgainst, path);
+          ReadFieldsFilterPipe.evaluateConditionalShow(f, checkConditionalShowAgainst, path, formGroupAvailable, complexField.id);
         }
         return f;
       })
