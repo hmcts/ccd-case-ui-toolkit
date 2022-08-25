@@ -2,23 +2,26 @@
 <div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
       role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
   <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
-    Something went wrong
+    {{'Something went wrong' | rpxTranslate}}
   </h1>
   <div class="govuk-error-summary__body" id="edit-case-event_error-summary-body">
-    <p>We're working to fix the problem. Try again shortly.</p>
-    <p><a href="get-help" target="_blank">Contact us</a> if you're still having problems.</p>
+    <p>{{"We're working to fix the problem. Try again shortly." | rpxTranslate}}</p>
+    <p>
+      <a href="get-help" target="_blank">
+        {{"Contact us" | rpxTranslate}}</a> {{"if you're still having problems." | rpxTranslate}}
+    </p>
   </div>
 </div>
 <!-- Callback error heading and error message to be displayed if there are specific error details -->
 <div *ngIf="error && error.details" class="error-summary" role="group"
       aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
   <h2 class="heading-h2 error-summary-heading" id="edit-case-event_error-summary-heading">
-    The callback data failed validation
+    {{"The callback data failed validation" | rpxTranslate}}
   </h2>
-  <p>{{error.message}}</p>
+  <p>{{error.message | rpxTranslate}}</p>
   <ul *ngIf="error.details?.field_errors" class="error-summary-list">
     <li *ngFor="let fieldError of error.details.field_errors">
-      {{fieldError.message}}
+      {{fieldError.message | rpxTranslate}}
     </li>
   </ul>
 </div>
@@ -33,7 +36,7 @@
   <div class="column-one-half">
     <ccd-case-header [caseDetails]="caseDetails"></ccd-case-header>
     <div class="case-viewer-controls" *ngIf="hasPrint && !isDraft() && isPrintEnabled()">
-      <a id="case-viewer-control-print" routerLink="print" class="button button-secondary">Print</a>
+      <a id="case-viewer-control-print" routerLink="print" class="button button-secondary">{{'Print' | rpxTranslate}}</a>
     </div>
   </div>
   <div *ngIf="hasEventSelector" class="column-one-half">
@@ -46,18 +49,18 @@
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
       <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true">
-        <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label">
+        <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>
-        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
+        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate">
           <ng-template matTabContent>
-            <table [class]="tab.id" aria-describedby="case viewer table">
+            <table [class]="tab.id" [attr.aria-describedby]="'case viewer table' | rpxTranslate">
               <tbody>
               <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup.controls['data']">
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
                       <th>
-                        <div class="case-viewer-label text-16">{{field.label}}</div>
+                        <div class="case-viewer-label text-16">{{field.label | rpxTranslate}}</div>
                       </th>
                       <td>
                         <span class="text-16">
@@ -85,7 +88,7 @@
             </table>
           </ng-template>
         </mat-tab>
-        <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label">
+        <mat-tab *ngFor="let tab of appendedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>
       </mat-tab-group>
       <router-outlet *ngIf="(prependedTabs && prependedTabs.length) || (appendedTabs && appendedTabs.length)"></router-outlet>
