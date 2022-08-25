@@ -60,8 +60,8 @@ describe('DatetimePickerComponent', () => {
               testMode: true,
               validity: {
                 days: 1
-              }            
-            })  
+              }
+            })
           ],
           declarations: [
             DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe

@@ -62,7 +62,7 @@ describe('WriteDynamicListFieldComponent', () => {
             testMode: true,
             validity: {
               days: 1
-            }            
+            }
           })
         ],
         declarations: [

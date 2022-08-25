@@ -62,8 +62,8 @@ describe('WriteMultiSelectListFieldComponent', () => {
             testMode: true,
             validity: {
               days: 1
-            }            
-          })  
+            }
+          })
         ],
         declarations: [
           WriteMultiSelectListFieldComponent,

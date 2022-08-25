@@ -35,7 +35,7 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   public complexFields: CaseField[];
 
-  constructor(private readonly isCompoundPipe: IsCompoundPipe, 
+  constructor(private readonly isCompoundPipe: IsCompoundPipe,
               private readonly formValidatorsService: FormValidatorsService,
               private readonly ref: ChangeDetectorRef) {
     super();
