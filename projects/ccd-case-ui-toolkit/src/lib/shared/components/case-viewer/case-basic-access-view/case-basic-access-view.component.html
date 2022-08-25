@@ -29,7 +29,7 @@
 
     <div class="govuk-summary-list__row" *ngIf="accessType">
       <dt class="govuk-summary-list__key summary-key">{{'Access' | rpxTranslate}}</dt>
-      <dd class="govuk-summary-list__value">{{accessType | rpxTranslate | titlecase}}</dd>
+      <dd class="govuk-summary-list__value">{{accessType | titlecase | rpxTranslate}}</dd>
     </div>
   </dl>
 </div>

@@ -21,11 +21,11 @@
 
     <div class="form-group form-group-related">
       <button class="govuk-button govuk-!-margin-right-2" data-module="govuk-button" (click)="onContinue()">
-        {{'Continue'}}
+        {{'Continue' | rpxTranslate}}
       </button>
       <a [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']"
               class="govuk-button govuk-button--secondary" data-module="govuk-button">
-        {{'Cancel'}}
+        {{'Cancel' | rpxTranslate}}
       </a>
     </div>
   </div>
