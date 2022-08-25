@@ -35,6 +35,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   public caseId: string;
   public showHideLinkText = 'Show';
   public noLinkedCases = true;
+  public isServerError = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -61,6 +62,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     this.caseId = this.route.snapshot.data.case.case_id;
     this.getLinkedCases().subscribe(
       response => {
+        this.isServerError = false;
         this.getLinkedCasesResponse = response.linkedCases && response.linkedCases.map(item => {
           const mappedCasetype = this.mapLookupIDToValueFromJurisdictions('CASE_TYPE', item.ccdCaseType);
           const mappedCaseState = this.mapLookupIDToValueFromJurisdictions('STATE', item.state);
@@ -70,7 +72,10 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
         })
         this.noLinkedCases = !response.linkedCases || !response.linkedCases.length;
       },
-      () => this.notifyAPIFailure.emit(true)
+      err => {
+        this.isServerError = true;
+        this.notifyAPIFailure.emit(true);
+      }
       );
   }
 

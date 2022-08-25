@@ -129,6 +129,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
         });
         this.linkedCasesService.initialCaseLinks = caseLinks;
         this.linkedCasesService.linkedCases = caseLinks;
+        this.isServerError = false;
       },
         err => {
           this.isServerError = true;
