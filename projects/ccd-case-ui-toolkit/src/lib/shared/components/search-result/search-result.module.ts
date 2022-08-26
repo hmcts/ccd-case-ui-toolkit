@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { LabelSubstitutorDirective } from '../../directives/substitutor/label-substitutor.directive';
 import { LabelSubstitutorModule } from '../../directives/substitutor/label-substitutor.module';
 import { CaseReferencePipe } from '../../pipes/case-reference/case-reference.pipe';
@@ -24,7 +25,8 @@ import { SearchResultComponent } from './search-result.component';
     LabelSubstitutorModule,
     PipesModule,
     ActivityModule,
-    PaginationModule
+    PaginationModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     SearchResultComponent

@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { LabelSubstitutorDirective, PlaceholderService } from '../../directives';
 import { createCaseView } from '../../fixture/case-view.test.fixture';
 import { CaseReferencePipe } from '../../pipes';
@@ -28,6 +29,9 @@ describe('CaseHeaderComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed
       .configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 } })
+        ],
         declarations: [
           CaseHeaderComponent,
           CaseReferencePipe,

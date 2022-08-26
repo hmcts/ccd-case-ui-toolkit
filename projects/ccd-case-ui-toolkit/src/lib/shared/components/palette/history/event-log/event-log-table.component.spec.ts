@@ -3,6 +3,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
 import { DatePipe } from '../../utils';
@@ -69,7 +70,9 @@ describe('EventLogTableComponent', () => {
     beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
-          imports: [RouterTestingModule],
+          imports: [RouterTestingModule,
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+          ],
           declarations: [
             EventLogTableComponent,
             DatePipe
@@ -205,7 +208,9 @@ describe('EventLogTableComponent', () => {
 
       TestBed
         .configureTestingModule({
-          imports: [RouterTestingModule],
+          imports: [RouterTestingModule,
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+          ],
           declarations: [
             EventLogTableComponent,
             DatePipe

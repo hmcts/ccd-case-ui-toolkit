@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
@@ -186,7 +187,8 @@ describe('SearchResultComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            RouterTestingModule
+            RouterTestingModule,
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
           ],
           declarations: [
             FieldReadComponent,
@@ -860,7 +862,8 @@ describe('SearchResultComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            RouterTestingModule
+            RouterTestingModule,
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
           ],
           declarations: [
             FieldReadComponent,

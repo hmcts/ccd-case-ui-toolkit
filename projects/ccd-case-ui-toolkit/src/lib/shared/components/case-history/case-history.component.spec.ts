@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { LabelSubstitutorDirective, PlaceholderService } from '../../directives';
@@ -108,6 +109,7 @@ describe('CaseHistoryComponent', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           CaseHistoryComponent,
