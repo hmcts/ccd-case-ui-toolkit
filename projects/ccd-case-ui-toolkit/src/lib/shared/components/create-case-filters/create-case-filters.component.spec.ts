@@ -303,7 +303,7 @@ describe('CreateCaseFiltersComponent', () => {
         imports: [
           FormsModule,
           ReactiveFormsModule,
-          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})          
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           CreateCaseFiltersComponent

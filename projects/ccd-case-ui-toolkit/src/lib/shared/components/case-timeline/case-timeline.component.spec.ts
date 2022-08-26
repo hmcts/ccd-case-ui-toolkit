@@ -107,7 +107,7 @@ describe('CaseTimelineComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})            
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
           ],
           declarations: [
             CaseTimelineComponent,

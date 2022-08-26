@@ -396,7 +396,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
         imports: [
-          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})          
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
@@ -497,7 +497,7 @@ describe('CaseEditPageComponent', () => {
 
       TestBed.configureTestingModule({
         imports: [
-          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})          
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
@@ -605,7 +605,7 @@ describe('CaseEditPageComponent', () => {
 
       TestBed.configureTestingModule({
         imports: [
-          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})          
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           CaseEditPageComponent,
