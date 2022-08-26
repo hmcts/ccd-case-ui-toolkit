@@ -9,25 +9,14 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  checkboxes: FormArray;
-  dynamicListFormControl: FormControl;
+  public checkboxes: FormArray;
+  public dynamicListFormControl: FormControl;
 
   ngOnInit(): void {
     this.checkboxes = new FormArray([]);
 
-    if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {
-      this.caseField.list_items = this.caseField.formatted_value.list_items;
-    }
-
-    if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value) {
-      this.caseField.value = this.caseField.formatted_value.value;
-    }
-
-    let isNull = this.caseField.value === undefined || this.caseField.value === '';
-
-    if (isNull || !Array.isArray(this.caseField.value)) {
-      this.caseField.value = [];
-    }
+    this.setInitialCaseList();
+    this.setInitialCaseFieldValue();
 
     // Initialise array with existing values
     if (this.caseField.value && Array.isArray(this.caseField.value)) {
@@ -42,7 +31,7 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
     this.dynamicListFormControl.setValue(this.checkboxes.value);
   }
 
-  onCheckChange(event: Event) {
+  public onCheckChange(event: Event) {
     const target = event.target as HTMLInputElement;
 
     if (!target || !target.value) {
@@ -66,17 +55,34 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
     this.dynamicListFormControl.setValue(this.checkboxes.value);
   }
 
-  isSelected(code: string): AbstractControl {
+  public isSelected(code: string): AbstractControl {
     if (this.checkboxes && this.checkboxes.controls) {
       return this.checkboxes.controls.find(control => control.value.code === code);
     }
   }
 
-  buildElementId(name: string): string {
-    return `${this.id()}-${name}`;
-  }
-
   private getValueListItem(value: string) {
     return this.caseField.list_items.find(i => i.code === value);
+  }
+
+  private setInitialCaseList(): void {
+    const hasListItems = this.caseField.list_items && this.caseField.list_items.length > 0;
+    const hasFormattedListItems = this.caseField.formatted_value && this.caseField.formatted_value.list_items.length > 0;
+
+    if (!hasListItems && hasFormattedListItems) {
+      this.caseField.list_items = this.caseField.formatted_value.list_items;
+    }
+  }
+
+  private setInitialCaseFieldValue(): void {
+    if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value) {
+      this.caseField.value = this.caseField.formatted_value.value;
+    }
+
+    let isNull = this.caseField.value === undefined || this.caseField.value === '';
+
+    if (isNull || !Array.isArray(this.caseField.value)) {
+      this.caseField.value = [];
+    }
   }
 }

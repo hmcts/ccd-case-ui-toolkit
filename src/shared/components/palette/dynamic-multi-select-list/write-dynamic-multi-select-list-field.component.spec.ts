@@ -83,16 +83,6 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
       fixture.detectChanges();
     }));
 
-    describe('buildElementId()', () => {
-      it('should produce a composite id string', () => {
-        const name = 'str';
-
-        const result = component.buildElementId(name);
-
-        expect(result).toEqual('DynamicMultiSelectList-str');
-      });
-    });
-
     it('should register a FormArray', () => {
       expect(component.checkboxes.constructor).toBe(FormArray);
     });
