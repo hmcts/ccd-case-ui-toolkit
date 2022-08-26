@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { CaseField } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
@@ -62,6 +63,7 @@ describe('ReadOrganisationFieldComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
       ],
       declarations: [
         MarkdownComponent,

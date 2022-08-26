@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BrowserService } from '../../services';
 import { CaseListComponent, TableConfig } from './case-list.component';
 
@@ -53,7 +54,9 @@ describe('CaseListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterModule ],
+      imports: [ RouterModule,
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+      ],
       declarations: [ CaseListComponent, PaginatePipe ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [ PaginationService, BrowserService ]

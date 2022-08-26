@@ -2,6 +2,7 @@ import { DebugElement, EventEmitter } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
 import { CaseEventCompletionTaskCancelledComponent } from './case-event-completion-task-cancelled.component';
 
@@ -24,6 +25,7 @@ describe('TaskCancelledComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
       ],
       declarations: [CaseEventCompletionTaskCancelledComponent],
       providers: [

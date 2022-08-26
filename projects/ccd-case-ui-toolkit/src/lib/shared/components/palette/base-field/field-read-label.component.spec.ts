@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { createFieldType, newCaseField } from '../../../fixture';
 import { text } from '../../../test/helpers';
@@ -31,7 +32,8 @@ describe('FieldReadLabelComponent', () => {
     TestBed
       .configureTestingModule({
         imports: [
-          FormsModule
+          FormsModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           FieldReadLabelComponent,

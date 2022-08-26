@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseViewTrigger } from '../../domain';
 import { OrderService } from '../../services';
 import { attr, text } from '../../test/helpers';
@@ -58,7 +59,8 @@ describe('EventTriggerComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
           ],
           declarations: [
             EventTriggerComponent
@@ -187,7 +189,8 @@ describe('EventTriggerComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
           ],
           declarations: [
             EventTriggerComponent

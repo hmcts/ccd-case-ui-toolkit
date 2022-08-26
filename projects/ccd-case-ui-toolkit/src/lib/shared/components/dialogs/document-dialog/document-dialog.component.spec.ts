@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MatDialogRef } from '@angular/material/dialog';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { DocumentDialogComponent } from './document-dialog.component';
 
 describe('DocumentDialogComponent', () => {
@@ -11,6 +12,9 @@ describe('DocumentDialogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+      ],
       declarations: [ DocumentDialogComponent ],
       providers: [
         { provide: MatDialogRef, useValue: matDialogRef },

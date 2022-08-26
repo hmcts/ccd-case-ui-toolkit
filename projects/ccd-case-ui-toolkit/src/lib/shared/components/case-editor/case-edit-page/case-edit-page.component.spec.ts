@@ -25,6 +25,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 describe('CaseEditPageComponent', () => {
 
@@ -118,7 +119,8 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'next');
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
-        imports: [FormsModule, ReactiveFormsModule],
+        imports: [FormsModule, ReactiveFormsModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})],
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -393,6 +395,9 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'next');
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})          
+        ],
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -491,6 +496,9 @@ describe('CaseEditPageComponent', () => {
       };
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})          
+        ],
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -596,6 +604,9 @@ describe('CaseEditPageComponent', () => {
       spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(eventData);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})          
+        ],
         declarations: [
           CaseEditPageComponent,
           FieldsFilterPipe,
@@ -802,6 +813,9 @@ describe('CaseEditPageComponent', () => {
       spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(caseEventDataPrevious);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+        ],
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -914,6 +928,9 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'next');
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+        ],
         declarations: [CaseEditPageComponent,
           CaseReferencePipe, CcdCaseTitlePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],

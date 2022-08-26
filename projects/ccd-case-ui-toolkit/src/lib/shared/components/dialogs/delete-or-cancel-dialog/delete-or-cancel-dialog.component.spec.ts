@@ -5,6 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { DeleteOrCancelDialogComponent } from './delete-or-cancel-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 describe('DeleteOrCancelDialogComponent', () => {
   const DELETE_BUTTON = By.css('button[title="Delete"]');
@@ -19,6 +20,9 @@ describe('DeleteOrCancelDialogComponent', () => {
     matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('MatDialogRef', ['close']);
 
     TestBed.configureTestingModule({
+      imports: [
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+      ],
       declarations: [ DeleteOrCancelDialogComponent ],
       providers: [
         { provide: MatDialogRef, useValue: matDialogRef }

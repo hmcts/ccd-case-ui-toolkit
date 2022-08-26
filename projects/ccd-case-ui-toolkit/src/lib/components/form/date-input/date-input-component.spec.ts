@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { PaletteUtilsModule } from '../../../shared/components/palette/utils/utils.module';
 import { DateInputComponent } from './date-input.component';
 import createSpy = jasmine.createSpy;
@@ -30,7 +31,15 @@ describe('Date input component', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
         ],
         declarations: [
           DateInputComponent,

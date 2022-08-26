@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { AlertModule } from '../../../../components/banners/alert';
 import { CasesService } from '../../case-editor/services/cases.service';
@@ -31,7 +32,8 @@ describe('CaseSpecificAccessRequestComponent', () => {
     casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
     casesService.createSpecificAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({
-      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule ],
+      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule,
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }}) ],
       declarations: [ CaseSpecificAccessRequestComponent, ErrorMessageComponent ],
       providers: [
         FormBuilder,

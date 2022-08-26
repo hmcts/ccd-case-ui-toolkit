@@ -5,6 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { SaveOrDiscardDialogComponent } from './save-or-discard-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 describe('SaveOrDiscardDialogComponent', () => {
   const SAVE_BUTTON = By.css('button[title="Save"]');
@@ -19,6 +20,9 @@ describe('SaveOrDiscardDialogComponent', () => {
     matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['close']);
 
     TestBed.configureTestingModule({
+      imports: [
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+      ],
       declarations: [ SaveOrDiscardDialogComponent ],
       providers: [
         { provide: MatDialogRef, useValue: matDialogRef }

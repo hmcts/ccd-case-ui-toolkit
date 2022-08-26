@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { CaseField, CaseView } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes/case-reference';
@@ -50,7 +51,9 @@ describe('CaseBasicAccessViewComponent', () => {
 
         TestBed
         .configureTestingModule({
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule,
+              RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+            ],
             declarations: [
                 CaseBasicAccessViewComponent,
                 CaseReferencePipe

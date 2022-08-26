@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { Observable, of, throwError } from 'rxjs';
 import { ConditionalShowModule } from '../../directives';
 import { CaseType } from '../../domain/definition/case-type.model';
@@ -203,8 +204,16 @@ describe('WorkbasketFiltersComponent', () => {
           imports: [
             FormsModule,
             ReactiveFormsModule,
-            ConditionalShowModule
-          ],
+            ConditionalShowModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }
+            })
+            ],
           declarations: [
             WorkbasketFiltersComponent,
             FieldWriteComponent
@@ -619,7 +628,15 @@ describe('WorkbasketFiltersComponent', () => {
           imports: [
             FormsModule,
             ReactiveFormsModule,
-            ConditionalShowModule
+            ConditionalShowModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }
+            })
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -720,7 +737,15 @@ describe('WorkbasketFiltersComponent', () => {
           imports: [
             FormsModule,
             ReactiveFormsModule,
-            ConditionalShowModule
+            ConditionalShowModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }
+            })
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -796,7 +821,15 @@ describe('WorkbasketFiltersComponent', () => {
           imports: [
             FormsModule,
             ReactiveFormsModule,
-            ConditionalShowModule
+            ConditionalShowModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }
+            })
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -879,7 +912,15 @@ describe('WorkbasketFiltersComponent', () => {
           imports: [
             FormsModule,
             ReactiveFormsModule,
-            ConditionalShowModule
+            ConditionalShowModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }
+            })
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -965,7 +1006,15 @@ describe('WorkbasketFiltersComponent', () => {
           imports: [
             FormsModule,
             ReactiveFormsModule,
-            ConditionalShowModule
+            ConditionalShowModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }
+            })
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -1046,7 +1095,15 @@ describe('WorkbasketFiltersComponent', () => {
           imports: [
             FormsModule,
             ReactiveFormsModule,
-            ConditionalShowModule
+            ConditionalShowModule,
+            RpxTranslationModule.forRoot({
+              baseUrl: '',
+              debounceTimeMs: 300,
+              testMode: true,
+              validity: {
+                days: 1
+              }
+            })
           ],
           declarations: [
             WorkbasketFiltersComponent,

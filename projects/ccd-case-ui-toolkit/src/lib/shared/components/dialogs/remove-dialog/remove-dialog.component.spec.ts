@@ -5,6 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { RemoveDialogComponent } from './remove-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 describe('RemoveDialogComponent', () => {
   const REMOVE_BUTTON = By.css('button[title="Remove"]');
@@ -19,6 +20,9 @@ describe('RemoveDialogComponent', () => {
     matDialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['close']);
 
     TestBed.configureTestingModule({
+      imports: [
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+      ],
       declarations: [ RemoveDialogComponent ],
       providers: [
         { provide: MatDialogRef, useValue: matDialogRef }

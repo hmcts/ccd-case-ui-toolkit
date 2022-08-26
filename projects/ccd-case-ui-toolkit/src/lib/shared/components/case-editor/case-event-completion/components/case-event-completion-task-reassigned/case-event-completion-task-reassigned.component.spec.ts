@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../../../app.config';
 import { Caseworker } from '../../../../../domain/work-allocation/case-worker.model';
@@ -105,7 +106,9 @@ describe('TaskReassignedComponent', () => {
     mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(task));
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule,
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+      ],
       declarations: [CaseEventCompletionTaskReassignedComponent],
       providers: [
         {provide: ActivatedRoute, useValue: mockRoute},

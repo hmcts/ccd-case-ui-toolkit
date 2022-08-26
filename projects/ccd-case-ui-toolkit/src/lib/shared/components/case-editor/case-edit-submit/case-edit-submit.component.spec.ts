@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
@@ -398,6 +399,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -697,6 +708,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -837,6 +858,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -1076,6 +1107,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -1215,6 +1256,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -1357,6 +1408,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -1498,6 +1559,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -1646,6 +1717,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -1835,6 +1916,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -1969,6 +2060,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -2102,6 +2203,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -2246,6 +2357,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -2399,6 +2520,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -2558,6 +2689,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -2698,6 +2839,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -2841,6 +2992,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -2984,6 +3145,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -3126,6 +3297,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -3273,6 +3454,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -3422,6 +3613,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -3571,6 +3772,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -3731,6 +3942,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -3890,6 +4111,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -4043,6 +4274,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,
@@ -4199,6 +4440,16 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
 
       TestBed.configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({
+            baseUrl: '',
+            debounceTimeMs: 300,
+            testMode: true,
+            validity: {
+              days: 1
+            }
+          })
+        ],
         declarations: [
           CaseEditSubmitComponent,
           IsCompoundPipe,

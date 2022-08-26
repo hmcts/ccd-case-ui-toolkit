@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, Input, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'ccd-loading-spinner',
@@ -7,6 +7,10 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None
 })
 
-export class LoadingSpinnerComponent {
+export class LoadingSpinnerComponent implements AfterContentChecked {
   @Input() public loadingText = 'Loading';
+  constructor(private readonly ref: ChangeDetectorRef) { }
+  public ngAfterContentChecked(): void {
+    this.ref.detectChanges();
+  }
 }

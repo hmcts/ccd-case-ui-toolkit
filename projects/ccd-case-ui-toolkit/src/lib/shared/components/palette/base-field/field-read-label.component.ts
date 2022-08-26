@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -11,7 +11,7 @@ import { AbstractFieldReadComponent } from './abstract-field-read.component';
     './field-read-label.scss'
   ]
 })
-export class FieldReadLabelComponent extends AbstractFieldReadComponent implements OnChanges {
+export class FieldReadLabelComponent extends AbstractFieldReadComponent implements OnChanges, AfterContentChecked {
 
   // EUI-3267. Flag for whether or not this can have a grey bar.
   public canHaveGreyBar = false;
@@ -21,6 +21,14 @@ export class FieldReadLabelComponent extends AbstractFieldReadComponent implemen
 
   @Input()
   public markdownUseHrefAsRouterLink?: boolean;
+
+  constructor(private readonly ref: ChangeDetectorRef) {
+    super();
+  }
+
+  public ngAfterContentChecked(): void {
+    this.ref.detectChanges();
+  }
 
   public isLabel(): boolean {
     return this.caseField.field_type && this.caseField.field_type.type === 'Label';

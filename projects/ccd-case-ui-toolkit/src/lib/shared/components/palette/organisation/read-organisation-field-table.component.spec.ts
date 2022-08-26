@@ -16,6 +16,7 @@ import { ReadOrganisationFieldTableComponent } from './read-organisation-field-t
 import { MarkdownComponent } from '../markdown/markdown.component';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 describe('ReadOrganisationFieldTableComponent', () => {
   let component: ReadOrganisationFieldTableComponent;
@@ -108,7 +109,8 @@ describe('ReadOrganisationFieldTableComponent', () => {
         CommonModule,
         HttpClientTestingModule,
         ReactiveFormsModule,
-        PaletteUtilsModule
+        PaletteUtilsModule,
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
       ],
       declarations: [
         CaseReferencePipe,

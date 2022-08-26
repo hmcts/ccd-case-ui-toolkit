@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DebugElement, EventEmitter } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { Subject } from 'rxjs';
 import { HttpError } from '../../domain/http';
 import { text } from '../../test/helpers';
@@ -40,6 +41,9 @@ describe('CallbackErrorsComponent', () => {
 
     TestBed
       .configureTestingModule({
+        imports: [
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+        ],
         declarations: [
           CallbackErrorsComponent
         ]

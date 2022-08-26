@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of, Subject } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -555,7 +556,8 @@ xdescribe('CaseFullAccessViewComponent', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
-          PaymentLibModule
+          PaymentLibModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -999,7 +1001,8 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
-          PaymentLibModule
+          PaymentLibModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -1085,7 +1088,8 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
-          PaymentLibModule
+          PaymentLibModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -1159,6 +1163,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }}),
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1278,6 +1283,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }}),
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1400,6 +1406,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           MatTabsModule,
           BrowserAnimationsModule,
           PaletteModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }}),
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1506,6 +1513,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }}),
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1630,6 +1638,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           BrowserAnimationsModule,
           PaletteModule,
           PaymentLibModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }}),
           RouterTestingModule.withRoutes([
             {
               path: 'cases',

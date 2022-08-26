@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseSpecificAccessSuccessComponent } from './case-specific-access-success.component';
 
 describe('CaseSpecificAccessSuccessComponent', () => {
@@ -18,6 +19,9 @@ describe('CaseSpecificAccessSuccessComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+      ],
       declarations: [ CaseSpecificAccessSuccessComponent ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }

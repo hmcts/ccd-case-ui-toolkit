@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { text } from '../../../test/helpers';
@@ -56,7 +57,9 @@ describe('ReadMultiSelectListFieldComponent', () => {
     beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+          ],
           declarations: [
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
@@ -134,7 +137,9 @@ describe('ReadMultiSelectListFieldComponent', () => {
     beforeEach(waitForAsync(() => {
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+          ],
           declarations: [
             ReadMultiSelectListFieldComponent,
             FixedListPipe,

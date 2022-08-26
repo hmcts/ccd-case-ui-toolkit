@@ -5,6 +5,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { MarkdownComponent } from '../../../components/palette/markdown/markdown.component';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 import { CaseField } from '../../../domain';
@@ -65,6 +66,7 @@ describe('CaseEditConfirmComponent', () => {
           ReactiveFormsModule,
           RouterTestingModule,
           PipesModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           CaseEditConfirmComponent,
@@ -133,7 +135,8 @@ describe('CaseEditConfirmComponent', () => {
         imports: [
           ReactiveFormsModule,
           RouterTestingModule,
-          PipesModule
+          PipesModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           CaseEditConfirmComponent,

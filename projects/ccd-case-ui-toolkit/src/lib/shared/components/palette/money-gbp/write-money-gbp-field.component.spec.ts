@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
 import { PaletteUtilsModule } from '../utils';
@@ -36,7 +37,8 @@ describe('WriteMoneyGbpFieldComponent', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           WriteMoneyGbpFieldComponent,
@@ -101,7 +103,8 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
       .configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          PaletteUtilsModule
+          PaletteUtilsModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           WriteMoneyGbpFieldComponent,

@@ -2,6 +2,7 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { Observable, of, throwError } from 'rxjs';
 import { ConditionalShowModule } from '../../directives/conditional-show/conditional-show.module';
 import { CaseType } from '../../domain/definition/case-type.model';
@@ -169,7 +170,8 @@ describe('SearchFiltersComponent', () => {
         imports: [
           FormsModule,
           ReactiveFormsModule,
-          ConditionalShowModule
+          ConditionalShowModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           SearchFiltersComponent,
@@ -560,7 +562,8 @@ describe('Clear localStorage', () => {
         imports: [
           FormsModule,
           ReactiveFormsModule,
-          ConditionalShowModule
+          ConditionalShowModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
         ],
         declarations: [
           SearchFiltersComponent,

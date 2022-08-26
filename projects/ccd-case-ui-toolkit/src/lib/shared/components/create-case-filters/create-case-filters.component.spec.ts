@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { AccessControlList } from '../../domain/definition/access-control-list.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
@@ -301,7 +302,8 @@ describe('CreateCaseFiltersComponent', () => {
       .configureTestingModule({
         imports: [
           FormsModule,
-          ReactiveFormsModule
+          ReactiveFormsModule,
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})          
         ],
         declarations: [
           CreateCaseFiltersComponent

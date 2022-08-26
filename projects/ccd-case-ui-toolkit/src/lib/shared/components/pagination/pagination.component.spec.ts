@@ -7,6 +7,7 @@ import { PaginationComponent } from './pagination.component';
 import { ComponentTestComponent, getControlsDirective, getPageLinkItems, overrideTemplate } from './testing/testing-helpers';
 
 import locale from '@angular/common/locales/de';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 registerLocaleData(locale);
 
@@ -14,6 +15,9 @@ describe('PaginationComponent:', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+      ],
       declarations: [
         PaginationControlsComponent,
         PaginationControlsDirective,

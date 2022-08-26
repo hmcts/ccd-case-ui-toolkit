@@ -1,6 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { PaletteUtilsModule } from '../utils';
 import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
@@ -40,7 +41,8 @@ describe('WriteCaseLinkFieldComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        PaletteUtilsModule
+        PaletteUtilsModule,
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
       ],
       declarations: [
         WriteCaseLinkFieldComponent,

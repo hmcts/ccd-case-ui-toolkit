@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { Activity, DisplayMode } from '../../domain/activity/activity.model';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
 import { ActivityComponent } from './activity.component';
@@ -99,7 +100,9 @@ describe('CcdActivityComponent', () => {
     activityPollingService.isEnabled = true;
     TestBed
       .configureTestingModule({
-        imports: [],
+        imports: [
+          RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 } })
+        ],
         declarations: [
           ActivityComponent,
           // Mocks

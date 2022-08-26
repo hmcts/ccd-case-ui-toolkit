@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { AlertModule } from '../../../../components/banners/alert';
 import { ChallengedAccessRequest } from '../../../domain';
@@ -32,7 +33,9 @@ describe('CaseChallengedAccessRequestComponent', () => {
     casesService = createSpyObj<CasesService>('casesService', ['createChallengedAccessRequest']);
     casesService.createChallengedAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({
-      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule.withRoutes([]) ],
+      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule.withRoutes([]),
+      RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+    ],
       declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent ],
       providers: [
         FormBuilder,

@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { Observable } from 'rxjs';
 import { AbstractAppConfig, AccessManagementRequestReviewMockModel } from '../../../../app.config';
 import { AlertModule } from '../../../../components/banners/alert';
@@ -96,7 +97,9 @@ describe('CaseSpecificAccessRequestComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [AlertModule, ReactiveFormsModule, RouterTestingModule],
+      imports: [AlertModule, ReactiveFormsModule, RouterTestingModule,
+        RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+      ],
       declarations: [
         CaseReviewSpecificAccessRequestComponent,
         ErrorMessageComponent,

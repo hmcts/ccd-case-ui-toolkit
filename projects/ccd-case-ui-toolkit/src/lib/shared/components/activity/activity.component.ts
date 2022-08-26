@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Activity, ActivityInfo, DisplayMode } from '../../domain/activity/activity.model';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
@@ -8,7 +8,7 @@ import { ActivityPollingService } from '../../services/activity/activity.polling
   templateUrl: './activity.component.html',
   styleUrls: ['./activity.component.css']
 })
-export class ActivityComponent implements OnInit, OnDestroy {
+export class ActivityComponent implements OnInit, OnDestroy, AfterContentChecked {
   public activity: Activity;
   public dspMode = DisplayMode;
 
@@ -27,7 +27,8 @@ export class ActivityComponent implements OnInit, OnDestroy {
   private readonly EDITORS_PREFIX = 'This case is being updated by ';
   private readonly EDITORS_SUFFIX = '';
 
-  constructor(private readonly activityPollingService: ActivityPollingService) {}
+  constructor(private readonly activityPollingService: ActivityPollingService,
+              private readonly ref: ChangeDetectorRef) {}
 
   public ngOnInit() {
     this.activity = new Activity();
@@ -51,6 +52,10 @@ export class ActivityComponent implements OnInit, OnDestroy {
       this.EDITORS_SUFFIX,
       this.activity.editors,
       this.activity.unknownEditors);
+  }
+
+  public ngAfterContentChecked(): void {
+    this.ref.detectChanges();
   }
 
   public isActivityEnabled() {

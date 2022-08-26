@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { CaseView, CaseViewEvent, HttpError } from '../../domain';
 import { AlertService } from '../../services';
@@ -105,7 +106,9 @@ describe('CaseTimelineComponent', () => {
 
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})            
+          ],
           declarations: [
             CaseTimelineComponent,
 
@@ -154,7 +157,8 @@ describe('CaseTimelineComponent', () => {
       fixture.detectChanges();
 
       const link = de.query($BACK_TO_TIMELINE_LINK);
-      expect(link.nativeElement.textContent).toBe('Back to case timeline');
+      console.log(link.nativeElement.textContent);
+      expect(link.nativeElement.textContent).toBe(' Back to case timeline ');
 
       const caseHistoryDe = de.query(By.directive(CaseHistoryComponent));
       expect(caseHistoryDe).toBeDefined();
@@ -204,7 +208,9 @@ describe('CaseTimelineComponent', () => {
 
       TestBed
         .configureTestingModule({
-          imports: [],
+          imports: [
+            RpxTranslationModule.forRoot({ baseUrl: '', debounceTimeMs: 300, testMode: true, validity: { days: 1 }})
+          ],
           declarations: [
             CaseTimelineComponent,
 
