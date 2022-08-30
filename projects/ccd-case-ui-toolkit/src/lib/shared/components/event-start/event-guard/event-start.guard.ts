@@ -17,11 +17,9 @@ export class EventStartGuard implements CanActivate {
   }
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    // Checks must be performed only for Work Allocation 2
-    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation2') {
-      const caseId = route.params['cid'];
-      const eventId = route.params['eid'];
-      const taskId = route.queryParams['tid'];
+    const caseId = route.params['cid'];
+    const eventId = route.params['eid'];
+    const taskId = route.queryParams['tid'];
 
       // TODO: NavigationExtras should be used once Angular upgrade changes have been incorporated
       const isComplete = route.queryParams['isComplete'];
@@ -42,7 +40,10 @@ export class EventStartGuard implements CanActivate {
       // Checks not required, return true by default for Work Allocation 1
       return of(true);
     }
-  }
+        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction).pipe(
+          switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
+        );
+      }
 
   public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string): boolean {
     if (!payload || !payload.tasks) {
