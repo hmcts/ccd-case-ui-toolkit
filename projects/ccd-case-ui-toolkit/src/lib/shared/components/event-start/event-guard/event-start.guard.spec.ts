@@ -9,7 +9,8 @@ import { EventStartGuard } from './event-start.guard';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('EventStartGuard', () => {
-  const WORK_ALLOCATION_API_URL = 'workallocation2';
+  const WORK_ALLOCATION_1_API_URL = 'workallocation'; 
+  const WORK_ALLOCATION_2_API_URL = 'workallocation2';
   const tasks: any[] = [
     {
       assignee: null,
@@ -113,21 +114,21 @@ describe('EventStartGuard', () => {
 
     it('should return true if there are no tasks in the payload', () => {
       const mockEmptyPayload: TaskPayload = { task_required_for_event: false, tasks: [] };
-      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, cId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, cId, '')).toBe(true);
     });
 
     it('should return true if there are no tasks assigned to the user', () => {
       tasks[0].assignee = '2x2';
       const mockPayload: TaskPayload = { task_required_for_event: false, tasks: [tasks[0]] };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, '')).toBe(true);
     });
 
     it('should return true and navigate to event trigger if one task is assigned to user', () => {
       tasks[0].assignee = '1';
       const mockPayload: TaskPayload = { task_required_for_event: false, tasks: [tasks[0]] };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, null)).toBe(true);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, '')).toBe(true);
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('taskToComplete', JSON.stringify(tasks[0]));
     });
 
@@ -136,7 +137,7 @@ describe('EventStartGuard', () => {
       tasks.push(tasks[0]);
       const mockPayload: TaskPayload = { task_required_for_event: false, tasks };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
-      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, null)).toBe(false);
+      expect(guard.checkTaskInEventNotRequired(mockPayload, cId, '')).toBe(false);
       expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${cId}/multiple-tasks-exist`]);
     });
 
