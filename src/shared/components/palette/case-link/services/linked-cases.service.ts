@@ -17,6 +17,7 @@ export class LinkedCasesService {
   public editMode = false;
   public jurisdictionsResponse: Jurisdiction[] = [];
   public serverJurisdictionError: boolean;
+  public isServerReasonCodeError: boolean;
 
   constructor(private readonly jurisdictionService: JurisdictionService) {
     this.jurisdictionService.getJurisdictions().subscribe((jurisdictions) => {

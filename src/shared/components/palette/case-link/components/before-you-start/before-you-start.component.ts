@@ -21,6 +21,10 @@ export class BeforeYouStartComponent {
     private readonly linkedCasesService: LinkedCasesService,
   ) {
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
+    // re-initiate the state based on the casefield value
+    const linkedCaseRefereneIds = this.linkedCasesService.caseFieldValue.filter(item => item).map(item => item.id);
+    this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter(item => linkedCaseRefereneIds.indexOf(item.caseReference) != -1);
+    this.linkedCasesService.initialCaseLinks = this.linkedCasesService.linkedCases;
   }
 
   public onNext(): void {

@@ -50,18 +50,19 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public ngOnInit(): void {
-    this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
-    this.linkedCasesService.editMode = false;
-    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
-    this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
-      next: reasons => {
-        this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
+      this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
+      this.linkedCasesService.editMode = false;
+      const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+      this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
+        next: reasons => {
+          this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
+        }
+      })
+      if (!this.linkedCasesService.editMode) {
+        this.getLinkedCases();
       }
-    })
-    // Get linked cases
-    this.getLinkedCases();
-    this.linkedCasesService.isLinkedCasesEventTrigger =
-            this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
+      this.linkedCasesService.isLinkedCasesEventTrigger =
+      this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
   }
 
   public ngAfterViewInit(): void {
@@ -120,7 +121,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       // update form value
       this.onLinkedCasesSelected.emit();
       (this.caseEdit.form.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue)});
-    }
+    } 
   }
 
   public isAtFinalPage(): boolean {
@@ -139,7 +140,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   public getLinkedCases(): void {
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
-        const linkedCases: CaseLink[] = this.linkedCasesService.linkedCases;
+        const linkedCases: CaseLink[] = this.linkedCasesService.caseFieldValue;
       // Initialise the first page to display
         this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger || (linkedCases && linkedCases.length > 0)
           ? LinkedCasesPages.BEFORE_YOU_START
