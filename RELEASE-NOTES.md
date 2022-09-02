@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.18.15-hearings
+### Version 4.19.0-hearings
 **EUI-5912** Hearing tab is not loading
 
 ### Version 4.12.1-EUI-5682-complex-table-collection-1
