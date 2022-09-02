@@ -45,14 +45,16 @@ export class SearchService {
                 metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: {column: string, order: number}): Observable<{}> {
     const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;
 
-    let options: OptionsType = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     const body: {} = {
       sort,
-      size: this.appConfig.getPaginationPageSize()
+      size: this.appConfig.getPaginationPageSize(),
+      metaCriteria,
+      caseCriteria,
+      view
     };
     const loadingToken = this.loadingService.register();
     return this.httpService
-      .post(url, body, options)
+      .post(url, body, null)
       .pipe(
         map(response => response),
         finalize(() => this.loadingService.unregister(loadingToken))
