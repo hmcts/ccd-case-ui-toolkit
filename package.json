@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.15-angular11-upgrade",
+  "version": "5.0.16-angular11-upgrade",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
@@ -200,9 +200,6 @@
     "hosted-git-info": "^3.0.8",
     "normalize-url": "^6.0.1",
     "trim-newlines": "^3.0.1"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "nyc": {
     "include": [
