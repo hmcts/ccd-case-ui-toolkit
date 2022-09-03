@@ -51,6 +51,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   public ngOnInit(): void {
       this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
+      this.linkedCasesService.caseDetails = this.caseEdit.caseDetails;
       this.linkedCasesService.editMode = false;
       const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
       this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
@@ -58,9 +59,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
           this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
         }
       })
-      if (!this.linkedCasesService.editMode) {
-        this.getLinkedCases();
-      }
+      this.getLinkedCases();
       this.linkedCasesService.isLinkedCasesEventTrigger =
       this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
   }
@@ -121,7 +120,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       // update form value
       this.onLinkedCasesSelected.emit();
       (this.caseEdit.form.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue)});
-    } 
+    }
   }
 
   public isAtFinalPage(): boolean {
@@ -140,9 +139,18 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   public getLinkedCases(): void {
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
-        const linkedCases: CaseLink[] = this.linkedCasesService.caseFieldValue;
-      // Initialise the first page to display
-        this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger || (linkedCases && linkedCases.length > 0)
+      let caseViewFiltered = caseView.tabs.filter(val => {
+        let linkField = val.fields.some(({field_type}) => field_type.collection_field_type.id === 'CaseLink')
+        return linkField
+      })
+      if (caseViewFiltered) {
+        const caseLinkFieldValue = caseViewFiltered.map(filtered => filtered.fields.length && filtered.fields[0].value)
+        this.linkedCasesService.caseFieldValue = caseLinkFieldValue[0] && caseLinkFieldValue[0];
+        this.linkedCasesService.getAllLinkedCaseInformation();
+      }
+        // Initialise the first page to display
+        this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger ||
+                          (this.linkedCasesService.caseFieldValue && this.linkedCasesService.caseFieldValue.length > 0)
           ? LinkedCasesPages.BEFORE_YOU_START
           : LinkedCasesPages.NO_LINKED_CASES;
         // Initialise the error to be displayed when clicked on Continue button

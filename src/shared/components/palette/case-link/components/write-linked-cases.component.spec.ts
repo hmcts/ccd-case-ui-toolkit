@@ -95,6 +95,11 @@ describe('WriteLinkedCasesComponent', () => {
         id: 'linked_cases_sscs',
         fields: [
           {
+            field_type: {
+              collection_field_type: {
+                id: 'CaseLink'
+              }
+            },
             value: [
               {
                 caseReference: '1652112127295261',
@@ -163,7 +168,8 @@ describe('WriteLinkedCasesComponent', () => {
 
   linkedCasesService = {
     caseId: '1682374819203471',
-    linkedCases: linkedCases
+    linkedCases: linkedCases,
+    getAllLinkedCaseInformation() {}
   };
 
   const linkCaseReasons: LovRefDataByServiceModel = {

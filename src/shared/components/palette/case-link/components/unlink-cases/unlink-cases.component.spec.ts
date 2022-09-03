@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { PipesModule } from '../../../../../pipes';
-import { CasesService } from '../../../../case-editor';
+import { CaseEditComponent, CasesService } from '../../../../case-editor';
 import { CaseLink } from '../../domain/linked-cases.model';
 import { LinkedCasesService } from '../../services';
 import { UnLinkCasesComponent } from './unlink-cases.component';
@@ -16,6 +16,7 @@ describe('UnLinkCasesComponent', () => {
   let casesService: any;
   let linkedCasesService: any;
   let nativeElement: any;
+  let caseEditComponentStub: any;
 
   const caseInfo = {
     case_id: '1682374819203471',
@@ -97,10 +98,31 @@ describe('UnLinkCasesComponent', () => {
 
   linkedCasesService = {
     caseId: '1682374819203471',
-    linkedCases: linkedCases
+    linkedCases: linkedCases,
+    getAllLinkedCaseInformation() {},
+    caseFieldValue: [],
   };
 
   beforeEach(async(() => {
+    const FORM_GROUP = new FormGroup({
+      'data': new FormGroup({'caseLinks': new FormControl('SOME_VALUE')})
+    });
+    caseEditComponentStub = {
+      'form': FORM_GROUP,
+      'data': '',
+      'eventTrigger': {'case_fields': []},
+      'hasPrevious': () => true,
+      'getPage': () => null,
+      'confirmation': {
+        'getCaseId': () => 'case1',
+        'getStatus': () => 'status1',
+        'getHeader': () => 'Header',
+        'getBody': () => 'A body with mark down'
+      },
+      'caseDetails': {'case_id': '1234567812345678', 'tabs': [{id: 'tab1', label: 'tabLabel1',
+        fields: []}], 'metadataFields': [],
+        'state': {'id': '1', 'name': 'Incomplete Application', 'title_display': '# 1234567812345678: test'}},
+    };
     casesService = createSpyObj('CasesService', ['getCaseViewV2']);
     TestBed.configureTestingModule({
       imports: [
@@ -113,7 +135,8 @@ describe('UnLinkCasesComponent', () => {
       declarations: [UnLinkCasesComponent],
       providers: [
         { provide: CasesService, useValue: casesService },
-        { provide: LinkedCasesService, useValue: linkedCasesService }
+        { provide: LinkedCasesService, useValue: linkedCasesService },
+        { provide: CaseEditComponent, useValue: caseEditComponentStub },
       ]
     })
     .compileComponents();

@@ -13,6 +13,8 @@ describe('BeforeYouStartComponent', () => {
   const linkedCasesService = {
     caseId: '1682374819203471',
     isLinkedCasesEventTrigger: false,
+    caseFieldValue: [],
+    linkedCases: []
   };
 
   beforeEach(async(() => {

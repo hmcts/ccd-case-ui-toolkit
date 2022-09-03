@@ -2,7 +2,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AbstractAppConfig } from '../../../../../../app.config';
 import { PipesModule } from '../../../../../pipes';
+import { AuthService, HttpErrorService, HttpService, LoadingService, RequestOptionsBuilder, SearchService } from '../../../../../services';
 import { CaseLink } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { JurisdictionService } from '../../services/jurisdiction.service';
@@ -98,9 +100,8 @@ describe('CheckYourAnswersComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CheckYourAnswersComponent],
-      providers: [LinkedCasesService,
-                  JurisdictionService,
-      ]
+      providers: [LinkedCasesService, JurisdictionService, SearchService, AbstractAppConfig,
+                  HttpService, HttpErrorService, AuthService, RequestOptionsBuilder, LoadingService]
     })
     .compileComponents();
   }));

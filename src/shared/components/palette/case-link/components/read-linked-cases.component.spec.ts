@@ -366,7 +366,8 @@ describe('ReadLinkedCases', () => {
 
   linkedCasesService = {
     caseId: '1682374819203471',
-    linkedCases: linkedCases
+    linkedCases: linkedCases,
+    getAllLinkedCaseInformation() {}
   };
 
   beforeEach(async(() => {
