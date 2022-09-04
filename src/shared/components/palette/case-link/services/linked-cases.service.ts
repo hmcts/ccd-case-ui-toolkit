@@ -81,9 +81,11 @@ export class LinkedCasesService {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
         const casesResponse = [];
         searchCases.forEach(response => {
-          response.results.forEach((result: any) =>
-            casesResponse.push(this.mapResponse(result)));
+          response.results.forEach((result: any) => {
+            casesResponse.push(this.mapResponse(result));
+          });
         });
+
         const caseLinks = casesResponse.map(item => {
           return {
             caseReference: item.caseReference,
