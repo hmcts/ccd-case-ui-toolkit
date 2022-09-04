@@ -140,7 +140,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public getLinkedCases(): void {
     console.log('getlnked')
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
-     
       let caseViewFiltered = caseView.tabs.filter(val => {
         let linkField = val.fields.some(({field_type}) => field_type.collection_field_type.id === 'CaseLink')
         return linkField

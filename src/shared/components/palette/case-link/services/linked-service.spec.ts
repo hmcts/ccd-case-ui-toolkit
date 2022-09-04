@@ -1,10 +1,10 @@
-import { TestBed } from "@angular/core/testing";
-import { of } from "rxjs";
-import { Jurisdiction } from "../../../../domain";
-import { SearchService } from "../../../../services";
-import { CASE_VIEW_DATA, mockSearchByCaseIdsResponse } from "../components/__mocks__";
-import { JurisdictionService } from "./jurisdiction.service";
-import { LinkedCasesService } from "./linked-cases.service";
+import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { Jurisdiction } from '../../../../domain';
+import { SearchService } from '../../../../services';
+import { CASE_VIEW_DATA, mockSearchByCaseIdsResponse } from '../components/__mocks__';
+import { JurisdictionService } from './jurisdiction.service';
+import { LinkedCasesService } from './linked-cases.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('LinkedCasesService', () => {
