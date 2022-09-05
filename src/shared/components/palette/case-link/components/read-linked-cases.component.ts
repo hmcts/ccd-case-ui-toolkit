@@ -40,6 +40,7 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
       },
       error: error => {
         this.isServerReasonCodeError = true;
+        this.linkedCasesService.isServerReasonCodeError = true;
       }
     });
     this.serverLinkedApiError = {

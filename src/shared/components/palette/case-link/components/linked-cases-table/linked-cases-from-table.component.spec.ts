@@ -45,6 +45,7 @@ describe('LinkCasesFromTableComponent', () => {
   linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases: linkedCases,
+    getAllLinkedCaseInformation() {},
     jurisdictionsResponse: [
       {
         id: 'SSCS',

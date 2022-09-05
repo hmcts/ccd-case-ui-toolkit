@@ -33,6 +33,7 @@ describe('LinkCasesToTableComponent', () => {
   linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases: mocklinkedCases,
+    getAllLinkedCaseInformation() {},
     jurisdictionsResponse: [
       {
         id: 'SSCS',

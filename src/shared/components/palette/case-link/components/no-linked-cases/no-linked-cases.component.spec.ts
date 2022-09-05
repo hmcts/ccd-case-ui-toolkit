@@ -19,7 +19,8 @@ describe('NoLinkedCasesComponent', () => {
   router.navigate.and.returnValue({then: f => f()});
 
   linkedCasesService = {
-    caseId: '1682374819203471'
+    caseId: '1682374819203471',
+    getAllLinkedCaseInformation() {}
   };
 
   beforeEach(async(() => {

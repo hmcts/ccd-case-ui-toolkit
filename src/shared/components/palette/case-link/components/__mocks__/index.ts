@@ -1,3 +1,4 @@
+import { CaseView } from '../../../../../domain';
 import { LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
 import { CaseLink } from '../../domain';
 
@@ -126,4 +127,23 @@ export const mockCaseLinkingReasonCode: LovRefDataByServiceModel = {
       child_nodes: null,
     },
   ],
+};
+
+export const CASE_VIEW_DATA: CaseView = {
+  case_id: '11',
+  case_type: {
+    id: 'Benefit_Xui',
+    name: 'Benefit_Xui',
+    description: 'some case_type description',
+    jurisdiction: {
+      id: 'JURI_1',
+      name: 'TEST',
+      description: 'some jurisdiction description'
+    }
+  },
+  state: null,
+  channels: [],
+  tabs: [],
+  triggers: [],
+  events: []
 };

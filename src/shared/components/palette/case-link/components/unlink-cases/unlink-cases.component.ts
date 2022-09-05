@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { CaseView, ErrorMessage } from '../../../../../domain';
+import { CaseEditComponent } from '../../../../case-editor/case-edit';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLink, LinkedCasesState } from '../../domain';
 import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
@@ -23,7 +24,8 @@ export class UnLinkCasesComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public unlinkErrorMessage: string;
 
-  constructor(private readonly fb: FormBuilder,
+  constructor(private caseEdit: CaseEditComponent,
+    private readonly fb: FormBuilder,
     private readonly casesService: CasesService,
     private readonly linkedCasesService: LinkedCasesService) {
   }
@@ -91,6 +93,10 @@ export class UnLinkCasesComponent implements OnInit {
       this.unlinkErrorMessage = LinkedCasesErrorMessages.UnlinkCaseSelectionError;
       navigateToNextPage = false;
     }
+    const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
+    const updatedLinkedCases = this.linkedCasesService.caseFieldValue.filter
+                              (item => unlinkedCaseRefereneIds.indexOf(item.value.CaseReference) === -1);
+    (this.caseEdit.form.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(updatedLinkedCases || [])});
     // Return linked cases state and error messages to the parent
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.UNLINK_CASE,
