@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.18.14-payment-status",
+  "version": "4.18.14-payment-status.2",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
@@ -78,7 +78,7 @@
     "@angular/core": "~7.0.3",
     "@angular/forms": "~7.0.3",
     "@angular/router": "~7.0.3",
-    "@hmcts/ccpay-web-component": "^5.0.7",
+    "@hmcts/ccpay-web-component": "^5.0.7-beta16",
     "local-storage": "^2.0.0"
   },
   "devDependencies": {
