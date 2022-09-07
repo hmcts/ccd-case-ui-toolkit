@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import type { ConditionalShowFormDirective } from '../conditional-show-form.directive';
+import { ConditionalShowFormDirective } from '../conditional-show-form.directive';
 
 @Injectable()
 export class ConditionalShowRegistrarService {
