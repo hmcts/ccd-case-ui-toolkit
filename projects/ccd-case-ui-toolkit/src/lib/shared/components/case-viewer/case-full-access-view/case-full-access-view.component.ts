@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
-import { Component, Input, NgZone, OnDestroy, OnInit, OnChanges, ViewChild,
-  ViewContainerRef, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
+  SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
@@ -77,13 +77,13 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
     private readonly errorNotifierService: ErrorNotifierService,
-    private convertHrefToRouterService: ConvertHrefToRouterService,
+    private readonly convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location,
     private readonly crf: ChangeDetectorRef
   ) {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges) {
     if (!changes.prependedTabs.firstChange) {
       this.init();
       this.crf.detectChanges();
@@ -91,8 +91,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
-  ngOnInit() {
-    initDialog(this.dialogConfig);
+  public ngOnInit() {
+    initDialog();
 
     this.init();
 
@@ -119,7 +119,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     return this.caseDetails.case_type.printEnabled;
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.activityPollingService.isEnabled) {
       this.unsubscribe(this.activitySubscription);
     }
