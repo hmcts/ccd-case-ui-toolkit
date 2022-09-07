@@ -10,7 +10,6 @@ import { LinkedCasesService } from '../../services/linked-cases.service';
   templateUrl: './before-you-start.component.html'
 })
 export class BeforeYouStartComponent {
-  public hasAnyAPIFailure = false;
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
@@ -22,7 +21,6 @@ export class BeforeYouStartComponent {
   constructor(private readonly router: Router, private readonly linkedCasesService: LinkedCasesService) {
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
     // re-initiate the state based on the casefield value
-    this.hasAnyAPIFailure = this.linkedCasesService && this.linkedCasesService.serverLinkedApiError != null;
     const linkedCaseRefereneIds = this.linkedCasesService.caseFieldValue.filter(item => item).map(item => item.id);
     this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter
                                       (item => linkedCaseRefereneIds.indexOf(item.caseReference) !== -1);
