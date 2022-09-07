@@ -1596,7 +1596,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   }));
 
   it('should display overview tab by default', () => {
-
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     componentFixture.detectChanges();
     const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
@@ -1626,6 +1625,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
 
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -1728,6 +1728,5 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
       expect(convertHrefToRouterService.callAngularRouter).not.toHaveBeenCalled();
       done();
     });
-
   });
 });
