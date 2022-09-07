@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of, Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -1625,14 +1625,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect((tasksTab1.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Roles and access');
     const tasksTab2: HTMLElement = matTabHTMLElement.children[2] as HTMLElement;
     expect((tasksTab2.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Overview');
-    const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
-<<<<<<< HEAD:projects/ccd-case-ui-toolkit/src/lib/shared/components/case-viewer/case-full-access-view/case-full-access-view.component.spec.ts
-    expect((tasksTab3.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Case notes');
-=======
-    expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
-    const tasksTab4: HTMLElement = matTabHTMLElement.children[4] as HTMLElement;
-    expect((<HTMLElement>tasksTab4.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
->>>>>>> Release:src/shared/components/case-viewer/case-full-access-view/case-full-access-view.component.spec.ts
   });
 
   it('should add prepended & appended tabs to the existing tab list', () => {
@@ -1705,9 +1697,9 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
-    alertService.success.and.returnValue(Observable.of({}));
-    alertService.warning.and.returnValue(Observable.of({}));
+    alertService.setPreserveAlerts.and.returnValue(of({}));
+    alertService.success.and.returnValue(of({}));
+    alertService.warning.and.returnValue(of({}));
 
     TestBed
       .configureTestingModule({
@@ -1814,12 +1806,12 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
   });
 
   it('should clear errors and warnings', () => {
-    let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
     componentFixture.detectChanges();
     caseViewerComponent.clearErrorsAndWarnings();
-    let error = de.query($ERROR_SUMMARY);
+    const error = de.query($ERROR_SUMMARY);
     expect(error).toBeFalsy();
     expect(caseViewerComponent.error).toBeFalsy();
     expect(caseViewerComponent.ignoreWarning).toBeFalsy();
