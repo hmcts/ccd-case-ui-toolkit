@@ -87,8 +87,8 @@ describe('FieldWriteComponent', () => {
   });
 
   it('should get field write class from PaletteService to be call with case file and writeMode params', () => {
-    const writeMode = false;
-    expect(paletteService.getFieldComponentClass).toHaveBeenCalledWith(CASE_FIELD, writeMode);
+    component.caseField.display_context === 'OPTIONAL'
+    expect(paletteService.getFieldComponentClass).toHaveBeenCalledWith(CASE_FIELD, true);
   })
 
   it('should inject component instance as child', () => {
