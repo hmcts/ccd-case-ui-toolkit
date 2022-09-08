@@ -1,7 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LinkedCasesPages } from '../../enums';
+import { JurisdictionService } from '../../services/jurisdiction.service';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { BeforeYouStartComponent } from './before-you-start.component';
 
@@ -14,7 +17,14 @@ describe('BeforeYouStartComponent', () => {
     caseId: '1682374819203471',
     isLinkedCasesEventTrigger: false,
     caseFieldValue: [],
-    linkedCases: []
+    linkedCases: [],
+    serverLinkedApiError: null,
+  };
+
+  let mockRouter: any;
+  mockRouter = {
+    navigate: jasmine.createSpy('navigate'),
+    url: ''
   };
 
   beforeEach(async(() => {
@@ -24,6 +34,8 @@ describe('BeforeYouStartComponent', () => {
       declarations: [BeforeYouStartComponent],
       providers: [
         { provide: LinkedCasesService, useValue: linkedCasesService },
+        { provide: Router, useValue: mockRouter },
+
       ]
     })
     .compileComponents();
@@ -33,7 +45,6 @@ describe('BeforeYouStartComponent', () => {
     fixture = TestBed.createComponent(BeforeYouStartComponent);
     component = fixture.componentInstance;
     spyOn(component.linkedCasesStateEmitter, 'emit');
-    nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     fixture.detectChanges();
   });
 
@@ -42,10 +53,9 @@ describe('BeforeYouStartComponent', () => {
   });
 
   it('should next event emit linked cases state with no error', () => {
-    nextButton.click();
     fixture.detectChanges();
-    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
-    expect(errorMessageElement).toBeNull();
+    const buttonElem = fixture.debugElement.query(By.css('.button-primary')); // change selector here
+    buttonElem.triggerEventHandler('click', null);
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
       { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: undefined, navigateToNextPage: true });
   });

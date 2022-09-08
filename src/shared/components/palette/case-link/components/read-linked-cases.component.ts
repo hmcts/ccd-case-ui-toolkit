@@ -68,9 +68,8 @@ export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
   }
 
   public reloadCurrentRoute() {
-    let currentUrl = this.router.url;
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.router.navigate([currentUrl]);
+    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseDetails.case_id]).then(() => {
+      window.location.hash = 'Linked cases';
     });
   }
 

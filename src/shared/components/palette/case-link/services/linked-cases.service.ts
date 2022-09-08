@@ -101,7 +101,14 @@ export class LinkedCasesService {
           } as CaseLink
         });
         this.linkedCases = caseLinks;
-      })
+        this.serverLinkedApiError = null;
+      },
+      err => {
+        this.serverLinkedApiError = {
+          id: 'backendError', message: 'Some case information is not available at the moment'
+        }
+      }
+    )
     }
   }
 

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { ErrorMessage } from '../../../../../domain';
 import { LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
@@ -17,9 +18,7 @@ export class BeforeYouStartComponent {
 
   public errorMessages: ErrorMessage[];
 
-  constructor(
-    private readonly linkedCasesService: LinkedCasesService,
-  ) {
+  constructor(private readonly router: Router, private readonly linkedCasesService: LinkedCasesService) {
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
     // re-initiate the state based on the casefield value
     const linkedCaseRefereneIds = this.linkedCasesService.caseFieldValue.filter(item => item).map(item => item.id);
@@ -33,6 +32,12 @@ export class BeforeYouStartComponent {
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
       errorMessages: this.errorMessages,
       navigateToNextPage: true
+    });
+  }
+
+  public onBack(): void {
+    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseId]).then(() => {
+      window.location.hash = 'Linked cases';
     });
   }
 }
