@@ -35,11 +35,11 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   }
 
   ngOnInit(): void {
-    let writeMode = !(this.caseField.display_context === 'READONLY')
-    let componentClass = this.paletteService.getFieldComponentClass(this.caseField, writeMode);
+    const writeMode = !(this.caseField.display_context === 'READONLY')
+    const componentClass = this.paletteService.getFieldComponentClass(this.caseField, writeMode);
 
-    let injector = Injector.create([], this.fieldContainer.parentInjector);
-    let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+    const injector = Injector.create([], this.fieldContainer.parentInjector);
+    const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Only Fixed list use plainToClassFromExist
     // Better performance
