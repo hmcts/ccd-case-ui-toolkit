@@ -59,7 +59,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
           this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
         }
       })
-      this.getLinkedCases(); 
+      this.getLinkedCases();
       this.linkedCasesService.isLinkedCasesEventTrigger =
       this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
   }
