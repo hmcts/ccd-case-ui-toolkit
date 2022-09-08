@@ -70,6 +70,10 @@ export class LinkedCasesService {
   }
 
   public getAllLinkedCaseInformation() {
+    if (this.isLinkedCasesEventTrigger) {
+      return;
+    }
+    
     const searchCasesResponse = [];
     const linkedCaseIds = this.groupLinkedCasesByCaseType(this.caseFieldValue, 'CaseType');
     Object.keys(linkedCaseIds).forEach(key => {

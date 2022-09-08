@@ -1,8 +1,8 @@
 <div>
-  <div *ngIf="linkedCasesService.serverLinkedApiError">
+  <div *ngIf="linkedService.serverLinkedApiError">
     <h1 class="govuk-heading-xl">There is a problem</h1>
-    <p id="unlink-cases-error" class="govuk-error-message" *ngIf="linkedCasesService.serverLinkedApiError">
-      <span class="govuk-visually-hidden">Error:</span> {{linkedCasesService.serverLinkedApiError.message}}
+    <p id="unlink-cases-error" class="govuk-error-message" *ngIf="linkedService.serverLinkedApiError">
+      <span class="govuk-visually-hidden">Error:</span> {{linkedService.serverLinkedApiError.message}}
     </p>
     <p class="govuk-body">
       <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">Go back to the Linked cases tab</a>
@@ -10,7 +10,7 @@
     <button class="button button-primary" type="button" id="next-button" (click)="onNext()">Next</button>
 
   </div>
-  <div *ngIf="!linkedCasesService || !linkedCasesService.serverLinkedApiError">
+  <div *ngIf="!linkedService.serverLinkedApiError">
     <h1 class="govuk-heading-xl">Before you start</h1>
     <div id="link-cases-journey" *ngIf="isLinkCasesJourney">
       <p class="govuk-body">If a group of linked cases has a lead case, you must start from the lead case.</p>

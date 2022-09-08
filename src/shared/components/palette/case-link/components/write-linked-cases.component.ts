@@ -59,7 +59,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
           this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
         }
       })
-      this.getLinkedCases();
+      this.getLinkedCases(); 
       this.linkedCasesService.isLinkedCasesEventTrigger =
       this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
   }
@@ -150,8 +150,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       }
         // Initialise the first page to display
         this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger ||
-                          (this.linkedCasesService.caseFieldValue && this.linkedCasesService.caseFieldValue.length > 0
-                            && !this.linkedCasesService.serverLinkedApiError)
+                          (this.linkedCasesService.caseFieldValue && this.linkedCasesService.caseFieldValue.length > 0)
           ? LinkedCasesPages.BEFORE_YOU_START
           : LinkedCasesPages.NO_LINKED_CASES;
         // Initialise the error to be displayed when clicked on Continue button
