@@ -14,9 +14,18 @@ describe('CaseField', () => {
   }));
 
   it('should be able to retrive right values from the accessors menthods when FieldType is DynamicLists', () => {
-
     let fieldType: FieldType = new FieldType();
     fieldType.type = 'DynamicList'
+    component.field_type = fieldType;
+    expect(component.value).toBeUndefined();
+    expect(component.list_items).toEqual([]);
+    component.value = 'Ali'
+    expect(component.value).toBe(null);
+  });
+
+  it('should be able to retrive right values from the accessors menthods when FieldType is DynamicMultiSelectList', () => {
+    let fieldType: FieldType = new FieldType();
+    fieldType.type = 'DynamicMultiSelectList'
     component.field_type = fieldType;
     expect(component.value).toBeUndefined();
     expect(component.list_items).toEqual([]);
