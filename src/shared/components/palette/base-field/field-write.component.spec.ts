@@ -87,7 +87,7 @@ describe('FieldWriteComponent', () => {
   });
 
   it('should get field write class from PaletteService to be call with case file and writeMode params', () => {
-    component.caseField.display_context === 'OPTIONAL';
+    component.caseField.display_context = 'OPTIONAL';
     expect(paletteService.getFieldComponentClass).toHaveBeenCalledWith(CASE_FIELD, true);
   });
 

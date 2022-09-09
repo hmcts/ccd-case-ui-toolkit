@@ -34,7 +34,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     FormValidatorsService.addValidators(caseField, control);
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const writeMode = this.caseField.display_context !== 'READONLY';
     const componentClass = this.paletteService.getFieldComponentClass(this.caseField, writeMode);
 
