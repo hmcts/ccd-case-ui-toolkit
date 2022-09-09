@@ -9,7 +9,7 @@ import { LinkedCasesService } from '../../services/linked-cases.service';
 export class NoLinkedCasesComponent {
 
   constructor(private readonly router: Router,
-    private readonly linkedCasesService: LinkedCasesService) {
+    public linkedCasesService: LinkedCasesService) {
   }
 
   public onBack(): void {
