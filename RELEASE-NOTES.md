@@ -3,6 +3,9 @@
 ### Version 4.18.16-EUI-2831-dynamic-multiselect-1
 **EUI-2831** Dynamic multi-select list
 
+### Version 4.18.16-EUI-6309-mandatory-field-issue
+**EUI-6309* mandatory-field-issue
+
 ### Version 4.12.1-EUI-5225-organisation-search
 **EUI-5225** Bug fix the organisation search functionality
 
