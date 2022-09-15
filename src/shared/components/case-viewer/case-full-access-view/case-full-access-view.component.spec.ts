@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -1617,6 +1617,8 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
   let convertHrefToRouterService;
+  let subscribeSpy: jasmine.Spy;
+  let subscriptionMock: Subscription = new Subscription();
 
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
@@ -1624,6 +1626,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
 
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
+    subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
     TestBed
       .configureTestingModule({
@@ -1727,5 +1730,16 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
       expect(convertHrefToRouterService.callAngularRouter).not.toHaveBeenCalled();
       done();
     });
+  });
+
+  it('should unsubscribe', () => {
+    caseViewerComponent.unsubscribe(subscriptionMock);
+    expect(subscribeSpy).toHaveBeenCalled();
+  });
+
+  it('should not unsubscribe', () => {
+    subscriptionMock = null;
+    caseViewerComponent.unsubscribe(subscriptionMock);
+    expect(subscribeSpy).not.toHaveBeenCalled();
   });
 });
