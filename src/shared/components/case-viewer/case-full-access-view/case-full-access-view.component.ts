@@ -211,9 +211,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       // lastPath can be /caseId, or the tabs /tasks, /hearings etc.
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
       let foundTab: CaseTab = null;
-      if (!this.prependedTabs) {
-        this.prependedTabs = [];
-      }
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
         foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
