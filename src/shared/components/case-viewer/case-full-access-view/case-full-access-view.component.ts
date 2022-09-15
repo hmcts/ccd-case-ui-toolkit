@@ -8,9 +8,8 @@ import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
-import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { ShowCondition } from '../../../directives';
-import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM, } from '../../../domain';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
 import {
   ActivityPollingService,
   AlertService,
@@ -18,11 +17,12 @@ import {
   ErrorNotifierService,
   NavigationNotifierService,
   NavigationOrigin,
-  OrderService,
+  OrderService
 } from '../../../services';
+import { ConvertHrefToRouterService } from '../../case-editor/services';
+import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
-import { ConvertHrefToRouterService } from '../../case-editor/services';
 
 @Component({
   selector: 'ccd-case-full-access-view',
