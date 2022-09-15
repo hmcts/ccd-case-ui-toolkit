@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 4.19.3-hearings
+**EUI-5912** Hearing tab is not loading
+
+### Version 4.12.1-EUI-5682-complex-table-collection-1
+**EUI-5682** Bug fix for the complex collection table view
 
 ### Version 4.12.1-EUI-5225-organisation-search
 **EUI-5225** Bug fix the organisation search functionality
@@ -12,7 +17,6 @@
 
 ### Version 4.17.6-EUI-5736-unassigned-cases-pagination
 **EUI-5736** unassigned cases pagination
-
 
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
@@ -33,7 +37,6 @@ Add refunds functionality
 
 ### Version 4.13.8-event-start-task-not-required"
 **EUI-5569** Task not required for event functionality
-
 
 ### Version 4.12.16-task-event-completion"
 **Task event completion and state machine** Task event completion and state machine
