@@ -1,6 +1,10 @@
 ## RELEASE NOTES
 
-### Version 4.18.0-EUI-5696-upload-error-fix
+### Version 4.18.16-EUI-5696-upload-error-fix
+**EUI-5696** Bug fix for document upload
+
+### Version 4.18.16-EUI-6309-mandatory-field-issue
+**EUI-6309* mandatory-field-issue
 
 ### Version 4.12.1-EUI-5225-organisation-search
 **EUI-5225** Bug fix the organisation search functionality
