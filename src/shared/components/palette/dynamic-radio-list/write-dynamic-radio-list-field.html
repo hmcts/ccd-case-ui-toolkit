@@ -1,7 +1,7 @@
 <div class="form-group bottom-30"
     [ngClass]="{'form-group-error': !dynamicRadioListControl.valid && dynamicRadioListControl.dirty}" [id]="id()">
   <fieldset>
-    <label [for]="id()">
+    <label [for]="createElementId()">
         <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
         <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
         <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">Select an option below</span>
@@ -12,8 +12,8 @@
 
     <ng-container>
       <div class="multiple-choice" *ngFor="let radioButton of caseField.list_items" [ngClass]="{selected: dynamicRadioListControl.value === radioButton.code}">
-          <input class="form-control" [id]="buildElementId(radioButton.code)" name="{{id()}}" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
-          <label class="form-label" [for]="buildElementId(radioButton.code)">{{radioButton.label}}</label>
+          <input class="form-control" [id]="createElementId(radioButton.code)" [name]="createElementId(radioButton.code)" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
+          <label class="form-label" [for]="createElementId(radioButton.code)">{{radioButton.label}}</label>
       </div>
     </ng-container>
   </fieldset>

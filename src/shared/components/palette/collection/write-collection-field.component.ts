@@ -198,7 +198,16 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   public addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    const item = { value: null }
+    let item = { value: null }
+
+    // Clonning last item and incrementing Id
+    if (this.caseField.field_type && this.caseField.field_type.collection_field_type
+      && this.caseField.field_type.collection_field_type.id === 'DynamicRadioList') {
+      item  = {...this.caseField.value[this.caseField.value.length - 1]};
+      const key: number = Number(item['id'][item['id'].length - 1]) + 1;
+      (item as any).id = item['id'].replace(/.$/, key.toString() );
+    }
+
     this.caseField.value.push(item);
     const index = this.caseField.value.length - 1;
     const caseField: CaseField = this.buildCaseField(item, index, true);
