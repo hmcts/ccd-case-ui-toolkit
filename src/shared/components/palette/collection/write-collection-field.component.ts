@@ -200,7 +200,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.formArray.setErrors(null);
     let item = { value: null }
 
-    // Clonning last item and incrementing Id
     if ( this.isCollectionDynamic() ) {
       item  = {...this.caseField.value[this.caseField.value.length - 1]};
       const key: number = Number(item['id'][item['id'].length - 1]) + 1;
@@ -241,7 +240,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (!this.caseField.field_type || !this.caseField.field_type.collection_field_type) {
       return false;
     }
-    return this.caseField.field_type.collection_field_type.id === 'DynamicRadioList'
+    return this.caseField.field_type.collection_field_type.id === 'DynamicRadioList';
   }
 
   private removeItem(index: number): void {
