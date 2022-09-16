@@ -1,6 +1,8 @@
 import { Location } from '@angular/common';
-import { Component, Input, NgZone, OnDestroy, OnInit, OnChanges, ViewChild,
-  ViewContainerRef, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import {
+  AfterViewInit, ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
+  SimpleChanges, ViewChild, ViewContainerRef
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -9,9 +11,8 @@ import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
-import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { ShowCondition } from '../../../directives';
-import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM, } from '../../../domain';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
 import {
   ActivityPollingService,
   AlertService,
@@ -19,18 +20,19 @@ import {
   ErrorNotifierService,
   NavigationNotifierService,
   NavigationOrigin,
-  OrderService,
+  OrderService
 } from '../../../services';
+import { ConvertHrefToRouterService } from '../../case-editor/services';
+import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
-import { ConvertHrefToRouterService } from '../../case-editor/services';
 
 @Component({
   selector: 'ccd-case-full-access-view',
   templateUrl: './case-full-access-view.component.html',
   styleUrls: ['./case-full-access-view.component.scss']
 })
-export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges {
+export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
@@ -81,7 +83,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!changes.prependedTabs.firstChange) {
+    if (changes.prependedTabs && !changes.prependedTabs.firstChange) {
       this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
@@ -209,6 +211,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         && this.error.details
         && this.error.details.field_errors
         && this.error.details.field_errors.length);
+  }
+
+  public ngAfterViewInit(): void {
+    this.organiseTabPosition();
   }
 
   public organiseTabPosition(): void {
