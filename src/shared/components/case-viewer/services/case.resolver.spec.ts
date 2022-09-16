@@ -5,7 +5,7 @@ import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin
 import { CaseResolver } from './case.resolver';
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('CaseResolver', () => {
+describe('CaseResolver', () => {
   describe('resolve()', () => {
 
     const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
