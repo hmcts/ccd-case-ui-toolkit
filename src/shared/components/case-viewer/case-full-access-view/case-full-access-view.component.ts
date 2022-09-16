@@ -32,6 +32,7 @@ import { initDialog } from '../../helpers';
   templateUrl: './case-full-access-view.component.html',
   styleUrls: ['./case-full-access-view.component.scss']
 })
+
 export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
@@ -77,8 +78,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly draftService: DraftService,
     private readonly errorNotifierService: ErrorNotifierService,
     private convertHrefToRouterService: ConvertHrefToRouterService,
-    private readonly location: Location,
-    private readonly crf: ChangeDetectorRef
+    private readonly location: Location
   ) {
   }
 
@@ -119,20 +119,20 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   ngOnDestroy() {
-    if (this.activityPollingService.isEnabled) {
-      this.unsubscribe(this.activitySubscription);
+    if (this.activitySubscription && this.activityPollingService.isEnabled) {
+      this.activitySubscription.unsubscribe();
     }
-    if (!this.route.snapshot.data.case) {
-      this.unsubscribe(this.caseSubscription);
+    if (this.callbackErrorsSubject) {
+      this.callbackErrorsSubject.unsubscribe();
     }
-    this.unsubscribe(this.callbackErrorsSubject);
-    this.unsubscribe(this.errorSubscription);
-    this.unsubscribe(this.subscription);
-  }
-
-  public unsubscribe(subscription: any) {
-    if (subscription) {
-      subscription.unsubscribe();
+    if (!this.route.snapshot.data.case && this.caseSubscription) {
+      this.caseSubscription.unsubscribe();
+    }
+    if (this.errorSubscription) {
+      this.errorSubscription.unsubscribe();
+    }
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
   }
 
@@ -221,14 +221,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     let matTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    if (!url.includes('#') && !url.includes('roles-and-access') && !url.includes('tasks')) {
+    if (!url.includes('#')) {
       const paths = url.split('/');
       // lastPath can be /caseId, or the tabs /tasks, /hearings etc.
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
       let foundTab: CaseTab = null;
-      if (!this.prependedTabs) {
-        this.prependedTabs = [];
-      }
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
         foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
@@ -245,7 +242,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // preselect the 1st order of CCD predefined tabs
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], {fragment: preSelectTab.label}).then(() => {
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           this.tabGroup.selectedIndex = matTab.position;
         });
@@ -253,9 +250,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     } else {
       const regExp = new RegExp(CaseFullAccessViewComponent.UNICODE_SPACE, 'g');
       hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
-      if (hashValue.includes('roles-and-access') || hashValue.includes('tasks')) {
-        hashValue = hashValue.includes('roles-and-access') ? 'roles and access' : 'tasks';
-      }
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
                                 hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
@@ -268,9 +262,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (<HTMLElement>tab.element.nativeElement).id;
-    const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
+    // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
+    // so have to hard code the hearings id here
     if ((tabChangeEvent.index <= 1 && this.prependedTabs.length) ||
-      (tabChangeEvent.index >= tabsLengthBeforeAppended && this.appendedTabs.length)) {
+      (this.appendedTabs.length && id === 'hearings')) {
       this.router.navigate([id], {relativeTo: this.route});
     } else {
       const label = tabChangeEvent.tab.textLabel;
