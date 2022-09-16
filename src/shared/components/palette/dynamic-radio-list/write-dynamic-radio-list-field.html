@@ -1,7 +1,7 @@
 <div class="form-group bottom-30"
     [ngClass]="{'form-group-error': !dynamicRadioListControl.valid && dynamicRadioListControl.dirty}" [id]="id()">
   <fieldset>
-    <label [for]="createElementId()">
+    <label [for]="id()">
         <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
         <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
         <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">Select an option below</span>
