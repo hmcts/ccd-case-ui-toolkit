@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import {
-  ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,
+  AfterViewInit, ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -32,7 +32,7 @@ import { initDialog } from '../../helpers';
   templateUrl: './case-full-access-view.component.html',
   styleUrls: ['./case-full-access-view.component.scss']
 })
-export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges {
+export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
