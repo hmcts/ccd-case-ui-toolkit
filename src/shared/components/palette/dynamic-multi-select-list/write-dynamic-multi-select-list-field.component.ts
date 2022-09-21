@@ -57,7 +57,8 @@ export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWrit
 
   public isSelected(code: string): AbstractControl {
     if (this.checkboxes && this.checkboxes.controls) {
-      return this.checkboxes.controls.find(control => control.value.code === code);
+      return this.checkboxes.controls.find(control =>
+        Array.isArray(control.value) ? control.value.find(value => value.code === code) : control.value.code === code);
     }
   }
 
