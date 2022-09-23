@@ -17,6 +17,14 @@ export class ReadDynamicMultiSelectListFieldComponent extends AbstractFieldReadC
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
 
+    /**
+     *
+     * Reassigning list_items from caseField.value when case field formatted value is empty
+     */
+    if (!this.caseField.list_items && !this.caseField.formatted_value) {
+      this.caseField.list_items = this.caseField.value;
+    }
+
     if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value) {
       this.caseField.value = this.caseField.formatted_value.value;
     }
