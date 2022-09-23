@@ -1750,6 +1750,10 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE);
   });
 
+  it('should return true for tab available', () => {
+    expect(caseViewerComponent.hasTabsPresent()).toEqual(true);
+  })
+
   it('should unsubscribe', () => {
     caseViewerComponent.unsubscribe(subscriptionMock);
     expect(subscribeSpy).toHaveBeenCalled();
