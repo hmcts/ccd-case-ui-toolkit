@@ -1754,6 +1754,19 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     expect(caseViewerComponent.hasTabsPresent()).toEqual(true);
   })
 
+  it('should pass flag to disable button when form valid but callback errors exist', () => {
+    caseViewerComponent.error = HttpError.from(null);
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeFalsy();
+    const error = HttpError.from(null);
+    error.callbackErrors = ['anErrors'];
+    caseViewerComponent.error = error;
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeTruthy();
+  });
+
   it('should unsubscribe', () => {
     caseViewerComponent.unsubscribe(subscriptionMock);
     expect(subscribeSpy).toHaveBeenCalled();
