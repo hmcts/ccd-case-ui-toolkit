@@ -1732,6 +1732,24 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     });
   });
 
+  it('should change button label when notified about callback errors', () => {
+    let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
+    componentFixture.detectChanges();
+
+    let eventTriggerElement = debugElement.query(By.directive(EventTriggerComponent));
+    let eventTrigger = eventTriggerElement.componentInstance;
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
+
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
+    caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
+    componentFixture.detectChanges();
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE);
+  });
+
   it('should unsubscribe', () => {
     caseViewerComponent.unsubscribe(subscriptionMock);
     expect(subscribeSpy).toHaveBeenCalled();
