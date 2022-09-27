@@ -1245,7 +1245,6 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
       }
     ];
     d = f.debugElement;
-    comp.init();
     f.detectChanges();
   }));
 
@@ -1374,7 +1373,6 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
       }
     ];
     d = f.debugElement;
-    comp.init();
     f.detectChanges();
   }));
 
@@ -1477,7 +1475,6 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
     comp = compFixture.componentInstance;
     comp.caseDetails = CASE_VIEW;
     debugElement = compFixture.debugElement;
-    comp.init();
     compFixture.detectChanges();
   }));
 
@@ -1620,7 +1617,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
       }
     ];
     debugElement = componentFixture.debugElement;
-    caseViewerComponent.init();
     componentFixture.detectChanges();
   }));
 
@@ -1785,7 +1781,6 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
       }
     ];
     debugElement = componentFixture.debugElement;
-    caseViewerComponent.init();
     componentFixture.detectChanges();
     de = componentFixture.debugElement;
   }));

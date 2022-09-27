@@ -82,6 +82,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   ngOnInit() {
     initDialog(this.dialogConfig);
+    this.init(false);
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
     });
@@ -104,7 +105,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   ngOnChanges(changes: SimpleChanges) {
     if (!changes.prependedTabs.firstChange) {
-      this.init();
+      this.init(true);
       this.crf.detectChanges();
       this.organiseTabPosition();
     }
@@ -273,14 +274,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
-  public init(): void {
+  private init(callActivityPolling: boolean): void {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
 
-    if (this.activityPollingService.isEnabled) {
+    if (this.activityPollingService.isEnabled && callActivityPolling) {
       this.ngZone.runOutsideAngular(() => {
         this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
           // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
