@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.18.17-EUI-5696-upload-error-fix
+### Version 4.18.18-EUI-5696-upload-error-fix
 **EUI-5696** Bug fix for document upload
 
 ### Version 4.18.16-EUI-6309-mandatory-field-issue
