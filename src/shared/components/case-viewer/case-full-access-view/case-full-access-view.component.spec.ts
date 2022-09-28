@@ -1660,7 +1660,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
     componentFixture.detectChanges();
-    expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
+    expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(0);
   });
 
 });
