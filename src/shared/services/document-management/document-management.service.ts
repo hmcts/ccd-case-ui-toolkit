@@ -1,10 +1,10 @@
-import { Observable } from 'rxjs';
-import { DocumentData } from '../../domain/document/document-data.model';
-import { Injectable } from '@angular/core';
-import { HttpService } from '../http';
-import { AbstractAppConfig } from '../../../app.config';
-import { delay } from 'rxjs/internal/operators';
 import { HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, timer } from 'rxjs';
+import { switchMap } from 'rxjs/internal/operators';
+import { AbstractAppConfig } from '../../../app.config';
+import { DocumentData } from '../../domain/document/document-data.model';
+import { HttpService } from '../http';
 
 @Injectable()
 export class DocumentManagementService {
@@ -33,10 +33,9 @@ export class DocumentManagementService {
     // Angular HttpClient in @angular/common/http. Just create and pass a new HttpHeaders object. Angular will add the
     // correct headers and values automatically
     const headers = new HttpHeaders();
-    return this.http
-      .post(url, formData, {headers, observe: 'body'})
-      .pipe(delay(DocumentManagementService.RESPONSE_DELAY))
-      .pipe();
+    return timer(DocumentManagementService.RESPONSE_DELAY).pipe(
+      switchMap(() => this.http.post(url, formData, {headers, observe: 'body'}))
+    );
   }
 
   public getMediaViewerInfo(documentFieldValue: any): string {

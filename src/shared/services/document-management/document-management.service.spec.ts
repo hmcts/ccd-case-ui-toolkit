@@ -1,9 +1,10 @@
-import { DocumentManagementService } from './document-management.service';
-import createSpyObj = jasmine.createSpyObj;
+import { fakeAsync, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
-import { HttpService } from '../http';
 import { CaseField, DocumentData, FieldType } from '../../domain';
+import { HttpService } from '../http';
+import { DocumentManagementService } from './document-management.service';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('DocumentManagementService', () => {
   const DOCUMENT_MANAGEMENT_URL = 'https://www.example.com/binary';
@@ -64,11 +65,12 @@ describe('DocumentManagementService', () => {
       httpService.post.and.returnValue(of(RESPONSE));
     });
 
-    it('should use HttpService.post with the correct URL', () => {
+    it('should use HttpService.post with the correct URL', fakeAsync(() => {
       documentManagementService.uploadFile(new FormData()).subscribe();
+      tick(1000);
 
       expect(httpService.post).toHaveBeenCalledWith(DOCUMENT_MANAGEMENT_URL, jasmine.any(FormData), jasmine.any(Object));
-    });
+    }));
 
     it('should set Content-Type header to null', () => {
       documentManagementService.uploadFile(new FormData()).subscribe(() => {
