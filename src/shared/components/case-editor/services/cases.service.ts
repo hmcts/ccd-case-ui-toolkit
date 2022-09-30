@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -9,14 +9,11 @@ import { ShowCondition } from '../../../directives';
 import {
   CaseEventData,
   CaseEventTrigger,
-  CaseField,
   CasePrintDocument,
   CaseView,
   ChallengedAccessRequest,
   SpecificAccessRequest,
   Draft,
-  FieldType,
-  FieldTypeEnum,
   RoleAssignmentResponse,
   RoleCategory,
   RoleRequestPayload
@@ -334,6 +331,14 @@ export class CasesService {
     return this.http.post(`/api/challenged-access-request`, payload);
   }
 
+  public updateChallengedAccessRequestAttributes(caseId: string, attributesToUpdate: { [x: string]: any })
+    : Observable<RoleAssignmentResponse> {
+    return this.http.post(`/api/challenged-access-request/updateAttributes`, {
+      caseId,
+      attributesToUpdate
+    });
+  }
+
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
@@ -384,4 +389,11 @@ export class CasesService {
     );
   }
 
+  public updateSpecificAccessRequestAttributes(caseId: string, attributesToUpdate: { [x: string]: any })
+    : Observable<RoleAssignmentResponse> {
+    return this.http.post(`/api/specific-access-request/updateAttributes`, {
+      caseId,
+      attributesToUpdate
+    });
+  }
 }
