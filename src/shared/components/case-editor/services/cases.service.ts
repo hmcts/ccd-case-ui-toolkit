@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -9,14 +9,11 @@ import { ShowCondition } from '../../../directives';
 import {
   CaseEventData,
   CaseEventTrigger,
-  CaseField,
   CasePrintDocument,
   CaseView,
   ChallengedAccessRequest,
   SpecificAccessRequest,
   Draft,
-  FieldType,
-  FieldTypeEnum,
   RoleAssignmentResponse,
   RoleCategory,
   RoleRequestPayload
@@ -321,6 +318,8 @@ export class CasesService {
     const beginTime = new Date();
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
     const id = userInfo.id ? userInfo.id : userInfo.uid;
+    const isNew = true;
+
     const payload: RoleRequestPayload = camUtils.getAMPayload(id,
                                                               id,
                                                               roleName,
@@ -329,9 +328,19 @@ export class CasesService {
                                                               caseId,
                                                               request,
                                                               beginTime,
-                                                              endTime);
+                                                              endTime,
+                                                              isNew
+      );
 
     return this.http.post(`/api/challenged-access-request`, payload);
+  }
+
+  public updateChallengedAccessRequestAttributes(caseId: string, attributesToUpdate: { [x: string]: any })
+    : Observable<RoleAssignmentResponse> {
+    return this.http.post(`/api/challenged-access-request/update-attributes`, {
+      caseId,
+      attributesToUpdate
+    });
   }
 
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
@@ -369,19 +378,31 @@ export class CasesService {
       readOnly: true
     };
 
-    payload.requestedRoles[0].attributes = {
-      ...payload.requestedRoles[0].attributes,
-      requestedRole: roleName
-    }
-
-    payload.requestedRoles[0].notes[0] = {
+    const notes = [{
       ...payload.requestedRoles[0].notes[0],
       userId: payload.requestedRoles[0].actorId
+    }];
+
+    payload.requestedRoles[0].attributes = {
+      ...payload.requestedRoles[0].attributes,
+      requestedRole: roleName,
+      notes,
+      isNew: true,
     }
+
+    payload.requestedRoles[0].notes = notes;
+
     return this.http.post(
       `/api/specific-access-request`,
       payload
     );
   }
 
+  public updateSpecificAccessRequestAttributes(caseId: string, attributesToUpdate: { [x: string]: any })
+    : Observable<RoleAssignmentResponse> {
+    return this.http.post(`/api/specific-access-request/update-attributes`, {
+      caseId,
+      attributesToUpdate
+    });
+  }
 }
