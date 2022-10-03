@@ -19,6 +19,7 @@ import { CaseEventTriggerComponent } from './case-event-trigger';
 import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject';
 import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request';
+import { CaseSpecificAccessSuccessComponent } from './case-specific-access-success';
 import { CasePrinterComponent } from './printer';
 import { EventTriggerResolver } from './services';
 
@@ -102,6 +103,13 @@ export const viewerRouting: Routes = [
           title: 'Request Specific Access',
         },
         pathMatch: 'full',
+      },
+      {
+        path: 'success',
+        component: CaseSpecificAccessSuccessComponent,
+        data: {
+          title: 'Specific Access Success',
+        },
       },
     ],
   },

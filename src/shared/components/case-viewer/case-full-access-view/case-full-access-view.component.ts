@@ -92,7 +92,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         this.callbackErrorsSubject.next(this.error);
       }
     });
-
     this.markdownUseHrefAsRouterLink = true;
 
     this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
@@ -108,20 +107,20 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   ngOnDestroy() {
-    if (this.activitySubscription && this.activityPollingService.isEnabled) {
-      this.activitySubscription.unsubscribe();
+    if (this.activityPollingService.isEnabled) {
+      this.unsubscribe(this.activitySubscription);
     }
-    if (this.callbackErrorsSubject) {
-      this.callbackErrorsSubject.unsubscribe();
+    if (!this.route.snapshot.data.case) {
+      this.unsubscribe(this.caseSubscription);
     }
-    if (!this.route.snapshot.data.case && this.caseSubscription) {
-      this.caseSubscription.unsubscribe();
-    }
-    if (this.errorSubscription) {
-      this.errorSubscription.unsubscribe();
-    }
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    this.unsubscribe(this.callbackErrorsSubject);
+    this.unsubscribe(this.errorSubscription);
+    this.unsubscribe(this.subscription);
+  }
+
+  public unsubscribe(subscription: any) {
+    if (subscription) {
+      subscription.unsubscribe();
     }
   }
 
