@@ -1,4 +1,4 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
 import { Observable, throwError } from 'rxjs';
@@ -56,6 +56,22 @@ export class CasesService {
    * @deprecated Use `CasesService::getCaseView` instead
    */
   get = this.getCaseView;
+
+  public static updateChallengedAccessRequestAttributes(httpClient: HttpClient, caseId: string, attributesToUpdate: { [x: string]: any })
+    : Observable<RoleAssignmentResponse> {
+    return httpClient.post<RoleAssignmentResponse>(`/api/challenged-access-request/update-attributes`, {
+      caseId,
+      attributesToUpdate
+    });
+  }
+
+  public static updateSpecificAccessRequestAttributes(httpClient: HttpClient, caseId: string, attributesToUpdate: { [x: string]: any })
+    : Observable<RoleAssignmentResponse> {
+    return httpClient.post<RoleAssignmentResponse>(`/api/specific-access-request/update-attributes`, {
+      caseId,
+      attributesToUpdate
+    });
+  }
 
   constructor(
     private http: HttpService,
@@ -335,14 +351,6 @@ export class CasesService {
     return this.http.post(`/api/challenged-access-request`, payload);
   }
 
-  public updateChallengedAccessRequestAttributes(caseId: string, attributesToUpdate: { [x: string]: any })
-    : Observable<RoleAssignmentResponse> {
-    return this.http.post(`/api/challenged-access-request/update-attributes`, {
-      caseId,
-      attributesToUpdate
-    });
-  }
-
   public createSpecificAccessRequest(caseId: string, sar: SpecificAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
@@ -396,13 +404,5 @@ export class CasesService {
       `/api/specific-access-request`,
       payload
     );
-  }
-
-  public updateSpecificAccessRequestAttributes(caseId: string, attributesToUpdate: { [x: string]: any })
-    : Observable<RoleAssignmentResponse> {
-    return this.http.post(`/api/specific-access-request/update-attributes`, {
-      caseId,
-      attributesToUpdate
-    });
   }
 }
