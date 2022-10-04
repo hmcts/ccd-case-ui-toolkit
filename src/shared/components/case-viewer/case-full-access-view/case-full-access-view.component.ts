@@ -82,7 +82,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   ngOnInit() {
     initDialog(this.dialogConfig);
-    this.init(false);
+    this.init();
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
     });
@@ -100,11 +100,17 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.convertHrefToRouterService.callAngularRouter(hrefMarkdownLinkContent);
       }
     });
+
+    if (this.activityPollingService.isEnabled && !this.activitySubscription) {
+      this.ngZone.runOutsideAngular(() => {
+        this.activitySubscription = this.postViewActivity().subscribe();
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (!changes.prependedTabs.firstChange) {
-      this.init(true);
+      this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
     }
@@ -273,20 +279,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
-  private init(callActivityPolling: boolean): void {
+  private init(): void {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
-
-    if (this.activityPollingService.isEnabled && callActivityPolling) {
-      this.ngZone.runOutsideAngular(() => {
-        this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
-          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
-        });
-      });
-    }
 
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
