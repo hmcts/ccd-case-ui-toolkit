@@ -84,17 +84,12 @@ export class CaseAccessUtils {
         isNew = false,
     ): RoleRequestPayload {
         const process =  (<ChallengedAccessRequest>details).caseReference !== undefined ? 'challenged-access' : 'specific-access';
-        const notes = [{
-          userId: assignerId,
-          time: new Date(),
-          comment: JSON.stringify(details)
-        }];
 
         const payload: RoleRequestPayload = {
             roleRequest: {
                 assignerId: assignerId,
                 process,
-                reference:  `${caseId}/${roleName}/${actorId}`,
+                reference: `${caseId}/${roleName}/${actorId}`,
                 replaceExisting: true
             },
             requestedRoles: [{
@@ -110,9 +105,13 @@ export class CaseAccessUtils {
                 attributes: {
                   caseId,
                   isNew,
-                  notes
+                  accessReason: JSON.stringify(details),
                 },
-                notes
+                notes: [{
+                  userId: assignerId,
+                  time: new Date(),
+                  comment: JSON.stringify(details)
+                }]
             }]
         };
 

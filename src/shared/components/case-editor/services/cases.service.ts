@@ -365,7 +365,7 @@ export class CasesService {
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
-                                      roleName, roleCategory, 'SPECIFIC', caseId, sar);
+                                      roleName, roleCategory, 'SPECIFIC', caseId, sar, null, null, true);
 
     payload.roleRequest = {
       ...payload.roleRequest,
@@ -386,19 +386,15 @@ export class CasesService {
       readOnly: true
     };
 
-    const notes = [{
-      ...payload.requestedRoles[0].notes[0],
-      userId: payload.requestedRoles[0].actorId
-    }];
-
     payload.requestedRoles[0].attributes = {
       ...payload.requestedRoles[0].attributes,
       requestedRole: roleName,
-      notes,
-      isNew: true,
     }
 
-    payload.requestedRoles[0].notes = notes;
+    payload.requestedRoles[0].notes[0] = {
+      ...payload.requestedRoles[0].notes[0],
+      userId: payload.requestedRoles[0].actorId
+    }
 
     return this.http.post(
       `/api/specific-access-request`,
