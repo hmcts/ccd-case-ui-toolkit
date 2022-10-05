@@ -414,6 +414,13 @@
   dependencies:
     tslib "^1.9.0"
 
+"@hmcts/rpx-xui-common-lib@1.8.3-update-joh-name-to-full-name":
+  version "1.8.3-update-joh-name-to-full-name"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.8.3-update-joh-name-to-full-name.tgz#e0ac0509217ae7025cbaea5bba1f01748392eb0c"
+  integrity sha512-rRXS5B4bfaiKC9AF7/LRg//5PAu0AwJFy5u1Pd5EVhkRswZw2lINSsKIAyp/AswBuLYrHCcXS9j5kL1e5FQcxw==
+  dependencies:
+    tslib "^1.9.0"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

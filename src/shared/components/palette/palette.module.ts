@@ -37,6 +37,7 @@ import { WriteEmailFieldComponent } from './email/write-email-field.component';
 import { FixedListModule } from './fixed-list/fixed-list.module';
 import { FixedRadioListModule } from './fixed-radio-list/fixed-radio-list.module';
 import { CaseHistoryViewerModule } from './history/case-history-viewer.module';
+import { JudicialUserFieldComponent } from './judicial-user/judicial-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
 import { MoneyGbpModule } from './money-gbp/money-gbp.module';
 import { MultiSelectListModule } from './multi-select-list/multi-select-list.module';
@@ -102,6 +103,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     LabelFieldComponent,
     DatetimePickerComponent,
     WaysToPayFieldComponent,
+    JudicialUserFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -126,6 +128,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     UnsupportedFieldComponent,
     LabelFieldComponent,
     WaysToPayFieldComponent,
+    JudicialUserFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -159,6 +162,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     LabelFieldComponent,
     DatetimePickerComponent,
     WaysToPayFieldComponent,
+    JudicialUserFieldComponent,
 
     // Read
     ReadTextFieldComponent,

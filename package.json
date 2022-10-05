@@ -98,6 +98,7 @@
     "@angular/upgrade": "~7.0.3",
     "@compodoc/compodoc": "^1.1.7",
     "@hmcts/ccpay-web-component": "5.0.4",
+    "@hmcts/rpx-xui-common-lib": "1.8.3-update-joh-name-to-full-name",
     "@nicky-lenaers/ngx-scroll-to": "^1.0.0",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
