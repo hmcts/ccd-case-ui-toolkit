@@ -1,7 +1,30 @@
-<xuilib-search-judicials id="judicialsSearch"
-  [placeholderContent]="'e.g. John Smith'"
-  [idValue]="idValue"
-  [serviceId]="serviceId"
-  [selectedJudicials]="judgeList"
-  [control]="personFormGroup.controls.selectedFormControl">
-</xuilib-search-judicials>
+<div class="govuk-form-group">
+  <input
+    class="govuk-input"
+    [formControl]="judicialUserFormControl"
+    [matAutocomplete]="autoComplete"
+    [placeholder]="placeholderContent"
+    [attr.disabled]="!disabled ? null: disabled"
+    [value]="getControlValueDisplayText()"
+  >
+  <mat-autocomplete
+    autoActiveFirstOption
+    #autoComplete="matAutocomplete"
+  >
+    <mat-option
+      *ngFor="let judicial of filteredJudicialUsers"
+      class="select-option"
+      [ngClass]="{'hide-autocomplete': !showAutocomplete}"
+      [value]="getDisplayName(judicial)"
+      (onSelectionChange)="onSelectionChange(judicial)"
+    >
+      {{ getDisplayName(judicial) }}
+    </mat-option>
+    <mat-option
+      class="select-option"
+      *ngIf="!displayedJudicialsDuplicationFiltered?.length && showAutocomplete && !searchInProgress"
+    >
+      No results found
+    </mat-option>
+  </mat-autocomplete>
+</div>
