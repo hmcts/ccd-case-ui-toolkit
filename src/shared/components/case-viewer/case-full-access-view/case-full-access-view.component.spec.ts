@@ -1682,7 +1682,6 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
-
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
     alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
     alertService.success.and.returnValue(Observable.of({}));
