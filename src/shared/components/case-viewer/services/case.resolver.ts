@@ -83,10 +83,6 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheDraft(cid): Promise<CaseView> {
-    if (this.caseNotifier.cachedCaseView && this.caseNotifier.cachedCaseView.case_id && this.caseNotifier.cachedCaseView.case_id === cid) {
-      this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
-      return of(this.caseNotifier.cachedCaseView).toPromise();
-    } else {
       return this.draftService
       .getDraft(cid)
       .pipe(
@@ -97,7 +93,6 @@ export class CaseResolver implements Resolve<CaseView> {
         }),
         catchError(error => this.checkAuthorizationError(error))
       ).toPromise();
-    }
   }
 
   private checkAuthorizationError(error: any) {

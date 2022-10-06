@@ -1798,11 +1798,34 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
     componentFixture.detectChanges();
-    caseViewerComponent.clearErrorsAndWarnings();
-    let error = de.query($ERROR_SUMMARY);
-    expect(error).toBeFalsy();
-    expect(caseViewerComponent.error).toBeFalsy();
-    expect(caseViewerComponent.ignoreWarning).toBeFalsy();
+
+    let eventTriggerElement = debugElement.query(By.directive(EventTriggerComponent));
+    let eventTrigger = eventTriggerElement.componentInstance;
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
+
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
+    caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
+    componentFixture.detectChanges();
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE);
+  });
+
+  it('should return true for tab available', () => {
+    expect(caseViewerComponent.hasTabsPresent()).toEqual(true);
+  })
+
+  it('should pass flag to disable button when form valid but callback errors exist', () => {
+    caseViewerComponent.error = HttpError.from(null);
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeFalsy();
+    const error = HttpError.from(null);
+    error.callbackErrors = ['anErrors'];
+    caseViewerComponent.error = error;
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeTruthy();
   });
 
   it('should unsubscribe', () => {
