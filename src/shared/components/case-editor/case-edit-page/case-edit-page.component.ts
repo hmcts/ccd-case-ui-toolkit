@@ -136,17 +136,21 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // Adding validation message to show it as Error Summary
-  public generateErrorMessage(fields: CaseField[], container?: AbstractControl): void {
+  public generateErrorMessage(fields: CaseField[], container?: AbstractControl, path?: string): void {
     const group: AbstractControl = container || this.editForm.controls['data'];
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
-      .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm))
+      .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path))
       .forEach(casefield => {
         const fieldElement = group.get(casefield.id);
         if (fieldElement) {
           const label = casefield.label || 'Field';
           let id = casefield.id;
           if (fieldElement['component'] && fieldElement['component'].parent) {
-            id = `${fieldElement['component'].idPrefix}${id}`;
+            if (fieldElement['component'].idPrefix.indexOf('_' + id + '_') === -1) {
+              id = `${fieldElement['component'].idPrefix}${id}`;
+            } else {
+              id = `${fieldElement['component'].idPrefix}`;
+            }
           }
           if (fieldElement.hasError('required')) {
             this.validationErrors.push({ id, message: `${label} is required` });
@@ -162,12 +166,19 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
             fieldElement.markAsDirty();
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
-              this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement);
+              this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
               const fieldArray = fieldElement as FormArray;
-              fieldArray.controls.forEach((c: AbstractControl) => {
-                this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'));
-              });
+              if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
+                fieldArray['component']['collItems'].forEach(element => {
+                  id = `${element.prefix}`;
+                  fieldArray.controls.forEach((control: AbstractControl, index) => {
+                    if (id.charAt(id.indexOf(index.toString())) === index.toString()) {
+                      this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, control.get('value'), id);
+                    }
+                  })
+                });
+              }
             } else {
               this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();

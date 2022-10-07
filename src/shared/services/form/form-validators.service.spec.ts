@@ -66,10 +66,10 @@ describe('FormValidatorsService', () => {
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.invalid).toBeTruthy();
-    result.setValue(' Invalid  ');
+    result.setValue(' This text is valid. ');
     result.markAsTouched();
     result.updateValueAndValidity();
-    expect(result.invalid).toBeTruthy();
+    expect(result.valid).toBeTruthy();
     result.setValue('#with Special_character_');
     result.markAsTouched();
     result.updateValueAndValidity();

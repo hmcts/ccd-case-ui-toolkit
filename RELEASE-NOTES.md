@@ -1,11 +1,76 @@
 ## RELEASE NOTES
-### Version 4.8.3-strategic-activity-tracker-a
+### Version 4.8.3-strategic-activity-tracker-b
 **EUI-2976** Activity tracker redesign
+
+### Version 4.18.16-EUI-6309-mandatory-field-issue
+**EUI-6309* mandatory-field-issue
+
+### Version 4.19.3-hearings
+**EUI-5912** Hearing tab is not loading
+
+### Version 4.12.1-EUI-5682-complex-table-collection-1
+**EUI-5682** Bug fix for the complex collection table view
+
+### Version 4.12.1-EUI-5225-organisation-search
+**EUI-5225** Bug fix the organisation search functionality
+
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
+### Version 4.12.6-date-year-validation
+**EUI-4606** Enhanced the date year input validation to restrict between 1900-2100
+
+### Version 4.17.6-EUI-5736-unassigned-cases-pagination
+**EUI-5736** unassigned cases pagination
+
+### Version 4.14.1-EUI-5305-change-link-accessibility-update
+**EUI-5305** Accessibility improvement for 'Change' links
+
+### Version 4.12.0
+Add refunds functionality
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
+### Version 4.9.16-wcag20-exui-4"
+**FPLA: Accessibility Issues Found in ExUI** FPLA: Accessibility Issues Found in ExUI
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+
+### Version 4.12.16-task-event-completion"
+**Task event completion and state machine** Task event completion and state machine
+
+### Version 4.12.6-limit-search-results-10k-400-5"
+**Limit search results to 10k / 400 pages** Limit search results to 10k / 400 pages
+
+### Version 4.9.15-state-machine"
+**Task event completion and state machine** Task event completion and state machine
+
+### Version 4.3.9-markdown-case-ref-EUI-3650
+**EUI-3650** Added formatting for case reference inside markdown
+
+### Version 4.7.6-tab-not-defined-error"
+**EUI-4562** Case details Active tasks tab on success not returning to active tasks page
+
 ### Version 4.3.6-hotfix-EUI-4404
 **EUI-4404** Fix rendering of read-only Collection field within editable Complex field
 
+### Version 4.7.6-tab-not-defined-error"
+**EUI-4562** Case details Active tasks tab on success not returning to active tasks page
+
+### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details 
+**EUI-4441** Add hearings tab in case details
+
 ### Version 4.7.6-hearings-tab
 **EUI-4441** Add hearings tab in case details
+**EUI-4627** Can't access /hearings tab from URL
 
 ### Version 4.7.0-EUI-4412-order-fields-CYA-page
 **EUI-4414** Field order on the CYA page changes

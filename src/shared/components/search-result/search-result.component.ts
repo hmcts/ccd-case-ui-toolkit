@@ -23,6 +23,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
 
+  private readonly PAGINATION_MAX_ITEM_RESULT = 10000;
+
   ICON = DisplayMode.ICON;
 
   @Input()
@@ -75,6 +77,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   @Output()
   sortHandler: EventEmitter<any> = new EventEmitter();
+
+  public paginationLimitEnforced = false;
 
   paginationPageSize: number;
 
@@ -147,6 +151,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
     }
+  }
+
+  get resultTotal(): number {
+    const total = this.paginationMetadata.total_results_count;
+    const maximumResultReached = total >= this.PAGINATION_MAX_ITEM_RESULT;
+    this.paginationLimitEnforced = maximumResultReached;
+
+    return maximumResultReached ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
   public clearSelection(): void {
@@ -412,7 +424,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   getTotalResults(): number {
-    return this.paginationMetadata.total_results_count + this.draftsCount;
+    const total = this.paginationMetadata.total_results_count + this.draftsCount;
+
+    return total >= this.PAGINATION_MAX_ITEM_RESULT ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
   prepareCaseLinkUrl(caseId: string): string {

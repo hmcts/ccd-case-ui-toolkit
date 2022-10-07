@@ -1,18 +1,27 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { CaseFullAccessViewComponent } from './case-full-access-view.component';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable } from 'rxjs';
-import { attr, text } from '../../../test/helpers';
+import { Observable, of, Subscription } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
-import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
+import { AppMockConfig } from '../../../../app-config.mock';
+import { AbstractAppConfig } from '../../../../app.config';
+import { DeleteOrCancelDialogComponent } from '../../../components/dialogs';
+import { CallbackErrorsContext } from '../../../components/error/domain';
 import { PaletteUtilsModule } from '../../../components/palette/utils';
-import { CaseField } from '../../../domain/definition';
+import { LabelSubstitutorDirective } from '../../../directives/substitutor';
 import { PlaceholderService } from '../../../directives/substitutor/services';
+import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../../domain/case-view';
+import { CaseField } from '../../../domain/definition';
+import { HttpError } from '../../../domain/http';
+import { CaseReferencePipe } from '../../../pipes/case-reference';
 import {
   ActivityService,
   AuthService,
@@ -24,22 +33,15 @@ import {
   NavigationOrigin,
   SessionStorageService
 } from '../../../services/';
-import { LabelSubstitutorDirective } from '../../../directives/substitutor';
-import { HttpError } from '../../../domain/http';
-import { OrderService } from '../../../services/order';
-import { DeleteOrCancelDialogComponent } from '../../../components/dialogs';
-import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../../domain/case-view';
+import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
 import { AlertService } from '../../../services/alert';
-import { CallbackErrorsContext } from '../../../components/error/domain';
 import { DraftService } from '../../../services/draft';
-import { CaseReferencePipe } from '../../../pipes/case-reference';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
+import { OrderService } from '../../../services/order';
+import { attr, text } from '../../../test/helpers';
 import { CaseNotifier } from '../../case-editor';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ConvertHrefToRouterService } from '../../case-editor/services/convert-href-to-router.service';
 import { ComplexModule, PaletteModule } from '../../palette';
-import { AbstractAppConfig } from '../../../../app.config';
-import { AppMockConfig } from '../../../../app-config.mock';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({
@@ -114,7 +116,7 @@ const CaseHeaderComponent: any = MockComponent({
 
 const MarkdownComponent: any = MockComponent({
   selector: 'ccd-markdown',
-  inputs: ['content']
+  inputs: ['content', 'markdownUseHrefAsRouterLink']
 });
 
 let CaseActivityComponent: any = MockComponent({
@@ -554,6 +556,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          PaymentLibModule
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -568,7 +571,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          MarkdownComponent,
+          MarkdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -997,6 +1000,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          PaymentLibModule
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -1011,7 +1015,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          MarkdownComponent,
+          MarkdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -1082,6 +1086,7 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
+          PaymentLibModule
         ],
         declarations: [
           CaseFullAccessViewComponent,
@@ -1096,7 +1101,7 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          MarkdownComponent,
+          MarkdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -1142,7 +1147,11 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
+  let convertHrefToRouterService;
+
   beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
     TestBed
       .configureTestingModule({
         imports: [
@@ -1151,6 +1160,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          PaymentLibModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1171,7 +1181,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
                 }
               ]
             }
-          ]),
+          ])
         ],
         declarations: [
           TasksContainerComponent,
@@ -1182,7 +1192,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
-          CallbackErrorsComponent,
+          CallbackErrorsComponent
         ],
         providers: [
           FieldsUtils,
@@ -1211,6 +1221,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1256,7 +1267,135 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
+  let convertHrefToRouterService;
+
   beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          MatTabsModule,
+          ComplexModule,
+          BrowserAnimationsModule,
+          PaletteModule,
+          PaymentLibModule,
+          RouterTestingModule.withRoutes([
+            {
+              path: 'cases',
+              children: [
+                {
+                  path: 'case-details',
+                  children: [
+                    {
+                      path: ':id',
+                      children: [
+                        {
+                          path: 'tasks',
+                          component: TasksContainerComponent
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ])
+        ],
+        declarations: [
+          TasksContainerComponent,
+          CaseFullAccessViewComponent,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          OrderService,
+          {
+            provide: Location,
+            useClass: class MockLocation {
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+            }
+          },
+          ErrorNotifierService,
+          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
+          ActivityService,
+          HttpService,
+          HttpErrorService,
+          AuthService,
+          SessionStorageService,
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          DeleteOrCancelDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    f = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp = f.componentInstance;
+    comp.caseDetails = CASE_VIEW;
+    comp.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'roles-and-access',
+        label: 'Roles and access',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    comp.appendedTabs = [
+      {
+        id: 'hearings',
+        label: 'Hearings',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    d = f.debugElement;
+    f.detectChanges();
+  }));
+
+  it('should render appended tabs hearings', () => {
+    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
+    expect(matTabHTMLElement.children.length).toBe(6);
+    const hearingsTab: HTMLElement = matTabHTMLElement.children[5] as HTMLElement;
+    expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
+  });
+
+})
+
+describe('CaseFullAccessViewComponent - ends with caseID', () => {
+
+  let comp: CaseFullAccessViewComponent;
+  let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
+  let debugElement: DebugElement;
+  let convertHrefToRouterService;
+
+  beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
     TestBed
       .configureTestingModule({
         imports: [
@@ -1306,7 +1445,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456'
             }
           },
           ErrorNotifierService,
@@ -1326,46 +1465,25 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent,
-          CaseActivityComponent
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          DeleteOrCancelDialogComponent
         ]
       })
       .compileComponents();
 
-    f = TestBed.createComponent(CaseFullAccessViewComponent);
-    comp = f.componentInstance;
+    compFixture = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp = compFixture.componentInstance;
     comp.caseDetails = CASE_VIEW;
-    comp.prependedTabs = [
-      {
-        id: 'tasks',
-        label: 'Tasks',
-        fields: [],
-        show_condition: null
-      },
-      {
-        id: 'roles-and-access',
-        label: 'Roles and access',
-        fields: [],
-        show_condition: null
-      }
-    ];
-    comp.appendedTabs = [
-      {
-        id: 'hearings',
-        label: 'Hearings',
-        fields: [],
-        show_condition: null
-      }
-    ];
-    d = f.debugElement;
-    f.detectChanges();
+    debugElement = compFixture.debugElement;
+    compFixture.detectChanges();
   }));
 
-  it('should render appended tabs hearings', () => {
-    const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
+  it('should render 1st order of tabs', () => {
+    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(6);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[5] as HTMLElement;
-    expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
+    expect(matTabHTMLElement.children.length).toBe(3);
+    const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
+    expect((<HTMLElement>hearingsTab.querySelector('.mat-tab-label-content')).innerText).toBe('History');
   });
 
 })
@@ -1377,7 +1495,27 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let caseViewerComponent: CaseFullAccessViewComponent;
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
+  let convertHrefToRouterService;
+  const prependedTabsList = [
+    {
+      id: 'tasks',
+      label: 'Tasks',
+      fields: [],
+      show_condition: null
+    },
+    {
+      id: 'roles-and-access',
+      label: 'Roles and access',
+      fields: [],
+      show_condition: null
+    }
+  ];
+
   beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    navigationNotifierService = new NavigationNotifierService();
+    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
     TestBed
@@ -1388,6 +1526,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           ComplexModule,
           BrowserAnimationsModule,
           PaletteModule,
+          PaymentLibModule,
           RouterTestingModule.withRoutes([
             {
               path: 'cases',
@@ -1408,7 +1547,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
                 }
               ]
             }
-          ]),
+          ])
         ],
         declarations: [
           TasksContainerComponent,
@@ -1419,7 +1558,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
-          CallbackErrorsComponent,
+          CallbackErrorsComponent
         ],
         providers: [
           FieldsUtils,
@@ -1446,6 +1585,178 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          DeleteOrCancelDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    componentFixture = TestBed.createComponent(CaseFullAccessViewComponent);
+    caseViewerComponent = componentFixture.componentInstance;
+    caseViewerComponent.caseDetails = WORK_ALLOCATION_CASE_VIEW;
+    caseViewerComponent.appendedTabs = [
+      {
+        id: 'hearings',
+        label: 'Hearings',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    caseViewerComponent.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'roles-and-access',
+        label: 'Roles and access',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    debugElement = componentFixture.debugElement;
+    componentFixture.detectChanges();
+  }));
+
+  it('should display overview tab by default', () => {
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    componentFixture.detectChanges();
+    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
+    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
+    const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
+    expect((<HTMLElement>tasksTab0.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
+    const tasksTab1: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
+    expect((<HTMLElement>tasksTab1.querySelector('.mat-tab-label-content')).innerText).toBe('Roles and access');
+    const tasksTab2: HTMLElement = matTabHTMLElement.children[2] as HTMLElement;
+    expect((<HTMLElement>tasksTab2.querySelector('.mat-tab-label-content')).innerText).toBe('Overview');
+    const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
+    expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
+    const tasksTab4: HTMLElement = matTabHTMLElement.children[4] as HTMLElement;
+    expect((<HTMLElement>tasksTab4.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
+  });
+
+  it('should add prepended & appended tabs to the existing tab list', () => {
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(5);
+  });
+
+  it('should return blank array when pretended tabs are null', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330');
+    componentFixture.detectChanges();
+    caseViewerComponent.prependedTabs = null;
+    caseViewerComponent.organiseTabPosition();
+    expect(caseViewerComponent.prependedTabs).toEqual([]);
+  });
+
+  it('should return tabs', () => {
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.hasTabsPresent).toBeTruthy();
+  })
+
+  it('should navigate to roles and access tab', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(0);
+  });
+
+});
+
+describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {
+  let mockLocation: any;
+
+  let caseViewerComponent: CaseFullAccessViewComponent;
+  let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
+  let debugElement: DebugElement;
+  let convertHrefToRouterService;
+  let subscribeSpy: jasmine.Spy;
+  let subscriptionMock: Subscription = new Subscription();
+
+  beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
+
+    mockLocation = createSpyObj('location', ['path']);
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
+    subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
+    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
+    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
+    alertService.success.and.returnValue(Observable.of({}));
+    alertService.warning.and.returnValue(Observable.of({}));
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          MatTabsModule,
+          ComplexModule,
+          BrowserAnimationsModule,
+          PaletteModule,
+          PaymentLibModule,
+          RouterTestingModule.withRoutes([
+            {
+              path: 'cases',
+              children: [
+                {
+                  path: 'case-details',
+                  children: [
+                    {
+                      path: ':id#overview',
+                      children: [
+                        {
+                          path: 'tasks',
+                          component: TasksContainerComponent
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ])
+        ],
+        declarations: [
+          TasksContainerComponent,
+          CaseFullAccessViewComponent,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          OrderService,
+          {
+            provide: Location,
+            useValue: mockLocation
+          },
+          ErrorNotifierService,
+          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
+          ActivityService,
+          HttpService,
+          HttpErrorService,
+          AuthService,
+          SessionStorageService,
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1470,18 +1781,62 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     ];
     debugElement = componentFixture.debugElement;
     componentFixture.detectChanges();
+    de = componentFixture.debugElement;
   }));
 
-  it('should display overview tab by default', () => {
-    const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
-    const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    const tasksTab0: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
-    expect((<HTMLElement>tasksTab0.querySelector('.mat-tab-label-content')).innerText).toBe('Tasks');
-    const tasksTab1: HTMLElement = matTabHTMLElement.children[1] as HTMLElement;
-    expect((<HTMLElement>tasksTab1.querySelector('.mat-tab-label-content')).innerText).toBe('Roles and access');
-    const tasksTab2: HTMLElement = matTabHTMLElement.children[2] as HTMLElement;
-    expect((<HTMLElement>tasksTab2.querySelector('.mat-tab-label-content')).innerText).toBe('Overview');
-    const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
-    expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
+  it('should not call callAngularRouter() on initial (default) value', (done) => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
+    componentFixture.detectChanges();
+    convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
+      expect(convertHrefToRouterService.callAngularRouter).not.toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it('should clear errors and warnings', () => {
+    let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
+    componentFixture.detectChanges();
+
+    let eventTriggerElement = debugElement.query(By.directive(EventTriggerComponent));
+    let eventTrigger = eventTriggerElement.componentInstance;
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
+
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
+    caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
+    componentFixture.detectChanges();
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE);
+  });
+
+  it('should return true for tab available', () => {
+    expect(caseViewerComponent.hasTabsPresent()).toEqual(true);
+  })
+
+  it('should pass flag to disable button when form valid but callback errors exist', () => {
+    caseViewerComponent.error = HttpError.from(null);
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeFalsy();
+    const error = HttpError.from(null);
+    error.callbackErrors = ['anErrors'];
+    caseViewerComponent.error = error;
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeTruthy();
+  });
+
+  it('should unsubscribe', () => {
+    caseViewerComponent.unsubscribe(subscriptionMock);
+    expect(subscribeSpy).toHaveBeenCalled();
+  });
+
+  it('should not unsubscribe', () => {
+    subscriptionMock = null;
+    caseViewerComponent.unsubscribe(subscriptionMock);
+    expect(subscribeSpy).not.toHaveBeenCalled();
   });
 });

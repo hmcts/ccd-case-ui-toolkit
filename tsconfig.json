@@ -11,9 +11,11 @@
     "lib": ["es2015", "dom"],
     "typeRoots" : [
       "./node_modules/@types"
-    ]
+    ],
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts"
-  ]
+  ],
+  "javascript.implicitProjectConfig.experimentalDecorators": true
 }

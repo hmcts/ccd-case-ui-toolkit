@@ -835,8 +835,10 @@ describe('CaseEditPageComponent', () => {
 
     const F_GROUP = new FormGroup({
       'data': new FormGroup({'Invalidfield1': new FormControl(null, Validators.required)
-                              , 'Invalidfield2': new FormControl(null, Validators.required)
+                              , 'Invalidfield2': new FormControl(null,
+                                  [Validators.required, Validators.minLength(5), Validators.maxLength(10)])
                               , 'OrganisationField': new FormControl(null, Validators.required)
+                              , 'complexField1': new FormControl(null, Validators.required)
                             })
     });
 
@@ -937,9 +939,59 @@ describe('CaseEditPageComponent', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach(error => {
-        expect(error.message).toEqual(`${error.id} is required`)
+        expect(error.message).toEqual(`${error.id} is required`);
       });
     });
+
+    it('should validate minimum length field value and log error message', () => {
+      const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
+      wizardPage.case_fields.push(case_Field);
+      wizardPage.isMultiColumn = () => false;
+      F_GROUP.setValue({data: {Invalidfield2: 'test', Invalidfield1: 'test1', OrganisationField: '', complexField1: ''}, });
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} is below the minimum length`);
+      });
+    })
+
+    it('should validate maximum length field value and log error message', () => {
+      const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
+      wizardPage.case_fields.push(case_Field);
+      wizardPage.isMultiColumn = () => false;
+      F_GROUP.setValue({data: {Invalidfield2: 'testing1234', Invalidfield1: 'test1', OrganisationField: '', complexField1: ''}, });
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} exceeds the maximum length`);
+      });
+    })
+
+    it('should validate mandatory complex type fields and log error message', () => {
+      const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'MANDATORY', 1, null, true, true);
+      const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'MANDATORY', 2, null, false, true);
+      wizardPage.case_fields.push(aCaseField('complexField1', 'complexField1', 'Complex', 'MANDATORY', 1,
+        [complexSubField1, complexSubField2], true, true));
+
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} is required`);
+      });
+    })
   });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {

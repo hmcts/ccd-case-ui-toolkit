@@ -25,6 +25,69 @@ describe('ReadFieldsFilterPipe', () => {
     field_type: { id: 'Label', type: 'Label' }, label: 'Label'
   }, null);
 
+  const value = {
+    type: 'INDIVIDUAL',
+    individualFirstName: 'Aamir',
+    individualLastName: 'Khan'
+  }
+
+  const complexCaseField: CaseField = buildCaseField('ViewApplicationTab', {
+    display_context: 'COMPLEX',
+    field_type: {
+      complex_fields: [
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            fixed_list_items: [
+              {code: 'INDIVIDUAL', label: 'Individual', order: '1'},
+              {code: 'COMPANY', label: 'Company', order: '2'},
+              {code: 'ORGANISATION', label: 'Organisation', order: '3'},
+            ],
+            id: 'FixedRadioList-PartyType',
+            type: 'FixedRadioList-PartyType',
+          },
+          hidden: false,
+          id: 'type',
+          label: 'Claimant type',
+          show_condition: null,
+          value: null,
+        },
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            id: 'Text',
+            type: 'Text',
+          },
+          hidden: false,
+          id: 'individualFirstName',
+          label: 'First Name',
+          show_condition: 'applicant1.type=\"INDIVIDUAL\"',
+          value: null,
+        },
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            id: 'Text',
+            type: 'Text',
+          },
+          hidden: false,
+          id: 'individualLastName',
+          label: 'Last Name',
+          show_condition: 'applicant1.type=\"INDIVIDUAL\"',
+          value: null,
+        }
+      ],
+      id: 'Party',
+      type: 'Complex'
+    },
+    id: 'applicant1',
+    label: 'Claimants details',
+    show_condition: null
+  }, value);
+
   let pipe: ReadFieldsFilterPipe;
 
   beforeEach(() => {
@@ -158,4 +221,22 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(0);
   });
 
+  it('it shoulld evaluate showcondition and set the hidden property of field to false when value doesnt match within complex field', () => {
+    const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true);
+    expect(RESULT.length).toEqual(3);
+    expect(RESULT[1].hidden).toEqual(false);
+    expect(RESULT[2].hidden).toEqual(false);
+  });
+  it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field', () => {
+    const value1 = {
+      type: 'ORGANISATION',
+      individualFirstName: 'Aamir',
+      individualLastName: 'Khan'
+    }
+    complexCaseField.value = value1;
+    const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true);
+    expect(RESULT.length).toEqual(3);
+    expect(RESULT[1].hidden).toEqual(true);
+    expect(RESULT[2].hidden).toEqual(true);
+  });
 });
