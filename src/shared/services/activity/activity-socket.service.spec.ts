@@ -91,43 +91,6 @@ describe('ActivitySocketService', () => {
       expect(service.socket).toBeUndefined();
     });
 
-    describe('socket behaviour', () => {
-      let emitSpy;
-      beforeEach(() => {
-        emitSpy = spyOn(service.socket, 'emit').and.callThrough();
-      });
-      it('should be connected', async (done) => {
-        let connectFired = false;
-        let activityFired = false;
-        service.connect.subscribe((_) => {
-          connectFired = true;
-        });
-        service.activity.subscribe((_) => {
-          activityFired = true;
-        });
-        setTimeout(() => {
-          expect(connectFired).toBeTruthy('connect did not fire');
-          expect(activityFired).toBeFalsy('activity fired');
-          done();
-        }, 100);
-      });
-      it('should send appropriate message when watching cases', () => {
-        const caseIds = ['a', 'c', 'h', 't', 'w'];
-        service.watchCases(caseIds);
-        expect(emitSpy).toHaveBeenCalledWith('watch', { caseIds });
-      });
-      it('should send appropriate message when viewing a case', () => {
-        const caseId = 'v';
-        service.viewCase(caseId);
-        expect(emitSpy).toHaveBeenCalledWith('view', { caseId });
-      });
-      it('should send appropriate message when editing a case', () => {
-        const caseId = 'e';
-        service.editCase(caseId);
-        expect(emitSpy).toHaveBeenCalledWith('edit', { caseId });
-      });
-    });
-
   });
 
   describe('when "socket" mode is enabled', () => {
