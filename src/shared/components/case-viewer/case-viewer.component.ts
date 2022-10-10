@@ -12,7 +12,9 @@ import { CaseNotifier } from '../case-editor';
 export class CaseViewerComponent implements OnInit, OnDestroy {
 
   static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
+  static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
   static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
+  static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -22,6 +24,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   @Input() public caseDetails: CaseView;
   public caseSubscription: Subscription;
   public userAccessType: string;
+  public accessGranted: boolean;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -56,6 +59,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     if (caseDetails && Array.isArray(caseDetails.metadataFields)) {
       const access_process = caseDetails.metadataFields.find(metadataField =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
+      const access_granted = caseDetails.metadataFields.find(metadataField =>
+        metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_GRANTED_ID);
+        this.accessGranted = access_granted ? access_granted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
       this.userAccessType = access_process ? access_process.value : null;
     }
   }
@@ -66,6 +72,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   public hasStandardAccess(): boolean {
     const featureToggleOn = this.appConfig.getAccessManagementMode();
-    return featureToggleOn ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true;
+    return featureToggleOn ?
+            !this.accessGranted ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true
+            : true;
   }
 }
