@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 4.8.3-strategic-activity-tracker-c
+**EUI-2976** Activity tracker redesign
 
 ### Version 4.18.16-EUI-6309-mandatory-field-issue
 **EUI-6309* mandatory-field-issue
@@ -104,7 +106,7 @@ Add refunds functionality
 **EUI-4348** Filter options not retained for search
 
 ### Version 4.3.2
-**EUI-4423** Populated file filed treated as empty when secure docstore toggle is enabled 
+**EUI-4423** Populated file filed treated as empty when secure docstore toggle is enabled
 **EUI-4346** Link a case event throws error
 **EUI-4349** Reset caseDetailsPage Position to Top
 
@@ -284,7 +286,7 @@ Activity Tracker Performance changes
 ### Version 3.0.3
 **EUI-3505** OCMC: OCON9x paper response form button should be disabled continued...
 
-### Version 3.0.0 
+### Version 3.0.0
 **EUI-3997** Master release candidate
 **EUI-2569** ExUI - Labels not displaying in Case Heading
 **EUI-3870** ExUI - Unresponsive and 'laggy' show-hide conditions
@@ -370,7 +372,7 @@ Fix EUI-3403 - fixed a subsequent issue with empty documents being sent.
 Fix EUI-3403 - fix for optional top-level documents incorrectly showing.
 
 ### Version 2.71.3-conditional-show-perf
-Fix EUI-3398 - don't submit labels with empty string values 
+Fix EUI-3398 - don't submit labels with empty string values
 
 ### Version 2.71.2-conditional-show-perf
 Fix EUI-3381 - fix for missing alert banner.
@@ -411,8 +413,8 @@ We do need to submit labels
 **EUI-3331** Problem with event_data submission
 
 ### Version 2.68.11-prerelease-conditional-show-perf
-**EUI-3270** Improve performance of event forms. 
-Work around for case when profile data is not available. 
+**EUI-3270** Improve performance of event forms.
+Work around for case when profile data is not available.
 Merge master to simplify final branch merge
 
 ### Version 2.68.10-prerelease-conditional-show-perf
@@ -489,7 +491,7 @@ Merge master to simplify final branch merge
 **EUI** Undoing retain hidden fields functionality
 
 ### Version 2.65.1
-**EUI** Undoing retain hidden fields revert 
+**EUI** Undoing retain hidden fields revert
 
 ### Version 2.65
 **EUI** Catching up with releases
@@ -642,8 +644,8 @@ release from master branch
 ### Version 2.62.28-RDM-6061-prerelease - December 17 2019
 **RDM-6061** - JS error when a non-available case field is used in showCondition
 
-### Version 2.62.26-RDM-6716-prerelease - December 17 2019 
-**RDM-6716** default '--select a value--' bug fix for fixed list 
+### Version 2.62.26-RDM-6716-prerelease - December 17 2019
+**RDM-6716** default '--select a value--' bug fix for fixed list
 
 ### Version 2.62.27-RDM-6555-prerelease - December 12 2019
 ***RDM-6555** Address Current known security vulnerabilities in ccd-case-ui-toolkit
@@ -696,7 +698,7 @@ release from master branch
 Revert 5398 - Document in collections
 
 ### Version 2.59.3 - August 19 2019
-REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Complex Type 
+REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Complex Type
 
 ### Version 2.59.2 - August 19 2019
 **RDM-5072** remove some bad code introduced in WriteAddressFieldComponent
@@ -738,7 +740,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-5031** redirect to case-list when user do not have access to the case after an event
 
 ### Version 2.58.8 - July 12 2019
-**RDM-4673** Show/Hide condition handling on New Collection View UI change 
+**RDM-4673** Show/Hide condition handling on New Collection View UI change
 
 ### Version 2.58.7 - July 11 2019
 **RDM-4121** Console error when trying to Remove a collection item that has complex field with a collection item
@@ -755,7 +757,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 
 ### Version 2.58.2 - July 01 2019
 **RDM-4266** DAC - List mark-up
-**RDM-4274** DAC - Non-Descriptive form fields 
+**RDM-4274** DAC - Non-Descriptive form fields
 **RDM-4282** DAC - no postcode link P1 - Colour contrast
 
 ### Version 2.58.1 - July 1 2019
@@ -767,7 +769,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-4906** Payment web-component v1.8.6 integration in CCD
 
 ### Version 2.57.0 - June 26 2019
-**RDM-4525** Ordering of fixed lists 
+**RDM-4525** Ordering of fixed lists
 
 ### Version 2.56.0 - June 25 2019
 **RDM-2987** Markdown supporting Iterating collection items when accessing Complex elements
@@ -782,7 +784,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-4781** RDM-4781-Data not being shown on multi-select list
 
 ### Version 2.54.0 - June 07 2019
-**RDM-4336** RDM-4336 New external V2 Create Event endpoint  
+**RDM-4336** RDM-4336 New external V2 Create Event endpoint
 
 ### Version 2.53.0 - June 07 2019
 **RDM-4537** Case List Filters extraction and new contract
@@ -806,7 +808,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-4537** Case List Filters extraction and new contract
 
 ### Version 2.49.2 - May 21 2019
-**RDM-876** Hide print button when not configured  
+**RDM-876** Hide print button when not configured
 
 ### REVRTED Version 2.49.0 - May 14 2019
 **RDM-4537** Case List Filters extraction and new contract
@@ -815,7 +817,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-4575** search filters definition service
 
 ### Version 2.47.0 - May 7 2019
-**RDM-4574** Create Case Filters componant retrieve jurisdiction internally 
+**RDM-4574** Create Case Filters componant retrieve jurisdiction internally
 
 ### Version 2.46.0 - May 1 2019
 **RDM-3496** Case View of Nested Complex Types - Collection of complex types within complex types
@@ -825,7 +827,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 
 ### Version 2.43.0 - April 29 2019
 **RDM-4386** Make print, event selector and history tab optional but present by default
-**RDM-4130** Extract Results List Component to toolkit 
+**RDM-4130** Extract Results List Component to toolkit
 
 ### Version 2.42.3 - April 23 2019
 **RDM-3940** Add Hide and Show support to new ComplexTypeToEvent mapping
@@ -902,7 +904,7 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-3820** - New contract - extract Case Search Form component
 
 ### Version 2.24.1 - February 13 2019
-**RDM-2963** changed initialisation values to null 
+**RDM-2963** changed initialisation values to null
 
 ### Version 2.24.0 - February 12 2019
 **RDM-3821** - Extract Case Search Form to ui-toolkit as is

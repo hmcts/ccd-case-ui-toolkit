@@ -1,4 +1,5 @@
 export class ActivityInfo {
+  id?: string;
   forename: string;
   surname: string;
 }

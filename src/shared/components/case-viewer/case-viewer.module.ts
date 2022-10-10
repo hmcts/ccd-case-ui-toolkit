@@ -10,6 +10,7 @@ import { CaseReferencePipe, PipesModule } from '../../pipes';
 import {
   ActivityPollingService,
   ActivityService,
+  ActivitySocketService,
   DraftService,
   ErrorNotifierService,
   HttpService,
@@ -89,6 +90,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     EventTriggerResolver,
     ActivityService,
     ActivityPollingService,
+    ActivitySocketService,
     OrderService,
     DraftService,
     HttpService,

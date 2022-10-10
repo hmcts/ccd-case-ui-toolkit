@@ -38,7 +38,8 @@ import { AlertService } from '../../../services/alert';
 import { DraftService } from '../../../services/draft';
 import { OrderService } from '../../../services/order';
 import { attr, text } from '../../../test/helpers';
-import { CaseNotifier, ConvertHrefToRouterService } from '../../case-editor';
+import { CaseNotifier } from '../../case-editor';
+import { ConvertHrefToRouterService } from '../../case-editor/services/convert-href-to-router.service';
 import { ComplexModule, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -119,8 +120,8 @@ const MarkdownComponent: any = MockComponent({
 });
 
 let CaseActivityComponent: any = MockComponent({
-  selector: 'ccd-activity',
-  inputs: ['caseId', 'displayMode']
+  selector: 'ccd-case-activity',
+  inputs: ['caseId', 'iconOnly']
 });
 
 let FieldReadComponent: any = MockComponent({
@@ -1463,6 +1464,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          DeleteOrCancelDialogComponent,
           {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
         ]

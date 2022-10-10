@@ -114,31 +114,31 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       MarkdownComponent,
       PaginationComponent,
 
-      BaseFieldModule,
-      PaletteUtilsModule,
-      UnsupportedFieldComponent,
-      LabelFieldComponent,
+    BaseFieldModule,
+    PaletteUtilsModule,
+    UnsupportedFieldComponent,
+    LabelFieldComponent,
 
-      // Read
-      ReadTextFieldComponent,
-      ReadTextAreaFieldComponent,
-      ReadNumberFieldComponent,
-      ReadEmailFieldComponent,
-      ReadPhoneUKFieldComponent,
-      ReadDateFieldComponent,
-      ReadCollectionFieldComponent,
+    // Read
+    ReadTextFieldComponent,
+    ReadTextAreaFieldComponent,
+    ReadNumberFieldComponent,
+    ReadEmailFieldComponent,
+    ReadPhoneUKFieldComponent,
+    ReadDateFieldComponent,
+    ReadCollectionFieldComponent,
 
-      // Write
-      WriteCollectionFieldComponent,
-      WriteTextFieldComponent,
-      WriteTextAreaFieldComponent,
-      WritePhoneUKFieldComponent,
-      WriteNumberFieldComponent,
-      WriteEmailFieldComponent,
-      WriteDateFieldComponent,
-      LabelSubstitutorDirective,
-      FocusElementDirective,
-      PaginatePipe
-    ]
+    // Write
+    WriteCollectionFieldComponent,
+    WriteTextFieldComponent,
+    WriteTextAreaFieldComponent,
+    WritePhoneUKFieldComponent,
+    WriteNumberFieldComponent,
+    WriteEmailFieldComponent,
+    WriteDateFieldComponent,
+    LabelSubstitutorDirective,
+    FocusElementDirective,
+    PaginatePipe,
+  ]
 })
 export class CaseUIToolkitModule {}
