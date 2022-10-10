@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 4.8.3-strategic-activity-tracker-b
+### Version 4.8.3-strategic-activity-tracker-c
 **EUI-2976** Activity tracker redesign
 
 ### Version 4.18.16-EUI-6309-mandatory-field-issue
