@@ -13,7 +13,7 @@ import { AbstractFieldReadComponent } from '../base-field';
 export class JudicialUserFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
 
   @Input() public selectedJudicialUser: string;
-  @Input() public serviceId: string = '';
+  @Input() public serviceId: string = 'DIVORCE';
   @Output() public emitJudicialUserSelected = new EventEmitter<JudicialUserModel>();
 
   public judicialUserFormControl: FormControl;
@@ -23,8 +23,8 @@ export class JudicialUserFieldComponent extends AbstractFieldReadComponent imple
   public sub: Subscription;
 
   constructor(private readonly cd: ChangeDetectorRef,
-    private readonly jurisdictionService: JurisdictionService) {
-      super();
+              private readonly jurisdictionService: JurisdictionService) {
+    super();
   }
 
   public ngOnInit(): void {

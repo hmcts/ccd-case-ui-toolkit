@@ -25,4 +25,4 @@ export type FieldTypeEnum =
   | 'CaseHistoryViewer'
   | 'Organisation'
   | 'WaysToPay'
-  | 'JudicialUser';
+  | 'JudicialUserField';

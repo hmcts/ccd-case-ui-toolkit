@@ -1,4 +1,6 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatAutocompleteModule } from '@angular/material';
 import { JudicialUserFieldComponent } from './judicial-user-field.component';
 
 describe('JudicialUserFieldComponent', () => {
@@ -7,8 +9,9 @@ describe('JudicialUserFieldComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [],
+      imports: [MatAutocompleteModule],
       declarations: [JudicialUserFieldComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: []
     })
     .compileComponents();

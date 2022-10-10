@@ -64,6 +64,7 @@ import { DocumentDialogComponent } from './shared/components/dialogs/document-di
 import { RemoveDialogComponent } from './shared/components/dialogs/remove-dialog/remove-dialog.component';
 import { SaveOrDiscardDialogComponent } from './shared/components/dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CallbackErrorsComponent } from './shared/components/error/callback-errors.component';
+import { JudicialUserFieldComponent } from './shared/components/palette/judicial-user';
 import { PaletteModule } from './shared/components/palette/palette.module';
 
 @NgModule({
@@ -113,6 +114,7 @@ import { PaletteModule } from './shared/components/palette/palette.module';
       CaseReferencePipe,
       MarkdownComponent,
       PaginationComponent,
+      JudicialUserFieldComponent,
 
       BaseFieldModule,
       PaletteUtilsModule,

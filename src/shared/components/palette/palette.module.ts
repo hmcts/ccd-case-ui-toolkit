@@ -2,7 +2,7 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatFormFieldModule, MatInputModule, MAT_DATE_LOCALE } from '@angular/material';
+import { MatAutocompleteModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MAT_DATE_LOCALE } from '@angular/material';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
@@ -12,6 +12,7 @@ import { HeadersModule } from '../../../components/header/headers.module';
 import { TabsModule } from '../../../components/tabs/tabs.module';
 import { LabelSubstitutorModule } from '../../directives/substitutor/label-substitutor.module';
 import { PipesModule } from '../../pipes/pipes.module';
+import { AuthService, HttpErrorService, JurisdictionService } from '../../services';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { MarkdownModule } from '../markdown/markdown.module';
 import { AddressModule } from './address/address.module';
@@ -96,6 +97,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
+    MatAutocompleteModule,
     PaymentLibModule
   ],
   declarations: [
@@ -189,6 +191,9 @@ import { YesNoModule } from './yes-no/yes-no.module';
     FormValidatorsService,
     FileUploadStateService,
     FileUploadProgressGuard,
+    AuthService,
+    HttpErrorService,
+    JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ]
 })
