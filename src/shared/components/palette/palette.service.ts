@@ -50,9 +50,6 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 export class PaletteService {
 
   getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
-    if (caseField.id === 'JudicialUserField') {
-      return JudicialUserFieldComponent;
-    }
     switch (caseField.field_type.type) {
       case 'Text':
       case 'Postcode':
@@ -91,6 +88,8 @@ export class PaletteService {
             return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
           case 'Organisation':
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
+          case 'JudicialUser':
+            return JudicialUserFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
@@ -108,8 +107,6 @@ export class PaletteService {
         return CaseHistoryViewerFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
-      case 'JudicialUserField':
-        return JudicialUserFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }

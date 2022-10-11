@@ -1,27 +1,31 @@
-<div class="govuk-form-group">
+<div class="form-group">
+  <label
+    for="judicial-user"
+  >
+    {{ caseField.label }}
+  </label>
   <input
-    class="govuk-input"
+    id="judicial-user"
+    class="form-control bottom-30"
     [formControl]="judicialUserFormControl"
     [matAutocomplete]="autoComplete"
-    [placeholder]="placeholderContent"
-    [attr.disabled]="!disabled ? null: disabled"
   >
   <mat-autocomplete
     autoActiveFirstOption
     #autoComplete="matAutocomplete"
   >
     <mat-option
-      *ngFor="let judicial of filteredJudicialUsers"
+      *ngFor="let judicialUser of filteredJudicialUsers"
       class="select-option"
       [ngClass]="{'hide-autocomplete': !showAutocomplete}"
-      [value]="getDisplayName(judicial)"
-      (onSelectionChange)="onSelectionChange(judicial)"
+      [value]="judicialUser"
+      (onSelectionChange)="onSelectionChange(judicialUser)"
     >
-      {{ getDisplayName(judicial) }}
+      {{ judicialUser.fullName }} ({{ judicialUser.emailId }})
     </mat-option>
     <mat-option
       class="select-option"
-      *ngIf="!displayedJudicialsDuplicationFiltered?.length && showAutocomplete && !searchInProgress"
+      *ngIf="!filteredJudicialUsers?.length && showAutocomplete"
     >
       No results found
     </mat-option>
