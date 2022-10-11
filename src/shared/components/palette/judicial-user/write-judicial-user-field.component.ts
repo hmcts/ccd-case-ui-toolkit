@@ -1,23 +1,23 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { catchError, debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
 import { JurisdictionService } from '../../../services';
-import { AbstractFieldReadComponent } from '../base-field';
+import { AbstractFieldWriteComponent } from '../base-field';
 
 @Component({
-  selector: 'ccd-judicial-user-field',
-  styleUrls: ['./judicial-user-field.component.scss'],
-  templateUrl: './judicial-user-field.component.html'
+  selector: 'ccd-write-judicial-user-field',
+  styleUrls: ['./write-judicial-user-field.component.scss'],
+  templateUrl: './write-judicial-user-field.component.html'
 })
-export class JudicialUserFieldComponent extends AbstractFieldReadComponent implements OnInit, OnDestroy {
+export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
 
   private readonly JURISDICTION_ID = 'jid';
   private readonly MINIMUM_SEARCH_CHARACTERS = 2;
 
-  public judicialUserFormControl: FormControl;
+  public judicialUserFieldFormControl: FormControl;
   public jurisdictionId: string;
   public filteredJudicialUsers: JudicialUserModel[] = [];
   public showAutocomplete: boolean = false;
@@ -31,9 +31,9 @@ export class JudicialUserFieldComponent extends AbstractFieldReadComponent imple
 
   public ngOnInit(): void {
     this.jurisdictionId = this.route.snapshot.params[this.JURISDICTION_ID];
-    this.judicialUserFormControl = new FormControl('');
-    this.formGroup.addControl('judicialUserFormControl', this.judicialUserFormControl);
-    this.sub = this.judicialUserFormControl.valueChanges.pipe(
+    this.judicialUserFieldFormControl = new FormControl('');
+    this.formGroup.addControl('JudicialUserField', this.judicialUserFieldFormControl);
+    this.sub = this.judicialUserFieldFormControl.valueChanges.pipe(
       tap(() => this.showAutocomplete = false),
       tap(() => this.filteredJudicialUsers = []),
       debounceTime(300),
@@ -55,7 +55,8 @@ export class JudicialUserFieldComponent extends AbstractFieldReadComponent imple
 
   public onSelectionChange(judicialUser: JudicialUserModel): void {
     console.log('SELECTED JUDICIAL USER', judicialUser);
-    this.judicialUserFormControl.setValue(`${judicialUser.fullName} (${judicialUser.emailId})`);
+    // this.judicialUserFormControl.setValue(`${judicialUser.fullName} (${judicialUser.emailId})`);
+		this.judicialUserFieldFormControl.setValue(judicialUser.idamId);
   }
 
   public ngOnDestroy(): void {

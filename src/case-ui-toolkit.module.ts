@@ -42,6 +42,7 @@ import {
   ReadPhoneUKFieldComponent,
   ReadTextAreaFieldComponent,
   ReadTextFieldComponent,
+  ReadJudicialUserFieldComponent,
   SearchFiltersModule,
   UnsupportedFieldComponent,
   WriteCollectionFieldComponent,
@@ -50,7 +51,8 @@ import {
   WriteNumberFieldComponent,
   WritePhoneUKFieldComponent,
   WriteTextAreaFieldComponent,
-  WriteTextFieldComponent
+  WriteTextFieldComponent,
+  WriteJudicialUserFieldComponent
 } from './shared';
 import { CaseCreateComponent } from './shared/components/case-editor/case-create/case-create.component';
 import { CaseEditComponent } from './shared/components/case-editor/case-edit/case-edit.component';
@@ -64,83 +66,83 @@ import { DocumentDialogComponent } from './shared/components/dialogs/document-di
 import { RemoveDialogComponent } from './shared/components/dialogs/remove-dialog/remove-dialog.component';
 import { SaveOrDiscardDialogComponent } from './shared/components/dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CallbackErrorsComponent } from './shared/components/error/callback-errors.component';
-import { JudicialUserFieldComponent } from './shared/components/palette/judicial-user';
 import { PaletteModule } from './shared/components/palette/palette.module';
 
 @NgModule({
-    imports: [
-      BannersModule,
-      HeadersModule,
-      FootersModule,
-      BodyModule,
-      FormModule,
-      TabsModule,
-      CaseEditorModule,
-      CaseViewerModule,
-      CaseHistoryModule,
-      PaletteModule,
-      DialogsModule,
-      PipesModule,
-      MarkdownModule,
-      ConditionalShowModule,
-      LabelSubstitutorModule,
-      SearchFiltersModule,
-      FocusElementModule,
-      LoadingModule,
-      PaginationModule,
-      PortalModule
-    ],
-    exports: [
-      AlertComponent,
-      PhaseComponent,
-      HeaderBarComponent,
-      NavigationComponent,
-      NavigationItemComponent,
-      FooterComponent,
-      BodyComponent,
-      DateInputComponent,
-      TabsComponent,
-      TabComponent,
-      CaseEditComponent,
-      CaseCreateComponent,
-      CaseProgressComponent,
-      CaseViewComponent,
-      CaseViewerComponent,
-      CallbackErrorsComponent,
-      DocumentDialogComponent,
-      DeleteOrCancelDialogComponent,
-      SaveOrDiscardDialogComponent,
-      RemoveDialogComponent,
-      CaseReferencePipe,
-      MarkdownComponent,
-      PaginationComponent,
-      JudicialUserFieldComponent,
+  imports: [
+    BannersModule,
+    HeadersModule,
+    FootersModule,
+    BodyModule,
+    FormModule,
+    TabsModule,
+    CaseEditorModule,
+    CaseViewerModule,
+    CaseHistoryModule,
+    PaletteModule,
+    DialogsModule,
+    PipesModule,
+    MarkdownModule,
+    ConditionalShowModule,
+    LabelSubstitutorModule,
+    SearchFiltersModule,
+    FocusElementModule,
+    LoadingModule,
+    PaginationModule,
+    PortalModule
+  ],
+  exports: [
+    AlertComponent,
+    PhaseComponent,
+    HeaderBarComponent,
+    NavigationComponent,
+    NavigationItemComponent,
+    FooterComponent,
+    BodyComponent,
+    DateInputComponent,
+    TabsComponent,
+    TabComponent,
+    CaseEditComponent,
+    CaseCreateComponent,
+    CaseProgressComponent,
+    CaseViewComponent,
+    CaseViewerComponent,
+    CallbackErrorsComponent,
+    DocumentDialogComponent,
+    DeleteOrCancelDialogComponent,
+    SaveOrDiscardDialogComponent,
+    RemoveDialogComponent,
+    CaseReferencePipe,
+    MarkdownComponent,
+    PaginationComponent,
 
-      BaseFieldModule,
-      PaletteUtilsModule,
-      UnsupportedFieldComponent,
-      LabelFieldComponent,
+    BaseFieldModule,
+    PaletteUtilsModule,
+    UnsupportedFieldComponent,
+    LabelFieldComponent,
 
-      // Read
-      ReadTextFieldComponent,
-      ReadTextAreaFieldComponent,
-      ReadNumberFieldComponent,
-      ReadEmailFieldComponent,
-      ReadPhoneUKFieldComponent,
-      ReadDateFieldComponent,
-      ReadCollectionFieldComponent,
+    // Read
+    ReadTextFieldComponent,
+    ReadTextAreaFieldComponent,
+    ReadNumberFieldComponent,
+    ReadEmailFieldComponent,
+    ReadPhoneUKFieldComponent,
+    ReadDateFieldComponent,
+    ReadCollectionFieldComponent,
+    ReadJudicialUserFieldComponent,
 
-      // Write
-      WriteCollectionFieldComponent,
-      WriteTextFieldComponent,
-      WriteTextAreaFieldComponent,
-      WritePhoneUKFieldComponent,
-      WriteNumberFieldComponent,
-      WriteEmailFieldComponent,
-      WriteDateFieldComponent,
-      LabelSubstitutorDirective,
-      FocusElementDirective,
-      PaginatePipe
-    ]
+    // Write
+    WriteCollectionFieldComponent,
+    WriteTextFieldComponent,
+    WriteTextAreaFieldComponent,
+    WritePhoneUKFieldComponent,
+    WriteNumberFieldComponent,
+    WriteEmailFieldComponent,
+    WriteDateFieldComponent,
+    WriteJudicialUserFieldComponent,
+    LabelSubstitutorDirective,
+    FocusElementDirective,
+    PaginatePipe
+  ]
 })
 export class CaseUIToolkitModule {}

@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatAutocompleteModule } from '@angular/material';
-import { JudicialUserFieldComponent } from './judicial-user-field.component';
+import { WriteJudicialUserFieldComponent } from './write-judicial-user-field.component';
 
-describe('JudicialUserFieldComponent', () => {
-  let fixture: ComponentFixture<JudicialUserFieldComponent>;
-  let component: JudicialUserFieldComponent;
+describe('WriteJudicialUserFieldComponent', () => {
+  let fixture: ComponentFixture<WriteJudicialUserFieldComponent>;
+  let component: WriteJudicialUserFieldComponent;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [MatAutocompleteModule],
-      declarations: [JudicialUserFieldComponent],
+      declarations: [WriteJudicialUserFieldComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: []
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(JudicialUserFieldComponent);
+    fixture = TestBed.createComponent(WriteJudicialUserFieldComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

@@ -38,7 +38,8 @@ import { WriteEmailFieldComponent } from './email/write-email-field.component';
 import { FixedListModule } from './fixed-list/fixed-list.module';
 import { FixedRadioListModule } from './fixed-radio-list/fixed-radio-list.module';
 import { CaseHistoryViewerModule } from './history/case-history-viewer.module';
-import { JudicialUserFieldComponent } from './judicial-user/judicial-user-field.component';
+import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
+import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
 import { MoneyGbpModule } from './money-gbp/money-gbp.module';
 import { MultiSelectListModule } from './multi-select-list/multi-select-list.module';
@@ -105,7 +106,6 @@ import { YesNoModule } from './yes-no/yes-no.module';
     LabelFieldComponent,
     DatetimePickerComponent,
     WaysToPayFieldComponent,
-    JudicialUserFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -115,6 +115,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadJudicialUserFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -125,12 +126,12 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteJudicialUserFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
     LabelFieldComponent,
     WaysToPayFieldComponent,
-    JudicialUserFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -142,6 +143,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadCollectionFieldComponent,
     ReadCaseLinkFieldComponent,
     ReadOrganisationFieldComponent,
+    ReadJudicialUserFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -154,7 +156,8 @@ import { YesNoModule } from './yes-no/yes-no.module';
     DatetimePickerComponent,
     WriteCaseLinkFieldComponent,
     WriteDateContainerFieldComponent,
-    WriteOrganisationFieldComponent
+    WriteOrganisationFieldComponent,
+    WriteJudicialUserFieldComponent
   ],
   exports: [
     BaseFieldModule,
@@ -164,7 +167,6 @@ import { YesNoModule } from './yes-no/yes-no.module';
     LabelFieldComponent,
     DatetimePickerComponent,
     WaysToPayFieldComponent,
-    JudicialUserFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -174,6 +176,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadJudicialUserFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -184,6 +187,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
     WriteDateContainerFieldComponent,
+    WriteJudicialUserFieldComponent
   ],
   providers: [
     CollectionCreateCheckerService,
