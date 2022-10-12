@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { catchError, debounceTime, filter, switchMap, tap } from 'rxjs/operators';
@@ -17,7 +17,9 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
   private readonly JURISDICTION_ID = 'jid';
   private readonly MINIMUM_SEARCH_CHARACTERS = 2;
 
-  public judicialUserFieldFormControl: FormControl;
+  public judicialUserFormGroup: FormGroup;
+  public idamIdFormControl: FormControl;
+  public personalCodeFormControl: FormControl;
   public jurisdictionId: string;
   public filteredJudicialUsers: JudicialUserModel[] = [];
   public showAutocomplete: boolean = false;
@@ -31,9 +33,13 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
 
   public ngOnInit(): void {
     this.jurisdictionId = this.route.snapshot.params[this.JURISDICTION_ID];
-    this.judicialUserFieldFormControl = new FormControl('');
-    this.formGroup.addControl('JudicialUserField', this.judicialUserFieldFormControl);
-    this.sub = this.judicialUserFieldFormControl.valueChanges.pipe(
+    this.judicialUserFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
+    this.idamIdFormControl = new FormControl('');
+    this.judicialUserFormGroup.addControl('idamId', this.idamIdFormControl);
+    this.personalCodeFormControl = new FormControl('');
+    this.judicialUserFormGroup.addControl('personalCode', this.personalCodeFormControl);
+
+    this.sub = this.idamIdFormControl.valueChanges.pipe(
       tap(() => this.showAutocomplete = false),
       tap(() => this.filteredJudicialUsers = []),
       debounceTime(300),
@@ -54,9 +60,8 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
   }
 
   public onSelectionChange(judicialUser: JudicialUserModel): void {
-    console.log('SELECTED JUDICIAL USER', judicialUser);
-    // this.judicialUserFormControl.setValue(`${judicialUser.fullName} (${judicialUser.emailId})`);
-		this.judicialUserFieldFormControl.setValue(judicialUser.idamId);
+    this.idamIdFormControl.setValue(`${judicialUser.fullName} (${judicialUser.emailId})`);
+    this.personalCodeFormControl.setValue(judicialUser.personalCode);
   }
 
   public ngOnDestroy(): void {

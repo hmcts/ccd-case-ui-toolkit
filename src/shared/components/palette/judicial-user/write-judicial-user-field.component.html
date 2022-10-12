@@ -1,13 +1,24 @@
-<div class="form-group">
+<div class="form-group" [formGroup]="judicialUserFormGroup">
   <label
-    for="judicial-user"
+    [for]="id()"
   >
-    {{ caseField.label }}
+    <span
+      *ngIf="caseField.label"
+      class="form-label"
+    >
+      {{caseField | ccdFieldLabel}}
+    </span>
   </label>
+  <span
+    *ngIf="caseField.hint_text"
+    class="form-hint"
+  >
+    {{caseField.hint_text}}
+  </span>
   <input
-    id="judicial-user"
     class="form-control bottom-30"
-    [formControl]="judicialUserFieldFormControl"
+    [id]="id()"
+    [formControl]="idamIdFormControl"
     [matAutocomplete]="autoComplete"
   >
   <mat-autocomplete
@@ -18,14 +29,14 @@
       *ngFor="let judicialUser of filteredJudicialUsers"
       class="select-option"
       [ngClass]="{'hide-autocomplete': !showAutocomplete}"
-      [value]="judicialUser"
+      [value]="judicialUser.idamId"
       (onSelectionChange)="onSelectionChange(judicialUser)"
     >
       {{ judicialUser.fullName }} ({{ judicialUser.emailId }})
     </mat-option>
     <mat-option
-      class="select-option"
       *ngIf="!filteredJudicialUsers?.length && showAutocomplete"
+      class="select-option"
     >
       No results found
     </mat-option>
