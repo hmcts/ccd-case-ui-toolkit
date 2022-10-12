@@ -19,6 +19,7 @@ import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { initDialog } from '../../helpers';
+import { debug } from 'console';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -252,9 +253,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     let theControl = formGroup.controls['data'].get(caseFieldId);
     if (theControl && theControl['status'] !== 'DISABLED') {
       if (Array.isArray(theControl.value) && Array.isArray(value)
-              && theControl.value.length > value.length && theControl['caseField']
-              && theControl['caseField']['display_context'] && theControl['caseField']['display_context'] === 'OPTIONAL'
-              && theControl['caseField']['field_type'] && theControl['caseField']['field_type']['type'] === 'Collection') {
+        && theControl.value.length >= value.length && theControl['caseField']
+        && theControl['caseField']['display_context']
+        && (theControl['caseField']['display_context'] === 'OPTIONAL' || theControl['caseField']['display_context'] === 'COMPLEX')
+        && theControl['caseField']['field_type'] && theControl['caseField']['field_type']['type'] === 'Collection') {
         // do nothing
       } else {
         theControl.patchValue(value);
