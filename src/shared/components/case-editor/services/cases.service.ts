@@ -389,6 +389,7 @@ export class CasesService {
     payload.requestedRoles[0].attributes = {
       ...payload.requestedRoles[0].attributes,
       requestedRole: roleName,
+      specificAccessReason: sar.specificReason
     }
 
     payload.requestedRoles[0].notes[0] = {
