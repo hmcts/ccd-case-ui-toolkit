@@ -1,7 +1,7 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -9,14 +9,11 @@ import { ShowCondition } from '../../../directives';
 import {
   CaseEventData,
   CaseEventTrigger,
-  CaseField,
   CasePrintDocument,
   CaseView,
   ChallengedAccessRequest,
   SpecificAccessRequest,
   Draft,
-  FieldType,
-  FieldTypeEnum,
   RoleAssignmentResponse,
   RoleCategory,
   RoleRequestPayload
@@ -59,6 +56,22 @@ export class CasesService {
    * @deprecated Use `CasesService::getCaseView` instead
    */
   get = this.getCaseView;
+
+  public static updateChallengedAccessRequestAttributes(httpClient: HttpClient, caseId: string, attributesToUpdate: { [x: string]: any })
+    : Observable<RoleAssignmentResponse> {
+    return httpClient.post<RoleAssignmentResponse>(`/api/challenged-access-request/update-attributes`, {
+      caseId,
+      attributesToUpdate
+    });
+  }
+
+  public static updateSpecificAccessRequestAttributes(httpClient: HttpClient, caseId: string, attributesToUpdate: { [x: string]: any })
+    : Observable<RoleAssignmentResponse> {
+    return httpClient.post<RoleAssignmentResponse>(`/api/specific-access-request/update-attributes`, {
+      caseId,
+      attributesToUpdate
+    });
+  }
 
   constructor(
     private http: HttpService,
@@ -321,6 +334,8 @@ export class CasesService {
     const beginTime = new Date();
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
     const id = userInfo.id ? userInfo.id : userInfo.uid;
+    const isNew = true;
+
     const payload: RoleRequestPayload = camUtils.getAMPayload(id,
                                                               id,
                                                               roleName,
@@ -329,7 +344,9 @@ export class CasesService {
                                                               caseId,
                                                               request,
                                                               beginTime,
-                                                              endTime);
+                                                              endTime,
+                                                              isNew
+      );
 
     return this.http.post(`/api/challenged-access-request`, payload);
   }
@@ -348,7 +365,7 @@ export class CasesService {
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
-                                      roleName, roleCategory, 'SPECIFIC', caseId, sar);
+                                      roleName, roleCategory, 'SPECIFIC', caseId, sar, null, null, true);
 
     payload.roleRequest = {
       ...payload.roleRequest,
@@ -379,10 +396,10 @@ export class CasesService {
       ...payload.requestedRoles[0].notes[0],
       userId: payload.requestedRoles[0].actorId
     }
+
     return this.http.post(
       `/api/specific-access-request`,
       payload
     );
   }
-
 }
