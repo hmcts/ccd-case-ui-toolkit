@@ -60,8 +60,14 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
         }
       })
       this.getLinkedCases();
-      this.linkedCasesService.isLinkedCasesEventTrigger =
-      this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
+      this.linkedCasesService.isCreateCaseLinkEventTrigger = this.isCreateCaseLinkEvent();
+  }
+
+  public isCreateCaseLinkEvent() {
+    const createEventCaseFields = this.caseEditPageComponent.eventTrigger.case_fields &&
+                                    this.caseEditPageComponent.eventTrigger.case_fields.filter
+            (field => field.display_context_parameter === this.linkedCasesService.createCaseLinkDisplayContext);
+    return createEventCaseFields && createEventCaseFields.length ? true : false;
   }
 
   public ngAfterViewInit(): void {
@@ -97,7 +103,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public setContinueButtonValidationErrorMessage(): void {
-    const errorMessage = this.linkedCasesService.isLinkedCasesEventTrigger
+    const errorMessage = this.linkedCasesService.isCreateCaseLinkEventTrigger
         ? LinkedCasesErrorMessages.LinkCasesNavigationError
         : LinkedCasesErrorMessages.UnlinkCasesNavigationError;
 
@@ -140,7 +146,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public getLinkedCases(): void {
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
       let caseViewFiltered = caseView.tabs.filter(val => {
-        let linkField = val.fields.some(({field_type}) => field_type.collection_field_type.id === 'CaseLink')
+        let linkField = val.fields.some(({field_type}) => field_type.collection_field_type && field_type.collection_field_type.id === 'CaseLink')
         return linkField
       })
       if (caseViewFiltered) {
@@ -149,7 +155,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
         this.linkedCasesService.getAllLinkedCaseInformation();
       }
         // Initialise the first page to display
-        this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger ||
+        this.linkedCasesPage = this.linkedCasesService.isCreateCaseLinkEventTrigger ||
                           (this.linkedCasesService.caseFieldValue && this.linkedCasesService.caseFieldValue.length > 0
                             && !this.linkedCasesService.serverLinkedApiError)
           ? LinkedCasesPages.BEFORE_YOU_START

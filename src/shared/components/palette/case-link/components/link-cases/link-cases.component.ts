@@ -104,7 +104,7 @@ export class LinkCasesComponent implements OnInit {
   }
 
   private isCaseSelectedSameAsCurrentCase(): boolean {
-    return this.linkCaseForm.value.caseNumber === this.linkedCasesService.caseId
+    return this.formatCaseNumber(this.linkCaseForm.value.caseNumber) === this.linkedCasesService.caseId;
   }
 
   public showErrorInfo(): void {
@@ -140,7 +140,7 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber',
       });
     }
-    if (this.linkCaseForm.value.caseNumber === this.linkedCasesService.caseId) {
+    if (this.formatCaseNumber(this.linkCaseForm.value.caseNumber) === this.linkedCasesService.caseId) {
       this.errorMessages.push({
         title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.ProposedCaseWithIn,
@@ -151,8 +151,12 @@ export class LinkCasesComponent implements OnInit {
     this.emitLinkedCasesState(false);
   }
 
+  private formatCaseNumber(caseNumber) {
+    return caseNumber.replace(/[- ]/g, '');
+  }
+
   public getCaseInfo(): void {
-    const caseNumberData = this.linkCaseForm.value.caseNumber.replace(/[- ]/g, '');
+    const caseNumberData = this.formatCaseNumber(this.linkCaseForm.value.caseNumber);
     this.casesService
       .getCaseViewV2(caseNumberData)
       .subscribe(

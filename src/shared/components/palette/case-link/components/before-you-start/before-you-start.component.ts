@@ -19,7 +19,7 @@ export class BeforeYouStartComponent {
   public errorMessages: ErrorMessage[];
 
   constructor(private readonly router: Router, public readonly linkedCasesService: LinkedCasesService) {
-    this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
+    this.isLinkCasesJourney = this.linkedCasesService.isCreateCaseLinkEventTrigger;
     // re-initiate the state based on the casefield value
     const linkedCaseRefereneIds = this.linkedCasesService.caseFieldValue.filter(item => item).map(item => item.id);
     this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter
