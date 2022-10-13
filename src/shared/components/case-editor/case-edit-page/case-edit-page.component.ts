@@ -19,7 +19,6 @@ import { CaseField } from '../../../domain/definition';
 import { FieldsUtils } from '../../../services/fields';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { initDialog } from '../../helpers';
-import { debug } from 'console';
 
 @Component({
   selector: 'ccd-case-edit-page',
