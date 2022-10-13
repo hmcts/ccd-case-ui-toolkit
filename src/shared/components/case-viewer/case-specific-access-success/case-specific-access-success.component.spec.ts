@@ -33,7 +33,6 @@ describe('CaseSpecificAccessSuccessComponent', () => {
   it('should create component and show the correct Case Reference', () => {
     expect(component).toBeDefined();
     const confirmationMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-panel__body');
-    console.log('test' , JSON.stringify(confirmationMessageElement.textContent));
     expect(confirmationMessageElement.textContent).toContain(case_id);
   });
 
