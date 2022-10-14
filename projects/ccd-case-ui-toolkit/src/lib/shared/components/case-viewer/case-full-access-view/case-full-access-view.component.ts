@@ -1,6 +1,8 @@
 import { Location } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
-  SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit, ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
@@ -26,14 +28,12 @@ import { ConvertHrefToRouterService } from '../../case-editor/services/convert-h
 import { DeleteOrCancelDialogComponent } from '../../dialogs/delete-or-cancel-dialog/delete-or-cancel-dialog.component';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 
-
-
 @Component({
   selector: 'ccd-case-full-access-view',
   templateUrl: './case-full-access-view.component.html',
   styleUrls: ['./case-full-access-view.component.scss']
 })
-export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges {
+export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   public static readonly TRIGGER_TEXT_START = 'Go';
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
@@ -84,7 +84,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (!changes.prependedTabs.firstChange) {
+    if (changes.prependedTabs && !changes.prependedTabs.firstChange) {
       this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
@@ -212,6 +212,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         && this.error.details
         && this.error.details.field_errors
         && this.error.details.field_errors.length);
+  }
+
+  public ngAfterViewInit(): void {
+    this.organiseTabPosition();
   }
 
   public organiseTabPosition(): void {

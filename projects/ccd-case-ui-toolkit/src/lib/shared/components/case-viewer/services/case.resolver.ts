@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
 import { plainToClassFromExist } from 'class-transformer';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
-import { CaseView } from '../../../domain/case-view/case-view.model';
-import { Draft } from '../../../domain/draft.model';
-import { DraftService } from '../../../services/draft/draft.service';
+import { CaseView, Draft } from '../../../domain';
+import { DraftService, NavigationOrigin } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
-import { NavigationOrigin } from '../../../services/navigation/navigation-origin.model';
-import { CaseNotifier } from '../../case-editor/services/case.notifier';
-import { CasesService } from '../../case-editor/services/cases.service';
+import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -86,10 +83,6 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheDraft(cid): Promise<CaseView> {
-    if (this.caseNotifier.cachedCaseView && this.caseNotifier.cachedCaseView.case_id && this.caseNotifier.cachedCaseView.case_id === cid) {
-      this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
-      return of(this.caseNotifier.cachedCaseView).toPromise();
-    } else {
       return this.draftService
       .getDraft(cid)
       .pipe(
@@ -99,13 +92,16 @@ export class CaseResolver implements Resolve<CaseView> {
           return this.caseNotifier.cachedCaseView;
         }),
         catchError(error => this.checkAuthorizationError(error))
-      ).toPromise() as Promise<CaseView>;
-    }
+      ).toPromise();
   }
 
   private checkAuthorizationError(error: any) {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
+    if (error.status === 400) {
+      this.router.navigate(['/search/noresults']);
+      return of(null);
+    }
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case']);
       return of(null);

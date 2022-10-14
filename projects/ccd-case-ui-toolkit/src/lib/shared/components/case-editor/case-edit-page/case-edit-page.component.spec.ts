@@ -11,6 +11,10 @@ import { CaseEventData, CaseEventTrigger, CaseField, Draft, FieldType, HttpError
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { CcdCaseTitlePipe } from '../../../pipes/case-title';
+import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
+import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
+import createSpyObj = jasmine.createSpyObj;
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValueService } from '../../../services';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
@@ -19,12 +23,8 @@ import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
-import { CaseEditPageComponent } from './case-edit-page.component';
 import { CaseEditPageText } from './case-edit-page-text.enum';
-import createSpyObj = jasmine.createSpyObj;
-import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
-import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
-import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
+import { CaseEditPageComponent } from './case-edit-page.component';
 
 describe('CaseEditPageComponent', () => {
 
@@ -848,7 +848,8 @@ describe('CaseEditPageComponent', () => {
 
     const F_GROUP = new FormGroup({
       data: new FormGroup({Invalidfield1: new FormControl(null, Validators.required)
-                              , Invalidfield2: new FormControl(null, Validators.required)
+                              , Invalidfield2: new FormControl(null,
+                                  [Validators.required, Validators.minLength(5), Validators.maxLength(10)])
                               , OrganisationField: new FormControl(null, Validators.required)
                               , complexField1: new FormControl(null, Validators.required)
                             })
@@ -952,6 +953,38 @@ describe('CaseEditPageComponent', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach(error => {
         expect(error.message).toEqual(`${error.id} is required`);
+      });
+    });
+
+    it('should validate minimum length field value and log error message', () => {
+      const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
+      wizardPage.case_fields.push(case_Field);
+      wizardPage.isMultiColumn = () => false;
+      F_GROUP.setValue({data: {Invalidfield2: 'test', Invalidfield1: 'test1', OrganisationField: '', complexField1: ''}, });
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} is below the minimum length`);
+      });
+    });
+
+    it('should validate maximum length field value and log error message', () => {
+      const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
+      wizardPage.case_fields.push(case_Field);
+      wizardPage.isMultiColumn = () => false;
+      F_GROUP.setValue({data: {Invalidfield2: 'testing1234', Invalidfield1: 'test1', OrganisationField: '', complexField1: ''}, });
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} exceeds the maximum length`);
       });
     });
 

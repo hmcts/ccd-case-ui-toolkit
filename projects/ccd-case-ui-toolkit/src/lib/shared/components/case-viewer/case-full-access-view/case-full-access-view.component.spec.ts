@@ -1630,7 +1630,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
 
   it('should add prepended & appended tabs to the existing tab list', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
-    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
     expect(caseViewerComponent.tabGroup._tabs.length).toEqual(5);
   });
@@ -1644,16 +1644,16 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   });
 
   it('should return tabs', () => {
-    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
     expect(caseViewerComponent.hasTabsPresent).toBeTruthy();
-  })
+  });
 
   it('should navigate to roles and access tab', () => {
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
-    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
-    expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
+    expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(0);
   });
 
   it('should return blank array when pretended tabs are null', () => {
@@ -1665,14 +1665,14 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   });
 
   it('should return tabs', () => {
-    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
     expect(caseViewerComponent.hasTabsPresent).toBeTruthy();
-  })
+  });
 
   it('should navigate to roles and access tab', () => {
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
-    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
     expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
   });
@@ -1696,7 +1696,6 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
-
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
     alertService.setPreserveAlerts.and.returnValue(of({}));
     alertService.success.and.returnValue(of({}));
@@ -1811,11 +1810,34 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
     componentFixture.detectChanges();
-    caseViewerComponent.clearErrorsAndWarnings();
-    const error = de.query($ERROR_SUMMARY);
-    expect(error).toBeFalsy();
-    expect(caseViewerComponent.error).toBeFalsy();
-    expect(caseViewerComponent.ignoreWarning).toBeFalsy();
+
+    const eventTriggerElement = debugElement.query(By.directive(EventTriggerComponent));
+    const eventTrigger = eventTriggerElement.componentInstance;
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
+
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
+    caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
+    componentFixture.detectChanges();
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE);
+  });
+
+  it('should return true for tab available', () => {
+    expect(caseViewerComponent.hasTabsPresent()).toEqual(true);
+  });
+
+  it('should pass flag to disable button when form valid but callback errors exist', () => {
+    caseViewerComponent.error = HttpError.from(null);
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeFalsy();
+    const error = HttpError.from(null);
+    error.callbackErrors = ['anErrors'];
+    caseViewerComponent.error = error;
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeTruthy();
   });
 
   it('should unsubscribe', () => {

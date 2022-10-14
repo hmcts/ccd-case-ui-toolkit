@@ -36,9 +36,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
       providers: [],
       parent: this.fieldContainer?.injector
     };
-
     const injector = Injector.create(injectorOptions);
-
     const factory = this.resolver.resolveComponentFactory(componentClass);
     const component = this.fieldContainer.createComponent(factory, 0, injector);
 

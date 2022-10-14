@@ -212,6 +212,30 @@ describe('CaseResolver', () => {
       expect(router.navigate).not.toHaveBeenCalledWith(['/list/case']);
     });
 
+    it('should redirect to no case found page when case cannot be found and previousUrl is event submission', () => {
+      const error = {
+        status: 400
+      };
+      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
+      };
+
+      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).toHaveBeenCalledWith(['/search/noresults']);
+    });
+
     it('should redirect to case list page when case id is empty', () => {
       const navigationResult = Promise.resolve('someResult');
       router.navigate.and.returnValue(navigationResult);
@@ -306,6 +330,16 @@ describe('CaseResolver', () => {
         });
       expect(draftService.getDraft).not.toHaveBeenCalled();
       expect(caseNotifier.cachedCaseView).toBe(DRAFT);
+    });
+
+    it('should make sevice call when cached case view is not exists', () => {
+      DRAFT.case_id = 'DRAFT42';
+      caseResolver
+        .resolve(route)
+        .then(caseData => {
+          expect(caseData).toEqual(DRAFT);
+        });
+      expect(draftService.getDraft).toHaveBeenCalled();
     });
   });
 });
