@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.21.1-judicial-user-typeahead
+**EUI-6746** CR-52 JOH typeahead
+
 ### Version 4.21.0-update-joh-name-to-full-name
 **EUI-6746** CR-52 JOH typeahead
 
