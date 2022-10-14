@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CaseHistoryViewerFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
-	public ngOnInit(): void {
-		console.log('HISTORY CASE FIELD', this.caseField);
-	}
+  public ngOnInit(): void {
+    console.log('HISTORY CASE FIELD', this.caseField);
+  }
 }

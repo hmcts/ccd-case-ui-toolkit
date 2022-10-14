@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Subscription } from "rxjs";
-import { JudicialUserModel } from "../../../domain/jurisdiction";
-import { JurisdictionService } from "../../../services";
-import { AbstractFieldReadComponent } from "../base-field";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { JudicialUserModel } from '../../../domain/jurisdiction';
+import { JurisdictionService } from '../../../services';
+import { AbstractFieldReadComponent } from '../base-field';
 
 @Component({
   selector: 'ccd-read-judicial-user-field',

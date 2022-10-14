@@ -16,13 +16,15 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
 
   private readonly JURISDICTION_ID = 'jid';
   private readonly MINIMUM_SEARCH_CHARACTERS = 2;
+  private readonly IDAM_ID = 'idamId';
+  private readonly PERSONAL_CODE = 'personalCode';
 
   public judicialUserFormGroup: FormGroup;
   public idamIdFormControl: FormControl;
   public personalCodeFormControl: FormControl;
   public jurisdictionId: string;
   public filteredJudicialUsers: JudicialUserModel[] = [];
-  public showAutocomplete: boolean = false;
+  public showAutocomplete = false;
   public sub: Subscription;
 
   constructor(private readonly route: ActivatedRoute,
@@ -35,9 +37,9 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
     this.jurisdictionId = this.route.snapshot.params[this.JURISDICTION_ID];
     this.judicialUserFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
     this.idamIdFormControl = new FormControl('');
-    this.judicialUserFormGroup.addControl('idamId', this.idamIdFormControl);
+    this.judicialUserFormGroup.addControl(this.IDAM_ID, this.idamIdFormControl);
     this.personalCodeFormControl = new FormControl('');
-    this.judicialUserFormGroup.addControl('personalCode', this.personalCodeFormControl);
+    this.judicialUserFormGroup.addControl(this.PERSONAL_CODE, this.personalCodeFormControl);
 
     this.sub = this.idamIdFormControl.valueChanges.pipe(
       tap(() => this.showAutocomplete = false),
