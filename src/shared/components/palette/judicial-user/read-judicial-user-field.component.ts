@@ -18,10 +18,12 @@ export class ReadJudicialUserFieldComponent extends AbstractFieldReadComponent i
   }
 
   public ngOnInit(): void {
-    const personalCode = this.caseField.value.personalCode;
-    this.sub = this.jurisdictionService.searchJudicialUsersByPersonalCodes([personalCode]).subscribe(judicialUsers => {
-      this.judicialUser = judicialUsers && judicialUsers.length > 0 && judicialUsers[0];
-    });
+    if (this.caseField && this.caseField.value && this.caseField.value.personalCode) {
+      const personalCode = this.caseField.value.personalCode;
+      this.sub = this.jurisdictionService.searchJudicialUsersByPersonalCodes([personalCode]).subscribe(judicialUsers => {
+        this.judicialUser = judicialUsers && judicialUsers.length > 0 && judicialUsers[0];
+      });
+    }
   }
 
   public ngOnDestroy(): void {

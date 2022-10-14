@@ -52,7 +52,6 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
       ))
     ).subscribe((judicialUsers: JudicialUserModel[]) => {
       this.filteredJudicialUsers = judicialUsers;
-      this.cd.detectChanges();
     });
   }
 
