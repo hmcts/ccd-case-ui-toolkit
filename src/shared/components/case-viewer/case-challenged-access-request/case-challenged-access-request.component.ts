@@ -111,7 +111,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
     // Initiate Challenged Access Request
     if (this.formGroup.valid) {
       // Get the Case Reference (for which access is being requested) from the ActivatedRouteSnapshot data
-      const caseId = this.route.snapshot.data.case.case_id;
+      const caseId = this.route.snapshot.params.cid;
       const radioSelectedValue = this.formGroup.get(this.radioSelectedControlName).value;
       // Get the index of the selected AccessReason enum value. Can't use Object.values because it's not available in
       // < ES2017!
