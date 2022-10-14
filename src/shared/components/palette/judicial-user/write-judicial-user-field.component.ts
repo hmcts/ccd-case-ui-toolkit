@@ -57,7 +57,6 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
   }
 
   public filter(searchTerm: string): Observable<JudicialUserModel[]> {
-    this.jurisdictionId = 'BBA3';
     return this.jurisdictionService.searchJudicialUsers(searchTerm, this.jurisdictionId);
   }
 

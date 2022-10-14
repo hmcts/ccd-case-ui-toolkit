@@ -113,22 +113,6 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('abc', async() => {
-    const inputElement = fixture.debugElement.query(By.css('input')); // Returns DebugElement
-    inputElement.nativeElement.dispatchEvent(new Event('focusin'));
-    inputElement.nativeElement.value = 'jac';
-    inputElement.nativeElement.dispatchEvent(new Event('input'));
-
-    fixture.detectChanges();
-    await fixture.whenStable();
-    fixture.detectChanges();
-
-    const matOptions = document.querySelectorAll('mat-option');
-    console.log('MAT OPTIONS', matOptions);
-
-    expect(component.jurisdictionId).toEqual('BBA3');
-  });
-
   it('should create', async() => {
     component.filteredJudicialUsers = JUDICIAL_USERS;
     fixture.detectChanges();
