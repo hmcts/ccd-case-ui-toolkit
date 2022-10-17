@@ -35,6 +35,16 @@ const COMPLEX_FIELD_TYPE: FieldType = {
     type: 'Complex'
   }
 };
+
+const DYNAMIC_FIELD_TYPE: FieldType = {
+  id: 'Address',
+  type: 'Collection',
+  collection_field_type: {
+    id: 'DynamicRadioList',
+    type: 'Complex'
+  }
+};
+
 const VALUES = [
   {
     id: '123',
@@ -613,3 +623,101 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
     expect(component.formArray['component'].collItems[0].prefix).toEqual('Values_0_');
   });
 })
+
+describe('WriteCollectionFieldComponent', () => {
+  let fixture: ComponentFixture<WriteCollectionFieldComponent>;
+  let component: WriteCollectionFieldComponent;
+  let de: DebugElement;
+  let formValidatorService: any;
+  let dialog: any;
+  let dialogRef: any;
+  let scrollToService: any;
+  let profileNotifier: any;
+  let caseField: CaseField;
+  let formGroup: FormGroup;
+  let collectionCreateCheckerService: CollectionCreateCheckerService;
+
+  beforeEach(async(() => {
+    formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+    dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of());
+    dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
+    dialog.open.and.returnValue(dialogRef);
+    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
+    scrollToService.scrollTo.and.returnValue(of());
+    caseField = <CaseField>({
+      id: FIELD_ID,
+      label: 'X',
+      field_type: DYNAMIC_FIELD_TYPE,
+      display_context: 'OPTIONAL',
+      display_context_parameter: '#COLLECTION(allowInsert)',
+      value: VALUES.slice(0),
+      acls: [
+        {
+          role: 'caseworker-divorce',
+          create: true,
+          read: true,
+          update: true,
+          delete: true
+        }
+      ]
+    });
+    formGroup = new FormGroup({
+      field1: new FormControl()
+    });
+
+    profileNotifier = new ProfileNotifier();
+    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+
+    collectionCreateCheckerService = new CollectionCreateCheckerService();
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          PaletteUtilsModule
+        ],
+        declarations: [
+          WriteCollectionFieldComponent,
+          FieldWriteComponent,
+          FieldReadComponent
+        ],
+        providers: [
+          { provide: FormValidatorsService, useValue: formValidatorService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: ScrollToService, useValue: scrollToService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
+          RemoveDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(WriteCollectionFieldComponent);
+    component = fixture.componentInstance;
+    component.caseField = caseField;
+    component.caseFields = [caseField];
+    component.formGroup = formGroup;
+    component.ngOnInit();
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  }));
+
+  it('should add dynamic item to collection when add button is clicked', () => {
+    let addButton = de.query($ADD_BUTTON_TOP);
+
+    addButton.nativeElement.click();
+    fixture.detectChanges();
+
+    let writeFields = de.queryAll($WRITE_FIELDS);
+
+    expect(writeFields.length).toEqual(3);
+
+    let addedField = writeFields[2].componentInstance;
+
+    // Show empty case field
+    expect(addedField.caseField.field_type instanceof FieldType).toBeTruthy();
+    expect(addedField.caseField.field_type.id).toEqual(DYNAMIC_FIELD_TYPE.collection_field_type.id);
+    expect(addedField.caseField.field_type.type).toEqual(DYNAMIC_FIELD_TYPE.collection_field_type.type);
+  });
+});

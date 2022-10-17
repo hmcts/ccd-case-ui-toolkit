@@ -199,7 +199,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
     let item = { value: null }
-
+debugger;
     if ( this.isCollectionDynamic() ) {
       item  = {...this.caseField.value[this.caseField.value.length - 1]};
       const key: number = Number(item['id'][item['id'].length - 1]) + 1;
@@ -236,6 +236,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   private isCollectionDynamic(): boolean {
+    debugger;
     if (!this.caseField.field_type || !this.caseField.field_type.collection_field_type) {
       return false;
     }
