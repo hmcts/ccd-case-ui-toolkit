@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatTabsModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -1494,10 +1494,26 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
   let convertHrefToRouterService;
+  const prependedTabsList = [
+    {
+      id: 'tasks',
+      label: 'Tasks',
+      fields: [],
+      show_condition: null
+    },
+    {
+      id: 'roles-and-access',
+      label: 'Roles and access',
+      fields: [],
+      show_condition: null
+    }
+  ];
 
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    navigationNotifierService = new NavigationNotifierService();
+    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
     TestBed
@@ -1576,6 +1592,14 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     componentFixture = TestBed.createComponent(CaseFullAccessViewComponent);
     caseViewerComponent = componentFixture.componentInstance;
     caseViewerComponent.caseDetails = WORK_ALLOCATION_CASE_VIEW;
+    caseViewerComponent.appendedTabs = [
+      {
+        id: 'hearings',
+        label: 'Hearings',
+        fields: [],
+        show_condition: null
+      }
+    ];
     caseViewerComponent.prependedTabs = [
       {
         id: 'tasks',
@@ -1607,7 +1631,38 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect((<HTMLElement>tasksTab2.querySelector('.mat-tab-label-content')).innerText).toBe('Overview');
     const tasksTab3: HTMLElement = matTabHTMLElement.children[3] as HTMLElement;
     expect((<HTMLElement>tasksTab3.querySelector('.mat-tab-label-content')).innerText).toBe('Case notes');
+    const tasksTab4: HTMLElement = matTabHTMLElement.children[4] as HTMLElement;
+    expect((<HTMLElement>tasksTab4.querySelector('.mat-tab-label-content')).innerText).toBe('Hearings');
   });
+
+  it('should add prepended & appended tabs to the existing tab list', () => {
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(5);
+  });
+
+  it('should return blank array when pretended tabs are null', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330');
+    componentFixture.detectChanges();
+    caseViewerComponent.prependedTabs = null;
+    caseViewerComponent.organiseTabPosition();
+    expect(caseViewerComponent.prependedTabs).toEqual([]);
+  });
+
+  it('should return tabs', () => {
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.hasTabsPresent).toBeTruthy();
+  })
+
+  it('should navigate to roles and access tab', () => {
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) })
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(0);
+  });
+
 });
 
 describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {
@@ -1617,6 +1672,8 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
   let convertHrefToRouterService;
+  let subscribeSpy: jasmine.Spy;
+  let subscriptionMock: Subscription = new Subscription();
 
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
@@ -1624,6 +1681,11 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
 
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
+    subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
+    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
+    alertService.setPreserveAlerts.and.returnValue(Observable.of({}));
+    alertService.success.and.returnValue(Observable.of({}));
+    alertService.warning.and.returnValue(Observable.of({}));
 
     TestBed
       .configureTestingModule({
@@ -1717,6 +1779,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     ];
     debugElement = componentFixture.debugElement;
     componentFixture.detectChanges();
+    de = componentFixture.debugElement;
   }));
 
   it('should not call callAngularRouter() on initial (default) value', (done) => {
@@ -1727,5 +1790,51 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
       expect(convertHrefToRouterService.callAngularRouter).not.toHaveBeenCalled();
       done();
     });
+  });
+
+  it('should clear errors and warnings', () => {
+    let callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
+    componentFixture.detectChanges();
+
+    let eventTriggerElement = debugElement.query(By.directive(EventTriggerComponent));
+    let eventTrigger = eventTriggerElement.componentInstance;
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
+
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
+    caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
+    componentFixture.detectChanges();
+
+    expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE);
+  });
+
+  it('should return true for tab available', () => {
+    expect(caseViewerComponent.hasTabsPresent()).toEqual(true);
+  })
+
+  it('should pass flag to disable button when form valid but callback errors exist', () => {
+    caseViewerComponent.error = HttpError.from(null);
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeFalsy();
+    const error = HttpError.from(null);
+    error.callbackErrors = ['anErrors'];
+    caseViewerComponent.error = error;
+    componentFixture.detectChanges();
+
+    expect(caseViewerComponent.isTriggerButtonDisabled()).toBeTruthy();
+  });
+
+  it('should unsubscribe', () => {
+    caseViewerComponent.unsubscribe(subscriptionMock);
+    expect(subscribeSpy).toHaveBeenCalled();
+  });
+
+  it('should not unsubscribe', () => {
+    subscriptionMock = null;
+    caseViewerComponent.unsubscribe(subscriptionMock);
+    expect(subscribeSpy).not.toHaveBeenCalled();
   });
 });

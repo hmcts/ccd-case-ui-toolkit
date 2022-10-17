@@ -1,12 +1,12 @@
-import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
+import { plainToClassFromExist } from 'class-transformer';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
-import { CaseNotifier, CasesService } from '../../case-editor';
 import { DraftService, NavigationOrigin } from '../../../services';
-import { plainToClassFromExist } from 'class-transformer';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
+import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -83,10 +83,6 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheDraft(cid): Promise<CaseView> {
-    if (this.caseNotifier.cachedCaseView && this.caseNotifier.cachedCaseView.case_id && this.caseNotifier.cachedCaseView.case_id === cid) {
-      this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
-      return of(this.caseNotifier.cachedCaseView).toPromise();
-    } else {
       return this.draftService
       .getDraft(cid)
       .pipe(
@@ -97,14 +93,17 @@ export class CaseResolver implements Resolve<CaseView> {
         }),
         catchError(error => this.checkAuthorizationError(error))
       ).toPromise();
-    }
   }
 
   private checkAuthorizationError(error: any) {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
+    if (error.status === 400) {
+      this.router.navigate(['/search/noresults']);
+      return Observable.of(null);
+    }
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
-      this.router.navigate(['/list/case'])
+      this.router.navigate(['/list/case']);
       return Observable.of(null);
     }
     if (error.status !== 401 && error.status !== 403) {
