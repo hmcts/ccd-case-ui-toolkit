@@ -19,10 +19,8 @@ describe('CaseChallengedAccessRequestComponent', () => {
   const case_id = '1234123412341234';
   const mockRoute = {
     snapshot: {
-      data: {
-        case: {
-          case_id
-        }
+      params: {
+        cid: case_id
       }
     }
   };

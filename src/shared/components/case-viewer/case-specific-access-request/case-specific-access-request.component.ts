@@ -3,7 +3,7 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup,
+  FormGroup
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ import { ErrorMessage, SpecificAccessRequest } from '../../../domain';
 import { CasesService } from '../../case-editor';
 import {
   SpecificAccessRequestErrors,
-  SpecificAccessRequestPageText,
+  SpecificAccessRequestPageText
 } from './models';
 
 @Component({
@@ -86,7 +86,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
     // Initiate Specific Access Request
     if (this.formGroup.valid) {
       // Get the Case Reference (for which access is being requested) from the ActivatedRouteSnapshot data
-      const caseId = this.route.snapshot.data.case.case_id;
+      const caseId = this.route.snapshot.params.cid;
       const specificAccessRequest = {
         specificReason: this.formGroup.get(this.specificReasonControlName).value
       } as SpecificAccessRequest;
