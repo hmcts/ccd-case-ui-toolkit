@@ -1,1 +1,1 @@
-export * from './case-file-view-filed.component';
+export * from './case-file-view-field.component';
