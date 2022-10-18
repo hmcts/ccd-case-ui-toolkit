@@ -246,7 +246,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (<HTMLElement>tab.element.nativeElement).id;
-    // due to some edge case like hidden tab we can't calculate the last index of existing tabs,	    const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
+    // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
     // so have to hard code the hearings id here
     if ((tabChangeEvent.index <= 1 && this.prependedTabs.length) ||
       (this.appendedTabs.length && id === 'hearings')) {
