@@ -66,7 +66,8 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   public isCreateCaseLinkEvent() {
     const createEventCaseFields = this.caseEditPageComponent.eventTrigger.case_fields &&
                                     this.caseEditPageComponent.eventTrigger.case_fields.filter
-            (field => field.display_context_parameter && field.display_context_parameter.includes(this.linkedCasesService.createCaseLinkDisplayContext));
+            (field => field.display_context_parameter &&
+                    field.display_context_parameter.includes(this.linkedCasesService.createCaseLinkDisplayContext));
     return createEventCaseFields && createEventCaseFields.length ? true : false;
   }
 
