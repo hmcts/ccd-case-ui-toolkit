@@ -38,6 +38,7 @@ export class LinkedCasesService {
   }
 
   public groupLinkedCasesByCaseType = (arrObj, key) => {
+    if (!arrObj) return {};
     return arrObj.reduce((rv, x) => {
       (rv[x.value[key]] = rv[x.value[key]] || []).push(x.value['CaseReference']);
       return rv;
