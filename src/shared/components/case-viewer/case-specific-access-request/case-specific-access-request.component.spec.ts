@@ -50,7 +50,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
 
   it('should create component and show the \"specific access\" info message banner', () => {
     const infoBannerElement = fixture.debugElement.nativeElement.querySelector('.hmcts-banner');
-    expect(infoBannerElement.textContent).toContain('This case requires specific access.');
+    expect(infoBannerElement.textContent).toContain('Authorisation is needed to access this case.');
     const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
     expect(headingElement.textContent).toContain(SpecificAccessRequestPageText.TITLE);
     const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-hint');
