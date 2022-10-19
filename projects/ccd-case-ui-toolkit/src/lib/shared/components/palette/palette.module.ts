@@ -23,10 +23,12 @@ import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from
 
 import { RouterModule } from '@angular/router';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
+import { AngularSplitModule } from 'angular-split';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -137,7 +139,10 @@ const PALETTE_COMPONENTS = [
     WriteFixedListFieldComponent,
     WriteFixedRadioListFieldComponent,
     WriteCaseLinkFieldComponent,
-    WriteCollectionFieldComponent
+    WriteCollectionFieldComponent,
+
+    // ComponentLauncher web components
+    CaseFileViewFieldComponent
 ];
 
 @NgModule({
@@ -164,7 +169,8 @@ const PALETTE_COMPONENTS = [
     MatDatepickerModule,
     MatAutocompleteModule,
     PaymentLibModule,
-    ScrollToModule.forRoot()
+    ScrollToModule.forRoot(),
+    AngularSplitModule
   ],
   declarations: [
     FixedListPipe,

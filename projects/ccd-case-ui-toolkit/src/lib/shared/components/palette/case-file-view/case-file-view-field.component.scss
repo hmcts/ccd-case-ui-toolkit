@@ -1,0 +1,14 @@
+.left {
+  background-color: lightblue;
+  width: 40%;
+}
+
+.resizer {
+  background-color: orangered;
+  width: 1%;
+}
+
+.right {
+  background-color: lightgreen;
+  flex: 1 1 0%;
+}
