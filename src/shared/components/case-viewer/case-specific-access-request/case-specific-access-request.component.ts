@@ -8,11 +8,12 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ErrorMessage, SpecificAccessRequest } from '../../../domain';
-import { CasesService } from '../../case-editor';
+import { CaseNotifier, CasesService } from '../../case-editor';
 import {
   SpecificAccessRequestErrors,
   SpecificAccessRequestPageText
 } from './models';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-specific-access-request',
@@ -34,7 +35,8 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
     private readonly fb: FormBuilder,
     private readonly router: Router,
     private readonly casesService: CasesService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private caseNotifier: CaseNotifier
   ) {}
 
   public ngOnInit(): void {
@@ -92,6 +94,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
       } as SpecificAccessRequest;
 
       this.$roleAssignmentResponseSubscription = this.casesService.createSpecificAccessRequest(caseId, specificAccessRequest)
+        .pipe(switchMap(() => this.caseNotifier.fetchAndRefresh(caseId)))
         .subscribe(
           _response => {
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until

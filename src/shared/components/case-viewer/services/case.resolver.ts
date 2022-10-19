@@ -36,7 +36,6 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
-
     let cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
 
     if (!cid) {
@@ -72,16 +71,9 @@ export class CaseResolver implements Resolve<CaseView> {
       if (Draft.isDraft(cid)) {
         return this.getAndCacheDraft(cid);
       } else {
-        return this.casesService
-          .getCaseViewV2(cid)
-          .pipe(
-            map(caseView => {
-              this.caseNotifier.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
-              this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
-              return this.caseNotifier.cachedCaseView;
-            }),
-            catchError(error => this.checkAuthorizationError(error))
-          ).toPromise();
+        return this.caseNotifier.fetchAndRefresh(cid)
+          .pipe(catchError(error => this.checkAuthorizationError(error)))
+          .toPromise();
       }
     }
   }
@@ -101,7 +93,6 @@ export class CaseResolver implements Resolve<CaseView> {
 
   private checkAuthorizationError(error: any) {
     // TODO Should be logged to remote logging infrastructure
-    console.error(error);
     if (error.status === 400) {
       this.router.navigate(['/search/noresults']);
       return Observable.of(null);
