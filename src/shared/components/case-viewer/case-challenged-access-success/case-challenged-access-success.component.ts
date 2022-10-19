@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './case-challenged-access-success.component.html'
 })
 export class CaseChallengedAccessSuccessComponent implements OnInit {
-
   public caseId: string;
 
   constructor(private readonly route: ActivatedRoute) { }
@@ -14,5 +13,4 @@ export class CaseChallengedAccessSuccessComponent implements OnInit {
   public ngOnInit(): void {
     this.caseId = this.route.snapshot.params.cid;
   }
-
 }
