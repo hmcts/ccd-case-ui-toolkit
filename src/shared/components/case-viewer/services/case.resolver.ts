@@ -13,7 +13,6 @@ export class CaseResolver implements Resolve<CaseView> {
 
   public static readonly EVENT_REGEX = new RegExp('\/trigger\/.*?\/submit$');
   public static readonly PARAM_CASE_ID = 'cid';
-  public static readonly SUCCESS_URL = '/success';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
 
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
@@ -29,9 +28,6 @@ export class CaseResolver implements Resolve<CaseView> {
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
         this.previousUrl = event.url;
-        if (event.url.toLocaleLowerCase().includes(CaseResolver.SUCCESS_URL)) {
-          this.caseNotifier.cachedCaseView = null;
-        }
       });
   }
 
