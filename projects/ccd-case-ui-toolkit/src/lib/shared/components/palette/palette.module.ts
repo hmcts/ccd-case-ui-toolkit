@@ -23,7 +23,6 @@ import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from
 
 import { RouterModule } from '@angular/router';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-import { AngularSplitModule } from 'angular-split';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { WindowService } from '../../services/window';
@@ -169,8 +168,7 @@ const PALETTE_COMPONENTS = [
     MatDatepickerModule,
     MatAutocompleteModule,
     PaymentLibModule,
-    ScrollToModule.forRoot(),
-    AngularSplitModule
+    ScrollToModule.forRoot()
   ],
   declarations: [
     FixedListPipe,

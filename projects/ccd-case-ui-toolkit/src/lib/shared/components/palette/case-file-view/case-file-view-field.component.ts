@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { fromEvent, Observable, Subscription } from "rxjs";
+import { fromEvent, Subscription } from "rxjs";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { AbstractFieldReadComponent } from "../base-field/abstract-field-read.component";
 
 @Component({
@@ -34,25 +35,31 @@ export class CaseFileViewFieldComponent extends AbstractFieldReadComponent imple
 		this.leftSide = this.elementRef.nativeElement.querySelector('.left');
 		this.rightSide = this.elementRef.nativeElement.querySelector('.right');
 
-    const mouseDown$ = fromEvent(this.resizer, 'mousedown');
+		const mousedown$ = fromEvent<MouseEvent>(this.resizer, 'mousedown');
+		const mousemove$ = fromEvent<MouseEvent>(document, 'mousemove');
+		const mouseup$ = fromEvent<MouseEvent>(document, 'mouseup');
 
-		this.mouseDownSubscription = mouseDown$.subscribe((event: MouseEvent) => {
-			const mouseMove$ = fromEvent(this.resizer, 'mousemove');
-			const mouseUp$ = fromEvent(document, 'mouseup');
-			this.x = event.clientX;
-			this.y = event.clientY;
-			this.leftWidth = this.leftSide.getBoundingClientRect().width;
+		const drag$ = mousedown$.pipe(
+			switchMap(
+				(start) => {
+					const x = start.clientX;
+					const leftWidth = this.leftSide.getBoundingClientRect().width;
+					return mousemove$.pipe(map(move => {
+						move.preventDefault();
+						return {
+							dx: move.clientX - x,
+							leftWidth: leftWidth
+						}
+					}),
+					takeUntil(mouseup$));
+				}
+			)
+		);
 
-			this.mouseMoveSubscription = mouseMove$.subscribe((event: MouseEvent) => {
-				const dx = event.clientX - this.x;
-				const dy = event.clientY - this.y;
-				const newLeftWidth = ((this.leftWidth + dx) * 100) / this.resizer.parentElement.getBoundingClientRect().width;
-				this.leftSide.setAttribute('style', `width: ${newLeftWidth}%`);
-			});
-
-			this.mouseUpSubscription = mouseUp$.subscribe(() => {
-				this.mouseMoveSubscription.unsubscribe();
-			});
+		drag$.subscribe(pos => {
+			console.log('pos', pos);
+			const newLeftWidth = ((pos.leftWidth + pos.dx) * 100) / this.resizer.parentElement.getBoundingClientRect().width;
+			this.leftSide.setAttribute('style', `width: ${newLeftWidth}%`);
 		});
 	}
 
