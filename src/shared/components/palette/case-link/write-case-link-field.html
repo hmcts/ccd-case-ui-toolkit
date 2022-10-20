@@ -8,6 +8,6 @@
   </div>
 	<div class="form-group" *ngIf="containsCaseLinkCollection">
 		<ccd-write-linked-cases [caseFields]="caseFields" [caseField]="caseField" [formGroup]="formGroup" [caseEditPageComponent]="caseEditPageComponent" 
-            (onLinkedCasesSelected)="submitLinkedCases();" [isLinkedCasesJourney]="linkedCasesService.isLinkedCasesEventTrigger"></ccd-write-linked-cases>
+            (onLinkedCasesSelected)="submitLinkedCases();" [isLinkedCasesJourney]="linkedCasesService.isCreateCaseLinkEventTrigger"></ccd-write-linked-cases>
 	</div>
 </ng-container>

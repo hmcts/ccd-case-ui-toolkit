@@ -15,7 +15,7 @@ describe('BeforeYouStartComponent', () => {
 
   const linkedCasesService = {
     caseId: '1682374819203471',
-    isLinkedCasesEventTrigger: false,
+    isCreateCaseLinkEventTrigger: false,
     caseFieldValue: [],
     linkedCases: [],
     serverLinkedApiError: null,

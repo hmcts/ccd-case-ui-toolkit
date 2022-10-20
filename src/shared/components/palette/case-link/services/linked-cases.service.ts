@@ -10,7 +10,7 @@ import { JurisdictionService } from './jurisdiction.service';
 @Injectable()
 export class LinkedCasesService {
   public caseFieldValue = [];
-  public isLinkedCasesEventTrigger = false;
+  public isCreateCaseLinkEventTrigger = false;
   public caseDetails: CaseView;
   public caseId: string;
   public linkCaseReasons: LovRefDataModel[] = [];
@@ -24,6 +24,9 @@ export class LinkedCasesService {
   public serverLinkedApiError: { id: string, message: string } = null;
   public isServerReasonCodeError = false;
   public caseJurisdictionID = null;
+  public createCaseLinkDisplayContext =  '#ARGUMENT(CREATE)';
+  public maintainCaseLinkDisplayContext = '#ARGUMENT(UPDATE)';
+  public readonlyCaseLinkDisplayContext = '#ARGUMENT(READ)';
 
   constructor(private readonly jurisdictionService: JurisdictionService,
               private readonly searchService: SearchService) {
@@ -35,6 +38,9 @@ export class LinkedCasesService {
   }
 
   public groupLinkedCasesByCaseType = (arrObj, key) => {
+    if (!arrObj) {
+      return {};
+    }
     return arrObj.reduce((rv, x) => {
       (rv[x.value[key]] = rv[x.value[key]] || []).push(x.value['CaseReference']);
       return rv;
