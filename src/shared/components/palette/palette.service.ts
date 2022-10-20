@@ -106,6 +106,8 @@ export class PaletteService {
       case 'CasePaymentHistoryViewer':
         return CasePaymentHistoryViewerFieldComponent;
       case 'CaseHistoryViewer':
+        // TODO: This is temporary and will be reverted once the component launcher code is in place
+        // https://tools.hmcts.net/jira/browse/EUI-6965
         // return CaseHistoryViewerFieldComponent;
         return CaseFileViewFieldComponent;
       case 'WaysToPay':
