@@ -1,5 +1,5 @@
-import { NgModule } from "@angular/core";
-import { CaseFileViewFieldComponent } from "./case-file-view-field.component";
+import { NgModule } from '@angular/core';
+import { CaseFileViewFieldComponent } from './case-file-view-field.component';
 
 @NgModule({
   imports: [
