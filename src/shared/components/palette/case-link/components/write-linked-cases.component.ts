@@ -146,13 +146,10 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   public getLinkedCases(): void {
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
-      let caseViewFiltered = caseView.tabs.filter(val => {
-        let linkField = val.fields.some(({field_type}) => field_type.collection_field_type && field_type.collection_field_type.id === 'CaseLink')
-        return linkField
-      })
+      let caseViewFiltered = caseView.tabs.find(val => val.fields.some(({field_type}) => field_type.collection_field_type && field_type.collection_field_type.id === 'CaseLink'));
       if (caseViewFiltered) {
-        const caseLinkFieldValue = caseViewFiltered.map(filtered => filtered.fields.length && filtered.fields[0].value)
-        this.linkedCasesService.caseFieldValue = caseLinkFieldValue.length ? caseLinkFieldValue[0] : [];
+        const caseLinkField = caseViewFiltered.fields.find(field => field.field_type.collection_field_type && field.field_type.collection_field_type.id === "CaseLink");
+        this.linkedCasesService.caseFieldValue = caseLinkField.value;
         this.linkedCasesService.getAllLinkedCaseInformation();
       }
         // Initialise the first page to display
