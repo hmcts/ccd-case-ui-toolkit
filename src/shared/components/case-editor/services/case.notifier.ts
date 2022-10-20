@@ -1,8 +1,8 @@
-import { BehaviorSubject } from 'rxjs';
-import { CaseView } from '../../../domain';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
 import { plainToClassFromExist } from 'class-transformer';
+import { BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CaseView } from '../../../domain';
 import { CasesService } from './cases.service';
 
 @Injectable()

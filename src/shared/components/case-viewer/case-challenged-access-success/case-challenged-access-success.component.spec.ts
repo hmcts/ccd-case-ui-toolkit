@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success.component';
 
 describe('CaseChallengedAccessSuccessComponent', () => {
@@ -16,6 +17,7 @@ describe('CaseChallengedAccessSuccessComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ RouterTestingModule.withRoutes([]) ],
       declarations: [ CaseChallengedAccessSuccessComponent ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
@@ -38,6 +40,6 @@ describe('CaseChallengedAccessSuccessComponent', () => {
 
   it('should have the correct Case Reference in the \"View case file\" link URL', () => {
     const viewCaseFileLinkElement = fixture.debugElement.nativeElement.querySelector('p.govuk-body a');
-    expect(viewCaseFileLinkElement.getAttribute('href')).toEqual(`cases/case-details/${case_id}`);
+    expect(viewCaseFileLinkElement.getAttribute('href')).toEqual(`/cases/case-details/${case_id}`);
   });
 });

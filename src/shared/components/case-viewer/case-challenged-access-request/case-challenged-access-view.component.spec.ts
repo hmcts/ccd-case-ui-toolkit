@@ -3,9 +3,9 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { CasesService } from '../..';
+import { CaseNotifier, CasesService } from '../..';
 import { AlertModule } from '../../../../components/banners/alert';
-import { ChallengedAccessRequest } from '../../../domain';
+import { CaseView, ChallengedAccessRequest } from '../../../domain';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request.component';
 import { ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
@@ -16,6 +16,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
   let component: CaseChallengedAccessRequestComponent;
   let fixture: ComponentFixture<CaseChallengedAccessRequestComponent>;
   let casesService: jasmine.SpyObj<CasesService>;
+  let casesNotifier: jasmine.SpyObj<CaseNotifier>;
   const case_id = '1234123412341234';
   const mockRoute = {
     snapshot: {
@@ -25,17 +26,19 @@ describe('CaseChallengedAccessRequestComponent', () => {
     }
   };
   let router: Router;
-
   beforeEach(async(() => {
     casesService = createSpyObj<CasesService>('casesService', ['createChallengedAccessRequest']);
+    casesNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['fetchAndRefresh']);
     casesService.createChallengedAccessRequest.and.returnValue(of(true));
+    casesNotifier.fetchAndRefresh.and.returnValue(of(new CaseView()));
     TestBed.configureTestingModule({
       imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule ],
       declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent ],
       providers: [
         FormBuilder,
         { provide: CasesService, useValue: casesService },
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: CaseNotifier, useValue: casesNotifier },
       ]
     })
     .compileComponents();

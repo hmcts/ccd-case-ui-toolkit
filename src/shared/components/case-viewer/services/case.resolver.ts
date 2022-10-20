@@ -6,7 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
-import { CaseNotifier, CasesService } from '../../case-editor';
+import { CaseNotifier } from '../../case-editor';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -20,7 +20,6 @@ export class CaseResolver implements Resolve<CaseView> {
   // we cache the case view to avoid retrieving it for each child route
   previousUrl: string;
   constructor(private caseNotifier: CaseNotifier,
-              private casesService: CasesService,
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
               private router: Router) {

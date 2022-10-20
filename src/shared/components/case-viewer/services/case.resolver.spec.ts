@@ -1,5 +1,5 @@
 import { NavigationEnd } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CaseView } from '../../../domain';
 import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
 import { CaseResolver } from './case.resolver';
@@ -32,12 +32,13 @@ describe('CaseResolver', () => {
         navigate: jasmine.createSpy('navigate'),
         events: Observable.of( new NavigationEnd(0, '/case', '/home'))
     };
-      caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
+      caseNotifier = createSpyObj('caseNotifier', ['announceCase', 'fetchAndRefresh']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
       navigationNotifierService = new NavigationNotifierService();
       spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+      caseNotifier.fetchAndRefresh.and.returnValue(of(CASE));
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
 
       route = {
         firstChild: {
@@ -49,8 +50,7 @@ describe('CaseResolver', () => {
     });
 
     it('should resolve case and cache when the route is the one for case view', () => {
-      caseNotifier.cachedCaseView = CASE_CACHED;
-      casesService.getCaseViewV2.and.returnValue(CASE_OBS);
+      caseNotifier.cachedCaseView = CASE;
 
       caseResolver
         .resolve(route)
@@ -58,7 +58,7 @@ describe('CaseResolver', () => {
           expect(caseData).toEqual(CASE);
         });
 
-      expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
+      expect(caseNotifier.fetchAndRefresh).toHaveBeenCalledWith(CASE_ID);
       expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_ID);
       // allows to access private cachedCaseView field
       expect(caseNotifier.cachedCaseView).toEqual(CASE);
@@ -66,7 +66,6 @@ describe('CaseResolver', () => {
 
     it('should return cached case view when the route is a case view tab and cached view exists', () => {
       caseNotifier.cachedCaseView = CASE_CACHED;
-      casesService.getCaseViewV2.and.returnValue(CASE_OBS);
       route = {
         firstChild: {
           url: [],
@@ -81,13 +80,13 @@ describe('CaseResolver', () => {
         .then(caseData => {
           expect(caseData).toBe(CASE_CACHED);
         });
-      expect(casesService.getCaseViewV2).not.toHaveBeenCalled();
+      expect(caseNotifier.fetchAndRefresh).not.toHaveBeenCalled();
       expect(caseNotifier.cachedCaseView).toBe(CASE_CACHED);
     });
 
     it('should return retrieve case view when the route is a case view tab but empty cache', () => {
       caseNotifier.cachedCaseView = null;
-      casesService.getCaseViewV2.and.returnValue(CASE_OBS);
+      caseNotifier.fetchAndRefresh.and.returnValue(CASE_OBS);
       route = {
         firstChild: {
           url: [],
@@ -103,14 +102,11 @@ describe('CaseResolver', () => {
           expect(caseData).toEqual(CASE);
         });
 
-      expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
-      // allows to access private cachedCaseView field
-      expect(caseNotifier.cachedCaseView).toEqual(CASE);
+      expect(caseNotifier.fetchAndRefresh).toHaveBeenCalledWith(CASE_ID);
     });
 
     it('should return cached case view when the route is not the one for case view and cached view exists', () => {
       caseNotifier.cachedCaseView = CASE_CACHED;
-      casesService.getCaseViewV2.and.returnValue(CASE_OBS);
       route = {
         firstChild: {
           url: ['someUrlSegment']
@@ -124,13 +120,13 @@ describe('CaseResolver', () => {
         .then(caseData => {
           expect(caseData).toBe(CASE_CACHED);
         });
-      expect(casesService.getCaseViewV2).not.toHaveBeenCalled();
+      expect(caseNotifier.fetchAndRefresh).not.toHaveBeenCalled();
       expect(caseNotifier.cachedCaseView).toEqual(CASE_CACHED);
     });
 
     it('should retrieve case view when the route is not the one for case view and cached is empty', () => {
       caseNotifier.cachedCaseView = null;
-      casesService.getCaseViewV2.and.returnValue(CASE_OBS);
+      caseNotifier.fetchAndRefresh.and.returnValue(CASE_OBS);
       route = {
         firstChild: {
           url: ['someUrlSegment']
@@ -145,13 +141,11 @@ describe('CaseResolver', () => {
           expect(caseData).toEqual(CASE);
         });
 
-      expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_ID);
-      // allows to access private cachedCaseView field
-      expect(caseNotifier.cachedCaseView).toEqual(CASE);
+      expect(caseNotifier.fetchAndRefresh).toHaveBeenCalledWith(CASE_ID);
     });
 
     it('should redirect to error page when case cannot be retrieved', () => {
-      casesService.getCaseViewV2.and.returnValue(Observable.throw('Failed'));
+      caseNotifier.fetchAndRefresh.and.returnValue(Observable.throw('Failed'));
 
       caseResolver
         .resolve(route)
@@ -168,14 +162,14 @@ describe('CaseResolver', () => {
       const error = {
         status: 404
       };
-      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+      caseNotifier.fetchAndRefresh.and.returnValue(Observable.throw(error));
 
       router = {
         navigate: jasmine.createSpy('navigate'),
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
 
       caseResolver
         .resolve(route)
@@ -192,14 +186,14 @@ describe('CaseResolver', () => {
       const error = {
         status: 404
       };
-      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+      caseNotifier.fetchAndRefresh.and.returnValue(Observable.throw(error));
 
       router = {
         navigate: jasmine.createSpy('navigate'),
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
 
       caseResolver
         .resolve(route)
@@ -216,14 +210,14 @@ describe('CaseResolver', () => {
       const error = {
         status: 400
       };
-      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+      caseNotifier.fetchAndRefresh.and.returnValue(Observable.throw(error));
 
       router = {
         navigate: jasmine.createSpy('navigate'),
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
 
       caseResolver
         .resolve(route)
@@ -255,7 +249,7 @@ describe('CaseResolver', () => {
         .then(caseData => {
           expect(caseData).toEqual(CASE);
         });
-      expect(casesService.getCaseViewV2).not.toHaveBeenCalled();
+      expect(caseNotifier.fetchAndRefresh).not.toHaveBeenCalled();
       expect(caseNotifier.cachedCaseView).toBe(CASE);
     });
   });
@@ -294,7 +288,7 @@ describe('CaseResolver', () => {
       draftService.getDraft.and.returnValue(DRAFT_OBS);
       alertService = createSpyObj('alertService', ['success']);
       navigationNotifierService = createSpyObj('navigationNotifierService', ['announceNavigation']);
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
 
       route = {
         firstChild: {
