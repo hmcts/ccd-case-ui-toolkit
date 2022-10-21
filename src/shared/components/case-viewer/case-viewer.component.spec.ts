@@ -130,12 +130,14 @@ describe('CaseViewerComponent', () => {
 
   let mockCaseNotifier;
   let mockActivatedRoute = new MockActivatedRoute();
+  let casesService: any;
+  casesService = createSpyObj('casesService', ['getCaseViewV2']);
   let mockAppConfig = createSpyObj('AbstractAppConfig', [
     'getAccessManagementMode',
     'getAccessManagementBasicViewMock'
   ]);
 
-  mockCaseNotifier = new CaseNotifier();
+  mockCaseNotifier = new CaseNotifier(casesService);
   mockCaseNotifier.caseView = new BehaviorSubject(null).asObservable();
 
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();

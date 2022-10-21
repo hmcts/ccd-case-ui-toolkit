@@ -3,7 +3,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { CasesService } from '../..';
+import { CaseNotifier, CasesService } from '../..';
 import { AlertModule } from '../../../../components/banners/alert';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request.component';
@@ -15,6 +15,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
   let component: CaseSpecificAccessRequestComponent;
   let fixture: ComponentFixture<CaseSpecificAccessRequestComponent>;
   let casesService: jasmine.SpyObj<CasesService>;
+  let casesNotifier: jasmine.SpyObj<CaseNotifier>;
   const case_id = '1234123412341234';
   const mockRoute = {
     snapshot: {
@@ -34,7 +35,8 @@ describe('CaseSpecificAccessRequestComponent', () => {
       providers: [
         FormBuilder,
         { provide: CasesService, useValue: casesService },
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: CaseNotifier, useValue: casesNotifier },
       ]
     })
     .compileComponents();

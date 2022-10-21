@@ -1,13 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { MockComponent } from 'ng2-mock-component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { CaseViewEvent, CaseView, HttpError } from '../../domain';
-import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
-import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { CasesService, CaseNotifier } from '../case-editor';
-import createSpyObj = jasmine.createSpyObj;
+import { MockComponent } from 'ng2-mock-component';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { CaseView, CaseViewEvent, HttpError } from '../../domain';
 import { AlertService } from '../../services';
+import { CaseNotifier, CasesService } from '../case-editor';
+import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseTimelineComponent', () => {
 
@@ -80,7 +80,7 @@ describe('CaseTimelineComponent', () => {
   let fixture: ComponentFixture<CaseTimelineComponent>;
   let component: CaseTimelineComponent;
   let de: DebugElement;
-
+  casesService = createSpyObj('casesService', ['getCaseViewV2']);
   EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
     'events'
   ]});
@@ -101,7 +101,7 @@ describe('CaseTimelineComponent', () => {
       alertService = createSpyObj('alertService', ['error']);
       alertService.error.and.returnValue(Observable.of({}));
 
-      caseNotifier = new CaseNotifier();
+      caseNotifier = new CaseNotifier(casesService);
       caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
       TestBed
