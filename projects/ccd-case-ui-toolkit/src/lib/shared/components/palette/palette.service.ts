@@ -1,7 +1,7 @@
 import { Injectable, Type } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
-import { CaseFileViewFieldComponent } from './case-file-view';
+import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
