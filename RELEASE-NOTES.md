@@ -2,6 +2,7 @@
 
 ### Version 4.23.0-case-file-view-two-sections
 **EUI-6822** Two sections for case file view
+**EUI-5376** Slider function for case file view
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
