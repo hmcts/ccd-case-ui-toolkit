@@ -1,6 +1,7 @@
 ## RELEASE NOTES
 ### Version 5.0.22-case-file-view-two-sections
 **EUI-6822** Two sections for case file view
+**EUI-5376** Slider function for case file view
 
 ### Version 5.0.22-angular11-upgrade
 **EUI-6326** Angular 11 upgrade
