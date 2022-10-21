@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.23.0-case-file-view-two-sections
+### Version 4.23.1-case-file-view-two-sections
 **EUI-6822** Two sections for case file view
 **EUI-5376** Slider function for case file view
 

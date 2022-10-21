@@ -17,7 +17,7 @@ import { FormValidatorsService } from '../../services/form/form-validators.servi
 import { MarkdownModule } from '../markdown/markdown.module';
 import { AddressModule } from './address/address.module';
 import { BaseFieldModule } from './base-field/base-field.module';
-import { CaseFileViewModule } from './case-file-view';
+import { CaseFileViewModule } from './case-file-view/case-file-view.module';
 import { CaseLinkModule } from './case-link/case-link.module';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
