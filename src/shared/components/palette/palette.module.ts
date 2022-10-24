@@ -1,8 +1,9 @@
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MAT_DATE_LOCALE } from '@angular/material';
+import { MatAutocompleteModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatTreeModule, MAT_DATE_LOCALE } from '@angular/material';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
@@ -101,7 +102,8 @@ import { YesNoModule } from './yes-no/yes-no.module';
     MatDatepickerModule,
     MatAutocompleteModule,
     PaymentLibModule,
-    CaseFileViewModule
+    CaseFileViewModule,
+    CdkTreeModule
   ],
   declarations: [
     UnsupportedFieldComponent,

@@ -1,17 +1,28 @@
+import { CdkTreeModule } from '@angular/cdk/tree';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { CaseFileViewService } from '../../../services';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
+import { CaseFileViewDocumentTreeComponent } from './components/case-file-view-document-tree/case-file-view-document-tree.component';
 
 @NgModule({
   imports: [
+    RouterModule,
+    CdkTreeModule
   ],
   declarations: [
-    CaseFileViewFieldComponent
+    CaseFileViewFieldComponent,
+    CaseFileViewDocumentTreeComponent
   ],
   entryComponents: [
     CaseFileViewFieldComponent
   ],
   exports: [
-    CaseFileViewFieldComponent
+    CaseFileViewFieldComponent,
+    CaseFileViewDocumentTreeComponent
+  ],
+  providers: [
+    CaseFileViewService
   ]
 })
 export class CaseFileViewModule {}
