@@ -13,7 +13,7 @@ export class CaseNotifier {
 
     constructor(private casesService: CasesService) {}
 
-    public removeCahedCase() {
+    public removeCachedCase() {
       this.cachedCaseView = null;
     }
 
