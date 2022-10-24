@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { AbstractAppConfig } from '../../../../../../../src/app.config';
+import { AbstractAppConfig } from '../../../app.config';
 import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments } from '../../domain/case-file-view';
 import { HttpErrorService, HttpService } from '../http';
 import { CaseFileViewService } from './case-file-view.service';

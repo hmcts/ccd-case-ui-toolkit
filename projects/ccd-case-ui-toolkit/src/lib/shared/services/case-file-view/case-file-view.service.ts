@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { AbstractAppConfig } from '../../../../../../../src/app.config';
+import { AbstractAppConfig } from '../../../app.config';
 import { CategoriesAndDocuments } from '../../domain/case-file-view';
 import { HttpService } from '../http';
 
