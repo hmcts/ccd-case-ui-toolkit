@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+
+### Version 4.23.2-case-file-view-two-sections
+**EUI-6822** Two sections for case file view
+**EUI-5376** Slider function for case file view
+
 **EUI-5481** Service layer for HTTP GET call to CCD endpoint for retrieving categories and documents
 
 ### Version 4.23.1-case-file-view-two-sections
