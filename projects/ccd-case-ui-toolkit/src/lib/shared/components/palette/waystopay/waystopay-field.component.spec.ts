@@ -63,7 +63,8 @@ const APP_CONFIG: AbstractAppConfig = {
     getAccessManagementRequestReviewMockModel: () => ({}),
     getCamRoleAssignmentsApiUrl: () => 'camRoleAssignmentsApiUrl',
     getLocationRefApiUrl: () => 'locationRefApiUrl',
-    getPaymentReturnUrl: () => 'paymentReturnUrl'
+    getPaymentReturnUrl: () => 'paymentReturnUrl',
+    getCategoriesAndDocumentsUrl: () => 'categoriesAndDocumentsUrl'
   };
 
   let PaymentWebComponent;

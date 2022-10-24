@@ -83,6 +83,7 @@ export abstract class AbstractAppConfig {
     }
     public abstract getRefundsUrl(): string;
     public abstract getPaymentReturnUrl(): string;
+    public abstract getCategoriesAndDocumentsUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -142,4 +143,5 @@ export class CaseEditorConfig {
     public cam_role_assignments_api_url?: string;
     public refunds_url: string;
     public payment_return_url: string;
+    public categories_and_documents_url: string;
 }

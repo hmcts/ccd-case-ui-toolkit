@@ -1,7 +1,5 @@
 ## RELEASE NOTES
-### Version 5.0.22-case-file-view-two-sections
-**EUI-6822** Two sections for case file view
-**EUI-5376** Slider function for case file view
+**EUI-5481** Service layer for HTTP GET call to CCD endpoint for retrieving categories and documents
 
 ### Version 5.0.22-angular11-upgrade
 **EUI-6326** Angular 11 upgrade
