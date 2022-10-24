@@ -1,4 +1,5 @@
 ## RELEASE NOTES
+**EUI-5481** Service layer for HTTP GET call to CCD endpoint for retrieving categories and documents
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead

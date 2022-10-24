@@ -30,10 +30,11 @@ export class AppConfig extends AbstractAppConfig {
     'work_allocation_api_url': '/workallocation',
     'user_info_api_url': '/user-info',
     'document_management_url_v2': '/v2/health',
-    'document_management_secure_enabled':true,
-    'access_management_mode':true,
+    'document_management_secure_enabled': true,
+    'access_management_mode': true,
     'refunds_url': '/api/refunds',
-    'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/'
+    'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/',
+    'categories_and_documents_url': '/categoriesAndDocuments'
   };
 
   constructor(private http: HttpClient) {
@@ -169,5 +170,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getPaymentReturnUrl(): string {
     return this.config.payment_return_url;
+  }
+
+  public getCategoriesAndDocumentsUrl(): string {
+    return this.config.categories_and_documents_url;
   }
 }
