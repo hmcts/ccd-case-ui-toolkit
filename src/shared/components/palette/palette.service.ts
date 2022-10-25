@@ -1,6 +1,7 @@
 import { Injectable, Type } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
@@ -105,7 +106,10 @@ export class PaletteService {
       case 'CasePaymentHistoryViewer':
         return CasePaymentHistoryViewerFieldComponent;
       case 'CaseHistoryViewer':
-        return CaseHistoryViewerFieldComponent;
+        // TODO: This is temporary and will be reverted once the component launcher code is in place
+        // https://tools.hmcts.net/jira/browse/EUI-6965
+        // return CaseHistoryViewerFieldComponent;
+        return CaseFileViewFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
       default:
