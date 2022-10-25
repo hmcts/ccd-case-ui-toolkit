@@ -34,7 +34,8 @@ export class AppConfig extends AbstractAppConfig {
     'access_management_mode': true,
     'refunds_url': '/api/refunds',
     'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/',
-    'categories_and_documents_url': '/categoriesAndDocuments'
+    'categories_and_documents_url': '/categoriesAndDocuments',
+    'document_data_url': '/documentData'
   };
 
   constructor(private http: HttpClient) {
@@ -174,5 +175,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCategoriesAndDocumentsUrl(): string {
     return this.config.categories_and_documents_url;
+  }
+
+  public getDocumentDataUrl(): string {
+    return this.config.document_data_url;
   }
 }

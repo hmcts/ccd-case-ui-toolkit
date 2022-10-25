@@ -1,14 +1,17 @@
 ## RELEASE NOTES
+### Version 4.23.2-case-file-view-update-document-category
+**EUI-6815** Service layer for HTTP PUT call to CCD endpoint for updating the category associated with a document
 
 ### Version 4.23.2-case-file-view-two-sections
 **EUI-6822** Two sections for case file view
 **EUI-5376** Slider function for case file view
 
-**EUI-5481** Service layer for HTTP GET call to CCD endpoint for retrieving categories and documents
-
 ### Version 4.23.1-case-file-view-two-sections
 **EUI-6822** Two sections for case file view
 **EUI-5376** Slider function for case file view
+
+### Version 4.22.0-case-file-view-get-categories-and-documents
+**EUI-5481** Service layer for HTTP GET call to CCD endpoint for retrieving categories and documents
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
