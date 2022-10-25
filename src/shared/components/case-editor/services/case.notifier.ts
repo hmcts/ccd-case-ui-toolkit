@@ -13,6 +13,10 @@ export class CaseNotifier {
 
     constructor(private casesService: CasesService) {}
 
+    public removeCachedCase() {
+      this.cachedCaseView = null;
+    }
+
     public announceCase(c: CaseView) {
         this.caseViewSource.next(c);
     }
