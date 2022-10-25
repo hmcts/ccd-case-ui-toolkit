@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/do';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractFieldWriteComponent, FieldTypeEnum, OrderService, Jurisdiction, CaseType, AlertService,
-  JurisdictionService, WindowService } from '../..';
+  JurisdictionService, WindowService, HttpService } from '../..';
 import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
 import { ConditionalShowModule } from '../../directives';
@@ -171,6 +171,7 @@ describe('WorkbasketFiltersComponent', () => {
   let workbasketHandler;
   let router: any;
   let activatedRoute: any;
+  let httpService: HttpService;
   let jurisdictionService: JurisdictionService;
   let workbasketInputFilterService: any;
   let orderService: any;
@@ -188,7 +189,8 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
+      jurisdictionService = new JurisdictionService(httpService);
       windowMockService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
         'getLocalStorage', 'removeLocalStorage']);
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
@@ -251,7 +253,7 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
@@ -655,7 +657,7 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -753,7 +755,7 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
 
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -825,7 +827,7 @@ describe('WorkbasketFiltersComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -1063,7 +1065,7 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       windowService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
         'getLocalStorage', 'setLocalStorage', 'removeLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');
