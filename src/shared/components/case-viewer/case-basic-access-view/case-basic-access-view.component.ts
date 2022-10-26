@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { CasesService } from '../..';
 import { CaseView } from '../../../domain';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'ccd-case-basic-access-view',
@@ -21,7 +22,8 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly casesService: CasesService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly _location: Location
   ) {}
 
   public ngOnInit(): void {
@@ -50,7 +52,7 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
     // TODO: hacky solution to refresh case component (i.e. visit another route and then visit the previous one;
     //  we use skipLocationChange so we don't make an useless entry to the browser's history)
     this.router.navigateByUrl(`/cases/case-loader`, { skipLocationChange: true }).then(() => {
-      window.history.go(-1);
+      this._location.back();
     });
   }
 
