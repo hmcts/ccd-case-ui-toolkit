@@ -160,4 +160,8 @@ export class AppMockConfig implements AbstractAppConfig {
   public getCategoriesAndDocumentsUrl(): string {
     return '';
   }
+
+  public getDocumentDataUrl(): string {
+    return '';
+  }
 }
