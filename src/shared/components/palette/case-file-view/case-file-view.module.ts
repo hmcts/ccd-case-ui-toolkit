@@ -1,5 +1,6 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { NgModule } from '@angular/core';
+import { MatIconModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { CaseFileViewService } from '../../../services';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
@@ -8,7 +9,8 @@ import { CaseFileViewDocumentTreeComponent } from './components/case-file-view-d
 @NgModule({
   imports: [
     RouterModule,
-    CdkTreeModule
+    CdkTreeModule,
+		MatIconModule
   ],
   declarations: [
     CaseFileViewFieldComponent,
