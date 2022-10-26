@@ -84,6 +84,7 @@ export abstract class AbstractAppConfig {
   abstract getRefundsUrl(): string;
   abstract getPaymentReturnUrl(): string;
   abstract getCategoriesAndDocumentsUrl(): string;
+  abstract getDocumentDataUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -144,4 +145,5 @@ export class CaseEditorConfig {
   refunds_url: string;
   payment_return_url: string;
   categories_and_documents_url: string;
+  document_data_url: string;
 }
