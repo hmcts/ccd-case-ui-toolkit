@@ -52,8 +52,6 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    // TODO: hacky solution to refresh case component (i.e. visit another route and then visit the previous one;
-    //  we use skipLocationChange so we don't make an useless entry to the browser's history)
     this.router.navigateByUrl(`/cases/case-loader`, { skipLocationChange: true }).then(() => {
       this._location.back();
     });
