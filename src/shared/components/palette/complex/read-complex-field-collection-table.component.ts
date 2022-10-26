@@ -27,11 +27,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     super.ngOnInit();
     if (this.caseField.display_context_parameter
       && this.caseField.display_context_parameter.trim().startsWith('#TABLE(')) {
-
-      let displayContextParameter = this.caseField.display_context_parameter.trim();
-      let result: string = displayContextParameter.replace('#TABLE(', '');
-      this.columns = result.replace(')', '').split(',').map((c: string) => c.trim());
-
+      this.columns = this.caseField.display_context_parameter_obj.table.map((c: string) => c.trim());
       let labelsVertical: { [k: string]: any } = {};
       let labelsHorizontal: { [k: string]: any } = {};
       let allLabels: { [k: string]: any } = {};

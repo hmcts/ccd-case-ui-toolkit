@@ -8,11 +8,6 @@ export class CaseFieldBuilder {
     return new CaseFieldBuilder();
   }
 
-  public withACLs(acls: AccessControlList[]): CaseFieldBuilder {
-    this.caseField.acls = acls;
-    return this;
-  }
-
   public withId(id: string): CaseFieldBuilder {
     this.caseField.id = id;
     return this;

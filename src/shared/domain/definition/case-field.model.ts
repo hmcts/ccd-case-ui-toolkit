@@ -5,6 +5,7 @@ import { AccessControlList } from './access-control-list.model';
 import * as _ from 'underscore';
 import { FieldTypeEnum } from './field-type-enum.model';
 import { FixedListItem } from './fixed-list-item.model';
+import { DisplayContextParameter } from '..';
 
 // @dynamic
 export class CaseField implements Orderable {
@@ -21,11 +22,12 @@ export class CaseField implements Orderable {
   security_label?: string;
   display_context: string;
   display_context_parameter?: string;
+  // display_context_parameter_obj?: DisplayContextParameter;
   month_format?: string;
   show_condition?: string;
   show_summary_change_option?: boolean;
   show_summary_content_option?: number;
-  acls?: AccessControlList[];
+  // acls?: AccessControlList[];
   metadata?: boolean;
   formatted_value?: any;
   retain_hidden_value: boolean;
@@ -35,6 +37,58 @@ export class CaseField implements Orderable {
 
   private _value: any;
   private _list_items: any = [];
+
+  // @Expose()
+  // get acls(): AccessControlList[] {
+  //  return [
+  //       // {
+  //       //   role: 'caseworker-divorce',
+  //       //   create: true,
+  //       //   read: true,
+  //       //   update: true,
+  //       //   delete: true
+  //       // }
+  //     ]
+  // }
+
+  // set acls(items: AccessControlList[]) {
+  //   //this.display_context_parameter = items;
+  // }
+
+
+
+  @Expose()
+  get display_context_parameter_obj(): any {
+
+    if(!this.display_context_parameter){
+      return ;
+    }
+
+    let obj:DisplayContextParameter = {  collection:null, dateTimeEntry:null, dateTimeDisplay:null, table:null }
+
+    Object.getOwnPropertyNames(obj).forEach(key => {
+      obj[key]  = this.getAndAllocatePropertiesFromString(this.display_context_parameter,key);
+    });
+
+    obj.dateTimeDisplay = obj.dateTimeDisplay[0];
+    obj.dateTimeEntry = obj.dateTimeEntry[0];
+    debugger;
+
+    return obj;
+  }
+
+  set display_context_parameter_obj(items: any) {
+    this.display_context_parameter = items;
+  }
+
+  findStr (arr, str) {
+    return arr && str && arr.length>0 ? arr.find(e => e.toLowerCase().search(str.toLowerCase()) !== -1) : []
+  }
+  getAndAllocatePropertiesFromString(text:string,key:string):string[]
+  {
+    const str = this.findStr(text.split('#'),key);
+    return str && str.length>0 ? str.slice(str.indexOf('(')+1,str.indexOf(')')).split(',') : [];
+  }
 
   @Expose()
   get value(): any {
@@ -75,13 +129,31 @@ export class CaseField implements Orderable {
 
   @Expose()
   get dateTimeEntryFormat(): string {
+
     if (this.isComplexDisplay()) {
       return null;
     }
     if (this.display_context_parameter) {
-      return this.extractBracketValue(this.display_context_parameter, '#DATETIMEENTRY');
-    }
+      // return this.extractBracketValue(this.display_context_parameter, '#DATETIMEENTRY');
+      return this.display_context_parameter_obj.dateTimeEntry
+             && this.display_context_parameter_obj.dateTimeEntry.length > 0 ? this.display_context_parameter_obj.dateTimeEntry : null;
+
+            }
+
     return null;
+  }
+
+  @Expose()
+  public checkPermission(display_context_parameter:string, type: string) {
+    const tempCaseField = new CaseField();
+    const property = 'collection';
+    tempCaseField.display_context_parameter = display_context_parameter;
+    if(tempCaseField.display_context_parameter_obj && tempCaseField.display_context_parameter_obj[property])
+    {
+      const permission = tempCaseField.display_context_parameter_obj[property].some(e => e.toLowerCase().search(type.toLowerCase()) !== -1)
+      return permission;
+    }
+    return false;
   }
 
   @Expose()
@@ -90,7 +162,9 @@ export class CaseField implements Orderable {
       return null;
     }
     if (this.display_context_parameter) {
-      return this.extractBracketValue(this.display_context_parameter, '#DATETIMEDISPLAY')
+      //return this.extractBracketValue(this.display_context_parameter, '#DATETIMEDISPLAY')
+      return this.display_context_parameter_obj.dateTimeDisplay &&
+             this.display_context_parameter_obj.dateTimeDisplay.length > 0 ? this.display_context_parameter_obj.dateTimeDisplay : null;
     }
     return null;
   }

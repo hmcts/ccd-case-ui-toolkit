@@ -115,7 +115,6 @@ export const createCaseField = (id: string,
     .withShowSummaryContentOption(0)
     .withOrder(order)
     .withShowCondition(show_condition || undefined)
-    .withACLs(ACLs)
     .withHidden(hidden || false)
     .build();
 };

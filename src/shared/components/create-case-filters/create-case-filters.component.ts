@@ -6,6 +6,7 @@ import { CaseEvent } from '../../domain/definition/case-event.model';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
 import { CREATE_ACCESS } from '../../domain/case-view/access-types.model';
 import { DefinitionsService, OrderService, SessionStorageService } from '../../services';
+import { CaseField } from '../../domain';
 
 @Component({
   selector: 'ccd-create-case-filters',
@@ -119,7 +120,10 @@ export class CreateCaseFiltersComponent implements OnInit {
   }
 
   private hasCreateAccess(caseEvent: CaseEvent, role: any): boolean {
-    return !!caseEvent.acls.find(acl => acl.role === role && acl.create === true);
+    // return !!caseEvent.acls.find(acl => acl.role === role && acl.create === true);
+    // caseEVENT which doesn't have a display context parameter. So current approach doesn't cover caseEvent.
+    // temporarly returning true
+    return true;
   }
 
   private selectJurisdiction(jurisdictions: Jurisdiction[], filterJurisdictionControl: FormControl) {
