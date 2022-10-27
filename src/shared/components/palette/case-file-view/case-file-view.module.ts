@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { CaseFileViewService } from '../../../services';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
-import { CaseFileViewDocumentTreeComponent } from './components/case-file-view-document-tree/case-file-view-document-tree.component';
+import { CaseFileViewFolderComponent } from './components/case-file-view-folder/case-file-view-folder.component';
 
 @NgModule({
   imports: [
@@ -14,14 +14,14 @@ import { CaseFileViewDocumentTreeComponent } from './components/case-file-view-d
   ],
   declarations: [
     CaseFileViewFieldComponent,
-    CaseFileViewDocumentTreeComponent
+    CaseFileViewFolderComponent
   ],
   entryComponents: [
     CaseFileViewFieldComponent
   ],
   exports: [
     CaseFileViewFieldComponent,
-    CaseFileViewDocumentTreeComponent
+    CaseFileViewFolderComponent
   ],
   providers: [
     CaseFileViewService

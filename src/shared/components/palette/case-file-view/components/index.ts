@@ -1,1 +1,1 @@
-export * from './case-file-view-document-tree/case-file-view-document-tree.component';
+export * from './case-file-view-folder/case-file-view-folder.component';
