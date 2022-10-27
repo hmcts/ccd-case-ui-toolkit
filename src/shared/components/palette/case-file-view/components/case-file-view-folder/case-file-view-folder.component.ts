@@ -1,7 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input } from '@angular/core';
-import { Observable, of as observableOf } from 'rxjs';
-import { CaseFileViewDocument, CategoriesAndDocuments } from '../../../../../domain/case-file-view';
+import { Observable, of } from 'rxjs';
+import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments } from '../../../../../domain/case-file-view';
 
 interface Document {
 	name?: string;
@@ -25,15 +25,15 @@ export class CaseFileViewFolderComponent {
   public documentTree: Document[] = [];
   public nestedTreeControl: NestedTreeControl<Document>;
   public nestedDataSource: Document[];
+	public subcategories: Document[] = [];
+
+	private _getChildren = (node: Document) => of(node.children);
+	public hasNestedChild = (_: number, nodeData: Document) => nodeData.children;
 
   constructor() {
     this.nestedTreeControl = new NestedTreeControl<Document>(this._getChildren);
     this.nestedDataSource = this.documentTree;
   }
-
-  hasNestedChild = (_: number, nodeData: Document) => nodeData.children;
-
-  private _getChildren = (node: Document) => observableOf(node.children);
   
   public ngOnInit(): void {
   	// this.categoriesAndDocuments$.subscribe(x =>
@@ -46,16 +46,12 @@ export class CaseFileViewFolderComponent {
 
 	public generateDocumentTree(categoriesAndDocuments: CategoriesAndDocuments): void {
 		categoriesAndDocuments.categories.forEach(category => {
-			const subCategories: Document[] = [];
+			let subCategories: Document[] = [];
 			const documents: Document[] = [];
 			if (category.sub_categories) {
-				category.sub_categories.forEach(subCategory => {
-					const children: Document[] = [];
-					subCategory.documents.forEach(document => {
-						children.push({ name: document.document_filename });
-					});
-					subCategories.push({ name: subCategory.category_name, children: children });
-				});
+				subCategories = this.appendSubCategories(category.sub_categories);
+				console.log('SUB CATEGORIES PARENT', subCategories);
+				this.subcategories = [];
 			}
 			if (category.documents) {
 				category.documents.forEach(document => {
@@ -69,6 +65,24 @@ export class CaseFileViewFolderComponent {
 		this.appendUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents);
 
 		console.log('DOCUMENT TREE', this.documentTree);
+	}
+
+	public appendSubCategories(subcategories: CaseFileViewCategory[]): Document[] {
+
+		subcategories.forEach(subcategory => {
+			const children: Document[] = [];
+			subcategory.documents.forEach(document => {
+				children.push({ name: document.document_filename });
+			});
+			if (subcategory.sub_categories) {
+				this.appendSubCategories(subcategory.sub_categories);
+			}
+			this.subcategories.push({ name: subcategory.category_name, children: children });
+		});
+
+		console.log('SUB CATEGORIES RETURN', this.subcategories);
+
+		return this.subcategories;
 	}
 
 	public appendUncategorisedDocuments(documents: CaseFileViewDocument[]) {
@@ -109,7 +123,7 @@ export class CaseFileViewFolderComponent {
             {
               category_id: 'S1',
               category_name: 'Category1 Sub-category1',
-              category_order: 1,
+              category_order: 2,
               documents: [
                 {
                   document_url: '/test3',
@@ -154,7 +168,7 @@ export class CaseFileViewFolderComponent {
             {
               category_id: 'C2S1',
               category_name: 'Category2 Sub-category1',
-              category_order: 1,
+              category_order: 2,
               documents: [
                 {
                   document_url: '/test3',
@@ -175,7 +189,7 @@ export class CaseFileViewFolderComponent {
 								{
 									category_id: 'C2S1S1',
 									category_name: 'Category2 Sub-category1 Sub-category1',
-									category_order: 1,
+									category_order: 3,
 									documents: [
 										{
 											document_url: '/test3',
@@ -230,13 +244,13 @@ export class CaseFileViewFolderComponent {
             {
               category_id: 'C4S1',
               category_name: 'Category4 Sub-category1',
-              category_order: 1,
+              category_order: 2,
               documents: [],
               sub_categories: [
 								{
 									category_id: 'C4S1S1',
 									category_name: 'Category4 Sub-category1 Sub-category1',
-									category_order: 1,
+									category_order: 3,
 									documents: [
 										{
 											document_url: '/test3',
@@ -261,13 +275,13 @@ export class CaseFileViewFolderComponent {
             {
               category_id: 'C5S1',
               category_name: 'Category5 Sub-category1',
-              category_order: 1,
+              category_order: 2,
               documents: [],
               sub_categories: [
 								{
 									category_id: 'C5S1S1',
 									category_name: 'Category5 Sub-category1 Sub-category1',
-									category_order: 1,
+									category_order: 3,
 									documents: [
 										{
 											document_url: '/test3',
