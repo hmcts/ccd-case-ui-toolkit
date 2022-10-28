@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class CaseNotifier {
     private caseViewSource: BehaviorSubject<CaseView> = new BehaviorSubject<CaseView>(new CaseView());
     caseView = this.caseViewSource.asObservable();
+    public cachedCaseView: CaseView;
 
     announceCase(c: CaseView) {
         this.caseViewSource.next(c);

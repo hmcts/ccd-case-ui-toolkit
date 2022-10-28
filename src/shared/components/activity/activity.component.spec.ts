@@ -93,7 +93,7 @@ describe('CcdActivityComponent', () => {
 
   beforeEach(async(() => {
     activityPollingService = createSpyObj<any>('activityPollingService',
-     ['subscribeToActivity', 'unsubscribeFromActivity', 'stopPolling']);
+      ['subscribeToActivity', 'unsubscribeFromActivity', 'stopPolling']);
     activityPollingService.subscribeToActivity.and.returnValue();
     activityPollingService.unsubscribeFromActivity.and.returnValue();
     activityPollingService.isEnabled = true;

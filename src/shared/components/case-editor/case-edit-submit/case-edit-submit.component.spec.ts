@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
-import { CaseField, FieldType, FixedListItem, HttpError, Profile } from '../../../domain';
+import { CaseField, CaseView, FieldType, FixedListItem, HttpError, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { aCaseField, createCaseField, createFieldType, createMultiSelectListFieldType } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
@@ -33,6 +33,8 @@ import { CaseEditSubmitComponent } from './case-edit-submit.component';
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
 import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
+import { CaseNotifier } from '../services';
+import { CallbackErrorsContext } from '../../error';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -46,6 +48,7 @@ describe('CaseEditSubmitComponent', () => {
   };
 
   let sessionStorageService: any;
+  let mockCaseNotifier: any;
   const task = `{
     "assignee": null,
     "auto_assigned": false,
@@ -422,6 +425,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
           PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -721,6 +725,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
           PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -861,6 +866,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
           PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -1100,7 +1106,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -1241,7 +1248,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -1385,7 +1393,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -1528,7 +1537,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -1596,7 +1606,10 @@ describe('CaseEditSubmitComponent', () => {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
     };
-
+    const CASE_CACHED: CaseView = new CaseView();
+    CASE_CACHED.case_id = 'CACHED_CASE_ID_1';
+    mockCaseNotifier = new CaseNotifier();
+    mockCaseNotifier.cachedCaseView = CASE_CACHED;
     beforeEach(async(() => {
       complexCollectionField.retain_hidden_value = true;
       complexCollectionField.show_condition = FIELD_3_SHOW_CONDITION;
@@ -1638,7 +1651,7 @@ describe('CaseEditSubmitComponent', () => {
         'cancelled': cancelled,
         'submit': createSpy('submit').and.returnValue({
           // Provide a dummy subscribe function to be called in place of the real one
-          subscribe: () => {}
+          subscribe: () => { mockCaseNotifier.cachedCaseView = null; }
         })
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
@@ -1674,7 +1687,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -1709,6 +1723,46 @@ describe('CaseEditSubmitComponent', () => {
         event_token: undefined,
         ignore_warning: false
       });
+    });
+
+    it('should submit CaseEventData and makes the cachedCaseView property of CaseNotifier to null', () => {
+      // Trigger the clearing of hidden fields by invoking next()
+      caseEditComponent.next();
+      // Submit the form and check the expected CaseEventData is being passed to the CaseEditComponent for submission
+      comp.submit();
+      expect(caseEditComponent.submit).toHaveBeenCalledWith({
+        data: {
+          // Note that Collection fields are restored *in their entirety* when any user input is discarded, as per
+          // agreed handling of Scenarios 5 and 8 in EUI-3868
+          collectionField1: [{
+            id: COLLECTION_ELEMENT_ID_ATTRIBUTE,
+            value: {
+              childField1: COMPLEX_SUBFIELD_1_VALUE_RETAINED,
+              childField2: COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED
+            }
+          }],
+          field3: 'Hide all'
+        },
+        event: undefined,
+        event_token: undefined,
+        ignore_warning: false
+      });
+      expect(mockCaseNotifier.cachedCaseView).toBe(null);
+    });
+
+    it('should check for callback error context', () => {
+      const callbackErrorsContext = new CallbackErrorsContext();
+      callbackErrorsContext.ignore_warning = true;
+      callbackErrorsContext.trigger_text = 'test';
+      comp.callbackErrorsNotify(callbackErrorsContext)
+      expect(comp.ignoreWarning).toBe(true);
+      expect(comp.triggerText).toBe('test');
+    });
+
+    it('should check for isLabel', () => {
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Label', 'OPTIONAL', 4);
+      comp.isLabel(caseField)
+      expect(comp.isLabel(caseField)).toBe(true);
     });
   });
 
@@ -1825,7 +1879,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -1961,7 +2016,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -2096,7 +2152,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -2239,7 +2296,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -2394,7 +2452,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -2555,7 +2614,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -2697,7 +2757,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -2842,7 +2903,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -2987,7 +3049,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -3131,7 +3194,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -3280,7 +3344,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -3431,7 +3496,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -3582,7 +3648,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -3744,7 +3811,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -3905,7 +3973,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -4060,7 +4129,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));
@@ -4218,7 +4288,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier},
         ]
       }).compileComponents();
     }));

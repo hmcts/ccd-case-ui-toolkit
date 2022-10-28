@@ -140,11 +140,6 @@ describe('FieldWriteComponent', () => {
     expect(paletteService.getFieldComponentClass).toHaveBeenCalledWith(CASE_FIELD, true);
   });
 
-  it('should get field write class from PaletteService to be call with case file and writeMode params', () => {
-    component.caseField.display_context = 'OPTIONAL';
-    expect(paletteService.getFieldComponentClass).toHaveBeenCalledWith(CASE_FIELD, true);
-  });
-
   it('should inject component instance as child', () => {
     let divWrapper = de.children[0];
     let ngContent = divWrapper.children[0];

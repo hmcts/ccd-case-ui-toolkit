@@ -101,7 +101,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         this.callbackErrorsSubject.next(this.error);
       }
     });
-
     this.markdownUseHrefAsRouterLink = true;
 
     this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
@@ -120,20 +119,20 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   }
 
   public ngOnDestroy(): void {
-    if (this.activitySubscription && this.activityPollingService.isEnabled) {
-      this.activitySubscription.unsubscribe();
+    if (this.activityPollingService.isEnabled) {
+      this.unsubscribe(this.activitySubscription);
     }
-    if (this.callbackErrorsSubject) {
-      this.callbackErrorsSubject.unsubscribe();
+    if (!this.route.snapshot.data.case) {
+      this.unsubscribe(this.caseSubscription);
     }
-    if (!this.route.snapshot.data.case && this.caseSubscription) {
-      this.caseSubscription.unsubscribe();
-    }
-    if (this.errorSubscription) {
-      this.errorSubscription.unsubscribe();
-    }
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    this.unsubscribe(this.callbackErrorsSubject);
+    this.unsubscribe(this.errorSubscription);
+    this.unsubscribe(this.subscription);
+  }
+
+  public unsubscribe(subscription: any) {
+    if (subscription) {
+      subscription.unsubscribe();
     }
   }
 
@@ -262,9 +261,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
 
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (<HTMLElement>tab.element.nativeElement).id;
-    const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
+    // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
+    // so have to hard code the hearings id here
     if ((tabChangeEvent.index <= 1 && this.prependedTabs.length) ||
-      (tabChangeEvent.index >= tabsLengthBeforeAppended && this.appendedTabs.length)) {
+      (this.appendedTabs.length && id === 'hearings')) {
       this.router.navigate([id], {relativeTo: this.route});
     } else {
       const label = tabChangeEvent.tab.textLabel;
