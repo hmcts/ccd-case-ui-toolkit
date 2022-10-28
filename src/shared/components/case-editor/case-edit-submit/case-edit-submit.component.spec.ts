@@ -4469,7 +4469,8 @@ describe('CaseEditSubmitComponent', () => {
           {provide: ProfileNotifier, useValue: profileNotifier},
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
-          PlaceholderService
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier}
         ]
       }).compileComponents();
     }));

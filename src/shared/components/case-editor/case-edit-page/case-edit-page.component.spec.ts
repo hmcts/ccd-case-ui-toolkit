@@ -953,7 +953,15 @@ describe('CaseEditPageComponent', () => {
       const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
       wizardPage.case_fields.push(case_Field);
       wizardPage.isMultiColumn = () => false;
-      F_GROUP.setValue({data: {Invalidfield2: 'test', Invalidfield1: 'test1', OrganisationField: '', complexField1: ''}, });
+      F_GROUP.setValue({
+        data: {
+          Invalidfield2: 'test',
+          Invalidfield1: 'test1',
+          OrganisationField: '',
+          complexField1: '',
+          FlagLauncherField: null
+        }
+      });
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
@@ -969,7 +977,15 @@ describe('CaseEditPageComponent', () => {
       const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
       wizardPage.case_fields.push(case_Field);
       wizardPage.isMultiColumn = () => false;
-      F_GROUP.setValue({data: {Invalidfield2: 'testing1234', Invalidfield1: 'test1', OrganisationField: '', complexField1: ''}, });
+      F_GROUP.setValue({
+        data: {
+          Invalidfield2: 'testing1234',
+          Invalidfield1: 'test1',
+          OrganisationField: '',
+          complexField1: '',
+          FlagLauncherField: null
+        }
+      });
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
