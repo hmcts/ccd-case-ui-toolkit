@@ -12,7 +12,7 @@ export class IsCompoundPipe implements PipeTransform {
   ];
 
   private static readonly EXCLUDE: string[] = [
-    'CaseLink'
+    'CaseLink', 'JudicialUser'
   ];
 
   public transform(field: CaseField): boolean {

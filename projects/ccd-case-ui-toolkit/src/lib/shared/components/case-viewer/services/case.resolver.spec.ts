@@ -216,11 +216,11 @@ describe('CaseResolver', () => {
       const error = {
         status: 400
       };
-      casesService.getCaseViewV2.and.returnValue(Observable.throw(error));
+      casesService.getCaseViewV2.and.returnValue(throwError(error));
 
       router = {
         navigate: jasmine.createSpy('navigate'),
-        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
+        events: of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
       caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);

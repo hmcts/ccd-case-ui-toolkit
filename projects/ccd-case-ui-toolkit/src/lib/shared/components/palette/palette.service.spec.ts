@@ -1,4 +1,3 @@
-import { WriteDateContainerFieldComponent } from '.';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
@@ -6,12 +5,15 @@ import { WriteCollectionFieldComponent } from './collection/write-collection-fie
 import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
 import { WriteComplexFieldComponent } from './complex/write-complex-field.component';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
+import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { ReadEmailFieldComponent } from './email/read-email-field.component';
 import { WriteEmailFieldComponent } from './email/write-email-field.component';
 import { ReadFixedListFieldComponent } from './fixed-list/read-fixed-list-field.component';
 import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-field.component';
+import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
+import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
@@ -194,6 +196,14 @@ describe('PaletteService', () => {
 
     it('should get WriteOrderSummaryFieldComponent component class for Complex field with OrderSummary complex type', () => {
       assertComponent('Complex', true, WriteOrderSummaryFieldComponent, 'OrderSummary');
+    });
+
+    it('should get ReadJudicialUserFieldComponent component class for Complex field with JudicialUser complex type', () => {
+      assertComponent('Complex', false, ReadJudicialUserFieldComponent, 'JudicialUser');
+    });
+
+    it('should get WriteJudicialUserFieldComponent component class for Complex field with JudicialUser complex type', () => {
+      assertComponent('Complex', true, WriteJudicialUserFieldComponent, 'JudicialUser');
     });
 
     it('should get CasePaymentHistoryViewerFieldComponent component class for CasePaymentHistoryViewer regardless of read/write', () => {

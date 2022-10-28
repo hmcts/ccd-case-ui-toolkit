@@ -1669,14 +1669,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     componentFixture.detectChanges();
     expect(caseViewerComponent.hasTabsPresent).toBeTruthy();
   });
-
-  it('should navigate to roles and access tab', () => {
-    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
-    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
-    componentFixture.detectChanges();
-    expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
-  });
-
 });
 
 describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {
