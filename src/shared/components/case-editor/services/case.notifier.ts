@@ -7,11 +7,11 @@ import { CasesService } from './cases.service';
 
 @Injectable()
 export class CaseNotifier {
+    public static readonly CASE_NAME = 'caseNameHmctsInternal';
+    public static readonly CASE_LOCATION = 'caseManagementLocation'
     private caseViewSource: BehaviorSubject<CaseView> = new BehaviorSubject<CaseView>(new CaseView());
     caseView = this.caseViewSource.asObservable();
     public cachedCaseView: CaseView;
-    public static readonly CASE_NAME = 'caseNameHmctsInternal';
-    public static readonly CASE_LOCATION = 'caseManagementLocation'
 
     constructor(private casesService: CasesService) {}
 
@@ -27,7 +27,7 @@ export class CaseNotifier {
       return this.casesService
         .getCaseViewV2(cid)
         .pipe(
-          map(caseView => {         
+          map(caseView => {
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
             this.setBasicFields(this.cachedCaseView.tabs);
             this.announceCase(this.cachedCaseView);
@@ -35,7 +35,7 @@ export class CaseNotifier {
           }),
         );
     }
-    public setBasicFields(tabs: CaseTab[]): void {      
+    public setBasicFields(tabs: CaseTab[]): void {
       tabs.forEach((t) => {
         const caseName = t.fields.find(f => f.id === CaseNotifier.CASE_NAME);
         const caseLocation = t.fields.find(f => f.id === CaseNotifier.CASE_LOCATION);
@@ -44,7 +44,7 @@ export class CaseNotifier {
             caseNameHmctsInternal : caseName ? caseName.value : null,
             caseManagementLocation : caseLocation ? caseLocation.value : null
           };
-        }  
+        }
       })
     }
 }
