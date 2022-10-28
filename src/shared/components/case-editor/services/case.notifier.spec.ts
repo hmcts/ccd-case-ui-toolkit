@@ -1,6 +1,6 @@
-import { CaseField, CaseTab, CaseView } from "../../../domain";
-import { CaseNotifier } from "./case.notifier";
-import { CasesService } from "./cases.service";
+import { CaseField, CaseTab, CaseView } from '../../../domain';
+import { CaseNotifier } from './case.notifier';
+import { CasesService } from './cases.service';
 
 describe('setBasicFields', () => {
   let caseNotifier: CaseNotifier;
@@ -33,14 +33,14 @@ describe('setBasicFields', () => {
 
   beforeEach(() => {
     caseNotifier = new CaseNotifier(casesService);
-    caseNotifier.cachedCaseView = CASE_VIEW;    
+    caseNotifier.cachedCaseView = CASE_VIEW;
 
     caseTab1.id = 'overview';
     caseTab1.fields = [];
 
     caseTab2.id = 'Something';
     caseTab2.fields = [];
-    
+
     caseField1.id = CaseNotifier.CASE_NAME;
     caseField1.value = 'Case Name';
 
@@ -92,5 +92,5 @@ describe('setBasicFields', () => {
     const basicFields = { caseNameHmctsInternal: null, caseManagementLocation: { baseLocation : 22}}
     expect(caseNotifier.cachedCaseView.basicFields).toEqual(basicFields);
   });
-  
+
 });
