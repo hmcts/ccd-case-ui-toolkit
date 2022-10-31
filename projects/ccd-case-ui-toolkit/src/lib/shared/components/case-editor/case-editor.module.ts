@@ -11,6 +11,7 @@ import {
 import { LabelSubstitutorModule } from '../../directives/substitutor/label-substitutor.module';
 import { AddressesService } from '../../services/addresses';
 import { CaseFieldService } from '../../services/case-fields/case-field.service';
+import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
 import { DocumentManagementService } from '../../services/document-management';
 import { FieldsPurger } from '../../services/fields/fields.purger';
 import { FieldsUtils } from '../../services/fields/fields.utils';
@@ -93,6 +94,7 @@ import { CaseworkerService } from './services/case-worker.service';
         FieldTypeSanitiser,
         FormValueService,
         FormErrorService,
+        FormatTranslatorService,
         HttpService,
         PageValidationService,
         CaseFieldService,
