@@ -54,7 +54,7 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   public onCancel(): void {
     this.router.navigateByUrl(`/cases/case-loader`, { skipLocationChange: true }).then(() => {
       this._location.back();
-    }
+    });
   }
 
   public getRequestUrl(accessType: string): string {
