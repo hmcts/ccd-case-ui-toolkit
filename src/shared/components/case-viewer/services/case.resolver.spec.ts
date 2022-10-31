@@ -4,10 +4,10 @@ import { CaseView } from '../../../domain';
 import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
 import { CaseResolver } from './case.resolver';
 import createSpyObj = jasmine.createSpyObj;
+import { CaseNotifier } from '../../case-editor';
 
 describe('CaseResolver', () => {
   describe('resolve()', () => {
-
     const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
 
     const CASE_ID = '42';
@@ -73,13 +73,14 @@ describe('CaseResolver', () => {
         },
         paramMap: createSpyObj('paramMap', ['get'])
       };
-      route.paramMap.get.and.returnValue(CASE_ID);
+      route.paramMap.get.and.returnValue(CASE_CACHED.case_id);
 
       caseResolver
         .resolve(route)
         .then(caseData => {
           expect(caseData).toBe(CASE_CACHED);
         });
+
       expect(caseNotifier.fetchAndRefresh).not.toHaveBeenCalled();
       expect(caseNotifier.cachedCaseView).toBe(CASE_CACHED);
     });
@@ -113,7 +114,7 @@ describe('CaseResolver', () => {
         },
         paramMap: createSpyObj('paramMap', ['get'])
       };
-      route.paramMap.get.and.returnValue(CASE_ID);
+      route.paramMap.get.and.returnValue(CASE_CACHED.case_id);
 
       caseResolver
         .resolve(route)
@@ -241,22 +242,34 @@ describe('CaseResolver', () => {
 
     });
 
-    it('should avoid making sevice call and return cached case view when cached view exists', () => {
+    it('should avoid making service call and return' +
+      'cached case view when cached view exists AND paramMap has the same case id AND is not rootCaseView', () => {
       CASE.case_id = '42';
+      route.paramMap.get.and.returnValue(CASE.case_id);
       caseNotifier.cachedCaseView = CASE;
+      const childCaseViewRoute = {
+        ...route,
+        firstChild: {
+          url: [],
+          fragment: 'someFragment'
+        },
+      };
       caseResolver
-        .resolve(route)
+        .resolve(childCaseViewRoute)
         .then(caseData => {
           expect(caseData).toEqual(CASE);
-        });
+      });
+
       expect(caseNotifier.fetchAndRefresh).not.toHaveBeenCalled();
       expect(caseNotifier.cachedCaseView).toBe(CASE);
     });
   });
 
   describe('resolve()', () => {
-
     const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
+
+    const CASE: CaseView = new CaseView();
+    CASE.case_id = 'CASE_ID_1';
 
     const DRAFT_ID = 'DRAFT42';
     const DRAFT: CaseView = new CaseView();
@@ -269,7 +282,7 @@ describe('CaseResolver', () => {
     let caseResolver: CaseResolver;
     let draftService: any;
 
-    let caseNotifier: any;
+    let caseNotifier: CaseNotifier;
     let casesService: any;
     let alertService: AlertService;
     let navigationNotifierService: NavigationNotifierService;
@@ -283,13 +296,13 @@ describe('CaseResolver', () => {
         events: Observable.of( new NavigationEnd(0, '/case', '/home'))
       };
       caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
+      caseNotifier = createSpyObj('caseNotifier', ['fetchAndRefresh']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
       draftService.getDraft.and.returnValue(DRAFT_OBS);
       alertService = createSpyObj('alertService', ['success']);
       navigationNotifierService = createSpyObj('navigationNotifierService', ['announceNavigation']);
       caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
-
       route = {
         firstChild: {
           url: []
@@ -314,19 +327,7 @@ describe('CaseResolver', () => {
       expect(caseNotifier.cachedCaseView).toEqual(DRAFT);
     });
 
-    it('should avoid making sevice call and return cached case view when cached view exists', () => {
-      DRAFT.case_id = 'DRAFT42';
-      caseNotifier.cachedCaseView = DRAFT;
-      caseResolver
-        .resolve(route)
-        .then(caseData => {
-          expect(caseData).toEqual(DRAFT);
-        });
-      expect(draftService.getDraft).not.toHaveBeenCalled();
-      expect(caseNotifier.cachedCaseView).toBe(DRAFT);
-    });
-
-    it('should make sevice call when cached case view is not exists', () => {
+    it('should make sevice call when cached case view is not exists and is draft', () => {
       DRAFT.case_id = 'DRAFT42';
       caseResolver
         .resolve(route)

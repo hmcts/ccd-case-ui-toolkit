@@ -25,6 +25,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   public caseSubscription: Subscription;
   public userAccessType: string;
   public accessGranted: boolean;
+  private routerSubscription: Subscription;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -38,21 +39,26 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
     if (this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
   }
 
   public loadCaseDetails(): void {
-    if (!this.route.snapshot.data.case) {
-      this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
-        this.caseDetails = caseDetails;
+    this.routerSubscription = this.route.data.subscribe((data) => {
+      if (!data.case) {
+        this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
+          this.caseDetails = caseDetails;
+          this.setUserAccessType(this.caseDetails);
+        });
+      } else {
+        this.caseDetails = data.case;
         this.setUserAccessType(this.caseDetails);
-      });
-    } else {
-      this.caseDetails = this.route.snapshot.data.case;
-      this.setUserAccessType(this.caseDetails);
-    }
+      }
+    });
   }
 
   public setUserAccessType(caseDetails: CaseView): void {

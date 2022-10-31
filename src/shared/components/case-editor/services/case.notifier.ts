@@ -10,7 +10,7 @@ export class CaseNotifier {
     public static readonly CASE_NAME = 'caseNameHmctsInternal';
     public static readonly CASE_LOCATION = 'caseManagementLocation'
     private caseViewSource: BehaviorSubject<CaseView> = new BehaviorSubject<CaseView>(new CaseView());
-    caseView = this.caseViewSource.asObservable();
+    public caseView = this.caseViewSource.asObservable();
     public cachedCaseView: CaseView;
 
     constructor(private casesService: CasesService) {}

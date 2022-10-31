@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
 import { plainToClassFromExist } from 'class-transformer';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin } from '../../../services';
@@ -10,7 +10,6 @@ import { CaseNotifier } from '../../case-editor';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
-
   public static readonly EVENT_REGEX = new RegExp('\/trigger\/.*?\/submit$');
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
@@ -32,15 +31,24 @@ export class CaseResolver implements Resolve<CaseView> {
 
   resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
     let cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
-
-    if (!cid) {
+    if (cid) {
+      if (Draft.isDraft(cid)) {
+        return this.getAndCacheDraft(cid).toPromise();
+      } else {
+        if (this.isRootCaseViewRoute(route)) {
+          return this.getAndCacheCaseView(cid).toPromise()
+        } else {
+          if (this.caseNotifier.cachedCaseView && this.caseNotifier.cachedCaseView.case_id === cid) {
+            return Promise.resolve(this.caseNotifier.cachedCaseView);
+          } else {
+            return this.getAndCacheCaseView(cid).toPromise()
+          }
+        }
+      }
+    } else {
       // when redirected to case view after a case created, and the user has no READ access,
       // the post returns no id
       this.navigateToCaseList();
-    } else {
-      return this.isRootCaseViewRoute(route) ? this.getAndCacheCaseView(cid)
-        : this.caseNotifier.cachedCaseView ? Promise.resolve(this.caseNotifier.cachedCaseView)
-        : this.getAndCacheCaseView(cid);
     }
   }
 
@@ -58,22 +66,12 @@ export class CaseResolver implements Resolve<CaseView> {
     return route.firstChild && route.firstChild.fragment;
   }
 
-  private getAndCacheCaseView(cid): Promise<CaseView> {
-    if (this.caseNotifier.cachedCaseView && this.caseNotifier.cachedCaseView.case_id && this.caseNotifier.cachedCaseView.case_id === cid) {
-      this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
-      return of(this.caseNotifier.cachedCaseView).toPromise();
-    } else {
-      if (Draft.isDraft(cid)) {
-        return this.getAndCacheDraft(cid);
-      } else {
-        return this.caseNotifier.fetchAndRefresh(cid)
-          .pipe(catchError(error => this.checkAuthorizationError(error)))
-          .toPromise();
-      }
-    }
+  private getAndCacheCaseView(cid): Observable<CaseView> {
+    return this.caseNotifier.fetchAndRefresh(cid)
+      .pipe(catchError(error => this.checkAuthorizationError(error)))
   }
 
-  private getAndCacheDraft(cid): Promise<CaseView> {
+  private getAndCacheDraft(cid: string): Observable<CaseView> {
       return this.draftService
       .getDraft(cid)
       .pipe(
@@ -83,7 +81,7 @@ export class CaseResolver implements Resolve<CaseView> {
           return this.caseNotifier.cachedCaseView;
         }),
         catchError(error => this.checkAuthorizationError(error))
-      ).toPromise();
+      );
   }
 
   private checkAuthorizationError(error: any) {

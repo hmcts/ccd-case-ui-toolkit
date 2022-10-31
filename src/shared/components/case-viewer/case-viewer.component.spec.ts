@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, Type } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -9,7 +9,7 @@ import {
   Route,
   UrlSegment
 } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CaseNotifier } from '..';
 import { CaseField } from '../..';
 import { AbstractAppConfig, CaseView } from '../../..';
@@ -141,7 +141,7 @@ describe('CaseViewerComponent', () => {
   mockCaseNotifier.caseView = new BehaviorSubject(null).asObservable();
 
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
-  mockActivatedRoute.snapshot.data = <Data>{};
+  mockActivatedRoute.data = of(<Data>{});
 
   mockAppConfig.getAccessManagementMode.and.returnValue(false);
   mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({active: false});
@@ -151,7 +151,9 @@ describe('CaseViewerComponent', () => {
       declarations: [CaseViewerComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute, useValue: mockActivatedRoute
+        },
         { provide: CaseNotifier, useValue: mockCaseNotifier },
         { provide: AbstractAppConfig, useValue: mockAppConfig },
       ],
@@ -168,31 +170,37 @@ describe('CaseViewerComponent', () => {
       expect(component.isDataLoaded()).toBeFalsy();
     });
 
-    it('should return true if caseDetails is full', () => {
-      mockActivatedRoute.snapshot.data = <Data>{ case: CASE_VIEW_FROM_ROUTE };
+    it('should return true if caseDetails is full', fakeAsync(() => {
+      mockActivatedRoute.data = of(<Data>{ case: CASE_VIEW_FROM_ROUTE });
       fixture.detectChanges();
       component.loadCaseDetails();
+      tick();
+
       expect(component.isDataLoaded()).toBeTruthy();
-    });
+    }));
   });
 
   describe('loadCaseDetails()', () => {
-    it('should assign caseDetails in activatedRoute', () => {
-      mockActivatedRoute.snapshot.data = <Data>{ case: CASE_VIEW_FROM_ROUTE };
+    it('should assign caseDetails in activatedRoute', fakeAsync(() => {
+      mockActivatedRoute.data = of(<Data>{ case: CASE_VIEW_FROM_ROUTE });
       fixture.detectChanges();
       component.loadCaseDetails();
-      expect(component.caseDetails.case_type.id).toEqual('case_view_1_type_id');
-    });
+      tick();
 
-    it('should check caseNotifier if caseDetails is not in activatedRoute', () => {
-      mockActivatedRoute.snapshot.data = <Data>{};
+      expect(component.caseDetails.case_type.id).toEqual('case_view_1_type_id');
+    }));
+
+    it('should check caseNotifier if caseDetails is not in activatedRoute', fakeAsync(() => {
+      mockActivatedRoute.data = of(<Data>{});
       mockCaseNotifier.caseView = new BehaviorSubject(
         CASE_VIEW_FROM_CASE_NOTIFIER
       ).asObservable();
       fixture.detectChanges();
       component.loadCaseDetails();
+      tick();
+
       expect(component.caseDetails.case_type.id).toEqual('case_view_2_type_id');
-    });
+    }));
   });
 
   describe('hasStandardAccess()', () => {
@@ -200,43 +208,49 @@ describe('CaseViewerComponent', () => {
       expect(component.hasStandardAccess()).toBeTruthy();
     });
 
-    it('should return true if feature toggling is true and user has access other than CHALLENGED or SPECIFIC', () => {
-      mockActivatedRoute.snapshot.data = <Data>{ case: CASE_VIEW_FROM_ROUTE };
+    it('should return true if feature toggling is true and user has access other than CHALLENGED or SPECIFIC', fakeAsync(() => {
+      mockActivatedRoute.data = of(<Data>{ case: CASE_VIEW_FROM_ROUTE });
       mockAppConfig.getAccessManagementMode.and.returnValue(true);
       fixture.detectChanges();
       component.loadCaseDetails();
-      expect(component.hasStandardAccess()).toBeTruthy();
-    });
+      tick();
 
-    it('should return false if feature toggling is true and user has BASIC access granted', () => {
+      expect(component.hasStandardAccess()).toBeTruthy();
+    }));
+
+    it('should return false if feature toggling is true and user has BASIC access granted', fakeAsync(() => {
       const META_DATA_FIELD_WITH_BASIC_ACCESS: CaseField = new CaseField();
       META_DATA_FIELD_WITH_BASIC_ACCESS.id = '[ACCESS_GRANTED]';
       META_DATA_FIELD_WITH_BASIC_ACCESS.value = 'BASIC';
       CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS.metadataFields.push(META_DATA_FIELD_WITH_BASIC_ACCESS);
 
-      mockActivatedRoute.snapshot.data = <Data>{
+      mockActivatedRoute.data = of(<Data>{
         case: CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS,
-      };
+      });
       mockAppConfig.getAccessManagementMode.and.returnValue(true);
       fixture.detectChanges();
       component.loadCaseDetails();
+      tick();
+
       expect(component.hasStandardAccess()).toBeFalsy();
       CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS.metadataFields.pop();
-    });
+    }));
 
-    it('should return true if feature toggling is true and user has any other access granted', () => {
+    it('should return true if feature toggling is true and user has any other access granted', fakeAsync(() => {
       const META_DATA_FIELD_WITH_BASIC_ACCESS: CaseField = new CaseField();
       META_DATA_FIELD_WITH_BASIC_ACCESS.id = '[ACCESS_GRANTED]';
       META_DATA_FIELD_WITH_BASIC_ACCESS.value = 'BASIC,CHALLENGED,STANDARD';
       CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS.metadataFields.push(META_DATA_FIELD_WITH_BASIC_ACCESS);
 
-      mockActivatedRoute.snapshot.data = <Data>{
+      mockActivatedRoute.data = of(<Data>{
         case: CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS,
-      };
+      });
       mockAppConfig.getAccessManagementMode.and.returnValue(true);
       fixture.detectChanges();
       component.loadCaseDetails();
+      tick();
+
       expect(component.hasStandardAccess()).toBeTruthy();
-    });
+    }));
   });
 });
