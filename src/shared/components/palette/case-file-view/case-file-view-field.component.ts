@@ -23,10 +23,6 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
 	public ngOnInit(): void {
 		const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
 		this.categoriesAndDocuments$ = this.caseFileViewService.getCategoriesAndDocuments(cid);
-
-		this.categoriesAndDocuments$.subscribe(categoriesAndDocuments => {
-			console.log('CATEGORIES AND DOCUMENTS', categoriesAndDocuments);
-		});
 	}
 
   public ngAfterViewInit(): void {

@@ -1,4 +1,5 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
@@ -8,6 +9,7 @@ import { CaseFileViewFolderComponent } from './components/case-file-view-folder/
 
 @NgModule({
   imports: [
+		CommonModule,
     RouterModule,
     CdkTreeModule,
 		MatIconModule

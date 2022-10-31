@@ -3,12 +3,9 @@ import { Component, Input } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments } from '../../../../../domain/case-file-view';
 
-interface Document {
-	name?: string;
-	type?: string;
-	category_name?: string;
-	document_filename?: string;
-	children?: Document[];
+interface TreeNode {
+  name?: string;
+  children?: TreeNode[];
 }
 
 @Component({
@@ -18,309 +15,88 @@ interface Document {
 })
 export class CaseFileViewFolderComponent {
 
-	private readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
+  private readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
 
   @Input() public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
 
-  public documentTree: Document[] = [];
-  public nestedTreeControl: NestedTreeControl<Document>;
-  public nestedDataSource: Document[];
-	public subcategories: Document[] = [];
+  public documentTree: TreeNode[] = [];
+  public subcategoriesTree: TreeNode[] = [];
+  public nestedTreeControl: NestedTreeControl<TreeNode>;
+  public nestedDataSource: TreeNode[];
+  public categories: CaseFileViewCategory[] = [];
+  public uncategorisedDocuments: CaseFileViewDocument[] = [];
 
-	private _getChildren = (node: Document) => of(node.children);
-	public hasNestedChild = (_: number, nodeData: Document) => nodeData.children;
+  private _getChildren = (node: TreeNode) => of(node.children);
+  public hasNestedChild = (_: number, nodeData: TreeNode) => nodeData.children;
 
   constructor() {
-    this.nestedTreeControl = new NestedTreeControl<Document>(this._getChildren);
-    this.nestedDataSource = this.documentTree;
+    this.nestedTreeControl = new NestedTreeControl<TreeNode>(this._getChildren);
   }
   
   public ngOnInit(): void {
-  	// this.categoriesAndDocuments$.subscribe(x =>
-  	// 	console.log('CATEGORIES AND DOCUMENTS INNER', x)
-  	// );
+    this.categoriesAndDocuments$.subscribe(categoriesAndDocuments => {
+      this.categories = categoriesAndDocuments.categories;
+      this.uncategorisedDocuments = categoriesAndDocuments.uncategorised_documents;
+      this.generateDocumentTreeData();
+    });	
+  }
 
-		const categoriesAndDocuments = this.loadCategoriesAndDocuments();
-		this.generateDocumentTree(categoriesAndDocuments);
-	}
+  public generateDocumentTreeData(): void {
+    this.categories.forEach(category => {
+      let subCategories: TreeNode[] = [];
+      const documents: TreeNode[] = [];
+      if (category.sub_categories) {
+        subCategories = this.appendSubCategories(category.sub_categories);
+        this.subcategoriesTree = [];
+      }
+      if (category.documents) {
+        category.documents.forEach(document => {
+          documents.push({ name: document.document_filename });
+        });
+      }
 
-	public generateDocumentTree(categoriesAndDocuments: CategoriesAndDocuments): void {
-		categoriesAndDocuments.categories.forEach(category => {
-			let subCategories: Document[] = [];
-			const documents: Document[] = [];
-			if (category.sub_categories) {
-				subCategories = this.appendSubCategories(category.sub_categories);
-				console.log('SUB CATEGORIES PARENT', subCategories);
-				this.subcategories = [];
-			}
-			if (category.documents) {
-				category.documents.forEach(document => {
-					documents.push({ name: document.document_filename });
-				});
-			}
+      this.documentTree.push({ name: category.category_name, children: [...subCategories, ...documents] });
+    });
 
-			this.documentTree.push({ name: category.category_name, children: [...subCategories, ...documents] });
-		});
+    // Append uncategorised documents
+    this.appendUncategorisedDocuments();
 
-		this.appendUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents);
+    // Initialise cdk tree with generated data
+    this.nestedDataSource = this.documentTree;
 
-		console.log('DOCUMENT TREE', this.documentTree);
-	}
+    console.log('DOCUMENT TREE', this.documentTree);
+  }
 
-	public appendSubCategories(subcategories: CaseFileViewCategory[]): Document[] {
-
-		subcategories.forEach(subcategory => {
-			const children: Document[] = [];
-			subcategory.documents.forEach(document => {
-				children.push({ name: document.document_filename });
-			});
-			if (subcategory.sub_categories) {
-				this.appendSubCategories(subcategory.sub_categories);
-			}
-			this.subcategories.push({ name: subcategory.category_name, children: children });
-		});
-
-		console.log('SUB CATEGORIES RETURN', this.subcategories);
-
-		return this.subcategories;
-	}
-
-	public appendUncategorisedDocuments(documents: CaseFileViewDocument[]) {
-		if (documents && documents.length > 0) {
-			const uncategorisedDocuments: Document[] = [];
-			documents.forEach(document => {
-				uncategorisedDocuments.push({ name: document.document_filename });
-			});
-			this.documentTree.push({ name: this.UNCATEGORISED_DOCUMENTS_TITLE, children: uncategorisedDocuments });
-		}
-	}
-    
-  public loadCategoriesAndDocuments(): CategoriesAndDocuments {
-    return {
-      case_version: 1,
-      categories: [
-        {
-          category_id: 'C1',
-          category_name: 'Category1',
-          category_order: 1,
-          documents: [
-            {
-              document_url: '/test1',
-              document_filename: 'Category1 Document1',
-              document_binary_url: '/test1/binary',
-              attribute_path: '',
-              upload_timestamp: ''
-            },
-            {
-              document_url: '/test2',
-              document_filename: 'Category1 Document2',
-              document_binary_url: '/test2/binary',
-              attribute_path: '',
-              upload_timestamp: ''
-            }
-          ],
-          sub_categories: [
-            {
-              category_id: 'S1',
-              category_name: 'Category1 Sub-category1',
-              category_order: 2,
-              documents: [
-                {
-                  document_url: '/test3',
-                  document_filename: 'Category1 Sub-category1 Document1',
-                  document_binary_url: '/test3/binary',
-                  attribute_path: '',
-                  upload_timestamp: ''
-                },
-                {
-                  document_url: '/test4',
-                  document_filename: 'Category1 Sub-category1 Document2',
-                  document_binary_url: '/test4/binary',
-                  attribute_path: '',
-                  upload_timestamp: ''
-                }
-              ],
-              sub_categories: []
-            }
-          ]
-        },
-				{
-          category_id: 'C2',
-          category_name: 'Category2',
-          category_order: 1,
-          documents: [
-            {
-              document_url: '/test1',
-              document_filename: 'Category2 Document1',
-              document_binary_url: '/test1/binary',
-              attribute_path: '',
-              upload_timestamp: ''
-            },
-            {
-              document_url: '/test2',
-              document_filename: 'Category2 Document2',
-              document_binary_url: '/test2/binary',
-              attribute_path: '',
-              upload_timestamp: ''
-            }
-          ],
-          sub_categories: [
-            {
-              category_id: 'C2S1',
-              category_name: 'Category2 Sub-category1',
-              category_order: 2,
-              documents: [
-                {
-                  document_url: '/test3',
-                  document_filename: 'Category2 Sub-category1 Document1',
-                  document_binary_url: '/test3/binary',
-                  attribute_path: '',
-                  upload_timestamp: ''
-                },
-                {
-                  document_url: '/test4',
-                  document_filename: 'Category2 Sub-category1 Document2',
-                  document_binary_url: '/test4/binary',
-                  attribute_path: '',
-                  upload_timestamp: ''
-                }
-              ],
-              sub_categories: [
-								{
-									category_id: 'C2S1S1',
-									category_name: 'Category2 Sub-category1 Sub-category1',
-									category_order: 3,
-									documents: [
-										{
-											document_url: '/test3',
-											document_filename: 'Category2 Sub-category1 Sub-category1 Document 1',
-											document_binary_url: '/test3/binary',
-											attribute_path: '',
-											upload_timestamp: ''
-										}
-									],
-									sub_categories: []
-								}
-							]
-            }
-          ]
-        },
-				{
-          category_id: 'C3',
-          category_name: 'Category3',
-          category_order: 1,
-          documents: [
-            {
-              document_url: '/test1',
-              document_filename: 'Category3 Document1',
-              document_binary_url: '/test1/binary',
-              attribute_path: '',
-              upload_timestamp: ''
-            }
-          ],
-          sub_categories: []
-        },
-				{
-          category_id: 'C4',
-          category_name: 'Category4',
-          category_order: 1,
-          documents: [
-            {
-              document_url: '/test1',
-              document_filename: 'Category4 Document1',
-              document_binary_url: '/test1/binary',
-              attribute_path: '',
-              upload_timestamp: ''
-            },
-            {
-              document_url: '/test2',
-              document_filename: 'Category4 Document2',
-              document_binary_url: '/test2/binary',
-              attribute_path: '',
-              upload_timestamp: ''
-            }
-          ],
-          sub_categories: [
-            {
-              category_id: 'C4S1',
-              category_name: 'Category4 Sub-category1',
-              category_order: 2,
-              documents: [],
-              sub_categories: [
-								{
-									category_id: 'C4S1S1',
-									category_name: 'Category4 Sub-category1 Sub-category1',
-									category_order: 3,
-									documents: [
-										{
-											document_url: '/test3',
-											document_filename: 'Category4 Sub-category1 Sub-category1 Document 1',
-											document_binary_url: '/test3/binary',
-											attribute_path: '',
-											upload_timestamp: ''
-										}
-									],
-									sub_categories: []
-								}
-							]
-            }
-          ]
-        },
-				{
-          category_id: 'C5',
-          category_name: 'Category5',
-          category_order: 1,
-          documents: [],
-          sub_categories: [
-            {
-              category_id: 'C5S1',
-              category_name: 'Category5 Sub-category1',
-              category_order: 2,
-              documents: [],
-              sub_categories: [
-								{
-									category_id: 'C5S1S1',
-									category_name: 'Category5 Sub-category1 Sub-category1',
-									category_order: 3,
-									documents: [
-										{
-											document_url: '/test3',
-											document_filename: 'Category5 Sub-category1 Sub-category1 Document 1',
-											document_binary_url: '/test3/binary',
-											attribute_path: '',
-											upload_timestamp: ''
-										}
-									],
-									sub_categories: []
-								}
-							]
-            }
-          ]
+  public appendSubCategories(subcategories: CaseFileViewCategory[], recursiveCall?: boolean): TreeNode[] {
+    return subcategories.reduce((previousSubcategory, currentSubcategory) => {     
+      if (currentSubcategory.sub_categories && currentSubcategory.sub_categories.length > 0) {
+        if (this.subcategoriesTree && this.subcategoriesTree.length > 0) {
+          const subcategory: TreeNode[] = [{ name: currentSubcategory.category_name, children: [] }];
+          this.subcategoriesTree[0].children = [...this.subcategoriesTree[0].children, ...subcategory];
+        } else {
+          this.subcategoriesTree.push({ name: currentSubcategory.category_name, children: [] });
         }
-      ],
-      uncategorised_documents: [
-				{
-					document_url: '/test1',
-					document_filename: 'Uncategorised Document1',
-					document_binary_url: '/test1/binary',
-					attribute_path: '',
-					upload_timestamp: ''
-				},
-				{
-					document_url: '/test1',
-					document_filename: 'Uncategorised Document2',
-					document_binary_url: '/test1/binary',
-					attribute_path: '',
-					upload_timestamp: ''
-				},
-				{
-					document_url: '/test1',
-					document_filename: 'Uncategorised Document3',
-					document_binary_url: '/test1/binary',
-					attribute_path: '',
-					upload_timestamp: ''
-				}
-			]
-    };
+        this.appendSubCategories(currentSubcategory.sub_categories, true);
+      } else {
+        if (recursiveCall) {
+          const subcategory: TreeNode[] = [{ name: currentSubcategory.category_name, children: [] }];
+          this.subcategoriesTree[0].children = [...this.subcategoriesTree[0].children, ...subcategory];
+        } else {
+          this.subcategoriesTree.push({ name: currentSubcategory.category_name, children: [] });
+        }
+      }
+      return this.subcategoriesTree;
+    }, []);
+  }
+
+  public appendUncategorisedDocuments() {
+    const uncategorisedDocuments: TreeNode[] = [];
+    if (this.uncategorisedDocuments && this.uncategorisedDocuments.length > 0) {
+      const uncategorisedDocuments: TreeNode[] = [];
+      this.uncategorisedDocuments.forEach(document => {
+        uncategorisedDocuments.push({ name: document.document_filename });
+      });
+    }
+    this.documentTree.push({ name: this.UNCATEGORISED_DOCUMENTS_TITLE, children: uncategorisedDocuments });
   }
 }
