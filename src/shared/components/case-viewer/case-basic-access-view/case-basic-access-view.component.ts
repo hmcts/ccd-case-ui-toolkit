@@ -16,6 +16,7 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   public accessType: string = null;
 
   public courtOrHearingCentre: string = null;
+  public showSpinner: boolean;
   private courtOrHearingCentreSubscription: Subscription;
 
   constructor(
@@ -30,11 +31,13 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
       this.caseDetails.basicFields.caseManagementLocation.baseLocation : null;
 
     if (locationId) {
-      this.courtOrHearingCentreSubscription = this.casesService.getCourtOrHearingCentreName(locationId).subscribe(courtOrHearingCentre =>
-        this.courtOrHearingCentre = courtOrHearingCentre[0] && courtOrHearingCentre[0].building_location_name ?
-                                    courtOrHearingCentre[0].building_location_name :
-                                    null
-      );
+      this.showSpinner = true;
+      this.courtOrHearingCentreSubscription = this.casesService.getCourtOrHearingCentreName(locationId).subscribe(courtOrHearingCentre => {
+        this.courtOrHearingCentre = courtOrHearingCentre[0] && courtOrHearingCentre[0].court_name ?
+        courtOrHearingCentre[0].court_name : null;
+        this.showSpinner = false;
+      },
+      error => this.showSpinner = false);
     }
   }
 
