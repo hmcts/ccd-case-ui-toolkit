@@ -280,6 +280,17 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
+  /**
+   * Indicates that a CaseField is to be displayed without a label, as is expected for all ComponentLauncher-type
+   * fields.
+   * @param caseField The `CaseField` instance to check
+   * @returns `true` if it should not have a label; `false` otherwise
+   */
+  public isFieldToHaveNoLabel(caseField: CaseField): boolean {
+    return caseField.field_type.type === 'ComponentLauncher'
+      && caseField.display_context_parameter === '#ARGUMENT(CaseFileView)';
+  }
+
   private init(): void {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);

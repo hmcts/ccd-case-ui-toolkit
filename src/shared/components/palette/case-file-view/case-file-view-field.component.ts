@@ -9,8 +9,7 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
 })
 export class CaseFileViewFieldComponent implements AfterViewInit {
 
-  constructor(private readonly elementRef: ElementRef) {
-  }
+  constructor(private readonly elementRef: ElementRef) { }
 
   public ngAfterViewInit(): void {
     const slider = this.elementRef.nativeElement.querySelector('.slider');
