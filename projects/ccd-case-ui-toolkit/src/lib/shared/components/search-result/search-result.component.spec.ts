@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, Input, SimpleChange } from '@angular/core';
+import { Component, DebugElement, Input, NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -164,7 +164,7 @@ describe('SearchResultComponent', () => {
     let fixture: ComponentFixture<SearchResultComponent>;
     let component: SearchResultComponent;
     let de: DebugElement;
-    const CaseActivityComponent: any = MockComponent({
+    let CaseActivityComponent: any = MockComponent({
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
@@ -197,7 +197,7 @@ describe('SearchResultComponent', () => {
             CaseActivityComponent,
             PaginatePipe
           ],
-          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          schemas: [NO_ERRORS_SCHEMA],
           providers: [
             PlaceholderService,
             FieldsUtils,
@@ -286,9 +286,9 @@ describe('SearchResultComponent', () => {
       activityService.isEnabled = false;
       fixture.detectChanges();
 
-      const headRow = de.query(By.css('table>thead>tr .search-result-column-activity'));
+      const headRow = de.query(By.css('div>table>thead>tr'));
 
-      expect(headRow.children.length).toBe(0);
+      expect(headRow.children.length).toBe(RESULT_VIEW.columns.length);
     });
 
     it('should display case reference with hyphens', () => {
@@ -422,54 +422,6 @@ describe('SearchResultComponent', () => {
       expect(firstResult).toBe(105);
       expect(lastResult).toBe(108);
       expect(totalResults).toBe(109);
-    });
-
-    it('should display correct text content for first nameee links', () => {
-      const sortFirstNameLink = de.query(By.css('table>thead>tr th:nth-child(3) .search-result-column-header .sort-widget'));
-      const sortLastNameLink = de.query(By.css('table>thead>tr th:nth-child(1) .search-result-column-header .sort-widget'));
-
-      expect(sortFirstNameLink.nativeElement.textContent).toBe('▼');
-      expect(sortLastNameLink.nativeElement.textContent).toBe('▲');
-    });
-
-    it('should render widget matching ordering (defaulting to sort descending if unordered)', () => {
-      // Check unordered
-      assertOrder(new Array(0, 1, 2, 3));
-    });
-
-    it('should render widget matching ordering and sort first name rows when widget pressed', () => {
-      const sortFirstNameLink = de.query(By.css('table>thead>tr th:nth-child(3) .search-result-column-header .sort-widget'));
-
-      sortFirstNameLink.triggerEventHandler('click', null);
-      fixture.detectChanges();
-
-      assertOrder(new Array(2, 0, 1, 3));
-
-      // sortFirstNameLink.triggerEventHandler('click', null);
-      // fixture.detectChanges();
-
-      // fixture.whenStable().then(() => {
-      //   assertOrder(new Array(3, 1, 0, 2));
-      // })
-    });
-
-    function assertOrder(order: number[]) {
-      const firstField = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
-      const secondField = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
-      const thirdField = de.query(By.css('div>table>tbody tr:nth-child(3) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
-      const fourthField = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
-
-      expect(firstField).toBe(RESULT_VIEW.results[order[0]].case_fields['PersonFirstName']);
-      expect(secondField).toBe(RESULT_VIEW.results[order[1]].case_fields['PersonFirstName']);
-      expect(thirdField).toBe(RESULT_VIEW.results[order[2]].case_fields['PersonFirstName']);
-      expect(fourthField).toBe(RESULT_VIEW.results[order[3]].case_fields['PersonFirstName']);
-    }
-
-    it('should not break while sorting with unknown sort comparators like Complex type Address', () => {
-      const complexType = de.query(By.css('table>thead>tr th:nth-child(2) table tr div'));
-      complexType.triggerEventHandler('click', null);
-      fixture.detectChanges();
-      expect(complexType.nativeElement.textContent).toBe('Address');
     });
 
     it('should render case reference value in first column with hyperlink if not draft and first column field value is null', () => {
@@ -787,7 +739,7 @@ describe('SearchResultComponent', () => {
             PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
           }
         }];
-      component.ngAfterViewInit();
+      component.ngOnInit();
       expect(component.selectedCases.length).toEqual(2);
     });
 
@@ -844,7 +796,7 @@ describe('SearchResultComponent', () => {
       })
     };
 
-    const CaseActivityComponent: any = MockComponent({
+    let CaseActivityComponent: any = MockComponent({
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
@@ -871,7 +823,7 @@ describe('SearchResultComponent', () => {
             CaseActivityComponent,
             PaginatePipe
           ],
-          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          schemas: [NO_ERRORS_SCHEMA],
           providers: [
             PlaceholderService,
             FieldsUtils,
