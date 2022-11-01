@@ -164,14 +164,14 @@ describe('SearchResultComponent', () => {
     let fixture: ComponentFixture<SearchResultComponent>;
     let component: SearchResultComponent;
     let de: DebugElement;
-    let CaseActivityComponent: any = MockComponent({
-      selector: 'ccd-activity',
-      inputs: ['caseId', 'displayMode']
-    });
     let activityService: any;
     let searchHandler;
     let appConfig: any;
     const caseReferencePipe = new CaseReferencePipe();
+    const CaseActivityComponent: any = MockComponent({
+      selector: 'ccd-activity',
+      inputs: ['caseId', 'displayMode']
+    });
 
     beforeEach(waitForAsync(() => {
       activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
@@ -796,13 +796,13 @@ describe('SearchResultComponent', () => {
       })
     };
 
-    let CaseActivityComponent: any = MockComponent({
-      selector: 'ccd-activity',
-      inputs: ['caseId', 'displayMode']
-    });
     let activityService: any;
     let appConfig: any;
     const caseReferencePipe = new CaseReferencePipe();
+    const CaseActivityComponent: any = MockComponent({
+      selector: 'ccd-activity',
+      inputs: ['caseId', 'displayMode']
+    });
 
     beforeEach(waitForAsync(() => {
       activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
