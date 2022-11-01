@@ -1,5 +1,6 @@
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { CaseFileViewFieldComponent } from './case-file-view';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
@@ -211,5 +212,20 @@ describe('PaletteService', () => {
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
     });
 
+    it('should get CaseFileViewFieldComponent component class for ComponentLauncher field with argument of "CaseFileView"', () => {
+      const caseField = new CaseField();
+      caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
+      caseField.display_context_parameter = '#ARGUMENT(CaseFileView)';
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(CaseFileViewFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(CaseFileViewFieldComponent);
+    });
+
+    it('should get UnsupportedFieldComponent component class for ComponentLauncher field with unknown argument', () => {
+      const caseField = new CaseField();
+      caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
+      caseField.display_context_parameter = '#ARGUMENT(abc)';
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(UnsupportedFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(UnsupportedFieldComponent);
+    });
   });
 });

@@ -50,6 +50,9 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 
 @Injectable()
 export class PaletteService {
+  private readonly componentLauncherRegistry = {
+    CaseFileView: CaseFileViewFieldComponent
+  };
 
   public getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
     switch (caseField.field_type.type) {
@@ -106,14 +109,23 @@ export class PaletteService {
       case 'CasePaymentHistoryViewer':
         return CasePaymentHistoryViewerFieldComponent;
       case 'CaseHistoryViewer':
-        // TODO: This is temporary and will be reverted once the component launcher code is in place
-        // https://tools.hmcts.net/jira/browse/EUI-6965
-        // return CaseHistoryViewerFieldComponent;
-        return CaseFileViewFieldComponent;
+        return CaseHistoryViewerFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
+      case 'ComponentLauncher':
+        return this.getComponentLauncherComponent(caseField);
       default:
         return UnsupportedFieldComponent;
     }
+  }
+
+  private getComponentLauncherComponent(caseField: CaseField): any {
+    // Extract the value passed for #ARGUMENT(...) in the CaseField display_context_parameter and return the matching
+    // component from the componentLauncherRegistry
+    const argumentValue = caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[1];
+    if (argumentValue && this.componentLauncherRegistry.hasOwnProperty(argumentValue)) {
+      return this.componentLauncherRegistry[argumentValue];
+    }
+    return UnsupportedFieldComponent;
   }
 }
