@@ -1,12 +1,12 @@
+import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
-import { plainToClassFromExist } from 'class-transformer';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
-import { DraftService, NavigationOrigin } from '../../../services';
-import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { CaseNotifier, CasesService } from '../../case-editor';
+import { DraftService, NavigationOrigin } from '../../../services';
+import { plainToClassFromExist } from 'class-transformer';
+import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
@@ -98,10 +98,6 @@ export class CaseResolver implements Resolve<CaseView> {
   private checkAuthorizationError(error: any) {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
-    if (error.status === 400) {
-      this.router.navigate(['/search/noresults']);
-      return Observable.of(null);
-    }
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case']);
       return Observable.of(null);
