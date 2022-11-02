@@ -106,6 +106,6 @@ describe('CaseSpecificAccessRequestComponent', () => {
     cancelLink.click();
     tick();
 
-    expect(location.path()).toBe('/work/my-work/list');
+    expect(location.path()).toBe(CaseSpecificAccessRequestComponent.CANCEL_LINK_DESTINATION);
   }));
 });
