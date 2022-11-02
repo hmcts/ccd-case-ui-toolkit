@@ -15,7 +15,7 @@ import {
 })
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
-  private readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
+  private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
 
   @Input() public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
 
@@ -72,7 +72,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     uncategorisedDocuments.forEach(document => {
       documents.push({ name: document.document_filename });
     });
-    return { name: this.UNCATEGORISED_DOCUMENTS_TITLE, children: documents };
+    return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, children: documents };
   }
 
   public ngOnDestroy(): void {
