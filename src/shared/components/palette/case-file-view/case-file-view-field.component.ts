@@ -12,18 +12,18 @@ import { CaseFileViewService } from '../../../services/case-file-view/case-file-
 })
 export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
 
-	public static readonly PARAM_CASE_ID = 'cid';
-	public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
+  public static readonly PARAM_CASE_ID = 'cid';
+  public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
 
   constructor(private readonly elementRef: ElementRef,
-							private readonly route: ActivatedRoute,
-							private caseFileViewService: CaseFileViewService) {
+              private readonly route: ActivatedRoute,
+              private caseFileViewService: CaseFileViewService) {
   }
 
-	public ngOnInit(): void {
-		const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
-		this.categoriesAndDocuments$ = this.caseFileViewService.getCategoriesAndDocuments(cid);
-	}
+  public ngOnInit(): void {
+    const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
+    this.categoriesAndDocuments$ = this.caseFileViewService.getCategoriesAndDocuments(cid);
+  }
 
   public ngAfterViewInit(): void {
     const slider = this.elementRef.nativeElement.querySelector('.slider');

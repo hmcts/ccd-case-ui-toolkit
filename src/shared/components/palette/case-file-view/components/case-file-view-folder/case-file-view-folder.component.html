@@ -1,14 +1,13 @@
 <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
   <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="example-tree-node">
-    <!-- <button mat-icon-button disabled></button> -->
+    <button mat-icon-button disabled>
+      .
+    </button>
     {{node.name}}
   </cdk-nested-tree-node>
   <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasNestedChild" class="example-tree-node">
     <button mat-icon-button [attr.aria-label]="'toggle ' + node.name" cdkTreeNodeToggle>
-      <!-- <mat-icon class="mat-icon-rtl-mirror">
-        {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-      </mat-icon> -->
-			>
+      >
     </button>
     {{node.name}}
     <div [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">

@@ -9,10 +9,10 @@ import { CaseFileViewFolderComponent } from './components/case-file-view-folder/
 
 @NgModule({
   imports: [
-		CommonModule,
+    CommonModule,
     RouterModule,
     CdkTreeModule,
-		MatIconModule
+    MatIconModule
   ],
   declarations: [
     CaseFileViewFieldComponent,
