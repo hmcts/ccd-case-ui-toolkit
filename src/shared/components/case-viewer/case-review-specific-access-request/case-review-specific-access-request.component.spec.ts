@@ -193,7 +193,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
     expect(cancelLink.text).toContain('Cancel');
     cancelLink.click();
     tick();
-    expect(location.path()).toBe('/work/my-work/list');
+    expect(location.path()).toBe(CaseReviewSpecificAccessRequestComponent.CANCEL_LINK_DESTINATION);
   }));
 
   it('should make a Reviewed Access request with correct parameters and navigate to the rejected page', () => {

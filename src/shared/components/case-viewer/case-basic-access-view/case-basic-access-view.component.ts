@@ -10,6 +10,7 @@ import { Location } from '@angular/common';
   templateUrl: 'case-basic-access-view.component.html'
 })
 export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
+  public static CANCEL_LINK_DESTINATION = '/work/my-work/list';
 
   @Input()
   public caseDetails: CaseView = null;
@@ -52,7 +53,7 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    this.router.navigateByUrl(`/work/my-work/list`);
+    this.router.navigateByUrl(CaseBasicAccessViewComponent.CANCEL_LINK_DESTINATION);
   }
 
   public getRequestUrl(accessType: string): string {

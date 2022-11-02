@@ -90,9 +90,9 @@ describe('CaseBasicAccessViewComponent', () => {
         expect(component.courtOrHearingCentre).toEqual('dummy-location');
     });
 
-  it('should go to "/work/my-work/list" onCancel', fakeAsync(() => {
+  it('should go to "CANCEL_LINK_DESTINATION" onCancel', fakeAsync(() => {
     component.onCancel();
     tick();
-    expect(location.path()).toBe('/work/my-work/list');
+    expect(location.path()).toBe(CaseBasicAccessViewComponent.CANCEL_LINK_DESTINATION);
   }));
 });
