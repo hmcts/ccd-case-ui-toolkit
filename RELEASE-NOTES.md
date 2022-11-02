@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 4.23.2-case-file-view-folder-tree-display
+**EUI-6824** Case file view folder tree display
+
 ### Version 4.23.2-case-file-view-component-launcher-implementation
 **EUI-6965** Implement the ComponentLauncher mechanism for invoking the Case File View web component
 
