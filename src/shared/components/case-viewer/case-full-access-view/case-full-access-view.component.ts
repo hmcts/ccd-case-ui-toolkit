@@ -66,7 +66,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
   public notificationBannerConfig: NotificationBannerConfig;
   public selectedTabIndex = 0;
   public activeCaseFlags = false;
-  public isCaseFlagSubmission = false;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
@@ -291,9 +290,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       : null;
 
     if (caseFlagsTab) {
-      // Hide the field label column as it pushes the case flags table to the right
-      this.isCaseFlagSubmission = true;
-
       // Get the active case flags count
       // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
       // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
@@ -323,6 +319,15 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     }
 
     return false;
+  }
+
+  /**
+   * Indicates that a CaseField is to be displayed without a label, as is expected for the FlagLauncher field.
+   * @param caseField The `CaseField` instance to check
+   * @returns `true` if it should not have a label; `false` otherwise
+   */
+  public isFieldToHaveNoLabel(caseField: CaseField): boolean {
+    return FieldsUtils.isFlagLauncherCaseField(caseField);
   }
 
   private init(): void {
