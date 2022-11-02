@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 4.23.2-case-file-view-component-launcher-implementation
+**EUI-6965** Implement the ComponentLauncher mechanism for invoking the Case File View web component
+
 ### Version 4.23.2-case-file-view-update-document-category
 **EUI-6815** Service layer for HTTP PUT call to CCD endpoint for updating the category associated with a document
 
