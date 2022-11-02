@@ -1,5 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement, Type } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Component, DebugElement, Type } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,6 +11,7 @@ import { ReviewSpecificAccessRequestPageText, ReviewSpecificAccessRequestErrors 
 import { Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../..';
 import createSpyObj = jasmine.createSpyObj;
+import { Location } from '@angular/common';
 
 const ACCESS_MANAGEMENT_REQUEST_REVIEW: AccessManagementRequestReviewMockModel = {
   active: true,
@@ -67,6 +68,9 @@ class MockActivatedRoute implements ActivatedRoute {
   }
 }
 
+@Component({template: ``})
+class StubComponent {}
+
 describe('CaseSpecificAccessRequestComponent', () => {
   let de: DebugElement;
   let component: CaseReviewSpecificAccessRequestComponent;
@@ -87,6 +91,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
     'getAccessManagementRequestReviewMockModel',
   ]);
   let router: Router;
+  let location: Location;
 
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
   mockActivatedRoute.snapshot.data = <Data>{};
@@ -97,10 +102,16 @@ describe('CaseSpecificAccessRequestComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [AlertModule, ReactiveFormsModule, RouterTestingModule],
+      imports: [AlertModule, ReactiveFormsModule,
+        [RouterTestingModule.withRoutes([
+          { path: '', component: CaseReviewSpecificAccessRequestComponent },
+          { path: 'work/my-work/list', component: StubComponent }
+        ])]
+      ],
       declarations: [
         CaseReviewSpecificAccessRequestComponent,
         ErrorMessageComponent,
+        StubComponent
       ],
       providers: [
         FormBuilder,
@@ -119,6 +130,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
     router = TestBed.get(Router);
+    location = TestBed.get(Location);
     spyOn(router, 'navigate');
   }));
 
@@ -175,14 +187,14 @@ describe('CaseSpecificAccessRequestComponent', () => {
     expect(errorMessageElement).toBeNull();
   });
 
-  it('should go back to the page before previous one when the Cancel link is clicked', () => {
+  it('should go back to the page before previous one when the Cancel link is clicked', fakeAsync(() => {
     const cancelLink =
       fixture.debugElement.nativeElement.querySelector('a.govuk-body');
     expect(cancelLink.text).toContain('Cancel');
-    spyOn(window.history, 'go');
     cancelLink.click();
-    expect(window.history.go).toHaveBeenCalledWith(-1);
-  });
+    tick();
+    expect(location.path()).toBe('/work/my-work/list');
+  }));
 
   it('should make a Reviewed Access request with correct parameters and navigate to the rejected page', () => {
     const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-1');

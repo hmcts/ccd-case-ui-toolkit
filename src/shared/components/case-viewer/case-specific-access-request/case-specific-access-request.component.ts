@@ -110,7 +110,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
 
   public onCancel(): void {
     // Navigate to the page before previous one (should be Search Results or Case List page, for example)
-    window.history.go(-2);
+    this.router.navigateByUrl(`/work/my-work/list`);
   }
 
   public ngOnDestroy(): void {

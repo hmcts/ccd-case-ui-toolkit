@@ -96,8 +96,7 @@ export class CaseReviewSpecificAccessRequestComponent
   }
 
   public onCancel(): void {
-    // Navigate to the page before previous one (should be Search Results or Case List page, for example)
-    window.history.go(-1);
+    this.router.navigateByUrl(`/work/my-work/list`);
   }
 
   // remove once Access management goes live

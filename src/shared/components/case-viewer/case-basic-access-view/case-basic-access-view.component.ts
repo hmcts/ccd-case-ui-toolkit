@@ -2,6 +2,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CasesService } from '../..';
 import { CaseView } from '../../../domain';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'ccd-case-basic-access-view',
@@ -20,7 +22,9 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   private courtOrHearingCentreSubscription: Subscription;
 
   constructor(
-    private readonly casesService: CasesService
+    private readonly casesService: CasesService,
+    private readonly router: Router,
+    private readonly _location: Location
   ) {}
 
   public ngOnInit(): void {
@@ -48,8 +52,7 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    // Navigate to the previous page
-    window.history.go(-1);
+    this.router.navigateByUrl(`/work/my-work/list`);
   }
 
   public getRequestUrl(accessType: string): string {
