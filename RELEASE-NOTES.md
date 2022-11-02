@@ -1,7 +1,10 @@
 ## RELEASE NOTES
 
+### Version 4.22.0-judicial-user-typeahead
+**EUI-6746** CR-52 JOH typeahead
+
 ### Version 4.18.16-EUI-6309-mandatory-field-issue
-**EUI-6309* mandatory-field-issue
+**EUI-6309** mandatory-field-issue
 
 ### Version 4.19.6-EUI-6865
 **EUI-6865** Fixed issue with deleting collection items with allowDelete absent
@@ -794,10 +797,10 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-2804** OR and Not Equals support for Show and Hide
 
 ### Version 2.51.1 - June 07 2019
-	**RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
+  **RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
 
 ### Version 2.51.0 - May 29 2019
-	**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
+  **RDM-3201** Dynamic Fixed Lists (Using service callbacks)
 
 ### Version 2.50.2 - May 29 2019
 **RDM-4687** Continue button is not enabled for a mandatory collection field that includes show/hide conditions inside complex fields

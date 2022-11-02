@@ -128,7 +128,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
    */
   public toPreviousPage(): void {
     this.validationErrors = [];
-    let caseEventData: CaseEventData = this.buildCaseEventData();
+    let caseEventData: CaseEventData = this.buildCaseEventData(true);
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
     this.previous();
@@ -389,7 +389,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return result;
   }
 
-  private buildCaseEventData(): CaseEventData {
+  private buildCaseEventData(fromPreviousPage?: boolean): CaseEventData {
     const formValue: object = this.editForm.value;
 
     // Get the CaseEventData for the current page.
@@ -398,7 +398,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
     // Get the CaseEventData for the entire form (all pages).
     const allCaseFields = this.getCaseFieldsFromCurrentAndPreviousPages();
-    const formEventData: CaseEventData = this.getFilteredCaseEventData(allCaseFields, formValue, false, true);
+    const formEventData: CaseEventData = this.getFilteredCaseEventData(allCaseFields, formValue, false, true, fromPreviousPage);
 
     // Now here's the key thing - the pageEventData has a property called `event_data` and
     // we need THAT to be the value of the entire form: `formEventData.data`.
@@ -425,7 +425,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
    * @param clearNonCase Whether or not to clear out fields that are not part of the case.
    * @returns CaseEventData for the specified parameters.
    */
-  private getFilteredCaseEventData(caseFields: CaseField[], formValue: object, clearEmpty = false, clearNonCase = false): CaseEventData {
+  private getFilteredCaseEventData(caseFields: CaseField[], formValue: object, clearEmpty = false,
+    clearNonCase = false, fromPreviousPage = false): CaseEventData {
     // Get the data for the fields specified.
     const formFields = this.formValueService.filterCurrentPageFields(caseFields, formValue);
 
@@ -436,7 +437,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
 
     // Tidy it up before we return it.
-    this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase);
+    this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase,
+      fromPreviousPage, this.currentPage.case_fields);
 
     return caseEventData;
   }
