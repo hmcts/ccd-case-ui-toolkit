@@ -101,6 +101,9 @@ caching previous data when the user elects to change the case flag being created
 **EUI-4836** Add case flags tab to case details
 **EUI-4897** Add banner message to case details
 
+### Version 4.18.16-EUI-6309-mandatory-field-issue
+**EUI-6309* mandatory-field-issue
+
 ### Version 4.19.3-hearings
 **EUI-5912** Hearing tab is not loading
 

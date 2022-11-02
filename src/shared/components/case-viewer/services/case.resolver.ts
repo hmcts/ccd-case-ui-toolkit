@@ -99,7 +99,7 @@ export class CaseResolver implements Resolve<CaseView> {
     // TODO Should be logged to remote logging infrastructure
     console.error(error);
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
-      this.router.navigate(['/list/case'])
+      this.router.navigate(['/list/case']);
       return Observable.of(null);
     }
     if (error.status !== 401 && error.status !== 403) {
