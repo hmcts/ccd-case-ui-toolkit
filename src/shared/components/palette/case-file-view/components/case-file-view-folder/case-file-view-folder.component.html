@@ -9,6 +9,10 @@
     <button mat-icon-button [attr.aria-label]="'toggle ' + node.name" cdkTreeNodeToggle>
       >
     </button>
+		<ccd-case-file-view-icon
+			
+		>
+		</ccd-case-file-view-icon>
     {{node.name}}
     <div [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
       <ng-container cdkTreeNodeOutlet></ng-container>

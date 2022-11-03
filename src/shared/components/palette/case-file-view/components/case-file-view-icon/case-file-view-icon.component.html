@@ -1,0 +1,5 @@
+<div class="icon-container" [style.background]="'url('+type === 'folder' ? 'folder.png' : 'document.png'+')'">
+	<span class="count-container" *ngIf="type == 'folder'">
+		{{count}}
+	</span>
+</div>
