@@ -12,6 +12,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './case-challenged-access-request.component.html'
 })
 export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
+  public static CANCEL_LINK_DESTINATION = '/work/my-work/list';
 
   public title: string;
   public hint: string;
@@ -140,8 +141,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   }
 
   public onCancel(): void {
-    // Navigate to the page before previous one (should be Search Results or Case List page, for example)
-    window.history.go(-2);
+    this.router.navigateByUrl(CaseChallengedAccessRequestComponent.CANCEL_LINK_DESTINATION);
   }
 
   public ngOnDestroy(): void {

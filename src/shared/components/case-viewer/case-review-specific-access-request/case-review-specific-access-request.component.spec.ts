@@ -102,11 +102,13 @@ describe('CaseSpecificAccessRequestComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [AlertModule, ReactiveFormsModule,
-        [RouterTestingModule.withRoutes([
+      imports: [
+        AlertModule,
+        ReactiveFormsModule,
+        RouterTestingModule.withRoutes([
           { path: '', component: CaseReviewSpecificAccessRequestComponent },
           { path: 'work/my-work/list', component: StubComponent }
-        ])]
+        ])
       ],
       declarations: [
         CaseReviewSpecificAccessRequestComponent,
@@ -187,7 +189,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
     expect(errorMessageElement).toBeNull();
   });
 
-  it('should go back to the page before previous one when the Cancel link is clicked', fakeAsync(() => {
+  it('should go back to the cancel link destination when the Cancel link is clicked', fakeAsync(() => {
     const cancelLink =
       fixture.debugElement.nativeElement.querySelector('a.govuk-body');
     expect(cancelLink.text).toContain('Cancel');

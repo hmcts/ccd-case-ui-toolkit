@@ -58,11 +58,11 @@ describe('CaseBasicAccessViewComponent', () => {
         TestBed
         .configureTestingModule({
             imports: [
-              [RouterTestingModule.withRoutes([
+              RouterTestingModule.withRoutes([
                 { path: '', component: CaseBasicAccessViewComponent },
                 { path: 'route-1', component: StubComponent },
                 { path: 'work/my-work/list', component: StubComponent }
-              ])]
+              ])
             ],
             declarations: [
                 CaseBasicAccessViewComponent,
