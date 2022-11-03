@@ -3,16 +3,22 @@
     <button mat-icon-button disabled>
       .
     </button>
+    <ccd-case-file-view-icon
+      [type]="node.type"
+      [count]="node.count"
+    >
+    </ccd-case-file-view-icon>
     {{node.name}}
   </cdk-nested-tree-node>
   <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasNestedChild" class="example-tree-node">
     <button mat-icon-button [attr.aria-label]="'toggle ' + node.name" cdkTreeNodeToggle>
       >
     </button>
-		<ccd-case-file-view-icon
-			
-		>
-		</ccd-case-file-view-icon>
+    <ccd-case-file-view-icon
+      [type]="node.type"
+      [count]="node.count"
+    >
+    </ccd-case-file-view-icon>
     {{node.name}}
     <div [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
       <ng-container cdkTreeNodeOutlet></ng-container>
