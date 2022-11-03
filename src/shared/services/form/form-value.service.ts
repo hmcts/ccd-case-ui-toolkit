@@ -396,7 +396,8 @@ export class FormValueService {
    * @param clearEmpty Whether or not we should clear out empty, optional, complex objects.
    * @param clearNonCase Whether or not we should clear out non-case fields at the top level.
    */
-  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false): void {
+  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false,
+    fromPreviousPage = false, currentPageCaseFields = []): void {
     if (data && caseFields && caseFields.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       if (clearNonCase) {
@@ -427,6 +428,10 @@ export class FormValueService {
               // Also remove any optional complex objects that are completely empty.
               // EUI-4244: Ritesh's fix, passing true instead of clearEmpty.
               if (FormValueService.clearOptionalEmpty(true, data[field.id], field)) {
+                delete data[field.id];
+              }
+              if (data[field.id] && FormValueService.isEmptyData(data[field.id]) && fromPreviousPage
+                && currentPageCaseFields.findIndex(c_field => c_field.id === field.id) === -1) {
                 delete data[field.id];
               }
               break;

@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { CaseField, FieldType } from '../../domain/definition';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
@@ -538,6 +539,22 @@ describe('FormValueService', () => {
     });
   });
 
+  describe('removeUnnecessaryFields', () => {
+    it('should empty the collection field if it contains only id', () => {
+      const data = {collection1: [{id: '123'}]};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Complex';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+
+      formValueService.removeUnnecessaryFields(data, [caseField]);
+      const actual = {collection1: [{id: '123'}]};
+      expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
+    });
+  });
   describe('removeInvalidCollectionData', () => {
     it('should empty the collection field if it contains only id', () => {
       const data = {collection1: [{id: '123'}]};
@@ -783,3 +800,6 @@ describe('FormValueService', () => {
     });
   });
 });
+function createSpyObj(arg0: string, arg1: string[]): any {
+  throw new Error('Function not implemented.');
+}

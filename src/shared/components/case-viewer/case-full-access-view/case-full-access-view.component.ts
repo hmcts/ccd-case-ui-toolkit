@@ -1,5 +1,6 @@
 import { Location } from '@angular/common';
-import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy, OnInit, OnChanges, ViewChild,
+  ViewContainerRef, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -34,7 +35,7 @@ import { ConvertHrefToRouterService } from '../../case-editor/services';
   templateUrl: './case-full-access-view.component.html',
   styleUrls: ['./case-full-access-view.component.scss']
 })
-export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   static readonly TRIGGER_TEXT_START = 'Go';
   static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
@@ -82,15 +83,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     private readonly draftService: DraftService,
     private readonly errorNotifierService: ErrorNotifierService,
     private convertHrefToRouterService: ConvertHrefToRouterService,
-    private readonly location: Location
+    private readonly location: Location,
+    private readonly crf: ChangeDetectorRef
   ) {
   }
 
   public ngOnInit(): void {
     initDialog(this.dialogConfig);
-
     this.init();
-
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
     });
@@ -109,8 +109,22 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       }
     });
 
+    if (this.activityPollingService.isEnabled && !this.activitySubscription) {
+      this.ngZone.runOutsideAngular(() => {
+        this.activitySubscription = this.postViewActivity().subscribe();
+      });
+    }
+
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (!changes.prependedTabs.firstChange) {
+      this.init();
+      this.crf.detectChanges();
+      this.organiseTabPosition();
+    }
   }
 
   public isPrintEnabled(): boolean {
@@ -212,15 +226,18 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         && this.error.details.field_errors.length);
   }
 
-  public ngAfterViewInit(): void {
+  public organiseTabPosition(): void {
     let matTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    if (!url.includes('#')) {
+    if (!url.includes('#') && !url.includes('roles-and-access') && !url.includes('tasks')) {
       const paths = url.split('/');
       // lastPath can be /caseId, or the tabs /tasks, /hearings etc.
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
       let foundTab: CaseTab = null;
+      if (!this.prependedTabs) {
+        this.prependedTabs = [];
+      }
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
         foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
@@ -237,7 +254,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // preselect the 1st order of CCD predefined tabs
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], {fragment: preSelectTab.label}).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           this.tabGroup.selectedIndex = matTab.position;
         });
@@ -245,6 +262,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     } else {
       const regExp = new RegExp(CaseFullAccessViewComponent.UNICODE_SPACE, 'g');
       hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
+      if (hashValue.includes('roles-and-access') || hashValue.includes('tasks')) {
+        hashValue = hashValue.includes('roles-and-access') ? 'roles and access' : 'tasks';
+      }
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
                                 hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
@@ -336,14 +356,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
-
-    if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular(() => {
-        this.activitySubscription = this.postViewActivity().subscribe((_resolved) => {
-          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
-        });
-      });
-    }
 
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
