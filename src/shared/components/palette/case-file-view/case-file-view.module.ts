@@ -5,7 +5,6 @@ import { MatIconModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { CaseFileViewService } from '../../../services';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
-import { CaseFileViewIconComponent } from './components';
 import { CaseFileViewFolderComponent } from './components/case-file-view-folder/case-file-view-folder.component';
 
 @NgModule({
@@ -17,16 +16,14 @@ import { CaseFileViewFolderComponent } from './components/case-file-view-folder/
   ],
   declarations: [
     CaseFileViewFieldComponent,
-    CaseFileViewFolderComponent,
-    CaseFileViewIconComponent
+    CaseFileViewFolderComponent
   ],
   entryComponents: [
     CaseFileViewFieldComponent
   ],
   exports: [
     CaseFileViewFieldComponent,
-    CaseFileViewFolderComponent,
-    CaseFileViewIconComponent
+    CaseFileViewFolderComponent
   ],
   providers: [
     CaseFileViewService

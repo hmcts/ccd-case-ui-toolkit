@@ -1,27 +1,28 @@
-<cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
-  <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="example-tree-node">
-    <button mat-icon-button disabled>
-      .
-    </button>
-    <ccd-case-file-view-icon
-      [type]="node.type"
-      [count]="node.count"
-    >
-    </ccd-case-file-view-icon>
-    {{node.name}}
-  </cdk-nested-tree-node>
-  <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasNestedChild" class="example-tree-node">
-    <button mat-icon-button [attr.aria-label]="'toggle ' + node.name" cdkTreeNodeToggle>
-      >
-    </button>
-    <ccd-case-file-view-icon
-      [type]="node.type"
-      [count]="node.count"
-    >
-    </ccd-case-file-view-icon>
-    {{node.name}}
-    <div [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
-      <ng-container cdkTreeNodeOutlet></ng-container>
-    </div>
-  </cdk-nested-tree-node>
-</cdk-tree>
+<div class="document-filter-container">
+  <div class="document-filter"></div>
+  <div class="documents-title">Documents</div>
+</div>
+<div class="document-tree-container">
+  <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
+    <!-- document -->
+    <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="document-tree-node">
+      <div class="node">
+        <button class="icon icon-document" mat-icon-button disabled>
+        </button>
+        <span class="node-name node-name-document">{{node.name}}</span>
+      </div>
+    </cdk-nested-tree-node>
+    <!-- folder-->
+    <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasNestedChild" class="document-tree-node">
+      <div class="node">
+        <button class="icon icon-folder" mat-icon-button [attr.aria-label]="'toggle ' + node.name" cdkTreeNodeToggle>
+          <span class="document-count">{{node.count}}</span>
+        </button>
+        <span class="node-name node-name-folder">{{node.name}}</span>
+      </div>
+      <div [class.document-tree-invisible]="!nestedTreeControl.isExpanded(node)">
+        <ng-container cdkTreeNodeOutlet></ng-container>
+      </div>
+    </cdk-nested-tree-node>
+  </cdk-tree>
+</div>

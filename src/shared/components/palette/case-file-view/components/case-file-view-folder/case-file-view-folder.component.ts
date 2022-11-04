@@ -5,8 +5,7 @@ import {
   CaseFileViewCategory,
   CaseFileViewDocument,
   CategoriesAndDocuments,
-  DocumentTreeNode,
-  DocumentTreeNodeType
+  DocumentTreeNode
 } from '../../../../../domain/case-file-view';
 
 @Component({
@@ -54,7 +53,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       ...[
         {
           name: node.category_name,
-          type: DocumentTreeNodeType.FOLDER,
           children: [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)]
         },
       ],
@@ -64,7 +62,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public getDocuments(documents: CaseFileViewDocument[]): DocumentTreeNode[] {
     const documentsToReturn: DocumentTreeNode[] = [];
     documents.forEach(document => {
-      documentsToReturn.push({ name: document.document_filename, type: DocumentTreeNodeType.DOCUMENT });
+      documentsToReturn.push({ name: document.document_filename });
     });
     return documentsToReturn;
   }
@@ -74,7 +72,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     uncategorisedDocuments.forEach(document => {
       documents.push({ name: document.document_filename });
     });
-    return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, type: DocumentTreeNodeType.FOLDER, children: documents };
+    return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, children: documents };
   }
 
   public ngOnDestroy(): void {
