@@ -26,6 +26,20 @@ export class EventStartGuard implements CanActivate {
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
+      const caseJurisdiction = caseInfo.jurisdiction ? caseInfo.jurisdiction : null;
+      const caseType = caseInfo.caseType ? caseInfo.caseType : null;
+      // assume case does not have event access
+      let supportedCaseType = false;
+      this.appConfig.getWAServiceConfig().configurations.forEach(serviceConfig => {
+        if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
+          // just checking if the service and case type is present in the feature
+          supportedCaseType = true;
+        }
+      });
+      if (!supportedCaseType) {
+        // ensure that if service does not have access to WA they cannot use event dropdown
+        return of(false);
+      }
       if (caseInfo && caseInfo.cid === caseId) {
         if (isComplete) {
           return of(true);

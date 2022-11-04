@@ -32,9 +32,10 @@ describe('EventStartGuard', () => {
   route.queryParams = {};
   const router = createSpyObj('router', ['navigate']);
   const service = createSpyObj('service', ['getTasksByCaseIdAndEventId']);
-  const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl']);
+  const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getWAServiceConfig']);
   const sessionStorageService = createSpyObj('sessionStorageService', ['getItem', 'removeItem', 'setItem']);
   sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
+  appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['caseType'], release: '3.0'}]});
 
   it('canActivate should return false', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
@@ -61,6 +62,21 @@ describe('EventStartGuard', () => {
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
       expect(canActivate).toEqual(true);
+    });
+  });
+
+  it('canActivate should return false when case type is set differently on the feature', () => {
+    appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['example'], release: '3.0'}]});
+    appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
+    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
+    const payload: TaskPayload = {
+      task_required_for_event: false,
+      tasks: []
+    }
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
+    const canActivate$ = guard.canActivate(route);
+    canActivate$.subscribe(canActivate => {
+      expect(canActivate).toEqual(false);
     });
   });
 

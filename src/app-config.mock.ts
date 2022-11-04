@@ -129,6 +129,10 @@ export class AppMockConfig implements AbstractAppConfig {
     return false;
   }
 
+  getWAServiceConfig(): any {
+    return null;
+  }
+
   getAccessManagementMode(): boolean {
     return false;
   }
