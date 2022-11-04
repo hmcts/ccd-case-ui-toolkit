@@ -107,6 +107,9 @@ caching previous data when the user elects to change the case flag being created
 ### Version 4.18.16-EUI-6309-mandatory-field-issue
 **EUI-6309** mandatory-field-issue
 
+### Version 4.19.6-EUI-6865
+**EUI-6865** Fixed issue with deleting collection items with allowDelete absent
+
 ### Version 4.19.3-hearings
 **EUI-5912** Hearing tab is not loading
 
