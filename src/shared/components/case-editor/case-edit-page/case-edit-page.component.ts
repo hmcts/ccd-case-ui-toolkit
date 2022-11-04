@@ -1,24 +1,24 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { MatDialog, MatDialogConfig } from '@angular/material';
-import { CallbackErrorsContext } from '../../error/domain/error-context';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { PageValidationService } from '../services/page-validation.service';
-import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog';
-import { WizardPage } from '../domain/wizard-page.model';
-import { FormErrorService } from '../../../services/form/form-error.service';
 import { CaseEventData } from '../../../domain/case-event-data.model';
-import { DRAFT_PREFIX } from '../../../domain/draft.model';
-import { Wizard } from '../domain/wizard.model';
+import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
-import { FieldsUtils } from '../../../services/fields';
+import { DRAFT_PREFIX } from '../../../domain/draft.model';
+import { HttpError } from '../../../domain/http/http-error.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { FieldsUtils } from '../../../services/fields';
+import { FormErrorService } from '../../../services/form/form-error.service';
+import { FormValueService } from '../../../services/form/form-value.service';
+import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog';
+import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { initDialog } from '../../helpers';
+import { CaseEditComponent } from '../case-edit/case-edit.component';
+import { WizardPage } from '../domain/wizard-page.model';
+import { Wizard } from '../domain/wizard.model';
+import { PageValidationService } from '../services/page-validation.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -52,7 +52,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   caseFields: CaseField[];
   validationErrors: { id: string, message: string }[] = [];
   showSpinner: boolean;
-
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private static scrollToTop(): void {
@@ -179,6 +178,22 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
                   })
                 });
               }
+              fieldArray.controls.forEach((c: AbstractControl) => {
+                this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
+              });
+            } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {
+              // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
+              // (expected always to be one of the two), to set the correct error message
+              let action = '';
+              if (casefield.display_context_parameter === '#ARGUMENT(CREATE)') {
+                action = 'creation';
+              } else if (casefield.display_context_parameter === '#ARGUMENT(UPDATE)') {
+                action = 'update';
+              }
+              this.validationErrors.push({
+                id,
+                message: `Please select Next to complete the ${action} of the ${action === 'update' ? 'selected ' : ''}case flag`
+              });
             } else {
               this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();
