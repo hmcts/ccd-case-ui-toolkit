@@ -8,8 +8,11 @@ import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-
-import { DeleteOrCancelDialogComponent } from '../../dialogs';
+import {
+  NotificationBannerConfig,
+  NotificationBannerHeaderClass,
+  NotificationBannerType
+} from '../../../../components/banners/notification-banner';
 import { ShowCondition } from '../../../directives';
 import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
 import {
@@ -17,10 +20,12 @@ import {
   AlertService,
   DraftService,
   ErrorNotifierService,
+  FieldsUtils,
   NavigationNotifierService,
   NavigationOrigin,
   OrderService
 } from '../../../services';
+import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
@@ -59,6 +64,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public markdownUseHrefAsRouterLink: boolean;
   public message: string;
   public subscription: Subscription;
+  public notificationBannerConfig: NotificationBannerConfig;
+  public selectedTabIndex = 0;
+  public activeCaseFlags = false;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
@@ -80,7 +88,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     initDialog(this.dialogConfig);
     this.init();
     this.callbackErrorsSubject.subscribe(errorEvent => {
@@ -106,6 +114,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.activitySubscription = this.postViewActivity().subscribe();
       });
     }
+
+    // Check for active Case Flags
+    this.activeCaseFlags = this.hasActiveCaseFlags();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -120,7 +131,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     return this.caseDetails.case_type.printEnabled;
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.activityPollingService.isEnabled) {
       this.unsubscribe(this.activitySubscription);
     }
@@ -264,6 +275,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    // Update selected tab index
+    this.selectedTabIndex = tabChangeEvent.index;
+
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (<HTMLElement>tab.element.nativeElement).id;
     // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
@@ -277,6 +291,63 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         window.location.hash = label;
       });
     }
+  }
+
+  public onLinkClicked(triggerOutputEventText: string): void {
+    // Get the *absolute* (not relative) index of the target tab and set as the active tab, using the selectedIndex input
+    // of mat-tab-group (bound to selectedTabIndex)
+    const targetTabIndex = this.tabGroup._tabs.toArray().findIndex(tab => tab.textLabel === triggerOutputEventText);
+    if (targetTabIndex > -1) {
+      this.selectedTabIndex = targetTabIndex;
+    }
+  }
+
+  public hasActiveCaseFlags(): boolean {
+    // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
+    const caseFlagsTab = this.caseDetails.tabs
+      ? (this.caseDetails.tabs).filter(
+        tab => tab.fields && tab.fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
+      : null;
+
+    if (caseFlagsTab) {
+      // Get the active case flags count
+      // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
+      // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
+      // (or sub-fields of Complex fields in a collection)
+      const activeCaseFlags = caseFlagsTab.fields
+        .filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.value)
+        .reduce((active, caseFlag) => {
+          return FieldsUtils.countActiveFlagsInCaseField(active, caseFlag);
+        }, 0);
+
+      if (activeCaseFlags > 0) {
+        const description = activeCaseFlags > 1
+          ? `There are ${activeCaseFlags} active flags on this case.` : 'There is 1 active flag on this case.';
+        // Initialise and display notification banner
+        this.notificationBannerConfig = {
+          bannerType: NotificationBannerType.INFORMATION,
+          headingText: 'Important',
+          description: description,
+          showLink: true,
+          linkText: 'View case flags',
+          triggerOutputEvent: true,
+          triggerOutputEventText: caseFlagsTab.label,
+          headerClass: NotificationBannerHeaderClass.INFORMATION
+        }
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Indicates that a CaseField is to be displayed without a label, as is expected for the FlagLauncher field.
+   * @param caseField The `CaseField` instance to check
+   * @returns `true` if it should not have a label; `false` otherwise
+   */
+  public isFieldToHaveNoLabel(caseField: CaseField): boolean {
+    return FieldsUtils.isFlagLauncherCaseField(caseField);
   }
 
   private init(): void {

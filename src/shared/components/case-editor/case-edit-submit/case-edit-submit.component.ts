@@ -44,6 +44,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   task: Task;
   eventCompletionParams: EventCompletionParams;
   eventCompletionChecksRequired = false;
+  isCaseFlagSubmission = false;
+  pageTitle: string;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -91,6 +93,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.isSubmitting = false;
     this.contextFields = this.getCaseFields();
+    // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
+    // a FlagLauncher field in the event trigger
+    this.isCaseFlagSubmission = this.eventTrigger.case_fields.some(
+      caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
+    this.pageTitle = this.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
   }
 
   public ngOnDestroy(): void {
@@ -168,6 +175,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
     // these will fail validation
     this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
+    // If this is a Case Flag submission (and thus a FlagLauncher field is present in the event trigger), the flag
+    // details data needs populating for each Flags field, then the FlagLauncher field needs removing
+    if (this.isCaseFlagSubmission) {
+      this.formValueService.populateFlagDetailsFromCaseFields(caseEventData.data, this.eventTrigger.case_fields);
+      this.formValueService.removeFlagLauncherField(caseEventData.data, this.eventTrigger.case_fields);
+    }
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
     if (this.caseEdit.confirmation) {
