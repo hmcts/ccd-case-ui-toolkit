@@ -42,8 +42,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
             move.preventDefault();
             return {
               dx: move.clientX - x,
-              documentTreeContainerWidth: documentTreeContainerWidth
-            }
+              documentTreeContainerWidth
+            };
           }),
           takeUntil(mouseup$));
         }
