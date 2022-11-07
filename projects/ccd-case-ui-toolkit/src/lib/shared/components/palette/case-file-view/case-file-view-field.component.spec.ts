@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { CategoriesAndDocuments } from '../../../domain/case-file-view/categories-and-documents.model';
 import { CaseFileViewService } from '../../../services';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -40,6 +41,7 @@ describe('CaseFileViewFieldComponent', () => {
 
     fixture = TestBed.createComponent(CaseFileViewFieldComponent);
     component = fixture.componentInstance;
+    component.categoriesAndDocuments = of(CategoriesAndDocuments);
     fixture.detectChanges();
   }));
 
