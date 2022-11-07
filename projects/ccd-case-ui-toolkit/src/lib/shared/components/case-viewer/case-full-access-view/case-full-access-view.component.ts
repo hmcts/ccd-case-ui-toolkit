@@ -1,39 +1,36 @@
 import { Location } from '@angular/common';
-import {
-  AfterViewInit, ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,
-  ViewContainerRef
-} from '@angular/core';
+import { AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { initDialog } from '../../../components/helpers/init-dialog-helper';
-import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
-import { Activity, DisplayMode } from '../../../domain/activity/activity.model';
-import { CaseTab } from '../../../domain/case-view/case-tab.model';
-import { CaseViewTrigger } from '../../../domain/case-view/case-view-trigger.model';
-import { CaseView } from '../../../domain/case-view/case-view.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { Draft, DRAFT_QUERY_PARAM } from '../../../domain/draft.model';
-import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
-import { AlertService } from '../../../services/alert/alert.service';
-import { DraftService } from '../../../services/draft/draft.service';
-import { ErrorNotifierService } from '../../../services/error/error-notifier.service';
-import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
-import { NavigationOrigin } from '../../../services/navigation/navigation-origin.model';
-import { OrderService } from '../../../services/order/order.service';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
+
+import { ShowCondition } from '../../../directives';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
+import {
+  ActivityPollingService,
+  AlertService,
+  DraftService,
+  ErrorNotifierService,
+  NavigationNotifierService,
+  NavigationOrigin,
+  OrderService
+} from '../../../services';
 import { ConvertHrefToRouterService } from '../../case-editor/services/convert-href-to-router.service';
 import { DeleteOrCancelDialogComponent } from '../../dialogs/delete-or-cancel-dialog/delete-or-cancel-dialog.component';
-import { CallbackErrorsContext } from '../../error/domain/error-context';
+import { CallbackErrorsContext } from '../../error';
+import { initDialog } from '../../helpers';
 
 @Component({
   selector: 'ccd-case-full-access-view',
   templateUrl: './case-full-access-view.component.html',
   styleUrls: ['./case-full-access-view.component.scss']
 })
-export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterViewInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   public static readonly TRIGGER_TEXT_START = 'Go';
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
@@ -78,17 +75,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly draftService: DraftService,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly convertHrefToRouterService: ConvertHrefToRouterService,
-    private readonly location: Location,
-    private readonly crf: ChangeDetectorRef
+    private readonly location: Location
   ) {
-  }
-
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes.prependedTabs && !changes.prependedTabs.firstChange) {
-      this.init();
-      this.crf.detectChanges();
-      this.organiseTabPosition();
-    }
   }
 
   public ngOnInit() {
@@ -215,21 +203,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public ngAfterViewInit(): void {
-    this.organiseTabPosition();
-  }
-
-  public organiseTabPosition(): void {
     let matTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    if (!url.includes('#') && !url.includes('roles-and-access') && !url.includes('tasks')) {
+    if (!url.includes('#')) {
       const paths = url.split('/');
       // lastPath can be /caseId, or the tabs /tasks, /hearings etc.
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
       let foundTab: CaseTab = null;
-      if (!this.prependedTabs) {
-        this.prependedTabs = [];
-      }
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
         foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
@@ -246,7 +227,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // preselect the 1st order of CCD predefined tabs
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], {fragment: preSelectTab.label}).then(() => {
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           this.tabGroup.selectedIndex = matTab.position;
         });
@@ -254,9 +235,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     } else {
       const regExp = new RegExp(CaseFullAccessViewComponent.UNICODE_SPACE, 'g');
       hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
-      if (hashValue.includes('roles-and-access') || hashValue.includes('tasks')) {
-        hashValue = hashValue.includes('roles-and-access') ? 'roles and access' : 'tasks';
-      }
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
                                 hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
@@ -269,9 +247,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
     const id = (tab.element.nativeElement as HTMLElement).id;
-    const tabsLengthBeforeAppended = this.prependedTabs.length + this.caseDetails.tabs.length;
+    // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
+    // so have to hard code the hearings id here
     if ((tabChangeEvent.index <= 1 && this.prependedTabs.length) ||
-      (tabChangeEvent.index >= tabsLengthBeforeAppended && this.appendedTabs.length)) {
+      (this.appendedTabs.length && id === 'hearings')) {
       this.router.navigate([id], {relativeTo: this.route});
     } else {
       const label = tabChangeEvent.tab.textLabel;
