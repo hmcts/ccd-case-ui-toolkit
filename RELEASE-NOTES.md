@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.23.2-case-file-view-folder-and-document-icons
+### Version 4.23.3-case-file-view-folder-and-document-icons
 **EUI-6974** Case file view folder and document icons
 
 ### Version 4.23.2-case-file-view-folder-tree-display

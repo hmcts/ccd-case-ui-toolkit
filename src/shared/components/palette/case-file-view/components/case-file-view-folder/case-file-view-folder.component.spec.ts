@@ -11,6 +11,7 @@ import { CaseFileViewFolderComponent } from './case-file-view-folder.component';
 describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
   let fixture: ComponentFixture<CaseFileViewFolderComponent>;
+  let nativeElement: any;
 
   const categoriesAndDocuments: CategoriesAndDocuments = {
     case_version: 1,
@@ -296,6 +297,7 @@ describe('CaseFileViewFolderComponent', () => {
     fixture = TestBed.createComponent(CaseFileViewFolderComponent);
     component = fixture.componentInstance;
     component.categoriesAndDocuments$ = of(categoriesAndDocuments);
+    nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   }));
 
@@ -346,6 +348,13 @@ describe('CaseFileViewFolderComponent', () => {
       ]
     }
     expect(component.getUncategorisedDocuments(uncategorisedDocuments)).toEqual(uncategorisedDocumentsTreeNode);
+  });
+
+  it('should render cdk nested tree', () => {
+    component.nestedDataSource = treeData;
+    fixture.detectChanges();
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
+    expect(documentTreeContainerEl).toBeDefined();
   });
 
   it('should unsubscribe', () => {
