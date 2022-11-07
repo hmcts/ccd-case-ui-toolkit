@@ -2,7 +2,8 @@ import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import {
-  CaseFileViewDocument, DocumentTreeNode
+  CaseFileViewDocument,
+  DocumentTreeNode
 } from '../../../../../domain/case-file-view';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
 import { treeData } from '../../test-data/document-tree-node-test-data';
