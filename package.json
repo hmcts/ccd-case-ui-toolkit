@@ -47,6 +47,8 @@
     "build-storybook": "yarn docs:json && build-storybook"
   },
   "dependencies": {
+    "@angular-material-components/datetime-picker": "6.0.0",
+    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/animations": "~11.2.14",
     "@angular/cdk": "^11.2.13",
     "@angular/common": "~11.2.14",
@@ -57,8 +59,6 @@
     "@angular/material": "^11.2.13",
     "@angular/platform-browser": "~11.2.14",
     "@angular/platform-browser-dynamic": "~11.2.14",
-    "@angular-material-components/datetime-picker": "6.0.0",
-    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/router": "~11.2.14",
     "@angular/upgrade": "~11.2.14",
     "@edium/fsm": "^2.1.2",
@@ -85,6 +85,7 @@
     "underscore": "^1.9.1",
     "util": "^0.12.4",
     "yargs-parser": "18.1.2",
+    "yarn": "^1.22.15",
     "zone.js": "~0.11.7"
   },
   "devDependencies": {
