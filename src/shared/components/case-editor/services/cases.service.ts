@@ -11,12 +11,10 @@ import {
   CaseEventTrigger,
   CasePrintDocument,
   CaseView,
-  ChallengedAccessRequest,
-  SpecificAccessRequest,
-  Draft,
+  ChallengedAccessRequest, Draft,
   RoleAssignmentResponse,
   RoleCategory,
-  RoleRequestPayload
+  RoleRequestPayload, SpecificAccessRequest
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
@@ -316,7 +314,7 @@ export class CasesService {
   }
 
   public getCourtOrHearingCentreName(locationId: number): Observable<any> {
-    return this.http.get(`${this.appConfig.getLocationRefApiUrl()}/building-locations?epimms_id=${locationId}`);
+    return this.http.post(`/api/locations/getLocationsById`, { locations : [{ locationId : locationId }]});
   }
 
   public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {

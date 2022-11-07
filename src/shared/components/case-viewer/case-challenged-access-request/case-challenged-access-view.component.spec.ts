@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Location } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,6 +12,11 @@ import { CaseChallengedAccessRequestComponent } from './case-challenged-access-r
 import { ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
 
 import createSpyObj = jasmine.createSpyObj;
+import { CaseReviewSpecificAccessRequestComponent } from '../case-review-specific-access-request';
+import { Component } from '@angular/core';
+
+@Component({template: ``})
+class StubComponent {}
 
 describe('CaseChallengedAccessRequestComponent', () => {
   let component: CaseChallengedAccessRequestComponent;
@@ -26,14 +32,22 @@ describe('CaseChallengedAccessRequestComponent', () => {
     }
   };
   let router: Router;
+  let location: Location;
   beforeEach(async(() => {
     casesService = createSpyObj<CasesService>('casesService', ['createChallengedAccessRequest']);
     casesNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['fetchAndRefresh']);
     casesService.createChallengedAccessRequest.and.returnValue(of(true));
     casesNotifier.fetchAndRefresh.and.returnValue(of(new CaseView()));
     TestBed.configureTestingModule({
-      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule ],
-      declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent ],
+      imports: [
+        AlertModule,
+        ReactiveFormsModule,
+        RouterTestingModule.withRoutes([
+          { path: '', component: CaseChallengedAccessRequestComponent },
+          { path: 'work/my-work/list', component: StubComponent }
+        ])
+      ],
+      declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent, StubComponent ],
       providers: [
         FormBuilder,
         { provide: CasesService, useValue: casesService },
@@ -49,6 +63,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     router = TestBed.get(Router);
+    location = TestBed.get(Location);
     spyOn(router, 'navigate');
   });
 
@@ -305,13 +320,13 @@ describe('CaseChallengedAccessRequestComponent', () => {
     expect(errorMessageElement.textContent).toContain(ChallengedAccessRequestErrors.NO_REASON);
   });
 
-  it('should go back to the page before previous one when the \"Cancel\" link is clicked', () => {
+  it('should go back to the cancel link destination when the Cancel link is clicked', fakeAsync(() => {
     const cancelLink = fixture.debugElement.nativeElement.querySelector('a.govuk-body');
     expect(cancelLink.text).toContain('Cancel');
-    spyOn(window.history, 'go');
     cancelLink.click();
-    expect(window.history.go).toHaveBeenCalledWith(-2);
-  });
+    tick();
+    expect(location.path()).toBe(CaseChallengedAccessRequestComponent.CANCEL_LINK_DESTINATION);
+  }));
 
   it('should make a Challenged Access request with correct parameters for the first reason, and navigate to the success page', () => {
     const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-0');

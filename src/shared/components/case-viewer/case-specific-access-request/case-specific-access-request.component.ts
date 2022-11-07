@@ -20,6 +20,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './case-specific-access-request.component.html',
 })
 export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
+  public static CANCEL_LINK_DESTINATION = '/work/my-work/list';
   public collapsed = false;
   public title: string;
   public hint: string;
@@ -110,7 +111,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
 
   public onCancel(): void {
     // Navigate to the page before previous one (should be Search Results or Case List page, for example)
-    window.history.go(-2);
+    this.router.navigateByUrl(CaseSpecificAccessRequestComponent.CANCEL_LINK_DESTINATION);
   }
 
   public ngOnDestroy(): void {

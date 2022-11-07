@@ -1,3 +1,4 @@
+<ccd-loading-spinner  *ngIf="showSpinner"></ccd-loading-spinner>
 <div>
   <cut-alert type="information">
     <ng-container *ngIf="accessType === 'CHALLENGED'">This case requires {{accessType | lowercase}} access.</ng-container>
