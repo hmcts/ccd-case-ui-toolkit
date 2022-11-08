@@ -55,7 +55,6 @@ export class WorkAllocationService {
   private isWAEnabled(jurisdiction?: string, caseType?: string): boolean {
     this.features = this.appConfig.getWAServiceConfig();
     let enabled = false;
-    console.log(this.features);
     if (!jurisdiction || !caseType) {
       const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo'));
       jurisdiction = caseInfo.jurisdiction;
@@ -65,12 +64,10 @@ export class WorkAllocationService {
       return false;
     }
     this.features.configurations.forEach(serviceConfig => {
-      console.log(serviceConfig.serviceName === jurisdiction && (serviceConfig.caseTypes.indexOf(caseType) !== -1));
       if (serviceConfig.serviceName === jurisdiction && (serviceConfig.caseTypes.indexOf(caseType) !== -1)) {
           enabled = true;
       }
     })
-    console.log(enabled);
     return enabled;
   }
 
