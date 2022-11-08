@@ -83,7 +83,7 @@ describe('CasesService', () => {
     });
     alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
 
-    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
     sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
       "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com","token": null}`);
     loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);

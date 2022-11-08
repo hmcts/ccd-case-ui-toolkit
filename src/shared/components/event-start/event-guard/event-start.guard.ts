@@ -12,7 +12,6 @@ export class EventStartGuard implements CanActivate {
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
-    private readonly appConfig: AbstractAppConfig,
     private readonly sessionStorageService: SessionStorageService) {
   }
 
@@ -24,22 +23,9 @@ export class EventStartGuard implements CanActivate {
     // TODO: NavigationExtras should be used once Angular upgrade changes have been incorporated
     const isComplete = route.queryParams['isComplete'];
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
+    console.log('checking activation');
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
-      const caseJurisdiction = caseInfo.jurisdiction ? caseInfo.jurisdiction : null;
-      const caseType = caseInfo.caseType ? caseInfo.caseType : null;
-      // assume case does not have event access
-      let supportedCaseType = false;
-      this.appConfig.getWAServiceConfig().configurations.forEach(serviceConfig => {
-        if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
-          // just checking if the service and case type is present in the feature
-          supportedCaseType = true;
-        }
-      });
-      if (!supportedCaseType) {
-        // ensure that if service does not have access to WA they cannot use event dropdown
-        return of(false);
-      }
       if (caseInfo && caseInfo.cid === caseId) {
         if (isComplete) {
           return of(true);
@@ -54,7 +40,7 @@ export class EventStartGuard implements CanActivate {
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
     // Clear taskToComplete from session as we will be starting the process for new task
     this.sessionStorageService.removeItem('taskToComplete');
-
+    console.log('hi there');
     if (payload.task_required_for_event) {
       // There are some issues in EventTriggerResolver/CaseService and/or CCD for some events
       // which triggers the CanActivate guard again.

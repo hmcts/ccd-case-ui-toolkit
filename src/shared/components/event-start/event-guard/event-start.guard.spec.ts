@@ -39,7 +39,7 @@ describe('EventStartGuard', () => {
 
   it('canActivate should return false', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
-    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
+    const guard = new EventStartGuard(service, router, sessionStorageService);
     const payload: TaskPayload = {
       task_required_for_event: true,
       tasks
@@ -53,7 +53,7 @@ describe('EventStartGuard', () => {
 
   it('canActivate should return true', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
-    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
+    const guard = new EventStartGuard(service, router, sessionStorageService);
     const payload: TaskPayload = {
       task_required_for_event: false,
       tasks: []
@@ -62,21 +62,6 @@ describe('EventStartGuard', () => {
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
       expect(canActivate).toEqual(true);
-    });
-  });
-
-  it('canActivate should return false when case type is set differently on the feature', () => {
-    appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['example'], release: '3.0'}]});
-    appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
-    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
-    const payload: TaskPayload = {
-      task_required_for_event: false,
-      tasks: []
-    }
-    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
-    const canActivate$ = guard.canActivate(route);
-    canActivate$.subscribe(canActivate => {
-      expect(canActivate).toEqual(false);
     });
   });
 
@@ -97,7 +82,7 @@ describe('EventStartGuard', () => {
     const caseId = '1234567890';
     const eventId = 'testEvent';
 
-    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
+    const guard = new EventStartGuard(service, router, sessionStorageService);
 
     it('should return true if there are no tasks in the payload', () => {
       const mockEmptyPayload: TaskPayload = {task_required_for_event: false, tasks: []};
