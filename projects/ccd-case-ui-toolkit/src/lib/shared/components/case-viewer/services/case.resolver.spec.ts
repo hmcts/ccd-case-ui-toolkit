@@ -1,8 +1,8 @@
+import { CaseResolver } from './case.resolver';
 import { NavigationEnd } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 import { CaseView } from '../../../domain';
 import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
-import { CaseResolver } from './case.resolver';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseResolver', () => {
@@ -210,30 +210,6 @@ describe('CaseResolver', () => {
         });
 
       expect(router.navigate).not.toHaveBeenCalledWith(['/list/case']);
-    });
-
-    it('should redirect to no case found page when case cannot be found and previousUrl is event submission', () => {
-      const error = {
-        status: 400
-      };
-      casesService.getCaseViewV2.and.returnValue(throwError(error));
-
-      router = {
-        navigate: jasmine.createSpy('navigate'),
-        events: of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
-      };
-
-      caseResolver = new CaseResolver(caseNotifier, casesService, draftService, navigationNotifierService, router);
-
-      caseResolver
-        .resolve(route)
-        .then(data => {
-          expect(data).toBeFalsy();
-        }, err => {
-          expect(err).toBeTruthy();
-        });
-
-      expect(router.navigate).toHaveBeenCalledWith(['/search/noresults']);
     });
 
     it('should redirect to case list page when case id is empty', () => {

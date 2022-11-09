@@ -12,7 +12,7 @@
 ### Version 5.0.22-case-file-view-get-categories-and-documents
 **EUI-5481** Service layer for HTTP GET call to CCD endpoint for retrieving categories and documents
 
-### Version 5.0.22-angular11-upgrade
+### Version 5.0.24-angular11-upgrade
 **EUI-6326** Angular 11 upgrade
 
 ### Version 4.22.0-judicial-user-typeahead
