@@ -23,6 +23,7 @@ describe('CaseResolver', () => {
     let casesService: any;
     let caseNotifier: any;
     let navigationNotifierService: NavigationNotifierService;
+    let sessionStorageService: any;
     let route: any;
 
     let router: any;
@@ -35,10 +36,12 @@ describe('CaseResolver', () => {
       caseNotifier = createSpyObj('caseNotifier', ['announceCase', 'fetchAndRefresh']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
+      sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
       navigationNotifierService = new NavigationNotifierService();
       spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
       caseNotifier.fetchAndRefresh.and.returnValue(of(CASE));
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
+      sessionStorageService.getItem.and.returnValue(null);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       route = {
         firstChild: {
@@ -169,7 +172,7 @@ describe('CaseResolver', () => {
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       caseResolver
         .resolve(route)
@@ -193,7 +196,7 @@ describe('CaseResolver', () => {
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       caseResolver
         .resolve(route)
@@ -217,7 +220,7 @@ describe('CaseResolver', () => {
         events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       caseResolver
         .resolve(route)
@@ -228,6 +231,40 @@ describe('CaseResolver', () => {
         });
 
       expect(router.navigate).toHaveBeenCalledWith(['/search/noresults']);
+    });
+
+    it('should redirect to default page when case cannot be found and previousUrl is not matching event submission', () => {
+      const error = {
+        status: 404
+      };
+      caseNotifier.fetchAndRefresh.and.returnValue(Observable.throw(error));
+
+      router = {
+        navigate: jasmine.createSpy('navigate'),
+        events: Observable.of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
+      };
+
+      const userInfo = {
+        id: '2',
+        forename: 'G',
+        surname: 'Testing',
+        email: 'testing2@mail.com',
+        active: true,
+        roles: ['caseworker-ia-caseofficer']
+      };
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
+
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).toHaveBeenCalledWith(['/work/my-work/list']);
     });
 
     it('should redirect to case list page when case id is empty', () => {
@@ -273,6 +310,7 @@ describe('CaseResolver', () => {
     let casesService: any;
     let alertService: AlertService;
     let navigationNotifierService: NavigationNotifierService;
+    let sessionStorageService: any;
     let route: any;
 
     let router: any;
@@ -285,10 +323,12 @@ describe('CaseResolver', () => {
       caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
+      sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
       draftService.getDraft.and.returnValue(DRAFT_OBS);
       alertService = createSpyObj('alertService', ['success']);
       navigationNotifierService = createSpyObj('navigationNotifierService', ['announceNavigation']);
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router);
+      sessionStorageService.getItem.and.returnValue(null);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
 
       route = {
         firstChild: {

@@ -51,9 +51,9 @@ describe('EventTaskResolverService', () => {
   httpService = createSpyObj<HttpService>('httpService', ['post', 'get']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
   const sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
   sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
+  workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [

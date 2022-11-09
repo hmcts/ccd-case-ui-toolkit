@@ -4,7 +4,7 @@ import { plainToClassFromExist } from 'class-transformer';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseView, Draft } from '../../../domain';
-import { DraftService, NavigationOrigin } from '../../../services';
+import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
 import { CaseNotifier } from '../../case-editor';
 
@@ -15,6 +15,8 @@ export class CaseResolver implements Resolve<CaseView> {
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
 
+  public static defaultWAPage = '/work/my-work/list';
+  public static defaultPage = '/cases';
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
   // we cache the case view to avoid retrieving it for each child route
@@ -22,7 +24,8 @@ export class CaseResolver implements Resolve<CaseView> {
   constructor(private caseNotifier: CaseNotifier,
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
-              private router: Router) {
+              private router: Router,
+              private sessionStorage: SessionStorageService) {
     router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
@@ -99,6 +102,21 @@ export class CaseResolver implements Resolve<CaseView> {
     if (error.status !== 401 && error.status !== 403) {
       this.router.navigate(['/error']);
     }
+    this.goToDefaultPage();
     return Observable.throw(error);
+  }
+
+  // as discussed for EUI-5456, need functionality to go to default page
+  private goToDefaultPage(): void {
+    const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails'));
+    userDetails && userDetails.roles
+        && !userDetails.roles.includes('pui-case-manager')
+        &&
+        (userDetails.roles.includes('caseworker-ia-iacjudge')
+          || userDetails.roles.includes('caseworker-ia-caseofficer')
+          || userDetails.roles.includes('caseworker-ia-admofficer')
+          || userDetails.roles.includes('caseworker-civil')
+          || userDetails.roles.includes('caseworker-privatelaw'))
+        ? this.router.navigate([CaseResolver.defaultWAPage]) : this.router.navigate([CaseResolver.defaultPage]);
   }
 }
