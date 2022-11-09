@@ -6,7 +6,7 @@ import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { FieldsPurger, FieldsUtils } from '../../../services';
+import { FieldsPurger, FieldsUtils, SessionStorageService, WindowService } from '../../../services';
 import { ConditionalShowRegistrarService } from '../../../directives';
 import { FieldsFilterPipe, PaletteUtilsModule } from '../../palette';
 import { WizardFactoryService } from '../services/wizard-factory.service';
@@ -297,7 +297,9 @@ describe('CaseEditComponent', () => {
             {provide: FieldsPurger, useValue: fieldsPurger},
             {provide: ConditionalShowRegistrarService, useValue: registrarService},
             {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: route}
+            {provide: ActivatedRoute, useValue: route},
+            SessionStorageService,
+            WindowService
           ]
         })
         .compileComponents();
@@ -1102,7 +1104,9 @@ describe('CaseEditComponent', () => {
             {provide: FieldsPurger, useValue: fieldsPurger},
             {provide: ConditionalShowRegistrarService, useValue: registrarService},
             {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: mockRouteNoProfile}
+            {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+            SessionStorageService,
+            WindowService
           ]
         })
         .compileComponents();

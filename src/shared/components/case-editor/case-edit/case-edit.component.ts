@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import { CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
-import { FieldsPurger, FieldsUtils } from '../../../services';
+import { FieldsPurger, FieldsUtils, SessionStorageService, WindowService } from '../../../services';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { WizardFactoryService } from '../services';
 
@@ -17,6 +17,7 @@ import { WizardFactoryService } from '../services';
 })
 export class CaseEditComponent implements OnInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
+  static readonly ALERT_MESSAGE = 'Page is being refreshed so you will be redirected to the first page of this event.';
 
   @Input()
   eventTrigger: CaseEventTrigger;
@@ -55,10 +56,26 @@ export class CaseEditComponent implements OnInit {
     private fieldsPurger: FieldsPurger,
     private registrarService: ConditionalShowRegistrarService,
     private wizardFactory: WizardFactoryService,
+    private sessionStorageService: SessionStorageService,
+    private windowsService: WindowService
   ) {}
 
   ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
+    const initialUrl = this.sessionStorageService.getItem('eventUrl');
+    const isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
+    let ispageLoaded  = false;
+    if (isPageRefreshed && initialUrl) {
+      this.sessionStorageService.removeItem('eventUrl');
+      ispageLoaded = true;
+      this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+      this.router.navigateByUrl(initialUrl).then(() => {
+        window.location.reload();
+      });
+    }
+    if (this.router.url && (!isPageRefreshed || !ispageLoaded)) {
+      this.sessionStorageService.setItem('eventUrl', this.router.url);
+    }
 
     this.form = this.fb.group({
       'data': new FormGroup({}),

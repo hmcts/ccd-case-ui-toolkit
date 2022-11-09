@@ -18,7 +18,8 @@ import {
   ErrorNotifierService,
   NavigationNotifierService,
   NavigationOrigin,
-  OrderService
+  OrderService,
+  SessionStorageService
 } from '../../../services';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
@@ -74,7 +75,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     private readonly draftService: DraftService,
     private readonly errorNotifierService: ErrorNotifierService,
     private convertHrefToRouterService: ConvertHrefToRouterService,
-    private readonly location: Location
+    private readonly location: Location,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -93,6 +95,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       }
     });
     this.markdownUseHrefAsRouterLink = true;
+
+    this.sessionStorageService.removeItem('eventUrl');
 
     this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
       // do not convert router with initial default value; convert to router only on updated link content
