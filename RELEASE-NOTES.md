@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.24-case-file-view-post-ccd-toolkit-angular11-upgrade
+**EUI-7062** Migrate Case File View to Angular 11-upgraded CCD Case UI Toolkit
+
 ### Version 5.0.22-case-file-view-component-launcher-implementation
 **EUI-6965** Implement the ComponentLauncher mechanism for invoking the Case File View web component
 
