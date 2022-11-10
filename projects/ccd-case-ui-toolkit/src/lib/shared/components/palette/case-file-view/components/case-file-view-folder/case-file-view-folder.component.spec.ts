@@ -1,5 +1,6 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
 import {
   CaseFileViewDocument,
@@ -43,11 +44,12 @@ describe('CaseFileViewFolderComponent', () => {
 
   it('should get documents from category', () => {
     const documents = categoriesAndDocuments.categories[0].documents;
-    const documentsTreeNodes: DocumentTreeNode[] = [
+    const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
-        name: 'Beers encyclopedia'
+        name: 'Beers encyclopedia',
+        type: 'document'
       }
-    ];
+    ]);
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
   });
 
@@ -68,17 +70,20 @@ describe('CaseFileViewFolderComponent', () => {
         upload_timestamp: ''
       }
     ];
-    const uncategorisedDocumentsTreeNode: DocumentTreeNode = {
+    const uncategorisedDocumentsTreeNode: DocumentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Uncategorised documents',
+      type: 'category',
       children: [
         {
-          name: 'Uncategorised document 1'
+          name: 'Uncategorised document 1',
+          type: 'document'
         },
         {
-          name: 'Uncategorised document 2'
+          name: 'Uncategorised document 2',
+          type: 'document'
         }
       ]
-    };
+    });
     expect(component.getUncategorisedDocuments(uncategorisedDocuments)).toEqual(uncategorisedDocumentsTreeNode);
   });
 
