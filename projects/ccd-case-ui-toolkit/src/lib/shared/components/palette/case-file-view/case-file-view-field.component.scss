@@ -1,15 +1,17 @@
 #case-file-view {
   display: flex;
+  border: 2px solid #C9C9C9;
 
   .document-tree-container {
-    background-color: lightblue;
-    width: 40%;
+    background-color: #FAF8F8;
+    width: 30%;
     min-height: 400px;
+    min-width: 10%;
   }
   
   .slider {
-    background-color: orangered;
     width: 0.2%;
+    background-color: #6B6B6B;
   }
 
   .slider:hover,
@@ -18,7 +20,6 @@
   }
   
   .media-viewer-container {
-    background-color: lightgreen;
     flex: 1 1 0%;
   }  
 }
