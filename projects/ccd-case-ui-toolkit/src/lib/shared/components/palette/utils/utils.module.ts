@@ -32,6 +32,9 @@ import { IsReadOnlyPipe } from './is-read-only.pipe';
     IsReadOnlyPipe,
     IsReadOnlyAndNotCollectionPipe,
     DashPipe
+  ],
+  providers:[
+    IsCompoundPipe
   ]
 })
 export class PaletteUtilsModule {}

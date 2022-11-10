@@ -4,6 +4,7 @@ export * from './unsupported-field.component';
 
 export * from './address';
 export * from './base-field';
+export * from './case-file-view';
 export * from './case-link';
 export * from './collection';
 export * from './complex';
