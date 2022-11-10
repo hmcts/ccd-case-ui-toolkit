@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.22-case-file-view-folder-and-document-icons
+**EUI-6974** Folder and document icons
+
 ### Version 5.0.22-case-file-view-component-launcher-implementation
 **EUI-6965** Implement the ComponentLauncher mechanism for invoking the Case File View web component
 
