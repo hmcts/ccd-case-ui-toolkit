@@ -50,6 +50,8 @@ export class CaseEditComponent implements OnInit {
 
   initialUrl: string;
 
+  isPageRefreshed: boolean;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -65,16 +67,10 @@ export class CaseEditComponent implements OnInit {
   ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
     this.initialUrl = this.sessionStorageService.getItem('eventUrl');
-    const isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
-    if (isPageRefreshed && this.initialUrl) {
-      this.sessionStorageService.removeItem('eventUrl');
-      this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
-      this.router.navigateByUrl(this.initialUrl).then(() => {
-        window.location.reload();
-      });
-    }
+    this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
 
-    if (this.router.url && !isPageRefreshed) {
+    this.checkPageRefresh();
+    if (this.router.url && !this.isPageRefreshed) {
       this.sessionStorageService.setItem('eventUrl', this.router.url);
     }
 
@@ -90,6 +86,16 @@ export class CaseEditComponent implements OnInit {
     this.route.queryParams.subscribe((params: Params) => {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
+  }
+
+  checkPageRefresh(): boolean {
+    if (this.isPageRefreshed && this.initialUrl) {
+      this.sessionStorageService.removeItem('eventUrl');
+      this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+      this.router.navigateByUrl(this.initialUrl, { skipLocationChange: true });
+      return true;
+    }
+    return false;
   }
 
   getPage(pageId: string): WizardPage {

@@ -209,10 +209,12 @@ describe('CaseEditComponent', () => {
   const fieldsPurger = new FieldsPurger(fieldsUtils);
   const registrarService = new ConditionalShowRegistrarService();
   let route: any;
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
 
   describe('profile available in route', () => {
     routerStub = {
       navigate: jasmine.createSpy('navigate'),
+      navigateByUrl: jasmine.createSpy('navigateByUrl'),
       routerState: {}
     };
 
@@ -254,6 +256,7 @@ describe('CaseEditComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
 
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
+      mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
 
       route = {
         queryParams: of({Origin: 'viewDraft'}),
@@ -782,6 +785,22 @@ describe('CaseEditComponent', () => {
           expect(wizard.nextPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
           expect(fieldsPurger.deleteFieldValue).not.toHaveBeenCalled();
+        });
+
+        it('should check page is not refreshed', () => {
+          mockSessionStorageService.getItem.and.returnValue(component.initialUrl = null);
+          mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = false);
+
+          fixture.detectChanges();
+          expect(component.checkPageRefresh()).toBe(false);
+        });
+
+        it('should check page is refreshed', () => {
+          mockSessionStorageService.getItem.and.returnValue(component.initialUrl = 'test');
+          mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = true);
+
+          fixture.detectChanges();
+          expect(component.checkPageRefresh()).toBe(true);
         });
       });
 
