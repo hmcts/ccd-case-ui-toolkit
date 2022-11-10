@@ -190,16 +190,8 @@ describe('WriteCaseFlagFieldComponent', () => {
                 id: 'Flags',
                 type: 'Complex'
               } as FieldType,
-              formatted_value: {
-                partyName: null,
-                roleOnCase: null,
-                details: []
-              },
-              value: {
-                partyName: null,
-                roleOnCase: null,
-                details: []
-              }
+              formatted_value: {},
+              value: {}
             }
           ] as CaseField[]
         }
@@ -418,8 +410,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].flags.details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[1].flags.details[1].hearingRelevant).toBe(true);
     expect(component.flagsData[2].flags.flagsCaseFieldId).toEqual(caseFlagsFieldId);
-    expect(component.flagsData[2].flags.partyName).toBeNull();
-    expect(component.flagsData[2].flags.roleOnCase).toBeNull();
+    expect(component.flagsData[2].flags.partyName).toBeUndefined();
+    expect(component.flagsData[2].flags.roleOnCase).toBeUndefined();
     expect(component.flagsData[2].flags.details).toBeNull();
   });
 
