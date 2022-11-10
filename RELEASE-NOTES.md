@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.0-case-flags-fix-for-empty-case-level-flags-field
+**EUI-7116** Fix to ensure a "caseFlags" case-level Flags field with an empty value is retained (it will be empty initially because no party name is required)
+
 ### Version 4.18.10-revert-erroneous-html-tag-change
 **EUI-6551** Fix incorrect alignment of tabular display of non built-in CCD complex fields on tabs, caused by an erroneous HTML tag change for the Case Flags feature
 
