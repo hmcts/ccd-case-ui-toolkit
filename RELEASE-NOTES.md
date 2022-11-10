@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.0-rc1
+**EUI-7116** Re-tag for release
+
 ### Version 6.10.0-case-flags-fix-for-empty-case-level-flags-field
 **EUI-7116** Fix to ensure a "caseFlags" case-level Flags field with an empty value is retained (it will be empty initially because no party name is required)
 
