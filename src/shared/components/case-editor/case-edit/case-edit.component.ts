@@ -48,6 +48,8 @@ export class CaseEditComponent implements OnInit {
 
   navigationOrigin: any;
 
+  initialUrl: string;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -62,18 +64,17 @@ export class CaseEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
-    const initialUrl = this.sessionStorageService.getItem('eventUrl');
+    this.initialUrl = this.sessionStorageService.getItem('eventUrl');
     const isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
-    let ispageLoaded  = false;
-    if (isPageRefreshed && initialUrl) {
+    if (isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
-      ispageLoaded = true;
       this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
-      this.router.navigateByUrl(initialUrl).then(() => {
+      this.router.navigateByUrl(this.initialUrl).then(() => {
         window.location.reload();
       });
     }
-    if (this.router.url && (!isPageRefreshed || !ispageLoaded)) {
+
+    if (this.router.url && !isPageRefreshed) {
       this.sessionStorageService.setItem('eventUrl', this.router.url);
     }
 
@@ -106,6 +107,10 @@ export class CaseEditComponent implements OnInit {
   }
 
   next(currentPageId: string): Promise<boolean> {
+    this.initialUrl = this.sessionStorageService.getItem('eventUrl');
+    if (this.router.url && !this.initialUrl) {
+      this.sessionStorageService.setItem('eventUrl', this.router.url);
+    }
     this.fieldsPurger.clearHiddenFields(this.form, this.wizard, this.eventTrigger, currentPageId);
     this.registrarService.reset();
 
