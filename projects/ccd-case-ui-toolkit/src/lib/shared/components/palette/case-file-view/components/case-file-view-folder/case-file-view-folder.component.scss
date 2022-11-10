@@ -20,27 +20,27 @@
   .document-tree-invisible {
     display: none;
   }
-  
+
   .document-tree ul,
   .document-tree li {
     margin-top: 0;
     margin-bottom: 0;
     list-style-type: none;
   }
-  
+
   .document-tree-node {
     display: block;
   }
-  
+
   .document-tree-node .document-tree-node {
     padding-left: 40px;
   }
-  
+
   .node {
     display: flex;
     padding: 4px;
   }
-  
+
   .icon {
     width: 36px;
     height: 36px;
@@ -48,25 +48,21 @@
     border: 0px;
     background-color: #FFF;
   }
-  
+
   .icon-folder {
     background-image: url(/assets/images/folder.png);
   }
-  
+
   .icon-document {
     background-image: url(/assets/images/document.png);
   }
-  
+
   .node-name {
     margin-left: 6px;
   }
-  
+
   .node-name-folder,
   .node-name-document {
     margin-top: 4px;
-  }
-  
-  .document-count {
-    color: #FFF;
   }
 }

@@ -17,7 +17,7 @@ describe('CaseFileViewFieldComponent', () => {
   };
   const mockRoute = {
     params: of({cid: '1234123412341234'}),
-    snapshot: {mockSnapshot}
+    snapshot: {...mockSnapshot}
   };
   const categoriesAndDocuments: CategoriesAndDocuments = {
     case_version: 1,

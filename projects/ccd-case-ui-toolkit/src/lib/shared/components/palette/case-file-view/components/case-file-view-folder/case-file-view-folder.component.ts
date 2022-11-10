@@ -1,5 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { plainToClass } from 'class-transformer';
 import { Observable, of, Subscription } from 'rxjs';
 import {
   CaseFileViewCategory,
@@ -14,7 +15,6 @@ import {
   templateUrl: './case-file-view-folder.component.html'
 })
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
-
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
 
   @Input() public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
@@ -32,7 +32,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments$.subscribe(categoriesAndDocuments => {
+    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments$
+      .subscribe(categoriesAndDocuments => {
       // Using the mock data for now as we have to display the documents as well for demo purpose
       const categories = this.loadCategories(); // categoriesAndDocuments.categories;
       // Generate document tree data from categories
@@ -51,10 +52,11 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return categories.reduce((tree, node) => [
       ...tree,
       ...[
-        {
+        plainToClass(DocumentTreeNode, {
           name: node.category_name,
-          children: [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)]
-        },
+          type: 'category',
+          children: [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)],
+        })
       ],
     ], []);
   }
@@ -62,17 +64,22 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public getDocuments(documents: CaseFileViewDocument[]): DocumentTreeNode[] {
     const documentsToReturn: DocumentTreeNode[] = [];
     documents.forEach(document => {
-      documentsToReturn.push({ name: document.document_filename });
+      documentsToReturn.push(plainToClass(DocumentTreeNode,
+        { name: document.document_filename, type: 'document' })
+      );
     });
+
     return documentsToReturn;
   }
 
   public getUncategorisedDocuments(uncategorisedDocuments: CaseFileViewDocument[]): DocumentTreeNode {
     const documents: DocumentTreeNode[] = [];
     uncategorisedDocuments.forEach(document => {
-      documents.push({ name: document.document_filename });
+      documents.push(plainToClass(DocumentTreeNode, {name: document.document_filename, type: 'document' }));
     });
-    return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, children: documents };
+    return plainToClass(DocumentTreeNode,
+      { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, type: 'category', children: documents }
+    );
   }
 
   public ngOnDestroy(): void {

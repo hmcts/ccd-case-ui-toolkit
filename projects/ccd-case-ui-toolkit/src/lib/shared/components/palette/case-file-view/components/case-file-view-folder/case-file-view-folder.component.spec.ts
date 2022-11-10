@@ -1,5 +1,6 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
 import {
   CaseFileViewDocument,
@@ -191,96 +192,117 @@ describe('CaseFileViewFolderComponent', () => {
     ]
   };
 
-  const treeData: DocumentTreeNode[] = [
+  const treeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
     {
       name: 'Beers',
+      type: 'category',
       children: [
         {
           name: 'Bitters',
-          children: []
+          type: 'category',
+          children: [],
         },
         {
           name: 'American',
-          children: []
+          type: 'category',
+          children: [],
         },
         {
           name: 'Asian',
+          type: 'category',
           children: []
         },
         {
-          name: 'Beers encyclopedia'
+          name: 'Beers encyclopedia',
+          type: 'document'
         }
       ]
     },
     {
       name: 'Wines',
+      type: 'category',
       children: [
         {
           name: 'French',
+          type: 'category',
           children: []
         },
         {
           name: 'Italian',
+          type: 'category',
           children: []
         }
       ]
     },
     {
       name: 'Spirits',
+      type: 'category',
       children: [
         {
           name: 'Scotch whisky',
+          type: 'category',
           children: [
             {
               name: 'Highland',
+              type: 'category',
               children: [
                 {
                   name: 'Highland 1',
+                  type: 'category',
                   children: []
                 }
               ]
             },
             {
               name: 'Lowland',
+              type: 'category',
               children: [
                 {
                   name: 'Lowland 1',
+                  type: 'category',
                   children: [
                     {
-                      name: 'Details about Whisky Lowland 1'
+                      name: 'Details about Whisky Lowland 1',
+                      type: 'document',
                     }
                   ]
                 },
                 {
                   name: 'Lowland 2',
+                  type: 'category',
                   children: []
                 }
               ]
             },
             {
               name: 'Islay',
+              type: 'category',
               children: [
                 {
-                  name: 'Details about Whisky Islay'
+                  name: 'Details about Whisky Islay',
+                  type: 'document',
                 },
                 {
-                  name: 'More information about Whisky Islay'
+                  name: 'More information about Whisky Islay',
+                  type: 'document',
                 }
               ]
             },
             {
               name: 'Speyside',
+              type: 'category',
               children: []
             },
             {
               name: 'Campbeltown',
+              type: 'category',
               children: []
             }
           ]
         }
       ]
     }
-  ];
+  ]);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -311,11 +333,12 @@ describe('CaseFileViewFolderComponent', () => {
 
   it('should get documents from category', () => {
     const documents = categoriesAndDocuments.categories[0].documents;
-    const documentsTreeNodes: DocumentTreeNode[] = [
+    const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
-        name: 'Beers encyclopedia'
+        name: 'Beers encyclopedia',
+        type: 'document'
       }
-    ];
+    ]);
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
   });
 
@@ -336,17 +359,20 @@ describe('CaseFileViewFolderComponent', () => {
         upload_timestamp: ''
       }
     ];
-    const uncategorisedDocumentsTreeNode: DocumentTreeNode = {
+    const uncategorisedDocumentsTreeNode: DocumentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Uncategorised documents',
+      type: 'category',
       children: [
         {
-          name: 'Uncategorised document 1'
+          name: 'Uncategorised document 1',
+          type: 'document'
         },
         {
-          name: 'Uncategorised document 2'
+          name: 'Uncategorised document 2',
+          type: 'document'
         }
       ]
-    }
+    });
     expect(component.getUncategorisedDocuments(uncategorisedDocuments)).toEqual(uncategorisedDocumentsTreeNode);
   });
 
