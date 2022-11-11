@@ -1,4 +1,4 @@
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -592,6 +592,17 @@ describe('CasesService', () => {
       };
       casesService.createSpecificAccessRequest(CASE_ID, sar);
       expect(httpService.post).toHaveBeenCalled();
+    });
+  });
+
+  describe('isPuiCaseManager()', () => {
+    it('should be false', () => {
+      expect(casesService.isPuiCaseManager()).toEqual(false);
+    });
+    it('should be true', () => {
+      sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
+      "roles": ["caseworker-role1", "caseworker-role3", "pui-case-manager"], "email": "test@mail.com","token": null}`);
+      expect(casesService.isPuiCaseManager()).toEqual(true);
     });
   });
 

@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { WorkAllocationService } from '../../case-editor';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { AbstractAppConfig } from '../../../../app.config';
 import { SessionStorageService } from '../../../services';
+import { CasesService, WorkAllocationService } from '../../case-editor';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService) {
+    private readonly sessionStorageService: SessionStorageService,
+    private caseService: CasesService) {
   }
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
@@ -26,12 +26,12 @@ export class EventStartGuard implements CanActivate {
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       if (caseInfo && caseInfo.cid === caseId) {
-        if (isComplete) {
+        if (isComplete || this.caseService.isPuiCaseManager()) {
           return of(true);
         }
-        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction).pipe(
-          switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
-        );
+          return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction).pipe(
+            switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
+          );
       }
     }
   }
