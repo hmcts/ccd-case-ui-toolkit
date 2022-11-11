@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 5.0.24-case-file-view-folder-document-icons
+### Version 5.0.24-case-file-view-folder-document-icons-v2
 **EUI-6974** Case file view folder and document icons display
 
 ### Version 5.0.24-case-file-view-post-ccd-toolkit-angular11-upgrade
