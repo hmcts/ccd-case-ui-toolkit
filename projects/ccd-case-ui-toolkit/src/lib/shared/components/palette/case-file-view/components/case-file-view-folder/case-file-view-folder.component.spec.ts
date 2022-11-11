@@ -1,24 +1,18 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { CategoriesAndDocuments } from '../../../domain/case-file-view/categories-and-documents.model';
-import { CaseFileViewService } from '../../../services';
-import { CaseFileViewFieldComponent } from './case-file-view-field.component';
-import createSpyObj = jasmine.createSpyObj;
+import {
+  CaseFileViewDocument,
+  CategoriesAndDocuments,
+  DocumentTreeNode
+} from '../../../../../domain/case-file-view';
+import { CaseFileViewFolderComponent } from './case-file-view-folder.component';
 
-describe('CaseFileViewFieldComponent', () => {
-  let component: CaseFileViewFieldComponent;
-  let fixture: ComponentFixture<CaseFileViewFieldComponent>;
-  let mockCaseFileViewService: any;
-  const mockSnapshot = {
-    paramMap: createSpyObj('paramMap', ['get']),
-  };
-  const mockRoute = {
-    params: of({cid: '1234123412341234'}),
-    snapshot: mockSnapshot
-  };
+describe('CaseFileViewFolderComponent', () => {
+  let component: CaseFileViewFolderComponent;
+  let fixture: ComponentFixture<CaseFileViewFolderComponent>;
+  let nativeElement: any;
+
   const categoriesAndDocuments: CategoriesAndDocuments = {
     case_version: 1,
     categories: [
@@ -197,32 +191,175 @@ describe('CaseFileViewFieldComponent', () => {
     ]
   };
 
+  const treeData: DocumentTreeNode[] = [
+    {
+      name: 'Beers',
+      children: [
+        {
+          name: 'Bitters',
+          children: []
+        },
+        {
+          name: 'American',
+          children: []
+        },
+        {
+          name: 'Asian',
+          children: []
+        },
+        {
+          name: 'Beers encyclopedia'
+        }
+      ]
+    },
+    {
+      name: 'Wines',
+      children: [
+        {
+          name: 'French',
+          children: []
+        },
+        {
+          name: 'Italian',
+          children: []
+        }
+      ]
+    },
+    {
+      name: 'Spirits',
+      children: [
+        {
+          name: 'Scotch whisky',
+          children: [
+            {
+              name: 'Highland',
+              children: [
+                {
+                  name: 'Highland 1',
+                  children: []
+                }
+              ]
+            },
+            {
+              name: 'Lowland',
+              children: [
+                {
+                  name: 'Lowland 1',
+                  children: [
+                    {
+                      name: 'Details about Whisky Lowland 1'
+                    }
+                  ]
+                },
+                {
+                  name: 'Lowland 2',
+                  children: []
+                }
+              ]
+            },
+            {
+              name: 'Islay',
+              children: [
+                {
+                  name: 'Details about Whisky Islay'
+                },
+                {
+                  name: 'More information about Whisky Islay'
+                }
+              ]
+            },
+            {
+              name: 'Speyside',
+              children: []
+            },
+            {
+              name: 'Campbeltown',
+              children: []
+            }
+          ]
+        }
+      ]
+    }
+  ];
+
   beforeEach(async(() => {
-    mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService', ['getCategoriesAndDocuments']);
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        CdkTreeModule
       ],
       declarations: [
-        CaseFileViewFieldComponent
+        CaseFileViewFolderComponent
       ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ],
-      providers: [
-        { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: CaseFileViewService, useValue: mockCaseFileViewService }
-      ]
+      providers: []
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CaseFileViewFieldComponent);
+    fixture = TestBed.createComponent(CaseFileViewFolderComponent);
     component = fixture.componentInstance;
+    component.categoriesAndDocuments$ = of(categoriesAndDocuments);
+    nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(mockCaseFileViewService.getCategoriesAndDocuments).toHaveBeenCalled();
+  });
+
+  it('should generate tree data', () => {
+    expect(component.generateTreeData(categoriesAndDocuments.categories)).toEqual(treeData);
+  });
+
+  it('should get documents from category', () => {
+    const documents = categoriesAndDocuments.categories[0].documents;
+    const documentsTreeNodes: DocumentTreeNode[] = [
+      {
+        name: 'Beers encyclopedia'
+      }
+    ];
+    expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
+  });
+
+  it('should get uncategorised documents', () => {
+    const uncategorisedDocuments: CaseFileViewDocument[] =  [
+      {
+        document_url: '/uncategorised-document-1',
+        document_filename: 'Uncategorised document 1',
+        document_binary_url: '/test/binary',
+        attribute_path: '',
+        upload_timestamp: ''
+      },
+      {
+        document_url: '/uncategorised-document-2',
+        document_filename: 'Uncategorised document 2',
+        document_binary_url: '/test/binary',
+        attribute_path: '',
+        upload_timestamp: ''
+      }
+    ];
+    const uncategorisedDocumentsTreeNode: DocumentTreeNode = {
+      name: 'Uncategorised documents',
+      children: [
+        {
+          name: 'Uncategorised document 1'
+        },
+        {
+          name: 'Uncategorised document 2'
+        }
+      ]
+    }
+    expect(component.getUncategorisedDocuments(uncategorisedDocuments)).toEqual(uncategorisedDocumentsTreeNode);
+  });
+
+  it('should render cdk nested tree', () => {
+    component.nestedDataSource = treeData;
+    fixture.detectChanges();
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
+    expect(documentTreeContainerEl).toBeDefined();
+  });
+
+  it('should unsubscribe', () => {
+    spyOn(component.categoriesAndDocumentsSubscription, 'unsubscribe').and.callThrough();
+    component.ngOnDestroy();
+    expect(component.categoriesAndDocumentsSubscription.unsubscribe).toHaveBeenCalled();
   });
 });

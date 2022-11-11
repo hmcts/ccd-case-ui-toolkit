@@ -1,15 +1,29 @@
-import { AfterViewInit, Component, ElementRef } from '@angular/core';
-import { fromEvent } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { fromEvent, Observable } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { CategoriesAndDocuments } from '../../../domain/case-file-view';
+import { CaseFileViewService } from '../../../services/case-file-view/case-file-view.service';
 
 @Component({
   selector: 'ccd-case-file-view-field',
   templateUrl: './case-file-view-field.component.html',
   styleUrls: ['./case-file-view-field.component.scss']
 })
-export class CaseFileViewFieldComponent implements AfterViewInit {
+export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
 
-  constructor(private readonly elementRef: ElementRef) { }
+  public static readonly PARAM_CASE_ID = 'cid';
+  public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
+
+  constructor(private readonly elementRef: ElementRef,
+              private readonly route: ActivatedRoute,
+              private caseFileViewService: CaseFileViewService) {
+  }
+
+  public ngOnInit(): void {
+    const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
+    this.categoriesAndDocuments$ = this.caseFileViewService.getCategoriesAndDocuments(cid);
+  }
 
   public ngAfterViewInit(): void {
     const slider = this.elementRef.nativeElement.querySelector('.slider');
@@ -29,7 +43,7 @@ export class CaseFileViewFieldComponent implements AfterViewInit {
             return {
               dx: move.clientX - x,
               documentTreeContainerWidth
-            }
+            };
           }),
           takeUntil(mouseup$));
         }
