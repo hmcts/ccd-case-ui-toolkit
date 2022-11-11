@@ -17,7 +17,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
 
-  @Input() public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
+  @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
 
   public nestedTreeControl: NestedTreeControl<DocumentTreeNode>;
   public nestedDataSource: DocumentTreeNode[];
@@ -25,14 +25,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public categoriesAndDocumentsSubscription: Subscription;
 
   private getChildren = (node: DocumentTreeNode) => of(node.children);
-  public hasNestedChild = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
+  public nestedChildren = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
 
   constructor() {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
 
   public ngOnInit(): void {
-    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments$.subscribe(categoriesAndDocuments => {
+    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocuments => {
       // Using the mock data for now as we have to display the documents as well for demo purpose
       const categories = this.loadCategories(); // categoriesAndDocuments.categories;
       // Generate document tree data from categories

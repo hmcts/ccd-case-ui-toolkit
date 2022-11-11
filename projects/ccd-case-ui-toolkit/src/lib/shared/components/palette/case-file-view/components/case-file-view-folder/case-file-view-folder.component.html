@@ -13,7 +13,7 @@
       </div>
     </cdk-nested-tree-node>
     <!-- folder-->
-    <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasNestedChild" class="document-tree-node">
+    <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: nestedChildren" class="document-tree-node">
       <div class="node">
         <button class="icon icon-folder" mat-icon-button [attr.aria-label]="'toggle ' + node.name" cdkTreeNodeToggle>
           <span class="document-count">{{node.count}}</span>

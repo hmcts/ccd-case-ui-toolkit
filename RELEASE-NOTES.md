@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.24-case-file-view-folder-document-icons
+**EUI-6974** Case file view folder and document icons display
+
 ### Version 5.0.24-case-file-view-post-ccd-toolkit-angular11-upgrade
 **EUI-7062** Migrate Case File View to Angular 11-upgraded CCD Case UI Toolkit
 
