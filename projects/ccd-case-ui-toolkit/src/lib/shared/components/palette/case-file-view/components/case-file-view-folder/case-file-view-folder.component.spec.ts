@@ -2,7 +2,7 @@ import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import {
-	CaseFileViewDocument, DocumentTreeNode
+  CaseFileViewDocument, DocumentTreeNode
 } from '../../../../../domain/case-file-view';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
 import { treeData } from '../../test-data/document-tree-node-test-data';
@@ -51,7 +51,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should get uncategorised documents', () => {
-    const uncategorisedDocuments: CaseFileViewDocument[] =  [
+    const uncategorisedDocuments: CaseFileViewDocument[] = [
       {
         document_url: '/uncategorised-document-1',
         document_filename: 'Uncategorised document 1',
@@ -77,7 +77,7 @@ describe('CaseFileViewFolderComponent', () => {
           name: 'Uncategorised document 2'
         }
       ]
-    }
+    };
     expect(component.getUncategorisedDocuments(uncategorisedDocuments)).toEqual(uncategorisedDocumentsTreeNode);
   });
 
