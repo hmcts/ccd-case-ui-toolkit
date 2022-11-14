@@ -1,10 +1,16 @@
 .document-filter-container {
-  height: 60px;
   border-bottom: 2px solid #C9C9C9;
   padding-bottom: 4px;
 
   .document-filter {
     height: 70%;
+    padding: 8px 0 0 8px;
+    margin-bottom: 10px;
+
+    .document-search {
+      background: url(assets/images/icon-search-white.svg) no-repeat;
+      width: 50%;
+    }
   }
 
   .documents-title {

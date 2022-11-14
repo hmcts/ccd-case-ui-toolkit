@@ -1,6 +1,8 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
+import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
@@ -8,6 +10,7 @@ import {
   DocumentTreeNode
 } from '../../../../../domain/case-file-view';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
+import { treeData } from '../../test-data/document-tree-node-test-data';
 
 @Component({
   selector: 'ccd-case-file-view-folder',
@@ -17,6 +20,7 @@ import { categoriesAndDocuments } from '../../test-data/categories-and-documents
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
+  private static readonly MINIMUM_SEARCH_CHARACTERS = 2;
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
 
@@ -24,6 +28,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public nestedDataSource: DocumentTreeNode[];
   public categories: CaseFileViewCategory[] = [];
   public categoriesAndDocumentsSubscription: Subscription;
+  public documentFilterFormGroup: FormGroup;
+  public documentSearchFormControl: FormControl;
 
   private getChildren = (node: DocumentTreeNode) => of(node.children);
   public nestedChildren = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
@@ -33,6 +39,19 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.documentFilterFormGroup = new FormGroup({});
+    this.documentSearchFormControl = new FormControl('');
+    this.documentFilterFormGroup.addControl('documentSearchFormControl', this.documentSearchFormControl);
+    this.documentSearchFormControl.valueChanges.pipe(
+      tap(() => console.log(this.documentFilterFormGroup.value)),
+      debounceTime(300),
+      filter((searchTerm: string) => searchTerm && searchTerm.length > CaseFileViewFolderComponent.MINIMUM_SEARCH_CHARACTERS),
+      switchMap((searchTerm: string) => this.filter(searchTerm).pipe(
+        tap(() => console.log('SEARCH TERM', searchTerm))
+      ))
+    ).subscribe(result => {
+      console.log('RESULT', result);
+    });
     this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocumentsResult => {
       // Using the mock data for now as we have to display the documents as well for demo purpose
       const categories = categoriesAndDocuments.categories; // categoriesAndDocuments.categories;
@@ -47,6 +66,11 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       this.nestedDataSource = treeData;
     });
   }
+
+  public filter(searchTerm: string): Observable<any> {
+
+    return of(treeData);
+  };
 
   public generateTreeData(categories: CaseFileViewCategory[]): DocumentTreeNode[] {
     return categories.reduce((tree, node) => [
