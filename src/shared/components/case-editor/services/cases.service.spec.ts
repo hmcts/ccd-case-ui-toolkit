@@ -634,5 +634,4 @@ describe('CasesService', () => {
       expect(casesService.isPuiCaseManager()).toEqual(true);
     });
   });
-
 });
