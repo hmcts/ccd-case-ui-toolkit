@@ -10,7 +10,7 @@ import createSpyObj = jasmine.createSpyObj;
 describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
   let fixture: ComponentFixture<CaseFileViewFieldComponent>;
-  let mockCaseFileViewService: any;
+  const mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService', ['getCategoriesAndDocuments']);
   const mockSnapshot = {
     paramMap: createSpyObj('paramMap', ['get']),
   };
@@ -20,7 +20,6 @@ describe('CaseFileViewFieldComponent', () => {
   };
 
   beforeEach(async(() => {
-    mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService', ['getCategoriesAndDocuments']);
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule

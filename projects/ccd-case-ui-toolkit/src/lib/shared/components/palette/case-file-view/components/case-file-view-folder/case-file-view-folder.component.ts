@@ -7,6 +7,7 @@ import {
   CategoriesAndDocuments,
   DocumentTreeNode
 } from '../../../../../domain/case-file-view';
+import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
 
 @Component({
   selector: 'ccd-case-file-view-folder',
@@ -32,14 +33,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocuments => {
+    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocumentsResult => {
       // Using the mock data for now as we have to display the documents as well for demo purpose
-      const categories = this.loadCategories(); // categoriesAndDocuments.categories;
+      const categories = categoriesAndDocuments.categories; // categoriesAndDocuments.categories;
       // Generate document tree data from categories
       const treeData = this.generateTreeData(categories);
       // Append uncategorised documents
-      if (categoriesAndDocuments.uncategorised_documents && categoriesAndDocuments.uncategorised_documents.length > 0) {
-        const uncategorisedDocuments = this.getUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents);
+      if (categoriesAndDocumentsResult.uncategorised_documents && categoriesAndDocumentsResult.uncategorised_documents.length > 0) {
+        const uncategorisedDocuments = this.getUncategorisedDocuments(categoriesAndDocumentsResult.uncategorised_documents);
         treeData.push(uncategorisedDocuments);
       }
       // Initialise cdk tree with generated data
