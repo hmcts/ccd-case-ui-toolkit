@@ -1,6 +1,5 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { plainToClass } from 'class-transformer';
 import { Observable, of, Subscription } from 'rxjs';
 import {
   CaseFileViewCategory,
@@ -64,9 +63,11 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public getDocuments(documents: CaseFileViewDocument[]): DocumentTreeNode[] {
     const documentsToReturn: DocumentTreeNode[] = [];
     documents.forEach(document => {
-      documentsToReturn.push(plainToClass(DocumentTreeNode,
-        { name: document.document_filename, type: 'document' })
-      );
+      const documentTreeNode = new DocumentTreeNode();
+      documentTreeNode.name = document.document_filename;
+      documentTreeNode.type = 'document';
+
+      documentsToReturn.push(documentTreeNode);
     });
 
     return documentsToReturn;
@@ -75,11 +76,19 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public getUncategorisedDocuments(uncategorisedDocuments: CaseFileViewDocument[]): DocumentTreeNode {
     const documents: DocumentTreeNode[] = [];
     uncategorisedDocuments.forEach(document => {
-      documents.push(plainToClass(DocumentTreeNode, {name: document.document_filename, type: 'document' }));
+      const documentTreeNode = new DocumentTreeNode();
+      documentTreeNode.name = document.document_filename;
+      documentTreeNode.type = 'document';
+
+      documents.push(documentTreeNode);
     });
-    return plainToClass(DocumentTreeNode,
-      { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, type: 'category', children: documents }
-    );
+
+    const uncategorisedNode = new DocumentTreeNode();
+    uncategorisedNode.name = CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE;
+    uncategorisedNode.type = 'category';
+    uncategorisedNode.children = documents;
+
+    return uncategorisedNode;
   }
 
   public ngOnDestroy(): void {
