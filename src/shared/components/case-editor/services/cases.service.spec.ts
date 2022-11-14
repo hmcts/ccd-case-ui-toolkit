@@ -621,6 +621,9 @@ describe('CasesService', () => {
       expect(httpClient.post).toHaveBeenCalledWith('/api/specific-access-request/update-attributes',
        {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
 
+    });
+  });
+
   describe('isPuiCaseManager()', () => {
     it('should be false', () => {
       expect(casesService.isPuiCaseManager()).toEqual(false);
