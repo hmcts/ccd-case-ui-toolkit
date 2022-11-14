@@ -8,7 +8,7 @@ export class DocumentTreeNode {
 
   @Expose()
   public get childDocumentCount() {
-    const countChildren = (childNodes) => {
+    const countChildren = (childNodes: DocumentTreeNode[] | undefined) => {
       let count = 0;
       if (childNodes?.length) {
         const documents = childNodes.filter(item => item.type === 'document');
