@@ -1,4 +1,4 @@
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError, TaskSearchParameter } from '../../../domain';
 import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
@@ -203,6 +203,13 @@ describe('WorkAllocationService', () => {
         });
     });
 
+    it('should be blocked when not supported by WA', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      const userId = getExampleUserDetails()[1].userInfo.id;
+      workAllocationService.assignTask(MOCK_TASK_1.id, userId).subscribe();
+      expect(httpService.post).not.toHaveBeenCalled();
+    });
+
   });
 
   describe('completeTask', () => {
@@ -231,6 +238,12 @@ describe('WorkAllocationService', () => {
         });
     });
 
+    it('should be blocked when not supported by WA', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.post).not.toHaveBeenCalled();
+    });
+
   });
 
   describe('assignAndCompleteTask', () => {
@@ -257,6 +270,12 @@ describe('WorkAllocationService', () => {
           expect(alertService.warning).toHaveBeenCalled();
           done();
         });
+    });
+
+    it('should be blocked when not supported by WA', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.post).not.toHaveBeenCalled();
     });
 
   });
@@ -355,6 +374,14 @@ describe('WorkAllocationService', () => {
       workAllocationService.getTask(MOCK_TASK_2.id).subscribe(result => {
         expect(getSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         done();
+      });
+    });
+
+    it('should be blocked when not supported by WA', () => {
+      const completeSpy = spyOn(workAllocationService, 'completeTask');
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      workAllocationService.completeAppropriateTask(null, null, 'IA', 'Asylum').subscribe(result => {
+        expect(result).toBe(null);
       });
     });
 

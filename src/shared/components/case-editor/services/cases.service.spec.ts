@@ -1,4 +1,4 @@
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -592,6 +592,34 @@ describe('CasesService', () => {
       };
       casesService.createSpecificAccessRequest(CASE_ID, sar);
       expect(httpService.post).toHaveBeenCalled();
+    });
+  });
+
+  describe('getCourtOrHearingCentreName()', () => {
+    beforeEach(() => {
+      httpService.post.and.callThrough();
+    });
+    it('should get court name', () => {
+      casesService.getCourtOrHearingCentreName(1);
+      expect(httpService.post).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateChallengedAccessRequestAttributes()', () => {
+    it('should update challenged access request', () => {
+      const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
+      CasesService.updateChallengedAccessRequestAttributes(httpClient, 'exampleId', {attribute: true})
+      expect(httpClient.post).toHaveBeenCalledWith('/api/challenged-access-request/update-attributes',
+       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
+    });
+  });
+
+  describe('updateSpecificAccessRequestAttributes()', () => {
+    it('should update specific access request', () => {
+      const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
+      CasesService.updateSpecificAccessRequestAttributes(httpClient, 'exampleId', {attribute: true})
+      expect(httpClient.post).toHaveBeenCalledWith('/api/specific-access-request/update-attributes',
+       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
     });
   });
 
