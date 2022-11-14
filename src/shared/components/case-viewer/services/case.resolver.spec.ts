@@ -1,8 +1,8 @@
+import { CaseResolver } from './case.resolver';
 import { NavigationEnd } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { CaseView } from '../../../domain';
 import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
-import { CaseResolver } from './case.resolver';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseResolver', () => {

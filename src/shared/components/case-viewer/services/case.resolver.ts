@@ -1,8 +1,9 @@
+import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
 import { plainToClassFromExist } from 'class-transformer';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
