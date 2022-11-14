@@ -85,7 +85,6 @@
     "underscore": "^1.9.1",
     "util": "^0.12.4",
     "yargs-parser": "18.1.2",
-    "yarn": "^1.22.15",
     "zone.js": "~0.11.7"
   },
   "devDependencies": {
@@ -170,7 +169,8 @@
     "webpack-dev-middleware": "^4.0.2",
     "webpack-rxjs-externals": "^2.0.0",
     "webpack-source-map-support": "^2.0.1",
-    "xlsx": "^0.15.4"
+    "xlsx": "^0.15.4",
+    "yarn": "^1.22.15"
   },
   "resolutions": {
     "braces": "^2.3.1",
