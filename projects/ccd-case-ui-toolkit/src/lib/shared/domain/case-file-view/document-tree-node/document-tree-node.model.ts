@@ -1,8 +1,8 @@
 import { Expose, Type } from 'class-transformer';
 
 export class DocumentTreeNode {
-  public name?: string;
-  public type?: 'document' | 'category';
+  public name: string;
+  public type: 'document' | 'category';
   @Type(() => DocumentTreeNode)
   public children?: DocumentTreeNode[];
 
