@@ -92,7 +92,7 @@ export class CaseEditComponent implements OnInit {
     if (this.isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
       this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
-      this.router.navigateByUrl(this.initialUrl, { skipLocationChange: true });
+      this.router.navigate([this.initialUrl], { relativeTo: this.route});
       return true;
     }
     return false;
