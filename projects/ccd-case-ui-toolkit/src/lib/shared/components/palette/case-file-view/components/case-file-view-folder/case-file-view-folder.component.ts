@@ -48,16 +48,17 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public generateTreeData(categories: CaseFileViewCategory[]): DocumentTreeNode[] {
-    return categories.reduce((tree, node) => [
-      ...tree,
-      ...[
-        plainToClass(DocumentTreeNode, {
-          name: node.category_name,
-          type: 'category',
-          children: [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)],
-        })
-      ],
-    ], []);
+    return categories.reduce((tree, node) => {
+      const newDocumentTreeNode = new DocumentTreeNode();
+      newDocumentTreeNode.name = node.category_name;
+      newDocumentTreeNode.type = 'category';
+      newDocumentTreeNode.children = [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)];
+
+      return [
+        ...tree,
+        newDocumentTreeNode,
+      ];
+    }, []);
   }
 
   public getDocuments(documents: CaseFileViewDocument[]): DocumentTreeNode[] {
