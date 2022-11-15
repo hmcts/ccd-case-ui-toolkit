@@ -1,6 +1,6 @@
 {
     "name": "@hmcts/ccd-case-ui-toolkit",
-    "version": "5.0.24-case-file-view-folder-document-icons-v3",
+    "version": "5.0.24-case-file-view-error-message-display",
     "engines": {
       "yarn": "^1.22.15",
       "npm": "^8.10.0"

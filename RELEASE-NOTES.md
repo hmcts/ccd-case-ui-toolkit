@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.24-case-file-view-error-message-display
+**EUI-6826** Display standard error message if Case File View component is unable to retrieve categories and documents data
+
 ### Version 5.0.24-case-file-view-folder-document-icons-v3
 **EUI-6974** Case file view folder and document icons display
 
