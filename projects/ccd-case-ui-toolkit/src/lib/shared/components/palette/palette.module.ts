@@ -1,33 +1,30 @@
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
-
 import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
 import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
-
-import { PaletteUtilsModule } from './utils';
-
-import { PipesModule } from '../../pipes/pipes.module';
-import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
-
-import { RouterModule } from '@angular/router';
-import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
+import { PipesModule } from '../../pipes/pipes.module';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
+import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -62,6 +59,7 @@ import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-u
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
+import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
 
@@ -141,7 +139,8 @@ const PALETTE_COMPONENTS = [
     WriteCollectionFieldComponent,
 
     // ComponentLauncher web components
-    CaseFileViewFieldComponent
+    CaseFileViewFieldComponent,
+    CaseFileViewFolderComponent
 ];
 
 @NgModule({
@@ -167,6 +166,7 @@ const PALETTE_COMPONENTS = [
     MatInputModule,
     MatDatepickerModule,
     MatAutocompleteModule,
+    CdkTreeModule,
     PaymentLibModule,
     ScrollToModule.forRoot()
   ],

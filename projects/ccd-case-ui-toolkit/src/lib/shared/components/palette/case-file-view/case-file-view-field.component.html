@@ -2,7 +2,9 @@
 <div class="govuk-form-group" id="case-file-view">
   <!-- Document tree -->
   <div class="document-tree-container">
-    Document tree
+    <ccd-case-file-view-folder
+      [categoriesAndDocuments]="categoriesAndDocuments$"
+    ></ccd-case-file-view-folder>
   </div>
   <!-- Slider -->
   <div class="slider"></div>
