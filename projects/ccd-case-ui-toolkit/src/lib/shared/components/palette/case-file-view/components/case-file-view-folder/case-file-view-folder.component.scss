@@ -8,9 +8,10 @@
     margin-bottom: 10px;
 
     .document-search {
-      background: url(assets/images/icon-search-black.svg) no-repeat 274px;
-      width: 300px;
+      background: url(assets/images/icon-search-black.svg) no-repeat 98% #FFF;
       padding-right: 30px;
+      min-width: 30%;
+      max-width: 340px;
     }
   }
 

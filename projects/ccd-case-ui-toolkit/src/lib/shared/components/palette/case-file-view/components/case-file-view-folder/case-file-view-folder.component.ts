@@ -2,7 +2,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
-import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
@@ -19,6 +19,7 @@ import { categoriesAndDocuments } from '../../test-data/categories-and-documents
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
+  private static readonly DOCUMENT_SEARCH_FORM_CONTROL_NAME = 'documentSearchFormControl';
   private static readonly MINIMUM_SEARCH_CHARACTERS = 2;
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
@@ -41,16 +42,11 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.documentFilterFormGroup = new FormGroup({});
     this.documentSearchFormControl = new FormControl('');
-    this.documentFilterFormGroup.addControl('documentSearchFormControl', this.documentSearchFormControl);
+    this.documentFilterFormGroup.addControl(CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME, this.documentSearchFormControl);
     
     // Listen to search input and initiate filter documents if at least three characters entered
     this.documentSearchFormControl.valueChanges.pipe(
-      tap(() => console.log(this.documentFilterFormGroup.value)),
-      debounceTime(300),
-      filter((searchTerm: string) => searchTerm && searchTerm.length > CaseFileViewFolderComponent.MINIMUM_SEARCH_CHARACTERS),
-      switchMap((searchTerm: string) => this.filter(searchTerm.toLowerCase(), this.documentTreeData).pipe(
-        tap(() => console.log('SEARCH TERM', searchTerm))
-      ))
+      switchMap((searchTerm: string) => this.filter(searchTerm.toLowerCase(), this.documentTreeData))
     ).subscribe(documentTreeData => {
       this.nestedDataSource = documentTreeData;
     });
@@ -106,7 +102,11 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
 
     let filteredData = documentTreeData;
-    if (searchTerm) {
+
+    console.log('SEARCH TERM', searchTerm);
+    console.log('FORM CONTROL VALUE', this.documentFilterFormGroup.controls[CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME].value);
+
+    if (searchTerm && searchTerm.length > 2 && this.documentFilterFormGroup.controls[CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME].value.length > 2) {
       filteredData = documentTreeData.map(copy).filter(function filterTreeData(node: DocumentTreeNode) {
         if (node.name && node.name.toLowerCase().includes(searchTerm)) {
           return true;
