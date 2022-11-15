@@ -4,3 +4,8 @@ export interface DocumentTreeNode {
   count?: number;
   children?: DocumentTreeNode[];
 }
+
+export enum DocumentTreeNodeType {
+  FOLDER = 'folder',
+  DOCUMENT = 'document',
+}

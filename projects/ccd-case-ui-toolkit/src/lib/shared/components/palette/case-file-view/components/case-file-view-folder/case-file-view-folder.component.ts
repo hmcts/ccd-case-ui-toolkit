@@ -7,7 +7,8 @@ import {
   CaseFileViewCategory,
   CaseFileViewDocument,
   CategoriesAndDocuments,
-  DocumentTreeNode
+  DocumentTreeNode,
+  DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
 
@@ -43,14 +44,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     this.documentFilterFormGroup = new FormGroup({});
     this.documentSearchFormControl = new FormControl('');
     this.documentFilterFormGroup.addControl(CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME, this.documentSearchFormControl);
-    
+
     // Listen to search input and initiate filter documents if at least three characters entered
     this.documentSearchFormControl.valueChanges.pipe(
       switchMap((searchTerm: string) => this.filter(searchTerm.toLowerCase(), this.documentTreeData))
     ).subscribe(documentTreeData => {
       this.nestedDataSource = documentTreeData;
     });
-    
+
     // Subscribe to the input categories and documents, and generate tree data and initialise cdk tree
     this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocumentsResult => {
       // Using the mock data for now as we have to display the documents as well for demo purpose
@@ -73,6 +74,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       ...[
         {
           name: node.category_name,
+          type: DocumentTreeNodeType.FOLDER,
           children: [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)]
         },
       ],
@@ -82,7 +84,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public getDocuments(documents: CaseFileViewDocument[]): DocumentTreeNode[] {
     const documentsToReturn: DocumentTreeNode[] = [];
     documents.forEach(document => {
-      documentsToReturn.push({ name: document.document_filename });
+      documentsToReturn.push({ name: document.document_filename, type: DocumentTreeNodeType.DOCUMENT });
     });
     return documentsToReturn;
   }
@@ -92,7 +94,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     uncategorisedDocuments.forEach(document => {
       documents.push({ name: document.document_filename });
     });
-    return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, children: documents };
+    return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, type: DocumentTreeNodeType.DOCUMENT, children: documents };
   }
 
   public filter(searchTerm: string, documentTreeData: DocumentTreeNode[]): Observable<DocumentTreeNode[]> {
@@ -102,13 +104,9 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
 
     let filteredData = documentTreeData;
-
-    console.log('SEARCH TERM', searchTerm);
-    console.log('FORM CONTROL VALUE', this.documentFilterFormGroup.controls[CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME].value);
-
     if (searchTerm && searchTerm.length > 2 && this.documentFilterFormGroup.controls[CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME].value.length > 2) {
       filteredData = documentTreeData.map(copy).filter(function filterTreeData(node: DocumentTreeNode) {
-        if (node.name && node.name.toLowerCase().includes(searchTerm)) {
+        if (node.name && node.name.toLowerCase().includes(searchTerm) && node.type === DocumentTreeNodeType.DOCUMENT) {
           return true;
         }
         // Call recursively if node has children
@@ -117,9 +115,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         }
       });
     }
-
     return of(filteredData);
-  };
+  }
 
   public ngOnDestroy(): void {
     if (this.categoriesAndDocumentsSubscription) {
