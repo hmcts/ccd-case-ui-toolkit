@@ -1,8 +1,9 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import {
-  CaseFileViewDocument, DocumentTreeNode
+  CaseFileViewDocument, DocumentTreeNode, DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
 import { treeData } from '../../test-data/document-tree-node-test-data';
@@ -16,7 +17,8 @@ describe('CaseFileViewFolderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        CdkTreeModule
+        CdkTreeModule,
+        ReactiveFormsModule
       ],
       declarations: [
         CaseFileViewFolderComponent
@@ -32,8 +34,17 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  fit('should create', async() => {
+    spyOn(component, 'filter').and.returnValue(of([]));
+    const documentFilterInputEl = nativeElement.querySelector('.document-search');
+    documentFilterInputEl.dispatchEvent(new Event('focusin'));
+    documentFilterInputEl.value = 'enc';
+    documentFilterInputEl.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(component.filter).toHaveBeenCalled();
+    expect(component.documentTreeData).toEqual(treeData);
   });
 
   it('should generate tree data', () => {
@@ -44,7 +55,8 @@ describe('CaseFileViewFolderComponent', () => {
     const documents = categoriesAndDocuments.categories[0].documents;
     const documentsTreeNodes: DocumentTreeNode[] = [
       {
-        name: 'Beers encyclopedia'
+        name: 'Beers encyclopedia',
+        type: DocumentTreeNodeType.DOCUMENT
       }
     ];
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
@@ -69,12 +81,15 @@ describe('CaseFileViewFolderComponent', () => {
     ];
     const uncategorisedDocumentsTreeNode: DocumentTreeNode = {
       name: 'Uncategorised documents',
+      type: DocumentTreeNodeType.FOLDER,
       children: [
         {
-          name: 'Uncategorised document 1'
+          name: 'Uncategorised document 1',
+          type: DocumentTreeNodeType.DOCUMENT
         },
         {
-          name: 'Uncategorised document 2'
+          name: 'Uncategorised document 2',
+          type: DocumentTreeNodeType.DOCUMENT
         }
       ]
     };
@@ -88,9 +103,83 @@ describe('CaseFileViewFolderComponent', () => {
     expect(documentTreeContainerEl).toBeDefined();
   });
 
+  it('should filter documents', () => {
+    const filteredTreeData: DocumentTreeNode[] = [
+      {
+        name: 'Spirits',
+        type: DocumentTreeNodeType.FOLDER,
+        children: [
+          {
+            name: 'Scotch whisky',
+            type: DocumentTreeNodeType.FOLDER,
+            children: [
+              {
+                name: 'Lowland',
+                type: DocumentTreeNodeType.FOLDER,
+                children: [
+                  {
+                    name: 'Lowland 1',
+                    type: DocumentTreeNodeType.FOLDER,
+                    children: [
+                      {
+                        name: 'Details about Whisky Lowland 1',
+                        type: DocumentTreeNodeType.DOCUMENT
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                name: 'Islay',
+                type: DocumentTreeNodeType.FOLDER,
+                children: [
+                  {
+                    name: 'Details about Whisky Islay',
+                    type: DocumentTreeNodeType.DOCUMENT
+                  },
+                  {
+                    name: 'More information about Whisky Islay',
+                    type: DocumentTreeNodeType.DOCUMENT
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ];
+    component.documentSearchFormControl.setValue('abo');
+    component.filter('abo', treeData).subscribe(result => {
+      expect(result).toEqual(filteredTreeData);
+    });
+  });
+
+  it('should filter documents no match', () => {
+    component.documentSearchFormControl.setValue('some random text');
+    component.filter('some random text', treeData).subscribe(result => {
+      expect(result.length).toEqual(0);
+    });
+  });
+
+  it('should filter documents verify UI', async() => {
+    component.nestedDataSource = treeData;
+    fixture.detectChanges();
+    const documentFilterInputEl = nativeElement.querySelector('.document-search');
+    documentFilterInputEl.dispatchEvent(new Event('focusin'));
+    documentFilterInputEl.value = 'enc';
+    documentFilterInputEl.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
+    expect(documentTreeContainerEl.textContent).toContain('Beers encyclopedia');
+  });
+
   it('should unsubscribe', () => {
     spyOn(component.categoriesAndDocumentsSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.documentFilterSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.categoriesAndDocumentsSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.documentFilterSubscription.unsubscribe).toHaveBeenCalled();
   });
 });

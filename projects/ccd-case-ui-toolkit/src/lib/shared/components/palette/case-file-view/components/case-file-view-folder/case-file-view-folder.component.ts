@@ -32,6 +32,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public documentFilterFormGroup: FormGroup;
   public documentSearchFormControl: FormControl;
   public documentTreeData: DocumentTreeNode[];
+  public documentFilterSubscription: Subscription;
 
   private getChildren = (node: DocumentTreeNode) => of(node.children);
   public nestedChildren = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
@@ -46,7 +47,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     this.documentFilterFormGroup.addControl(CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME, this.documentSearchFormControl);
 
     // Listen to search input and initiate filter documents if at least three characters entered
-    this.documentSearchFormControl.valueChanges.pipe(
+    this.documentFilterSubscription = this.documentSearchFormControl.valueChanges.pipe(
       switchMap((searchTerm: string) => this.filter(searchTerm.toLowerCase(), this.documentTreeData))
     ).subscribe(documentTreeData => {
       this.nestedDataSource = documentTreeData;
@@ -92,9 +93,9 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public getUncategorisedDocuments(uncategorisedDocuments: CaseFileViewDocument[]): DocumentTreeNode {
     const documents: DocumentTreeNode[] = [];
     uncategorisedDocuments.forEach(document => {
-      documents.push({ name: document.document_filename });
+      documents.push({ name: document.document_filename, type: DocumentTreeNodeType.DOCUMENT });
     });
-    return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, type: DocumentTreeNodeType.DOCUMENT, children: documents };
+    return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, type: DocumentTreeNodeType.FOLDER, children: documents };
   }
 
   public filter(searchTerm: string, documentTreeData: DocumentTreeNode[]): Observable<DocumentTreeNode[]> {
@@ -121,6 +122,9 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();
+    }
+    if (this.documentFilterSubscription) {
+      this.documentFilterSubscription.unsubscribe();
     }
   }
 }
