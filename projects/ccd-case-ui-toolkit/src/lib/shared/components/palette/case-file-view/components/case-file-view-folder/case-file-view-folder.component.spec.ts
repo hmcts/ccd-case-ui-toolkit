@@ -6,7 +6,7 @@ import {
   CaseFileViewDocument, DocumentTreeNode, DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
-import { treeData } from '../../test-data/document-tree-node-test-data';
+import { treeData, treeDataWithUncategorisedDocuments } from '../../test-data/document-tree-node-test-data';
 import { CaseFileViewFolderComponent } from './case-file-view-folder.component';
 
 describe('CaseFileViewFolderComponent', () => {
@@ -34,7 +34,7 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
   }));
 
-  fit('should create', async() => {
+  it('should create', async() => {
     spyOn(component, 'filter').and.returnValue(of([]));
     const documentFilterInputEl = nativeElement.querySelector('.document-search');
     documentFilterInputEl.dispatchEvent(new Event('focusin'));
@@ -44,7 +44,7 @@ describe('CaseFileViewFolderComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
-    expect(component.documentTreeData).toEqual(treeData);
+    expect(component.documentTreeData).toEqual(treeDataWithUncategorisedDocuments);
   });
 
   it('should generate tree data', () => {
