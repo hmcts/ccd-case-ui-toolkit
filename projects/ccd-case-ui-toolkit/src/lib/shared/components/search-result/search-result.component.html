@@ -12,7 +12,7 @@
 
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
       attr.aria-label="{{ getTotalResults() }} results have been found" role="status">
-      <span class="text-16" id="search-result-summary__text">Showing 
+      <span class="text-16" id="search-result-summary__text">Showing
         <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
         to
         <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
@@ -35,12 +35,14 @@
       </th>
       <th *ngFor="let col of resultView.columns">
         <table class="search-result-column-header"
-          attr.aria-label="Sort by {{col.label}} {{ isSortAscending(col)? 'ascending' : 'descending' }}">
+          [attr.aria-label]="'Sort by ' + col.label + ' ' + isSortAscending(col)? 'ascending' : 'descending'">
           <tr>
-            <div class="search-result-column-label" (click)="sort(col)">{{col.label}}</div>
-            <div *ngIf="comparator(col)" class="search-result-column-sort">
-              <a (click)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"></a>
-            </div>
+            <th>
+              <div class="search-result-column-label" (click)="sort(col)">{{col.label}}</div>
+              <div *ngIf="comparator(col)" class="search-result-column-sort">
+                <a (click)="sort(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"></a>
+              </div>
+            </th>
           </tr>
         </table>
       </th>
@@ -126,10 +128,10 @@
   </tbody>
 </table>
 
-<ccd-pagination 
+<ccd-pagination
   *ngIf="hasResults()"
   (pageChange)="goToPage($event)"
-  [visibilityLabel]="hideRows ? 'hidden' : 'visible'" 
+  [visibilityLabel]="hideRows ? 'hidden' : 'visible'"
   [autoHide]="true"
   [maxSize]="8"
   [screenReaderPaginationLabel]="'Pagination'"
