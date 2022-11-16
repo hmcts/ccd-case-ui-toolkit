@@ -5,8 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
 import { ShowCondition } from '../../../directives';
@@ -18,7 +17,8 @@ import {
   ErrorNotifierService,
   NavigationNotifierService,
   NavigationOrigin,
-  OrderService
+  OrderService,
+  SessionStorageService
 } from '../../../services';
 import { ConvertHrefToRouterService } from '../../case-editor/services/convert-href-to-router.service';
 import { DeleteOrCancelDialogComponent } from '../../dialogs/delete-or-cancel-dialog/delete-or-cancel-dialog.component';
@@ -75,7 +75,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
     private readonly draftService: DraftService,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly convertHrefToRouterService: ConvertHrefToRouterService,
-    private readonly location: Location
+    private readonly location: Location,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -94,6 +95,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, AfterView
       }
     });
     this.markdownUseHrefAsRouterLink = true;
+
+    this.sessionStorageService.removeItem('eventUrl');
 
     this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
       // do not convert router with initial default value; convert to router only on updated link content
