@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { Jurisdiction } from '../../domain';
 import { JudicialUserModel } from '../../domain/jurisdiction';
 import { HttpService } from '../http';

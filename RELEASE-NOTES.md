@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 5.0.24-angular11-upgrade
+### Version 5.0.26-angular11-upgrade
 **EUI-6326** Angular 11 upgrade
 
 ### Version 4.22.0-judicial-user-typeahead
