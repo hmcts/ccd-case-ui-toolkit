@@ -6,7 +6,7 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
 import { ShowCondition } from '../../../directives';
