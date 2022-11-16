@@ -15,8 +15,8 @@
     </cdk-nested-tree-node>
     <!-- folder-->
     <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: nestedChildren" class="document-tree-node">
-      <div class="node">
-        <button class="node__icon" mat-icon-button [attr.aria-label]="'toggle ' + node.name" cdkTreeNodeToggle>
+      <div class="node" cdkTreeNodeToggle>
+        <button class="node__icon" mat-icon-button [attr.aria-label]="'toggle ' + node.name" >
           <img src="/assets/images/folder.png" class="node__iconImg">
           <span class="node__count">{{node.childDocumentCount}}</span>
         </button>
