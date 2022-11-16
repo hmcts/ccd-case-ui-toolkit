@@ -69,7 +69,7 @@
                       </th>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <th>
+                      <th [id]="'case-viewer-field-read--' + field.id">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
                           [caseField]="field" [caseReference]="caseDetails.case_id"
