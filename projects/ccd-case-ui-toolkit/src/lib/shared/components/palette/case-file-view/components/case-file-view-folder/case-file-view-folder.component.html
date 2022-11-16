@@ -8,7 +8,7 @@
     <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="document-tree-node">
       <div class="node">
         <button class="node__icon" mat-icon-button disabled>
-          <img src="/assets/images/document.png" class="node__iconImg">
+          <img src="/assets/images/document.png" class="node__iconImg" alt="Document icon">
         </button>
         <span class="node-name node-name-document">{{node.name}}</span>
       </div>
@@ -17,7 +17,7 @@
     <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: nestedChildren" class="document-tree-node">
       <div class="node" cdkTreeNodeToggle>
         <button class="node__icon" mat-icon-button [attr.aria-label]="'toggle ' + node.name" >
-          <img src="/assets/images/folder.png" class="node__iconImg">
+          <img src="/assets/images/folder.png" class="node__iconImg" alt="Folder icon">
           <span class="node__count">{{node.childDocumentCount}}</span>
         </button>
         <span class="node__name node__name--folder">{{node.name}}</span>
