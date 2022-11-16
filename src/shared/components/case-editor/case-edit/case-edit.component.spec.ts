@@ -6,7 +6,7 @@ import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { FieldsPurger, FieldsUtils } from '../../../services';
+import { FieldsPurger, FieldsUtils, SessionStorageService, WindowService } from '../../../services';
 import { ConditionalShowRegistrarService } from '../../../directives';
 import { FieldsFilterPipe, PaletteUtilsModule } from '../../palette';
 import { WizardFactoryService } from '../services/wizard-factory.service';
@@ -209,10 +209,12 @@ describe('CaseEditComponent', () => {
   const fieldsPurger = new FieldsPurger(fieldsUtils);
   const registrarService = new ConditionalShowRegistrarService();
   let route: any;
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
 
   describe('profile available in route', () => {
     routerStub = {
       navigate: jasmine.createSpy('navigate'),
+      navigateByUrl: jasmine.createSpy('navigateByUrl'),
       routerState: {}
     };
 
@@ -254,6 +256,7 @@ describe('CaseEditComponent', () => {
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
 
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
+      mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
 
       route = {
         queryParams: of({Origin: 'viewDraft'}),
@@ -297,7 +300,9 @@ describe('CaseEditComponent', () => {
             {provide: FieldsPurger, useValue: fieldsPurger},
             {provide: ConditionalShowRegistrarService, useValue: registrarService},
             {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: route}
+            {provide: ActivatedRoute, useValue: route},
+            SessionStorageService,
+            WindowService
           ]
         })
         .compileComponents();
@@ -781,6 +786,22 @@ describe('CaseEditComponent', () => {
           expect(routerStub.navigate).toHaveBeenCalled();
           expect(fieldsPurger.deleteFieldValue).not.toHaveBeenCalled();
         });
+
+        it('should check page is not refreshed', () => {
+          mockSessionStorageService.getItem.and.returnValue(component.initialUrl = null);
+          mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = false);
+
+          fixture.detectChanges();
+          expect(component.checkPageRefresh()).toBe(false);
+        });
+
+        it('should check page is refreshed', () => {
+          mockSessionStorageService.getItem.and.returnValue(component.initialUrl = 'test');
+          mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = true);
+
+          fixture.detectChanges();
+          expect(component.checkPageRefresh()).toBe(true);
+        });
       });
 
       describe('previous page', () => {
@@ -1102,7 +1123,9 @@ describe('CaseEditComponent', () => {
             {provide: FieldsPurger, useValue: fieldsPurger},
             {provide: ConditionalShowRegistrarService, useValue: registrarService},
             {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: mockRouteNoProfile}
+            {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+            SessionStorageService,
+            WindowService
           ]
         })
         .compileComponents();
