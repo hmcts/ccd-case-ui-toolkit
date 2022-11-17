@@ -99,7 +99,7 @@ describe('CaseFileViewFolderComponent', () => {
   it('should render cdk nested tree', () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
-    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
     expect(documentTreeContainerEl).toBeDefined();
   });
 
@@ -171,9 +171,24 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
     expect(documentTreeContainerEl.textContent).toContain('Beers encyclopedia');
   });
+
+  it('should filter documents no match verify UI', async() => {
+    component.nestedDataSource = treeData;
+    fixture.detectChanges();
+    const documentFilterInputEl = nativeElement.querySelector('.document-search');
+    documentFilterInputEl.dispatchEvent(new Event('focusin'));
+    documentFilterInputEl.value = 'some random text';
+    documentFilterInputEl.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
+    expect(documentTreeContainerEl.textContent).toContain('No results found');
+  });
+
 
   it('should unsubscribe', () => {
     spyOn(component.categoriesAndDocumentsSubscription, 'unsubscribe').and.callThrough();

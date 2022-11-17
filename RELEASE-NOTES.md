@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.24-case-file-view-search-document-exceptions
+**EUI-7066** Case file view search document exceptions
+
 ### Version 5.0.24-case-file-view-folder-document-icons-v3
 **EUI-6974** Case file view folder and document icons display
 
