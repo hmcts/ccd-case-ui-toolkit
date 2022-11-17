@@ -4,14 +4,14 @@
 
   .document-filter {
     height: 70%;
-    padding: 8px 0 0 8px;
+    padding: 8px 8px 0 8px;
     margin-bottom: 10px;
 
     .document-search {
-      background: url(/assets/images/icon-search-black.svg) no-repeat 98% #FFF;
+      background: url(/assets/images/icon-search-black.svg) no-repeat right #FFF;
+      background-position-x: calc(100% - 4px);
       padding-right: 30px;
-      min-width: 30%;
-      max-width: 340px;
+      width: 100%;
     }
   }
 

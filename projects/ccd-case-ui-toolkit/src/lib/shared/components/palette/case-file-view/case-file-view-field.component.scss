@@ -5,8 +5,16 @@
   .document-tree-container {
     background-color: #FAF8F8;
     width: 30%;
-    min-height: 400px;
+    height: 600px;
     min-width: 10%;
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none;  /* Hide scrollbar for Firefox */
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .document-tree-container::-webkit-scrollbar {
+    display: none;
   }
   
   .slider {
