@@ -1,10 +1,18 @@
 <div class="document-filter-container">
   <div class="form-group document-filter" [formGroup]="documentFilterFormGroup">
-    <input class="form-control document-search" type="search" id="document-search" name="documentSearchFormControl" formControlName="documentSearchFormControl">
+    <input class="form-control document-search"
+      type="search"
+      id="document-search"
+      name="documentSearchFormControl"
+      formControlName="documentSearchFormControl"
+      placeholder="Search by document name">
   </div>
   <div class="documents-title">Documents</div>
 </div>
-<div class="document-tree-container">
+<div class="document-tree-container" *ngIf="documentTreeData">
+  <div *ngIf="!nestedDataSource || nestedDataSource.length === 0">
+    No results found
+  </div>
   <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
     <!-- document -->
     <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="document-tree-node">

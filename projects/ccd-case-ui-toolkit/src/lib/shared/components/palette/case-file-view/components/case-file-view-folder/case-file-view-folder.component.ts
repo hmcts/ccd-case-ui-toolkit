@@ -107,7 +107,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     let filteredData = documentTreeData;
     if (searchTerm && searchTerm.length > 2 && this.documentFilterFormGroup.controls[CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME].value.length > 2) {
       filteredData = documentTreeData.map(copy).filter(function filterTreeData(node: DocumentTreeNode) {
-        if (node.name && node.name.toLowerCase().includes(searchTerm) && node.type === DocumentTreeNodeType.DOCUMENT) {
+        if (node.name && node.name.toLowerCase().includes(searchTerm)) {
           return true;
         }
         // Call recursively if node has children
