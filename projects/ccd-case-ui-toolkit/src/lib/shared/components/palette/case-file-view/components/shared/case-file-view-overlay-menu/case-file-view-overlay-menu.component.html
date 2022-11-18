@@ -1,0 +1,19 @@
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="cdkOverlayOrigin"
+  [cdkConnectedOverlayOpen]="isOpen"
+>
+  <div class="overlayMenu">
+    <ng-container *ngIf="title">
+      <div class="overlayMenu__title">{{title}}</div>
+    </ng-container>
+
+    <ng-container *ngFor="let item of menuItems">
+      <div class="overlayMenu__item" (click)="item.actionFn(); closeOverlay();">
+        <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlayMenu__itemIcon" />
+        <div class="overlayMenu__actionText">{{item.actionText}}</div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+

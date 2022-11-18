@@ -46,7 +46,15 @@ describe('CaseFileViewFolderComponent', () => {
     const documents = categoriesAndDocuments.categories[0].documents;
     const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
+        name: 'Lager encyclopedia',
+        type: 'document'
+      },
+      {
         name: 'Beers encyclopedia',
+        type: 'document'
+      },
+      {
+        name: 'Ale encyclopedia',
         type: 'document'
       }
     ]);
@@ -92,6 +100,28 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl).toBeDefined();
+  });
+
+  it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
+    const sortChildrenAscendingSpies = [];
+    component.nestedDataSource.forEach((item) => {
+      sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending'));
+    });
+    component.sortDataSourceAscAlphabetically();
+    sortChildrenAscendingSpies.forEach((item) => {
+      expect(item).toHaveBeenCalled();
+    });
+  });
+
+  it('should call sortChildrenDescending on all children of nestedDataSource when calling sortDataSourceDescAlphabetically', () => {
+    const sortChildrenDescendingSpies = [];
+    component.nestedDataSource.forEach((item) => {
+      sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending'));
+    });
+    component.sortDataSourceDescAlphabetically();
+    sortChildrenDescendingSpies.forEach((item) => {
+      expect(item).toHaveBeenCalled();
+    });
   });
 
   it('should unsubscribe', () => {
