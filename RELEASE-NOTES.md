@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.24-case-file-view-media-viewer-integration
+**EUI-5349** Integrate the Media Viewer component with Case File View
+
 ### Version 5.0.24-case-file-view-folder-document-icons-v3
 **EUI-6974** Case file view folder and document icons display
 

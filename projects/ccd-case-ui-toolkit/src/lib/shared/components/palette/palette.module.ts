@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
 import { HeadersModule, TabsModule } from '../../../components';
@@ -168,7 +169,8 @@ const PALETTE_COMPONENTS = [
     MatAutocompleteModule,
     CdkTreeModule,
     PaymentLibModule,
-    ScrollToModule.forRoot()
+    ScrollToModule.forRoot(),
+    MediaViewerModule
   ],
   declarations: [
     FixedListPipe,
