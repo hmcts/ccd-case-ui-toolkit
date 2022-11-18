@@ -1,17 +1,12 @@
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { CdkTree, NestedTreeControl } from '@angular/cdk/tree';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
-import {
-  CaseFileViewCategory,
-  CaseFileViewDocument,
-  CategoriesAndDocuments,
-  DocumentTreeNode
-} from '../../../../../domain/case-file-view';
+import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../../../domain/case-file-view';
 
 @Component({
   selector: 'ccd-case-file-view-folder',
+  templateUrl: './case-file-view-folder.component.html',
   styleUrls: ['./case-file-view-folder.component.scss'],
-  templateUrl: './case-file-view-folder.component.html'
 })
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
@@ -22,6 +17,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public nestedDataSource: DocumentTreeNode[];
   public categories: CaseFileViewCategory[] = [];
   public categoriesAndDocumentsSubscription: Subscription;
+
+  @ViewChild('tree', {static: true}) public tree: CdkTree<DocumentTreeNode>;
 
   private getChildren = (node: DocumentTreeNode) => of(node.children);
   public nestedChildren = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
@@ -91,10 +88,57 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return uncategorisedNode;
   }
 
+  public sortDataSourceAscAlphabetically() {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenAscending();
+
+      const newDocumentTreeNode = new DocumentTreeNode();
+      newDocumentTreeNode.name = item.name;
+      newDocumentTreeNode.type = item.type;
+      newDocumentTreeNode.children = item.children;
+
+      return newDocumentTreeNode;
+    });
+
+    this.updateNodeData(sortedData);
+  }
+  public sortDataSourceDescAlphabetically() {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenDescending();
+      return item;
+    });
+
+    this.updateNodeData(sortedData);
+  }
   public ngOnDestroy(): void {
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();
     }
+  }
+
+  public updateNodeData(data: DocumentTreeNode[]) {
+    const prevSelected = this.nestedTreeControl.expansionModel.selected.map(
+      (item) => {
+        return item.name;
+      });
+
+    this.nestedTreeControl.collapseAll();
+    this.nestedDataSource = data.map((item) => {
+      const newDocumentTreeNode = new DocumentTreeNode();
+      newDocumentTreeNode.name = item.name;
+      newDocumentTreeNode.type = item.type;
+      newDocumentTreeNode.children = item.children;
+
+      return newDocumentTreeNode;
+    });
+
+    const flattenedArray = this.nestedDataSource.map((item) => {
+      return item.flattenedAll;
+    }).flat();
+    const newObjects = flattenedArray.filter((item) => {
+      return prevSelected.includes(item.name);
+    });
+    newObjects.forEach(object => this.nestedTreeControl.expand(object));
   }
 
   public loadCategories(): CaseFileViewCategory[] {
@@ -106,7 +150,21 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         documents: [
           {
             document_url: '/test',
+            document_filename: 'Lager encyclopedia',
+            document_binary_url: '/test/binary',
+            attribute_path: '',
+            upload_timestamp: ''
+          },
+          {
+            document_url: '/test',
             document_filename: 'Beers encyclopedia',
+            document_binary_url: '/test/binary',
+            attribute_path: '',
+            upload_timestamp: ''
+          },
+          {
+            document_url: '/test',
+            document_filename: 'Ale encyclopedia',
             document_binary_url: '/test/binary',
             attribute_path: '',
             upload_timestamp: ''
