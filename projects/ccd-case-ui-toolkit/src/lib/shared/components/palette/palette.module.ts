@@ -65,6 +65,7 @@ import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view/components/shared/case-file-view-overlay-menu/case-file-view-overlay-menu.component';
+import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -145,36 +146,37 @@ const PALETTE_COMPONENTS = [
     CaseFileViewFieldComponent,
     CaseFileViewFolderComponent,
     CaseFileViewFolderSortComponent,
-    CaseFileViewOverlayMenuComponent
+    CaseFileViewOverlayMenuComponent,
+    CaseFileViewFolderDocumentActionsComponent,
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
-    PaletteUtilsModule,
-    PipesModule,
-    BannersModule,
-    HeadersModule,
-    FootersModule,
-    BodyModule,
-    FormModule,
-    TabsModule,
-    LabelSubstitutorModule,
-    NgxMdModule,
-    NgxMatDatetimePickerModule,
-    NgxMatTimepickerModule,
-    NgxMatNativeDateModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatAutocompleteModule,
-    CdkTreeModule,
-    OverlayModule,
-    PaymentLibModule,
-    ScrollToModule.forRoot()
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        PaletteUtilsModule,
+        PipesModule,
+        BannersModule,
+        HeadersModule,
+        FootersModule,
+        BodyModule,
+        FormModule,
+        TabsModule,
+        LabelSubstitutorModule,
+        NgxMdModule,
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule,
+        NgxMatNativeDateModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatAutocompleteModule,
+        CdkTreeModule,
+        OverlayModule,
+        PaymentLibModule,
+        ScrollToModule.forRoot()
   ],
   declarations: [
     FixedListPipe,
@@ -183,8 +185,7 @@ const PALETTE_COMPONENTS = [
     DynamicRadioListPipe,
     DocumentUrlPipe,
 
-    ...PALETTE_COMPONENTS,
-     CaseFileViewOverlayMenuComponent,
+    ...PALETTE_COMPONENTS
   ],
   exports: [
     NgxMatDatetimePickerModule,
