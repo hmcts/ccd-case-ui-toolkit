@@ -2,6 +2,9 @@
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="cdkOverlayOrigin"
   [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+  (backdropClick)="closeOverlay()"
 >
   <div class="overlayMenu">
     <ng-container *ngIf="title">

@@ -22,4 +22,13 @@ describe('CaseFileViewOverlayMenuComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should set isOpen to false and emit isOpenChange on calling closeOverlayy', () => {
+    component.isOpen = true;
+
+    spyOn(component.isOpenChange, 'emit');
+    component.closeOverlay();
+    expect(component.isOpen).toBe(false);
+    expect(component.isOpenChange.emit).toHaveBeenCalled();
+  });
 });

@@ -17,6 +17,14 @@
           <img src="/assets/images/document.png" class="node__iconImg" alt="Document icon">
         </button>
         <span class="node__name node-name-document">{{node.name}}</span>
+        <div class="node__document-options">
+          <ccd-case-file-view-folder-document-actions
+            (changeFolderAction)="triggerDocumentAction('changeFolder')"
+            (openInANewTabAction)="triggerDocumentAction('openInANewTab')"
+            (downloadAction)="triggerDocumentAction('download')"
+            (printAction)="triggerDocumentAction('print')">
+          </ccd-case-file-view-folder-document-actions>
+        </div>
       </div>
     </cdk-nested-tree-node>
     <!-- folder-->

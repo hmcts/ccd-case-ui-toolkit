@@ -110,6 +110,22 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
     this.updateNodeData(sortedData);
   }
+
+  public triggerDocumentAction(actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print') {
+    switch(actionType) {
+      case('changeFolder'):
+        return;
+      case('openInANewTab'):
+        return;
+      case('download'):
+        return;
+      case('print'):
+        return;
+      default:
+        return;
+    }
+  }
+
   public ngOnDestroy(): void {
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();
