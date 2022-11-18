@@ -1,16 +1,12 @@
-.document-filter-container {
-  height: 60px;
+  .document-folders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   border-bottom: 2px solid #C9C9C9;
-  padding-bottom: 4px;
+  padding: 10px;
 
-  .document-filter {
-    height: 70%;
-  }
-
-  .documents-title {
-    height: 30%;
-    margin-left: 8px;
-    font-weight: bold;
+  &__title {
+    font-weight: 700;
   }
 }
 
@@ -46,10 +42,13 @@
     position: relative;
     background: none;
     border: 0;
+    padding: 6px;
   }
 
   &__iconImg {
+    display: block;
     height: 24px;
+    width: 24px;
   }
 
   &__count {
@@ -58,9 +57,11 @@
     left: 50%;
     transform: translate(-50%, -50%);
     color: #fff;
+    // padding needed to adjust position
+    padding-top: 4px;
   }
 
   &__name {
-    margin-left: 6px;
+    margin-left: 4px;
   }
 }

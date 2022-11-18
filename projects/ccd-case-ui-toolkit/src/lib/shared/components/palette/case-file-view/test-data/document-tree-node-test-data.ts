@@ -22,9 +22,17 @@ export const treeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
         children: []
       },
       {
+        name: 'Lager encyclopedia',
+        type: 'document'
+      },
+      {
         name: 'Beers encyclopedia',
         type: 'document'
-      }
+      },
+      {
+        name: 'Ale encyclopedia',
+        type: 'document'
+      },
     ]
   },
   {
