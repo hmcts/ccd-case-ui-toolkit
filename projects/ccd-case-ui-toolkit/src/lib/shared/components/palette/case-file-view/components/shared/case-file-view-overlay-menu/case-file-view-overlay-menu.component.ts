@@ -8,7 +8,7 @@ import { CaseFileViewOverlayMenuItem } from './case-file-view-overlay-menu-item.
   styleUrls: ['./case-file-view-overlay-menu.component.scss']
 })
 export class CaseFileViewOverlayMenuComponent {
-  @Input() public title: string;
+  @Input() public title: string = '';
   @Input() public menuItems: CaseFileViewOverlayMenuItem[];
 
   @Input() public cdkOverlayOrigin: CdkOverlayOrigin;
