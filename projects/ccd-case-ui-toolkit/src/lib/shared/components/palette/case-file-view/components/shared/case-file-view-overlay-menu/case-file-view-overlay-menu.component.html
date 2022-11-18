@@ -10,7 +10,7 @@
 
     <ng-container *ngFor="let item of menuItems">
       <div class="overlayMenu__item" (click)="item.actionFn(); closeOverlay();">
-        <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlayMenu__itemIcon" />
+        <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlayMenu__itemIcon" [alt]="title" />
         <div class="overlayMenu__actionText">{{item.actionText}}</div>
       </div>
     </ng-container>
