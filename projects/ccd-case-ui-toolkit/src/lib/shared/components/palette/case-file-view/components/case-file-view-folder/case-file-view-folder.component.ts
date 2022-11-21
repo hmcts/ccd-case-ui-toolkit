@@ -2,7 +2,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
-import { catchError, debounceTime, filter, switchMap, tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
@@ -10,7 +10,6 @@ import {
   DocumentTreeNode,
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
-import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
 
 @Component({
   selector: 'ccd-case-file-view-folder',
@@ -21,7 +20,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
   private static readonly DOCUMENT_SEARCH_FORM_CONTROL_NAME = 'documentSearchFormControl';
-  private static readonly MINIMUM_SEARCH_CHARACTERS = 2;
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
 
@@ -118,10 +116,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
     return of(filteredData);
   }
-
-	public onDocumentTreeNodeSelected(event: any): void {
-		console.log('EVENT', event);
-	}
 
   public ngOnDestroy(): void {
     if (this.categoriesAndDocumentsSubscription) {
