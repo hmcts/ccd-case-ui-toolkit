@@ -32,7 +32,7 @@
           cdkTreeNodeToggle
           (click)="onDocumentTreeNodeSelected($event)"
         >
-          <img src="/assets/images/folder.png" class="icon" />
+          <img [src]="nestedTreeControl.isExpanded(node) ? '/assets/images/folder-open.png' : '/assets/images/folder.png'" class="icon" />
           <div class="node-name node-name-folder">{{node.name}}</div>
         </button>
       </div>
