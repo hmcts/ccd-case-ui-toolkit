@@ -24,6 +24,7 @@
 
 .document-tree {
   margin: 4px;
+  overflow-x: hidden;
   overflow-y: scroll;
   height: 400px;
 
@@ -48,17 +49,14 @@
   
   .node {
     display: flex;
-    width: 100%;
-    padding-top: 4px;
-		
+    padding: 4px;
+    
 
     .node-button {
       display: flex;
       width: 100%;
       background-color: #FAF8F8;
       border: none;
-      padding-top: 4px;
-      padding-bottom: 4px;
     }
   }
 
@@ -103,13 +101,13 @@
 }
 
 .document-tree::-webkit-scrollbar-button {
-  background: #CCC;
+  display: none;
 }
 
 .document-tree::-webkit-scrollbar-track-piece {
-  background: #CCC;
+  background: #EEE;
 }
 
 .document-tree::-webkit-scrollbar-thumb {
-  background: #EEE;
+  background: #CCC;
 }
