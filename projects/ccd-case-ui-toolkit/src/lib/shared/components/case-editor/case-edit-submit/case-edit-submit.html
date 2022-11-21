@@ -42,7 +42,7 @@
 
       <table class="form-table" aria-describedby="check your answers table">
         <tbody>
-        <ng-container *ngFor="let page of this.wizard.pages">
+        <ng-container *ngFor="let page of wizard.pages">
           <ng-container *ngIf="isShown(page)">
             <ng-container *ngFor="let field of page
             | ccdPageFields: editForm
@@ -73,7 +73,7 @@
 
       <table class="summary-fields" aria-describedby="summary fields table">
         <tbody>
-          <ng-container *ngFor="let field of this.showSummaryFields">
+          <ng-container *ngFor="let field of showSummaryFields">
               <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                 <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
                   <th id="summary-field-label">{{field.label}}</th>
