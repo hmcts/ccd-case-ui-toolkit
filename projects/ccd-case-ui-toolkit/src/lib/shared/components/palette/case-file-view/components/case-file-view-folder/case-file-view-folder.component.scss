@@ -36,13 +36,15 @@
 .node {
   display: flex;
   align-items: center;
-  padding: 6px 0;
+  width: 100%;
+  padding: 6px;
+  background: none;
+  border: 0;
+  cursor: pointer;
 
   &__icon {
     position: relative;
-    background: none;
-    border: 0;
-    padding: 6px;
+    display: inline-block;
   }
 
   &__iconImg {
@@ -62,7 +64,8 @@
   }
 
   &__name {
-    margin-left: 4px;
+    margin-left: 6px;
+    font-size: 1rem;
   }
 
   &__document-options {
