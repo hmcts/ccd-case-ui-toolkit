@@ -50,11 +50,10 @@
   .node {
     display: flex;
     padding: 4px;
-    
+    white-space: nowrap;
 
     .node-button {
       display: flex;
-      width: 100%;
       background-color: #FAF8F8;
       border: none;
     }
@@ -63,7 +62,7 @@
   .node-button:hover {
     cursor: pointer;
   }
-  
+ 
   .icon {
     width: 36px;
     background-size: 100%;
