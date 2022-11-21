@@ -26,12 +26,7 @@
     <!-- folder-->
     <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: nestedChildren" class="document-tree-node">
       <div class="node">
-        <button class="node-button"
-          mat-icon-button
-          [attr.aria-label]="'toggle ' + node.name"
-          cdkTreeNodeToggle
-          (click)="onDocumentTreeNodeSelected($event)"
-        >
+        <button class="node-button" mat-icon-button [attr.aria-label]="'toggle ' + node.name" cdkTreeNodeToggle>
           <img [src]="nestedTreeControl.isExpanded(node) ? '/assets/images/folder-open.png' : '/assets/images/folder.png'" class="icon" />
           <div class="node-name node-name-folder">{{node.name}}</div>
         </button>

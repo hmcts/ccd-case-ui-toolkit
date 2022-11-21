@@ -103,6 +103,18 @@ describe('CaseFileViewFolderComponent', () => {
     expect(documentTreeContainerEl).toBeDefined();
   });
 
+  it('should display correct folder icons', () => {
+    component.nestedDataSource = treeData;
+    fixture.detectChanges();
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
+    const firstNodeButton = documentTreeContainerEl.querySelector('.node-button');
+    const iconEl = firstNodeButton.querySelector('.icon');
+    expect(iconEl.getAttribute('src')).toEqual('/assets/images/folder.png');
+    firstNodeButton.click();
+    fixture.detectChanges();
+    expect(iconEl.getAttribute('src')).toEqual('/assets/images/folder-open.png');
+  });
+
   it('should filter documents', () => {
     const filteredTreeData: DocumentTreeNode[] = [
       {
