@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model';
 
 @Component({
@@ -6,7 +6,7 @@ import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay
   templateUrl: './case-file-view-folder-document-actions.component.html',
   styleUrls: ['./case-file-view-folder-document-actions.component.scss']
 })
-export class CaseFileViewFolderDocumentActionsComponent implements OnInit {
+export class CaseFileViewFolderDocumentActionsComponent {
   public isOpen = false;
 
   @Output() public changeFolderAction = new EventEmitter<void>();
@@ -21,7 +21,4 @@ export class CaseFileViewFolderDocumentActionsComponent implements OnInit {
     { actionText: 'Print', iconSrc: '/assets/img/case-file-view/document-menu/print.svg', actionFn: () => this.printAction.emit() },
   ];
   constructor() { }
-
-  public ngOnInit() {
-  }
 }

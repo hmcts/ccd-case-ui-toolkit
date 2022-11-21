@@ -1,4 +1,15 @@
-.overlayMenu {
+.overlay-toggle {
+  $padding-y: 6px;
+
+  display: block;
+  background: none;
+  border: 0;
+  padding: 0 $padding-y;
+  margin-right: -$padding-y;
+  cursor: pointer;
+}
+
+.overlay-menu {
   $border-color: grey;
   $border-size: 1px;
 
