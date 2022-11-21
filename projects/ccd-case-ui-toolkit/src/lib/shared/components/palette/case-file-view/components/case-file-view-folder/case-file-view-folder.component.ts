@@ -119,6 +119,10 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return of(filteredData);
   }
 
+	public onDocumentTreeNodeSelected(event: any): void {
+		console.log('EVENT', event);
+	}
+
   public ngOnDestroy(): void {
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();
