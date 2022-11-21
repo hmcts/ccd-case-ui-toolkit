@@ -31,5 +31,10 @@ describe('WindowService', () => {
   it('should get from session storage', () => {
     windowService.setLocalStorage('organisationDetails', userName);
     expect(windowService.getLocalStorage('organisationDetails')).toBe(userName);
-  });
+  })
+  it('should trigger alert', () => {
+    spyOn(windowService, 'alert');
+    windowService.alert('test');
+    expect(windowService.alert).toHaveBeenCalled();
+  })
 });
