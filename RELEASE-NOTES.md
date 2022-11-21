@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.10.0-rc2
+### Version 6.10.0-rc3
 **EUI-7116** Re-tag for release
 
 ### Version 6.10.0-case-flags-fix-for-empty-case-level-flags-field
