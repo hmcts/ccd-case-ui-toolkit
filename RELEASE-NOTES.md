@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 5.0.24-case-file-view-hand-icon-for-folder-clicking-v2
+### Version 5.0.24-case-file-view-hand-icon-for-folder-clicking-v3
 **EUI-7160** Case file view hand icon for folder clicking
 **EUI-5458** Case file view document view and folder action
 
