@@ -24,6 +24,8 @@
 
 .document-tree {
   margin: 4px;
+  overflow-y: scroll;
+  height: 400px;
 
   .document-tree-invisible {
     display: none;
@@ -48,6 +50,7 @@
     display: flex;
     width: 100%;
     padding-top: 4px;
+		
 
     .node-button {
       display: flex;
@@ -93,4 +96,20 @@
   .document-count {
     color: #FFF;
   }
+}
+
+.document-tree::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.document-tree::-webkit-scrollbar-button {
+  background: #CCC;
+}
+
+.document-tree::-webkit-scrollbar-track-piece {
+  background: #CCC;
+}
+
+.document-tree::-webkit-scrollbar-thumb {
+  background: #EEE;
 }
