@@ -52,14 +52,13 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     });
 
     // Subscribe to the input categories and documents, and generate tree data and initialise cdk tree
-    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocumentsResult => {
-      // Using the mock data for now as we have to display the documents as well for demo purpose
-      const categories = categoriesAndDocumentsResult.categories; // categoriesAndDocuments.categories;
+    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocuments => {
+      const categories = categoriesAndDocuments.categories;
       // Generate document tree data from categories
       this.documentTreeData = this.generateTreeData(categories);
       // Append uncategorised documents
-      if (categoriesAndDocumentsResult.uncategorised_documents && categoriesAndDocumentsResult.uncategorised_documents.length > 0) {
-        const uncategorisedDocuments = this.getUncategorisedDocuments(categoriesAndDocumentsResult.uncategorised_documents);
+      if (categoriesAndDocuments.uncategorised_documents && categoriesAndDocuments.uncategorised_documents.length > 0) {
+        const uncategorisedDocuments = this.getUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents);
         this.documentTreeData.push(uncategorisedDocuments);
       }
       // Initialise cdk tree with generated data
