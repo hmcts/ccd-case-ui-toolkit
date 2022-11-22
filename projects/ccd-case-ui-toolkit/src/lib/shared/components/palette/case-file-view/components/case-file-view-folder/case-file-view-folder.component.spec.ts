@@ -99,4 +99,8 @@ describe('CaseFileViewFolderComponent', () => {
     component.ngOnDestroy();
     expect(component.categoriesAndDocumentsSubscription.unsubscribe).toHaveBeenCalled();
   });
+
+  it ('should get all document count as get documentCount', () => {
+    expect(component.documentCount).toEqual(6);
+  });
 });
