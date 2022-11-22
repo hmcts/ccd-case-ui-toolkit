@@ -6,7 +6,7 @@ import { CaseField, CaseState, CaseType, DisplayMode,
   DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
   SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
-import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory } from '../../services';
+import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
@@ -104,7 +104,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     private readonly activityService: ActivityService,
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly placeholderService: PlaceholderService,
-    private readonly browserService: BrowserService
+    private readonly browserService: BrowserService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -119,6 +120,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
         }
       }
     }
+    this.sessionStorageService.removeItem('eventUrl');
     this.selection.emit(this.selectedCases);
   }
 

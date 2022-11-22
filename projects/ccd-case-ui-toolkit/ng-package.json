@@ -16,6 +16,6 @@
       "@edium/fsm": "@edium/fsm",
       "util": "util",
       "ngx-pagination": "ngx-pagination"
+      }
     }
   }
-}
