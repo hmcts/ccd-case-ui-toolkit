@@ -1,7 +1,7 @@
 import { plainToClass } from 'class-transformer';
 import { DocumentTreeNode } from './document-tree-node.model';
 
-describe('DocumentTreeNodeModel', () => {
+fdescribe('DocumentTreeNodeModel', () => {
   let documentTreeNode: DocumentTreeNode;
 
   beforeEach(() => {
