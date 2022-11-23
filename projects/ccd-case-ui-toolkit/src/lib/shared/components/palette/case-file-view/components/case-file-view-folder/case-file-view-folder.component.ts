@@ -1,7 +1,11 @@
-import { CdkTree, NestedTreeControl } from '@angular/cdk/tree';
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../../../domain/case-file-view';
+import { DocumentManagementService, WindowService } from '../../../../../services';
+
+export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 
 @Component({
   selector: 'ccd-case-file-view-folder',
@@ -18,12 +22,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public categories: CaseFileViewCategory[] = [];
   public categoriesAndDocumentsSubscription: Subscription;
 
-  @ViewChild('tree', {static: true}) public tree: CdkTree<DocumentTreeNode>;
-
   private getChildren = (node: DocumentTreeNode) => of(node.children);
   public nestedChildren = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
 
-  constructor() {
+  constructor(
+    private windowService: WindowService,
+    private router: Router,
+    private readonly documentManagementService: DocumentManagementService
+  ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
 
@@ -63,6 +69,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       const documentTreeNode = new DocumentTreeNode();
       documentTreeNode.name = document.document_filename;
       documentTreeNode.type = 'document';
+      documentTreeNode.document_filename = document.document_filename;
+      documentTreeNode.document_binary_url = document.document_binary_url;
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -76,6 +84,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       const documentTreeNode = new DocumentTreeNode();
       documentTreeNode.name = document.document_filename;
       documentTreeNode.type = 'document';
+      documentTreeNode.document_filename = document.document_filename;
+      documentTreeNode.document_binary_url = document.document_binary_url;
 
       documents.push(documentTreeNode);
     });
@@ -111,13 +121,24 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     this.updateNodeData(sortedData);
   }
 
-  public triggerDocumentAction(actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print') {
+  public triggerDocumentAction(
+    actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print',
+    documentTreeNode: DocumentTreeNode
+  ) {
     switch(actionType) {
       case('changeFolder'):
         console.log('changeFolder!');
         break;
       case('openInANewTab'):
-        console.log('openInANewTab!');
+        this.windowService.setLocalStorage(MEDIA_VIEWER_LOCALSTORAGE_KEY,
+          this.documentManagementService.getMediaViewerInfo({
+            document_binary_url: documentTreeNode.document_binary_url,
+            document_filename: documentTreeNode.document_filename
+        }));
+
+        this.windowService.openOnNewTab(
+          this.router.createUrlTree(['/media-viewer'])?.toString()
+        );
         break;
       case('download'):
         console.log('download!');

@@ -74,7 +74,7 @@ describe('Case File View service', () => {
   } as CategoriesAndDocuments;
   let appConfig: jasmine.SpyObj<AbstractAppConfig>;
   let authService: jasmine.SpyObj<AuthService>;
-  let service: CaseFileViewService
+  let service: CaseFileViewService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {

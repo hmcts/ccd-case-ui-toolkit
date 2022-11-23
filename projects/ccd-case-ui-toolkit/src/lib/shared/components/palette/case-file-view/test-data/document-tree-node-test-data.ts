@@ -23,15 +23,21 @@ export const treeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       },
       {
         name: 'Lager encyclopedia',
-        type: 'document'
+        type: 'document',
+        document_filename: 'Lager encyclopedia',
+        document_binary_url: '/test/binary'
       },
       {
         name: 'Beers encyclopedia',
-        type: 'document'
+        type: 'document',
+        document_filename: 'Beers encyclopedia',
+        document_binary_url: '/test/binary'
       },
       {
         name: 'Ale encyclopedia',
-        type: 'document'
+        type: 'document',
+        document_filename: 'Ale encyclopedia',
+        document_binary_url: '/test/binary'
       },
     ]
   },
@@ -80,7 +86,9 @@ export const treeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
                 children: [
                   {
                     name: 'Details about Whisky Lowland 1',
-                    type: 'document'
+                    type: 'document',
+                    document_filename: 'Details about Whisky Lowland 1',
+                    document_binary_url: '/test/binary'
                   }
                 ]
               },
@@ -97,11 +105,15 @@ export const treeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
             children: [
               {
                 name: 'Details about Whisky Islay',
-                type: 'document'
+                type: 'document',
+                document_filename: 'Details about Whisky Islay',
+                document_binary_url: '/test/binary'
               },
               {
                 name: 'More information about Whisky Islay',
-                type: 'document'
+                type: 'document',
+                document_filename: 'More information about Whisky Islay',
+                document_binary_url: '/test/binary'
               }
             ]
           },
