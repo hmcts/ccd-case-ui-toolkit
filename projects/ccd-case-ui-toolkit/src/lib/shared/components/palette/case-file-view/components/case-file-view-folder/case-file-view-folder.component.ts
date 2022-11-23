@@ -2,7 +2,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
@@ -20,6 +20,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
   private static readonly DOCUMENT_SEARCH_FORM_CONTROL_NAME = 'documentSearchFormControl';
+  private static readonly MINIMUM_SEARCH_CHARACTERS = 3;
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
 
@@ -46,9 +47,12 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
     // Listen to search input and initiate filter documents if at least three characters entered
     this.documentFilterSubscription = this.documentSearchFormControl.valueChanges.pipe(
-      switchMap((searchTerm: string) => this.filter(searchTerm.toLowerCase(), this.documentTreeData))
+      filter((searchTerm: string) => searchTerm && searchTerm.length >= CaseFileViewFolderComponent.MINIMUM_SEARCH_CHARACTERS),
+      switchMap((searchTerm: string) =>  this.filter(searchTerm.toLowerCase(), this.documentTreeData))
     ).subscribe(documentTreeData => {
       this.nestedDataSource = documentTreeData;
+      this.nestedTreeControl.dataNodes = documentTreeData;
+      this.nestedTreeControl.expandAll();
     });
 
     // Subscribe to the input categories and documents, and generate tree data and initialise cdk tree
@@ -63,6 +67,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       }
       // Initialise cdk tree with generated data
       this.nestedDataSource = this.documentTreeData;
+      this.nestedTreeControl.dataNodes = this.documentTreeData;
     });
   }
 
