@@ -3,15 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { fromEvent, Observable } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CategoriesAndDocuments } from '../../../domain/case-file-view';
-import { CaseFileViewService } from '../../../services/case-file-view/case-file-view.service';
+import { CaseFileViewService } from '../../../services';
 
 @Component({
   selector: 'ccd-case-file-view-field',
   templateUrl: './case-file-view-field.component.html',
-  styleUrls: ['./case-file-view-field.component.scss']
+  styleUrls: ['./case-file-view-field.component.scss'],
 })
 export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
-
   public static readonly PARAM_CASE_ID = 'cid';
   public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
 
@@ -32,7 +31,6 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
     const mousedown$ = fromEvent<MouseEvent>(slider, 'mousedown');
     const mousemove$ = fromEvent<MouseEvent>(document, 'mousemove');
     const mouseup$ = fromEvent<MouseEvent>(document, 'mouseup');
-
     const drag$ = mousedown$.pipe(
       switchMap(
         (start) => {

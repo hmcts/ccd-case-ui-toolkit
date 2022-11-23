@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.24-case-file-view-folder-document-icons-v3",
+  "version": "5.0.25-case-file-view-document-count",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
@@ -47,6 +47,8 @@
     "build-storybook": "yarn docs:json && build-storybook"
   },
   "dependencies": {
+    "@angular-material-components/datetime-picker": "6.0.0",
+    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/animations": "~11.2.14",
     "@angular/cdk": "^11.2.13",
     "@angular/common": "~11.2.14",
@@ -57,8 +59,6 @@
     "@angular/material": "^11.2.13",
     "@angular/platform-browser": "~11.2.14",
     "@angular/platform-browser-dynamic": "~11.2.14",
-    "@angular-material-components/datetime-picker": "6.0.0",
-    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/router": "~11.2.14",
     "@angular/upgrade": "~11.2.14",
     "@edium/fsm": "^2.1.2",
@@ -169,7 +169,8 @@
     "webpack-dev-middleware": "^4.0.2",
     "webpack-rxjs-externals": "^2.0.0",
     "webpack-source-map-support": "^2.0.1",
-    "xlsx": "^0.15.4"
+    "xlsx": "^0.15.4",
+    "yarn": "^1.22.15"
   },
   "resolutions": {
     "braces": "^2.3.1",

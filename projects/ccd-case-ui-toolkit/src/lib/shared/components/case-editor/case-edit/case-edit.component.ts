@@ -3,18 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { ConditionalShowRegistrarService } from '../../../directives/conditional-show/services/conditional-show-registrar.service';
-import { GreyBarService } from '../../../directives/conditional-show/services/grey-bar.service';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { CaseView } from '../../../domain/case-view/case-view.model';
-import { Draft } from '../../../domain/draft.model';
-import { Profile } from '../../../domain/profile/profile.model';
-import { FieldsPurger } from '../../../services/fields/fields.purger';
-import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { Confirmation } from '../domain/confirmation.model';
-import { WizardPage } from '../domain/wizard-page.model';
-import { Wizard } from '../domain/wizard.model';
-import { WizardFactoryService } from '../services/wizard-factory.service';
+import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
+import { CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
+import { FieldsPurger, FieldsUtils, SessionStorageService, WindowService } from '../../../services';
+import { Confirmation, Wizard, WizardPage } from '../domain';
+import { WizardFactoryService } from '../services';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -24,6 +17,7 @@ import { WizardFactoryService } from '../services/wizard-factory.service';
 })
 export class CaseEditComponent implements OnInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
+  public static readonly ALERT_MESSAGE = 'Page is being refreshed so you will be redirected to the first page of this event.';
 
   @Input()
   public eventTrigger: CaseEventTrigger;
@@ -54,6 +48,10 @@ export class CaseEditComponent implements OnInit {
 
   public navigationOrigin: any;
 
+  public initialUrl: string;
+
+  public isPageRefreshed: boolean;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly router: Router,
@@ -62,10 +60,19 @@ export class CaseEditComponent implements OnInit {
     private readonly fieldsPurger: FieldsPurger,
     private readonly registrarService: ConditionalShowRegistrarService,
     private readonly wizardFactory: WizardFactoryService,
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly windowsService: WindowService
   ) {}
 
   public ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
+    this.initialUrl = this.sessionStorageService.getItem('eventUrl');
+    this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
+
+    this.checkPageRefresh();
+    if (this.router.url && !this.isPageRefreshed) {
+      this.sessionStorageService.setItem('eventUrl', this.router.url);
+    }
 
     this.form = this.fb.group({
       data: new FormGroup({}),
@@ -79,6 +86,16 @@ export class CaseEditComponent implements OnInit {
     this.route.queryParams.subscribe((params: Params) => {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
+  }
+
+  public checkPageRefresh(): boolean {
+    if (this.isPageRefreshed && this.initialUrl) {
+      this.sessionStorageService.removeItem('eventUrl');
+      this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+      this.router.navigate([this.initialUrl], { relativeTo: this.route});
+      return true;
+    }
+    return false;
   }
 
   public getPage(pageId: string): WizardPage {
@@ -96,6 +113,10 @@ export class CaseEditComponent implements OnInit {
   }
 
   public next(currentPageId: string): Promise<boolean> {
+    this.initialUrl = this.sessionStorageService.getItem('eventUrl');
+    if (this.router.url && !this.initialUrl) {
+      this.sessionStorageService.setItem('eventUrl', this.router.url);
+    }
     this.fieldsPurger.clearHiddenFields(this.form, this.wizard, this.eventTrigger, currentPageId);
     this.registrarService.reset();
 

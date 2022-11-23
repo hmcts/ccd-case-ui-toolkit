@@ -1,8 +1,10 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
 import {
-  CaseFileViewDocument, DocumentTreeNode
+  CaseFileViewDocument,
+  DocumentTreeNode
 } from '../../../../../domain/case-file-view';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
 import { treeData } from '../../test-data/document-tree-node-test-data';
@@ -42,11 +44,20 @@ describe('CaseFileViewFolderComponent', () => {
 
   it('should get documents from category', () => {
     const documents = categoriesAndDocuments.categories[0].documents;
-    const documentsTreeNodes: DocumentTreeNode[] = [
+    const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
-        name: 'Beers encyclopedia'
+        name: 'Lager encyclopedia',
+        type: 'document'
+      },
+      {
+        name: 'Beers encyclopedia',
+        type: 'document'
+      },
+      {
+        name: 'Ale encyclopedia',
+        type: 'document'
       }
-    ];
+    ]);
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
   });
 
@@ -67,17 +78,20 @@ describe('CaseFileViewFolderComponent', () => {
         upload_timestamp: ''
       }
     ];
-    const uncategorisedDocumentsTreeNode: DocumentTreeNode = {
+    const uncategorisedDocumentsTreeNode: DocumentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Uncategorised documents',
+      type: 'category',
       children: [
         {
-          name: 'Uncategorised document 1'
+          name: 'Uncategorised document 1',
+          type: 'document'
         },
         {
-          name: 'Uncategorised document 2'
+          name: 'Uncategorised document 2',
+          type: 'document'
         }
       ]
-    };
+    });
     expect(component.getUncategorisedDocuments(uncategorisedDocuments)).toEqual(uncategorisedDocumentsTreeNode);
   });
 
@@ -86,6 +100,28 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl).toBeDefined();
+  });
+
+  it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
+    const sortChildrenAscendingSpies = [];
+    component.nestedDataSource.forEach((item) => {
+      sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending'));
+    });
+    component.sortDataSourceAscAlphabetically();
+    sortChildrenAscendingSpies.forEach((item) => {
+      expect(item).toHaveBeenCalled();
+    });
+  });
+
+  it('should call sortChildrenDescending on all children of nestedDataSource when calling sortDataSourceDescAlphabetically', () => {
+    const sortChildrenDescendingSpies = [];
+    component.nestedDataSource.forEach((item) => {
+      sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending'));
+    });
+    component.sortDataSourceDescAlphabetically();
+    sortChildrenDescendingSpies.forEach((item) => {
+      expect(item).toHaveBeenCalled();
+    });
   });
 
   it('should unsubscribe', () => {
