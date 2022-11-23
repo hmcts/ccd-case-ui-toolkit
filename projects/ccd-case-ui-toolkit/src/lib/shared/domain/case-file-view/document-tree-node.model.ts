@@ -1,6 +1,6 @@
 export interface DocumentTreeNode {
   name?: string;
-  type?: string;
+  type?: DocumentTreeNodeType;
   count?: number;
   children?: DocumentTreeNode[];
 }
