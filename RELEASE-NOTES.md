@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+### Version 6.10.0-rc4
+**EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
+**EUI-7225** Fix to display party role (if provided) alongside party name for party-level flags options on "Select flag location" page
+
 ### Version 6.10.0-rc3
 **EUI-7116** Re-tag for release
 

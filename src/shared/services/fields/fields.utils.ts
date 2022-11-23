@@ -460,9 +460,9 @@ export class FieldsUtils {
       return {
         flags: {
           flagsCaseFieldId: id,
-          partyName: value['partyName'],
-          roleOnCase: value['roleOnCase'],
-          details: value['details'] && value['details'].length > 0
+          partyName: value ? value['partyName'] : null,
+          roleOnCase: value ? value['roleOnCase'] : null,
+          details: value && value['details'] && value['details'].length > 0
             ? (value['details'] as any[]).map(detail => {
               return Object.assign({}, ...Object.keys(detail.value).map(k => {
                 // The id property set below will be null for a new case flag, and a unique id returned from CCD when

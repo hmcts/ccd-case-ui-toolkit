@@ -40,6 +40,7 @@ describe('SelectFlagLocationComponent', () => {
       flags: {
         flagsCaseFieldId: 'Party2Flags',
         partyName: 'Tom Atin',
+        roleOnCase: 'Claimant',
         details: [
           {
             name: 'Flag 3',
@@ -131,9 +132,10 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[2]);
     const radioButtonLabelElements = nativeElement.querySelectorAll('.govuk-radios__label');
     expect(radioButtonLabelElements.length).toBe(3);
-    expect(radioButtonLabelElements[0].textContent).toEqual(flagsData[0].flags.partyName);
-    expect(radioButtonLabelElements[1].textContent).toEqual(flagsData[1].flags.partyName);
-    expect(radioButtonLabelElements[2].textContent).toEqual(component.caseLevelFlagLabel);
+    expect(radioButtonLabelElements[0].textContent).toContain(flagsData[0].flags.partyName);
+    expect(radioButtonLabelElements[1].textContent).toContain(flagsData[1].flags.partyName);
+    expect(radioButtonLabelElements[1].textContent).toContain(`(${flagsData[1].flags.roleOnCase})`);
+    expect(radioButtonLabelElements[2].textContent).toContain(component.caseLevelFlagLabel);
   });
 
   it('should emit to parent if the validation succeeds', () => {
