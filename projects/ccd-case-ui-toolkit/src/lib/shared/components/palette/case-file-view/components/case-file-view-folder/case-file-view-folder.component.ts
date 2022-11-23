@@ -114,13 +114,17 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public triggerDocumentAction(actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print') {
     switch(actionType) {
       case('changeFolder'):
-        return;
+        console.log('changeFolder!');
+        break;
       case('openInANewTab'):
-        return;
+        console.log('openInANewTab!');
+        break;
       case('download'):
-        return;
+        console.log('download!');
+        break;
       case('print'):
-        return;
+        console.log('print!');
+        break;
       default:
         return;
     }

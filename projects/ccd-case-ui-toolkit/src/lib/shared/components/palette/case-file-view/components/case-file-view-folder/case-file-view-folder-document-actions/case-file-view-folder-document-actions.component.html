@@ -1,9 +1,9 @@
-<button class="actions-trigger" (click)="isOpen = !isOpen" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
-  <img class="actions-trigger__icon" src="/assets/img/case-file-view/document-menu/more_vert.svg" alt="More document options">
-</button>
-
 <ccd-case-file-view-overlay-menu
   [menuItems]="overlayMenuItems"
-  [cdkOverlayOrigin]="trigger"
   [(isOpen)]="isOpen"
-></ccd-case-file-view-overlay-menu>
+>
+  <ng-container trigger>
+    <img class="actions-trigger-icon" src="/assets/img/case-file-view/document-menu/more_vert.svg"
+      alt="More document options">
+  </ng-container>
+</ccd-case-file-view-overlay-menu>

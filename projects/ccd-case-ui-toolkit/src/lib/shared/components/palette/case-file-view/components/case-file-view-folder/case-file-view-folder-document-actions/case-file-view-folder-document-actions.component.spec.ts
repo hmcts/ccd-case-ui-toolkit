@@ -24,7 +24,7 @@ describe('CaseFileViewFolderDocumentActionsComponent', () => {
     component = fixture.componentInstance;
     component.isOpen = true;
     fixture.detectChanges();
-    overlayMenuButtons = fixture.debugElement.queryAll(By.css('.overlayMenu__item'));
+    overlayMenuButtons = fixture.debugElement.queryAll(By.css('.overlay-menu__item'));
   });
 
   it('should create', () => {
