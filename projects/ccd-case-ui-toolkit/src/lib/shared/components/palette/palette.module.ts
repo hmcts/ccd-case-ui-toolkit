@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
@@ -24,6 +25,7 @@ import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
+import { CaseFileViewFolderSelectorComponent } from './case-file-view/components/case-file-view-folder-selector/case-file-view-folder-selector.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
@@ -140,7 +142,8 @@ const PALETTE_COMPONENTS = [
 
     // ComponentLauncher web components
     CaseFileViewFieldComponent,
-    CaseFileViewFolderComponent
+    CaseFileViewFolderComponent,
+    CaseFileViewFolderSelectorComponent
 ];
 
 @NgModule({
@@ -168,7 +171,8 @@ const PALETTE_COMPONENTS = [
     MatAutocompleteModule,
     CdkTreeModule,
     PaymentLibModule,
-    ScrollToModule.forRoot()
+    ScrollToModule.forRoot(),
+    MatDialogModule
   ],
   declarations: [
     FixedListPipe,
@@ -197,7 +201,8 @@ const PALETTE_COMPONENTS = [
     FileUploadProgressGuard,
     WindowService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
-  ]
+  ],
+  entryComponents: [ CaseFileViewFolderSelectorComponent ]
 })
 export class PaletteModule {
 }
