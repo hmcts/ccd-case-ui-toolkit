@@ -2,7 +2,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
-import { filter, switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
@@ -32,6 +32,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public documentSearchFormControl: FormControl;
   public documentTreeData: DocumentTreeNode[];
   public documentFilterSubscription: Subscription;
+  public searchTermLength: number;
 
   private getChildren = (node: DocumentTreeNode) => of(node.children);
   public nestedChildren = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
@@ -47,12 +48,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
     // Listen to search input and initiate filter documents if at least three characters entered
     this.documentFilterSubscription = this.documentSearchFormControl.valueChanges.pipe(
-      filter((searchTerm: string) => searchTerm && searchTerm.length >= CaseFileViewFolderComponent.MINIMUM_SEARCH_CHARACTERS),
-      switchMap((searchTerm: string) =>  this.filter(searchTerm.toLowerCase(), this.documentTreeData))
+      tap((searchTerm: string) => this.searchTermLength = searchTerm.length),
+      switchMap((searchTerm: string) => this.filter(searchTerm.toLowerCase()).pipe())
     ).subscribe(documentTreeData => {
       this.nestedDataSource = documentTreeData;
       this.nestedTreeControl.dataNodes = documentTreeData;
-      this.nestedTreeControl.expandAll();
+      this.searchTermLength >= CaseFileViewFolderComponent.MINIMUM_SEARCH_CHARACTERS
+        ? this.nestedTreeControl.expandAll()
+        : this.nestedTreeControl.collapseAll();
     });
 
     // Subscribe to the input categories and documents, and generate tree data and initialise cdk tree
@@ -100,15 +103,15 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, type: DocumentTreeNodeType.FOLDER, children: documents };
   }
 
-  public filter(searchTerm: string, documentTreeData: DocumentTreeNode[]): Observable<DocumentTreeNode[]> {
+  public filter(searchTerm: string): Observable<DocumentTreeNode[]> {
     // Make a copy of the data so we do not mutate the original
     function copy(node: DocumentTreeNode) {
       return Object.assign({}, node);
     }
 
-    let filteredData = documentTreeData;
-    if (searchTerm && searchTerm.length > 2 && this.documentFilterFormGroup.controls[CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME].value.length > 2) {
-      filteredData = documentTreeData.map(copy).filter(function filterTreeData(node: DocumentTreeNode) {
+    let filteredData = this.documentTreeData;
+    if (searchTerm && searchTerm.length >= CaseFileViewFolderComponent.MINIMUM_SEARCH_CHARACTERS && this.documentFilterFormGroup.controls[CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME].value.length > 2) {
+      filteredData = this.documentTreeData.map(copy).filter(function filterTreeData(node: DocumentTreeNode) {
         if (node.name && node.name.toLowerCase().includes(searchTerm) && node.type === DocumentTreeNodeType.DOCUMENT) {
           return true;
         }
