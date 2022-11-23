@@ -14,7 +14,17 @@
         <div class="govuk-radios__item" *ngFor="let flagsInstance of filteredFlagsData; index as i">
           <input class="govuk-radios__input" id="flag-location-{{i}}" [name]="selectedLocationControlName"
             type="radio" [value]="flagsInstance" [formControlName]="selectedLocationControlName"/>
-          <label class="govuk-label govuk-radios__label" for="flag-location-{{i}}">{{flagsInstance.flags.partyName || caseLevelFlagLabel}}</label>
+          <label class="govuk-label govuk-radios__label" for="flag-location-{{i}}">
+            <ng-container *ngIf="flagsInstance.flags.partyName">
+              {{flagsInstance.flags.partyName}}
+              <ng-container *ngIf="flagsInstance.flags.roleOnCase">
+                ({{flagsInstance.flags.roleOnCase}})
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="!flagsInstance.flags.partyName">
+              {{caseLevelFlagLabel}}
+            </ng-container>
+          </label>
         </div>
       </div>
     </fieldset>
