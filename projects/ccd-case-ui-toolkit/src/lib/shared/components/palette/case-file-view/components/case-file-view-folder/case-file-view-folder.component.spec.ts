@@ -18,10 +18,21 @@ describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
   let fixture: ComponentFixture<CaseFileViewFolderComponent>;
   let nativeElement: any;
-  let mockWindowService: SpyObj<WindowService>;
-  let mockDocumentManagementService: SpyObj<DocumentManagementService>;
 
   beforeEach(async(() => {
+    const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
+    const mockDocumentManagementService = createSpyObj<DocumentManagementService>('DocumentManagementService', ['getMediaViewerInfo']);
+    mockDocumentManagementService.getMediaViewerInfo.and.callFake((documentFieldValue: any) => {
+      return JSON.stringify({
+        document_binary_url: documentFieldValue.document_binary_url,
+        document_filename: documentFieldValue.document_filename,
+        content_type: documentFieldValue.document_binary_url,
+        annotation_api_url: documentFieldValue.document_binary_url,
+        case_id: documentFieldValue.id,
+        case_jurisdiction: documentFieldValue.jurisdiction
+      });
+    });
+
     TestBed.configureTestingModule({
       imports: [
         CdkTreeModule,
@@ -36,19 +47,6 @@ describe('CaseFileViewFolderComponent', () => {
       ]
     })
     .compileComponents();
-
-    mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
-    mockDocumentManagementService = createSpyObj<DocumentManagementService>('DocumentManagementService', ['getMediaViewerInfo']);
-    mockDocumentManagementService.getMediaViewerInfo.and.callFake((documentFieldValue: any) => {
-      return JSON.stringify({
-        document_binary_url: documentFieldValue.document_binary_url,
-        document_filename: documentFieldValue.document_filename,
-        content_type: documentFieldValue.document_binary_url,
-        annotation_api_url: documentFieldValue.document_binary_url,
-        case_id: documentFieldValue.id,
-        case_jurisdiction: documentFieldValue.jurisdiction
-      });
-    });
 
     fixture = TestBed.createComponent(CaseFileViewFolderComponent);
     component = fixture.componentInstance;
