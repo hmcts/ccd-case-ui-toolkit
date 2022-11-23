@@ -160,15 +160,61 @@ describe('CaseFileViewFolderComponent', () => {
         ]
       }
     ];
+    component.documentTreeData = filteredTreeData;
     component.documentSearchFormControl.setValue('abo');
-    component.filter('abo', treeData).subscribe(result => {
+    component.filter('abo').subscribe(result => {
       expect(result).toEqual(filteredTreeData);
     });
   });
 
   it('should filter documents no match', () => {
+    const filteredTreeData: DocumentTreeNode[] = [
+      {
+        name: 'Spirits',
+        type: DocumentTreeNodeType.FOLDER,
+        children: [
+          {
+            name: 'Scotch whisky',
+            type: DocumentTreeNodeType.FOLDER,
+            children: [
+              {
+                name: 'Lowland',
+                type: DocumentTreeNodeType.FOLDER,
+                children: [
+                  {
+                    name: 'Lowland 1',
+                    type: DocumentTreeNodeType.FOLDER,
+                    children: [
+                      {
+                        name: 'Details about Whisky Lowland 1',
+                        type: DocumentTreeNodeType.DOCUMENT
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                name: 'Islay',
+                type: DocumentTreeNodeType.FOLDER,
+                children: [
+                  {
+                    name: 'Details about Whisky Islay',
+                    type: DocumentTreeNodeType.DOCUMENT
+                  },
+                  {
+                    name: 'More information about Whisky Islay',
+                    type: DocumentTreeNodeType.DOCUMENT
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ];
+    component.documentTreeData = filteredTreeData;
     component.documentSearchFormControl.setValue('some random text');
-    component.filter('some random text', treeData).subscribe(result => {
+    component.filter('some random text').subscribe(result => {
       expect(result.length).toEqual(0);
     });
   });
