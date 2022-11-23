@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.25-case-file-sort-documents",
+  "version": "5.0.25-case-file-sort-documents-v2",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
