@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { EventLogDetailsComponent } from '../palette/history/event-log/event-log-details.component';
-import { AlertModule } from '../../../components/banners/alert';
+import { AlertModule } from '../../../components/banners/alert/alert.module';
+import { BannersModule } from '../../../components/banners/banners.module';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CaseReferencePipe } from '../../pipes';
 import {
@@ -21,11 +21,9 @@ import { CaseEditorModule, CaseNotifier, ConvertHrefToRouterService } from '../c
 import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { ErrorsModule } from '../error/errors.module';
-import { EventMessageModule } from '../error-message/error-message.module';
 import { EventStartModule } from '../event-start/event-start.module';
 import { EventTriggerModule } from '../event-trigger';
 import { PaletteModule } from '../palette';
-import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basic-access-view.component';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success/case-challenged-access-success.component';
 import { CaseEventTriggerComponent } from './case-event-trigger';
@@ -48,7 +46,6 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseHeaderModule,
     EventStartModule,
     EventTriggerModule,
-    EventMessageModule,
     PaletteModule,
     CaseEditorModule,
     ConditionalShowModule,
@@ -56,13 +53,13 @@ import { CaseResolver, EventTriggerResolver } from './services';
     MatTabsModule,
     ReactiveFormsModule,
     AlertModule,
+    BannersModule,
     LabelSubstitutorModule
   ],
   declarations: [
     CaseEventTriggerComponent,
     CasePrinterComponent,
     CaseViewerComponent,
-    CaseBasicAccessViewComponent,
     CaseFullAccessViewComponent,
     CaseViewComponent,
     PrintUrlPipe,

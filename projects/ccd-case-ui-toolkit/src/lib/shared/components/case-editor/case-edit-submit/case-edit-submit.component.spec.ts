@@ -1521,7 +1521,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
           PlaceholderService,
-          {provide: CaseNotifier, useValue: mockCaseNotifier},
+          {provide: CaseNotifier, useValue: mockCaseNotifier}
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -1559,6 +1559,8 @@ describe('CaseEditSubmitComponent', () => {
     firstPage.case_fields = [complexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
     const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    let casesService: any;
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
     const snapshotNoProfile = {
       pathFromRoot: [
         {},
@@ -1588,7 +1590,7 @@ describe('CaseEditSubmitComponent', () => {
     };
     const CASE_CACHED: CaseView = new CaseView();
     CASE_CACHED.case_id = 'CACHED_CASE_ID_1';
-    mockCaseNotifier = new CaseNotifier();
+    mockCaseNotifier = new CaseNotifier(casesService);
     mockCaseNotifier.cachedCaseView = CASE_CACHED;
 
     beforeEach(() => {

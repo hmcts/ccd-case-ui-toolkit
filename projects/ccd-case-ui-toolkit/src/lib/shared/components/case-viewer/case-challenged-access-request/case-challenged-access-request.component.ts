@@ -3,14 +3,16 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ChallengedAccessRequest, ErrorMessage } from '../../../domain';
-import { CasesService } from '../../case-editor';
+import { CaseNotifier, CasesService } from '../../case-editor';
 import { AccessReason, ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-challenged-access-request',
   templateUrl: './case-challenged-access-request.component.html'
 })
 export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
+  public static CANCEL_LINK_DESTINATION = '/work/my-work/list';
 
   public title: string;
   public hint: string;
@@ -30,7 +32,8 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
     private readonly fb: FormBuilder,
     private readonly router: Router,
     private readonly casesService: CasesService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly caseNotifier: CaseNotifier
   ) {
       this.accessReasons = [
         {reason: AccessReason.LINKED_TO_CURRENT_CASE, checked: false},
@@ -108,7 +111,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
     // Initiate Challenged Access Request
     if (this.formGroup.valid) {
       // Get the Case Reference (for which access is being requested) from the ActivatedRouteSnapshot data
-      const caseId = this.route.snapshot.data.case.case_id;
+      const caseId = this.route.snapshot.params.cid;
       const radioSelectedValue = this.formGroup.get(this.radioSelectedControlName).value;
       // Get the index of the selected AccessReason enum value. Can't use Object.values because it's not available in
       // < ES2017!
@@ -120,6 +123,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
       } as ChallengedAccessRequest;
 
       this.$roleAssignmentResponseSubscription = this.casesService.createChallengedAccessRequest(caseId, challengedAccessRequest)
+        .pipe(switchMap(() => this.caseNotifier.fetchAndRefresh(caseId)))
         .subscribe(
           _response => {
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
@@ -134,8 +138,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   }
 
   public onCancel(): void {
-    // Navigate to the page before previous one (should be Search Results or Case List page, for example)
-    window.history.go(-2);
+    this.router.navigateByUrl(CaseChallengedAccessRequestComponent.CANCEL_LINK_DESTINATION);
   }
 
   public ngOnDestroy(): void {

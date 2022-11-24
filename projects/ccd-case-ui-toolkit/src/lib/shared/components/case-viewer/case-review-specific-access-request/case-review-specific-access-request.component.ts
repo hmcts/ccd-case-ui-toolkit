@@ -13,6 +13,7 @@ import { AccessReason, ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRe
 })
 export class CaseReviewSpecificAccessRequestComponent
   implements OnInit, OnDestroy {
+  public static CANCEL_LINK_DESTINATION = '/work/my-work/list';
   public collapsed = false;
   public title: string;
   public hint: string;
@@ -97,8 +98,7 @@ export class CaseReviewSpecificAccessRequestComponent
   }
 
   public onCancel(): void {
-    // Navigate to the page before previous one (should be Search Results or Case List page, for example)
-    window.history.go(-1);
+    this.router.navigateByUrl(CaseReviewSpecificAccessRequestComponent.CANCEL_LINK_DESTINATION);
   }
 
   // remove once Access management goes live

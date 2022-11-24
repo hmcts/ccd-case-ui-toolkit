@@ -40,6 +40,7 @@ import {
 } from './case-event-completion';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import {
+  CaseNotifier,
   EventCompletionStateMachineService,
   EventTriggerService,
   JudicialworkerService,
@@ -51,67 +52,68 @@ import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 import { CaseworkerService } from './services/case-worker.service';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        ReactiveFormsModule,
-        PaletteModule,
-        LabelSubstitutorModule,
-        ConditionalShowModule,
-        ErrorsModule,
-        PortalModule
-    ],
-    declarations: [
-        CaseEditConfirmComponent,
-        CaseEditComponent,
-        CaseEditPageComponent,
-        CaseEditFormComponent,
-        CaseEditSubmitComponent,
-        CaseEventCompletionComponent,
-        CaseEventCompletionTaskCancelledComponent,
-        CaseEventCompletionTaskReassignedComponent,
-        CaseCreateComponent,
-        CaseProgressComponent,
-        LoadingSpinnerComponent
-    ],
-    exports: [
-        CaseEditConfirmComponent,
-        CaseEditComponent,
-        CaseEditPageComponent,
-        CaseEditFormComponent,
-        CaseEditSubmitComponent,
-        CaseCreateComponent,
-        CaseProgressComponent,
-        CallbackErrorsComponent,
-        LoadingSpinnerComponent
-    ],
-    providers: [
-        FieldsUtils,
-        FieldsPurger,
-        ConditionalShowRegistrarService,
-        WizardFactoryService,
-        FieldTypeSanitiser,
-        FormValueService,
-        FormErrorService,
-        FormatTranslatorService,
-        HttpService,
-        PageValidationService,
-        CaseFieldService,
-        OrderService,
-        EventTriggerService,
-        ProfileService,
-        ProfileNotifier,
-        AddressesService,
-        DocumentManagementService,
-        RouterHelperService,
-        ProfileService,
-        CaseEditWizardGuard,
-        WorkAllocationService,
-        JudicialworkerService,
-        CaseworkerService,
-        SessionStorageService,
-        EventCompletionStateMachineService
-    ]
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    PaletteModule,
+    LabelSubstitutorModule,
+    ConditionalShowModule,
+    ErrorsModule,
+    PortalModule
+  ],
+  declarations: [
+    CaseEditConfirmComponent,
+    CaseEditComponent,
+    CaseEditPageComponent,
+    CaseEditFormComponent,
+    CaseEditSubmitComponent,
+    CaseEventCompletionComponent,
+    CaseEventCompletionTaskCancelledComponent,
+    CaseEventCompletionTaskReassignedComponent,
+    CaseCreateComponent,
+    CaseProgressComponent,
+    LoadingSpinnerComponent
+  ],
+  exports: [
+    CaseEditConfirmComponent,
+    CaseEditComponent,
+    CaseEditPageComponent,
+    CaseEditFormComponent,
+    CaseEditSubmitComponent,
+    CaseCreateComponent,
+    CaseProgressComponent,
+    CallbackErrorsComponent,
+    LoadingSpinnerComponent
+  ],
+  providers: [
+    CaseNotifier,
+    FieldsUtils,
+    FieldsPurger,
+    ConditionalShowRegistrarService,
+    WizardFactoryService,
+    FieldTypeSanitiser,
+    FormValueService,
+    FormErrorService,
+    FormatTranslatorService,
+    HttpService,
+    PageValidationService,
+    CaseFieldService,
+    OrderService,
+    EventTriggerService,
+    ProfileService,
+    ProfileNotifier,
+    AddressesService,
+    DocumentManagementService,
+    RouterHelperService,
+    ProfileService,
+    CaseEditWizardGuard,
+    WorkAllocationService,
+    JudicialworkerService,
+    CaseworkerService,
+    SessionStorageService,
+    EventCompletionStateMachineService
+  ]
 })
-export class CaseEditorModule {}
+export class CaseEditorModule { }
