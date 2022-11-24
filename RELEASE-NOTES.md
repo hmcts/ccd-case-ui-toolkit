@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.21-no-cases-to-unlink-error-message
+### Version 4.21.0-no-cases-to-unlink-error-message
 **EUI-7234** Linked cases no cases to unlink error message
 
 ### Version 4.19.3-hearings
