@@ -66,8 +66,6 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { CaseFileViewOverlayMenuComponent } from './case-file-view/components/shared/case-file-view-overlay-menu/case-file-view-overlay-menu.component';
-import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
