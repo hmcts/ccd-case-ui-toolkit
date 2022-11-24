@@ -19,22 +19,22 @@ import {
   FormValueService,
   OrderService,
   ProfileNotifier,
-  SessionStorageService,
+  SessionStorageService
 } from '../../../services';
 import { text } from '../../../test/helpers';
+import { CallbackErrorsContext } from '../../error';
 import { CcdPageFieldsPipe, FieldsFilterPipe, ReadFieldsFilterPipe } from '../../palette/complex';
+import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { aWizardPage } from '../case-edit.spec';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage, WizardPageField } from '../domain';
+import { CaseNotifier } from '../services';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
 
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
-import { CcdCYAPageLabelFilterPipe } from '../../palette/complex/ccd-cyapage-label-filter.pipe';
-import { CaseNotifier } from '../services';
-import { CallbackErrorsContext } from '../../error';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -392,7 +392,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -692,7 +692,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -833,7 +833,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1075,7 +1075,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1217,7 +1217,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1362,7 +1362,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1506,7 +1506,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1533,7 +1533,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
           PlaceholderService,
-          {provide: CaseNotifier, useValue: mockCaseNotifier},
+          {provide: CaseNotifier, useValue: mockCaseNotifier}
         ]
       }).compileComponents();
     }));
@@ -1574,6 +1574,8 @@ describe('CaseEditSubmitComponent', () => {
     firstPage.case_fields = [complexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
     const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    let casesService: any;
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
     const snapshotNoProfile = {
       pathFromRoot: [
         {},
@@ -1603,7 +1605,7 @@ describe('CaseEditSubmitComponent', () => {
     };
     const CASE_CACHED: CaseView = new CaseView();
     CASE_CACHED.case_id = 'CACHED_CASE_ID_1';
-    mockCaseNotifier = new CaseNotifier();
+    mockCaseNotifier = new CaseNotifier(casesService);
     mockCaseNotifier.cachedCaseView = CASE_CACHED;
     beforeEach(async(() => {
       complexCollectionField.retain_hidden_value = true;
@@ -1656,7 +1658,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1848,7 +1850,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1985,7 +1987,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2121,7 +2123,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2265,7 +2267,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2421,7 +2423,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2583,7 +2585,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2726,7 +2728,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2872,7 +2874,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3018,7 +3020,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3163,7 +3165,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3313,7 +3315,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3465,7 +3467,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3617,7 +3619,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3780,7 +3782,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3942,7 +3944,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -4098,7 +4100,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -4258,7 +4260,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
 
       TestBed.configureTestingModule({
         declarations: [
