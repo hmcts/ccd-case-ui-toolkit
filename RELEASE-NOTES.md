@@ -1,5 +1,11 @@
 ## RELEASE NOTES
 
+### Version 4.22.0-judicial-user-typeahead
+**EUI-6746** CR-52 JOH typeahead
+
+### Version 4.18.16-EUI-6309-mandatory-field-issue
+**EUI-6309** mandatory-field-issue
+
 ### Version 4.19.3-hearings
 **EUI-5912** Hearing tab is not loading
 
