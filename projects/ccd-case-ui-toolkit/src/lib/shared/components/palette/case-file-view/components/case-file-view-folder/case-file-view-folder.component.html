@@ -19,10 +19,10 @@
         <span class="node__name node-name-document">{{node.name}}</span>
         <div class="node__document-options">
           <ccd-case-file-view-folder-document-actions
-            (changeFolderAction)="triggerDocumentAction('changeFolder')"
-            (openInANewTabAction)="triggerDocumentAction('openInANewTab')"
-            (downloadAction)="triggerDocumentAction('download')"
-            (printAction)="triggerDocumentAction('print')">
+            (changeFolderAction)="triggerDocumentAction('changeFolder', node)"
+            (openInANewTabAction)="triggerDocumentAction('openInANewTab', node)"
+            (downloadAction)="triggerDocumentAction('download', node)"
+            (printAction)="triggerDocumentAction('print', node)">
           </ccd-case-file-view-folder-document-actions>
         </div>
       </button>

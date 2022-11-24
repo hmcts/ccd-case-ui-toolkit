@@ -12,7 +12,7 @@ export class CaseFileViewFolderSelectorComponent {
     public selected: string = '';
 
     constructor(
-        public dialogRef: MatDialogRef<string>,
+        public dialogRef: MatDialogRef<CaseFileViewFolderSelectorComponent>,
         @Inject(MAT_DIALOG_DATA) public data: { categories: CaseFileViewCategory[], document: CaseFileViewDocument }
     ) {
         this.currentCategories = [...this.data.categories];

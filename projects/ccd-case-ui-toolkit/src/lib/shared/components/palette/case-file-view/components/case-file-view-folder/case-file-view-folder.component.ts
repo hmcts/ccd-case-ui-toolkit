@@ -1,7 +1,9 @@
 import { CdkTree, NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable, of, Subscription } from 'rxjs';
 import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../../../domain/case-file-view';
+import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 
 @Component({
   selector: 'ccd-case-file-view-folder',
@@ -23,7 +25,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private getChildren = (node: DocumentTreeNode) => of(node.children);
   public nestedChildren = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
 
-  constructor() {
+  constructor(private dialog: MatDialog) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
 
@@ -111,10 +113,10 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     this.updateNodeData(sortedData);
   }
 
-  public triggerDocumentAction(actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print') {
+  public triggerDocumentAction(actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print', document: DocumentTreeNode) {
     switch(actionType) {
       case('changeFolder'):
-        console.log('changeFolder!');
+        this.openMoveDialog(document);
         break;
       case('openInANewTab'):
         console.log('openInANewTab!');
@@ -159,6 +161,36 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       return prevSelected.includes(item.name);
     });
     newObjects.forEach(object => this.nestedTreeControl.expand(object));
+  }
+
+  private nodeToDocument(node: DocumentTreeNode): CaseFileViewDocument {
+    if (node.type === 'category') {
+      return null;
+    }
+
+    const find = (name: string, categories: CaseFileViewCategory[]) => {
+      let doc = null;
+      for (let c of categories) {
+        doc = c.documents.find(d => d.document_filename === name);
+        if (doc) {
+          return doc;
+        }
+        return find(name, c.sub_categories);
+      }
+    }
+
+    return find(node.name, this.categories);
+  }
+
+  private openMoveDialog(node: DocumentTreeNode) {
+    const dialogRef = this.dialog.open(CaseFileViewFolderSelectorComponent, {
+      width: '350px',
+      data: { categories: this.categories, document: this.nodeToDocument(node) }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      console.log(data);
+    });
   }
 
   public loadCategories(): CaseFileViewCategory[] {
