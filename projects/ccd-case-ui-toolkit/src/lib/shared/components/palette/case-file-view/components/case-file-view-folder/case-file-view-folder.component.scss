@@ -1,17 +1,44 @@
-  .document-folders-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+//.document-folders-header {
+//  display: flex;
+//  align-items: center;
+//  justify-content: space-between;
+//  border-bottom: 2px solid #C9C9C9;
+//  padding: 10px;
+//
+//  &__title {
+//    font-weight: 700;
+//  }
+//}
+
+.document-filter-container {
   border-bottom: 2px solid #C9C9C9;
   padding: 10px;
 
-  &__title {
-    font-weight: 700;
+  .document-filter {
+    height: 70%;
+    padding: 8px 8px 0 8px;
+    margin-bottom: 10px;
+
+    .document-search {
+      background: url(/assets/images/icon-search-black.svg) no-repeat right #FFF;
+      background-position-x: calc(100% - 4px);
+      padding-right: 30px;
+      width: 100%;
+    }
+  }
+
+  .documents-title {
+    height: 30%;
+    margin-left: 8px;
+    font-weight: bold;
   }
 }
 
-.document-tree-container {
+.document-tree {
   margin: 4px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 400px;
 
   .document-tree-invisible {
     display: none;
@@ -31,46 +58,113 @@
   .document-tree-node .document-tree-node {
     padding-left: 40px;
   }
-}
 
-.node {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 6px;
-  background: none;
-  border: 0;
-  cursor: pointer;
+  .node {
+    display: flex;
+    padding: 4px;
+    white-space: nowrap;
 
-  &__icon {
-    position: relative;
-    display: inline-block;
+    .node-button {
+      display: flex;
+      background-color: #FAF8F8;
+      border: none;
+      width: 100%;
+    }
   }
 
-  &__iconImg {
-    display: block;
-    height: 24px;
-    width: 24px;
+  .node-button:hover {
+    cursor: pointer;
   }
 
-  &__count {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #fff;
-    font-size: 0.875rem;
-    // padding needed to adjust position
-    padding-top: 4px;
+  .icon {
+    width: 36px;
+    height: 36px;
+    background-size: 100%;
+    border: 0px;
+    background-color: #FAF8F8;
   }
 
-  &__name {
-    margin-left: 6px;
-    font-size: 1rem;
+  .node-name {
+    margin-left: 10px;
   }
 
-  &__document-options {
-    margin-left: auto;
-    margin-right: 0;
+  .node-name-folder,
+  .node-name-document {
+    margin-top: 8px;
+    font-size: 16px;
+  }
+
+  .document-count {
+    color: #FFF;
   }
 }
+
+.document-tree::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.document-tree::-webkit-scrollbar-button {
+  display: none;
+}
+
+.document-tree::-webkit-scrollbar-track-piece {
+  background: #EEE;
+}
+
+.document-tree::-webkit-scrollbar-thumb {
+  background: #CCC;
+}
+
+//.document-folders-header {
+//  display: flex;
+//  align-items: center;
+//  justify-content: space-between;
+//  border-bottom: 2px solid #C9C9C9;
+//  padding: 10px;
+//
+//  &__title {
+//    font-weight: 700;
+//  }
+//}
+//
+//.node {
+//  display: flex;
+//  align-items: center;
+//  width: 100%;
+//  padding: 6px;
+//  background: none;
+//  border: 0;
+//  cursor: pointer;
+//
+//  &__icon {
+//    position: relative;
+//    display: inline-block;
+//  }
+//
+//  &__iconImg {
+//    display: block;
+//    height: 24px;
+//    width: 24px;
+//  }
+//
+//  &__count {
+//    position: absolute;
+//    top: 50%;
+//    left: 50%;
+//    transform: translate(-50%, -50%);
+//    color: #fff;
+//    font-size: 0.875rem;
+//    // padding needed to adjust position
+//    padding-top: 4px;
+//  }
+//
+//  &__name {
+//    margin-left: 6px;
+//    font-size: 1rem;
+//  }
+//
+//  &__document-options {
+//    margin-left: auto;
+//    margin-right: 0;
+//  }
+//}
