@@ -1,21 +1,21 @@
-import { CaseField, FieldType } from '../../../domain/definition';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { WriteDocumentFieldComponent } from './write-document-field.component';
 import { DebugElement } from '@angular/core';
-import { DocumentManagementService } from '../../../services/document-management';
-import { DocumentData } from '../../../domain/document';
-import { of, throwError, Subscription } from 'rxjs';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { FormGroup } from '@angular/forms';
-import { FieldLabelPipe } from '../utils';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { of, Subscription, throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
+import { CaseField, FieldType } from '../../../domain/definition';
+import { DocumentData } from '../../../domain/document';
+import { DocumentManagementService } from '../../../services/document-management';
+import { CaseNotifier, CasesService } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
+import { FieldLabelPipe } from '../utils';
+import { FileUploadStateService } from './file-upload-state.service';
+import { WriteDocumentFieldComponent } from './write-document-field.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { FileUploadStateService } from './file-upload-state.service';
-import { AbstractAppConfig } from '../../../../app.config';
-import { CaseNotifier } from '../../case-editor';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -113,6 +113,7 @@ describe('WriteDocumentFieldComponent', () => {
   let mockDialog: any;
   let mockMatDialogRef: any;
   let appConfig: any;
+  let casesService: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -122,6 +123,7 @@ describe('WriteDocumentFieldComponent', () => {
     );
     mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
     mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed']);
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
 
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
       'setUploadInProgress',
@@ -147,6 +149,7 @@ describe('WriteDocumentFieldComponent', () => {
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: FileUploadStateService, useValue: mockFileUploadStateService},
           {provide: AbstractAppConfig, useValue: appConfig },
+          { provide: CasesService, useValue: casesService },
           DocumentDialogComponent,
           CaseNotifier
         ]
@@ -470,6 +473,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let deDialog: DebugElement;
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
+  let casesService: any
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -479,6 +483,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     );
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
 
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
       'setUploadInProgress',
@@ -504,6 +509,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: FileUploadStateService, useValue: mockFileUploadStateService},
           {provide: AbstractAppConfig, useValue: appConfig},
+          {provide: CasesService, useValue: casesService},
           DocumentDialogComponent,
           CaseNotifier
         ]

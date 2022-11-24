@@ -1,17 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { CasePrinterComponent } from './case-printer.component';
-import createSpyObj = jasmine.createSpyObj;
-import { PrintUrlPipe } from './pipes/print-url.pipe';
-import { CaseView, CasePrintDocument } from '../../../domain';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-import { PaletteUtilsModule } from '../../palette';
+import { CasePrintDocument, CaseView } from '../../../domain';
+import { AlertService } from '../../../services';
 import { attr, text } from '../../../test/helpers';
 import { CaseNotifier, CasesService } from '../../case-editor';
-import { AlertService } from '../../../services';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { PaletteUtilsModule } from '../../palette';
+import { CasePrinterComponent } from './case-printer.component';
+import { PrintUrlPipe } from './pipes/print-url.pipe';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CasePrinterComponent', () => {
 
@@ -73,7 +73,8 @@ describe('CasePrinterComponent', () => {
     appConfig = createSpyObj('AbstractAppConfig', ['getPrintServiceUrl']);
     appConfig.getPrintServiceUrl.and.returnValue(GATEWAY_PRINT_SERVICE_URL);
 
-    caseService = new CaseNotifier();
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
+    caseService = new CaseNotifier(casesService);
     caseService.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
     casesService = createSpyObj('CasesService', ['getPrintDocuments']);
     casesService.getPrintDocuments.and.returnValue(DOCUMENT_OBS);

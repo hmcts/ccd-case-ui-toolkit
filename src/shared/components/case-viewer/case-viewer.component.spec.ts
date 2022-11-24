@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, Type } from '@angular/core';
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -7,9 +7,9 @@ import {
   ParamMap,
   Params,
   Route,
-  UrlSegment,
+  UrlSegment
 } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { CaseNotifier } from '..';
 import { CaseField } from '../..';
 import { AbstractAppConfig, CaseView } from '../../..';
@@ -130,12 +130,14 @@ describe('CaseViewerComponent', () => {
 
   let mockCaseNotifier;
   let mockActivatedRoute = new MockActivatedRoute();
+  let casesService: any;
+  casesService = createSpyObj('casesService', ['getCaseViewV2']);
   let mockAppConfig = createSpyObj('AbstractAppConfig', [
     'getAccessManagementMode',
     'getAccessManagementBasicViewMock'
   ]);
 
-  mockCaseNotifier = new CaseNotifier();
+  mockCaseNotifier = new CaseNotifier(casesService);
   mockCaseNotifier.caseView = new BehaviorSubject(null).asObservable();
 
   mockActivatedRoute.snapshot = new MockActivatedRouteSnapshot();
@@ -206,7 +208,12 @@ describe('CaseViewerComponent', () => {
       expect(component.hasStandardAccess()).toBeTruthy();
     });
 
-    it('should return false if feature toggling is true and user does not have standard access', () => {
+    it('should return false if feature toggling is true and user has BASIC access granted', () => {
+      const META_DATA_FIELD_WITH_BASIC_ACCESS: CaseField = new CaseField();
+      META_DATA_FIELD_WITH_BASIC_ACCESS.id = '[ACCESS_GRANTED]';
+      META_DATA_FIELD_WITH_BASIC_ACCESS.value = 'BASIC';
+      CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS.metadataFields.push(META_DATA_FIELD_WITH_BASIC_ACCESS);
+
       mockActivatedRoute.snapshot.data = <Data>{
         case: CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS,
       };
@@ -214,6 +221,22 @@ describe('CaseViewerComponent', () => {
       fixture.detectChanges();
       component.loadCaseDetails();
       expect(component.hasStandardAccess()).toBeFalsy();
+      CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS.metadataFields.pop();
+    });
+
+    it('should return true if feature toggling is true and user has any other access granted', () => {
+      const META_DATA_FIELD_WITH_BASIC_ACCESS: CaseField = new CaseField();
+      META_DATA_FIELD_WITH_BASIC_ACCESS.id = '[ACCESS_GRANTED]';
+      META_DATA_FIELD_WITH_BASIC_ACCESS.value = 'BASIC,CHALLENGED,STANDARD';
+      CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS.metadataFields.push(META_DATA_FIELD_WITH_BASIC_ACCESS);
+
+      mockActivatedRoute.snapshot.data = <Data>{
+        case: CASE_VIEW_FROM_ROUTE_WITH_CHALLENGED_ACCESS,
+      };
+      mockAppConfig.getAccessManagementMode.and.returnValue(true);
+      fixture.detectChanges();
+      component.loadCaseDetails();
+      expect(component.hasStandardAccess()).toBeTruthy();
     });
   });
 });

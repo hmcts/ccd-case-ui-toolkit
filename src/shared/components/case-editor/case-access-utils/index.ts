@@ -4,7 +4,7 @@ export class CaseAccessUtils {
     // User role mapping
     public static readonly JUDGE_ROLE = 'judge';
     public static readonly JUDGE_ROLE_CATEGORY = 'JUDICIAL';
-    public static readonly JUDGE_ROLE_NAME = 'judicial';
+    public static readonly JUDGE_ROLE_NAME = 'judiciary';
     public static readonly ADMIN_ROLE = 'admin';
     public static readonly ADMIN_ROLE_CATEGORY = 'ADMIN';
     public static readonly ADMIN_ROLE_NAME = 'admin';
@@ -80,14 +80,16 @@ export class CaseAccessUtils {
         caseId: string,
         details: ChallengedAccessRequest | SpecificAccessRequest,
         beginTime: Date = null,
-        endTime: Date = null
+        endTime: Date = null,
+        isNew = false,
     ): RoleRequestPayload {
         const process =  (<ChallengedAccessRequest>details).caseReference !== undefined ? 'challenged-access' : 'specific-access';
+
         const payload: RoleRequestPayload = {
             roleRequest: {
                 assignerId: assignerId,
                 process,
-                reference:  `${caseId}/${roleName}/${actorId}`,
+                reference: `${caseId}/${roleName}/${actorId}`,
                 replaceExisting: true
             },
             requestedRoles: [{
@@ -101,12 +103,14 @@ export class CaseAccessUtils {
                 beginTime: beginTime,
                 endTime: endTime,
                 attributes: {
-                    caseId: caseId
+                  caseId,
+                  isNew,
+                  accessReason: JSON.stringify(details),
                 },
                 notes: [{
-                    userId: assignerId,
-                    time: new Date(),
-                    comment: JSON.stringify(details)
+                  userId: assignerId,
+                  time: new Date(),
+                  comment: JSON.stringify(details)
                 }]
             }]
         };
