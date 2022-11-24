@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.21-no-cases-to-unlink-error-message
+**EUI-7234** Linked cases no cases to unlink error message
+
 ### Version 4.19.3-hearings
 **EUI-5912** Hearing tab is not loading
 
