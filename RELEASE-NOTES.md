@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.20.19-no-cases-to-unlink-error-message
+**EUI-7234** Linked cases no cases to unlink error message
+
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
 
