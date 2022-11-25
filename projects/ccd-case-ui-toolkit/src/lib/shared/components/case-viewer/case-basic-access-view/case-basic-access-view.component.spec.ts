@@ -1,14 +1,14 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
-import { waitForAsync, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import createSpyObj = jasmine.createSpyObj;
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { CaseField, CaseView } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes/case-reference';
 import { CasesService } from '../../case-editor/services';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view.component';
-import createSpyObj = jasmine.createSpyObj;
-import { Router } from '@angular/router';
 
 const META_DATA_FIELD_WITH_CHALLENGED_ACCESS: CaseField = new CaseField();
 META_DATA_FIELD_WITH_CHALLENGED_ACCESS.id = '[ACCESS_PROCESS]';
@@ -71,14 +71,15 @@ describe('CaseBasicAccessViewComponent', () => {
             ],
             providers: [
                 { provide: CasesService, useValue: mockCasesService },
+                Location
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
         })
         .compileComponents();
-        router = TestBed.get(Router);
-        location = TestBed.get(Location);
+        router = TestBed.inject(Router);
+        location = TestBed.inject(Location);
         fixture = TestBed.createComponent(CaseBasicAccessViewComponent);
         component = fixture.componentInstance;
         component.caseDetails = CASE_VIEW_WITH_CHALLENGED_ACCESS;

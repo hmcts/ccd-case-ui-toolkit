@@ -1,9 +1,8 @@
-import { Location } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { CasesService } from '../..';
-import { CaseView } from '../../../domain';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { CasesService } from '../../case-editor/services/cases.service';
 
 @Component({
   selector: 'ccd-case-basic-access-view',
@@ -24,9 +23,7 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly casesService: CasesService,
-    private readonly router: Router,
-    private readonly _location: Location
-  ) {}
+    private readonly router: Router) {}
 
   public ngOnInit(): void {
     const locationId = this.caseDetails &&
