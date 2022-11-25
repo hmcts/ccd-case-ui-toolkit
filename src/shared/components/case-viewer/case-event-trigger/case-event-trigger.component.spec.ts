@@ -257,8 +257,8 @@ describe('CaseEventTriggerComponent', () => {
       done();
     });
     expect(casesService.validateCase).not.toHaveBeenCalled();
-	}
-	
+  });
+
   it('should cancel navigate to linked cases tab', () => {
     const routerWithModifiedUrl = TestBed.get(Router);
     routerWithModifiedUrl.url = 'linkCases';
