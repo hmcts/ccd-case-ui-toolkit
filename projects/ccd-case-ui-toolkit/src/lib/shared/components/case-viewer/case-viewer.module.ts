@@ -20,10 +20,13 @@ import { ActivityModule } from '../activity';
 import { CaseEditorModule, CaseNotifier, ConvertHrefToRouterService } from '../case-editor';
 import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
+import { EventMessageModule } from '../error-message/error-message.module';
 import { ErrorsModule } from '../error/errors.module';
 import { EventStartModule } from '../event-start/event-start.module';
 import { EventTriggerModule } from '../event-trigger';
+import { LoadingSpinnerModule } from '../loading-spinner/loading-spinner.module';
 import { PaletteModule } from '../palette';
+import { CaseBasicAccessViewComponent } from './case-basic-access-view';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success/case-challenged-access-success.component';
 import { CaseEventTriggerComponent } from './case-event-trigger';
@@ -52,9 +55,10 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseHistoryModule,
     MatTabsModule,
     ReactiveFormsModule,
-    AlertModule,
     BannersModule,
-    LabelSubstitutorModule
+    LabelSubstitutorModule,
+    LoadingSpinnerModule,
+    EventMessageModule
   ],
   declarations: [
     CaseEventTriggerComponent,
@@ -62,6 +66,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseViewerComponent,
     CaseFullAccessViewComponent,
     CaseViewComponent,
+    CaseBasicAccessViewComponent,
     PrintUrlPipe,
     CaseChallengedAccessRequestComponent,
     CaseSpecificAccessRequestComponent,

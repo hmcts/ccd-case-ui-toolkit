@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { BannersModule } from '../../../components/banners/banners.module';
 import { CallbackErrorsComponent } from '../../components/error';
 import { ConditionalShowModule } from '../../directives/conditional-show';
 import {
@@ -25,7 +26,7 @@ import { ProfileService } from '../../services/profile/profile.service';
 import { RouterHelperService } from '../../services/router';
 import { SessionStorageService } from '../../services/session/session-storage.service';
 import { ErrorsModule } from '../error/errors.module';
-import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
+import { LoadingSpinnerModule } from '../loading-spinner/loading-spinner.module';
 import { PaletteModule } from '../palette/palette.module';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
@@ -61,7 +62,9 @@ import { CaseworkerService } from './services/case-worker.service';
     LabelSubstitutorModule,
     ConditionalShowModule,
     ErrorsModule,
-    PortalModule
+    PortalModule,
+    LoadingSpinnerModule,
+    BannersModule
   ],
   declarations: [
     CaseEditConfirmComponent,
@@ -73,8 +76,7 @@ import { CaseworkerService } from './services/case-worker.service';
     CaseEventCompletionTaskCancelledComponent,
     CaseEventCompletionTaskReassignedComponent,
     CaseCreateComponent,
-    CaseProgressComponent,
-    LoadingSpinnerComponent
+    CaseProgressComponent
   ],
   exports: [
     CaseEditConfirmComponent,
@@ -84,8 +86,7 @@ import { CaseworkerService } from './services/case-worker.service';
     CaseEditSubmitComponent,
     CaseCreateComponent,
     CaseProgressComponent,
-    CallbackErrorsComponent,
-    LoadingSpinnerComponent
+    CallbackErrorsComponent
   ],
   providers: [
     CaseNotifier,
