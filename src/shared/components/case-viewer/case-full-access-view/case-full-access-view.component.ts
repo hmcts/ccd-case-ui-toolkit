@@ -23,7 +23,8 @@ import {
   FieldsUtils,
   NavigationNotifierService,
   NavigationOrigin,
-  OrderService
+  OrderService,
+  SessionStorageService
 } from '../../../services';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
@@ -84,7 +85,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly errorNotifierService: ErrorNotifierService,
     private convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location,
-    private readonly crf: ChangeDetectorRef
+    private readonly crf: ChangeDetectorRef,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -101,6 +103,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
     });
     this.markdownUseHrefAsRouterLink = true;
+
+    this.sessionStorageService.removeItem('eventUrl');
 
     this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
       // do not convert router with initial default value; convert to router only on updated link content

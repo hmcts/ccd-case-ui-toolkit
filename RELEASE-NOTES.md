@@ -114,6 +114,9 @@ caching previous data when the user elects to change the case flag being created
 **EUI-4836** Add case flags tab to case details
 **EUI-4897** Add banner message to case details
 
+### Version 4.20.20-linked-cases-merge-from-release
+Linked cases merge from Release
+
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
 

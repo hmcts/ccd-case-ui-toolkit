@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { plainToClass } from 'class-transformer';
 import { Observable, throwError } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
-
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
 import {
@@ -18,6 +17,7 @@ import {
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { LinkCaseReason, LinkedCasesResponse } from '../../palette/case-link/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -84,8 +84,8 @@ export class CasesService {
   }
 
   getCaseView(jurisdictionId: string,
-              caseTypeId: string,
-              caseId: string): Observable<CaseView> {
+    caseTypeId: string,
+    caseId: string): Observable<CaseView> {
     const url = this.appConfig.getApiUrl()
       + `/caseworkers/:uid`
       + `/jurisdictions/${jurisdictionId}`
@@ -105,15 +105,16 @@ export class CasesService {
   }
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
-    const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
+    let url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`
     const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
       .set('Content-Type', 'application/json');
 
     const loadingToken = this.loadingService.register();
+
     return this.http
-      .get(url, {headers, observe: 'body'})
+      .get(url, { headers, observe: 'body' })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -123,10 +124,45 @@ export class CasesService {
       );
   }
 
+  /**
+   * TODO: Gets case link responses
+   * @returns case link responses
+   */
+   public getCaseLinkResponses(): Observable<LinkCaseReason[]> {
+    const headers = new HttpHeaders()
+      .set('experimental', 'true')
+      .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
+      .set('Content-Type', 'application/json');
+    const loadingToken = this.loadingService.register();
+    return this.http
+      .get('assets/getCaseReasons.json', { headers, observe: 'body' })
+      .pipe(
+        map((reasons) => {
+          return reasons.sort((reasonA, reasonB) => reasonA.value_en > reasonB.value_en ? 1 : -1);
+        }),
+        catchError(error => {
+          this.errorService.setError(error);
+          return throwError(error);
+        }),
+        finalize(() => this.loadingService.unregister(loadingToken))
+      );
+  }
+
+  public getLinkedCases(caseId: string): Observable<LinkedCasesResponse> {
+    const url = `${this.appConfig.getCaseDataStoreApiUrl()}/${caseId}`
+    return this.http
+    .get(url)
+    .pipe(
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
   getEventTrigger(caseTypeId: string,
-                  eventTriggerId: string,
-                  caseId?: string,
-                  ignoreWarning?: string): Observable<CaseEventTrigger> {
+    eventTriggerId: string,
+    caseId?: string,
+    ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
 
     const url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
@@ -144,7 +180,7 @@ export class CasesService {
     }
 
     return this.http
-      .get(url, {headers, observe: 'body'})
+      .get(url, { headers, observe: 'body' })
       .pipe(
         map(body => {
           return FieldsUtils.handleNestedDynamicLists(body);
@@ -168,7 +204,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers, observe: 'body'})
+      .post(url, eventData, { headers, observe: 'body' })
       .pipe(
         map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
@@ -189,7 +225,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers, observe: 'body'})
+      .post(url, eventData, { headers, observe: 'body' })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -213,7 +249,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .post(url, eventData, {headers, observe: 'body'})
+      .post(url, eventData, { headers, observe: 'body' })
       .pipe(
         map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
@@ -234,7 +270,7 @@ export class CasesService {
       .set('Content-Type', 'application/json');
 
     return this.http
-      .get(url, {headers, observe: 'body'})
+      .get(url, { headers, observe: 'body' })
       .pipe(
         map(body => body.documentResources),
         catchError(error => {

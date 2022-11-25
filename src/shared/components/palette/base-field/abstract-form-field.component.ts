@@ -65,7 +65,9 @@ export abstract class AbstractFormFieldComponent {
 
   private addControlToFormGroup(control: AbstractControl, parent: FormGroup, replace: boolean): AbstractControl {
     if (replace) {
-      if (this.caseField.field_type && this.caseField.field_type.id === 'CaseLink' && this.caseField.field_type.type === 'Complex' && /^-?\d+$/.test(this.caseField.id)) {
+      if (this.caseField.field_type && this.caseField.field_type.collection_field_type
+          && this.caseField.field_type.collection_field_type.id === 'CaseLink'
+          && this.caseField.field_type.type === 'Complex' && /^-?\d+$/.test(this.caseField.id)) {
         parent.setControl('CaseReference', control['controls']['CaseReference']);
       } else {
         parent.setControl(this.caseField.id, control);

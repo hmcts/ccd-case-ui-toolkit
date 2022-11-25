@@ -5,6 +5,7 @@ import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edi
 
 import { CaseField } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 
@@ -35,11 +36,11 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     FormValidatorsService.addValidators(caseField, control);
   }
 
-  public ngOnInit(): void {
-    let componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
+  ngOnInit(): void {
+    const componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
 
-    let injector = Injector.create([], this.fieldContainer.parentInjector);
-    let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
+    const injector = Injector.create([], this.fieldContainer.parentInjector);
+    const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Only Fixed list use plainToClassFromExist
     // Better performance

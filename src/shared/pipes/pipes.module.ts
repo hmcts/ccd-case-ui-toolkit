@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CaseReferencePipe } from './case-reference';
 import { SortSearchResultPipe } from './search-result/sorting/sort-search-result.pipe';
 import { CcdCaseTitlePipe } from './case-title';
+import { LinkCasesReasonValuePipe } from './link-cases-reason-code';
 
 @NgModule({
   imports: [
@@ -11,12 +12,14 @@ import { CcdCaseTitlePipe } from './case-title';
   declarations: [
     CaseReferencePipe,
     SortSearchResultPipe,
-    CcdCaseTitlePipe
+    CcdCaseTitlePipe,
+    LinkCasesReasonValuePipe
   ],
   exports: [
     CaseReferencePipe,
     SortSearchResultPipe,
-    CcdCaseTitlePipe
+    CcdCaseTitlePipe,
+    LinkCasesReasonValuePipe
   ]
 })
 export class PipesModule {}

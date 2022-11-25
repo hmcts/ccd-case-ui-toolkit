@@ -41,6 +41,28 @@ export class SearchService {
       );
   }
 
+  public searchCasesByIds(
+    caseTypeId: string,
+    filter: any,
+    view?: SearchView,
+    sort?: { column: string; order: number }
+  ): Observable<{}> {
+    const url =
+      this.appConfig.getCaseDataUrl() +
+      `/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;
+
+    const body: {} = {
+      sort,
+      ...filter,
+      size: this.appConfig.getPaginationPageSize(),
+    };
+    const loadingToken = this.loadingService.register();
+    return this.httpService.post(url, body).pipe(
+      map((response) => response),
+      finalize(() => this.loadingService.unregister(loadingToken))
+    );
+  }
+
   public searchCases(caseTypeId: string,
                 metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: {column: string, order: number}): Observable<{}> {
     const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;

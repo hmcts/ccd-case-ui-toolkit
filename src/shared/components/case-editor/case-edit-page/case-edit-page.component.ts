@@ -19,6 +19,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
+import { LinkedCasesError } from '../../palette';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -52,6 +53,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   caseFields: CaseField[];
   validationErrors: { id: string, message: string }[] = [];
   showSpinner: boolean;
+  caseLinkError: LinkedCasesError;
   hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private static scrollToTop(): void {
@@ -163,19 +165,21 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           } else if (fieldElement.hasError('maxlength')) {
             this.validationErrors.push({ id, message: `${label} exceeds the maximum length` });
             fieldElement.markAsDirty();
+          } else if (this.caseLinkError && FieldsUtils.isLinkedCasesCaseField(casefield)) {
+            this.validationErrors.push({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
               this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
-              const fieldArray = fieldElement as FormArray;
-              if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
-                fieldArray['component']['collItems'].forEach(element => {
-                  id = `${element.prefix}`;
-                  fieldArray.controls.forEach((control: AbstractControl, index) => {
-                    if (id.charAt(id.indexOf(index.toString())) === index.toString()) {
-                      this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, control.get('value'), id);
-                    }
-                  })
+              if (this.caseLinkError && FieldsUtils.isLinkedCasesCaseField(casefield)) {
+                this.validationErrors.push({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
+              } else {
+                const fieldArray = fieldElement as FormArray;
+                if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
+                  id = `${fieldArray['component']['collItems'][0].prefix}`
+                }
+                fieldArray.controls.forEach((c: AbstractControl) => {
+                  this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
                 });
               }
             } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {

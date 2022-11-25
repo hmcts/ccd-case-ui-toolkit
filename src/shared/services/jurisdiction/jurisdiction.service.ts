@@ -16,7 +16,7 @@ export class JurisdictionService {
     this.selectedJurisdiction = this.selectedJurisdictionSource.asObservable();
   }
 
-  announceSelectedJurisdiction(jurisdiction: Jurisdiction) {
+  public announceSelectedJurisdiction(jurisdiction: Jurisdiction): void {
     this.selectedJurisdictionSource.next(jurisdiction);
   }
 

@@ -140,7 +140,10 @@ describe('CaseEventTriggerComponent', () => {
     alertService = createSpyObj<AlertService>('alertService', ['success', 'warning']);
     activityPollingService = createSpyObj<ActivityPollingService>('activityPollingService', ['postEditActivity']);
     activityPollingService.postEditActivity.and.returnValue(Observable.of());
-    router = createSpyObj('router', ['navigate']);
+    router = {
+      navigate: jasmine.createSpy('navigate'),
+      url: ''
+    };
     router.navigate.and.returnValue({then: f => f()});
 
     TestBed
@@ -254,5 +257,13 @@ describe('CaseEventTriggerComponent', () => {
       done();
     });
     expect(casesService.validateCase).not.toHaveBeenCalled();
+	}
+	
+  it('should cancel navigate to linked cases tab', () => {
+    const routerWithModifiedUrl = TestBed.get(Router);
+    routerWithModifiedUrl.url = 'linkCases';
+    component.caseDetails.case_id = '1111-2222-3333-4444';
+    component.cancel();
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444']);
   });
 });
