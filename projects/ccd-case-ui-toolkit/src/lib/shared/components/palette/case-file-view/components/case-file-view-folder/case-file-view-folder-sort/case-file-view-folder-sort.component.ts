@@ -13,7 +13,7 @@ export class CaseFileViewFolderSortComponent implements OnInit {
   @Output() public sortDescending = new EventEmitter<void>();
 
   public overlayMenuItems: CaseFileViewOverlayMenuItem[] = [
-    { actionText: 'A to Z descending', iconSrc: '/assets/img/sort/sort-down-arrow.svg', actionFn: () => this.sortAscending.emit() },
+    { actionText: 'A to Z ascending', iconSrc: '/assets/img/sort/sort-down-arrow.svg', actionFn: () => this.sortAscending.emit() },
     { actionText: 'Z to A descending', iconSrc: '/assets/img/sort/sort-up-arrow.svg', actionFn: () => this.sortDescending.emit() },
   ];
   constructor() { }
