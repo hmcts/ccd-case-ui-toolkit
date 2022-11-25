@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.9.0-work-allocation-changes-added",
+  "version": "4.20.20-linked-cases-merge-from-release",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

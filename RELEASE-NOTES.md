@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 4.20.20-linked-cases-merge-from-release
+Linked cases merge from Release
+
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
 
