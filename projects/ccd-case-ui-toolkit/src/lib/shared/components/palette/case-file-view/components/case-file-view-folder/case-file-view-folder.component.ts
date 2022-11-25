@@ -1,7 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import {
@@ -74,9 +74,10 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         const uncategorisedDocuments = this.getUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents);
         this.documentTreeData.push(uncategorisedDocuments);
       }
+
       // Initialise cdk tree with generated data
       this.nestedDataSource = this.documentTreeData;
-      this.nestedTreeControl.dataNodes = this.documentTreeData;
+      // this.nestedTreeControl.dataNodes = this.documentTreeData;
     });
   }
 
@@ -84,7 +85,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return categories.reduce((tree, node) => {
       const newDocumentTreeNode = new DocumentTreeNode();
       newDocumentTreeNode.name = node.category_name;
-      type: DocumentTreeNodeType.FOLDER,
+      newDocumentTreeNode.type = DocumentTreeNodeType.FOLDER;
       newDocumentTreeNode.children = [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)];
 
       return [
@@ -155,7 +156,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public filter(searchTerm: string): Observable<DocumentTreeNode[]> {
     // Make a copy of the data so we do not mutate the original
     function copy(node: DocumentTreeNode) {
-      return Object.assign({}, node);
+      const documentTree = new DocumentTreeNode();
+      return Object.assign(documentTree, node);
     }
 
     let filteredData = this.documentTreeData;

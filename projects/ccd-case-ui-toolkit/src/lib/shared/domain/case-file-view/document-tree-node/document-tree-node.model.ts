@@ -2,7 +2,7 @@ import { Expose, Type } from 'class-transformer';
 
 export class DocumentTreeNode {
   public name: string;
-  public type: 'document' | 'category';
+  public type: DocumentTreeNodeType;
   @Type(() => DocumentTreeNode)
   public children?: DocumentTreeNode[];
   public document_filename?: string;
@@ -100,4 +100,9 @@ export class DocumentTreeNode {
       }).flat()
     ];
   }
+}
+
+export enum DocumentTreeNodeType {
+  FOLDER = 'folder',
+  DOCUMENT = 'document',
 }

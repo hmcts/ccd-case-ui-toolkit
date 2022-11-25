@@ -3,12 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import createSpyObj = jasmine.createSpyObj;
-import SpyObj = jasmine.SpyObj;
 import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
 import {
   CaseFileViewDocument,
-  DocumentTreeNode
+  DocumentTreeNode,
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
 import { DocumentManagementService, WindowService } from '../../../../../services';
@@ -16,7 +15,7 @@ import { categoriesAndDocuments } from '../../test-data/categories-and-documents
 import { treeData, treeDataWithUncategorisedDocuments } from '../../test-data/document-tree-node-test-data';
 import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 
-describe('CaseFileViewFolderComponent', () => {
+fdescribe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
   let fixture: ComponentFixture<CaseFileViewFolderComponent>;
   let nativeElement: any;
@@ -38,7 +37,8 @@ describe('CaseFileViewFolderComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTreeModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        RouterTestingModule
       ],
       declarations: [
         CaseFileViewFolderComponent
@@ -190,8 +190,8 @@ describe('CaseFileViewFolderComponent', () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
     const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
-    const firstNodeButton = documentTreeContainerEl.querySelector('.node-button');
-    const iconEl = firstNodeButton.querySelector('.icon');
+    const firstNodeButton = documentTreeContainerEl.querySelector('.node');
+    const iconEl = firstNodeButton.querySelector('.node__iconImg');
     expect(iconEl.getAttribute('src')).toEqual('/assets/images/folder.png');
     firstNodeButton.click();
     fixture.detectChanges();
@@ -199,7 +199,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should filter documents', () => {
-    const filteredTreeData: DocumentTreeNode[] = [
+    const filteredTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
         name: 'Spirits',
         type: DocumentTreeNodeType.FOLDER,
@@ -242,7 +242,7 @@ describe('CaseFileViewFolderComponent', () => {
           }
         ]
       }
-    ];
+    ]);
     component.documentTreeData = filteredTreeData;
     component.documentSearchFormControl.setValue('abo');
     component.filter('abo').subscribe(result => {
@@ -251,7 +251,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should filter documents no match', () => {
-    const filteredTreeData: DocumentTreeNode[] = [
+    const filteredTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
         name: 'Spirits',
         type: DocumentTreeNodeType.FOLDER,
@@ -294,7 +294,7 @@ describe('CaseFileViewFolderComponent', () => {
           }
         ]
       }
-    ];
+    ]);
     component.documentTreeData = filteredTreeData;
     component.documentSearchFormControl.setValue('some random text');
     component.filter('some random text').subscribe(result => {
