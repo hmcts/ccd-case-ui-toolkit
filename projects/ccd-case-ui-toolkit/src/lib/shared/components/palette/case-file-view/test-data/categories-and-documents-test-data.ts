@@ -10,7 +10,21 @@ export const categoriesAndDocuments: CategoriesAndDocuments = {
       documents: [
         {
           document_url: '/test',
+          document_filename: 'Lager encyclopedia',
+          document_binary_url: '/test/binary',
+          attribute_path: '',
+          upload_timestamp: ''
+        },
+        {
+          document_url: '/test',
           document_filename: 'Beers encyclopedia',
+          document_binary_url: '/test/binary',
+          attribute_path: '',
+          upload_timestamp: ''
+        },
+        {
+          document_url: '/test',
+          document_filename: 'Ale encyclopedia',
           document_binary_url: '/test/binary',
           attribute_path: '',
           upload_timestamp: ''
