@@ -114,6 +114,9 @@ caching previous data when the user elects to change the case flag being created
 **EUI-4836** Add case flags tab to case details
 **EUI-4897** Add banner message to case details
 
+### Version 4.20.21-linked-cases-private-law-integration
+Linked cases private law integration
+
 ### Version 4.20.20-linked-cases-merge-from-release
 Linked cases merge from Release
 
