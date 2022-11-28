@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.20.20-linked-cases-merge-from-release",
+  "version": "4.20.21-linked-cases-private-law-integration",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

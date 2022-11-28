@@ -94,7 +94,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     // Generate the list of observables
     caseFieldValue.forEach(fieldValue => {
       if (fieldValue && fieldValue.id) {
-        searchCasesResponse.push(this.casesService.getCaseViewV2(fieldValue.id));  
+        searchCasesResponse.push(this.casesService.getCaseViewV2(fieldValue.id));
       }
     });
     if (searchCasesResponse.length) {
