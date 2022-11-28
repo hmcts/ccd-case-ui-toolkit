@@ -18,8 +18,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public categories: CaseFileViewCategory[] = [];
   public categoriesAndDocumentsSubscription: Subscription;
 
-  @ViewChild('tree', {static: true}) public tree: CdkTree<DocumentTreeNode>;
-
   private getChildren = (node: DocumentTreeNode) => of(node.children);
   public nestedChildren = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
 
@@ -88,6 +86,25 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return uncategorisedNode;
   }
 
+  public triggerDocumentAction(actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print') {
+    switch(actionType) {
+      case('changeFolder'):
+        console.log('changeFolder!');
+        break;
+      case('openInANewTab'):
+        console.log('openInANewTab!');
+        break;
+      case('download'):
+        console.log('download!');
+        break;
+      case('print'):
+        console.log('print!');
+        break;
+      default:
+        return;
+    }
+  }
+
   public sortDataSourceAscAlphabetically() {
     const sortedData = this.nestedDataSource.map(item => {
       item.sortChildrenAscending();
@@ -110,26 +127,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
     this.updateNodeData(sortedData);
   }
-
-  public triggerDocumentAction(actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print') {
-    switch(actionType) {
-      case('changeFolder'):
-        console.log('changeFolder!');
-        break;
-      case('openInANewTab'):
-        console.log('openInANewTab!');
-        break;
-      case('download'):
-        console.log('download!');
-        break;
-      case('print'):
-        console.log('print!');
-        break;
-      default:
-        return;
-    }
-  }
-
   public ngOnDestroy(): void {
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();

@@ -25,8 +25,8 @@ import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
-import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
+import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view/components/shared/case-file-view-overlay-menu/case-file-view-overlay-menu.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -66,6 +66,7 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { CaseFileViewOverlayMenuComponent } from './case-file-view/components/shared/case-file-view-overlay-menu/case-file-view-overlay-menu.component';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -147,36 +148,36 @@ const PALETTE_COMPONENTS = [
     CaseFileViewFolderComponent,
     CaseFileViewFolderSortComponent,
     CaseFileViewOverlayMenuComponent,
-    CaseFileViewFolderDocumentActionsComponent,
+    CaseFileViewFolderDocumentActionsComponent
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        ReactiveFormsModule,
-        PaletteUtilsModule,
-        PipesModule,
-        BannersModule,
-        HeadersModule,
-        FootersModule,
-        BodyModule,
-        FormModule,
-        TabsModule,
-        LabelSubstitutorModule,
-        NgxMdModule,
-        NgxMatDatetimePickerModule,
-        NgxMatTimepickerModule,
-        NgxMatNativeDateModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatAutocompleteModule,
-        CdkTreeModule,
-        OverlayModule,
-        PaymentLibModule,
-        ScrollToModule.forRoot()
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    PaletteUtilsModule,
+    PipesModule,
+    BannersModule,
+    HeadersModule,
+    FootersModule,
+    BodyModule,
+    FormModule,
+    TabsModule,
+    LabelSubstitutorModule,
+    NgxMdModule,
+    NgxMatDatetimePickerModule,
+    NgxMatTimepickerModule,
+    NgxMatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatAutocompleteModule,
+    CdkTreeModule,
+    OverlayModule,
+    PaymentLibModule,
+    ScrollToModule.forRoot()
   ],
   declarations: [
     FixedListPipe,
@@ -185,7 +186,7 @@ const PALETTE_COMPONENTS = [
     DynamicRadioListPipe,
     DocumentUrlPipe,
 
-    ...PALETTE_COMPONENTS
+    ...PALETTE_COMPONENTS,
   ],
   exports: [
     NgxMatDatetimePickerModule,

@@ -9,7 +9,7 @@
 </div>
 
 <div class="document-tree-container">
-  <cdk-tree #tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
+  <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
     <!-- document -->
     <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="document-tree-node">
       <button class="node">
