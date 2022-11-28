@@ -168,7 +168,7 @@ describe('SearchResultComponent', () => {
     let searchHandler;
     let appConfig: any;
     const caseReferencePipe = new CaseReferencePipe();
-    const CaseActivityComponent: any = MockComponent({
+    const caseActivityComponent: any = MockComponent({
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
@@ -194,7 +194,7 @@ describe('SearchResultComponent', () => {
             SortSearchResultPipe,
             CaseReferencePipe,
             // Mocks
-            CaseActivityComponent,
+            caseActivityComponent,
             PaginatePipe
           ],
           schemas: [NO_ERRORS_SCHEMA],
@@ -800,7 +800,7 @@ describe('SearchResultComponent', () => {
     let activityService: any;
     let appConfig: any;
     const caseReferencePipe = new CaseReferencePipe();
-    const CaseActivityComponent: any = MockComponent({
+    const caseActivityComponent: any = MockComponent({
       selector: 'ccd-activity',
       inputs: ['caseId', 'displayMode']
     });
@@ -821,7 +821,7 @@ describe('SearchResultComponent', () => {
             SortSearchResultPipe,
             CaseReferencePipe,
             // Mocks
-            CaseActivityComponent,
+            caseActivityComponent,
             PaginatePipe
           ],
           schemas: [NO_ERRORS_SCHEMA],
