@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.25-case-file-sort-documents-v5",
+  "version": "5.0.25-case-file-view-media-viewer-integration",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
@@ -64,6 +64,9 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "5.0.4",
     "@hmcts/frontend": "^0.0.50-alpha",
+    "@hmcts/media-viewer": "2.7.18-RC.3",
+    "@ngrx/effects": "^7.4.0",
+    "@ngrx/store": "^7.4.0",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
@@ -76,6 +79,7 @@
     "minimist": "1.2.3",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
+    "ngx-chips": "2.1.0",
     "ngx-md": "8.1.6",
     "ngx-pagination": "5.1.1",
     "npm-registry-fetch": "^4.0.5",
