@@ -139,23 +139,25 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   public getLinkedCases(): void {
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
-      let caseViewFiltered = caseView.tabs.filter(val => {
-        let linkField = val.fields.some(({field_type}) => field_type.collection_field_type.id === 'CaseLink')
-        return linkField
-      })
+      let caseViewFiltered = caseView.tabs.filter(tab => {
+        let linkField = tab.fields.some(
+          ({field_type}) => field_type && field_type.collection_field_type && field_type.collection_field_type.id === 'CaseLink'
+        );
+        return linkField;
+      });
       if (caseViewFiltered) {
         const caseLinkFieldValue = caseViewFiltered.map(filtered => filtered.fields.length && filtered.fields[0].value)
         this.linkedCasesService.caseFieldValue = caseLinkFieldValue.length ? caseLinkFieldValue[0] : [];
         this.linkedCasesService.getAllLinkedCaseInformation();
       }
-        // Initialise the first page to display
-        this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger ||
-                          (this.linkedCasesService.caseFieldValue && this.linkedCasesService.caseFieldValue.length > 0
-                            && !this.linkedCasesService.serverLinkedApiError)
-          ? LinkedCasesPages.BEFORE_YOU_START
-          : LinkedCasesPages.NO_LINKED_CASES;
-        // Initialise the error to be displayed when clicked on Continue button
-        this.setContinueButtonValidationErrorMessage();
+      // Initialise the first page to display
+      this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger ||
+                        (this.linkedCasesService.caseFieldValue && this.linkedCasesService.caseFieldValue.length > 0
+                          && !this.linkedCasesService.serverLinkedApiError)
+        ? LinkedCasesPages.BEFORE_YOU_START
+        : LinkedCasesPages.NO_LINKED_CASES;
+      // Initialise the error to be displayed when clicked on Continue button
+      this.setContinueButtonValidationErrorMessage();
     });
   }
 

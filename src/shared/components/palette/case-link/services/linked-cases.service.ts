@@ -115,7 +115,7 @@ export class LinkedCasesService {
   public mapLookupIDToValueFromJurisdictions(fieldName, fieldValue): string {
     const selectedJurisdiction = this.jurisdictionsResponse &&
       this.jurisdictionsResponse.find(item => item.id === this.caseDetails.case_type.jurisdiction.id);
-    const selectedCaseType = selectedJurisdiction.caseTypes.find(item => item.id === this.caseDetails.case_type.id);
+    const selectedCaseType = selectedJurisdiction && selectedJurisdiction.caseTypes.find(item => item.id === this.caseDetails.case_type.id);
     switch (fieldName) {
       case 'JURISDICTION':
         return selectedJurisdiction && selectedJurisdiction.description;
