@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.25-case-file-view-media-viewer-integration
+**EUI-5349** Integrate the Media Viewer component with Case File View
+
 ### Version 5.0.25-case-file-view-document-tree-functionalities-v3
 **EUI-7066** Case file view search document exceptions
 **EUI-7160** Case file view hand icon for folder clicking

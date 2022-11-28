@@ -59,17 +59,17 @@
                       <th id="case-viewer-field-label" *ngIf="!isFieldToHaveNoLabel(field)">
                         <div class="case-viewer-label text-16">{{field.label}}</div>
                       </th>
-                      <td>
+                      <th [id]="'case-viewer-field-read--' + field.id">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
                           [caseField]="field" [caseReference]="caseDetails.case_id"
                           [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
                           </ccd-field-read>
                         </span>
-                      </td>
+                      </th>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <th>
+                      <th [id]="'case-viewer-field-read--' + field.id">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
                           [caseField]="field" [caseReference]="caseDetails.case_id"

@@ -13,11 +13,10 @@ import {
 
 @Component({
   selector: 'ccd-case-file-view-folder',
+  templateUrl: './case-file-view-folder.component.html',
   styleUrls: ['./case-file-view-folder.component.scss'],
-  templateUrl: './case-file-view-folder.component.html'
 })
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
-
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
   private static readonly DOCUMENT_SEARCH_FORM_CONTROL_NAME = 'documentSearchFormControl';
   private static readonly MINIMUM_SEARCH_CHARACTERS = 3;
@@ -75,38 +74,55 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public generateTreeData(categories: CaseFileViewCategory[]): DocumentTreeNode[] {
-    return categories.reduce((tree, node) => [
-      ...tree,
-      ...[
-        {
-          name: node.category_name,
-          type: DocumentTreeNodeType.FOLDER,
-          children: [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)]
-        },
-      ],
-    ], []);
+    return categories.reduce((tree, node) => {
+      const newDocumentTreeNode = new DocumentTreeNode();
+      newDocumentTreeNode.name = node.category_name;
+      newDocumentTreeNode.type =  DocumentTreeNodeType.FOLDER;
+        newDocumentTreeNode.children = [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)];
+
+      return [
+        ...tree,
+        newDocumentTreeNode,
+      ];
+    }, []);
   }
 
   public getDocuments(documents: CaseFileViewDocument[]): DocumentTreeNode[] {
     const documentsToReturn: DocumentTreeNode[] = [];
     documents.forEach(document => {
-      documentsToReturn.push({ name: document.document_filename, type: DocumentTreeNodeType.DOCUMENT });
+      const documentTreeNode = new DocumentTreeNode();
+      documentTreeNode.name = document.document_filename;
+      documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
+
+      documentsToReturn.push(documentTreeNode);
     });
+
     return documentsToReturn;
   }
 
   public getUncategorisedDocuments(uncategorisedDocuments: CaseFileViewDocument[]): DocumentTreeNode {
     const documents: DocumentTreeNode[] = [];
     uncategorisedDocuments.forEach(document => {
-      documents.push({ name: document.document_filename, type: DocumentTreeNodeType.DOCUMENT });
+      const documentTreeNode = new DocumentTreeNode();
+      documentTreeNode.name = document.document_filename;
+      documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
+
+      documents.push(documentTreeNode);
     });
-    return { name: CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE, type: DocumentTreeNodeType.FOLDER, children: documents };
+
+    const uncategorisedNode = new DocumentTreeNode();
+    uncategorisedNode.name = CaseFileViewFolderComponent.UNCATEGORISED_DOCUMENTS_TITLE;
+    uncategorisedNode.type = DocumentTreeNodeType.FOLDER;
+    uncategorisedNode.children = documents;
+
+    return uncategorisedNode;
   }
 
   public filter(searchTerm: string): Observable<DocumentTreeNode[]> {
     // Make a copy of the data so we do not mutate the original
     function copy(node: DocumentTreeNode) {
-      return Object.assign({}, node);
+      const documentTreeNode = new DocumentTreeNode();
+      return Object.assign(documentTreeNode, node);
     }
 
     let filteredData = this.documentTreeData;
@@ -124,12 +140,57 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return of(filteredData);
   }
 
+  public sortDataSourceAscAlphabetically() {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenAscending();
+
+      const newDocumentTreeNode = new DocumentTreeNode();
+      newDocumentTreeNode.name = item.name;
+      newDocumentTreeNode.type = item.type;
+      newDocumentTreeNode.children = item.children;
+
+      return newDocumentTreeNode;
+    });
+
+    this.updateNodeData(sortedData);
+  }
+  public sortDataSourceDescAlphabetically() {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenDescending();
+      return item;
+    });
+
+    this.updateNodeData(sortedData);
+  }
+
+  public updateNodeData(data: DocumentTreeNode[]) {
+    const prevSelected = this.nestedTreeControl.expansionModel.selected.map(
+      (item) => {
+        return item.name;
+      });
+
+    this.nestedTreeControl.collapseAll();
+    this.nestedDataSource = data.map((item) => {
+      const newDocumentTreeNode = new DocumentTreeNode();
+      newDocumentTreeNode.name = item.name;
+      newDocumentTreeNode.type = item.type;
+      newDocumentTreeNode.children = item.children;
+
+      return newDocumentTreeNode;
+    });
+
+    const flattenedArray = this.nestedDataSource.map((item) => {
+      return item.flattenedAll;
+    }).flat();
+    const newObjects = flattenedArray.filter((item) => {
+      return prevSelected.includes(item.name);
+    });
+    newObjects.forEach(object => this.nestedTreeControl.expand(object));
+  }
+
   public ngOnDestroy(): void {
-    if (this.categoriesAndDocumentsSubscription) {
-      this.categoriesAndDocumentsSubscription.unsubscribe();
-    }
-    if (this.documentFilterSubscription) {
-      this.documentFilterSubscription.unsubscribe();
-    }
+    this.categoriesAndDocumentsSubscription?.unsubscribe();
+
+    this.documentFilterSubscription?.unsubscribe();
   }
 }

@@ -22,7 +22,19 @@
   }
 }
 
-.document-tree {
+  .document-folders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #C9C9C9;
+  padding: 10px;
+
+  &__title {
+    font-weight: 700;
+  }
+}
+
+.document-tree-container {
   margin: 4px;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -31,59 +43,55 @@
   .document-tree-invisible {
     display: none;
   }
-  
+
   .document-tree ul,
   .document-tree li {
     margin-top: 0;
     margin-bottom: 0;
     list-style-type: none;
   }
-  
+
   .document-tree-node {
     display: block;
   }
-  
+
   .document-tree-node .document-tree-node {
     padding-left: 40px;
   }
-  
-  .node {
-    display: flex;
-    padding: 4px;
-    white-space: nowrap;
+}
 
-    .node-button {
-      display: flex;
-      background-color: #FAF8F8;
-      border: none;
-      width: 100%;
-    }
-  }
+.node {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  white-space: nowrap;
+  cursor: pointer;
 
-  .node-button:hover {
-    cursor: pointer;
-  }
- 
-  .icon {
-    width: 36px;
-    height: 36px;
-    background-size: 100%;
-    border: 0px;
-    background-color: #FAF8F8;
+  &__icon {
+    position: relative;
+    background: none;
+    border: 0;
+    padding: 6px;
   }
 
-  .node-name {
-    margin-left: 10px;
+  &__iconImg {
+    display: block;
+    height: 24px;
+    width: 24px;
   }
-  
-  .node-name-folder,
-  .node-name-document {
-    margin-top: 8px;
-    font-size: 16px;
+
+  &__count {
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    // padding needed to adjust position
+    padding-top: 4px;
   }
-  
-  .document-count {
-    color: #FFF;
+
+  &__name {
+    margin-left: 4px;
   }
 }
 

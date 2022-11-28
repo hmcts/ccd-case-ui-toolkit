@@ -47,6 +47,8 @@
     "build-storybook": "yarn docs:json && build-storybook"
   },
   "dependencies": {
+    "@angular-material-components/datetime-picker": "6.0.0",
+    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/animations": "~11.2.14",
     "@angular/cdk": "^11.2.13",
     "@angular/common": "~11.2.14",
@@ -57,13 +59,14 @@
     "@angular/material": "^11.2.13",
     "@angular/platform-browser": "~11.2.14",
     "@angular/platform-browser-dynamic": "~11.2.14",
-    "@angular-material-components/datetime-picker": "6.0.0",
-    "@angular-material-components/moment-adapter": "6.0.0",
     "@angular/router": "~11.2.14",
     "@angular/upgrade": "~11.2.14",
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "5.0.4",
     "@hmcts/frontend": "^0.0.50-alpha",
+    "@hmcts/media-viewer": "2.7.18-RC.3",
+    "@ngrx/effects": "^7.4.0",
+    "@ngrx/store": "^7.4.0",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
@@ -76,6 +79,7 @@
     "minimist": "1.2.3",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
+    "ngx-chips": "2.1.0",
     "ngx-md": "8.1.6",
     "ngx-pagination": "5.1.1",
     "npm-registry-fetch": "^4.0.5",
@@ -169,7 +173,8 @@
     "webpack-dev-middleware": "^4.0.2",
     "webpack-rxjs-externals": "^2.0.0",
     "webpack-source-map-support": "^2.0.1",
-    "xlsx": "^0.15.4"
+    "xlsx": "^0.15.4",
+    "yarn": "^1.22.15"
   },
   "resolutions": {
     "braces": "^2.3.1",
