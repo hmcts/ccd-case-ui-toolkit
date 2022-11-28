@@ -60,7 +60,7 @@ describe('CaseFileViewFolderComponent', () => {
         name: 'Ale encyclopedia',
         type: 'document'
       }
-    ];
+    ]);
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
   });
 
@@ -113,6 +113,6 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it ('should get all document count as get documentCount', () => {
-    expect(component.documentCount).toEqual(6);
+    expect(component.documentCount).toEqual(8);
   });
 });
