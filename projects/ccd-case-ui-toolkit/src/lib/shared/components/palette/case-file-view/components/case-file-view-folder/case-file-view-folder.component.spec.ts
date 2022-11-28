@@ -7,7 +7,10 @@ import {
   DocumentTreeNode
 } from '../../../../../domain/case-file-view';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
-import { treeData } from '../../test-data/document-tree-node-test-data';
+import {
+  categorisedTreeData,
+  treeData
+} from '../../test-data/document-tree-node-test-data';
 import { CaseFileViewFolderComponent } from './case-file-view-folder.component';
 
 describe('CaseFileViewFolderComponent', () => {
@@ -38,13 +41,14 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should generate tree data', () => {
-    expect(component.generateTreeData(categoriesAndDocuments.categories)).toEqual(treeData);
+  it('should generate tree data from categorised data', () => {
+    expect(component.generateTreeData(categoriesAndDocuments.categories)).toEqual(categorisedTreeData);
   });
 
   it('should get documents from category', () => {
     const documents = categoriesAndDocuments.categories[0].documents;
     const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
+<<<<<<< HEAD
       {
         name: 'Lager encyclopedia',
         type: 'document'
@@ -54,6 +58,17 @@ describe('CaseFileViewFolderComponent', () => {
         type: 'document'
       },
       {
+=======
+      {
+        name: 'Lager encyclopedia',
+        type: 'document'
+      },
+      {
+        name: 'Beers encyclopedia',
+        type: 'document'
+      },
+      {
+>>>>>>> feature/case-file-view
         name: 'Ale encyclopedia',
         type: 'document'
       }
@@ -62,6 +77,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should get uncategorised documents', () => {
+<<<<<<< HEAD
     const uncategorisedDocuments: CaseFileViewDocument[] = [
       {
         document_url: '/uncategorised-document-1',
@@ -93,6 +109,9 @@ describe('CaseFileViewFolderComponent', () => {
       ]
     });
     expect(component.getUncategorisedDocuments(uncategorisedDocuments)).toEqual(uncategorisedDocumentsTreeNode);
+=======
+    expect(component.getUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents)).toEqual(uncategorisedTreeData);
+>>>>>>> feature/case-file-view
   });
 
   it('should render cdk nested tree', () => {
@@ -105,23 +124,52 @@ describe('CaseFileViewFolderComponent', () => {
   it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
     const sortChildrenAscendingSpies = [];
     component.nestedDataSource.forEach((item) => {
+<<<<<<< HEAD
       sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending'));
     });
     component.sortDataSourceAscAlphabetically();
     sortChildrenAscendingSpies.forEach((item) => {
       expect(item).toHaveBeenCalled();
     });
+=======
+      sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending').and.callThrough());
+    });
+
+    console.log(util.inspect(component.nestedDataSource[3].children));
+    component.sortDataSourceAscAlphabetically();
+    fixture.detectChanges();
+    console.log(util.inspect(component.nestedDataSource));
+
+    sortChildrenAscendingSpies.forEach((item) => {
+      expect(item).toHaveBeenCalled();
+    });
+
+    expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyAsc);
+>>>>>>> feature/case-file-view
   });
 
   it('should call sortChildrenDescending on all children of nestedDataSource when calling sortDataSourceDescAlphabetically', () => {
     const sortChildrenDescendingSpies = [];
     component.nestedDataSource.forEach((item) => {
+<<<<<<< HEAD
       sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending'));
     });
     component.sortDataSourceDescAlphabetically();
     sortChildrenDescendingSpies.forEach((item) => {
       expect(item).toHaveBeenCalled();
     });
+=======
+      sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending').and.callThrough());
+    });
+    component.sortDataSourceDescAlphabetically();
+    fixture.detectChanges();
+
+    sortChildrenDescendingSpies.forEach((item) => {
+      expect(item).toHaveBeenCalled();
+    });
+
+    expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyDesc);
+>>>>>>> feature/case-file-view
   });
 
   it('should unsubscribe', () => {

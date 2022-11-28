@@ -1,28 +1,19 @@
-<div>
-  <button class="overlay-toggle" (click)="isOpen = !isOpen" type="button"
-          cdkOverlayOrigin #trigger="cdkOverlayOrigin">
-    <ng-content select="[trigger]"></ng-content>
-  </button>
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="cdkOverlayOrigin"
+  [cdkConnectedOverlayOpen]="isOpen"
+>
+  <div class="overlayMenu">
+    <ng-container *ngIf="title">
+      <div class="overlayMenu__title">{{title}}</div>
+    </ng-container>
 
-  <ng-template
-    cdkConnectedOverlay
-    [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isOpen"
-    [cdkConnectedOverlayHasBackdrop]="true"
-    [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
-    (backdropClick)="closeOverlay()"
-  >
-    <div class="overlay-menu">
-      <ng-container *ngIf="title">
-        <div class="overlay-menu__title">{{title}}</div>
-      </ng-container>
+    <ng-container *ngFor="let item of menuItems">
+      <div class="overlayMenu__item" (click)="item.actionFn(); closeOverlay();">
+        <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlayMenu__itemIcon" [alt]="title" />
+        <div class="overlayMenu__actionText">{{item.actionText}}</div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
 
-      <ng-container *ngFor="let item of menuItems">
-        <div class="overlay-menu__item" (click)="item.actionFn(); closeOverlay();">
-          <img *ngIf="item.iconSrc" [src]="item.iconSrc" class="overlay-menu__itemIcon" alt="{{title}} icon'" />
-          <div class="overlay-menu__actionText">{{item.actionText}}</div>
-        </div>
-      </ng-container>
-    </div>
-  </ng-template>
-</div>

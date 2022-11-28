@@ -1,3 +1,4 @@
+import { CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CaseFileViewOverlayMenuItem } from './case-file-view-overlay-menu-item.model';
 
@@ -10,6 +11,7 @@ export class CaseFileViewOverlayMenuComponent {
   @Input() public title: string = '';
   @Input() public menuItems: CaseFileViewOverlayMenuItem[];
 
+  @Input() public cdkOverlayOrigin: CdkOverlayOrigin;
   @Input() public isOpen = false;
   @Output() public isOpenChange = new EventEmitter<boolean>();
 

@@ -188,7 +188,8 @@ const PALETTE_COMPONENTS = [
     DynamicRadioListPipe,
     DocumentUrlPipe,
 
-    ...PALETTE_COMPONENTS
+    ...PALETTE_COMPONENTS,
+     CaseFileViewOverlayMenuComponent,
   ],
   exports: [
     NgxMatDatetimePickerModule,

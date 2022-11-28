@@ -104,6 +104,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
     this.updateNodeData(sortedData);
   }
+  
   public sortDataSourceDescAlphabetically() {
     const sortedData = this.nestedDataSource.map(item => {
       item.sortChildrenDescending();
@@ -131,7 +132,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         return;
     }
   }
+  public sortDataSourceDescAlphabetically() {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenDescending();
+      return item;
+    });
 
+    this.updateNodeData(sortedData);
+  }
   public ngOnDestroy(): void {
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();

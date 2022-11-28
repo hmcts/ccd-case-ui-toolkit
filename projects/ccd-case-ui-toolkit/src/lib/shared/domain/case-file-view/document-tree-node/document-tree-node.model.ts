@@ -82,13 +82,12 @@ export class DocumentTreeNode {
       flattenedNodes.push(nodeChild);
 
       if (nodeChild.children?.length > 0) {
-        // flattenedNodes.push(nodeChild);
         nodeChild.children.forEach((child) => {
-            flattenedNodes.push(flattenChildren(child));
+            flattenedNodes.push(...flattenChildren(child));
         });
       }
 
-      return flattenedNodes.flat();
+      return flattenedNodes;
     };
 
     return [
