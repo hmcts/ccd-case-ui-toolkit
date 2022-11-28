@@ -271,7 +271,10 @@ export class FieldsPurger {
           // Field control should be a FormArray, so map each of its values to null
           // NOTE: The FormArray cannot just be set to an empty array because Angular checks that all existing values
           // of a FormArray are present; setting the control's value to an empty array causes a runtime error
-          fieldControl.setValue(fieldControl.value.map(() => null));
+          if (fieldControl.value) {
+            // Need to allow for field values that are objects, not just primitives
+            fieldControl.setValue(this.mapArrayValuesToNull(fieldControl.value));
+          }
           break;
         case 'Document':
           // NOTE: The field control (a FormGroup in this case) cannot just be set to null because Angular checks that
@@ -291,5 +294,19 @@ export class FieldsPurger {
           fieldControl.setValue(null);
       }
     }
+  }
+
+  /**
+   * Maps all values of an array to `null`, retaining keys for any values that are objects. For example,
+   * `[{ id: '0', value: 'Test' }, 'Test']` would become `[{ id: null, value: null }, null]`.
+   * @param array The array of values to map
+   * @returns A new array with the mapped values
+   */
+  public mapArrayValuesToNull(array: any[]): any[] {
+    return array.map(element => {
+      return typeof element === 'object'
+        ? Object.assign({}, ...Object.keys(element).map(k => ({ [k]: null })))
+        : null;
+    });
   }
 }
