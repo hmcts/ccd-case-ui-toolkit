@@ -1,5 +1,5 @@
 import { plainToClass } from 'class-transformer';
-import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../domain/case-file-view/document-tree-node.model';
+import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../domain/case-file-view';
 
 export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
   {
@@ -23,15 +23,15 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
       },
       {
         name: 'Lager encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Beers encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Ale encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
     ]
   },
@@ -65,7 +65,7 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
             children: [
               {
                 name: 'Highland 1',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: []
               }
             ]
@@ -80,7 +80,7 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
                 children: [
                   {
                     name: 'Details about Whisky Lowland 1',
-                    type: 'document'
+                    type: DocumentTreeNodeType.DOCUMENT
                   }
                 ]
               },
@@ -97,11 +97,11 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
             children: [
               {
                 name: 'Details about Whisky Islay',
-                type: 'document'
+                type: DocumentTreeNodeType.DOCUMENT
               },
               {
                 name: 'More information about Whisky Islay',
-                type: 'document'
+                type: DocumentTreeNodeType.DOCUMENT
               }
             ]
           },
@@ -123,15 +123,15 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
 
 export const uncategorisedTreeData: DocumentTreeNode = plainToClass(DocumentTreeNode, {
   name: 'Uncategorised documents',
-  type: 'category',
+  type: DocumentTreeNodeType.FOLDER,
   children: [
     {
       name: 'Uncategorised document 1',
-      type: 'document'
+      type: DocumentTreeNodeType.DOCUMENT
     },
     {
       name: 'Uncategorised document 2',
-      type: 'document'
+      type: DocumentTreeNodeType.DOCUMENT
     }
   ]
 });
@@ -258,144 +258,24 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
         ]
       }
     ]
+  },
+  {
+    name: 'Uncategorised documents',
+    type: DocumentTreeNodeType.FOLDER,
+    children: [
+      {
+        name: 'Uncategorised document 1',
+        type: DocumentTreeNodeType.DOCUMENT
+      },
+      {
+        name: 'Uncategorised document 2',
+        type: DocumentTreeNodeType.DOCUMENT
+      }
+    ]
   }
 ]);
 
 export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
-  {
-    name: 'Beers',
-    type: 'category',
-    children: [
-      {
-        name: 'Bitters',
-        type: 'category',
-        children: []
-      },
-      {
-        name: 'American',
-        type: 'category',
-        children: []
-      },
-      {
-        name: 'Asian',
-        type: 'category',
-        children: []
-      },
-      {
-        name: 'Lager encyclopedia',
-        type: 'document'
-      },
-      {
-        name: 'Beers encyclopedia',
-        type: 'document'
-      },
-      {
-        name: 'Ale encyclopedia',
-        type: 'document'
-      },
-    ]
-  },
-  {
-    name: 'Wines',
-    type: 'category',
-    children: [
-      {
-        name: 'French',
-        type: 'category',
-        children: []
-      },
-      {
-        name: 'Italian',
-        type: 'category',
-        children: []
-      }
-    ]
-  },
-  {
-    name: 'Spirits',
-    type: 'category',
-    children: [
-      {
-        name: 'Scotch whisky',
-        type: 'category',
-        children: [
-          {
-            name: 'Highland',
-            type: 'category',
-            children: [
-              {
-                name: 'Highland 1',
-                type: 'category',
-                children: []
-              }
-            ]
-          },
-          {
-            name: 'Lowland',
-            type: 'category',
-            children: [
-              {
-                name: 'Lowland 1',
-                type: 'category',
-                children: [
-                  {
-                    name: 'Details about Whisky Lowland 1',
-                    type: 'document'
-                  }
-                ]
-              },
-              {
-                name: 'Lowland 2',
-                type: 'category',
-                children: []
-              }
-            ]
-          },
-          {
-            name: 'Islay',
-            type: 'category',
-            children: [
-              {
-                name: 'More information about Whisky Islay',
-                type: 'document'
-              },
-              {
-                name: 'Details about Whisky Islay',
-                type: 'document'
-              },
-            ]
-          },
-          {
-            name: 'Speyside',
-            type: 'category',
-            children: []
-          },
-          {
-            name: 'Campbeltown',
-            type: 'category',
-            children: []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Uncategorised documents',
-    type: 'category',
-    children: [
-      {
-        name: 'Uncategorised document 2',
-        type: 'document'
-      },
-      {
-        name: 'Uncategorised document 1',
-        type: 'document'
-      }
-    ]
-  }
-]);
-
-export const treeDataWithUncategorisedDocuments: DocumentTreeNode[] = [
   {
     name: 'Beers',
     type: DocumentTreeNodeType.FOLDER,
@@ -416,9 +296,17 @@ export const treeDataWithUncategorisedDocuments: DocumentTreeNode[] = [
         children: []
       },
       {
+        name: 'Lager encyclopedia',
+        type: DocumentTreeNodeType.DOCUMENT
+      },
+      {
         name: 'Beers encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT
-      }
+      },
+      {
+        name: 'Ale encyclopedia',
+        type: DocumentTreeNodeType.DOCUMENT
+      },
     ]
   },
   {
@@ -482,13 +370,13 @@ export const treeDataWithUncategorisedDocuments: DocumentTreeNode[] = [
             type: DocumentTreeNodeType.FOLDER,
             children: [
               {
-                name: 'Details about Whisky Islay',
+                name: 'More information about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT
               },
               {
-                name: 'More information about Whisky Islay',
+                name: 'Details about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT
-              }
+              },
             ]
           },
           {
@@ -510,13 +398,13 @@ export const treeDataWithUncategorisedDocuments: DocumentTreeNode[] = [
     type: DocumentTreeNodeType.FOLDER,
     children: [
       {
-        name: 'Uncategorised document 1',
+        name: 'Uncategorised document 2',
         type: DocumentTreeNodeType.DOCUMENT
       },
       {
-        name: 'Uncategorised document 2',
+        name: 'Uncategorised document 1',
         type: DocumentTreeNodeType.DOCUMENT
       }
     ]
   }
-];
+]);

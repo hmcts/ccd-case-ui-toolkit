@@ -51,7 +51,7 @@ describe('CaseFileViewFolderComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
-    expect(component.documentTreeData).toEqual(treeDataWithUncategorisedDocuments);
+    expect(component.documentTreeData).toEqual(treeData);
   });
 
   it('should generate tree data from categorised data', () => {
@@ -122,9 +122,9 @@ describe('CaseFileViewFolderComponent', () => {
   it('should display correct folder icons', () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
-    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
-    const firstNodeButton = documentTreeContainerEl.querySelector('.node-button');
-    const iconEl = firstNodeButton.querySelector('.icon');
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
+    const firstNodeButton = documentTreeContainerEl.querySelector('.node');
+    const iconEl = firstNodeButton.querySelector('.node__iconImg');
     expect(iconEl.getAttribute('src')).toEqual('/assets/images/folder.png');
     firstNodeButton.click();
     fixture.detectChanges();
@@ -132,7 +132,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should filter documents', () => {
-    const filteredTreeData: DocumentTreeNode[] = [
+    const filteredTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
         name: 'Spirits',
         type: DocumentTreeNodeType.FOLDER,
@@ -175,7 +175,7 @@ describe('CaseFileViewFolderComponent', () => {
           }
         ]
       }
-    ];
+    ]);
     component.documentTreeData = filteredTreeData;
     component.documentSearchFormControl.setValue('abo');
     component.filter('abo').subscribe(result => {
@@ -184,7 +184,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should filter documents no match', () => {
-    const filteredTreeData: DocumentTreeNode[] = [
+    const filteredTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
         name: 'Spirits',
         type: DocumentTreeNodeType.FOLDER,
@@ -227,7 +227,7 @@ describe('CaseFileViewFolderComponent', () => {
           }
         ]
       }
-    ];
+    ]);
     component.documentTreeData = filteredTreeData;
     component.documentSearchFormControl.setValue('some random text');
     component.filter('some random text').subscribe(result => {
@@ -245,7 +245,7 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl.textContent).toContain('Beers encyclopedia');
   });
 
@@ -259,7 +259,7 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl.textContent).toContain('No results found');
   });
 
