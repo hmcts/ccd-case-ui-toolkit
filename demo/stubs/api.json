@@ -3615,6 +3615,17 @@
         "show_summary_change_option": true
       },
       {
+        "id": "CaseFlagTest",
+        "label": "Case Flag Test",
+        "hidden": false,
+        "hint_text": null,
+        "field_type": {
+          "id": "CaseFlag",
+          "type": "CaseFlag"
+        },
+        "show_summary_change_option": true
+      },
+      {
         "id": "PersonSecondAddress",
         "label": "Second Address",
         "hidden": null,
@@ -3784,8 +3795,12 @@
             "order": 2
           },
           {
-            "case_field_id": "PersonSecondAddress",
+            "case_field_id": "CaseFlagTest",
             "order": 3
+          },
+          {
+            "case_field_id": "PersonSecondAddress",
+            "order": 4
           }
         ]
       },

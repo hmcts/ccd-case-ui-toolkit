@@ -1,0 +1,49 @@
+<!-- Error message summary -->
+<div *ngIf="errorMessages.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+  <h2 class="govuk-error-summary__title" id="error-summary-title">
+    There is a problem
+  </h2>
+  <div *ngFor="let errorMessage of errorMessages" class="govuk-error-summary__body">
+    <ul class="govuk-list govuk-error-summary__list">
+      <li>
+        <a (click)="navigateToErrorElement(errorMessage.fieldId)" class="validation-error">{{errorMessage.description}}</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div *ngIf="!isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
+  <div class="govuk-form-group" [ngSwitch]="fieldState">
+    <div id="create-flag-caption" class="govuk-caption-l" [ngClass]="{'form-group-error': errorMessages.length > 0}">
+      {{createFlagCaption}}
+    </div>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
+      <ccd-select-flag-location [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-location>
+    </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
+      <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup" [jurisdiction]="jurisdiction"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
+        (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"></ccd-select-flag-type>
+    </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">
+      <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup" [languages]="listOfValues" [flagCode]="flagCode"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
+    </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
+      <ccd-add-comments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-add-comments>
+    </ng-container>
+  </div>
+</div>
+<div *ngIf="isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
+  <div class="govuk-form-group" [ngSwitch]="fieldState">
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS">
+      <ccd-manage-case-flags [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData" [caseTitle]="caseTitle"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-manage-case-flags>
+    </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_UPDATE">
+      <ccd-update-flag [formGroup]="caseFlagParentFormGroup" [selectedFlag]="selectedFlag"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-update-flag>
+    </ng-container>
+  </div>
+</div>

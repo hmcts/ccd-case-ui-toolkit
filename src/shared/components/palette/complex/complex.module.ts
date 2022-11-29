@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-
 import { ConditionalShowModule } from '../../../directives/conditional-show';
 import { MarkdownModule } from '../../markdown';
 import { BaseFieldModule } from '../base-field';
