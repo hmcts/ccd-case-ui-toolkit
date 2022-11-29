@@ -4,9 +4,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
 import {
-  CaseFileViewDocument, DocumentTreeNode, DocumentTreeNodeType
+  DocumentTreeNode, DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
-import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
+import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
   categorisedTreeData,
   treeData,
@@ -36,7 +36,7 @@ describe('CaseFileViewFolderComponent', () => {
 
     fixture = TestBed.createComponent(CaseFileViewFolderComponent);
     component = fixture.componentInstance;
-    component.categoriesAndDocuments = of(categoriesAndDocuments);
+    component.categoriesAndDocuments = of(categoriesAndDocumentsTestData);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   }));
@@ -55,11 +55,11 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should generate tree data from categorised data', () => {
-    expect(component.generateTreeData(categoriesAndDocuments.categories)).toEqual(categorisedTreeData);
+    expect(component.generateTreeData(categoriesAndDocumentsTestData.categories)).toEqual(categorisedTreeData);
   });
 
   it('should get documents from category', () => {
-    const documents = categoriesAndDocuments.categories[0].documents;
+    const documents = categoriesAndDocumentsTestData.categories[0].documents;
     const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
         name: 'Lager encyclopedia',
@@ -78,7 +78,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should get uncategorised documents', () => {
-    expect(component.getUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents)).toEqual(uncategorisedTreeData);
+    expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
   });
 
   it('should render cdk nested tree', () => {
@@ -270,5 +270,9 @@ describe('CaseFileViewFolderComponent', () => {
     component.ngOnDestroy();
     expect(component.categoriesAndDocumentsSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.documentFilterSubscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it ('should get all document count as get documentCount', () => {
+    expect(component.documentCount).toEqual(8);
   });
 });

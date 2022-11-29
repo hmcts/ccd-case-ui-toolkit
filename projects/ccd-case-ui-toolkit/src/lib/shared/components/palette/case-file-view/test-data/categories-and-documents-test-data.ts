@@ -1,6 +1,6 @@
-import { CategoriesAndDocuments } from '../../../../domain/case-file-view/categories-and-documents.model';
+import { CategoriesAndDocuments } from '../../../../domain/case-file-view';
 
-export const categoriesAndDocuments: CategoriesAndDocuments = {
+export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
   case_version: 1,
   categories: [
     {
