@@ -1,4 +1,5 @@
 import { plainToClass } from 'class-transformer';
+import { DocumentTreeNodeType } from './document-tree-node-type.model';
 import { DocumentTreeNode } from './document-tree-node.model';
 
 describe('DocumentTreeNodeModel', () => {
@@ -7,28 +8,28 @@ describe('DocumentTreeNodeModel', () => {
   beforeEach(() => {
     documentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Category A',
-      type: 'category',
+      type: DocumentTreeNodeType.FOLDER,
       children: [
         {
-          name: 'Category B', type: 'category', children: [
+          name: 'Category B', type: DocumentTreeNodeType.FOLDER, children: [
             {name: 'Document E', type: 'document'},
             {name: 'Document G', type: 'document'},
             {name: 'Document F', type: 'document'},
           ]
         },
-        {name: 'Category C', type: 'category'},
         {
-          name: 'Category D', type: 'category', children: [
-            {name: 'Document J', type: 'document'},
-            {name: 'Document I', type: 'document'},
-            {name: 'Document H', type: 'document'},
-            {name: 'Document K', type: 'document'},
+          name: 'Category D', type: DocumentTreeNodeType.FOLDER, children: [
+            {name: 'Document J', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document I', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document H', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document K', type: DocumentTreeNodeType.DOCUMENT},
           ]
         },
-        {name: 'Document C', type: 'document'},
-        {name: 'Document B', type: 'document'},
-        {name: 'Document A', type: 'document'},
-        {name: 'Document D', type: 'document'},
+        {name: 'Category C', type: DocumentTreeNodeType.FOLDER},
+        {name: 'Document C', type: DocumentTreeNodeType.DOCUMENT},
+        {name: 'Document B', type: DocumentTreeNodeType.DOCUMENT},
+        {name: 'Document A', type: DocumentTreeNodeType.DOCUMENT},
+        {name: 'Document D', type: DocumentTreeNodeType.DOCUMENT},
       ]
     });
   });
@@ -41,28 +42,28 @@ describe('DocumentTreeNodeModel', () => {
     documentTreeNode.sortChildrenAscending();
     const manuallySortedAscDocumentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Category A',
-      type: 'category',
+      type: DocumentTreeNodeType.FOLDER,
       children: [
         {
-          name: 'Category B', type: 'category', children: [
-            {name: 'Document E', type: 'document'},
-            {name: 'Document F', type: 'document'},
-            {name: 'Document G', type: 'document'},
+          name: 'Category B', type: DocumentTreeNodeType.FOLDER, children: [
+            {name: 'Document E', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document F', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document G', type: DocumentTreeNodeType.DOCUMENT},
           ]
         },
-        {name: 'Category C', type: 'category'},
         {
-          name: 'Category D', type: 'category', children: [
-            {name: 'Document H', type: 'document'},
-            {name: 'Document I', type: 'document'},
-            {name: 'Document J', type: 'document'},
-            {name: 'Document K', type: 'document'},
+          name: 'Category D', type: DocumentTreeNodeType.FOLDER, children: [
+            {name: 'Document H', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document I', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document J', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document K', type: DocumentTreeNodeType.DOCUMENT},
           ]
         },
-        {name: 'Document A', type: 'document'},
-        {name: 'Document B', type: 'document'},
-        {name: 'Document C', type: 'document'},
-        {name: 'Document D', type: 'document'},
+        {name: 'Category C', type: DocumentTreeNodeType.FOLDER},
+        {name: 'Document A', type: DocumentTreeNodeType.DOCUMENT},
+        {name: 'Document B', type: DocumentTreeNodeType.DOCUMENT},
+        {name: 'Document C', type: DocumentTreeNodeType.DOCUMENT},
+        {name: 'Document D', type: DocumentTreeNodeType.DOCUMENT},
       ]
     });
 
@@ -73,28 +74,28 @@ describe('DocumentTreeNodeModel', () => {
     documentTreeNode.sortChildrenDescending();
     const manuallySortedDescDocumentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Category A',
-      type: 'category',
+      type: DocumentTreeNodeType.FOLDER,
       children: [
         {
-          name: 'Category B', type: 'category', children: [
-            {name: 'Document G', type: 'document'},
-            {name: 'Document F', type: 'document'},
-            {name: 'Document E', type: 'document'},
+          name: 'Category B', type: DocumentTreeNodeType.FOLDER, children: [
+            {name: 'Document G', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document F', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document E', type: DocumentTreeNodeType.DOCUMENT},
           ]
         },
-        {name: 'Category C', type: 'category'},
         {
-          name: 'Category D', type: 'category', children: [
-            {name: 'Document K', type: 'document'},
-            {name: 'Document J', type: 'document'},
-            {name: 'Document I', type: 'document'},
-            {name: 'Document H', type: 'document'},
+          name: 'Category D', type: DocumentTreeNodeType.FOLDER, children: [
+            {name: 'Document K', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document J', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document I', type: DocumentTreeNodeType.DOCUMENT},
+            {name: 'Document H', type: DocumentTreeNodeType.DOCUMENT},
           ]
         },
-        {name: 'Document D', type: 'document'},
-        {name: 'Document C', type: 'document'},
-        {name: 'Document B', type: 'document'},
-        {name: 'Document A', type: 'document'},
+        {name: 'Category C', type: DocumentTreeNodeType.FOLDER},
+        {name: 'Document D', type: DocumentTreeNodeType.DOCUMENT},
+        {name: 'Document C', type: DocumentTreeNodeType.DOCUMENT},
+        {name: 'Document B', type: DocumentTreeNodeType.DOCUMENT},
+        {name: 'Document A', type: DocumentTreeNodeType.DOCUMENT},
       ]
     });
 

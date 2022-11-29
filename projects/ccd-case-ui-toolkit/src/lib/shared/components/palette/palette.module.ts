@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
 import { HeadersModule, TabsModule } from '../../../components';
@@ -24,11 +25,11 @@ import { FormValidatorsService } from '../../services/form/form-validators.servi
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
+import { CaseFileViewOverlayMenuComponent } from './case-file-view';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
-import { CaseFileViewOverlayMenuComponent } from './case-file-view/components/shared/case-file-view-overlay-menu/case-file-view-overlay-menu.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -147,36 +148,37 @@ const PALETTE_COMPONENTS = [
     CaseFileViewFolderComponent,
     CaseFileViewFolderSortComponent,
     CaseFileViewOverlayMenuComponent,
-    CaseFileViewFolderDocumentActionsComponent,
+    CaseFileViewFolderDocumentActionsComponent
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        ReactiveFormsModule,
-        PaletteUtilsModule,
-        PipesModule,
-        BannersModule,
-        HeadersModule,
-        FootersModule,
-        BodyModule,
-        FormModule,
-        TabsModule,
-        LabelSubstitutorModule,
-        NgxMdModule,
-        NgxMatDatetimePickerModule,
-        NgxMatTimepickerModule,
-        NgxMatNativeDateModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatAutocompleteModule,
-        CdkTreeModule,
-        OverlayModule,
-        PaymentLibModule,
-        ScrollToModule.forRoot()
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    PaletteUtilsModule,
+    PipesModule,
+    BannersModule,
+    HeadersModule,
+    FootersModule,
+    BodyModule,
+    FormModule,
+    TabsModule,
+    LabelSubstitutorModule,
+    NgxMdModule,
+    NgxMatDatetimePickerModule,
+    NgxMatTimepickerModule,
+    NgxMatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatAutocompleteModule,
+    CdkTreeModule,
+    OverlayModule,
+    PaymentLibModule,
+    ScrollToModule.forRoot(),
+    MediaViewerModule
   ],
   declarations: [
     FixedListPipe,
@@ -185,7 +187,7 @@ const PALETTE_COMPONENTS = [
     DynamicRadioListPipe,
     DocumentUrlPipe,
 
-    ...PALETTE_COMPONENTS
+    ...PALETTE_COMPONENTS,
   ],
   exports: [
     NgxMatDatetimePickerModule,

@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CategoriesAndDocuments } from '../../../domain/case-file-view';
 import { CaseFileViewService } from '../../../services';
@@ -13,6 +13,8 @@ import { CaseFileViewService } from '../../../services';
 export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
   public static readonly PARAM_CASE_ID = 'cid';
   public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
+  public categoriesAndDocumentsSubscription: Subscription;
+  public getCategoriesAndDocumentsError = false;
 
   constructor(private readonly elementRef: ElementRef,
               private readonly route: ActivatedRoute,
@@ -22,6 +24,10 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
     this.categoriesAndDocuments$ = this.caseFileViewService.getCategoriesAndDocuments(cid);
+    this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments$.subscribe({
+      next: _ => {},
+      error: _ => this.getCategoriesAndDocumentsError = true
+    });
   }
 
   public ngAfterViewInit(): void {
@@ -52,5 +58,11 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
       const calculatedWidth = ((pos.documentTreeContainerWidth + pos.dx) * 100) / slider.parentElement.getBoundingClientRect().width;
       documentTreeContainer.setAttribute('style', `width: ${calculatedWidth}%`);
     });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.categoriesAndDocumentsSubscription) {
+      this.categoriesAndDocumentsSubscription.unsubscribe();
+    }
   }
 }

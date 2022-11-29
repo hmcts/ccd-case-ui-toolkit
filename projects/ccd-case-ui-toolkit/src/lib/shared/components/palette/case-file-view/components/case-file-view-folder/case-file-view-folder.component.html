@@ -1,11 +1,11 @@
 <div class="document-filter-container">
   <div class="form-group document-filter" [formGroup]="documentFilterFormGroup">
     <input class="form-control document-search"
-           type="search"
-           id="document-search"
-           name="documentSearchFormControl"
-           formControlName="documentSearchFormControl"
-           placeholder="Search by document name">
+      type="search"
+      id="document-search"
+      name="documentSearchFormControl"
+      formControlName="documentSearchFormControl"
+      placeholder="Search by document name">
   </div>
 </div>
 
@@ -19,33 +19,33 @@
   </div>
 </div>
 
-<div class="document-tree" *ngIf="documentTreeData">
+<div class="document-tree-container" *ngIf="documentTreeData">
   <div *ngIf="!nestedDataSource || nestedDataSource.length === 0">
     No results found
   </div>
-
   <div>
     <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
       <!-- document -->
-      <cdk-nested-tree-node class="document-tree__node" *cdkTreeNodeDef="let node">
-        <button class="node">
-          <div class="node__icon" mat-icon-button disabled>
-            <img class="node__iconImg" src="/assets/images/document.png" alt="Document icon">
-          </div>
-          <span class="node__name node-name-document">{{node.name}}</span>
-          <div class="node__document-options">
-            <ccd-case-file-view-folder-document-actions
-              (changeFolderAction)="triggerDocumentAction('changeFolder', node)"
-              (openInANewTabAction)="triggerDocumentAction('openInANewTab', node)"
-              (downloadAction)="triggerDocumentAction('download', node)"
-              (printAction)="triggerDocumentAction('print', node)">
-            </ccd-case-file-view-folder-document-actions>
-          </div>
-        </button>
+      <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="document-tree-node">
+        <div class="node">
+          <button class="node-button" mat-icon-button>
+            <div class="node__icon" mat-icon-button disabled>
+              <img src="/assets/images/document.png" class="node__iconImg" alt="Document icon">
+            </div>
+            <span class="node__name node-name-document">{{node.name}}</span>
+            <div class="node__document-options">
+              <ccd-case-file-view-folder-document-actions
+                (changeFolderAction)="triggerDocumentAction('changeFolder', node)"
+                (openInANewTabAction)="triggerDocumentAction('openInANewTab', node)"
+                (downloadAction)="triggerDocumentAction('download', node)"
+                (printAction)="triggerDocumentAction('print', node)">
+              </ccd-case-file-view-folder-document-actions>
+            </div>
+          </button>
+        </div>
       </cdk-nested-tree-node>
-
       <!-- folder-->
-      <cdk-nested-tree-node class="document-tree__node" *cdkTreeNodeDef="let node; when: nestedChildren">
+      <cdk-nested-tree-node class="document-tree-node" *cdkTreeNodeDef="let node; when: nestedChildren">
         <button class="node" cdkTreeNodeToggle>
           <div class="node__icon" mat-icon-button [attr.aria-label]="'toggle ' + node.name" >
             <img class="node__iconImg" [src]="nestedTreeControl.isExpanded(node) ? '/assets/images/folder-open.png' : '/assets/images/folder.png'" alt="Folder icon">
@@ -53,6 +53,7 @@
           </div>
           <span class="node__name node__name--folder">{{node.name}}</span>
         </button>
+
         <div [class.document-tree-invisible]="!nestedTreeControl.isExpanded(node)">
           <ng-container cdkTreeNodeOutlet></ng-container>
         </div>
@@ -60,4 +61,3 @@
     </cdk-tree>
   </div>
 </div>
-

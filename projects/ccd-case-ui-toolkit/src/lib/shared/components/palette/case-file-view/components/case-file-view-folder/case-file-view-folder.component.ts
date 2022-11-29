@@ -30,6 +30,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public nestedDataSource: DocumentTreeNode[];
   public categories: CaseFileViewCategory[] = [];
   public categoriesAndDocumentsSubscription: Subscription;
+
   public documentFilterFormGroup: FormGroup;
   public documentSearchFormControl: FormControl;
   public documentTreeData: DocumentTreeNode[];
@@ -77,7 +78,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
       // Initialise cdk tree with generated data
       this.nestedDataSource = this.documentTreeData;
-      // this.nestedTreeControl.dataNodes = this.documentTreeData;
+      this.nestedTreeControl.dataNodes = this.documentTreeData;
     });
   }
 
@@ -85,7 +86,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return categories.reduce((tree, node) => {
       const newDocumentTreeNode = new DocumentTreeNode();
       newDocumentTreeNode.name = node.category_name;
-      newDocumentTreeNode.type = DocumentTreeNodeType.FOLDER;
+      newDocumentTreeNode.type =  DocumentTreeNodeType.FOLDER;
       newDocumentTreeNode.children = [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)];
 
       return [
@@ -133,17 +134,12 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public sortDataSourceAscAlphabetically() {
     const sortedData = this.nestedDataSource.map(item => {
       item.sortChildrenAscending();
-
-      const newDocumentTreeNode = new DocumentTreeNode();
-      newDocumentTreeNode.name = item.name;
-      newDocumentTreeNode.type = item.type;
-      newDocumentTreeNode.children = item.children;
-
-      return newDocumentTreeNode;
+      return item;
     });
 
     this.updateNodeData(sortedData);
   }
+
   public sortDataSourceDescAlphabetically() {
     const sortedData = this.nestedDataSource.map(item => {
       item.sortChildrenDescending();
@@ -156,8 +152,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public filter(searchTerm: string): Observable<DocumentTreeNode[]> {
     // Make a copy of the data so we do not mutate the original
     function copy(node: DocumentTreeNode) {
-      const documentTree = new DocumentTreeNode();
-      return Object.assign(documentTree, node);
+      const documentTreeNode = new DocumentTreeNode();
+      return Object.assign(documentTreeNode, node);
     }
 
     let filteredData = this.documentTreeData;
@@ -188,7 +184,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
           this.documentManagementService.getMediaViewerInfo({
             document_binary_url: documentTreeNode.document_binary_url,
             document_filename: documentTreeNode.document_filename
-        }));
+          }));
 
         this.windowService.openOnNewTab(
           this.router.createUrlTree(['/media-viewer'])?.toString()
@@ -202,15 +198,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         break;
       default:
         return;
-    }
-  }
-
-  public ngOnDestroy(): void {
-    if (this.categoriesAndDocumentsSubscription) {
-      this.categoriesAndDocumentsSubscription.unsubscribe();
-    }
-    if (this.documentFilterSubscription) {
-      this.documentFilterSubscription.unsubscribe();
     }
   }
 
@@ -237,5 +224,10 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       return prevSelected.includes(item.name);
     });
     newObjects.forEach(object => this.nestedTreeControl.expand(object));
+  }
+
+  public ngOnDestroy(): void {
+    this.categoriesAndDocumentsSubscription?.unsubscribe();
+    this.documentFilterSubscription?.unsubscribe();
   }
 }

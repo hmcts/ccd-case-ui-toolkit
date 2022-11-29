@@ -1,4 +1,5 @@
 import { Expose, Type } from 'class-transformer';
+import { DocumentTreeNodeType } from './document-tree-node-type.model';
 
 export class DocumentTreeNode {
   public name: string;
@@ -29,10 +30,10 @@ export class DocumentTreeNode {
   public sortChildrenAscending() {
     const sortAscending = () => {
       return (a, b) => {
-        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
 
-        if (a.type === 'category' || b.type === 'category') {
+        if (a.type === DocumentTreeNodeType.FOLDER || b.type === DocumentTreeNodeType.FOLDER) {
           return 0;
         }
 
@@ -55,10 +56,10 @@ export class DocumentTreeNode {
   public sortChildrenDescending() {
     const sortDescending = () => {
       return (a, b) => {
-        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
 
-        if (a.type === 'category' || b.type === 'category') {
+        if (a.type === DocumentTreeNodeType.FOLDER || b.type === DocumentTreeNodeType.FOLDER) {
           return 0;
         }
 
@@ -84,13 +85,12 @@ export class DocumentTreeNode {
       flattenedNodes.push(nodeChild);
 
       if (nodeChild.children?.length > 0) {
-        // flattenedNodes.push(nodeChild);
         nodeChild.children.forEach((child) => {
-            flattenedNodes.push(flattenChildren(child));
+            flattenedNodes.push(...flattenChildren(child));
         });
       }
 
-      return flattenedNodes.flat();
+      return flattenedNodes;
     };
 
     return [
@@ -100,9 +100,4 @@ export class DocumentTreeNode {
       }).flat()
     ];
   }
-}
-
-export enum DocumentTreeNodeType {
-  FOLDER = 'folder',
-  DOCUMENT = 'document',
 }

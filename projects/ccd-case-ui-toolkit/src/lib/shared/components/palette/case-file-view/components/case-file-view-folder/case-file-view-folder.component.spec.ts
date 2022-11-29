@@ -2,17 +2,22 @@ import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import createSpyObj = jasmine.createSpyObj;
 import { plainToClass } from 'class-transformer';
+import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
 import {
-  CaseFileViewDocument,
   DocumentTreeNode,
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
-import { treeData, treeDataWithUncategorisedDocuments } from '../../test-data/document-tree-node-test-data';
+import {
+  categorisedTreeData,
+  treeData,
+  treeDataSortedAlphabeticallyAsc,
+  treeDataSortedAlphabeticallyDesc,
+  uncategorisedTreeData
+} from '../../test-data/document-tree-node-test-data';
 import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 
 describe('CaseFileViewFolderComponent', () => {
@@ -67,11 +72,11 @@ describe('CaseFileViewFolderComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
-    expect(component.documentTreeData).toEqual(treeDataWithUncategorisedDocuments);
+    expect(component.documentTreeData).toEqual(treeData);
   });
 
-  it('should generate tree data', () => {
-    expect(component.generateTreeData(categoriesAndDocuments.categories)).toEqual(treeData);
+  it('should generate tree data from categorised data', () => {
+    expect(component.generateTreeData(categoriesAndDocuments.categories)).toEqual(categorisedTreeData);
   });
 
   it('should get documents from category', () => {
@@ -101,70 +106,45 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should get uncategorised documents', () => {
-    const uncategorisedDocuments: CaseFileViewDocument[] = [
-      {
-        document_url: '/uncategorised-document-1',
-        document_filename: 'Uncategorised document 1',
-        document_binary_url: '/test/binary',
-        attribute_path: '',
-        upload_timestamp: ''
-      },
-      {
-        document_url: '/uncategorised-document-2',
-        document_filename: 'Uncategorised document 2',
-        document_binary_url: '/test/binary',
-        attribute_path: '',
-        upload_timestamp: ''
-      }
-    ];
-    const uncategorisedDocumentsTreeNode: DocumentTreeNode = plainToClass(DocumentTreeNode, {
-      name: 'Uncategorised documents',
-      type: DocumentTreeNodeType.FOLDER,
-      children: [
-        {
-          name: 'Uncategorised document 1',
-          type: DocumentTreeNodeType.DOCUMENT,
-          document_filename: 'Uncategorised document 1',
-          document_binary_url: '/test/binary',
-        },
-        {
-          name: 'Uncategorised document 2',
-          type: DocumentTreeNodeType.DOCUMENT,
-          document_filename: 'Uncategorised document 2',
-          document_binary_url: '/test/binary',
-        }
-      ]
-    });
-    expect(component.getUncategorisedDocuments(uncategorisedDocuments)).toEqual(uncategorisedDocumentsTreeNode);
+    expect(component.getUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents)).toEqual(uncategorisedTreeData);
   });
 
   it('should render cdk nested tree', () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
-    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl).toBeDefined();
   });
 
   it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
     const sortChildrenAscendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-      sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending'));
+      sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending').and.callThrough());
     });
+
     component.sortDataSourceAscAlphabetically();
+    fixture.detectChanges();
+
     sortChildrenAscendingSpies.forEach((item) => {
       expect(item).toHaveBeenCalled();
     });
+
+    expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyAsc);
   });
 
   it('should call sortChildrenDescending on all children of nestedDataSource when calling sortDataSourceDescAlphabetically', () => {
     const sortChildrenDescendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-      sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending'));
+      sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending').and.callThrough());
     });
     component.sortDataSourceDescAlphabetically();
+    fixture.detectChanges();
+
     sortChildrenDescendingSpies.forEach((item) => {
       expect(item).toHaveBeenCalled();
     });
+
+    expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyDesc);
   });
 
   it('should set mediaViewer localStorage' +
@@ -189,7 +169,7 @@ describe('CaseFileViewFolderComponent', () => {
   it('should display correct folder icons', () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
-    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     const firstNodeButton = documentTreeContainerEl.querySelector('.node');
     const iconEl = firstNodeButton.querySelector('.node__iconImg');
     expect(iconEl.getAttribute('src')).toEqual('/assets/images/folder.png');
@@ -312,7 +292,7 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl.textContent).toContain('Beers encyclopedia');
   });
 
@@ -326,7 +306,7 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const documentTreeContainerEl = nativeElement.querySelector('.document-tree');
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl.textContent).toContain('No results found');
   });
 
