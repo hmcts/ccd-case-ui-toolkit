@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
-### Version 4.20.26-linked-cases-private-law-integration
-Linked cases private law integration
+### Version 4.20.27-linked-cases-private-law-integration
+**EUI-7219** Linked cases private law integration
 
 ### Version 6.10.0-rc4
 **EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
