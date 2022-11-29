@@ -1,8 +1,9 @@
 import { CdkTree, NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { DocumentTreeNode } from '../../../../../domain/case-file-view/document-tree-node/document-tree-node.model';
 import { Observable, of, Subscription } from 'rxjs';
-import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../../../domain/case-file-view';
+import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments } from '../../../../../domain/case-file-view';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 
 @Component({
@@ -100,15 +101,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       newDocumentTreeNode.children = item.children;
 
       return newDocumentTreeNode;
-    });
-
-    this.updateNodeData(sortedData);
-  }
-  
-  public sortDataSourceDescAlphabetically() {
-    const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending();
-      return item;
     });
 
     this.updateNodeData(sortedData);

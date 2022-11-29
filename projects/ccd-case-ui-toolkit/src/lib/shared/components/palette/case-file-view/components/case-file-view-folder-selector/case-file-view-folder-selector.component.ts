@@ -1,10 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { timeStamp } from 'console';
-import { CaseFileViewCategory, CaseFileViewDocument } from 'projects/ccd-case-ui-toolkit/src/lib/shared/domain/case-file-view';
+import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-file-view-category.model';
+import { CaseFileViewDocument } from '../../../../../domain/case-file-view/case-file-view-document.model';
 
 @Component({
-    selector: 'xui-case-file-view-folder-selector'
+    selector: 'xui-case-file-view-folder-selector',
+    templateUrl: './case-file-view-folder-selector.component.html',
+    styleUrls: ['./case-file-view-folder-selector.component.scss']
 })
 export class CaseFileViewFolderSelectorComponent {
 
