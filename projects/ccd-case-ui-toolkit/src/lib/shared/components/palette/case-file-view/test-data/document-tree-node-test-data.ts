@@ -1,118 +1,118 @@
 import { plainToClass } from 'class-transformer';
-import { DocumentTreeNode } from '../../../../domain/case-file-view';
+import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../domain/case-file-view';
 
 export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
   {
     name: 'Beers',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'Bitters',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'American',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'Asian',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'Lager encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Beers encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Ale encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
     ]
   },
   {
     name: 'Wines',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'French',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'Italian',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       }
     ]
   },
   {
     name: 'Spirits',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'Scotch whisky',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: [
           {
             name: 'Highland',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: [
               {
                 name: 'Highland 1',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: []
               }
             ]
           },
           {
             name: 'Lowland',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: [
               {
                 name: 'Lowland 1',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: [
                   {
                     name: 'Details about Whisky Lowland 1',
-                    type: 'document'
+                    type: DocumentTreeNodeType.DOCUMENT
                   }
                 ]
               },
               {
                 name: 'Lowland 2',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: []
               }
             ]
           },
           {
             name: 'Islay',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: [
               {
                 name: 'Details about Whisky Islay',
-                type: 'document'
+                type: DocumentTreeNodeType.DOCUMENT
               },
               {
                 name: 'More information about Whisky Islay',
-                type: 'document'
+                type: DocumentTreeNodeType.DOCUMENT
               }
             ]
           },
           {
             name: 'Speyside',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: []
           },
           {
             name: 'Campbeltown',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: []
           }
         ]
@@ -123,15 +123,15 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
 
 export const uncategorisedTreeData: DocumentTreeNode = plainToClass(DocumentTreeNode, {
   name: 'Uncategorised documents',
-  type: 'category',
+  type: DocumentTreeNodeType.FOLDER,
   children: [
     {
       name: 'Uncategorised document 1',
-      type: 'document'
+      type: DocumentTreeNodeType.DOCUMENT
     },
     {
       name: 'Uncategorised document 2',
-      type: 'document'
+      type: DocumentTreeNodeType.DOCUMENT
     }
   ]
 });
@@ -141,119 +141,118 @@ export const treeData = [
   uncategorisedTreeData
 ];
 
-
 export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
   {
     name: 'Beers',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'Bitters',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'American',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'Asian',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'Ale encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Beers encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Lager encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
     ]
   },
   {
     name: 'Wines',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'French',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'Italian',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       }
     ]
   },
   {
     name: 'Spirits',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'Scotch whisky',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: [
           {
             name: 'Highland',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: [
               {
                 name: 'Highland 1',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: []
               }
             ]
           },
           {
             name: 'Lowland',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: [
               {
                 name: 'Lowland 1',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: [
                   {
                     name: 'Details about Whisky Lowland 1',
-                    type: 'document'
+                    type: DocumentTreeNodeType.DOCUMENT
                   }
                 ]
               },
               {
                 name: 'Lowland 2',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: []
               }
             ]
           },
           {
             name: 'Islay',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: [
               {
                 name: 'Details about Whisky Islay',
-                type: 'document'
+                type: DocumentTreeNodeType.DOCUMENT
               },
               {
                 name: 'More information about Whisky Islay',
-                type: 'document'
+                type: DocumentTreeNodeType.DOCUMENT
               }
             ]
           },
           {
             name: 'Speyside',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: []
           },
           {
             name: 'Campbeltown',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: []
           }
         ]
@@ -262,15 +261,15 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
   },
   {
     name: 'Uncategorised documents',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'Uncategorised document 1',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Uncategorised document 2',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       }
     ]
   }
@@ -279,115 +278,115 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
 export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
   {
     name: 'Beers',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'Bitters',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'American',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'Asian',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'Lager encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Beers encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Ale encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
     ]
   },
   {
     name: 'Wines',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'French',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       },
       {
         name: 'Italian',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: []
       }
     ]
   },
   {
     name: 'Spirits',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'Scotch whisky',
-        type: 'category',
+        type: DocumentTreeNodeType.FOLDER,
         children: [
           {
             name: 'Highland',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: [
               {
                 name: 'Highland 1',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: []
               }
             ]
           },
           {
             name: 'Lowland',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: [
               {
                 name: 'Lowland 1',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: [
                   {
                     name: 'Details about Whisky Lowland 1',
-                    type: 'document'
+                    type: DocumentTreeNodeType.DOCUMENT
                   }
                 ]
               },
               {
                 name: 'Lowland 2',
-                type: 'category',
+                type: DocumentTreeNodeType.FOLDER,
                 children: []
               }
             ]
           },
           {
             name: 'Islay',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: [
               {
                 name: 'More information about Whisky Islay',
-                type: 'document'
+                type: DocumentTreeNodeType.DOCUMENT
               },
               {
                 name: 'Details about Whisky Islay',
-                type: 'document'
+                type: DocumentTreeNodeType.DOCUMENT
               },
             ]
           },
           {
             name: 'Speyside',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: []
           },
           {
             name: 'Campbeltown',
-            type: 'category',
+            type: DocumentTreeNodeType.FOLDER,
             children: []
           }
         ]
@@ -396,15 +395,15 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
   },
   {
     name: 'Uncategorised documents',
-    type: 'category',
+    type: DocumentTreeNodeType.FOLDER,
     children: [
       {
         name: 'Uncategorised document 2',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       },
       {
         name: 'Uncategorised document 1',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       }
     ]
   }

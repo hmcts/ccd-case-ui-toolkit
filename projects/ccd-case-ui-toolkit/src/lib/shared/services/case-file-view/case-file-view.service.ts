@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CategoriesAndDocuments } from '../../domain/case-file-view';
-import { HttpErrorService, HttpService } from '../http';
+import { HttpService } from '../http';
 
 @Injectable()
 export class CaseFileViewService {
   constructor(
     private readonly http: HttpService,
-    private readonly appConfig: AbstractAppConfig,
-    private readonly errorService: HttpErrorService
+    private readonly appConfig: AbstractAppConfig
   ) { }
 
   /**
