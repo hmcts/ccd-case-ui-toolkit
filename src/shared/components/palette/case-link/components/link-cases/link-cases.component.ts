@@ -31,7 +31,6 @@ export class LinkCasesComponent implements OnInit {
   public caseReasonError: string;
   public caseSelectionError: string;
   public noSelectedCaseError: string;
-  public caseName = 'Case name missing';
   private ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(

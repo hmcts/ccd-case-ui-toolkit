@@ -14,6 +14,7 @@ import { LinkedCasesService } from '../../services/linked-cases.service';
 export class UnLinkCasesComponent implements OnInit {
 
   private static readonly LINKED_CASES_TAB_ID = 'linked_cases_sscs';
+	private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
@@ -66,7 +67,7 @@ export class UnLinkCasesComponent implements OnInit {
       caseType: val.caseType,
       caseState: val.caseState,
       caseService: val.caseService,
-      caseName: val.caseName || 'Case name missing',
+      caseName: val.caseName || UnLinkCasesComponent.CASE_NAME_MISSING_TEXT,
       unlink: val.unlink
     }));
     return this.fb.array(formFieldArray);
