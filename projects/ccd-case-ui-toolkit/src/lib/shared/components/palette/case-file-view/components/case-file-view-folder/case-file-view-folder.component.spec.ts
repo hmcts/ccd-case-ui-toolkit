@@ -1,10 +1,10 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
 import {
-  CaseFileViewDocument,
-  DocumentTreeNode
+  CaseFileViewDocument, DocumentTreeNode, DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
 import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
 import {
@@ -21,7 +21,8 @@ describe('CaseFileViewFolderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        CdkTreeModule
+        CdkTreeModule,
+        ReactiveFormsModule
       ],
       declarations: [
         CaseFileViewFolderComponent
@@ -37,8 +38,17 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async() => {
+    spyOn(component, 'filter').and.returnValue(of([]));
+    const documentFilterInputEl = nativeElement.querySelector('.document-search');
+    documentFilterInputEl.dispatchEvent(new Event('focusin'));
+    documentFilterInputEl.value = 'enc';
+    documentFilterInputEl.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(component.filter).toHaveBeenCalled();
+    expect(component.documentTreeData).toEqual(treeData);
   });
 
   it('should generate tree data from categorised data', () => {
@@ -48,7 +58,6 @@ describe('CaseFileViewFolderComponent', () => {
   it('should get documents from category', () => {
     const documents = categoriesAndDocuments.categories[0].documents;
     const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
-<<<<<<< HEAD
       {
         name: 'Lager encyclopedia',
         type: 'document'
@@ -58,60 +67,15 @@ describe('CaseFileViewFolderComponent', () => {
         type: 'document'
       },
       {
-=======
-      {
-        name: 'Lager encyclopedia',
-        type: 'document'
-      },
-      {
-        name: 'Beers encyclopedia',
-        type: 'document'
-      },
-      {
->>>>>>> feature/case-file-view
         name: 'Ale encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT
       }
     ]);
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
   });
 
   it('should get uncategorised documents', () => {
-<<<<<<< HEAD
-    const uncategorisedDocuments: CaseFileViewDocument[] = [
-      {
-        document_url: '/uncategorised-document-1',
-        document_filename: 'Uncategorised document 1',
-        document_binary_url: '/test/binary',
-        attribute_path: '',
-        upload_timestamp: ''
-      },
-      {
-        document_url: '/uncategorised-document-2',
-        document_filename: 'Uncategorised document 2',
-        document_binary_url: '/test/binary',
-        attribute_path: '',
-        upload_timestamp: ''
-      }
-    ];
-    const uncategorisedDocumentsTreeNode: DocumentTreeNode = plainToClass(DocumentTreeNode, {
-      name: 'Uncategorised documents',
-      type: 'category',
-      children: [
-        {
-          name: 'Uncategorised document 1',
-          type: 'document'
-        },
-        {
-          name: 'Uncategorised document 2',
-          type: 'document'
-        }
-      ]
-    });
-    expect(component.getUncategorisedDocuments(uncategorisedDocuments)).toEqual(uncategorisedDocumentsTreeNode);
-=======
     expect(component.getUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents)).toEqual(uncategorisedTreeData);
->>>>>>> feature/case-file-view
   });
 
   it('should render cdk nested tree', () => {
@@ -124,41 +88,22 @@ describe('CaseFileViewFolderComponent', () => {
   it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
     const sortChildrenAscendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-<<<<<<< HEAD
-      sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending'));
-    });
-    component.sortDataSourceAscAlphabetically();
-    sortChildrenAscendingSpies.forEach((item) => {
-      expect(item).toHaveBeenCalled();
-    });
-=======
       sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending').and.callThrough());
     });
 
-    console.log(util.inspect(component.nestedDataSource[3].children));
     component.sortDataSourceAscAlphabetically();
     fixture.detectChanges();
-    console.log(util.inspect(component.nestedDataSource));
 
     sortChildrenAscendingSpies.forEach((item) => {
       expect(item).toHaveBeenCalled();
     });
 
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyAsc);
->>>>>>> feature/case-file-view
   });
 
   it('should call sortChildrenDescending on all children of nestedDataSource when calling sortDataSourceDescAlphabetically', () => {
     const sortChildrenDescendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-<<<<<<< HEAD
-      sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending'));
-    });
-    component.sortDataSourceDescAlphabetically();
-    sortChildrenDescendingSpies.forEach((item) => {
-      expect(item).toHaveBeenCalled();
-    });
-=======
       sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending').and.callThrough());
     });
     component.sortDataSourceDescAlphabetically();
@@ -169,12 +114,158 @@ describe('CaseFileViewFolderComponent', () => {
     });
 
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyDesc);
->>>>>>> feature/case-file-view
   });
+
+  it('should display correct folder icons', () => {
+    component.nestedDataSource = treeData;
+    fixture.detectChanges();
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
+    const firstNodeButton = documentTreeContainerEl.querySelector('.node');
+    const iconEl = firstNodeButton.querySelector('.node__iconImg');
+    expect(iconEl.getAttribute('src')).toEqual('/assets/images/folder.png');
+    firstNodeButton.click();
+    fixture.detectChanges();
+    expect(iconEl.getAttribute('src')).toEqual('/assets/images/folder-open.png');
+  });
+
+  it('should filter documents', () => {
+    const filteredTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
+      {
+        name: 'Spirits',
+        type: DocumentTreeNodeType.FOLDER,
+        children: [
+          {
+            name: 'Scotch whisky',
+            type: DocumentTreeNodeType.FOLDER,
+            children: [
+              {
+                name: 'Lowland',
+                type: DocumentTreeNodeType.FOLDER,
+                children: [
+                  {
+                    name: 'Lowland 1',
+                    type: DocumentTreeNodeType.FOLDER,
+                    children: [
+                      {
+                        name: 'Details about Whisky Lowland 1',
+                        type: DocumentTreeNodeType.DOCUMENT
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                name: 'Islay',
+                type: DocumentTreeNodeType.FOLDER,
+                children: [
+                  {
+                    name: 'Details about Whisky Islay',
+                    type: DocumentTreeNodeType.DOCUMENT
+                  },
+                  {
+                    name: 'More information about Whisky Islay',
+                    type: DocumentTreeNodeType.DOCUMENT
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]);
+    component.documentTreeData = filteredTreeData;
+    component.documentSearchFormControl.setValue('abo');
+    component.filter('abo').subscribe(result => {
+      expect(result).toEqual(filteredTreeData);
+    });
+  });
+
+  it('should filter documents no match', () => {
+    const filteredTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
+      {
+        name: 'Spirits',
+        type: DocumentTreeNodeType.FOLDER,
+        children: [
+          {
+            name: 'Scotch whisky',
+            type: DocumentTreeNodeType.FOLDER,
+            children: [
+              {
+                name: 'Lowland',
+                type: DocumentTreeNodeType.FOLDER,
+                children: [
+                  {
+                    name: 'Lowland 1',
+                    type: DocumentTreeNodeType.FOLDER,
+                    children: [
+                      {
+                        name: 'Details about Whisky Lowland 1',
+                        type: DocumentTreeNodeType.DOCUMENT
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                name: 'Islay',
+                type: DocumentTreeNodeType.FOLDER,
+                children: [
+                  {
+                    name: 'Details about Whisky Islay',
+                    type: DocumentTreeNodeType.DOCUMENT
+                  },
+                  {
+                    name: 'More information about Whisky Islay',
+                    type: DocumentTreeNodeType.DOCUMENT
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]);
+    component.documentTreeData = filteredTreeData;
+    component.documentSearchFormControl.setValue('some random text');
+    component.filter('some random text').subscribe(result => {
+      expect(result.length).toEqual(0);
+    });
+  });
+
+  it('should filter documents verify UI', async() => {
+    component.nestedDataSource = treeData;
+    fixture.detectChanges();
+    const documentFilterInputEl = nativeElement.querySelector('.document-search');
+    documentFilterInputEl.dispatchEvent(new Event('focusin'));
+    documentFilterInputEl.value = 'enc';
+    documentFilterInputEl.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
+    expect(documentTreeContainerEl.textContent).toContain('Beers encyclopedia');
+  });
+
+  it('should filter documents no match verify UI', async() => {
+    component.nestedDataSource = treeData;
+    fixture.detectChanges();
+    const documentFilterInputEl = nativeElement.querySelector('.document-search');
+    documentFilterInputEl.dispatchEvent(new Event('focusin'));
+    documentFilterInputEl.value = 'some random text';
+    documentFilterInputEl.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
+    expect(documentTreeContainerEl.textContent).toContain('No results found');
+  });
+
 
   it('should unsubscribe', () => {
     spyOn(component.categoriesAndDocumentsSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.documentFilterSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.categoriesAndDocumentsSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.documentFilterSubscription.unsubscribe).toHaveBeenCalled();
   });
 });
