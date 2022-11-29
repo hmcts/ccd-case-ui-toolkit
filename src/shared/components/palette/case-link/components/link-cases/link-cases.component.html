@@ -60,7 +60,7 @@
                 <div class="govuk-form-group--error"
                   [ngClass]="{'table-group-error':caseSelectionError && case.caseReference === linkCaseForm.value.caseNumber}">
                 </div>
-                <span>{{case.caseReference | ccdCaseReference}} <br> {{case.caseName}}</span>
+                <span>{{case.caseName}} <br> {{case.caseReference | ccdCaseReference}}</span>
               </td>
               <td class="govuk-table__cell">{{case.caseType}}</td>
               <td class="govuk-table__cell">{{case.caseService}}</td>

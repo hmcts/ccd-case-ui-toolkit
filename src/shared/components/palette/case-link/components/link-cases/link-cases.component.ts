@@ -165,7 +165,7 @@ export class LinkCasesComponent implements OnInit {
             caseType: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('CASE_TYPE', caseView.case_type.id),
             caseState: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE', caseView.state.name),
             caseService: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION', caseView.case_type.jurisdiction.name),
-            caseName: caseView.metadataFields && caseView.metadataFields['caseNameHmctsInternal'] || 'Case name missing',
+            caseName: this.linkedCasesService.getCaseName(caseView),
           };
           const ccdApiCaseLinkData: CCDCaseLinkType = {
             CaseReference: caseView.case_id,

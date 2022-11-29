@@ -9,6 +9,9 @@ import { JurisdictionService } from './jurisdiction.service';
 
 @Injectable()
 export class LinkedCasesService {
+
+  private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
+
   public caseFieldValue = [];
   public isLinkedCasesEventTrigger = false;
   public caseDetails: CaseView;
@@ -19,7 +22,6 @@ export class LinkedCasesService {
   public editMode = false;
   public jurisdictionsResponse: Jurisdiction[] = [];
   public serverJurisdictionError: boolean;
-  public caseNameMissingText = 'Case name missing';
   public serverError: { id: string, message: string } = null;
   public serverLinkedApiError: { id: string, message: string } = null;
   public isServerReasonCodeError = false;
@@ -56,7 +58,7 @@ export class LinkedCasesService {
     const caseInfo = this.caseFieldValue.find(item => item.value && item.value.CaseReference === esSearchCasesResponse.case_id);
     return caseInfo && {
       caseReference: esSearchCasesResponse.case_id,
-      caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal || this.caseNameMissingText,
+      caseName: esSearchCasesResponse.case_fields.caseNameHmctsInternal || LinkedCasesService.CASE_NAME_MISSING_TEXT,
       caseType: this.mapLookupIDToValueFromJurisdictions('CASE_TYPE', esSearchCasesResponse.case_fields['[CASE_TYPE]']),
       service: this.mapLookupIDToValueFromJurisdictions('JURISDICTION', esSearchCasesResponse.case_fields['[JURISDICTION]']),
       state: this.mapLookupIDToValueFromJurisdictions('STATE', esSearchCasesResponse.case_fields['[STATE]']),
@@ -127,5 +129,16 @@ export class LinkedCasesService {
       default:
         break;
     }
+  }
+
+  public getCaseName(searchCasesResponse: CaseView): string {
+    let caseName = LinkedCasesService.CASE_NAME_MISSING_TEXT;
+    searchCasesResponse.tabs.filter(tab => {
+      const caseNameHmctsInternalField = tab.fields.find(field => field.id === 'caseNameHmctsInternal');
+      if (caseNameHmctsInternalField) {
+        caseName = caseNameHmctsInternalField.value;
+      }
+    });
+    return caseName;
   }
 }
