@@ -9,9 +9,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { MockComponent } from 'ng2-mock-component';
 import { of, Subscription } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CallbackErrorsContext } from '../../../components/error/domain';
@@ -1181,7 +1183,9 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
                 }
               ]
             }
-          ])
+          ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         declarations: [
           TasksContainerComponent,
@@ -1300,7 +1304,9 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
                 }
               ]
             }
-          ])
+          ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         declarations: [
           TasksContainerComponent,
@@ -1423,6 +1429,8 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
               ]
             }
           ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         declarations: [
           TasksContainerComponent,
@@ -1527,7 +1535,9 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
                 }
               ]
             }
-          ])
+          ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         declarations: [
           TasksContainerComponent,
@@ -1654,7 +1664,9 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
                 }
               ]
             }
-          ])
+          ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         declarations: [
           TasksContainerComponent,
