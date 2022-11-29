@@ -27,6 +27,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public nestedDataSource: DocumentTreeNode[];
   public categories: CaseFileViewCategory[] = [];
   public categoriesAndDocumentsSubscription: Subscription;
+
   public documentFilterFormGroup: FormGroup;
   public documentSearchFormControl: FormControl;
   public documentTreeData: DocumentTreeNode[];
@@ -149,6 +150,25 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return of(filteredData);
   }
 
+  public triggerDocumentAction(actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print') {
+    switch(actionType) {
+      case('changeFolder'):
+        console.log('changeFolder!');
+        break;
+      case('openInANewTab'):
+        console.log('openInANewTab!');
+        break;
+      case('download'):
+        console.log('download!');
+        break;
+      case('print'):
+        console.log('print!');
+        break;
+      default:
+        return;
+    }
+  }
+
   public sortDataSourceAscAlphabetically() {
     const sortedData = this.nestedDataSource.map(item => {
       item.sortChildrenAscending();
@@ -199,7 +219,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.categoriesAndDocumentsSubscription?.unsubscribe();
-
     this.documentFilterSubscription?.unsubscribe();
   }
 }

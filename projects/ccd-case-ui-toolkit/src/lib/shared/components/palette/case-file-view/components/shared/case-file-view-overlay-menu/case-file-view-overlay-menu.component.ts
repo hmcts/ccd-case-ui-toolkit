@@ -11,7 +11,6 @@ export class CaseFileViewOverlayMenuComponent {
   @Input() public title: string = '';
   @Input() public menuItems: CaseFileViewOverlayMenuItem[];
 
-  @Input() public cdkOverlayOrigin: CdkOverlayOrigin;
   @Input() public isOpen = false;
   @Output() public isOpenChange = new EventEmitter<boolean>();
 
