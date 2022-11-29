@@ -169,7 +169,8 @@ describe('WriteLinkedCasesComponent', () => {
   linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases: linkedCases,
-    getAllLinkedCaseInformation() {}
+    getAllLinkedCaseInformation() {},
+    getCaseName() {}
   };
 
   const linkCaseReasons: LovRefDataByServiceModel = {

@@ -16,6 +16,7 @@ export class LinkedCasesService {
   public isLinkedCasesEventTrigger = false;
   public caseDetails: CaseView;
   public caseId: string;
+  public caseName: string;
   public linkCaseReasons: LovRefDataModel[] = [];
   public linkedCases: CaseLink[] = [];
   public initialCaseLinks: CaseLink[] = [];
