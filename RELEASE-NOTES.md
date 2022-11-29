@@ -1,7 +1,124 @@
 ## RELEASE NOTES
+### Version 6.10.0-rc4
+**EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
+**EUI-7225** Fix to display party role (if provided) alongside party name for party-level flags options on "Select flag location" page
+
+### Version 6.10.0-rc3
+**EUI-7116** Re-tag for release
+
+### Version 6.10.0-case-flags-fix-for-empty-case-level-flags-field
+**EUI-7116** Fix to ensure a "caseFlags" case-level Flags field with an empty value is retained (it will be empty initially because no party name is required)
+
+### Version 4.18.10-revert-erroneous-html-tag-change
+**EUI-6551** Fix incorrect alignment of tabular display of non built-in CCD complex fields on tabs, caused by an erroneous HTML tag change for the Case Flags feature
+
+### Version 4.18.10-flags-field-in-complex-and-collection-types
+**EUI-6438** Ensure Flags fields can be stored and amended as sub-fields of a Complex field, including a collection of that type, and as instances within a collection of type "Flags"
+
+### Version 4.18.6-case-flags-table-styling-changes
+**EUI-6198** Increase table caption font size and width of first column
+
+### Version 4.13.24-manage-case-flags-display-case-level-case-flags
+**EUI-5872** Manage case flags display case level case flags
+
+### Version 4.13.19-manage-case-flags-review-flag-details-page
+**EUI-6168** Fix "Review flag details" page to work when updating a flag (Manage Case Flags journey)
+
+### Version 4.13.19-manage-case-flags-display-formatted-flag-details
+**EUI-5810** Manage case flags display formatted flag details
+**EUI-6164** Reasonable adjustment display for sign language interpreter
+
+### Version 4.13.9-case-flag-details-persistence-fixes
+**EUI-6148** Fix bug where discarded Case Flag details are persisted when restarting the Create Case Flag or Manage Case Flags journeys by clicking "Change" from the "Review Flag Details" page
+**EUI-6155** Fix bug where change to case flag status is not being reflected
+**EUI-6156** Fix bug where last modified date is not being updated when a case flag is updated
+
+### Version 4.13.9-manage-case-flags-update-flag-page
+**EUI-5342** Manage case flags comments update flag page
+
+### Version 4.13.7-create-case-level-case-flag
+**EUI-5849** Create and display case-level flags
+
+### Version 4.13.7-manage-case-flags-comments-mandatory-or-optional
+**EUI-5848** Manage case flags comments mandatory or optional
+
+### Version 4.13.6-review-flag-details-change-link-and-continue-bugfix
+**EUI-6043** Fix bug where error state of the FlagLauncher component is not being reset correctly to "invalid" when the component is reloaded after clicking "Change" from the "Review Flag Details" page
+
+### Version 4.13.6-review-flag-details-change-link-bugfix
+**EUI-6043** Fix bug that results in more than one new case flag being added at the same time, which gives the appearance of
+caching previous data when the user elects to change the case flag being created
+
+### Version 4.13.6-review-flag-details-content-and-layout
+**EUI-5968** Display alternate version of ReadCaseFlagField component, with a summary list when display context is "Check your answers"
+
+### Version 4.13.3-create-case-flag-review-flag-details-page-part3
+**EUI-5973** Review flag details page part 3
+
+### Version 4.13.2-create-case-flag-integration-with-check-your-answers
+**EUI-4852** First pass at integration with "Check your answers" stage of the main Case Event flow, and persisting a case flag
+
+### Version 4.13.2-manage-case-flags-selection-page-validation
+**EUI-5190** Add validation to "Select case flag" page
+
+### Version 4.13.2-manage-case-flags-defect-fixes
+**EUI-5816/EUI-5808** Various defect fixes for the "Select case flag" page (EUI-4895) and "Update flag" page (EUI-5125)
+
+### Version 4.13.1-case-flags-search-for-sign-language-interpreter
+**EUI-5772** Display page title and hint text variation when selected language flag type is sign language
+
+### Version 4.13.1-case-flags-language-interpreter-dual-entry-error-2
+**EUI-5657** Fix error styling and HTML structure for page title and hint text
+
+### Version 4.13.1-case-flags-language-interpreter-dual-entry-error
+**EUI-5657** Additional validation for "Search for a language interpreter" step, covering dual language entry error scenario
+
+### Version 4.13.1-case-flags-search-for-language-interpreter-step-validation
+**EUI-4849** Add validation to language search and manual language inputs of the "Search for a language interpreter" step
+
+### Version 4.13.1-case-flags-search-for-language-interpreter-step-integration
+**EUI-5654** Integrate "Search for a language interpreter" step with Reference Data list of values for selected flag types
+
+### Version 4.13.1-case-flags-error-handling-no-party-data
+**EUI-5385** Error handling for Create Case Flag when case has not been configured for flags
+
+### Version 4.13.1-case-flags-multi-level-flag-types
+**EUI-5351** Support for display and selection of multi-level flag types at "Select flag type" step
+
+### Version 4.13.1-case-flags-ref-data-integration
+**EUI-5495/EUI-4845** Integrate "Select flag type" stage with Reference Data Common API for case flags
+
+### Version 4.13.1-case-flags-add-comments-step
+**EUI-4851** Add "add comments" step of Create Case Flag journey
+
+### Version 4.13.1-case-flags-case-event-flow-error-message-fixes-2
+**EUI-5374** Revision to error message text
+
+### Version 4.13.1-case-flags-case-event-flow-error-message-fixes
+**EUI-5374** Fix error message text on clicking "Continue" when creating a Case Flag
+**EUI-5372** Fix incorrect handling of display of Case Event flow error message
+
+### Version 4.13.1-case-flags-banner-message-fix-active-count
+**EUI-4897** Fix count of active case flags in message banner
+
+### Version 4.13.1-case-flags-tab-navigation
+**EUI-4897** Fix case flags tab navigation from message banner
+
+### Version 4.13.1-case-flags-select-location-step-rc.2
+**EUI-4838** Add "select location" step of Create Case Flag journey
+
+### Version 4.13.1-case-flags-tab-and-banner-message
+**EUI-4836** Add case flags tab to case details
+**EUI-4897** Add banner message to case details
+
+### Version 4.22.0-judicial-user-typeahead
+**EUI-6746** CR-52 JOH typeahead
 
 ### Version 4.18.16-EUI-6309-mandatory-field-issue
-**EUI-6309* mandatory-field-issue
+**EUI-6309** mandatory-field-issue
+
+### Version 4.19.6-EUI-6865
+**EUI-6865** Fixed issue with deleting collection items with allowDelete absent
 
 ### Version 4.19.3-hearings
 **EUI-5912** Hearing tab is not loading
@@ -791,10 +908,10 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-2804** OR and Not Equals support for Show and Hide
 
 ### Version 2.51.1 - June 07 2019
-	**RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
+  **RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
 
 ### Version 2.51.0 - May 29 2019
-	**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
+  **RDM-3201** Dynamic Fixed Lists (Using service callbacks)
 
 ### Version 2.50.2 - May 29 2019
 **RDM-4687** Continue button is not enabled for a mandatory collection field that includes show/hide conditions inside complex fields
