@@ -465,7 +465,7 @@ export class FormValueService {
   }
 
   /**
-   * Remove any empty or invalid arry with only id
+   * Remove any empty or invalid array with only id
    *
    * @param data The object tree of form values on which to perform the removal
    * @param field {@link CaseField} domain model object for each field
@@ -495,6 +495,48 @@ export class FormValueService {
           delete data[field.id];
         }
       }
+    }
+  }
+
+  /**
+   * Remove the FlagLauncher case field, which is not intended to be persisted.
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public removeFlagLauncherField(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      const flagLauncherCaseField = caseFields.filter(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
+      if (flagLauncherCaseField.length > 0) {
+        // There should be only one FlagLauncher case field
+        delete data[flagLauncherCaseField[0].id];
+      }
+    }
+  }
+
+  /**
+   * Populate the flag data for each Flags field, from the data held in its corresponding CaseField.
+   *
+   * @param data The object tree of form values on which to perform the data population
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public populateFlagDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
+      // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
+      // (or sub-fields of Complex fields in a collection)
+      caseFields.filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField))
+        .forEach(caseField => {
+          if (data[caseField.id]) {
+            // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+            // Flags field within a Complex field or a collection of Complex fields) is copied across
+            Object.keys(data[caseField.id]).forEach(key => {
+              if (caseField.value.hasOwnProperty(key)) {
+                data[caseField.id][key] = caseField.value[key];
+              }
+            });
+          }
+        });
     }
   }
 }
