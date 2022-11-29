@@ -4,9 +4,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
 import {
-  CaseFileViewDocument, DocumentTreeNode, DocumentTreeNodeType
+  DocumentTreeNode, DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
-import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
+import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
   categorisedTreeData,
   treeData,
