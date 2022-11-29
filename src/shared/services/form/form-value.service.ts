@@ -531,7 +531,7 @@ export class FormValueService {
             // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
             // Flags field within a Complex field or a collection of Complex fields) is copied across
             Object.keys(data[caseField.id]).forEach(key => {
-              if (caseField.value.hasOwnProperty(key)) {
+              if (caseField.value && caseField.value.hasOwnProperty(key)) {
                 data[caseField.id][key] = caseField.value[key];
               }
             });
