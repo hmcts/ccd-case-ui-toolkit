@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.20.21-linked-cases-private-law-integration
+### Version 4.20.22-linked-cases-private-law-integration
 Linked cases private law integration
 
 ### Version 4.20.20-linked-cases-merge-from-release
