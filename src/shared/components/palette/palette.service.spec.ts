@@ -1,5 +1,7 @@
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
+import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
@@ -215,5 +217,12 @@ describe('PaletteService', () => {
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
     });
 
+    it('should get WriteCaseFlagFieldComponent component class for FlagLauncher input', () => {
+      assertComponent('FlagLauncher', true, WriteCaseFlagFieldComponent, 'AnID');
+    });
+
+    it('should get ReadCaseFlagFieldComponent component class for FlagLauncher input', () => {
+      assertComponent('FlagLauncher', false, ReadCaseFlagFieldComponent, 'AnID');
+    });
   });
 });

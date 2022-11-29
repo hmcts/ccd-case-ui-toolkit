@@ -88,6 +88,7 @@ export abstract class AbstractAppConfig {
   abstract getPaymentReturnUrl(): string;
   abstract getRDCommonDataApiUrl(): string;
   abstract getCaseDataStoreApiUrl(): string;
+  abstract getCaseFlagsRefdataApiUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -150,4 +151,5 @@ export class CaseEditorConfig {
   payment_return_url: string;
   rd_common_data_api_url: string;
   case_data_store_api_url: string;
+  case_flags_refdata_api_url: string;
 }

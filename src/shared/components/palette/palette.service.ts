@@ -1,6 +1,8 @@
 import { Injectable, Type } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
+import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
@@ -113,6 +115,8 @@ export class PaletteService {
         return CaseHistoryViewerFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
+      case 'FlagLauncher':
+        return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }
