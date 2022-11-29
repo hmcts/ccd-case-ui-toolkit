@@ -79,6 +79,7 @@ describe('LinkCasesComponent', () => {
     linkCaseReasons: linkCaseReasons,
     caseFieldValue: [],
     mapLookupIDToValueFromJurisdictions() {},
+    getCaseName() {}
   };
 
   beforeEach(async(() => {
@@ -138,6 +139,7 @@ describe('LinkCasesComponent', () => {
       }, state: { name: 'With FTA' }
     }
     casesService.getCaseViewV2.and.returnValue(of(caseInfo));
+    spyOn(linkedCasesService, 'getCaseName').and.returnValue(of('Case name missing'));
     component.linkCaseForm.get('caseNumber').setValue('1231231231231231');
     const reasonOption = fixture.debugElement.query(By.css('input[value="Progressed as part of this lead case"]')).nativeElement;
     reasonOption.click();

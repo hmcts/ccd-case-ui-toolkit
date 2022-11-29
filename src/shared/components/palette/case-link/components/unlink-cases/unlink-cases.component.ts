@@ -14,7 +14,7 @@ import { LinkedCasesService } from '../../services/linked-cases.service';
 export class UnLinkCasesComponent implements OnInit {
 
   private static readonly LINKED_CASES_TAB_ID = 'linked_cases_sscs';
-	private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
+  private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();

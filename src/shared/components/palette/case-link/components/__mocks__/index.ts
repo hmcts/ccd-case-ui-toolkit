@@ -28,62 +28,62 @@ export const mockSearchByCaseIdsResponse = [
   },
 ]
 export const mocklinkedCases: CaseLink[] = [
-    {
-      caseReference: '1682374819203471',
-      reasons: [],
-      createdDateTime: '',
-      caseType: 'SSCS',
-      caseState: 'state',
-      caseService: 'Tribunal',
-      caseName: 'SSCS 2.1',
-    },
-    {
-      caseReference: '1682897456391875',
-      reasons: [],
-      createdDateTime: '',
-      caseType: 'SSCS',
-      caseState: 'state',
-      caseService: 'Tribunal',
-      caseName: 'SSCS 2.1',
-    },
-  ];
+  {
+    caseReference: '1682374819203471',
+    reasons: [],
+    createdDateTime: '',
+    caseType: 'SSCS',
+    caseState: 'state',
+    caseService: 'Tribunal',
+    caseName: 'SSCS 2.1',
+  },
+  {
+    caseReference: '1682897456391875',
+    reasons: [],
+    createdDateTime: '',
+    caseType: 'SSCS',
+    caseState: 'state',
+    caseService: 'Tribunal',
+    caseName: 'SSCS 2.1',
+  },
+];
 
 export const mockCaseLinkResponse = [
-    {
-      id: '52837798-42c6-43cc-98f6-0895fdba4961',
-      value: {
-        CaseType: 'FT_MasterCaseType',
-        CaseReference: '1682374819203471',
-        ReasonForLink: [
-          {
-            id: 'ffea83f4-3ec1-4be6-b530-e0b0b2a239aa',
-            value: {
-              Reason: 'CLRC001',
-              OtherDescription: 'testing',
-            },
+  {
+    id: '52837798-42c6-43cc-98f6-0895fdba4961',
+    value: {
+      CaseType: 'FT_MasterCaseType',
+      CaseReference: '1682374819203471',
+      ReasonForLink: [
+        {
+          id: 'ffea83f4-3ec1-4be6-b530-e0b0b2a239aa',
+          value: {
+            Reason: 'CLRC001',
+            OtherDescription: 'testing',
           },
-        ],
-        CreatedDateTime: '2022-04-28T13:26:53.947877',
-      },
+        },
+      ],
+      CreatedDateTime: '2022-04-28T13:26:53.947877',
     },
-    {
-      id: '52837798-42c6-43cc-98f6-0895fdba4962',
-      value: {
-        CaseType: 'BENEFIT_SCSS',
-        CaseReference: '1682897456391875',
-        ReasonForLink: [
-          {
-            id: 'ffea83f4-3ec1-4be6-b530-e0b0b2a239b',
-            value: {
-              Reason: 'CLRC002',
-              OtherDescription: 'testing',
-            },
+  },
+  {
+    id: '52837798-42c6-43cc-98f6-0895fdba4962',
+    value: {
+      CaseType: 'BENEFIT_SCSS',
+      CaseReference: '1682897456391875',
+      ReasonForLink: [
+        {
+          id: 'ffea83f4-3ec1-4be6-b530-e0b0b2a239b',
+          value: {
+            Reason: 'CLRC002',
+            OtherDescription: 'testing',
           },
-        ],
-        CreatedDateTime: '2022-04-28T13:26:53.947877',
-      },
-    }
-  ];
+        },
+      ],
+      CreatedDateTime: '2022-04-28T13:26:53.947877',
+    },
+  }
+];
 
 export const mockCaseLinkingReasonCode: LovRefDataByServiceModel = {
   list_of_values: [
