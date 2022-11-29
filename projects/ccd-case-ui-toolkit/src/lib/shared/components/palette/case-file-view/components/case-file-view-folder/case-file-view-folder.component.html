@@ -26,28 +26,26 @@
   <div>
     <cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
       <!-- document -->
-      <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="document-tree-node">
-        <div class="node">
-          <button class="node-button" mat-icon-button>
-            <div class="node__icon" mat-icon-button disabled>
-              <img src="/assets/images/document.png" class="node__iconImg" alt="Document icon">
-            </div>
-            <span class="node__name node-name-document">{{node.name}}</span>
-            <div class="node__document-options">
-              <ccd-case-file-view-folder-document-actions
-                (changeFolderAction)="triggerDocumentAction('changeFolder', node)"
-                (openInANewTabAction)="triggerDocumentAction('openInANewTab', node)"
-                (downloadAction)="triggerDocumentAction('download', node)"
-                (printAction)="triggerDocumentAction('print', node)">
-              </ccd-case-file-view-folder-document-actions>
-            </div>
-          </button>
-        </div>
+      <cdk-nested-tree-node class="document-tree-container__node" *cdkTreeNodeDef="let node">
+        <button class="node">
+          <div class="node__icon" disabled>
+            <img src="/assets/images/document.png" class="node__iconImg" alt="Document icon">
+          </div>
+          <span class="node__name node-name-document">{{node.name}}</span>
+          <div class="node__document-options">
+            <ccd-case-file-view-folder-document-actions
+              (changeFolderAction)="triggerDocumentAction('changeFolder', node)"
+              (openInANewTabAction)="triggerDocumentAction('openInANewTab', node)"
+              (downloadAction)="triggerDocumentAction('download', node)"
+              (printAction)="triggerDocumentAction('print', node)">
+            </ccd-case-file-view-folder-document-actions>
+          </div>
+        </button>
       </cdk-nested-tree-node>
       <!-- folder-->
-      <cdk-nested-tree-node class="document-tree-node" *cdkTreeNodeDef="let node; when: nestedChildren">
+      <cdk-nested-tree-node class="document-tree-container__node" *cdkTreeNodeDef="let node; when: nestedChildren">
         <button class="node" cdkTreeNodeToggle>
-          <div class="node__icon" mat-icon-button [attr.aria-label]="'toggle ' + node.name" >
+          <div class="node__icon" [attr.aria-label]="'toggle ' + node.name" >
             <img class="node__iconImg" [src]="nestedTreeControl.isExpanded(node) ? '/assets/images/folder-open.png' : '/assets/images/folder.png'" alt="Folder icon">
             <span class="node__count">{{node.childDocumentCount}}</span>
           </div>
