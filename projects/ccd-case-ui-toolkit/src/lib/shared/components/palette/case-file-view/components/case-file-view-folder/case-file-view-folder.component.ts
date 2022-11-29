@@ -2,8 +2,6 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
-import { CaseFileViewCategory, CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../../../domain/case-file-view';
-import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import { switchMap, tap } from 'rxjs/operators';
 import {
   CaseFileViewCategory,
