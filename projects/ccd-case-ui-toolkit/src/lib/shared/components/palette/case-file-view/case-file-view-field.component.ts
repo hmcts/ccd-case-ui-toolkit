@@ -10,7 +10,7 @@ import { CaseFileViewService } from '../../../services';
   templateUrl: './case-file-view-field.component.html',
   styleUrls: ['./case-file-view-field.component.scss'],
 })
-export class CaseFileViewFieldComponent implements OnInit, AfterViewInit {
+export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDestroy {
   public static readonly PARAM_CASE_ID = 'cid';
   public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
   public categoriesAndDocumentsSubscription: Subscription;
