@@ -1,8 +1,9 @@
 import { Expose, Type } from 'class-transformer';
+import { DocumentTreeNodeType } from './document-tree-node-type.model';
 
 export class DocumentTreeNode {
   public name: string;
-  public type: 'document' | 'category';
+  public type: DocumentTreeNodeType;
   @Type(() => DocumentTreeNode)
   public children?: DocumentTreeNode[];
 
@@ -27,10 +28,10 @@ export class DocumentTreeNode {
   public sortChildrenAscending() {
     const sortAscending = () => {
       return (a, b) => {
-        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
 
-        if (a.type === 'category' || b.type === 'category') {
+        if (a.type === DocumentTreeNodeType.FOLDER || b.type === DocumentTreeNodeType.FOLDER) {
           return 0;
         }
 
@@ -53,10 +54,10 @@ export class DocumentTreeNode {
   public sortChildrenDescending() {
     const sortDescending = () => {
       return (a, b) => {
-        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
 
-        if (a.type === 'category' || b.type === 'category') {
+        if (a.type === DocumentTreeNodeType.FOLDER || b.type === DocumentTreeNodeType.FOLDER) {
           return 0;
         }
 

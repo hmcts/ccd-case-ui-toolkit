@@ -1,3 +1,27 @@
+.document-filter-container {
+  border-bottom: 2px solid #C9C9C9;
+  padding-bottom: 4px;
+
+  .document-filter {
+    height: 70%;
+    padding: 8px 8px 0 8px;
+    margin-bottom: 10px;
+
+    .document-search {
+      background: url(/assets/images/icon-search-black.svg) no-repeat right #FFF;
+      background-position-x: calc(100% - 4px);
+      padding-right: 30px;
+      width: 100%;
+    }
+  }
+
+  .documents-title {
+    height: 30%;
+    margin-left: 8px;
+    font-weight: bold;
+  }
+}
+
   .document-folders-header {
   display: flex;
   align-items: center;
@@ -12,6 +36,9 @@
 
 .document-tree-container {
   margin: 4px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 400px;
 
   .document-tree-invisible {
     display: none;
@@ -37,6 +64,8 @@
   display: flex;
   align-items: center;
   padding: 6px 0;
+  white-space: nowrap;
+  cursor: pointer;
 
   &__icon {
     position: relative;
@@ -52,11 +81,11 @@
   }
 
   &__count {
+    color: #fff;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #fff;
     // padding needed to adjust position
     padding-top: 4px;
   }
@@ -64,4 +93,20 @@
   &__name {
     margin-left: 4px;
   }
+}
+
+.document-tree::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.document-tree::-webkit-scrollbar-button {
+  display: none;
+}
+
+.document-tree::-webkit-scrollbar-track-piece {
+  background: #EEE;
+}
+
+.document-tree::-webkit-scrollbar-thumb {
+  background: #CCC;
 }
