@@ -39,6 +39,15 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   private getChildren = (node: DocumentTreeNode) => of(node.children);
   public nestedChildren = (_: number, nodeData: DocumentTreeNode) => nodeData.children;
+  public get documentCount() {
+    if (this.nestedDataSource?.length) {
+      return this.nestedDataSource.reduce((acc, item) => {
+        return acc + item.childDocumentCount;
+      }, 0);
+    } else {
+      return 0;
+    }
+  }
 
   constructor(
     private windowService: WindowService,
