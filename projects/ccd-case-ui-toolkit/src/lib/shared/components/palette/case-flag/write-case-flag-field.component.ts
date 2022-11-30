@@ -159,6 +159,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public setFlagsCaseFieldValue(): void {
+    // tslint:disable-next-line: switch-default
     switch (this.fieldState) {
       case CaseFlagFieldState.FLAG_COMMENTS:
         this.addFlagToCollection();

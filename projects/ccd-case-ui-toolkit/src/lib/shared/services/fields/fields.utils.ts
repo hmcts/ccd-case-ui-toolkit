@@ -114,7 +114,8 @@ export class FieldsUtils {
     const objectRefs = [];
     // Also test for numeric values, and length > 0 for non-numeric values because this covers both strings and arrays.
     // Note: Deliberate use of non-equality (!=) operator for null check, to handle both null and undefined values.
-    const hasNonNullPrimitive = values.some(x => (x !== null &&
+    // tslint:disable-next-line: triple-equals
+    const hasNonNullPrimitive = values.some(x => (x != null &&
       ((typeof x === 'object' && x.constructor === Object) || Array.isArray(x)
         ? !objectRefs.push(x)
         : typeof x === 'number' || x.length > 0)
@@ -167,6 +168,8 @@ export class FieldsUtils {
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
+
+    // tslint:disable-next-line: switch-default
     switch (field.field_type.type) {
       case 'FixedList':
       case 'FixedRadioList': {
