@@ -1,7 +1,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <div>
-      <span class="govuk-caption-l">Link cases to {{caseName}} {{linkedCasesService.caseId | ccdCaseReference}}</span>
+      <span class="govuk-caption-l">Link cases to {{linkedCasesService.caseName}} {{linkedCasesService.caseId | ccdCaseReference}}</span>
       <h1 class="govuk-heading-xl">Select a&nbsp;case you want to link to this case</h1>
       <div class="form-group" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
         <h3 class="govuk-heading-s">Enter case reference</h3>
@@ -60,7 +60,7 @@
                 <div class="govuk-form-group--error"
                   [ngClass]="{'table-group-error':caseSelectionError && case.caseReference === linkCaseForm.value.caseNumber}">
                 </div>
-                <span>{{case.caseReference | ccdCaseReference}} <br> {{case.caseName}}</span>
+                <span>{{case.caseName}} <br> {{case.caseReference | ccdCaseReference}}</span>
               </td>
               <td class="govuk-table__cell">{{case.caseType}}</td>
               <td class="govuk-table__cell">{{case.caseService}}</td>

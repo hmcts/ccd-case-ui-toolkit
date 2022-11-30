@@ -117,6 +117,15 @@ caching previous data when the user elects to change the case flag being created
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
 
+### Version 4.20.24-linked-cases-private-law-integration
+**EUI-7219** Linked cases private law integration
+
+### Version 4.20.20-linked-cases-merge-from-release
+**EUI-7218** Linked cases merge from Release
+
+### Version 4.22.0-judicial-user-typeahead
+**EUI-6746** CR-52 JOH typeahead
+
 ### Version 4.18.16-EUI-6309-mandatory-field-issue
 **EUI-6309** mandatory-field-issue
 

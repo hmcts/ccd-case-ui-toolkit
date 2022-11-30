@@ -20,6 +20,9 @@ export enum PageType {
 })
 
 export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
+
+  private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
+
   @Input()
   caseField: CaseField;
 
@@ -67,8 +70,13 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
           const mappedCasetype = this.mapLookupIDToValueFromJurisdictions('CASE_TYPE', item.ccdCaseType);
           const mappedCaseState = this.mapLookupIDToValueFromJurisdictions('STATE', item.state);
           const mappedCaseService = this.mapLookupIDToValueFromJurisdictions('JURISDICTION', item.ccdJurisdiction);
-          return {...item, ccdCaseType: mappedCasetype, ccdJurisdiction: mappedCaseService,
-            state: mappedCaseState, caseNameHmctsInternal: item.caseNameHmctsInternal ||  'Case name missing'}
+          return {
+            ...item,
+            ccdCaseType: mappedCasetype,
+            ccdJurisdiction: mappedCaseService,
+            state: mappedCaseState,
+            caseNameHmctsInternal: item.caseNameHmctsInternal || LinkedCasesFromTableComponent.CASE_NAME_MISSING_TEXT
+          };
         })
         this.noLinkedCases = !response.linkedCases || !response.linkedCases.length;
       },

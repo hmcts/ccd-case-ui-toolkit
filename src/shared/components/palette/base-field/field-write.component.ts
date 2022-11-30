@@ -1,9 +1,9 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { CaseField } from '../../../domain/definition';
 import { FormValidatorsService } from '../../../services/form';
-import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 
