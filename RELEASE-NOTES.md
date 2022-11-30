@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 4.20.27-linked-cases-private-law-integration
+**EUI-7219** Linked cases private law integration
+
 ### Version 6.10.0-rc4
 **EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
 **EUI-7225** Fix to display party role (if provided) alongside party name for party-level flags options on "Select flag location" page
@@ -114,7 +118,7 @@ caching previous data when the user elects to change the case flag being created
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
 
-### Version 4.20.21-linked-cases-private-law-integration
+### Version 4.20.24-linked-cases-private-law-integration
 Linked cases private law integration
 
 ### Version 4.20.20-linked-cases-merge-from-release

@@ -51,6 +51,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   public ngOnInit(): void {
       this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
+      this.linkedCasesService.caseName = this.linkedCasesService.getCaseName(this.caseEdit.caseDetails);
       this.linkedCasesService.caseDetails = this.caseEdit.caseDetails;
       this.linkedCasesService.editMode = false;
       const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';

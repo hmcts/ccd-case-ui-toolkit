@@ -67,4 +67,8 @@ describe('LinkedCasesService', () => {
     expect(linkedCasesService.jurisdictionsResponse).not.toBeNull();
     expect(linkedCasesService.linkedCases).not.toBeNull();
   });
+
+  it('should return case name as case name missing', () => {
+    expect(linkedCasesService.getCaseName(CASE_VIEW_DATA)).toEqual('Case name missing');
+  });
 });

@@ -23,14 +23,15 @@ interface LinkedCasesResponse {
 })
 
 export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
+
+  private static readonly CASE_CONSOLIDATED_REASON_CODE = 'CLRC015';
+  private static readonly CASE_PROGRESS_REASON_CODE = 'CLRC016';
+
   @Input()
   caseField: CaseField;
 
   @Output()
   public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
-  public caseConsolidatedReasonCode = 'CLRC015';
-  public caseProgressedReasonCode = 'CLRC016';
-  public caseNameMissingText = 'Case name missing';
   public caseDetails: CaseView;
   public isLoaded: boolean;
   public linkedCasesFromResponse: LinkedCasesResponse[] = [];
@@ -71,8 +72,12 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     let secondLevelresultArray = [];
     searchCasesResponse.forEach((item: any) => {
       const reasons = item && item.reasons || [];
-      const consolidatedStateReason = reasons.map(x => x).find(reason => reason === this.caseConsolidatedReasonCode);
-      const progressedStateReason = reasons.map(x => x).find(reason => reason === this.caseProgressedReasonCode);
+      const consolidatedStateReason = reasons.map(x => x).find(
+        reason => reason === LinkedCasesToTableComponent.CASE_CONSOLIDATED_REASON_CODE
+      );
+      const progressedStateReason = reasons.map(x => x).find(
+        reason => reason === LinkedCasesToTableComponent.CASE_PROGRESS_REASON_CODE
+      );
       let arrayItem;
       if (progressedStateReason) {
         arrayItem = { ...item };
@@ -136,19 +141,20 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   }
 
   public hasLeadCaseOrConsolidated(reasonCode: string) {
-    return reasonCode === this.caseProgressedReasonCode || reasonCode === this.caseConsolidatedReasonCode;
+    return reasonCode === LinkedCasesToTableComponent.CASE_PROGRESS_REASON_CODE ||
+      reasonCode === LinkedCasesToTableComponent.CASE_CONSOLIDATED_REASON_CODE;
   }
 
-  public mapResponse(esSearchCasesResponse) {
+  public mapResponse(esSearchCasesResponse): LinkedCasesResponse {
     const caseInfo = this.caseField.value.find(item => item.value && item.value.CaseReference === esSearchCasesResponse.case_id);
     return caseInfo && {
       caseReference: esSearchCasesResponse.case_id,
-      caseName: esSearchCasesResponse.caseNameHmctsInternal || this.caseNameMissingText,
+      caseName: this.linkedCasesService.getCaseName(esSearchCasesResponse),
       caseType: esSearchCasesResponse.case_type.description || '',
       service: esSearchCasesResponse.case_type && esSearchCasesResponse.case_type.jurisdiction.description || '',
       state: esSearchCasesResponse.state.description || '',
       reasons: caseInfo.value && caseInfo.value.ReasonForLink &&
         caseInfo.value.ReasonForLink.map(reason => reason.value && reason.value.Reason),
-    } as LinkedCasesResponse
+    } as LinkedCasesResponse;
   }
 }
