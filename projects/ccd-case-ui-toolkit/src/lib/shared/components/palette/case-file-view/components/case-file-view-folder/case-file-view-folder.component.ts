@@ -140,7 +140,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return uncategorisedNode;
   }
 
-  public sortDataSourceAscAlphabetically() {
+  public sortDataSourceAscAlphabetically(): void {
     const sortedData = this.nestedDataSource.map(item => {
       item.sortChildrenAscending();
       return item;
