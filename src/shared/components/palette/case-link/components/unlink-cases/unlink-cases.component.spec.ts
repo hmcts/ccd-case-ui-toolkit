@@ -100,6 +100,7 @@ describe('UnLinkCasesComponent', () => {
     caseId: '1682374819203471',
     linkedCases: linkedCases,
     getAllLinkedCaseInformation() {},
+    getCaseName() {},
     caseFieldValue: [],
   };
 

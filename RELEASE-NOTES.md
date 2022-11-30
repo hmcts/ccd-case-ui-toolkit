@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 4.20.27-linked-cases-private-law-integration
+### Version 4.20.28-linked-cases-private-law-integration
 **EUI-7219** Linked cases private law integration
 
 ### Version 6.10.0-rc4
