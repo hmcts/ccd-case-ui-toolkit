@@ -26,7 +26,6 @@ import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summa
 import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-summary-field.component';
 import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
-import { WriteDateContainerFieldComponent } from '.';
 import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';

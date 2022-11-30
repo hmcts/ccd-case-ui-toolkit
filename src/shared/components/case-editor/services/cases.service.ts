@@ -12,6 +12,7 @@ import {
   CasePrintDocument,
   CaseView,
   ChallengedAccessRequest, Draft,
+  FieldTypeEnum,
   RoleAssignmentResponse,
   RoleCategory,
   RoleRequestPayload, SpecificAccessRequest
