@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { CaseView, ErrorMessage } from '../../../../../domain';
 import { CaseEditComponent } from '../../../../case-editor/case-edit';
 import { CasesService } from '../../../../case-editor/services/cases.service';
@@ -18,12 +19,16 @@ export class UnLinkCasesComponent implements OnInit {
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
+  @Output()
+  public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
 
   public unlinkCaseForm: FormGroup;
   public caseId: string;
   public linkedCases: CaseLink[] = [];
   public errorMessages: ErrorMessage[] = [];
   public unlinkErrorMessage: string;
+  public isLoaded: boolean;
+  public isServerError = false;
 
   constructor(private caseEdit: CaseEditComponent,
     private readonly fb: FormBuilder,
@@ -39,7 +44,7 @@ export class UnLinkCasesComponent implements OnInit {
     this.caseId = this.linkedCasesService.caseId;
     if (this.linkedCasesService.linkedCases.length > 0) {
       this.linkedCases = this.linkedCasesService.linkedCases;
-      this.initForm();
+      this.getAllLinkedCaseInformation();
     } else {
       this.casesService.getCaseViewV2(this.caseId).subscribe((caseView: CaseView) => {
         const linkedCasesTab = caseView.tabs.find(tab => tab.id === UnLinkCasesComponent.LINKED_CASES_TAB_ID);
@@ -47,10 +52,39 @@ export class UnLinkCasesComponent implements OnInit {
           const linkedCases: CaseLink[] = linkedCasesTab.fields[0].value;
           this.linkedCases = linkedCases;
           this.linkedCasesService.linkedCases = linkedCases;
-          this.initForm();
+          this.getAllLinkedCaseInformation();
         }
       });
     }
+  }
+
+  public getAllLinkedCaseInformation() {
+    const searchCasesResponse = [];
+    this.linkedCases.forEach(linkedCase => {
+      searchCasesResponse.push(this.casesService.getCaseViewV2(linkedCase.caseReference));
+    });
+    if (searchCasesResponse.length) {
+      this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
+        searchCases.forEach((response: CaseView) => {
+          const linkedCaseFromList = this.linkedCases.find(linkedCase => linkedCase.caseReference === response.case_id);
+          if (linkedCaseFromList) {
+            const caseName = this.linkedCasesService.getCaseName(response);
+            this.linkedCases.find(linkedCase => linkedCase.caseReference === response.case_id).caseName = caseName;
+          }
+        });
+        this.initForm();
+        this.linkedCasesService.linkedCases = this.linkedCases;
+        this.isServerError = false;
+      },
+      err => {
+        this.isServerError = true;
+        this.notifyAPIFailure.emit(true);
+      });
+    }
+  }
+
+  public searchCasesByCaseIds(searchCasesResponse: any[]) {
+    return forkJoin(searchCasesResponse);
   }
 
   public initForm(): void {

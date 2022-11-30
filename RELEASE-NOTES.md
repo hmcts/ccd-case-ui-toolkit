@@ -1,6 +1,7 @@
 ## RELEASE NOTES
-### Version 7.0.3-integration-of-case-flags-and-case-links
-**EUI-7241** Integration of case flags and case links
+
+### Version 4.20.28-linked-cases-private-law-integration
+**EUI-7219** Linked cases private law integration
 
 ### Version 6.10.0-rc4
 **EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
@@ -118,10 +119,10 @@ caching previous data when the user elects to change the case flag being created
 **EUI-6746** CR-52 JOH typeahead
 
 ### Version 4.20.24-linked-cases-private-law-integration
-**EUI-7219** Linked cases private law integration
+Linked cases private law integration
 
 ### Version 4.20.20-linked-cases-merge-from-release
-**EUI-7218** Linked cases merge from Release
+Linked cases merge from Release
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
