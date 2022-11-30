@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.0-rc6",
+  "version": "7.0.3-integration-of-case-flags-and-case-links",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
