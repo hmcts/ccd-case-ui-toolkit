@@ -1,5 +1,6 @@
 <div>
-  <button class="overlay-toggle" (click)="isOpen = !isOpen" type="button"
+  <button type="button" class="overlay-toggle"
+          (click)="$event.stopPropagation(); isOpen = !isOpen"
           cdkOverlayOrigin #trigger="cdkOverlayOrigin">
     <ng-content select="[trigger]"></ng-content>
   </button>
