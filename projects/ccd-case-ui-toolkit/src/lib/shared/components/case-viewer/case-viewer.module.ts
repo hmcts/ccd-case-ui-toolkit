@@ -5,6 +5,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { AlertModule } from '../../../components/banners/alert/alert.module';
 import { BannersModule } from '../../../components/banners/banners.module';
+import { NotificationBannerModule } from '../../../components/banners/notification-banner/notification-banner.module';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CaseReferencePipe } from '../../pipes';
 import {

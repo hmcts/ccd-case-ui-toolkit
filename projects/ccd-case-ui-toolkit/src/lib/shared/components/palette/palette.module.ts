@@ -1,6 +1,6 @@
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
@@ -27,6 +27,7 @@ import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -63,6 +64,7 @@ import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { CaseFlagRefdataService } from '../../services/case-flag';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -109,6 +111,7 @@ const PALETTE_COMPONENTS = [
     ReadComplexFieldRawComponent,
     ReadComplexFieldTableComponent,
     ReadComplexFieldCollectionTableComponent,
+    ReadCaseFlagFieldComponent,
 
     // Write
     WriteJudicialUserFieldComponent,
@@ -125,6 +128,7 @@ const PALETTE_COMPONENTS = [
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteCaseFlagFieldComponent,
 
     // new
     WriteYesNoFieldComponent,
@@ -172,7 +176,14 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
-
+    CaseFlagTableComponent,
+    SelectFlagTypeComponent,
+    SearchLanguageInterpreterComponent,
+    SelectFlagLocationComponent,
+    ManageCaseFlagsComponent,
+    AddCommentsComponent,
+    UpdateFlagComponent,
+    CaseFlagSummaryListComponent,
     ...PALETTE_COMPONENTS
   ],
   exports: [
@@ -185,6 +196,8 @@ const PALETTE_COMPONENTS = [
     ...PALETTE_COMPONENTS
   ],
   providers: [
+    ChangeDetectorRef as Provider,
+    CaseFlagRefdataService,
     YesNoService,
     CollectionCreateCheckerService,
     PaletteService,

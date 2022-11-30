@@ -5,6 +5,7 @@ export * from './unsupported-field.component';
 export * from './address';
 export * from './base-field';
 export * from './case-link';
+export * from './case-flag';
 export * from './collection';
 export * from './complex';
 export * from './date';
