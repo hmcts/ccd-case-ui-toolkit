@@ -27,6 +27,7 @@ describe('CaseEventCompletionComponent', () => {
   let httpService: HttpService;
   let errorService: HttpErrorService;
   let alertService: AlertService;
+  let sessionStorageService: any;
   let mockWorkAllocationService: WorkAllocationService;
   let mockCaseworkerService: CaseworkerService;
   let mockJudicialworkerService: JudicialworkerService;
@@ -76,7 +77,8 @@ describe('CaseEventCompletionComponent', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+  sessionStorageService = createSpyObj('sessionStorageService', ['getItem']);
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
   mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
   mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
   eventCompletionStateMachineService = createSpyObj<EventCompletionStateMachineService>('EventCompletionStateMachineService', ['initialiseStateMachine', 'createStates', 'addTransitions', 'startStateMachine']);

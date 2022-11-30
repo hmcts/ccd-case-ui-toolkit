@@ -66,6 +66,9 @@ export abstract class AbstractAppConfig {
   getUserInfoApiUrl(): string {
     return undefined;
   }
+  getWAServiceConfig(): any {
+    return undefined;
+  }
   getAccessManagementMode(): boolean {
     return undefined;
   }
@@ -83,6 +86,7 @@ export abstract class AbstractAppConfig {
   }
   abstract getRefundsUrl(): string;
   abstract getPaymentReturnUrl(): string;
+  abstract getCaseFlagsRefdataApiUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -116,6 +120,7 @@ export class CaseEditorConfig {
   cache_time_out: number;
   work_allocation_api_url: string;
   user_info_api_url: string;
+  wa_service_config?: any;
   access_management_mode?: boolean;
   access_management_basic_view_mock?: {
     active?: boolean,
@@ -142,4 +147,5 @@ export class CaseEditorConfig {
   cam_role_assignments_api_url?: string;
   refunds_url: string;
   payment_return_url: string;
+  case_flags_refdata_api_url: string;
 }

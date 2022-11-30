@@ -32,13 +32,14 @@ describe('EventStartGuard', () => {
   route.queryParams = {};
   const router = createSpyObj('router', ['navigate']);
   const service = createSpyObj('service', ['getTasksByCaseIdAndEventId']);
-  const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl']);
+  const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getWAServiceConfig']);
   const sessionStorageService = createSpyObj('sessionStorageService', ['getItem', 'removeItem', 'setItem']);
   sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
+  appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['caseType'], release: '3.0'}]});
 
   it('canActivate should return false', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
-    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
+    const guard = new EventStartGuard(service, router, sessionStorageService);
     const payload: TaskPayload = {
       task_required_for_event: true,
       tasks
@@ -52,7 +53,7 @@ describe('EventStartGuard', () => {
 
   it('canActivate should return true', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
-    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
+    const guard = new EventStartGuard(service, router, sessionStorageService);
     const payload: TaskPayload = {
       task_required_for_event: false,
       tasks: []
@@ -81,7 +82,7 @@ describe('EventStartGuard', () => {
     const caseId = '1234567890';
     const eventId = 'testEvent';
 
-    const guard = new EventStartGuard(service, router, appConfig, sessionStorageService);
+    const guard = new EventStartGuard(service, router, sessionStorageService);
 
     it('should return true if there are no tasks in the payload', () => {
       const mockEmptyPayload: TaskPayload = {task_required_for_event: false, tasks: []};

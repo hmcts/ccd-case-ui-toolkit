@@ -4,7 +4,6 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WorkAllocationService } from '../../case-editor';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { AbstractAppConfig } from '../../../../app.config';
 import { SessionStorageService } from '../../../services';
 
 @Injectable()
@@ -12,7 +11,6 @@ export class EventStartGuard implements CanActivate {
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
-    private readonly appConfig: AbstractAppConfig,
     private readonly sessionStorageService: SessionStorageService) {
   }
 
@@ -40,7 +38,6 @@ export class EventStartGuard implements CanActivate {
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
     // Clear taskToComplete from session as we will be starting the process for new task
     this.sessionStorageService.removeItem('taskToComplete');
-
     if (payload.task_required_for_event) {
       // There are some issues in EventTriggerResolver/CaseService and/or CCD for some events
       // which triggers the CanActivate guard again.
