@@ -25,9 +25,9 @@ export type FieldTypeEnum =
   | 'CaseHistoryViewer'
   | 'Organisation'
   | 'WaysToPay'
-  | 'CaseLink'
   | 'Flags'
   | 'FlagDetail'
   | 'FlagLauncher'
   | 'CaseFlag' // Temporary field type for faking Flags field type; to be removed
+  | 'CaseLink'
   | 'JudicialUserField';

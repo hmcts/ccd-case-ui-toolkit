@@ -64,9 +64,9 @@ const APP_CONFIG: AbstractAppConfig = {
     getCamRoleAssignmentsApiUrl: () => 'camRoleAssignmentsApiUrl',
     getLocationRefApiUrl: () => 'locationRefApiUrl',
     getPaymentReturnUrl: () => 'paymentReturnUrl',
+    getCaseFlagsRefdataApiUrl: () => 'caseFlagsRefdataApiUrl',
     getRDCommonDataApiUrl: () => 'rd_common_data_api_url',
     getCaseDataStoreApiUrl: () => 'case_data_store_api_url',
-    getCaseFlagsRefdataApiUrl: () => 'caseFlagsRefdataApiUrl',
     getWAServiceConfig: () => 'waServiceConfig'
   };
 

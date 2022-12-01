@@ -85,8 +85,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly errorNotifierService: ErrorNotifierService,
     private convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly crf: ChangeDetectorRef
+    private readonly crf: ChangeDetectorRef,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 

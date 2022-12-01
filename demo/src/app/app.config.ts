@@ -28,13 +28,16 @@ export class AppConfig extends AbstractAppConfig {
     'prd_url': 'api/caseshare/orgs',
     'cache_time_out': 45000,
     'work_allocation_api_url': '/workallocation',
+    'remote_print_service_url': '/print',
     'user_info_api_url': '/user-info',
     'document_management_url_v2': '/v2/health',
     'document_management_secure_enabled': true,
     'access_management_mode': true,
     'refunds_url': '/api/refunds',
     'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/',
-    'case_flags_refdata_api_url': '/refdata/commondata/caseflags/service-id=:sid'
+    'case_flags_refdata_api_url': '/refdata/commondata/caseflags/service-id=:sid',
+    'rd_common_data_api_url': '',
+    'case_data_store_api_url': ''
   };
 
   constructor(private http: HttpClient) {
@@ -178,5 +181,13 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCaseFlagsRefdataApiUrl(): string {
     return this.config.case_flags_refdata_api_url;
+  }
+
+  public getRDCommonDataApiUrl(): string {
+    return '';
+  }
+
+  public getCaseDataStoreApiUrl(): string {
+    return '';
   }
 }
