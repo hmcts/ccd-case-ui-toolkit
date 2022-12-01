@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.0-rc9
+**EUI-7265** Fix to ensure flag details can be added for a case field whose initial value is `null` or `undefined`
+
 ### Version 6.10.0-rc8
 **EUI-7272** Fix to ensure population of flag details from case fields is not attempted where the case field object has a `null` or `undefined` value
 
