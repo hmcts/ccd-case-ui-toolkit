@@ -13,12 +13,12 @@ import createSpy = jasmine.createSpy;
 describe('WriteCaseFlagFieldComponent', () => {
   let component: WriteCaseFlagFieldComponent;
   let fixture: ComponentFixture<WriteCaseFlagFieldComponent>;
-  const flaglauncher_id = 'FlagLauncher';
+  const flaglauncherId = 'FlagLauncher';
   const flagLauncherCaseField: CaseField = {
     id: 'FlagLauncher1',
     field_type: {
-      id: flaglauncher_id,
-      type: flaglauncher_id
+      id: flaglauncherId,
+      type: flaglauncherId
     }
   } as CaseField;
   const caseFlag1FieldId = 'CaseFlag1';
@@ -451,27 +451,27 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[0].value).toBeTruthy();
     expect(component.flagsData[1].caseField.value.details[1].id).toBeTruthy();
     expect(component.flagsData[1].caseField.value.details[1].value).toBeTruthy();
-    spyOn(component, 'populateNewFlagDetailInstance');
+    const populateNewFlagDetailInstanceSpy = spyOn(component, 'populateNewFlagDetailInstance').and.callThrough();
     let newFlag = {
       flags: null,
       pathToFlagsFormGroup: '',
       caseField: component.flagsData[0].caseField
-    } as FlagsWithFormGroupPath
+    } as FlagsWithFormGroupPath;
     component.selectedFlagsLocation = newFlag;
     component.addFlagToCollection();
-    expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
-    // Check there are now three case flag values in the caseField object for caseFlag1, and two in caseFlag2
+    expect(populateNewFlagDetailInstanceSpy).toHaveBeenCalled();
+    // // Check there are now three case flag values in the caseField object for caseFlag1, and two in caseFlag2
     expect(component.flagsData[0].caseField.value.details.length).toBe(3);
     expect(component.flagsData[0].caseField.value.details[2].id).toBeUndefined();
-    // FlagDetail value expected to be undefined because no caseFlagParentFormGroup value was set (which is used for
-    // populating the FlagDetail instance)
-    expect(component.flagsData[0].caseField.value.details[2].value).toBeUndefined();
+    // // FlagDetail value expected to be undefined because no caseFlagParentFormGroup value was set (which is used for
+    // // populating the FlagDetail instance)
+    expect(component.flagsData[0].caseField.value.details[2].value.name).toBeUndefined();
     expect(component.flagsData[1].caseField.value.details.length).toBe(2);
     newFlag = {
       flags: null,
       pathToFlagsFormGroup: '',
       caseField: component.flagsData[1].caseField
-    } as FlagsWithFormGroupPath
+    } as FlagsWithFormGroupPath;
     component.selectedFlagsLocation = newFlag;
     component.addFlagToCollection();
     // Check there are now two case flag values in the caseField object for caseFlag1, and three in caseFlag2
@@ -480,7 +480,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[2].id).toBeUndefined();
     // FlagDetail value expected to be undefined because no caseFlagParentFormGroup value was set (which is used for
     // populating the FlagDetail instance)
-    expect(component.flagsData[1].caseField.value.details[2].value).toBeUndefined();
+    expect(component.flagsData[1].caseField.value.details[2].value.name).toBeUndefined();
+    component.selectedFlagsLocation = null;
+    populateNewFlagDetailInstanceSpy.calls.reset();
   });
 
   it('should update flag in collection when updating a case flag', () => {
