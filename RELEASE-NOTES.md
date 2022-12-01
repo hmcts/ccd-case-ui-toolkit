@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 5.0.30-angular11-upgrade
+**EUI-6326** Angular 11 upgrade
+
 ### Version 6.10.0-rc4
 **EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
 **EUI-7225** Fix to display party role (if provided) alongside party name for party-level flags options on "Select flag location" page
@@ -113,9 +117,6 @@ caching previous data when the user elects to change the case flag being created
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
-
-### Version 5.0.29-angular11-upgrade
-**EUI-6326** Angular 11 upgrade
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
