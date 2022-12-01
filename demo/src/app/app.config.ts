@@ -37,6 +37,7 @@ export class AppConfig extends AbstractAppConfig {
     'payment_return_url': 'https://paymentoutcome-web.demo.platform.hmcts.net/',
     'case_flags_refdata_api_url': '/refdata/commondata/caseflags/service-id=:sid',
     'rd_common_data_api_url': '',
+    'case_data_store_api_url': ''
   };
 
   constructor(private http: HttpClient) {
