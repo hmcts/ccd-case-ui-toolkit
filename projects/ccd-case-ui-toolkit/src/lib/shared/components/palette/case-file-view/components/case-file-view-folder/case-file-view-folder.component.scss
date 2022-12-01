@@ -17,8 +17,38 @@
     .document-search {
       background: url(/assets/images/icon-search-black.svg) no-repeat right #FFF;
       background-position-x: calc(100% - 4px);
-      padding-right: 30px;
+      padding-right: calc(30px + 20px);
       width: 100%;
+
+      &:not(:valid) ~ .document-filter__reset {
+        display: none;
+      }
+    }
+
+    &__container {
+      position: relative;
+    }
+
+    &__reset {
+      background: none;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      height: 100%;
+      padding: 2px 0;
+      width: 20px;
+      position: absolute;
+      top: 0;
+      right: 30px;
+
+      &::before {
+        content: 'x';
+        padding: 6px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+      }
     }
   }
 
