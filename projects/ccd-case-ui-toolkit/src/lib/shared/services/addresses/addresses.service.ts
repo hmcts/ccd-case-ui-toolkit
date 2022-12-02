@@ -5,15 +5,10 @@ import { AbstractAppConfig } from '../../../app.config';
 import { AddressModel } from '../../domain/addresses';
 import { HttpService } from '../http';
 import { AddressParser } from './address-parser';
+import { AddressType } from './address-type.enum';
 
 @Injectable()
 export class AddressesService {
-
-  public static readonly DPA = 'DPA';
-
-  public static readonly UK = 'United Kingdom';
-
-  public static readonly RD06 = 'RD06';
 
   constructor(private readonly http: HttpService, private readonly appConfig: AbstractAppConfig) {
   }
@@ -26,7 +21,7 @@ export class AddressesService {
         map(res => res.results))
       .pipe(
         map(output => output.map(addresses =>
-          this.format(new AddressParser().parse(addresses[AddressesService.DPA]))
+          this.format(new AddressParser().parse(addresses[AddressType.DPA]))
         ))
       );
   }

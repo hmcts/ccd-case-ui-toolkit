@@ -14,7 +14,7 @@ import { FormErrorService } from '../../../services/form/form-error.service';
 import { FormValueService } from '../../../services/form/form-value.service';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
-import { initDialog } from '../../helpers';
+import { initDialog } from '../../helpers/init-dialog-helper';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
