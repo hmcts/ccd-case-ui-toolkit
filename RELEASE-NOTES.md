@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.0-rc8
+**EUI-7272** Fix to ensure population of flag details from case fields is not attempted where the case field object has a `null` or `undefined` value
+
 ### Version 6.10.0-rc7
 **EUI-7236** Fix to ensure function for deleting field values can handle collections of object values
 
