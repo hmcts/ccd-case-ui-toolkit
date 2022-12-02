@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.6-integration-of-case-flags-and-case-links
+**EUI-7241** Integration of case flags and case links
+
 ### Version 6.10.0-rc10
 **EUI-7265** Fix minor, unrelated bug causing console error when changing case tabs
 
