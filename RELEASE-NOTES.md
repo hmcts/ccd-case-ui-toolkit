@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.0-rc10
+**EUI-7265** Fix minor, unrelated bug causing console error when changing case tabs
+
 ### Version 6.10.0-rc9
 **EUI-7265** Fix to ensure flag details can be added for a case field whose initial value is `null` or `undefined`
 
