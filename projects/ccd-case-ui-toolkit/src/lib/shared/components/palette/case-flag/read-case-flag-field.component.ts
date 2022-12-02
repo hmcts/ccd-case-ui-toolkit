@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
@@ -14,8 +14,6 @@ import { CaseFlagSummaryListDisplayMode } from './enums';
   styleUrls: ['./read-case-flag-field.component.scss']
 })
 export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent implements OnInit {
-
-  @Input() public caseEditPageComponent: CaseEditPageComponent;
 
   public flagsData: FlagsWithFormGroupPath[];
   public partyLevelCaseFlagData: FlagsWithFormGroupPath[];
@@ -85,9 +83,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       }
     }
 
-    this.caseLevelFirstColumnHeader = this.caseEditPageComponent.getCaseTitle()
-      ? this.caseEditPageComponent.getCaseTitle()
-      : this.caseNameMissing;
+    this.caseLevelFirstColumnHeader = this.caseNameMissing;
   }
 
   private extractNewFlagToFlagDetailDisplayObject(selectedFlagsLocation: FlagsWithFormGroupPath): FlagDetailDisplay {

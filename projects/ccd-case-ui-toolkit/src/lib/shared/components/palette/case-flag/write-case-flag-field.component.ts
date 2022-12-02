@@ -3,7 +3,6 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
-import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
@@ -14,8 +13,6 @@ import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
   styleUrls: ['./write-case-flag-field.component.scss']
 })
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-
-  @Input() public caseEditPageComponent: CaseEditPageComponent;
 
   public formGroup: FormGroup;
   public fieldState: number;
@@ -86,9 +83,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
       // Get case title, to be used by child components
-      this.caseTitle = this.caseEditPageComponent.getCaseTitle()
-        ? this.caseEditPageComponent.getCaseTitle()
-        : this.caseNameMissing;
+      this.caseTitle = this.caseNameMissing;
     }
   }
 
@@ -124,9 +119,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       this.setCaseFlagParentFormGroup(caseFlagState.selectedFlag.pathToFlagsFormGroup);
     }
 
-    // Clear validation errors from the parent CaseEditPageComponent (given the "Next" button in a child component has
-    // been clicked)
-    this.caseEditPageComponent.validationErrors = [];
+
     this.errorMessages = caseFlagState.errorMessages;
     this.selectedFlag = caseFlagState.selectedFlag;
     // Validation succeeded; proceed to next state or final review stage ("Check your answers")
@@ -328,7 +321,5 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // Clear the "notAllCaseFlagStagesCompleted" error
     this.allCaseFlagStagesCompleted = true;
     this.formGroup.updateValueAndValidity();
-    // Perform a submit manually (as if the user had clicked "Continue")
-    this.caseEditPageComponent.submit();
   }
 }
