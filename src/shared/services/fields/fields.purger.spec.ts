@@ -235,4 +235,21 @@ describe('deleteFieldValue() tests', () => {
     fieldsPurger.deleteFieldValue(formGroup, COURT_SELECTION_FIELD);
     expect(formGroup.get('CourtSelection').value).toBeNull();
   });
+
+  it('should map array values to null, retaining any keys for object values', () => {
+    const array = [
+      {
+        id: '0',
+        value: 'Test'
+      },
+      'Test'
+    ];
+    expect(fieldsPurger.mapArrayValuesToNull(array)).toEqual([
+      {
+        id: null,
+        value: null
+      },
+      null
+    ]);
+  });
 });
