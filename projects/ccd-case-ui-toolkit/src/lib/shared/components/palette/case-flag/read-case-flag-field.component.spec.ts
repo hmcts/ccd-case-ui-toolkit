@@ -9,9 +9,6 @@ import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
-import createSpyObj = jasmine.createSpyObj;
-import createSpy = jasmine.createSpy;
-
 describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;
   let fixture: ComponentFixture<ReadCaseFlagFieldComponent>;
@@ -330,7 +327,6 @@ describe('ReadCaseFlagFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ReadCaseFlagFieldComponent);
     component = fixture.componentInstance;
-    component.caseEditPageComponent = createSpyObj('caseEditPageComponent', ['getCaseTitle']);
     fixture.detectChanges();
   });
 
@@ -342,12 +338,6 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set the first column header for case-level flags if the case title is available', () => {
-    component.caseEditPageComponent.getCaseTitle = createSpy().and.returnValue('Dummy case title');
-    component.ngOnInit();
-    expect(component.caseEditPageComponent.getCaseTitle).toHaveBeenCalled();
-    expect(component.caseLevelFirstColumnHeader).toEqual('Dummy case title');
-  });
 
   it('should extract all flags-related data from the CaseView object in the snapshot data', () => {
     component.caseField = flagLauncherCaseField;

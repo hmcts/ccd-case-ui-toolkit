@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, FieldType } from '../../../domain/definition';
@@ -7,7 +7,6 @@ import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPa
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
-import createSpyObj = jasmine.createSpyObj;
 import createSpy = jasmine.createSpy;
 
 describe('WriteCaseFlagFieldComponent', () => {
@@ -302,7 +301,7 @@ describe('WriteCaseFlagFieldComponent', () => {
 
   const updateMode = '#ARGUMENT(UPDATE)';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -317,7 +316,6 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteCaseFlagFieldComponent);
     component = fixture.componentInstance;
-    component.caseEditPageComponent = createSpyObj('caseEditPageComponent', ['submit', 'getCaseTitle']);
     spyOn(component, 'setDisplayContextParameterUpdate').and.callThrough();
     component.formGroup = parentFormGroup;
     component.caseField = flagLauncherCaseField;
@@ -357,13 +355,6 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.setDisplayContextParameterUpdate).toHaveBeenCalled();
     expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS);
-  });
-
-  it('should set the case title if it is available', () => {
-    component.caseEditPageComponent.getCaseTitle = createSpy().and.returnValue('Dummy case title');
-    component.ngOnInit();
-    expect(component.caseEditPageComponent.getCaseTitle).toHaveBeenCalled();
-    expect(component.caseTitle).toEqual('Dummy case title');
   });
 
   // TODO: Need to re-visit later as the next button has been moved to the child components
@@ -703,7 +694,6 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.addFlagToCollection).toHaveBeenCalled();
     expect(component.updateFlagInCollection).not.toHaveBeenCalled();
     expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
-    expect(component.caseEditPageComponent.submit).toHaveBeenCalled();
   });
 
   it('should set the CaseField value for the Flags object at the end of the Manage Case Flags journey', () => {
@@ -717,7 +707,6 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.addFlagToCollection).not.toHaveBeenCalled();
     expect(component.updateFlagInCollection).toHaveBeenCalled();
     expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
-    expect(component.caseEditPageComponent.submit).toHaveBeenCalled();
   });
 
   it('should populate a new FlagDetail instance with data held by the component', () => {
