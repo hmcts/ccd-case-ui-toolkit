@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.0.4-integration-of-case-flags-and-case-links
+### Version 7.0.5-integration-of-case-flags-and-case-links
 **EUI-7241** Integration of case flags and case links
 
 ### Version 6.10.0-rc4
