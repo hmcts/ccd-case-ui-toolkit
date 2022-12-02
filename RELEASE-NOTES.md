@@ -1,7 +1,15 @@
 ## RELEASE NOTES
+### Version 6.10.0-rc10
+**EUI-7265** Fix minor, unrelated bug causing console error when changing case tabs
 
-### Version 7.0.4-integration-of-case-flags-and-case-links
-**EUI-7241** Integration of case flags and case links
+### Version 6.10.0-rc9
+**EUI-7265** Fix to ensure flag details can be added for a case field whose initial value is `null` or `undefined`
+
+### Version 6.10.0-rc8
+**EUI-7272** Fix to ensure population of flag details from case fields is not attempted where the case field object has a `null` or `undefined` value
+
+### Version 6.10.0-rc7
+**EUI-7236** Fix to ensure function for deleting field values can handle collections of object values
 
 ### Version 6.10.0-rc4
 **EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
@@ -114,15 +122,6 @@ caching previous data when the user elects to change the case flag being created
 ### Version 4.13.1-case-flags-tab-and-banner-message
 **EUI-4836** Add case flags tab to case details
 **EUI-4897** Add banner message to case details
-
-### Version 4.22.0-judicial-user-typeahead
-**EUI-6746** CR-52 JOH typeahead
-
-### Version 4.20.24-linked-cases-private-law-integration
-Linked cases private law integration
-
-### Version 4.20.20-linked-cases-merge-from-release
-Linked cases merge from Release
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
