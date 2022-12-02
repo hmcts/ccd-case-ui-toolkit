@@ -290,8 +290,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     const id = (<HTMLElement>tab.element.nativeElement).id;
     // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
     // so have to hard code the hearings id here
-    if ((tabChangeEvent.index <= 1 && this.prependedTabs.length) ||
-      (this.appendedTabs.length && id === 'hearings')) {
+    if ((tabChangeEvent.index <= 1 && this.prependedTabs && this.prependedTabs.length) ||
+      (this.appendedTabs && this.appendedTabs.length && id === 'hearings')) {
       this.router.navigate([id], {relativeTo: this.route});
     } else {
       const label = tabChangeEvent.tab.textLabel;

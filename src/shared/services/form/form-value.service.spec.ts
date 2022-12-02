@@ -1,4 +1,3 @@
-import { TestBed } from '@angular/core/testing';
 import { CaseField, FieldType } from '../../domain/definition';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
@@ -744,6 +743,21 @@ describe('FormValueService', () => {
         }
       } as CaseField,
       {
+        id: 'caseFlagField3',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: null
+      } as CaseField,
+      {
+        id: 'caseFlagField4',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType
+      } as CaseField,
+      {
         id: 'flagLauncherField',
         field_type: {
           id: 'FlagLauncher',
@@ -763,6 +777,16 @@ describe('FormValueService', () => {
         field1: null,
         field2: null
       },
+      caseFlagField3: {
+        field0: null,
+        field1: null,
+        field2: null
+      },
+      caseFlagField4: {
+        field0: null,
+        field1: null,
+        field2: null
+      },
       flagLauncherField: {}
     };
 
@@ -775,6 +799,16 @@ describe('FormValueService', () => {
           field3: null
         },
         caseFlagField2: {
+          field0: null,
+          field1: null,
+          field2: null
+        },
+        caseFlagField3: {
+          field0: null,
+          field1: null,
+          field2: null
+        },
+        caseFlagField4: {
           field0: null,
           field1: null,
           field2: null
@@ -796,10 +830,17 @@ describe('FormValueService', () => {
           field1: 'One',
           field2: 'Two'
         },
+        caseFlagField3: {
+          field0: null,
+          field1: null,
+          field2: null
+        },
+        caseFlagField4: {
+          field0: null,
+          field1: null,
+          field2: null
+        }
       });
     });
   });
 });
-function createSpyObj(arg0: string, arg1: string[]): any {
-  throw new Error('Function not implemented.');
-}

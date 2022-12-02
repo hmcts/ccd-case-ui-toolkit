@@ -198,15 +198,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     if (path.indexOf('.') > -1) {
       path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
     }
-    if (flagsCaseFieldValue) {
-      // Create a details array if one does not exist
-      if (!flagsCaseFieldValue.hasOwnProperty('details')) {
-        flagsCaseFieldValue.details = [];
-      }
-      // Populate new FlagDetail instance and add to the Flags data within the CaseField instance of the selected flag
-      // location
-      flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+    // If the CaseField for the selected flags location has no value, set it to an empty object so it can be populated
+    // with flag details
+    if (!flagsCaseFieldValue) {
+      this.selectedFlagsLocation.caseField.value = {};
+      flagsCaseFieldValue = this.selectedFlagsLocation.caseField.value;
     }
+    // Create a details array if one does not exist
+    if (!flagsCaseFieldValue.hasOwnProperty('details')) {
+      flagsCaseFieldValue.details = [];
+    }
+    // Populate new FlagDetail instance and add to the Flags data within the CaseField instance of the selected flag
+    // location
+    flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
   }
 
   public updateFlagInCollection(): void {
