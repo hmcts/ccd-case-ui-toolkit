@@ -98,12 +98,12 @@ export class LinkCasesComponent implements OnInit {
     }
     const caseNumber = this.linkCaseForm.value.caseNumber;
     return !!linkedCases.find(
-      (caseLink) => caseLink.caseReference === caseNumber
+      (caseLink) => caseLink.caseReference.split('-').join('') === caseNumber.split('-').join('')
     );
   }
 
   private isCaseSelectedSameAsCurrentCase(): boolean {
-    return this.linkCaseForm.value.caseNumber === this.linkedCasesService.caseId
+    return this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('');
   }
 
   public showErrorInfo(): void {
@@ -115,7 +115,7 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber',
       });
     }
-     if (this.linkCaseForm.controls.reasonType.invalid) {
+    if (this.linkCaseForm.controls.reasonType.invalid) {
       this.caseReasonError = LinkedCasesErrorMessages.ReasonSelectionError;
       this.errorMessages.push({
         title: 'dummy-case-reason',
@@ -123,7 +123,7 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseReason',
       });
     }
-     if (this.isCaseSelected(this.selectedCases)) {
+    if (this.isCaseSelected(this.selectedCases)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CaseProposedError;
       this.errorMessages.push({
         title: 'dummy-case-number',
@@ -131,7 +131,7 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber',
       });
     }
-     if (this.isCaseSelected(this.linkedCasesService.linkedCases)) {
+    if (this.isCaseSelected(this.linkedCasesService.linkedCases)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CasesLinkedError;
       this.errorMessages.push({
         title: 'dummy-case-number',
@@ -139,7 +139,7 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber',
       });
     }
-    if (this.linkCaseForm.value.caseNumber === this.linkedCasesService.caseId) {
+    if (this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('')) {
       this.errorMessages.push({
         title: 'dummy-case-number',
         description: LinkedCasesErrorMessages.ProposedCaseWithIn,
