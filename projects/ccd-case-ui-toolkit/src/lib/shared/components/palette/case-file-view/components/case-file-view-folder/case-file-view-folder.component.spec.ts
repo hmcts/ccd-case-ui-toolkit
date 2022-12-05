@@ -7,7 +7,7 @@ import { plainToClass } from 'class-transformer';
 import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
-import { WindowService } from '../../../../../services';
+import { DocumentManagementService, WindowService } from '../../../../../services';
 import { mockDocumentManagementService } from '../../../../../services/document-management/document-management.service.mock';
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
