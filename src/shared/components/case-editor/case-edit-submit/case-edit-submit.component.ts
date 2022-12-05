@@ -98,6 +98,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.isCaseFlagSubmission = this.eventTrigger.case_fields.some(
       caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
     this.pageTitle = this.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
+    this.submitFormOnLoad();
   }
 
   public ngOnDestroy(): void {
@@ -379,6 +380,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public isChangeAllowed(field: CaseField): boolean {
     return !this.caseFieldService.isReadOnly(field);
+  }
+
+  public submitFormOnLoad(): void {
+    if (!this.checkYourAnswerFieldsToDisplayExists()) {
+      this.submit();
+    }
   }
 
   public checkYourAnswerFieldsToDisplayExists(): boolean {
