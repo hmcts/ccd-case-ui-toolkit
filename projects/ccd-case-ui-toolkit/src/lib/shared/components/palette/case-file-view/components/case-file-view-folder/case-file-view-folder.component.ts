@@ -52,8 +52,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private windowService: WindowService,
-    private router: Router,
+    private readonly windowService: WindowService,
+    private readonly router: Router,
     private readonly documentManagementService: DocumentManagementService
   ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
@@ -142,24 +142,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return uncategorisedNode;
   }
 
-  public sortDataSourceAscAlphabetically() {
-    const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenAscending();
-      return item;
-    });
-
-    this.updateNodeData(sortedData);
-  }
-
-  public sortDataSourceDescAlphabetically() {
-    const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending();
-      return item;
-    });
-
-    this.updateNodeData(sortedData);
-  }
-
   public filter(searchTerm: string): Observable<DocumentTreeNode[]> {
     // Make a copy of the data so we do not mutate the original
     function copy(node: DocumentTreeNode) {
@@ -185,7 +167,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public triggerDocumentAction(
     actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print',
     documentTreeNode: DocumentTreeNode
-  ) {
+  ): void {
     switch(actionType) {
       case('changeFolder'):
         console.log('changeFolder!');
@@ -212,7 +194,25 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public updateNodeData(data: DocumentTreeNode[]) {
+  public sortDataSourceAscAlphabetically() {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenAscending();
+      return item;
+    });
+
+    this.updateNodeData(sortedData);
+  }
+
+  public sortDataSourceDescAlphabetically() {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenDescending();
+      return item;
+    });
+
+    this.updateNodeData(sortedData);
+  }
+
+  public updateNodeData(data: DocumentTreeNode[]): void {
     const prevSelected = this.nestedTreeControl.expansionModel.selected.map(
       (item) => {
         return item.name;

@@ -7,7 +7,7 @@ import { plainToClass } from 'class-transformer';
 import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
-import { DocumentManagementService, WindowService } from '../../../../../services';
+import { WindowService } from '../../../../../services';
 import { mockDocumentManagementService } from '../../../../../services/document-management/document-management.service.mock';
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
@@ -135,7 +135,7 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyDesc);
   });
 
-  it('should set mediaViewer localStorage ' +
+  it('should set mediaViewer localStorage' +
     'and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
     const documentTreeNode = component.nestedDataSource[0].children[3];
     component.triggerDocumentAction('openInANewTab', documentTreeNode);

@@ -54,6 +54,14 @@
     }
   }
 
+  &__node {
+    display: block;
+
+    .document-tree-container__node {
+      padding-left: 40px;
+    }
+  }
+
   .document-tree-invisible {
     display: none;
   }
