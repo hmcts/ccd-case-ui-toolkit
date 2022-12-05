@@ -11,7 +11,6 @@ import { CaseFileViewService } from '../../../services';
   styleUrls: ['./case-file-view-field.component.scss'],
 })
 export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDestroy {
-
   public static readonly PARAM_CASE_ID = 'cid';
   public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
   public categoriesAndDocumentsSubscription: Subscription;

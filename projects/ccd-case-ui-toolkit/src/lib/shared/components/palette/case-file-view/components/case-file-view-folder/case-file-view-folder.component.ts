@@ -1,6 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import {
@@ -10,6 +11,8 @@ import {
   DocumentTreeNode,
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
+import { DocumentManagementService, WindowService } from '../../../../../services';
+export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 
 @Component({
   selector: 'ccd-case-file-view-folder',
@@ -46,7 +49,11 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor() {
+  constructor(
+    private readonly windowService: WindowService,
+    private readonly router: Router,
+    private readonly documentManagementService: DocumentManagementService
+  ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
 
@@ -77,6 +84,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         const uncategorisedDocuments = this.getUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents);
         this.documentTreeData.push(uncategorisedDocuments);
       }
+
       // Initialise cdk tree with generated data
       this.nestedDataSource = this.documentTreeData;
       this.nestedTreeControl.dataNodes = this.documentTreeData;
@@ -103,6 +111,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       const documentTreeNode = new DocumentTreeNode();
       documentTreeNode.name = document.document_filename;
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
+      documentTreeNode.document_filename = document.document_filename;
+      documentTreeNode.document_binary_url = document.document_binary_url;
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -116,6 +126,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       const documentTreeNode = new DocumentTreeNode();
       documentTreeNode.name = document.document_filename;
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
+      documentTreeNode.document_filename = document.document_filename;
+      documentTreeNode.document_binary_url = document.document_binary_url;
 
       documents.push(documentTreeNode);
     });
@@ -126,6 +138,24 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     uncategorisedNode.children = documents;
 
     return uncategorisedNode;
+  }
+
+  public sortDataSourceAscAlphabetically(): void {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenAscending();
+      return item;
+    });
+
+    this.updateNodeData(sortedData);
+  }
+
+  public sortDataSourceDescAlphabetically(): void {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenDescending();
+      return item;
+    });
+
+    this.updateNodeData(sortedData);
   }
 
   public filter(searchTerm: string): Observable<DocumentTreeNode[]> {
@@ -150,13 +180,24 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return of(filteredData);
   }
 
-  public triggerDocumentAction(actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print') {
+  public triggerDocumentAction(
+    actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print',
+    documentTreeNode: DocumentTreeNode
+  ): void {
     switch(actionType) {
       case('changeFolder'):
         console.log('changeFolder!');
         break;
       case('openInANewTab'):
-        console.log('openInANewTab!');
+        this.windowService.setLocalStorage(MEDIA_VIEWER_LOCALSTORAGE_KEY,
+          this.documentManagementService.getMediaViewerInfo({
+            document_binary_url: documentTreeNode.document_binary_url,
+            document_filename: documentTreeNode.document_filename
+          }));
+
+        this.windowService.openOnNewTab(
+          this.router.createUrlTree(['/media-viewer'])?.toString()
+        );
         break;
       case('download'):
         console.log('download!');
@@ -169,30 +210,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public sortDataSourceAscAlphabetically() {
-    const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenAscending();
-
-      const newDocumentTreeNode = new DocumentTreeNode();
-      newDocumentTreeNode.name = item.name;
-      newDocumentTreeNode.type = item.type;
-      newDocumentTreeNode.children = item.children;
-
-      return newDocumentTreeNode;
-    });
-
-    this.updateNodeData(sortedData);
-  }
-  public sortDataSourceDescAlphabetically() {
-    const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending();
-      return item;
-    });
-
-    this.updateNodeData(sortedData);
-  }
-
-  public updateNodeData(data: DocumentTreeNode[]) {
+  public updateNodeData(data: DocumentTreeNode[]): void {
     const prevSelected = this.nestedTreeControl.expansionModel.selected.map(
       (item) => {
         return item.name;

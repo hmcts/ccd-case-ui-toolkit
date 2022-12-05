@@ -1,12 +1,13 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { plainToClass } from 'class-transformer';
+import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
-import {
-  DocumentTreeNode, DocumentTreeNodeType
-} from '../../../../../domain/case-file-view';
+import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
+import { DocumentManagementService, WindowService } from '../../../../../services';
 import {
   categorisedTreeData,
   treeData,
@@ -14,7 +15,7 @@ import {
   treeDataSortedAlphabeticallyDesc,
   uncategorisedTreeData
 } from '../../test-data/document-tree-node-test-data';
-import { CaseFileViewFolderComponent } from './case-file-view-folder.component';
+import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 
 describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
@@ -22,15 +23,32 @@ describe('CaseFileViewFolderComponent', () => {
   let nativeElement: any;
 
   beforeEach(async(() => {
+    const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
+    const mockDocumentManagementService = createSpyObj<DocumentManagementService>('DocumentManagementService', ['getMediaViewerInfo']);
+    mockDocumentManagementService.getMediaViewerInfo.and.callFake((documentFieldValue: any) => {
+      return JSON.stringify({
+        document_binary_url: documentFieldValue.document_binary_url,
+        document_filename: documentFieldValue.document_filename,
+        content_type: documentFieldValue.document_binary_url,
+        annotation_api_url: documentFieldValue.document_binary_url,
+        case_id: documentFieldValue.id,
+        case_jurisdiction: documentFieldValue.jurisdiction
+      });
+    });
+
     TestBed.configureTestingModule({
       imports: [
         CdkTreeModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        RouterTestingModule
       ],
       declarations: [
         CaseFileViewFolderComponent
       ],
-      providers: []
+      providers: [
+        { provide: WindowService, useValue: mockWindowService },
+        { provide: DocumentManagementService, useValue: mockDocumentManagementService }
+      ]
     })
     .compileComponents();
 
@@ -63,17 +81,24 @@ describe('CaseFileViewFolderComponent', () => {
     const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
         name: 'Lager encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT
+        type: DocumentTreeNodeType.DOCUMENT,
+        document_filename: 'Lager encyclopedia',
+        document_binary_url: '/test/binary'
       },
       {
         name: 'Beers encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT
+        type: DocumentTreeNodeType.DOCUMENT,
+        document_filename: 'Beers encyclopedia',
+        document_binary_url: '/test/binary'
       },
       {
         name: 'Ale encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT
+        type: DocumentTreeNodeType.DOCUMENT,
+        document_filename: 'Ale encyclopedia',
+        document_binary_url: '/test/binary'
       }
     ]);
+
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
   });
 
@@ -117,6 +142,25 @@ describe('CaseFileViewFolderComponent', () => {
     });
 
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyDesc);
+  });
+
+  it('should set mediaViewer localStorage' +
+    'and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
+    const documentTreeNode = component.nestedDataSource[0].children[3];
+    component.triggerDocumentAction('openInANewTab', documentTreeNode);
+
+    // @ts-expect-error -- private method
+    expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
+      MEDIA_VIEWER_LOCALSTORAGE_KEY,
+      // @ts-expect-error -- private method
+      component.documentManagementService.getMediaViewerInfo({
+        document_binary_url: documentTreeNode.document_binary_url,
+        document_filename: documentTreeNode.document_filename
+      })
+    );
+
+    // @ts-expect-error -- private method
+    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
   });
 
   it('should display correct folder icons', () => {

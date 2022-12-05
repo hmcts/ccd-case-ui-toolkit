@@ -35,28 +35,56 @@
 }
 
 .document-tree-container {
-  margin: 4px;
+  padding: 4px 6px;
   overflow-x: hidden;
   overflow-y: scroll;
   height: 400px;
+
+  &__node {
+    display: block;
+
+    .document-tree-container__node {
+      padding-left: 40px;
+    }
+  }
 
   .document-tree-invisible {
     display: none;
   }
 
-  .document-tree ul,
-  .document-tree li {
-    margin-top: 0;
-    margin-bottom: 0;
-    list-style-type: none;
+  &::-webkit-scrollbar {
+    width: 7px;
   }
 
-  .document-tree-node {
-    display: block;
+  &::-webkit-scrollbar-thumb {
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #AAAAAA;
   }
 
-  .document-tree-node .document-tree-node {
-    padding-left: 40px;
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background: #EEE;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #CCC;
+  }
+}
+
+.document-folders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #C9C9C9;
+  padding: 10px;
+
+  &__title {
+    font-weight: 700;
   }
 }
 
@@ -64,7 +92,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 6px;
+  padding: 6px 4px;
   background: none;
   border: 0;
   cursor: pointer;
@@ -76,45 +104,37 @@
     display: inline-block;
   }
 
-  &__iconImg {
-    display: block;
-    height: 24px;
-    width: 24px;
-  }
-
   &__count {
-    color: #fff;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 0.875rem;
     // padding needed to adjust position
     padding-top: 4px;
   }
 
-  &__name {
-    margin-left: 6px;
-    font-size: 1rem;
+  &__iconImg {
+    display: block;
+    height: 30px;
+    width: 30px;
   }
 
   &__document-options {
     margin-left: auto;
     margin-right: 0;
   }
-}
 
-.document-tree::-webkit-scrollbar {
-  width: 0.5em;
-}
+  &__name {
+    margin-left: 6px;
+    font-size: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.document-tree::-webkit-scrollbar-button {
-  display: none;
-}
-
-.document-tree::-webkit-scrollbar-track-piece {
-  background: #EEE;
-}
-
-.document-tree::-webkit-scrollbar-thumb {
-  background: #CCC;
+  &__document-options {
+    margin-left: auto;
+    margin-right: 0;
+  }
 }
