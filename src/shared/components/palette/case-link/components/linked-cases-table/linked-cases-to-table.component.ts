@@ -11,8 +11,10 @@ interface LinkedCasesResponse {
   caseReference: string
   caseName: string
   caseType: string;
+  caseTypeDescription: string;
   service: string;
   state: string;
+  stateDescription: string;
   reasons: []
 }
 
@@ -150,9 +152,11 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     return caseInfo && {
       caseReference: esSearchCasesResponse.case_id,
       caseName: this.linkedCasesService.getCaseName(esSearchCasesResponse),
-      caseType: esSearchCasesResponse.case_type.description || '',
+      caseType: esSearchCasesResponse.case_type.name || '',
+      caseTypeDescription: esSearchCasesResponse.case_type.description || '',
       service: esSearchCasesResponse.case_type && esSearchCasesResponse.case_type.jurisdiction.description || '',
-      state: esSearchCasesResponse.state.description || '',
+      state: esSearchCasesResponse.state.name || '',
+      stateDescription: esSearchCasesResponse.state.description || '',
       reasons: caseInfo.value && caseInfo.value.ReasonForLink &&
         caseInfo.value.ReasonForLink.map(reason => reason.value && reason.value.Reason),
     } as LinkedCasesResponse;

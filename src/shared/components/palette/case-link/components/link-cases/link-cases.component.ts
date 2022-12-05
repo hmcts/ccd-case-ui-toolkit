@@ -161,9 +161,11 @@ export class LinkCasesComponent implements OnInit {
             caseReference: caseView.case_id,
             reasons: this.getSelectedCaseReasons(),
             createdDateTime: moment(new Date()).format(this.ISO_FORMAT),
-            caseType: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('CASE_TYPE', caseView.case_type.id),
-            caseState: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('STATE', caseView.state.name),
-            caseService: this.linkedCasesService.mapLookupIDToValueFromJurisdictions('JURISDICTION', caseView.case_type.jurisdiction.name),
+            caseType: caseView.case_type.name || '',
+            caseTypeDescription: caseView.case_type.description || '',
+            caseState: caseView.state.name || '',
+            caseStateDescription: caseView.state.description || '',
+            caseService: caseView.case_type && caseView.case_type.jurisdiction && caseView.case_type.jurisdiction.description || '',
             caseName: this.linkedCasesService.getCaseName(caseView),
           };
           const ccdApiCaseLinkData: CCDCaseLinkType = {

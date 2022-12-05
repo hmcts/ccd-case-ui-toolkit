@@ -349,7 +349,9 @@ describe('ReadLinkedCases', () => {
       reasons: [],
       createdDateTime: '',
       caseType: 'SSCS',
+      caseTypeDescription: 'SSCS case type',
       caseState: 'state',
+      caseStateDescription: 'state description',
       caseService: 'Tribunal',
       caseName: 'SSCS 2.1'
     },
@@ -358,7 +360,9 @@ describe('ReadLinkedCases', () => {
       reasons: [],
       createdDateTime: '',
       caseType: 'SSCS',
+      caseTypeDescription: 'SSCS case type',
       caseState: 'state',
+      caseStateDescription: 'state description',
       caseService: 'Tribunal',
       caseName: 'SSCS 2.1'
     }

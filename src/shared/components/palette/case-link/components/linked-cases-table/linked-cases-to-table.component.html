@@ -17,9 +17,9 @@
                 rel="noopener"><span class="govuk-link">{{case.caseName}} <br>
                   {{case.caseReference | ccdCaseReference}}</span></a></p>
           </td>
-          <td><span>{{case.caseType}}</span></td>
+          <td><span [title]="case.caseTypeDescription">{{case.caseType}}</span></td>
           <td><span>{{case.service}}</span></td>
-          <td><span>{{case.state}}</span>
+          <td><span [title]="case.stateDescription">{{case.state}}</span>
           </td>
           <td *ngIf="case && case.reasons">
             <span *ngFor="let reason of case.reasons; let i = index; let isLast = last">

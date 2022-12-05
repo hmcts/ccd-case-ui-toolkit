@@ -119,13 +119,17 @@ export class LinkedCasesService {
     const selectedJurisdiction = this.jurisdictionsResponse &&
       this.jurisdictionsResponse.find(item => item.id === this.caseDetails.case_type.jurisdiction.id);
     const selectedCaseType = selectedJurisdiction && selectedJurisdiction.caseTypes.find(item => item.id === this.caseDetails.case_type.id);
+    const state = selectedCaseType && selectedCaseType.states.find(item => item.id === fieldValue);
     switch (fieldName) {
       case 'JURISDICTION':
         return selectedJurisdiction && selectedJurisdiction.description;
       case 'CASE_TYPE':
+        return selectedCaseType && selectedCaseType.name;
+      case 'CASE_TYPE_DESCRIPTION':
         return selectedCaseType && selectedCaseType.description;
       case 'STATE':
-        const state = selectedCaseType && selectedCaseType.states.find(item => item.id === fieldValue);
+        return state && state.name || fieldValue;
+      case 'STATE_DESCRIPTION':
         return state && state.description || fieldValue;
       default:
         break;

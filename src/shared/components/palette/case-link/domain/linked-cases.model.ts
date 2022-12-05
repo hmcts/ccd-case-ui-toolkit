@@ -26,7 +26,9 @@ export class CaseLink {
   reasons: LinkReason[];
   createdDateTime: string;
   caseType: string;
+  caseTypeDescription: string;
   caseState: string;
+  caseStateDescription: string;
   caseService: string;
   caseName: string;
   unlink?: boolean;
@@ -46,8 +48,10 @@ export class CaseLinkResponse {
   caseNameHmctsInternal: string;
   caseReference: string;
   ccdCaseType: string;
+  ccdCaseTypeDescription: string;
   ccdJurisdiction: string;
   state: string;
+  stateDescription: string;
   linkDetails: [LinkDetails];
 }
 
