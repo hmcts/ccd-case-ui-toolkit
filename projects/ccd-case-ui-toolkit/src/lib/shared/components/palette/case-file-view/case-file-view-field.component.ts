@@ -2,8 +2,8 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angula
 import { ActivatedRoute } from '@angular/router';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { CategoriesAndDocuments } from '../../../domain/case-file-view';
-import { CaseFileViewService } from '../../../services';
+import { CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
+import { CaseFileViewService, DocumentManagementService } from '../../../services';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -11,15 +11,17 @@ import { CaseFileViewService } from '../../../services';
   styleUrls: ['./case-file-view-field.component.scss'],
 })
 export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDestroy {
-
   public static readonly PARAM_CASE_ID = 'cid';
   public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
   public categoriesAndDocumentsSubscription: Subscription;
   public getCategoriesAndDocumentsError = false;
+  public currentDocument: { document_binary_url: string, document_filename: string, content_type: string } | undefined;
 
   constructor(private readonly elementRef: ElementRef,
               private readonly route: ActivatedRoute,
-              private caseFileViewService: CaseFileViewService) {
+              private caseFileViewService: CaseFileViewService,
+              private documentManagementService: DocumentManagementService
+  ) {
   }
 
   public ngOnInit(): void {
@@ -59,6 +61,14 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
       const calculatedWidth = ((pos.documentTreeContainerWidth + pos.dx) * 100) / slider.parentElement.getBoundingClientRect().width;
       documentTreeContainer.setAttribute('style', `width: ${calculatedWidth}%`);
     });
+  }
+
+  public setMediaViewerFile(document: DocumentTreeNode): void {
+    const mediaViewerInfo = this.documentManagementService.getMediaViewerInfo({
+      document_binary_url: document.document_binary_url,
+      document_filename: document.document_filename
+    });
+    this.currentDocument = JSON.parse(mediaViewerInfo);
   }
 
   public ngOnDestroy(): void {

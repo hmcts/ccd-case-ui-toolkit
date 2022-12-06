@@ -6,6 +6,8 @@ export class DocumentTreeNode {
   public type: DocumentTreeNodeType;
   @Type(() => DocumentTreeNode)
   public children?: DocumentTreeNode[];
+  public document_filename?: string;
+  public document_binary_url?: string;
 
   @Expose()
   public get childDocumentCount() {

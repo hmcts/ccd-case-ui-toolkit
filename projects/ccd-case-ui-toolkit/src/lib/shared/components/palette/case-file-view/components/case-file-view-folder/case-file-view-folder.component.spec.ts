@@ -1,17 +1,20 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
 import { plainToClass } from 'class-transformer';
+import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
-import {
-  CaseFileViewDocument, DocumentTreeNode, DocumentTreeNodeType
-} from '../../../../../domain/case-file-view';
-import { categoriesAndDocuments } from '../../test-data/categories-and-documents-test-data';
+import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
+import { DocumentManagementService, WindowService } from '../../../../../services';
+import { mockDocumentManagementService } from '../../../../../services/document-management/document-management.service.mock';
+import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
   categorisedTreeData,
   treeData
 } from '../../test-data/document-tree-node-test-data';
-import { CaseFileViewFolderComponent } from './case-file-view-folder.component';
+import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 
 describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
@@ -19,21 +22,27 @@ describe('CaseFileViewFolderComponent', () => {
   let nativeElement: any;
 
   beforeEach(async(() => {
+    const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
+
     TestBed.configureTestingModule({
       imports: [
         CdkTreeModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        RouterTestingModule
       ],
       declarations: [
         CaseFileViewFolderComponent
       ],
-      providers: []
+      providers: [
+        { provide: WindowService, useValue: mockWindowService },
+        { provide: DocumentManagementService, useValue: mockDocumentManagementService }
+      ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(CaseFileViewFolderComponent);
     component = fixture.componentInstance;
-    component.categoriesAndDocuments = of(categoriesAndDocuments);
+    component.categoriesAndDocuments = of(categoriesAndDocumentsTestData);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   }));
@@ -52,30 +61,37 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should generate tree data from categorised data', () => {
-    expect(component.generateTreeData(categoriesAndDocuments.categories)).toEqual(categorisedTreeData);
+    expect(component.generateTreeData(categoriesAndDocumentsTestData.categories)).toEqual(categorisedTreeData);
   });
 
   it('should get documents from category', () => {
-    const documents = categoriesAndDocuments.categories[0].documents;
+    const documents = categoriesAndDocumentsTestData.categories[0].documents;
     const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
       {
         name: 'Lager encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT,
+        document_filename: 'Lager encyclopedia',
+        document_binary_url: '/test/binary'
       },
       {
         name: 'Beers encyclopedia',
-        type: 'document'
+        type: DocumentTreeNodeType.DOCUMENT,
+        document_filename: 'Beers encyclopedia',
+        document_binary_url: '/test/binary'
       },
       {
         name: 'Ale encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT
+        type: DocumentTreeNodeType.DOCUMENT,
+        document_filename: 'Ale encyclopedia',
+        document_binary_url: '/test/binary'
       }
     ]);
+
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
   });
 
   it('should get uncategorised documents', () => {
-    expect(component.getUncategorisedDocuments(categoriesAndDocuments.uncategorised_documents)).toEqual(uncategorisedTreeData);
+    expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
   });
 
   it('should render cdk nested tree', () => {
@@ -114,6 +130,25 @@ describe('CaseFileViewFolderComponent', () => {
     });
 
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyDesc);
+  });
+
+  it('should set mediaViewer localStorage' +
+    'and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
+    const documentTreeNode = component.nestedDataSource[0].children[3];
+    component.triggerDocumentAction('openInANewTab', documentTreeNode);
+
+    // @ts-expect-error -- private method
+    expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
+      MEDIA_VIEWER_LOCALSTORAGE_KEY,
+      // @ts-expect-error -- private method
+      component.documentManagementService.getMediaViewerInfo({
+        document_binary_url: documentTreeNode.document_binary_url,
+        document_filename: documentTreeNode.document_filename
+      })
+    );
+
+    // @ts-expect-error -- private method
+    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
   });
 
   it('should display correct folder icons', () => {
@@ -260,6 +295,28 @@ describe('CaseFileViewFolderComponent', () => {
     expect(documentTreeContainerEl.textContent).toContain('No results found');
   });
 
+  it('should get all document count as get documentCount', () => {
+    expect(component.documentCount).toEqual(8);
+  });
+
+  it('should emit clickedDocument when clicking a node that is of type document', () => {
+    spyOn(component.clickedDocument, 'emit');
+    const firstNodeOfTypeDocument = fixture.debugElement.query(By.css('.document-tree-container__node--document'));
+    const nodeButton = firstNodeOfTypeDocument.query(By.css('.node'));
+    nodeButton.nativeElement.click();
+
+    expect(component.clickedDocument.emit).toHaveBeenCalled();
+  });
+
+  it('should set selectedItem and set class "node--selected" when clicking a node that is of type document', () => {
+    const firstNodeOfTypeDocument = fixture.debugElement.query(By.css('.document-tree-container__node--document'));
+    const nodeButton = firstNodeOfTypeDocument.query(By.css('.node'));
+    nodeButton.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(component.selectedNodeItem).toBeDefined();
+    expect(nodeButton.nativeElement.classList).toContain('node--selected');
+  });
 
   it('should unsubscribe', () => {
     spyOn(component.categoriesAndDocumentsSubscription, 'unsubscribe').and.callThrough();

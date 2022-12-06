@@ -26,12 +26,12 @@ import { FormValidatorsService } from '../../services/form/form-validators.servi
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
+import { CaseFileViewOverlayMenuComponent } from './case-file-view';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { CaseFileViewFolderSelectorComponent } from './case-file-view/components/case-file-view-folder-selector/case-file-view-folder-selector.component';
 import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
-import { CaseFileViewOverlayMenuComponent } from './case-file-view/components/shared/case-file-view-overlay-menu/case-file-view-overlay-menu.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -191,7 +191,6 @@ const PALETTE_COMPONENTS = [
     DocumentUrlPipe,
 
     ...PALETTE_COMPONENTS,
-     CaseFileViewOverlayMenuComponent,
   ],
   exports: [
     NgxMatDatetimePickerModule,

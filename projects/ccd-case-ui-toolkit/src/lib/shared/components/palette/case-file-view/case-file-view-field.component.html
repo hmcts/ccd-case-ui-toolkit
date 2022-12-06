@@ -8,18 +8,22 @@
     <!-- Document tree -->
     <div class="document-tree-container">
       <ccd-case-file-view-folder
+        class="document-tree-container__tree"
         [categoriesAndDocuments]="categoriesAndDocuments$"
+        (clickedDocument)="setMediaViewerFile($event)"
       ></ccd-case-file-view-folder>
     </div>
     <!-- Slider -->
     <div class="slider"></div>
     <!-- Media viewer -->
     <div class="media-viewer-container">
-      <mv-media-viewer [url]="''"
-                       [downloadFileName]=""
-                       [showToolbar]="true"
-                       [contentType]="'pdf'">
-      </mv-media-viewer>
+      <ng-container *ngIf="currentDocument">
+        <mv-media-viewer [url]="currentDocument.document_binary_url"
+                         [downloadFileName]="currentDocument.document_filename"
+                         [showToolbar]="true"
+                         [contentType]="currentDocument.content_type">
+        </mv-media-viewer>
+      </ng-container>
     </div>
   </div>
 </div>
