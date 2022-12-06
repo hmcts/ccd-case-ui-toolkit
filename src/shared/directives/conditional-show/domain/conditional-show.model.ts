@@ -119,7 +119,7 @@ export class ShowCondition {
    * @param caseFields Inspected to see appropriate display_contexts.
    */
   public static hiddenCannotChange(showCondition: ShowCondition, caseFields: CaseField[]): boolean {
-    if (showCondition && caseFields) {
+    if (showCondition && showCondition.conditions.length && caseFields) {
       const conditions: string[] = this.getConditions(showCondition.conditions).split(',');
       if (conditions && conditions.length > 0) {
         let allUnchangeable = true;
@@ -171,7 +171,25 @@ export class ShowCondition {
   }
 
   public match(fields: object, path?: string): boolean {
-    return ConditionParser.evaluate(fields, this.conditions, path);
+    return ConditionParser.evaluate(fields, this.conditions, this.updatePathName(path));
+  }
+
+  private updatePathName(path: string): string {
+    if (path && path.split(/[_]+/g).length > 0) {
+      let [pathName, ...pathTail] = path.split(/[_]+/g);
+      const pathFinalIndex = pathTail.pop();
+      const pathTailString = pathTail.toString();
+
+      pathTail = pathTail.map((value) => {
+        return Number(pathFinalIndex) === Number(value) ? pathName : value;
+      });
+
+      return pathTailString !== pathTail.toString()
+        ? `${pathName}_${pathTail.join('_')}_${pathFinalIndex}`
+        : path;
+    } else {
+      return path;
+    }
   }
 
   public matchByContextFields(contextFields: CaseField[]): boolean {
