@@ -118,7 +118,12 @@ export class ActivityPollingService {
       return Observable.empty();
     }
 
-    return polling(this.activityService.postActivity(caseId, activityType), this.pollConfig);
+    const pollingConfig = {
+      ...this.pollConfig,
+      interval: 5000 // inline with CCD Backend
+    };
+
+    return polling(this.activityService.postActivity(caseId, activityType), pollingConfig);
   }
 
   get isEnabled(): boolean {

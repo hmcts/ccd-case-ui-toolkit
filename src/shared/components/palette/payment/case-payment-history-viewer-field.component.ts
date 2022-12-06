@@ -1,25 +1,17 @@
-import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { Component } from '@angular/core';
 import { AbstractAppConfig } from '../../../../app.config';
+import { SessionStorageService } from '../../../services/session/session-storage.service';
+import { PaymentField } from '../base-field/payment-field.component';
 
 @Component({
   selector: 'ccd-case-payment-history-viewer-field',
   templateUrl: 'case-payment-history-viewer-field.html',
 })
-export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadComponent {
-
+export class CasePaymentHistoryViewerFieldComponent extends PaymentField {
   constructor(
-    private appConfig: AbstractAppConfig
+    appConfig: AbstractAppConfig,
+    sessionStorage: SessionStorageService
   ) {
-    super();
+    super(appConfig, sessionStorage);
   }
-
-  getBaseURL() {
-    return this.appConfig.getPaymentsUrl();
-  }
-
-  getPayBulkScanBaseURL() {
-    return this.appConfig.getPayBulkScanBaseUrl();
-  }
-
 }

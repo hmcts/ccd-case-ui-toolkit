@@ -13,5 +13,4 @@ export class WritePhoneUKFieldComponent extends AbstractFieldWriteComponent impl
   ngOnInit() {
     this.phoneUkControl = this.registerControl(new FormControl(this.caseField.value)) as FormControl;
   }
-
 }

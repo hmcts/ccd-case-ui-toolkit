@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { WriteOrganisationFieldComponent } from './write-organisation-field.component';
 import { MarkdownModule } from '../../markdown';
 import { OrganisationConverter } from '../../../domain/organisation';
@@ -7,14 +6,13 @@ import { WriteOrganisationComplexFieldComponent } from './write-organisation-com
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OrganisationService } from '../../../services/organisation';
 import { of } from 'rxjs';
-import { CaseField } from '../../../domain/definition';
+import { CaseField, FieldType } from '../../../domain/definition';
+import { WindowService } from '../../../services/window';
 
-describe('WrieteOrganisationFieldComponent', () => {
+describe('WriteOrganisationFieldComponent', () => {
   let component: WriteOrganisationFieldComponent;
   let fixture: ComponentFixture<WriteOrganisationFieldComponent>;
   const mockOrganisationService = jasmine.createSpyObj<OrganisationService>('OrganisationService', ['getActiveOrganisations']);
-
-  const FORM_GROUP: FormGroup = new FormGroup({});
 
   const ORGANISATIONS = [{
     organisationIdentifier: 'O111111',
@@ -47,17 +45,49 @@ describe('WrieteOrganisationFieldComponent', () => {
     country: 'UK',
     postCode: 'RG11EB'
   }, {
-      organisationIdentifier: 'O444444',
-      name: 'The SN1 solicitor',
-      addressLine1: 'Davidson House',
-      addressLine2: '44',
-      addressLine3: 'The square',
-      townCity: 'Reading',
-      county: 'Berkshire',
-      country: 'UK',
-      postCode: 'RG11EX'
+    organisationIdentifier: 'O444444',
+    name: 'The SN1 solicitor',
+    addressLine1: 'Davidson House',
+    addressLine2: '44',
+    addressLine3: 'The square',
+    townCity: 'Reading',
+    county: 'Berkshire',
+    country: 'UK',
+    postCode: 'RG11EX'
   }];
-  let organisationID = new CaseField();
+  const organisationID = new CaseField();
+
+  const VALUE = {
+    OrganisationID: 'Org1234',
+    OrganisationName: 'Test Organisation'
+  };
+  const FIELD_ID = 'NewOrganisation';
+  const FIELD_TYPE: FieldType = {
+    id: 'Organisation',
+    type: 'Complex',
+  };
+  const ORGANISATION_ID: CaseField = <CaseField>({
+    id: 'OrganisationID',
+    label: 'Organisation ID',
+    field_type: {id: 'Text', type: 'Text'}
+  });
+  const ORGANISATION_NAME: CaseField = <CaseField>({
+    id: 'OrganisationName',
+    label: 'Name',
+    field_type: {id: 'Text', type: 'Text'}
+  });
+
+  const CASE_FIELD: CaseField = <CaseField>({
+    id: FIELD_ID,
+    label: 'New Organisation',
+    display_context: 'OPTIONAL',
+    field_type: {
+      ...FIELD_TYPE,
+      complex_fields: [ORGANISATION_ID, ORGANISATION_NAME]
+    },
+    value: VALUE,
+    retain_hidden_value: true
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -70,11 +100,12 @@ describe('WrieteOrganisationFieldComponent', () => {
         WriteOrganisationComplexFieldComponent
       ],
       providers: [
-        { provide: OrganisationService, useValue: mockOrganisationService },
+        WindowService,
+        {provide: OrganisationService, useValue: mockOrganisationService},
         OrganisationConverter
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -104,6 +135,9 @@ describe('WrieteOrganisationFieldComponent', () => {
       organisationID,
       organisationName
     ];
+    const prepopulateToUsersOrganisationControl = new FormControl('YES');
+    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.defaultOrg = {organisationIdentifier: 'O333333', name: 'The Ethical solicitor'};
     fixture.detectChanges();
   });
 
@@ -139,14 +173,38 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(component.organisationIDFormControl.valid).toBeTruthy();
   });
 
-  it('should pre-select organisation', () => {
-    component.caseField.value = {'OrganisationID': 'O333333', 'OrganisationName': 'The Ethical solicitor'};
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is YES', () => {
+    component.caseField = new CaseField();
+    component.caseField.field_type = {
+      ...FIELD_TYPE,
+      complex_fields: [ORGANISATION_ID, ORGANISATION_NAME]
+    }
+    component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
     component.selectedOrg$.toPromise().then(selectedOrg => {
       expect(selectedOrg.address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>')
     });
+  });
+
+  it('should pre-select organisation when PrepopulateToUsersOrganisationControl is NO but it has selected the org', () => {
+    const prepopulateToUsersOrganisationControl = new FormControl('NO');
+    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
+    expect(component.organisationIDFormControl.valid).toBeTruthy();
+  });
+
+  it('should not pre-select organisation when PrepopulateToUsersOrganisationControl is NO', () => {
+    const prepopulateToUsersOrganisationControl = new FormControl('NO');
+    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.caseField.value = null;
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.organisationIDFormControl.invalid).toBeTruthy();
   });
 
   it('should not search org if enter characters less than 2', () => {
@@ -187,13 +245,10 @@ describe('WrieteOrganisationFieldComponent', () => {
 
   it('should search organisation using post code with/without space', () => {
     const searchedOrg = component.searchOrg(ORGANISATIONS, 'rg1 1eb');
-    expect(searchedOrg.length).toEqual(2);
+    expect(searchedOrg.length).toEqual(1);
     expect(searchedOrg[0].organisationIdentifier).toEqual('O333333');
     expect(searchedOrg[0].name).toEqual('The Ethical solicitor');
     expect(searchedOrg[0].address).toEqual('Davidson House<br>33<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EB<br>');
-    expect(searchedOrg[1].organisationIdentifier).toEqual('O444444');
-    expect(searchedOrg[1].name).toEqual('The SN1 solicitor');
-    expect(searchedOrg[1].address).toEqual('Davidson House<br>44<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EX<br>');
   });
 
   it('should search organisation using post code and org name', () => {
@@ -262,15 +317,15 @@ describe('WrieteOrganisationFieldComponent', () => {
 
   it('should search organisation using both org name and postcode', () => {
     const SIMILAR_ORGANISATION = [{
-        organisationIdentifier: 'O555555',
-        name: 'Smith LLP',
-        addressLine1: 'Davidson House',
-        addressLine2: '55',
-        addressLine3: 'The square',
-        townCity: 'Reading',
-        county: 'Berkshire',
-        country: 'UK',
-        postCode: 'RG11EY'
+      organisationIdentifier: 'O555555',
+      name: 'Smith LLP',
+      addressLine1: 'Davidson House',
+      addressLine2: '55',
+      addressLine3: 'The square',
+      townCity: 'Reading',
+      county: 'Berkshire',
+      country: 'UK',
+      postCode: 'RG11EY'
     }, {
       organisationIdentifier: 'O666666',
       name: 'KMG solicitor',
@@ -356,6 +411,11 @@ describe('WrieteOrganisationFieldComponent', () => {
     expect(searchedOrg[0].address).toEqual('Davidson House<br>55<br>The square<br>Reading<br>Berkshire<br>UK<br>RG11EY<br>');
   });
 
+  it('should bring the exact match in the top order when there are other partial matches of org exist', () => {
+    const searchedOrg = component.searchOrg(ORGANISATIONS, 'the sn1 solicitor');
+    expect(searchedOrg[0].name).toEqual('The SN1 solicitor');
+  });
+
   it('should return organisation if nothing match', () => {
     const searchedOrg = component.searchOrg(ORGANISATIONS, 'atos');
     expect(searchedOrg.length).toEqual(0);
@@ -374,7 +434,7 @@ describe('WrieteOrganisationFieldComponent', () => {
     component.selectOrg(selectedOrg);
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
-    expect(component.caseField.value).toEqual({'OrganisationID': 'O111111', 'OrganisationName': 'Woodford solicitor'});
+    expect(component.caseField.value).toEqual({OrganisationID: 'O111111', OrganisationName: 'Woodford solicitor'});
   });
 
   it('should deselect organisation', () => {
@@ -382,14 +442,19 @@ describe('WrieteOrganisationFieldComponent', () => {
     component.organisationFormGroup.addControl('OrganisationID', component.organisationIDFormControl);
     component.organisationNameFormControl = new FormControl(null);
     component.organisationFormGroup.addControl('OrganisationName', component.organisationNameFormControl);
-    const selectedOrg = {
-      organisationIdentifier: 'O111111',
-      name: 'Woodford solicitor',
-      address: '12<br>Nithdale Role<br>Liverpool<br>Merseyside<br>UK<br>L15 5AX<br>'
-    }
-    component.deSelectOrg(selectedOrg);
+    component.deSelectOrg();
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.enabled).toBeTruthy();
-    expect(component.caseField.value).toEqual({'OrganisationID': null, 'OrganisationName': null});
+    expect(component.caseField.value).toEqual({OrganisationID: null, OrganisationName: null});
+  });
+
+  it('should set retain_hidden_value to true for all sub-fields that are part of an Organisation field', () => {
+    component.caseField = CASE_FIELD;
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(component.caseField.field_type.complex_fields.length).toEqual(2);
+    expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toEqual(true);
+    expect(component.caseField.field_type.complex_fields[1].retain_hidden_value).toEqual(true);
   });
 });

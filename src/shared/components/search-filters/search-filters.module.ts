@@ -6,6 +6,7 @@ import { PaletteModule } from '../palette';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DefinitionsModule } from '../../services/definitions';
 import { SearchFiltersWrapperComponent } from './search-filters-wrapper.component';
+import { ConditionalShowModule } from '../../directives/conditional-show';
 
 @NgModule({
     imports: [
@@ -13,15 +14,16 @@ import { SearchFiltersWrapperComponent } from './search-filters-wrapper.componen
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
-        DefinitionsModule
+        DefinitionsModule,
+        ConditionalShowModule
     ],
     declarations: [
         SearchFiltersComponent,
-        SearchFiltersWrapperComponent,
+        SearchFiltersWrapperComponent
     ],
     exports: [
         SearchFiltersComponent,
-        SearchFiltersWrapperComponent,
+        SearchFiltersWrapperComponent
     ],
     providers: [
         SearchService,

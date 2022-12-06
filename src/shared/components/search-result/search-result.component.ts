@@ -6,7 +6,7 @@ import { CaseField, CaseState, CaseType, CaseView, DisplayMode,
   DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
   SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
-import { ActivityService, SearchResultViewItemComparatorFactory, BrowserService } from '../../services';
+import { ActivityService, SearchResultViewItemComparatorFactory, BrowserService, SessionStorageService } from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
@@ -18,6 +18,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
+
+  private readonly PAGINATION_MAX_ITEM_RESULT = 10000;
 
   ICON = DisplayMode.ICON;
 
@@ -72,6 +74,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
   @Output()
   sortHandler: EventEmitter<any> = new EventEmitter();
 
+  public paginationLimitEnforced = false;
+
   paginationPageSize: number;
 
   hideRows: boolean;
@@ -100,7 +104,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     private activityService: ActivityService,
     private caseReferencePipe: CaseReferencePipe,
     private placeholderService: PlaceholderService,
-    private browserService: BrowserService
+    private browserService: BrowserService,
+    private sessionStorageService: SessionStorageService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
@@ -115,6 +120,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
         }
       }
     }
+    this.sessionStorageService.removeItem('eventUrl');
     this.selection.emit(this.selectedCases);
   }
 
@@ -141,6 +147,14 @@ export class SearchResultComponent implements OnChanges, OnInit {
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
     }
+  }
+
+  get resultTotal(): number {
+    const total = this.paginationMetadata.total_results_count;
+    const maximumResultReached = total >= this.PAGINATION_MAX_ITEM_RESULT;
+    this.paginationLimitEnforced = maximumResultReached;
+
+    return maximumResultReached ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
   public clearSelection(): void {
@@ -287,7 +301,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
       label: col.label,
       field_type: col.case_field_type,
       value: result.case_fields[col.case_field_id],
-      display_context: null,
+      display_context_parameter: col.display_context_parameter,
+      display_context: col.display_context,
     });
   }
 
@@ -405,7 +420,9 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   getTotalResults(): number {
-    return this.paginationMetadata.total_results_count + this.draftsCount;
+    const total = this.paginationMetadata.total_results_count + this.draftsCount;
+
+    return total >= this.PAGINATION_MAX_ITEM_RESULT ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
   prepareCaseLinkUrl(caseId: string): string {

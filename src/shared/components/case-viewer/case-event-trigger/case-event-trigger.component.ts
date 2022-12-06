@@ -1,11 +1,11 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
-import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
+import { Activity, CaseEventData, CaseEventTrigger, CaseField, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, EventStatusService } from '../../../services';
+import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
@@ -53,11 +53,11 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    if (this.activityPollingService.isEnabled) {
+  public ngOnDestroy(): void {
+    if (this.activitySubscription && this.activityPollingService.isEnabled) {
       this.activitySubscription.unsubscribe();
     }
-    if (!this.route.snapshot.data.case) {
+    if (!this.route.snapshot.data.case && this.caseSubscription) {
       this.caseSubscription.unsubscribe();
     }
   }
@@ -72,9 +72,27 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData, pageId: string) => this.casesService.validateCase(
-      this.caseDetails.case_type.id, sanitizedEditForm,
-      pageId);
+    return (sanitizedEditForm: CaseEventData, pageId: string) => {
+      // Bypass validation if the CaseEventData data object contains a FlagLauncher field; this field type cannot be
+      // validated like regular fields. Need to match this field id against that of the defined FlagLauncher CaseField
+      // (if it exists on any CaseTab)
+      let flagLauncherCaseField: CaseField;
+      if (this.caseDetails.tabs) {
+        for (const tab of this.caseDetails.tabs) {
+          if (tab.fields) {
+            flagLauncherCaseField = tab.fields.find(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
+            // Stop searching for a FlagLauncher field as soon as it is found
+            if (flagLauncherCaseField) {
+              break;
+            }
+          }
+        }
+      }
+
+      return flagLauncherCaseField && sanitizedEditForm.data.hasOwnProperty(flagLauncherCaseField.id)
+        ? of(null)
+        : this.casesService.validateCase(this.caseDetails.case_type.id, sanitizedEditForm, pageId);
+    }
   }
 
   submitted(event: any): void {
@@ -87,7 +105,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
           this.alertService.warning(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name} `
             + `but the callback service cannot be completed`);
         } else {
-          this.alertService.success(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name}`);
+          this.alertService.success(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name}`, true);
         }
     });
   }

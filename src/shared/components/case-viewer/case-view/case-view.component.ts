@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { AlertService } from '../../../services/alert';
+import { AlertService } from '../../../services';
 import { CaseView, Draft } from '../../../domain';
 import { CasesService, CaseNotifier } from '../../case-editor';
 import { DraftService } from '../../../services';
 import { Observable, throwError, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
+import { NavigationNotifierService } from '../../../services';
 import { plainToClassFromExist } from 'class-transformer';
 
 @Component({
@@ -29,7 +29,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private navigationNotifierService: NavigationNotifierService,
-    private caseNofitier: CaseNotifier,
+    private caseNotifier: CaseNotifier,
     private casesService: CasesService,
     private draftService: DraftService,
     private alertService: AlertService,
@@ -40,7 +40,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
       .pipe(
         map(caseView => {
           this.caseDetails = plainToClassFromExist(new CaseView(), caseView);
-          this.caseNofitier.announceCase(this.caseDetails);
+          this.caseNotifier.announceCase(this.caseDetails);
         })
       )
       .toPromise()
@@ -50,20 +50,21 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.navigationSubscription.unsubscribe();
+  public ngOnDestroy(): void {
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe();
+    }
   }
 
   isDataLoaded(): boolean {
-    return this.caseDetails ? true : false;
+    return !!this.caseDetails;
   }
 
   private getCaseView(cid): Observable<CaseView> {
     if (Draft.isDraft(cid)) {
       return this.getDraft(cid);
     } else {
-    return this.casesService
-          .getCaseViewV2(cid);
+      return this.casesService.getCaseViewV2(cid);
     }
   }
 

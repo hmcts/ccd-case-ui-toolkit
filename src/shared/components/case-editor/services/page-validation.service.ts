@@ -27,10 +27,13 @@ export class PageValidationService {
     return !(this.checkMandatoryField(caseField, theControl));
   }
 
-  private isHidden(caseField: CaseField, editForm: FormGroup) {
+  public isHidden(caseField: CaseField, editForm: FormGroup, path?: string): boolean {
     const formFields = editForm.getRawValue();
-    let condition = ShowCondition.getInstance(caseField.show_condition);
-    return !condition.match(formFields.data);
+    const condition = ShowCondition.getInstance(caseField.show_condition);
+    if (path && path.indexOf('_' + caseField.id + '_') === -1) {
+      path = `${path}${caseField.id}`;
+    }
+    return !condition.match(formFields.data, path);
   }
 
   private checkOptionalField(caseField: CaseField, theControl: AbstractControl): boolean {

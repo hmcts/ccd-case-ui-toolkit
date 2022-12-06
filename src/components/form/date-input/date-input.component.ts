@@ -31,6 +31,9 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   @Input()
   public formControl: FormControl;
 
+  @Input()
+  public isInvalid: boolean;
+
   public isTouched = false;
   public displayDay: string = null;
   public displayMonth: string = null;
@@ -44,7 +47,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   // 2018-04-09T08:02:27.542Z
   // 2018-04-09T08:02:27.542+01:00
   private readonly DATE_FORMAT =
-    /^(\d{4})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?|Z)?$/;
+    /^(19|20)\d{2}-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?|Z)?$/;
   //    year - month -  day     T   HH     :   MM      :  SS       .000        Z or +     01 :   00
   private propagateChange: (_: any) => {};
   private rawValue = '';
@@ -176,11 +179,6 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
 
   public inputFocus() {
     this.isTouched = false;
-    this.touch();
-  }
-
-  public inputBlur() {
-    this.isTouched = true;
     this.touch();
   }
 

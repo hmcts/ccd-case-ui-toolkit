@@ -12,6 +12,7 @@ export type FieldTypeEnum =
   | 'FixedList'
   | 'DynamicList'
   | 'FixedRadioList'
+  | 'DynamicRadioList'
   | 'Complex'
   | 'Collection'
   | 'MultiSelectList'
@@ -22,4 +23,10 @@ export type FieldTypeEnum =
   | 'AddressUK'
   | 'CasePaymentHistoryViewer'
   | 'CaseHistoryViewer'
-  | 'Organisation';
+  | 'Organisation'
+  | 'WaysToPay'
+  | 'Flags'
+  | 'FlagDetail'
+  | 'FlagLauncher'
+  | 'CaseFlag' // Temporary field type for faking Flags field type; to be removed
+  | 'JudicialUserField';

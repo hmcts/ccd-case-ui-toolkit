@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
 
-import { CaseEventData, CaseField } from '../../domain';
+import { CaseField } from '../../domain';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()
 export class FormValueService {
-  public static readonly LABEL_SUFFIX = '-LABEL';
-
   /**
    * Gets value of a field based on fieldKey which is a dot separated reference to value and collection index.
-   * There are two exeptions:
-   * 1) In case of a multiselect being identified as a leaf a '-LABEL' suffix is appended to the key and values og that key are returned
+   * There are two exceptions:
+   * 1) In case of a multiselect being identified as a leaf a '---LABEL' suffix is appended to the key and values of that key are returned
    *      form= { 'list': ['code1', 'code2'],
-   *              'list-LABEL': ['label1', 'label2'] },
+   *              'list---LABEL': ['label1', 'label2'] },
    *      fieldKey=list,
    *      colIndex=0,
    *      value=label1, label2
@@ -123,7 +121,7 @@ export class FormValueService {
     let currentFieldId = fieldIds[0];
     let currentForm = form[currentFieldId];
     if (FieldsUtils.isMultiSelectValue(currentForm)) {
-        return form[currentFieldId + FormValueService.LABEL_SUFFIX].join(', ');
+        return form[currentFieldId + FieldsUtils.LABEL_SUFFIX].join(', ');
     } else if (FieldsUtils.isCollectionOfSimpleTypes(currentForm)) {
         return currentForm.map(fieldValue => fieldValue['value']).join(', ');
     } else if (FieldsUtils.isCollection(currentForm)) {
@@ -135,6 +133,31 @@ export class FormValueService {
     }
   }
 
+  /**
+   * A recursive method to remove anything with a `---LABEL` suffix.
+   * @param data The data to recurse through and remove MultiSelect labels.
+   */
+  public static removeMultiSelectLabels(data: any): void {
+    if (data && typeof data === 'object') {
+      if (Array.isArray(data)) {
+        for (const item of data) {
+          FormValueService.removeMultiSelectLabels(item);
+        }
+      } else {
+        const keys: string[] = Object.keys(data);
+        for (const key of keys) {
+          // Have we found one a MultiSelect label?
+          if (key.indexOf(FieldsUtils.LABEL_SUFFIX) > 0) {
+            // If so, remove it.
+            delete data[key];
+          } else {
+            FormValueService.removeMultiSelectLabels(data[key]);
+          }
+        }
+      }
+    }
+  }
+
   private static isReadOnly(field: CaseField): boolean {
     return field.display_context ? field.display_context.toUpperCase() === 'READONLY' : false;
   }
@@ -143,7 +166,7 @@ export class FormValueService {
     return field.display_context ? field.display_context.toUpperCase() === 'OPTIONAL' : false;
   }
 
-  private static isLabel (field: CaseField): boolean {
+  private static isLabel(field: CaseField): boolean {
     if (field.field_type) {
       return field.field_type.type === 'Label';
     } else {
@@ -218,13 +241,26 @@ export class FormValueService {
     }
 
     let sanitisedObject = {};
-    Object.keys(rawObject).forEach(key => {
-      if ('CaseReference' === key) {
+    const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
+    for (const key in rawObject) {
+      // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
+      // properties is null, the entire sanitised object to be returned should be null
+      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] == null) {
+        sanitisedObject = null;
+        break;
+      } else if ('CaseReference' === key) {
         sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
       } else {
         sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
+        if (Array.isArray(sanitisedObject[key])) {
+          // If the 'sanitised' array is empty, whereas the original array had 1 or more items
+          // delete the property from the sanatised object
+          if (sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
+            delete sanitisedObject[key];
+          }
+        }
       }
-    });
+    }
     return sanitisedObject;
   }
 
@@ -234,12 +270,17 @@ export class FormValueService {
     }
 
     rawArray.forEach(item => {
-      if (item.hasOwnProperty('value')) {
+      if (item && item.hasOwnProperty('value')) {
         item.value = this.sanitiseValue(item.value);
       }
     });
 
-    return rawArray;
+    // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
+    // association of a value. In addition, if the array contains items with a "value" object property, return only
+    // those whose value object contains non-empty values, including for any descendant objects
+    return rawArray
+      .filter(item => !!item)
+      .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
   }
 
   private sanitiseValue(rawValue: any): any {
@@ -333,7 +374,9 @@ export class FormValueService {
               }
               break;
             case 'Document':
-              if (FormValueService.isEmptyData(data[field.id])) {
+              // Ensure this is executed only if the Document field is NOT hidden and is empty of data; hidden Document
+              // fields are handled by the filterRawFormValues() function in CaseEditSubmit component
+              if (field.hidden !== true && FormValueService.isEmptyData(data[field.id])) {
                 delete data[field.id];
               }
               break;
@@ -353,7 +396,8 @@ export class FormValueService {
    * @param clearEmpty Whether or not we should clear out empty, optional, complex objects.
    * @param clearNonCase Whether or not we should clear out non-case fields at the top level.
    */
-  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false): void {
+  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false,
+    fromPreviousPage = false, currentPageCaseFields = []): void {
     if (data && caseFields && caseFields.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       if (clearNonCase) {
@@ -380,14 +424,20 @@ export class FormValueService {
               }
               break;
             case 'Complex':
-              // Recurse and remove anything unnecessary from within a complex field.
               this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
               // Also remove any optional complex objects that are completely empty.
-              if (FormValueService.clearOptionalEmpty(clearEmpty, data[field.id], field)) {
+              // EUI-4244: Ritesh's fix, passing true instead of clearEmpty.
+              if (FormValueService.clearOptionalEmpty(true, data[field.id], field)) {
+                delete data[field.id];
+              }
+              if (data[field.id] && FormValueService.isEmptyData(data[field.id]) && fromPreviousPage
+                && currentPageCaseFields.findIndex(c_field => c_field.id === field.id) === -1) {
                 delete data[field.id];
               }
               break;
             case 'Collection':
+              // Check for valid collection data
+              this.removeInvalidCollectionData(data, field);
               // Get hold of the collection.
               const collection = data[field.id];
               // Check if we actually have a collection to work with.
@@ -409,6 +459,84 @@ export class FormValueService {
         }
       }
     }
+
+    // Clear out any MultiSelect labels.
+    FormValueService.removeMultiSelectLabels(data);
   }
 
+  /**
+   * Remove any empty or invalid array with only id
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param field {@link CaseField} domain model object for each field
+   */
+  removeInvalidCollectionData(data: object, field: CaseField) {
+    if (data[field.id] && data[field.id].length > 0) {
+      for (const objCollection of data[field.id]) {
+        if (Object.keys(objCollection).length === 1 && Object.keys(objCollection).indexOf('id') > -1) {
+          data[field.id] = [];
+        }
+      }
+    }
+  }
+
+  /**
+   * Remove any empty collection fields where a value of greater than zero is specified in the field's {@link FieldType}
+   * `min` attribute.
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public removeEmptyCollectionsWithMinValidation(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      for (const field of caseFields) {
+        if (field.field_type.type === 'Collection' && field.field_type.min > 0 && data[field.id] &&
+            Array.isArray(data[field.id]) && data[field.id].length === 0) {
+          delete data[field.id];
+        }
+      }
+    }
+  }
+
+  /**
+   * Remove the FlagLauncher case field, which is not intended to be persisted.
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public removeFlagLauncherField(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      const flagLauncherCaseField = caseFields.filter(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
+      if (flagLauncherCaseField.length > 0) {
+        // There should be only one FlagLauncher case field
+        delete data[flagLauncherCaseField[0].id];
+      }
+    }
+  }
+
+  /**
+   * Populate the flag data for each Flags field, from the data held in its corresponding CaseField.
+   *
+   * @param data The object tree of form values on which to perform the data population
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public populateFlagDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
+      // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
+      // (or sub-fields of Complex fields in a collection)
+      caseFields.filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField))
+        .forEach(caseField => {
+          if (data[caseField.id]) {
+            // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+            // Flags field within a Complex field or a collection of Complex fields) is copied across
+            Object.keys(data[caseField.id]).forEach(key => {
+              if (caseField.value.hasOwnProperty(key)) {
+                data[caseField.id][key] = caseField.value[key];
+              }
+            });
+          }
+        });
+    }
+  }
 }

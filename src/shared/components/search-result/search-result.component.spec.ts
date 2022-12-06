@@ -9,7 +9,6 @@ import { FormGroup } from '@angular/forms';
 import {
   CaseState,
   CaseType,
-  CaseView,
   DRAFT_PREFIX,
   Jurisdiction,
   PaginationMetadata,
@@ -17,7 +16,7 @@ import {
   SearchResultViewItem
 } from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
-import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory } from '../../services';
+import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import createSpyObj = jasmine.createSpyObj;
@@ -207,7 +206,8 @@ describe('SearchResultComponent', () => {
             PaginationService,
             { provide: AppConfig, useValue: appConfig },
             { provide: CaseReferencePipe, useValue: caseReferencePipe },
-            BrowserService
+            BrowserService,
+            SessionStorageService
           ]
         })
         .compileComponents();
@@ -222,6 +222,7 @@ describe('SearchResultComponent', () => {
       component.resultView = RESULT_VIEW;
       component.caseState = CASE_STATE;
       component.paginationMetadata = PAGINATION_METADATA;
+      component.paginationLimitEnforced = false;
       component.caseFilterFG = new FormGroup({});
       component.metadataFields = METADATA_FIELDS;
       component.ngOnChanges({
@@ -236,7 +237,7 @@ describe('SearchResultComponent', () => {
     it('should render pagination header', () => {
       let pagination = de.query(By.css('div.pagination-top'));
       expect(pagination).toBeTruthy();
-      expect(pagination.nativeElement.textContent.trim()).toBe('Displaying 1 - 4 out of 4 results');
+      expect(pagination.nativeElement.textContent.trim()).toBe('Showing 1 to 4 of 4 results');
     });
 
     it('should render a table <thead> and <tbody>', () => {
@@ -251,9 +252,23 @@ describe('SearchResultComponent', () => {
     });
 
     it('should render pagination controls if results and metadata not empty', () => {
-      let pagination = de.queryAll(By.css('pagination-controls.pagination'));
+      let pagination = de.queryAll(By.css('ccd-pagination'));
 
       expect(pagination.length).toBeTruthy();
+    });
+
+    it('should not render the pagination limit warning ', () => {
+      const paginationLimitWarning = de.query(By.css('div.pagination-limit-warning'));
+      expect(paginationLimitWarning).toBeFalsy();
+    });
+
+    it('should render the pagination limit warning ', () => {
+      component.paginationMetadata = {
+        total_results_count: 10100,
+        total_pages_count: 500
+      };
+
+      expect(component.resultTotal).toBe(10000);
     });
 
     it('should render columns based on SearchResultView', () => {
@@ -858,7 +873,8 @@ describe('SearchResultComponent', () => {
             PaginationService,
             { provide: AppConfig, useValue: appConfig },
             { provide: CaseReferencePipe, useValue: caseReferencePipe },
-            BrowserService
+            BrowserService,
+            SessionStorageService
           ]
         })
         .compileComponents();

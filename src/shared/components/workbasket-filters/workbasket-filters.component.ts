@@ -2,11 +2,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import 'rxjs/add/operator/do';
-import { Jurisdiction, CaseState, CaseTypeLite, WorkbasketInputModel } from '../../domain';
-import { JurisdictionService, AlertService, WindowService, OrderService, WorkbasketInputFilterService } from '../../services';
+import { Jurisdiction, CaseState, CaseTypeLite, WorkbasketInputModel, CaseField } from '../../domain';
+import { JurisdictionService, AlertService, WindowService, OrderService, WorkbasketInputFilterService, FieldsUtils } from '../../services';
+import { isDefined } from '@angular/compiler/src/util';
 
 const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
 const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
+const REGION_LIST_AND_FRC_FILTER = 'regionList';
+
 @Component({
   selector: 'ccd-workbasket-filters',
   templateUrl: './workbasket-filters.component.html',
@@ -17,6 +20,7 @@ export class WorkbasketFiltersComponent implements OnInit {
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
+  public caseFields: CaseField[];
 
   @Input()
   jurisdictions: Jurisdiction[];
@@ -61,7 +65,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     private windowService: WindowService) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.selected = {};
     this.route.queryParams.subscribe(params => {
       if (!this.initialised || !params || !Object.keys(params).length) {
@@ -92,6 +96,9 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (Object.keys(this.formGroup.controls).length === 0) {
       this.selected.formGroup = JSON.parse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE));
     } else {
+      // Update form group filters
+      this.updateFormGroupFilters();
+
       this.selected.formGroup = this.formGroup;
     }
     this.selected.init = init;
@@ -105,6 +112,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     }
     // Apply filters
     this.onApply.emit({selected: this.selected, queryParams: queryParams});
+    this.setFocusToTop();
   }
 
   reset(): void {
@@ -169,7 +177,7 @@ export class WorkbasketFiltersComponent implements OnInit {
                 item.field.value = searchFormValueObject[item.field.id];
               }
             });
-
+            this.getCaseFields();
           }, error => {
             console.log('Workbasket input fields request will be discarded reason: ', error.message);
           });
@@ -278,5 +286,56 @@ export class WorkbasketFiltersComponent implements OnInit {
   private resetCaseType() {
     this.selected.caseType = undefined; // option should be blank rather than "Select a value" in case of reset.
     this.selectedJurisdictionCaseTypes = null;
+  }
+
+  private setFocusToTop() {
+    window.scrollTo(0, 0);
+
+    const topContainer = document.getElementById('search-result-heading__text');
+    if (topContainer) {
+      topContainer.focus();
+    }
+  }
+
+  private getCaseFields(): void {
+    if (this.workbasketInputs) {
+      this.caseFields = this.workbasketInputs.map(item => FieldsUtils.convertToCaseField(item.field));
+    }
+  }
+
+  /**
+   * This method is used to clear the previously used
+   * form group control filter values to make sure only the
+   * currently selected form group control filter values are present.
+   *
+   * Has been implemented for 'Region and FRC filters' and can be extended
+   * in future to incorporate other dynamic filters.
+   *
+   * @private
+   * @memberof WorkbasketFiltersComponent
+   */
+  updateFormGroupFilters(): void {
+    // Read the form group local storage
+    const formGroupLS = JSON.parse(this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE));
+
+    // Form group local storage is available and contains regionList property
+    if (isDefined(formGroupLS) && formGroupLS.hasOwnProperty(REGION_LIST_AND_FRC_FILTER)) {
+      if (this.formGroup.get(REGION_LIST_AND_FRC_FILTER)) {
+        // If regionList value does not match between local storage and form group
+        // then the filter value has been changed and we need to clear the old filter values
+        if (formGroupLS[REGION_LIST_AND_FRC_FILTER] !== this.formGroup.get(REGION_LIST_AND_FRC_FILTER).value) {
+          for (const key in formGroupLS) {
+            if (formGroupLS.hasOwnProperty(key)) {
+              const value = formGroupLS[key];
+              // Clear the filter form group control values if it has a value in local storage
+              // The regionList form group control value should be ignored as it always contain the latest value
+              if (key !== REGION_LIST_AND_FRC_FILTER && value != null) {
+                this.formGroup.get(key).setValue(null);
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

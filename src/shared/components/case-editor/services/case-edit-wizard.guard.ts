@@ -10,6 +10,7 @@ import { Wizard } from '../domain/wizard.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { EventTriggerService } from './event-trigger.service';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
+import { FieldsUtils } from '../../../services/fields';
 
 @Injectable()
 export class CaseEditWizardGuard implements Resolve<boolean> {
@@ -71,11 +72,21 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
   }
 
   private goToSubmit(route: ActivatedRouteSnapshot): Promise<boolean> {
-    return this.router.navigate([...this.parentUrlSegments(route), 'submit']);
+    return this.router.navigate([...this.parentUrlSegments(route), 'submit'], {queryParams: route.queryParams});
   }
 
   private buildState(caseFields: CaseField[]): any {
     let state = {};
+
+    /**
+     *
+     * EUI-4873 SSCS - Dynamic lists in a collection within a complex type
+     *
+     * Catering for mid event callbacks, hence the call to re-evaluate
+     * for DynamicList's
+     *
+     */
+    FieldsUtils.handleNestedDynamicLists({case_fields: caseFields});
 
     caseFields.forEach(field => {
       state[field.id] = field.value;

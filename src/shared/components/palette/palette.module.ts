@@ -1,55 +1,69 @@
-import { NgModule } from '@angular/core';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
-import { ReadTextFieldComponent } from './text/read-text-field.component';
-import { PaletteService } from './palette.service';
-import { ReadNumberFieldComponent } from './number/read-number-field.component';
-import { ReadEmailFieldComponent } from './email/read-email-field.component';
-import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
-import { ReadDateFieldComponent } from './date/read-date-field.component';
-import { FixedListModule } from './fixed-list/fixed-list.module';
-import { DynamicListModule } from './dynamic-list/dynamic-list.module';
-import { YesNoModule } from './yes-no/yes-no.module';
-import { ComplexModule } from './complex/complex.module';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MAT_DATE_LOCALE } from '@angular/material';
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { BannersModule } from '../../../components/banners/banners.module';
+import { BodyModule } from '../../../components/body/body.module';
+import { FootersModule } from '../../../components/footer/footers.module';
+import { FormModule } from '../../../components/form/form.module';
+import { HeadersModule } from '../../../components/header/headers.module';
+import { TabsModule } from '../../../components/tabs/tabs.module';
+import { LabelSubstitutorModule } from '../../directives/substitutor/label-substitutor.module';
+import { PipesModule } from '../../pipes/pipes.module';
+import { AuthService, HttpErrorService, JurisdictionService } from '../../services';
+import { FormValidatorsService } from '../../services/form/form-validators.service';
+import { MarkdownModule } from '../markdown/markdown.module';
 import { AddressModule } from './address/address.module';
 import { BaseFieldModule } from './base-field/base-field.module';
-import { WriteTextFieldComponent } from './text/write-text-field.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { UnsupportedFieldComponent } from './unsupported-field.component';
-import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
-import { PaletteUtilsModule } from './utils/utils.module';
-import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
-import { WriteEmailFieldComponent } from './email/write-email-field.component';
-import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
-import { WriteNumberFieldComponent } from './number/write-number-field.component';
-import { MoneyGbpModule } from './money-gbp/money-gbp.module';
-import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
-import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
-import { MultiSelectListModule } from './multi-select-list/multi-select-list.module';
-import { WriteDateFieldComponent } from './date/write-date-field.component';
-import { DocumentModule } from './document/document.module';
-import { MarkdownModule } from '../markdown/markdown.module';
-import { FormValidatorsService } from '../../services/form/form-validators.service';
-import { OrderSummaryModule } from './order-summary/order-summary.module';
-import { CasePaymentHistoryViewerModule } from './payment/case-payment-history-viewer.module';
-import { PipesModule } from '../../pipes/pipes.module';
-import { BannersModule } from '../../../components/banners/banners.module';
-import { HeadersModule } from '../../../components/header/headers.module';
-import { FootersModule } from '../../../components/footer/footers.module';
-import { BodyModule } from '../../../components/body/body.module';
-import { FormModule } from '../../../components/form/form.module';
-import { TabsModule } from '../../../components/tabs/tabs.module';
-import { LabelFieldComponent } from './label';
-import { LabelSubstitutorModule } from '../../directives/substitutor';
+import { CaseFlagModule } from './case-flag/case-flag.module';
+import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
+import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
+import { CaseLinkModule } from './case-link/case-link.module';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
-import { FixedRadioListModule } from './fixed-radio-list';
-import { CaseHistoryViewerModule } from './history';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
-import { CaseLinkModule } from './case-link/case-link.module';
+import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
+import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
+import { ComplexModule } from './complex/complex.module';
+import { ReadDateFieldComponent } from './date/read-date-field.component';
+import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
+import { WriteDateFieldComponent } from './date/write-date-field.component';
+import { DatetimePickerComponent } from './datetime-picker/datetime-picker.component';
+import { DocumentModule } from './document/document.module';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
+import { DynamicListModule } from './dynamic-list/dynamic-list.module';
+import { DynamicRadioListModule } from './dynamic-radio-list/dynamic-radio-list.module';
+import { ReadEmailFieldComponent } from './email/read-email-field.component';
+import { WriteEmailFieldComponent } from './email/write-email-field.component';
+import { FixedListModule } from './fixed-list/fixed-list.module';
+import { FixedRadioListModule } from './fixed-radio-list/fixed-radio-list.module';
+import { CaseHistoryViewerModule } from './history/case-history-viewer.module';
+import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
+import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
+import { LabelFieldComponent } from './label/label-field.component';
+import { MoneyGbpModule } from './money-gbp/money-gbp.module';
+import { MultiSelectListModule } from './multi-select-list/multi-select-list.module';
+import { ReadNumberFieldComponent } from './number/read-number-field.component';
+import { WriteNumberFieldComponent } from './number/write-number-field.component';
+import { OrderSummaryModule } from './order-summary/order-summary.module';
 import { OrganisationModule } from './organisation/organisation.module';
-import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from './organisation';
+import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
+import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
+import { PaletteService } from './palette.service';
+import { CasePaymentHistoryViewerModule } from './payment/case-payment-history-viewer.module';
+import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
+import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
+import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
+import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
+import { ReadTextFieldComponent } from './text/read-text-field.component';
+import { WriteTextFieldComponent } from './text/write-text-field.component';
+import { UnsupportedFieldComponent } from './unsupported-field.component';
+import { PaletteUtilsModule } from './utils/utils.module';
+import { WaysToPayFieldComponent } from './waystopay/waystopay-field.component';
+import { YesNoModule } from './yes-no/yes-no.module';
 
 @NgModule({
   imports: [
@@ -57,6 +71,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     BaseFieldModule,
     FixedListModule,
     DynamicListModule,
+    DynamicRadioListModule,
     FixedRadioListModule,
     YesNoModule,
     ComplexModule,
@@ -79,11 +94,22 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     TabsModule,
     LabelSubstitutorModule,
     CaseLinkModule,
-    OrganisationModule
+    OrganisationModule,
+    NgxMatDatetimePickerModule,
+    NgxMatTimepickerModule,
+    NgxMatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatAutocompleteModule,
+    PaymentLibModule,
+    CaseFlagModule
   ],
   declarations: [
     UnsupportedFieldComponent,
     LabelFieldComponent,
+    DatetimePickerComponent,
+    WaysToPayFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -93,19 +119,23 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadJudicialUserFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
     WriteTextFieldComponent,
+    WriteDateContainerFieldComponent,
     WriteTextAreaFieldComponent,
     WritePhoneUKFieldComponent,
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteJudicialUserFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
     LabelFieldComponent,
+    WaysToPayFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -117,6 +147,8 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     ReadCollectionFieldComponent,
     ReadCaseLinkFieldComponent,
     ReadOrganisationFieldComponent,
+    ReadCaseFlagFieldComponent,
+    ReadJudicialUserFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -126,14 +158,21 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    DatetimePickerComponent,
     WriteCaseLinkFieldComponent,
-    WriteOrganisationFieldComponent
+    WriteDateContainerFieldComponent,
+    WriteOrganisationFieldComponent,
+    WriteCaseFlagFieldComponent,
+    WriteJudicialUserFieldComponent
   ],
   exports: [
     BaseFieldModule,
+    LabelSubstitutorModule,
     PaletteUtilsModule,
     UnsupportedFieldComponent,
     LabelFieldComponent,
+    DatetimePickerComponent,
+    WaysToPayFieldComponent,
 
     // Read
     ReadTextFieldComponent,
@@ -143,6 +182,7 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadJudicialUserFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -152,6 +192,8 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteDateContainerFieldComponent,
+    WriteJudicialUserFieldComponent
   ],
   providers: [
     CollectionCreateCheckerService,
@@ -159,6 +201,11 @@ import { ReadOrganisationFieldComponent, WriteOrganisationFieldComponent } from 
     FormValidatorsService,
     FileUploadStateService,
     FileUploadProgressGuard,
+    AuthService,
+    HttpErrorService,
+    JurisdictionService,
+    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ]
 })
-export class PaletteModule {}
+export class PaletteModule {
+}

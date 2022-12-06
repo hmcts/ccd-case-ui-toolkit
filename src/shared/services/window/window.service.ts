@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { UrlTree } from '@angular/router';
 
 @Injectable()
 export class WindowService {
@@ -23,11 +22,23 @@ export class WindowService {
     window.localStorage.removeItem(key);
   }
 
+  setSessionStorage(key: string, value: string) {
+    window.sessionStorage.setItem(key, value);
+  }
+
+  getSessionStorage(key: string) {
+    return window.sessionStorage.getItem(key);
+  }
+
   openOnNewTab(url: string): void {
     window.open(url, '_blank');
   }
 
   confirm(message: string): boolean {
     return window.confirm(message);
+  }
+
+  alert(message: string): void {
+    return window.alert(message);
   }
 }

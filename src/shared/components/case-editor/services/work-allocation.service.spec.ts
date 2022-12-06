@@ -1,6 +1,7 @@
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError, TaskSearchParameter } from '../../../domain';
+import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
 import { HttpErrorService, HttpService } from '../../../services';
 import { MULTIPLE_TASKS_FOUND, WorkAllocationService } from './work-allocation.service';
 
@@ -62,12 +63,45 @@ function getExampleUserDetails(): UserDetails[] {
   }]
 }
 
+function getExampleTask(): TaskRespone {
+  return {
+    task: {
+      assignee: '1234-1234-1234-1234',
+      auto_assigned: false,
+      case_category: 'asylum',
+      case_id: '2345678901',
+      case_management_category: null,
+      case_name: 'Alan Jonson',
+      case_type_id: null,
+      created_date: '2021-04-19T14:00:00.000+0000',
+      due_date: '2021-05-20T16:00:00.000+0000',
+      execution_type: null,
+      id: 'Task_2',
+      jurisdiction: 'Immigration and Asylum',
+      location: null,
+      location_name: null,
+      name: 'Task name',
+      permissions: null,
+      region: null,
+      security_classification: null,
+      task_state: null,
+      task_system: null,
+      task_title: 'Some lovely task name',
+      type: null,
+      warning_list: null,
+      warnings: true,
+      work_type_id: null
+    }
+  };
+}
+
 describe('WorkAllocationService', () => {
 
   const API_URL = 'http://aggregated.ccd.reform';
   const MOCK_TASK_1 = { id: 'Task_1', caseReference: '1234567890' };
   const MOCK_TASK_2 = { id: 'Task_2', caseReference: '2345678901' };
   const TASK_SEARCH_URL = `${API_URL}/searchForCompletable`;
+  const TASK_ASSIGN_URL = `${API_URL}/task/${MOCK_TASK_1.id}/assign`;
   const TASK_COMPLETE_URL = `${API_URL}/task/${MOCK_TASK_1.id}/complete`;
 
   const ERROR: HttpError = new HttpError();
@@ -81,17 +115,21 @@ describe('WorkAllocationService', () => {
   let errorService: any;
   let workAllocationService: WorkAllocationService;
   let alertService: any;
+  let sessionStorageService: any;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl', 'getWAServiceConfig']);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
     appConfig.getUserInfoApiUrl.and.returnValue('api/user/details');
+    appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['caseType'], release: '3.0'}]});
 
     httpService = createSpyObj<HttpService>('httpService', ['post', 'get']);
     httpService.get.and.returnValue(Observable.of(getExampleUserDetails()[1]));
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
     alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+    sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
   });
 
   describe('searchTasks', () => {
@@ -139,6 +177,41 @@ describe('WorkAllocationService', () => {
 
   });
 
+  describe('assignTask', () => {
+
+    beforeEach(() => {
+      httpService.post.and.returnValue(Observable.of({}));
+    });
+
+    it('should call post with the correct parameters', () => {
+      const userId = getExampleUserDetails()[1].userInfo.id;
+      workAllocationService.assignTask(MOCK_TASK_1.id, userId).subscribe();
+      expect(httpService.post).toHaveBeenCalledWith(TASK_ASSIGN_URL, {userId});
+    });
+
+    it('should set error service error when the call fails', (done) => {
+      const userId = getExampleUserDetails()[1].userInfo.id;
+      httpService.post.and.returnValue(throwError(ERROR));
+      workAllocationService.assignTask(MOCK_TASK_1.id, userId)
+        .subscribe(() => {
+          // Should not get here... so if we do, make sure it fails.
+          done.fail('Assign task instead of erroring');
+        }, err => {
+          expect(err).toEqual(ERROR);
+          expect(errorService.setError).toHaveBeenCalledWith(ERROR);
+          done();
+        });
+    });
+
+    it('should be blocked when not supported by WA', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      const userId = getExampleUserDetails()[1].userInfo.id;
+      workAllocationService.assignTask(MOCK_TASK_1.id, userId).subscribe();
+      expect(httpService.post).not.toHaveBeenCalled();
+    });
+
+  });
+
   describe('completeTask', () => {
 
     beforeEach(() => {
@@ -163,6 +236,46 @@ describe('WorkAllocationService', () => {
           expect(alertService.warning).toHaveBeenCalled();
           done();
         });
+    });
+
+    it('should be blocked when not supported by WA', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.post).not.toHaveBeenCalled();
+    });
+
+  });
+
+  describe('assignAndCompleteTask', () => {
+
+    beforeEach(() => {
+      httpService.post.and.returnValue(Observable.of({}));
+    });
+
+    it('should call post with the correct parameters', () => {
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {'completion_options': {'assign_and_complete': true}});
+    });
+
+    it('should set error service error when the call fails', (done) => {
+      httpService.post.and.returnValue(throwError(ERROR));
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id)
+        .subscribe(() => {
+          // Should not get here... so if we do, make sure it fails.
+          done.fail('Completed task instead of erroring');
+        }, err => {
+          expect(err).toEqual(ERROR);
+          expect(errorService.setError).toHaveBeenCalledWith(ERROR);
+          expect(alertService.setPreserveAlerts).toHaveBeenCalled();
+          expect(alertService.warning).toHaveBeenCalled();
+          done();
+        });
+    });
+
+    it('should be blocked when not supported by WA', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.post).not.toHaveBeenCalled();
     });
 
   });
@@ -205,7 +318,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(Observable.of({
         tasks: []
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
         expect(result).toBeTruthy();
         expect(completeSpy).not.toHaveBeenCalled();
         done();
@@ -218,7 +331,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(Observable.of({
         tasks: [ MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         done();
       });
@@ -229,7 +342,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(Observable.of({
         tasks: [ MOCK_TASK_1, MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(() => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(() => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Processed multiple tasks instead of erroring');
       }, error => {
@@ -244,13 +357,31 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(Observable.of({
         tasks: [ MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Completed task instead of erroring');
       }, error => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         expect(error.message).toEqual(COMPLETE_ERROR.message); // The error for completing the task.
         done();
+      });
+    });
+
+    it('should get task for the task id provided', (done) => {
+      const taskResponse = getExampleTask();
+      const getSpy = spyOn(workAllocationService, 'getTask').and.returnValue(Observable.of(taskResponse));
+      httpService.get.and.returnValue(Observable.of({taskResponse}));
+      workAllocationService.getTask(MOCK_TASK_2.id).subscribe(result => {
+        expect(getSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
+        done();
+      });
+    });
+
+    it('should be blocked when not supported by WA', () => {
+      const completeSpy = spyOn(workAllocationService, 'completeTask');
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      workAllocationService.completeAppropriateTask(null, null, 'IA', 'Asylum').subscribe(result => {
+        expect(result).toBe(null);
       });
     });
 

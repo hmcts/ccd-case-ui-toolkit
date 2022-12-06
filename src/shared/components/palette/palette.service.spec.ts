@@ -1,36 +1,40 @@
-import { PaletteService } from './palette.service';
-import { ReadTextFieldComponent } from './text/read-text-field.component';
-import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
-import { ReadNumberFieldComponent } from './number/read-number-field.component';
-import { ReadYesNoFieldComponent } from './yes-no/read-yes-no-field.component';
-import { ReadEmailFieldComponent } from './email/read-email-field.component';
-import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
-import { ReadDateFieldComponent } from './date/read-date-field.component';
-import { ReadFixedListFieldComponent } from './fixed-list/read-fixed-list-field.component';
-import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
-import { WriteTextFieldComponent } from './text/write-text-field.component';
-import { UnsupportedFieldComponent } from './unsupported-field.component';
+import { CaseField } from '../../domain/definition/case-field.model';
+import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
+import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
-import { WriteComplexFieldComponent } from './complex/write-complex-field.component';
-import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
-import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component';
-import { WriteEmailFieldComponent } from './email/write-email-field.component';
-import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
-import { WriteNumberFieldComponent } from './number/write-number-field.component';
-import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
-import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
-import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
-import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
-import { WriteMultiSelectListFieldComponent } from './multi-select-list/write-multi-select-list-field.component';
-import { WriteDateFieldComponent } from './date/write-date-field.component';
+import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
+import { WriteComplexFieldComponent } from './complex/write-complex-field.component';
+import { ReadDateFieldComponent } from './date/read-date-field.component';
+import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
-import { CaseField }  from '../../domain/definition/case-field.model';
-import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { ReadEmailFieldComponent } from './email/read-email-field.component';
+import { WriteEmailFieldComponent } from './email/write-email-field.component';
+import { ReadFixedListFieldComponent } from './fixed-list/read-fixed-list-field.component';
+import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-field.component';
+import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
+import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
+import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
+import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
+import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
+import { WriteMultiSelectListFieldComponent } from './multi-select-list/write-multi-select-list-field.component';
+import { ReadNumberFieldComponent } from './number/read-number-field.component';
+import { WriteNumberFieldComponent } from './number/write-number-field.component';
 import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summary-field.component';
 import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-summary-field.component';
+import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
+import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
+import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
+import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
+import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.component';
+import { ReadTextFieldComponent } from './text/read-text-field.component';
+import { WriteTextFieldComponent } from './text/write-text-field.component';
+import { UnsupportedFieldComponent } from './unsupported-field.component';
+import { ReadYesNoFieldComponent } from './yes-no/read-yes-no-field.component';
+import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component';
 
 describe('PaletteService', () => {
 
@@ -112,16 +116,16 @@ describe('PaletteService', () => {
       assertComponent('Date', false, ReadDateFieldComponent, 'AnID');
     });
 
-    it('should get WriteDateField component class for Date input', () => {
-      assertComponent('Date', true, WriteDateFieldComponent, 'AnID');
+    it('should get WriteDateContainer component class for Date input', () => {
+      assertComponent('Date', true, WriteDateContainerFieldComponent, 'AnID');
     });
 
     it('should get ReadDateTimeField component class for DateTime input', () => {
       assertComponent('DateTime', false, ReadDateFieldComponent, 'AnID');
     });
 
-    it('should get WriteDateTimeField component class for DateTime input', () => {
-      assertComponent('DateTime', true, WriteDateFieldComponent, 'AnID');
+    it('should get WriteDateTimeContainer component class for DateTime input', () => {
+      assertComponent('DateTime', true, WriteDateContainerFieldComponent, 'AnID');
     });
 
     it('should get ReadFixedListField component class for FixedList input', () => {
@@ -196,10 +200,25 @@ describe('PaletteService', () => {
       assertComponent('Complex', true, WriteOrderSummaryFieldComponent, 'OrderSummary');
     });
 
+    it('should get ReadJudicialUserFieldComponent component class for Complex field with JudicialUser complex type', () => {
+      assertComponent('Complex', false, ReadJudicialUserFieldComponent, 'JudicialUser');
+    });
+
+    it('should get WriteJudicialUserFieldComponent component class for Complex field with JudicialUser complex type', () => {
+      assertComponent('Complex', true, WriteJudicialUserFieldComponent, 'JudicialUser');
+    });
+
     it('should get CasePaymentHistoryViewerFieldComponent component class for CasePaymentHistoryViewer regardless of read/write', () => {
       assertComponent('CasePaymentHistoryViewer', true, CasePaymentHistoryViewerFieldComponent, 'AnID');
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
     });
 
+    it('should get WriteCaseFlagFieldComponent component class for FlagLauncher input', () => {
+      assertComponent('FlagLauncher', true, WriteCaseFlagFieldComponent, 'AnID');
+    });
+
+    it('should get ReadCaseFlagFieldComponent component class for FlagLauncher input', () => {
+      assertComponent('FlagLauncher', false, ReadCaseFlagFieldComponent, 'AnID');
+    });
   });
 });

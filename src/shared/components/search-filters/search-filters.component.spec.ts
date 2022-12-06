@@ -6,10 +6,11 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { Observable } from 'rxjs/Rx';
 import createSpyObj = jasmine.createSpyObj;
 import { createSearchInputs } from './domain/search-input.test.fixture';
-import { JurisdictionService, SearchService, OrderService, WindowService } from '../../services';
+import { JurisdictionService, SearchService, OrderService, WindowService, HttpService } from '../../services';
 import { Jurisdiction, CaseType } from '../../domain';
 import { SearchInput } from './domain';
 import { AbstractFieldWriteComponent } from '../palette';
+import { ConditionalShowModule } from '../../directives';
 
 const JURISDICTION_1: Jurisdiction = {
   id: 'J1',
@@ -149,6 +150,7 @@ describe('SearchFiltersComponent', () => {
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
   let de: DebugElement;
+  let httpService: HttpService;
   let jurisdictionService: JurisdictionService;
   let windowService;
   beforeEach(async(() => {
@@ -156,7 +158,8 @@ describe('SearchFiltersComponent', () => {
     searchHandler = createSpyObj('searchHandler', ['applyFilters', 'resetFilters']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
     orderService = createSpyObj('orderService', ['sortAsc']);
-    jurisdictionService = new JurisdictionService();
+    httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
+    jurisdictionService = new JurisdictionService(httpService);
     windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
 
     onJurisdictionHandler = createSpyObj('onJurisdictionHandler', ['applyJurisdiction']);
@@ -166,7 +169,8 @@ describe('SearchFiltersComponent', () => {
       .configureTestingModule({
         imports: [
           FormsModule,
-          ReactiveFormsModule
+          ReactiveFormsModule,
+          ConditionalShowModule
         ],
         declarations: [
           SearchFiltersComponent,
@@ -542,6 +546,7 @@ describe('Clear localStorage', () => {
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
   let de: DebugElement;
+  let httpService: HttpService;
   let jurisdictionService: JurisdictionService;
   let windowService: WindowService;
 
@@ -549,13 +554,15 @@ describe('Clear localStorage', () => {
     searchHandler = createSpyObj('searchHandler', ['applyFilters', 'applyReset']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
     orderService = createSpyObj('orderService', ['sortAsc']);
-    jurisdictionService = new JurisdictionService();
+    httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
+    jurisdictionService = new JurisdictionService(httpService);
     windowService = createSpyObj('windowService', ['clearLocalStorage', 'locationAssign', 'getLocalStorage', 'removeLocalStorage']);
     TestBed
       .configureTestingModule({
         imports: [
           FormsModule,
-          ReactiveFormsModule
+          ReactiveFormsModule,
+          ConditionalShowModule
         ],
         declarations: [
           SearchFiltersComponent,

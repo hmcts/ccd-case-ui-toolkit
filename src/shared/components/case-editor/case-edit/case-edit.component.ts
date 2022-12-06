@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import { CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
-import { FieldsPurger, FieldsUtils, ProfileNotifier, ProfileService } from '../../../services';
+import { FieldsPurger, FieldsUtils, SessionStorageService, WindowService } from '../../../services';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { WizardFactoryService } from '../services';
 
@@ -17,6 +17,7 @@ import { WizardFactoryService } from '../services';
 })
 export class CaseEditComponent implements OnInit {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
+  static readonly ALERT_MESSAGE = 'Page is being refreshed so you will be redirected to the first page of this event.';
 
   @Input()
   eventTrigger: CaseEventTrigger;
@@ -47,6 +48,10 @@ export class CaseEditComponent implements OnInit {
 
   navigationOrigin: any;
 
+  initialUrl: string;
+
+  isPageRefreshed: boolean;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -55,12 +60,19 @@ export class CaseEditComponent implements OnInit {
     private fieldsPurger: FieldsPurger,
     private registrarService: ConditionalShowRegistrarService,
     private wizardFactory: WizardFactoryService,
-    private profileService: ProfileService,
-    private profileNotifier: ProfileNotifier,
+    private sessionStorageService: SessionStorageService,
+    private windowsService: WindowService
   ) {}
 
   ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
+    this.initialUrl = this.sessionStorageService.getItem('eventUrl');
+    this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
+
+    this.checkPageRefresh();
+    if (this.router.url && !this.isPageRefreshed) {
+      this.sessionStorageService.setItem('eventUrl', this.router.url);
+    }
 
     this.form = this.fb.group({
       'data': new FormGroup({}),
@@ -74,7 +86,16 @@ export class CaseEditComponent implements OnInit {
     this.route.queryParams.subscribe((params: Params) => {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
-    this.announceProfile(this.route);
+  }
+
+  checkPageRefresh(): boolean {
+    if (this.isPageRefreshed && this.initialUrl) {
+      this.sessionStorageService.removeItem('eventUrl');
+      this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
+      this.router.navigate([this.initialUrl], { relativeTo: this.route});
+      return true;
+    }
+    return false;
   }
 
   getPage(pageId: string): WizardPage {
@@ -92,6 +113,10 @@ export class CaseEditComponent implements OnInit {
   }
 
   next(currentPageId: string): Promise<boolean> {
+    this.initialUrl = this.sessionStorageService.getItem('eventUrl');
+    if (this.router.url && !this.initialUrl) {
+      this.sessionStorageService.setItem('eventUrl', this.router.url);
+    }
     this.fieldsPurger.clearHiddenFields(this.form, this.wizard, this.eventTrigger, currentPageId);
     this.registrarService.reset();
 
@@ -128,9 +153,4 @@ export class CaseEditComponent implements OnInit {
     return this.router.navigate(['confirm'], {relativeTo: this.route});
   }
 
-  private announceProfile(route: ActivatedRoute): void {
-    route.snapshot.pathFromRoot[1].data.profile ?
-      this.profileNotifier.announceProfile(route.snapshot.pathFromRoot[1].data.profile)
-    : this.profileService.get().subscribe(_ => this.profileNotifier.announceProfile(_));
-  }
 }

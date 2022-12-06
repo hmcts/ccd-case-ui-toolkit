@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, Validators } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 import { Constants } from '../../commons/constants';
 import { CaseField } from '../../domain/definition/case-field.model';
@@ -22,12 +22,12 @@ export class FormValidatorsService {
         if (caseField.field_type.regular_expression) {
           validators.push(Validators.pattern(caseField.field_type.regular_expression));
         } else {
-          validators.push(Validators.pattern(Constants.REGEX_WHITESPACES));
+          validators.push(this.emptyValidator());
         }
-        if (caseField.field_type.min) {
+        if (caseField.field_type.min && (typeof caseField.field_type.min === 'number')) {
           validators.push(Validators.minLength(caseField.field_type.min));
         }
-        if (caseField.field_type.max) {
+        if (caseField.field_type.max && (typeof caseField.field_type.max === 'number')) {
           validators.push(Validators.maxLength(caseField.field_type.max));
         }
       }
@@ -39,6 +39,16 @@ export class FormValidatorsService {
     return control;
   }
 
+  public static emptyValidator(): ValidatorFn {
+    const validator = function(control: AbstractControl): ValidationErrors | null {
+     if (control && control.value && control.value.toString().trim().length === 0) {
+        return  { required: {} };
+      }
+      return null;
+    };
+    return validator;
+  }
+
   // TODO: Strip this out as it's only here for the moment because
   // the service is being injected all over the place but it doesn't
   // need to be as FormValidatorsService.addValidators is perfectly
@@ -46,4 +56,5 @@ export class FormValidatorsService {
   public addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
     return FormValidatorsService.addValidators(caseField, control);
   }
+
 }

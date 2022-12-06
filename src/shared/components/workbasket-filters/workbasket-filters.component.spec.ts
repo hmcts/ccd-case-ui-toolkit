@@ -8,9 +8,10 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/do';
 import createSpyObj = jasmine.createSpyObj;
 import { AbstractFieldWriteComponent, FieldTypeEnum, OrderService, Jurisdiction, CaseType, AlertService,
-  JurisdictionService, WindowService } from '../..';
+  JurisdictionService, WindowService, HttpService } from '../..';
 import { WorkbasketInputModel } from '../../domain/workbasket/workbasket-input.model';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { ConditionalShowModule } from '../../directives';
 
 @Component({
   selector: 'ccd-field-write',
@@ -170,6 +171,7 @@ describe('WorkbasketFiltersComponent', () => {
   let workbasketHandler;
   let router: any;
   let activatedRoute: any;
+  let httpService: HttpService;
   let jurisdictionService: JurisdictionService;
   let workbasketInputFilterService: any;
   let orderService: any;
@@ -187,7 +189,8 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
+      jurisdictionService = new JurisdictionService(httpService);
       windowMockService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
         'getLocalStorage', 'removeLocalStorage']);
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
@@ -202,7 +205,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -249,7 +253,7 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');
       resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
@@ -264,7 +268,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -615,6 +620,30 @@ describe('WorkbasketFiltersComponent', () => {
       expect(arg['formGroup'].value).toEqual(formGroup.value);
       expect(workbasketHandler.applyFilters).toHaveBeenCalledTimes(1);
     }));
+
+    it ('should update form group filters', () => {
+      const formGroupLocalStorage = {
+        regionList: 'london',
+        londonFRCList: 'london',
+        londonCourtList: 'FR_londonList_10',
+        southEastFRCList: null,
+        thamesvalleyCourtList: null
+      };
+      windowService.getLocalStorage.and.returnValue(JSON.stringify(formGroupLocalStorage));
+
+      const formControls = {
+        regionList: new FormControl('southeast'),
+        londonFRCList: new FormControl('london'),
+        londonCourtList: new FormControl('FR_londonList_10'),
+        southEastFRCList: new FormControl('thamesvalley'),
+        thamesvalleyCourtList: new FormControl('FR_thamesvalleyList_2')
+      };
+      component.formGroup = new FormGroup(formControls);
+
+      component.updateFormGroupFilters();
+      expect(component.formGroup.get('londonFRCList').value).toBe(null);
+      expect(component.formGroup.get('londonCourtList').value).toBe(null);
+    });
   });
 
   describe('with defaults and CRUD', () => {
@@ -628,7 +657,7 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -640,7 +669,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -725,7 +755,7 @@ describe('WorkbasketFiltersComponent', () => {
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
 
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -737,7 +767,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -796,7 +827,7 @@ describe('WorkbasketFiltersComponent', () => {
       windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       activatedRoute = {
         queryParams: Observable.of({}),
         snapshot: {
@@ -808,7 +839,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -887,7 +919,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -969,7 +1002,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,
@@ -1031,7 +1065,7 @@ describe('WorkbasketFiltersComponent', () => {
       orderService = createSpyObj('orderService', ['sortAsc']);
       workbasketInputFilterService = createSpyObj<WorkbasketInputFilterService>('workbasketInputFilterService', ['getWorkbasketInputs']);
       workbasketInputFilterService.getWorkbasketInputs.and.returnValue(createObservableFrom(TEST_WORKBASKET_INPUTS));
-      jurisdictionService = new JurisdictionService();
+      jurisdictionService = new JurisdictionService(httpService);
       windowService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
         'getLocalStorage', 'setLocalStorage', 'removeLocalStorage']);
       windowService.getLocalStorage.and.returnValue('{}');
@@ -1046,7 +1080,8 @@ describe('WorkbasketFiltersComponent', () => {
         .configureTestingModule({
           imports: [
             FormsModule,
-            ReactiveFormsModule
+            ReactiveFormsModule,
+            ConditionalShowModule
           ],
           declarations: [
             WorkbasketFiltersComponent,

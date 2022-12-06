@@ -29,6 +29,7 @@ import { CaseListFiltersConsumerComponent } from './case-list-filters-consumer.c
 import { SearchFiltersWrapperConsumerComponent } from './search-filters-wrapper-consumer.component';
 import { SearchResultConsumerComponent } from './search-result-consumer.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { EventDetails} from './common/eventDetails.component'
 
 @NgModule({
   imports: [
@@ -39,7 +40,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    BrowserAnimationsModule,    
+    BrowserAnimationsModule,
     HttpClientModule,
     CreateCaseFiltersModule,
     CaseTimelineModule,
@@ -61,6 +62,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CaseTimelineConsumerComponent,
     CaseListFiltersConsumerComponent,
     SearchResultConsumerComponent,
+    EventDetails
   ],
   providers: [
     CasesService,

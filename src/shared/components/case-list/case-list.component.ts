@@ -40,14 +40,22 @@ export class CaseListComponent {
 
   @Input() public selectedCases: any[] = [];
 
+  @Input() public currentPageNo: number;
+
+  @Input() public totalResultsCount?: number;
+
+  @Input() public pageSize?: number;
+
+  @Output() public pageChange = new EventEmitter();
+
   constructor(private browserService: BrowserService) { }
 
   public formatDate(date: Date): string {
-    return formatDate(date, 'dd MMM yyyy', 'en-GB');
+    return date ? formatDate(date, 'dd MMM yyyy', 'en-GB') : '-';
   }
 
   public formatDateAtTime(date: Date): string {
-      return DateTimeFormatUtils.formatDateAtTime(date, false);
+    return date ? DateTimeFormatUtils.formatDateAtTime(date, false) : '-';
   }
 
   public canBeShared(c: any): boolean {
@@ -108,6 +116,11 @@ export class CaseListComponent {
         this.changeSelection(aCase);
       }
     }
+  }
+
+  public goToPage(pageNumber: number) {
+    this.currentPageNo = pageNumber;
+    this.pageChange.emit(pageNumber);
   }
 }
 

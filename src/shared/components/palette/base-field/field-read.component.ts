@@ -1,8 +1,8 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
-
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
 
@@ -22,6 +22,9 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
 
   @Input()
   caseFields: CaseField[] = [];
+
+  @Input()
+  markdownUseHrefAsRouterLink?: boolean;
 
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   fieldContainer: ViewContainerRef;
@@ -54,6 +57,11 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       component.instance['parent'] = this.parent;
       component.instance['caseReference'] = this.caseReference;
       component.instance['context'] = this.context;
+      component.instance['markdownUseHrefAsRouterLink'] = this.markdownUseHrefAsRouterLink;
+
+      // Add a reference to the parent CaseEditPageComponent to this component (needed for access to the parent
+      // CaseEditPageComponent's getCaseTitle method)
+      component.instance['caseEditPageComponent'] = component.injector.get(CaseEditPageComponent);
       this.fieldContainer.insert(component.hostView);
     });
   }

@@ -3,6 +3,7 @@ import { CaseViewEvent } from './case-view-event.model';
 import { CaseViewTrigger } from './case-view-trigger.model';
 import { CaseField } from '../definition';
 import { Type } from 'class-transformer';
+import { Flags } from '../../components/palette/case-flag/domain';
 
 // @dynamic
 export class CaseView {
@@ -31,4 +32,11 @@ export class CaseView {
   events: CaseViewEvent[];
   @Type(() => CaseField)
   metadataFields?: CaseField[];
+  basicFields?: {
+    caseNameHmctsInternal?: string,
+    caseManagementLocation?: {
+      baseLocation?: number
+    }
+  };
+  case_flag?: Flags;
 }

@@ -9,8 +9,6 @@ import { CaseField } from '../../../domain/definition';
 })
 export class ReadComplexFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
-  public static readonly FIELD_TYPE_DYNAMIC_LIST = 'DynamicList';
-
   @Input()
   caseFields: CaseField[] = [];
 
@@ -20,14 +18,21 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
     super.ngOnInit();
     if (this.caseField.display_context_parameter) {
       this.context = PaletteContext.TABLE_VIEW;
+    } else {
+      // default to default views
+      if (!this.caseField.display_context_parameter && this.context) {
+        this.context = PaletteContext.DEFAULT;
+      }
     }
     if (this.caseField.field_type) {
       this.caseField.field_type.complex_fields.map(field => {
-        if (field.field_type.type === ReadComplexFieldComponent.FIELD_TYPE_DYNAMIC_LIST) {
+        if (field.isDynamic()) {
           field.list_items = this.caseField.value[field.id].list_items;
           field.value = {
             list_items: field.list_items,
-            value: this.caseField.value[field.id].value
+            value: this.caseField.value[field.id].value && this.caseField.value[field.id].value.code ?
+                    this.caseField.value[field.id].value.code :
+                    this.caseField.value[field.id].value
           };
         }
       });

@@ -10,7 +10,6 @@ import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Va
                     [value]="displayValue"
                     (change)="onChange($event)"
                     (keyup)="onChange($event)"
-                    (blur)="onBlur()"
                     [disabled]="disabled"/>`,
   providers: [
     {
@@ -27,7 +26,7 @@ import { ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, Va
 })
 export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
 
-  private static readonly PATTERN_REGEXP = new RegExp('^\\d*(\\.\\d{0,2})?$');
+  private static readonly PATTERN_REGEXP = new RegExp('^-?\\d*(\\.\\d{0,2})?$');
 
   @Input()
   id: string;
@@ -100,11 +99,6 @@ export class MoneyGbpInputComponent implements ControlValueAccessor, Validator {
   }
 
   private propagateChange = (_: any) => { };
-
-  onBlur() {
-    this.formControl.markAsTouched();
-    this.propagateChange(this.rawValue);
-  }
 
   validate(control: FormControl): ValidationErrors {
     if (this.mandatory && !control.value) {
