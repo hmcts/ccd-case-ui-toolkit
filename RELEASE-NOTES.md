@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.25-merge-from-angular11-upgrade
+**EUI-5297** Merge from angular upgrade
+
 ### Version 5.0.25-case-file-view-error-message-display
 **EUI-6826** Display standard error message if Case File View component is unable to retrieve categories and documents data
 
