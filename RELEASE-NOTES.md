@@ -1,7 +1,7 @@
 ## RELEASE NOTES
 
-### Version 7.0.8-integration-of-case-flags-and-case-links
-**EUI-7241** Integration of case flags and case links
+### Version 7.0.12-linked-cases-display-name-instead-of-description
+**EUI-7323** Linked cases display name instead of description
 
 ### Version 6.10.0-rc4
 **EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property

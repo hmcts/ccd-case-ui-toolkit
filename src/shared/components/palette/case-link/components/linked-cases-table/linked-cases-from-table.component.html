@@ -18,9 +18,9 @@
             rel="noopener"><span>{{case.caseNameHmctsInternal}} <br>
               {{case.caseReference | ccdCaseReference}}</span></a></p>
       </td>
-      <td class="case-table-column"><span>{{case.ccdCaseType}}</span></td>
+      <td class="case-table-column"><span [title]="case.ccdCaseTypeDescription">{{case.ccdCaseType}}</span></td>
       <td class="case-table-column"><span>{{case.ccdJurisdiction}}</span></td>
-      <td class="case-table-column"><span>{{case.state}}</span></td>
+      <td class="case-table-column"><span [title]="case.stateDescription">{{case.state}}</span></td>
       <td class="case-table-column" *ngFor="let details of case.linkDetails">
         <span *ngFor="let reason of details.reasons; let i = index; let isLast = last">
           {{reason.reasonCode | ccdLinkCasesReasonValue}} <br>

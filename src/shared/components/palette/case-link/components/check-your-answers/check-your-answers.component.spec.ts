@@ -21,7 +21,9 @@ describe('CheckYourAnswersComponent', () => {
       caseName: '',
       caseService: '',
       caseState: '',
+      caseStateDescription: '',
       caseType: '',
+      caseTypeDescription: '',
       createdDateTime: '11/05/2022',
       reasons: [
         {
@@ -37,7 +39,9 @@ describe('CheckYourAnswersComponent', () => {
       caseName: '',
       caseService: '',
       caseState: '',
+      caseStateDescription: '',
       caseType: '',
+      caseTypeDescription: '',
       createdDateTime: '11/05/2022',
       reasons: [
         {
@@ -50,7 +54,9 @@ describe('CheckYourAnswersComponent', () => {
       caseName: '',
       caseService: '',
       caseState: '',
+      caseStateDescription: '',
       caseType: '',
+      caseTypeDescription: '',
       createdDateTime: '11/05/2022',
       reasons: [
         {
@@ -65,7 +71,9 @@ describe('CheckYourAnswersComponent', () => {
       caseName: '',
       caseService: '',
       caseState: '',
+      caseStateDescription: '',
       caseType: '',
+      caseTypeDescription: '',
       createdDateTime: '10/03/2022',
       reasons: [
         {
@@ -81,7 +89,9 @@ describe('CheckYourAnswersComponent', () => {
       caseName: '',
       caseService: '',
       caseState: '',
+      caseStateDescription: '',
       caseType: '',
+      caseTypeDescription: '',
       createdDateTime: '10/03/2022',
       reasons: [
         {

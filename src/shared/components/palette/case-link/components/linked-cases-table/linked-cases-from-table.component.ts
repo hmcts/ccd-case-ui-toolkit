@@ -68,15 +68,19 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
         this.isServerError = false;
         this.getLinkedCasesResponse = response.linkedCases && response.linkedCases.map(item => {
           const mappedCasetype = this.mapLookupIDToValueFromJurisdictions('CASE_TYPE', item.ccdCaseType);
+          const mappedCasetypeDescription = this.mapLookupIDToValueFromJurisdictions('CASE_TYPE_DESCRIPTION', item.ccdCaseType);
           const mappedCaseState = this.mapLookupIDToValueFromJurisdictions('STATE', item.state);
+          const mappedCaseStateDescription = this.mapLookupIDToValueFromJurisdictions('STATE_DESCRIPTION', item.state);
           const mappedCaseService = this.mapLookupIDToValueFromJurisdictions('JURISDICTION', item.ccdJurisdiction);
           return {
             ...item,
             ccdCaseType: mappedCasetype,
+            ccdCaseTypeDescription: mappedCasetypeDescription,
             ccdJurisdiction: mappedCaseService,
             state: mappedCaseState,
+            stateDescription: mappedCaseStateDescription,
             caseNameHmctsInternal: item.caseNameHmctsInternal || LinkedCasesFromTableComponent.CASE_NAME_MISSING_TEXT
-          };
+          } as CaseLinkResponse;
         })
         this.noLinkedCases = !response.linkedCases || !response.linkedCases.length;
       },

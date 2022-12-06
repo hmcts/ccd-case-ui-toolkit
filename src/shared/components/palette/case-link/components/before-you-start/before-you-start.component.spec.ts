@@ -4,7 +4,6 @@ import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LinkedCasesPages } from '../../enums';
-import { JurisdictionService } from '../../services/jurisdiction.service';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { BeforeYouStartComponent } from './before-you-start.component';
 
@@ -23,7 +22,7 @@ describe('BeforeYouStartComponent', () => {
 
   let mockRouter: any;
   mockRouter = {
-    navigate: jasmine.createSpy('navigate'),
+    navigate: jasmine.createSpy('navigate').and.returnValue(Promise.resolve()),
     url: ''
   };
 
@@ -74,5 +73,10 @@ describe('BeforeYouStartComponent', () => {
     expect(manageLinkCasesJourneyElement.textContent).toBe(
       'If there are linked hearings for the case you need to un-link then you must unlink the hearing first.'
     );
+  });
+
+  it('should return to case details page', () => {
+    component.onBack();
+    expect(mockRouter.navigate).toHaveBeenCalled();
   });
 });

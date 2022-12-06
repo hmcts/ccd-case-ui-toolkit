@@ -105,7 +105,7 @@ export class CasesService {
   }
 
   getCaseViewV2(caseId: string): Observable<CaseView> {
-    let url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`
+    const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
     const headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
