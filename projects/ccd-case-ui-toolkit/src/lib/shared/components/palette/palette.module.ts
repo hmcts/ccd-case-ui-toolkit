@@ -151,6 +151,7 @@ const PALETTE_COMPONENTS = [
     CaseFileViewFolderSortComponent,
     CaseFileViewOverlayMenuComponent,
     CaseFileViewFolderDocumentActionsComponent,
+    CaseFileViewFolderSelectorComponent
 ];
 
 @NgModule({

@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DocumentTreeNode } from '../../../../../domain/case-file-view';
 import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-file-view-category.model';
-import { CaseFileViewDocument } from '../../../../../domain/case-file-view/case-file-view-document.model';
 
 @Component({
     selector: 'xui-case-file-view-folder-selector',
@@ -15,7 +15,7 @@ export class CaseFileViewFolderSelectorComponent {
 
     constructor(
         public dialogRef: MatDialogRef<CaseFileViewFolderSelectorComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { categories: CaseFileViewCategory[], document: CaseFileViewDocument }
+        @Inject(MAT_DIALOG_DATA) public data: { categories: CaseFileViewCategory[], document: DocumentTreeNode }
     ) {
         this.currentCategories = [...this.data.categories];
     }

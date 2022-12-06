@@ -1,6 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
@@ -12,6 +13,7 @@ import {
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
 import { DocumentManagementService, WindowService } from '../../../../../services';
+import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 
 @Component({
@@ -54,7 +56,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   constructor(
     private readonly windowService: WindowService,
     private readonly router: Router,
-    private readonly documentManagementService: DocumentManagementService
+    private readonly documentManagementService: DocumentManagementService,
+    private readonly dialog: MatDialog
   ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
@@ -170,7 +173,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   ): void {
     switch(actionType) {
       case('changeFolder'):
-        console.log('changeFolder!');
+        this.openMoveDialog(documentTreeNode);
         break;
       case('openInANewTab'):
         this.windowService.setLocalStorage(MEDIA_VIEWER_LOCALSTORAGE_KEY,
@@ -240,5 +243,16 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.categoriesAndDocumentsSubscription?.unsubscribe();
     this.documentFilterSubscription?.unsubscribe();
+  }
+
+  private openMoveDialog(node: DocumentTreeNode): void {
+    const dialogRef = this.dialog.open(CaseFileViewFolderSelectorComponent, {
+      width: '350px',
+      data: { categories: this.categories, document: node }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      console.log(data);
+    });
   }
 }
