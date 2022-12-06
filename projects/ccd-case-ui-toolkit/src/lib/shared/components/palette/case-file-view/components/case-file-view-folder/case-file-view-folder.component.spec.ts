@@ -135,7 +135,7 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyDesc);
   });
 
-  it('should set mediaViewer localStorage' +
+  it('should set mediaViewer localStorage ' +
     'and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
     const documentTreeNode = component.nestedDataSource[0].children[3];
     component.triggerDocumentAction('openInANewTab', documentTreeNode);

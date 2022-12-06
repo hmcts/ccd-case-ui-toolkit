@@ -1,12 +1,18 @@
 <div class="document-filter-container">
-  <div class="form-group document-filter" [formGroup]="documentFilterFormGroup">
-    <input class="form-control document-search"
-      type="search"
-      id="document-search"
-      name="documentSearchFormControl"
-      formControlName="documentSearchFormControl"
-      placeholder="Search by document name">
-  </div>
+  <form class="form-group document-filter" [formGroup]="documentFilterFormGroup">
+    <div class="document-filter__container">
+      <input class="form-control document-search"
+             required
+             type="text"
+             id="document-search"
+             name="documentSearchFormControl"
+             formControlName="documentSearchFormControl"
+             placeholder="Search by document name"
+      >
+
+      <button class="document-filter__reset" type="reset"></button>
+    </div>
+  </form>
 </div>
 
 <div class="document-folders-header">
