@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 5.0.31-angular11-upgrade
+### Version 5.0.32-angular11-upgrade
 **EUI-6326** Angular 11 upgrade
 
 ### Version 6.10.0-rc4
