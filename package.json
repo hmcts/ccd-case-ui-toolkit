@@ -47,7 +47,7 @@
     "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
     "demo": "yarn && yarn build:esm && yarn build:demo && yarn start",
     "build:test:functional": "yarn && yarn build:esm && yarn --cwd demo  test:functional",
-    "test:functional":"yarn --cwd demo  test:functional"
+    "test:functional": "yarn --cwd demo  test:functional"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "^2.0.4",
@@ -104,6 +104,7 @@
     "@types/jasminewd2": "^2.0.3",
     "@types/node": "^10.11.0",
     "@types/pegjs": "^0.10.0",
+    "@types/underscore": "^1.11.4",
     "@types/webpack": "^4.41.25",
     "@types/webpack-env": "^1.16.0",
     "angular2-template-loader": "^0.6.2",
