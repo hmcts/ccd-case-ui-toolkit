@@ -168,4 +168,8 @@ export class AppMockConfig implements AbstractAppConfig {
   getCaseFlagsRefdataApiUrl(): string {
     return '';
   }
+
+  public getDocumentDataUrl(): string {
+    return '';
+  }
 }

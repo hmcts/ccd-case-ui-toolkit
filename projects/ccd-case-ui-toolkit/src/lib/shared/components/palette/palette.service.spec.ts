@@ -229,7 +229,7 @@ describe('PaletteService', () => {
       expect(paletteService.getFieldComponentClass(caseField, true)).toBe(UnsupportedFieldComponent);
       expect(paletteService.getFieldComponentClass(caseField, false)).toBe(UnsupportedFieldComponent);
 		});
-		
+
     it('should get WriteCaseFlagFieldComponent component class for FlagLauncher input', () => {
       assertComponent('FlagLauncher', true, WriteCaseFlagFieldComponent, 'AnID');
     });
