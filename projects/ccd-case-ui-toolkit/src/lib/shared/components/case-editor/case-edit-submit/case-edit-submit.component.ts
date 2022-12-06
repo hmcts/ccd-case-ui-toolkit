@@ -2,64 +2,32 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-import { PaletteContext } from '../../../components/palette/base-field/palette-context.enum';
-import { CaseEventData } from '../../../domain/case-event-data.model';
-import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { Profile } from '../../../domain/profile/profile.model';
+import { CaseEventData, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
-import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { FormErrorService } from '../../../services/form/form-error.service';
-import { FormValueService } from '../../../services/form/form-value.service';
-import { OrderService } from '../../../services/order/order.service';
-import { ProfileNotifier } from '../../../services/profile/profile.notifier';
-import { SessionStorageService } from '../../../services/session/session-storage.service';
+import {
+  CaseFieldService,
+  FieldsUtils,
+  FormErrorService,
+  FormValueService,
+  OrderService,
+  ProfileNotifier,
+  SessionStorageService
+} from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
-import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
+import { PaletteContext } from '../../palette';
+import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
-import { Confirmation } from '../domain/confirmation.model';
+import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
-import { WizardPage } from '../domain/wizard-page.model';
-import { Wizard } from '../domain/wizard.model';
-import { CaseNotifier } from '../services/case.notifier';
+import { CaseNotifier } from '../services';
 
+// @dynamic
 @Component({
   selector: 'ccd-case-edit-submit',
   templateUrl: 'case-edit-submit.html',
   styleUrls: ['../case-edit.scss']
 })
 export class CaseEditSubmitComponent implements OnInit, OnDestroy {
-
-  constructor(
-    private readonly caseEdit: CaseEditComponent,
-    private readonly formValueService: FormValueService,
-    private readonly formErrorService: FormErrorService,
-    private readonly fieldsUtils: FieldsUtils,
-    private readonly caseFieldService: CaseFieldService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly orderService: OrderService,
-    private readonly profileNotifier: ProfileNotifier,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly caseNotifier: CaseNotifier,
-  ) { }
-
-  public get isDisabled(): boolean {
-    // EUI-3452.
-    // We don't need to check the validity of the editForm as it is readonly.
-    // This was causing issues with hidden fields that aren't wanted but have
-    // not been disabled.
-    return this.isSubmitting || this.hasErrors;
-  }
-
-  private get hasErrors(): boolean {
-    return this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length;
-  }
-
   public eventTrigger: CaseEventTrigger;
   public editForm: FormGroup;
   public error: HttpError;
@@ -76,6 +44,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public task: Task;
   public eventCompletionParams: EventCompletionParams;
   public eventCompletionChecksRequired = false;
+  public isCaseFlagSubmission = false;
+  public pageTitle: string;
+
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
     const bCaseField = b.show_summary_content_option === 0 || b.show_summary_content_option;
@@ -90,6 +61,29 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return a.show_summary_content_option - b.show_summary_content_option;
   }
 
+  public get isDisabled(): boolean {
+    // EUI-3452.
+    // We don't need to check the validity of the editForm as it is readonly.
+    // This was causing issues with hidden fields that aren't wanted but have
+    // not been disabled.
+    return this.isSubmitting || this.hasErrors;
+  }
+
+  constructor(
+    private readonly caseEdit: CaseEditComponent,
+    private readonly formValueService: FormValueService,
+    private readonly formErrorService: FormErrorService,
+    private readonly fieldsUtils: FieldsUtils,
+    private readonly caseFieldService: CaseFieldService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly orderService: OrderService,
+    private readonly profileNotifier: ProfileNotifier,
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly caseNotifier: CaseNotifier,
+  ) {
+  }
+
   public ngOnInit(): void {
     this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
@@ -99,6 +93,11 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.isSubmitting = false;
     this.contextFields = this.getCaseFields();
+    // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
+    // a FlagLauncher field in the event trigger
+    this.isCaseFlagSubmission = this.eventTrigger.case_fields.some(
+      caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
+    this.pageTitle = this.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
   }
 
   public ngOnDestroy(): void {
@@ -133,9 +132,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Handler function for event emitted from case event completion component
-   */
   public onEventCanBeCompleted(eventCanBeCompleted: boolean): void {
     if (eventCanBeCompleted) {
       // Submit
@@ -146,7 +142,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       this.router.navigate([`/cases/case-details/${this.getCaseId()}/tasks`], { relativeTo: this.route });
     }
   }
-
 
   private generateCaseEventData(): CaseEventData {
     const caseEventData: CaseEventData = {
@@ -162,6 +157,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
     // these will fail validation
     this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
+    // If this is a Case Flag submission (and thus a FlagLauncher field is present in the event trigger), the flag
+    // details data needs populating for each Flags field, then the FlagLauncher field needs removing
+    if (this.isCaseFlagSubmission) {
+      this.formValueService.populateFlagDetailsFromCaseFields(caseEventData.data, this.eventTrigger.case_fields);
+      this.formValueService.removeFlagLauncherField(caseEventData.data, this.eventTrigger.case_fields);
+    }
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
     if (this.caseEdit.confirmation) {
@@ -181,7 +182,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
             this.caseEdit.confirm(confirmation);
           } else {
-            this.caseEdit.submitted.emit({ caseId: response['id'], status: this.getStatus(response) });
+            this.caseEdit.submitted.emit({caseId: response['id'], status: this.getStatus(response)});
           }
         },
         error => {
@@ -250,7 +251,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
         if (caseField.field_type.type === 'Complex') {
           // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
           // handle both null and undefined values
-          if (caseField.value !== null) {
+          if (caseField.value != null) {
             // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
             // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
             // parent)
@@ -260,7 +261,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
             if (formGroup.controls[key].value) {
               Object.keys(formGroup.controls[key].value).forEach((item) => {
                 form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
-              })
+              });
             }
             rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
               form, caseField.field_type.complex_fields, caseField);
@@ -308,6 +309,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
   }
 
+  private get hasErrors(): boolean {
+    return this.error
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length;
+  }
+
   public navigateToPage(pageId: string): void {
     this.caseEdit.navigateToPage(pageId);
   }
@@ -318,7 +325,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public summaryCaseField(field: CaseField): CaseField {
-    if (!this.editForm.get('data').get(field.id)) {
+    if (null === this.editForm.get('data').get(field.id)) {
       // If not in form, return field itself
       return field;
     }
@@ -332,9 +339,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public cancel(): void {
     if (this.eventTrigger.can_save_draft) {
       if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-        this.caseEdit.cancelled.emit({ status: CaseEditPageText.RESUMED_FORM_DISCARD });
+        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
       } else {
-        this.caseEdit.cancelled.emit({ status: CaseEditPageText.NEW_FORM_DISCARD });
+        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
       }
     } else {
       this.caseEdit.cancelled.emit();
@@ -370,11 +377,22 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public readOnlySummaryFieldsToDisplayExists(): boolean {
-    return this.eventTrigger.case_fields.some(field => field.show_summary_content_option >= 0);
+    return this.eventTrigger.case_fields.some(field => field.show_summary_content_option >= 0 );
   }
 
   public showEventNotes(): boolean {
     return this.eventTrigger.show_event_notes !== false;
+  }
+
+  private getLastPageShown(): WizardPage {
+    let lastPage: WizardPage;
+    this.wizard.reverse().forEach(page => {
+      if (!lastPage && this.isShown(page)) {
+        lastPage = page;
+      }
+    });
+    // noinspection JSUnusedAssignment
+    return lastPage;
   }
 
   public previous(): void {
@@ -399,38 +417,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public isSolicitor(): boolean {
     return this.profile.isSolicitor();
-  }
-
-  public getCaseId(): string {
-    return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
-  }
-
-  public getEventId(): string {
-    return this.editForm.value.event.id;
-  }
-
-  public getCaseTitle(): string {
-    return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
-      this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
-  }
-
-  public getCancelText(): string {
-    if (this.eventTrigger.can_save_draft) {
-      return 'Return to case list';
-    } else {
-      return 'Cancel';
-    }
-  }
-
-  private getLastPageShown(): WizardPage {
-    let lastPage: WizardPage;
-    this.wizard.reverse().forEach(page => {
-      if (!lastPage && this.isShown(page)) {
-        lastPage = page;
-      }
-    });
-    // noinspection JSUnusedAssignment
-    return lastPage;
   }
 
   private buildConfirmation(response: object): Confirmation {
@@ -458,5 +444,26 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     }
 
     return this.eventTrigger.case_fields;
+  }
+
+  public getCaseId(): string {
+    return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
+  }
+
+  public getEventId(): string {
+    return this.editForm.value.event.id;
+  }
+
+  public getCaseTitle(): string {
+    return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
+    this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
+  }
+
+  public getCancelText(): string {
+    if (this.eventTrigger.can_save_draft) {
+      return 'Return to case list';
+    } else {
+      return 'Cancel';
+    }
   }
 }

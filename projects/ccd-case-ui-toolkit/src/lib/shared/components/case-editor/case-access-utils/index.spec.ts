@@ -78,7 +78,7 @@ describe('CaseAccessUtils', () => {
 
         it('should return judicial role name', () => {
             const response = camUtils.getAMRoleName('dummy', 'JUDICIAL');
-            expect(response).toEqual('dummy-access-judicial');
+            expect(response).toEqual('dummy-access-judiciary');
         });
 
         it('should return citizen role name', () => {

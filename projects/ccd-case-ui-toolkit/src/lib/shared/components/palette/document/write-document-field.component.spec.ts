@@ -9,7 +9,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { DocumentData } from '../../../domain/document';
 import { DocumentManagementService } from '../../../services/document-management';
-import { CaseNotifier } from '../../case-editor';
+import { CaseNotifier, CasesService } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import { FieldLabelPipe } from '../utils';
 import { FileUploadStateService } from './file-upload-state.service';
@@ -113,6 +113,7 @@ describe('WriteDocumentFieldComponent', () => {
   let mockDialog: any;
   let mockMatDialogRef: any;
   let appConfig: any;
+  let casesService: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -122,6 +123,7 @@ describe('WriteDocumentFieldComponent', () => {
     );
     mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
     mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed']);
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
 
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
       'setUploadInProgress',
@@ -147,6 +149,7 @@ describe('WriteDocumentFieldComponent', () => {
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: FileUploadStateService, useValue: mockFileUploadStateService},
           {provide: AbstractAppConfig, useValue: appConfig },
+          { provide: CasesService, useValue: casesService },
           DocumentDialogComponent,
           CaseNotifier
         ]
@@ -463,6 +466,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
+  let casesService: any
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -472,6 +476,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     );
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
 
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
       'setUploadInProgress',
@@ -497,6 +502,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: FileUploadStateService, useValue: mockFileUploadStateService},
           {provide: AbstractAppConfig, useValue: appConfig},
+          {provide: CasesService, useValue: casesService},
           DocumentDialogComponent,
           CaseNotifier
         ]

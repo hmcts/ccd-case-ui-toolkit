@@ -1,43 +1,58 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { Location } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { CaseNotifier, CasesService } from '../..';
 import { AlertModule } from '../../../../components/banners/alert';
-import { ChallengedAccessRequest } from '../../../domain';
-import { CasesService } from '../../case-editor/services/cases.service';
+import { CaseView, ChallengedAccessRequest } from '../../../domain';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request.component';
 import { ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
 
 import createSpyObj = jasmine.createSpyObj;
+import { CaseReviewSpecificAccessRequestComponent } from '../case-review-specific-access-request';
+import { Component } from '@angular/core';
+
+@Component({template: ``})
+class StubComponent {}
 
 describe('CaseChallengedAccessRequestComponent', () => {
   let component: CaseChallengedAccessRequestComponent;
   let fixture: ComponentFixture<CaseChallengedAccessRequestComponent>;
   let casesService: jasmine.SpyObj<CasesService>;
+  let casesNotifier: jasmine.SpyObj<CaseNotifier>;
   const case_id = '1234123412341234';
   const mockRoute = {
     snapshot: {
-      data: {
-        case: {
-          case_id
-        }
+      params: {
+        cid: case_id
       }
     }
   };
   let router: Router;
-
+  let location: Location;
   beforeEach(waitForAsync(() => {
     casesService = createSpyObj<CasesService>('casesService', ['createChallengedAccessRequest']);
+    casesNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['fetchAndRefresh']);
     casesService.createChallengedAccessRequest.and.returnValue(of(true));
+    casesNotifier.fetchAndRefresh.and.returnValue(of(new CaseView()));
     TestBed.configureTestingModule({
-      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule.withRoutes([]) ],
-      declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent ],
+      imports: [
+        AlertModule,
+        ReactiveFormsModule,
+        RouterTestingModule.withRoutes([
+          { path: '', component: CaseChallengedAccessRequestComponent },
+          { path: 'work/my-work/list', component: StubComponent }
+        ])
+      ],
+      declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent, StubComponent ],
       providers: [
         FormBuilder,
         { provide: CasesService, useValue: casesService },
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: CaseNotifier, useValue: casesNotifier },
       ]
     })
     .compileComponents();
@@ -47,7 +62,8 @@ describe('CaseChallengedAccessRequestComponent', () => {
     fixture = TestBed.createComponent(CaseChallengedAccessRequestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.inject(Router);
+    router = TestBed.get(Router);
+    location = TestBed.get(Location);
     spyOn(router, 'navigate');
   });
 
@@ -304,13 +320,13 @@ describe('CaseChallengedAccessRequestComponent', () => {
     expect(errorMessageElement.textContent).toContain(ChallengedAccessRequestErrors.NO_REASON);
   });
 
-  it('should go back to the page before previous one when the \"Cancel\" link is clicked', () => {
+  it('should go back to the cancel link destination when the Cancel link is clicked', fakeAsync(() => {
     const cancelLink = fixture.debugElement.nativeElement.querySelector('a.govuk-body');
     expect(cancelLink.text).toContain('Cancel');
-    spyOn(window.history, 'go');
     cancelLink.click();
-    expect(window.history.go).toHaveBeenCalledWith(-2);
-  });
+    tick();
+    expect(location.path()).toBe(CaseChallengedAccessRequestComponent.CANCEL_LINK_DESTINATION);
+  }));
 
   it('should make a Challenged Access request with correct parameters for the first reason, and navigate to the success page', () => {
     const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-0');
