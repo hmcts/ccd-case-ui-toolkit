@@ -1,5 +1,5 @@
-import { HttpHeaders } from '@angular/common/http';
-import { fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { fakeAsync, waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -84,7 +84,7 @@ describe('CasesService', () => {
     });
     alertService = jasmine.createSpyObj('alertService', ['clear', 'warning']);
 
-    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
     sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
       "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com","token": null}`);
     loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
@@ -595,6 +595,35 @@ describe('CasesService', () => {
       };
       casesService.createSpecificAccessRequest(CASE_ID, sar);
       expect(httpService.post).toHaveBeenCalled();
+    });
+  });
+
+  describe('getCourtOrHearingCentreName()', () => {
+    beforeEach(() => {
+      httpService.post.and.callThrough();
+    });
+    it('should get court name', () => {
+      casesService.getCourtOrHearingCentreName(1);
+      expect(httpService.post).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateChallengedAccessRequestAttributes()', () => {
+    it('should update challenged access request', () => {
+      const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
+      CasesService.updateChallengedAccessRequestAttributes(httpClient, 'exampleId', {attribute: true})
+      expect(httpClient.post).toHaveBeenCalledWith('/api/challenged-access-request/update-attributes',
+       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
+    });
+  });
+
+  describe('updateSpecificAccessRequestAttributes()', () => {
+    it('should update specific access request', () => {
+      const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
+      CasesService.updateSpecificAccessRequestAttributes(httpClient, 'exampleId', {attribute: true})
+      expect(httpClient.post).toHaveBeenCalledWith('/api/specific-access-request/update-attributes',
+       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
+
     });
   });
 

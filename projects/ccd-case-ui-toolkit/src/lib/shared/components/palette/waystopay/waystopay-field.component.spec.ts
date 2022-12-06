@@ -65,7 +65,9 @@ const APP_CONFIG: AbstractAppConfig = {
     getLocationRefApiUrl: () => 'locationRefApiUrl',
     getPaymentReturnUrl: () => 'paymentReturnUrl',
     getCategoriesAndDocumentsUrl: () => 'categoriesAndDocumentsUrl',
-    getDocumentDataUrl: () => 'documentDataUrl'
+    getDocumentDataUrl: () => 'documentDataUrl',
+    getCaseFlagsRefdataApiUrl: () => 'caseFlagsRefdataApiUrl',
+    getWAServiceConfig: () => 'waServiceConfig'
   };
 
   let PaymentWebComponent;

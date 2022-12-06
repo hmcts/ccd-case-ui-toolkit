@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
+import { TaskSearchParameter, WAFeatureConfig } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
 import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
-import { TaskSearchParameter } from '../../../domain/work-allocation/task-search-parameter.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { AlertService } from '../../../services/alert/alert.service';
-import { HttpErrorService } from '../../../services/http/http-error.service';
-import { HttpService } from '../../../services/http/http.service';
+import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
 
 export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 
@@ -18,12 +16,16 @@ export class WorkAllocationService {
   public static iACCaseOfficer = 'caseworker-ia-caseofficer';
   public static iACAdmOfficer = 'caseworker-ia-admofficer';
 
+  private features: WAFeatureConfig;
+
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
     private readonly errorService: HttpErrorService,
-    private readonly alertService: AlertService
+    private readonly alertService: AlertService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
+    // Check to see if work allocation is enabled
   }
 
   /**
@@ -31,6 +33,7 @@ export class WorkAllocationService {
    * @param searchRequest The search parameters that specify which tasks to match.
    */
   public searchTasks(searchRequest: TaskSearchParameter): Observable<object> {
+    // Do not need to check if WA enabled as parent method will do that
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/searchForCompletable`;
     return this.http
       .post(url, {searchRequest}, null, false)
@@ -49,12 +52,34 @@ export class WorkAllocationService {
       );
   }
 
+  private isWAEnabled(jurisdiction?: string, caseType?: string): boolean {
+    this.features = this.appConfig.getWAServiceConfig();
+    let enabled = false;
+    if (!jurisdiction || !caseType) {
+      const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo'));
+      jurisdiction = caseInfo.jurisdiction;
+      caseType = caseInfo.caseType;
+    }
+    if (!this.features || !this.features.configurations) {
+      return false;
+    }
+    this.features.configurations.forEach(serviceConfig => {
+      if (serviceConfig.serviceName === jurisdiction && (serviceConfig.caseTypes.indexOf(caseType) !== -1)) {
+          enabled = true;
+      }
+    })
+    return enabled;
+  }
+
   /**
    * Call the API to assign a task.
    * @param taskId specifies which task should be assigned.
    * @param userId specifies the user the task should be assigned to.
    */
   public assignTask(taskId: string, userId: string): Observable<any> {
+    if (!this.isWAEnabled()) {
+      return of(null);
+    }
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/assign`;
     return this.http
       .post(url, {userId})
@@ -71,6 +96,9 @@ export class WorkAllocationService {
    * @param taskId specifies which task should be completed.
    */
   public completeTask(taskId: string): Observable<any> {
+    if (!this.isWAEnabled()) {
+      return of(null);
+    }
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {})
@@ -91,6 +119,9 @@ export class WorkAllocationService {
    * @param taskId specifies which task should be completed.
    */
   public assignAndCompleteTask(taskId: string): Observable<any> {
+    if (!this.isWAEnabled()) {
+      return of(null);
+    }
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {
@@ -145,6 +176,9 @@ export class WorkAllocationService {
    * @param eventId The ID of the event to find tasks for.
    */
   public completeAppropriateTask(ccdId: string, eventId: string, jurisdiction: string, caseTypeId: string): Observable<any> {
+    if (!this.isWAEnabled(jurisdiction, caseTypeId)) {
+      return of(null);
+    }
     const taskSearchParameter: TaskSearchParameter = {
       ccdId,
       eventId,
@@ -176,6 +210,13 @@ export class WorkAllocationService {
    * Return tasks for case and event.
    */
   public getTasksByCaseIdAndEventId(eventId: string, caseId: string, caseType: string, jurisdiction: string): Observable<TaskPayload> {
+    const defaultPayload: TaskPayload = {
+      task_required_for_event: false,
+      tasks: []
+    }
+    if (!this.isWAEnabled()) {
+      return of(defaultPayload);
+    }
     return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}/caseType/${caseType}/jurisdiction/${jurisdiction}`);
   }
 
@@ -183,6 +224,9 @@ export class WorkAllocationService {
   * Call the API to get a task
   */
  public getTask(taskId: string): Observable<TaskRespone> {
+  if (!this.isWAEnabled()) {
+    return of({task: null});
+  }
   return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}`);
  }
 }

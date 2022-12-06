@@ -2,9 +2,8 @@
   *ngIf="formGroup.invalid && submitted"
   [error]="errorMessage"></exui-error-message>
 <cut-alert type="information"
-  >This case requires specific access.<br />This means it's outside your
-  jurisdiction and requires authorisation. If you request access to the case, it
-  will be logged for auditing purposes.</cut-alert>
+  >Authorisation is needed to access this case.<br />This could be because it's outside your jurisdiction, or you may be excluded from the case.
+    If you request access to this case, it will be logged for auditing purposes.</cut-alert>
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group"
     [ngClass]="{ 'form-group-error': formGroup.invalid && submitted }">
@@ -62,7 +61,7 @@
       </div>
     </fieldset>
   </div>
-  
+
   <div class="govuk-button-group">
     <button class="govuk-button govuk-!-margin-right-3" type="submit">
       Submit
