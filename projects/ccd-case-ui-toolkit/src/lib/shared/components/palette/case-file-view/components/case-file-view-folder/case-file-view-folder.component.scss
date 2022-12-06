@@ -112,18 +112,6 @@
   }
 }
 
-.document-folders-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 2px solid #C9C9C9;
-  padding: 10px;
-
-  &__title {
-    font-weight: 700;
-  }
-}
-
 .node {
   display: flex;
   align-items: center;
