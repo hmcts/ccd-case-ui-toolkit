@@ -1,13 +1,15 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { plainToClass } from 'class-transformer';
 import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
-import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import { DocumentManagementService, WindowService } from '../../../../../services';
+import { mockDocumentManagementService } from '../../../../../services/document-management/document-management.service.mock';
+import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
   categorisedTreeData,
   treeData,
@@ -24,17 +26,6 @@ describe('CaseFileViewFolderComponent', () => {
 
   beforeEach(async(() => {
     const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
-    const mockDocumentManagementService = createSpyObj<DocumentManagementService>('DocumentManagementService', ['getMediaViewerInfo']);
-    mockDocumentManagementService.getMediaViewerInfo.and.callFake((documentFieldValue: any) => {
-      return JSON.stringify({
-        document_binary_url: documentFieldValue.document_binary_url,
-        document_filename: documentFieldValue.document_filename,
-        content_type: documentFieldValue.document_binary_url,
-        annotation_api_url: documentFieldValue.document_binary_url,
-        case_id: documentFieldValue.id,
-        case_jurisdiction: documentFieldValue.jurisdiction
-      });
-    });
 
     TestBed.configureTestingModule({
       imports: [
@@ -307,6 +298,28 @@ describe('CaseFileViewFolderComponent', () => {
     expect(documentTreeContainerEl.textContent).toContain('No results found');
   });
 
+  it('should get all document count as get documentCount', () => {
+    expect(component.documentCount).toEqual(8);
+  });
+
+  it('should emit clickedDocument when clicking a node that is of type document', () => {
+    spyOn(component.clickedDocument, 'emit');
+    const firstNodeOfTypeDocument = fixture.debugElement.query(By.css('.document-tree-container__node--document'));
+    const nodeButton = firstNodeOfTypeDocument.query(By.css('.node'));
+    nodeButton.nativeElement.click();
+
+    expect(component.clickedDocument.emit).toHaveBeenCalled();
+  });
+
+  it('should set selectedItem and set class "node--selected" when clicking a node that is of type document', () => {
+    const firstNodeOfTypeDocument = fixture.debugElement.query(By.css('.document-tree-container__node--document'));
+    const nodeButton = firstNodeOfTypeDocument.query(By.css('.node'));
+    nodeButton.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(component.selectedNodeItem).toBeDefined();
+    expect(nodeButton.nativeElement.classList).toContain('node--selected');
+  });
 
   it('should unsubscribe', () => {
     spyOn(component.categoriesAndDocumentsSubscription, 'unsubscribe').and.callThrough();
@@ -314,9 +327,5 @@ describe('CaseFileViewFolderComponent', () => {
     component.ngOnDestroy();
     expect(component.categoriesAndDocumentsSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.documentFilterSubscription.unsubscribe).toHaveBeenCalled();
-  });
-
-  it ('should get all document count as get documentCount', () => {
-    expect(component.documentCount).toEqual(8);
   });
 });

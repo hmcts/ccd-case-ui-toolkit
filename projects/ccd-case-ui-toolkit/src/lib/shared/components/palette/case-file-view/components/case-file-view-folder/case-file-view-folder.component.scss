@@ -1,11 +1,18 @@
+:host {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+
+  .document-tree-container {
+    flex: 1 0;
+  }
+}
+
 .document-filter-container {
   border-bottom: 2px solid #C9C9C9;
-  padding-bottom: 4px;
 
   .document-filter {
-    height: 70%;
-    padding: 8px 8px 0 8px;
-    margin-bottom: 10px;
+    padding: 10px;
 
     .document-search {
       background: url(/assets/images/icon-search-black.svg) no-repeat right #FFF;
@@ -35,10 +42,17 @@
 }
 
 .document-tree-container {
-  padding: 4px 6px;
+  padding: 4px;
   overflow-x: hidden;
   overflow-y: scroll;
-  height: 400px;
+
+  &__node {
+    display: block;
+
+    .document-tree-container__node {
+      padding-left: 40px;
+    }
+  }
 
   &__node {
     display: block;
@@ -92,12 +106,15 @@
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 6px 4px;
+  padding: 6px;
   background: none;
   border: 0;
   cursor: pointer;
   white-space: nowrap;
 
+  &--selected {
+    background: #fff2cc;
+  }
 
   &__icon {
     position: relative;

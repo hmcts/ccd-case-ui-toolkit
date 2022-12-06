@@ -1,5 +1,5 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
@@ -25,11 +25,13 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private static readonly MINIMUM_SEARCH_CHARACTERS = 3;
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
+  @Output() public clickedDocument = new EventEmitter<DocumentTreeNode>();
 
   public nestedTreeControl: NestedTreeControl<DocumentTreeNode>;
   public nestedDataSource: DocumentTreeNode[];
   public categories: CaseFileViewCategory[] = [];
   public categoriesAndDocumentsSubscription: Subscription;
+  public selectedNodeItem: DocumentTreeNode | undefined;
 
   public documentFilterFormGroup: FormGroup;
   public documentSearchFormControl: FormControl;
@@ -140,24 +142,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return uncategorisedNode;
   }
 
-  public sortDataSourceAscAlphabetically(): void {
-    const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenAscending();
-      return item;
-    });
-
-    this.updateNodeData(sortedData);
-  }
-
-  public sortDataSourceDescAlphabetically(): void {
-    const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending();
-      return item;
-    });
-
-    this.updateNodeData(sortedData);
-  }
-
   public filter(searchTerm: string): Observable<DocumentTreeNode[]> {
     // Make a copy of the data so we do not mutate the original
     function copy(node: DocumentTreeNode) {
@@ -208,6 +192,24 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       default:
         return;
     }
+  }
+
+  public sortDataSourceAscAlphabetically() {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenAscending();
+      return item;
+    });
+
+    this.updateNodeData(sortedData);
+  }
+
+  public sortDataSourceDescAlphabetically() {
+    const sortedData = this.nestedDataSource.map(item => {
+      item.sortChildrenDescending();
+      return item;
+    });
+
+    this.updateNodeData(sortedData);
   }
 
   public updateNodeData(data: DocumentTreeNode[]): void {

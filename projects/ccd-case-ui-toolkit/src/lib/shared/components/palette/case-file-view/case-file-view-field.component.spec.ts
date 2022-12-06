@@ -3,10 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
-import { CaseFileViewService } from '../../../services';
-import { CaseFileViewFieldComponent } from './case-file-view-field.component';
-
+import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
+import { CaseFileViewService, DocumentManagementService } from '../../../services';
+import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
 import createSpyObj = jasmine.createSpyObj;
+import { CaseFileViewFieldComponent } from './case-file-view-field.component';
 
 describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
@@ -35,7 +36,8 @@ describe('CaseFileViewFieldComponent', () => {
       ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: CaseFileViewService, useValue: mockCaseFileViewService }
+        { provide: CaseFileViewService, useValue: mockCaseFileViewService },
+        { provide: DocumentManagementService, useValue: mockDocumentManagementService }
       ]
     })
     .compileComponents();
@@ -76,5 +78,19 @@ describe('CaseFileViewFieldComponent', () => {
     expect(caseFileViewHeadingElement).toBeNull();
     const caseFileViewElement = nativeElement.querySelector('#case-file-view');
     expect(caseFileViewElement).toBeNull();
+  });
+
+  it('should set currentDocument when calling setMediaViewerFile', () => {
+    const dummyNodeTreeDocument = new DocumentTreeNode();
+    dummyNodeTreeDocument.name = 'dummy_document.pdf';
+    dummyNodeTreeDocument.type = DocumentTreeNodeType.DOCUMENT;
+    dummyNodeTreeDocument.document_filename = 'dummy_document.pdf';
+    dummyNodeTreeDocument.document_binary_url = '/test/binary';
+
+    component.setMediaViewerFile(dummyNodeTreeDocument);
+    fixture.detectChanges();
+
+    expect(component.currentDocument.document_filename).toEqual(dummyNodeTreeDocument.document_filename);
+    expect(component.currentDocument.document_binary_url).toEqual(dummyNodeTreeDocument.document_binary_url);
   });
 });
