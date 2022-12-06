@@ -1,6 +1,6 @@
-import { inject, TestBed } from "@angular/core/testing";
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
-import { ValidatorsUtils } from "./validators.utils";
+import { inject, TestBed } from '@angular/core/testing';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { ValidatorsUtils } from './validators.utils';
 
 describe('ValidatorsUtils', () => {
   beforeEach(() => {
