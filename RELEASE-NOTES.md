@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 6.10.0-EUI-3729-show-hide-conditionals
+**EUI-3729** Support combinations of AND and OR boolean logic
+
 ### Version 6.10.0-rc4
 **EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
 **EUI-7225** Fix to display party role (if provided) alongside party name for party-level flags options on "Select flag location" page

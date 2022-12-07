@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.0-rc6",
+  "version": "6.10.0-EUI-3729-show-hide-conditionals",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
