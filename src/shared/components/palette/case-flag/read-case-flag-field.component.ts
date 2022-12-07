@@ -7,6 +7,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagSummaryListDisplayMode } from './enums';
+import { CaseFlagType } from './enums/case-flag-type.enum';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
@@ -22,8 +23,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public caseLevelCaseFlagData: FlagsWithFormGroupPath;
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
-  public caseLevelFirstColumnHeader: string;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
+  public flagType = CaseFlagType;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
   private readonly createMode = '#ARGUMENT(CREATE)';
@@ -84,10 +85,6 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         }
       }
     }
-
-    this.caseLevelFirstColumnHeader = this.caseEditPageComponent.getCaseTitle()
-      ? this.caseEditPageComponent.getCaseTitle()
-      : this.caseNameMissing;
   }
 
   private extractNewFlagToFlagDetailDisplayObject(selectedFlagsLocation: FlagsWithFormGroupPath): FlagDetailDisplay {
