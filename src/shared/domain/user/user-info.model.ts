@@ -9,5 +9,5 @@ export interface UserInfo {
   active: boolean,
   roles: string[],
   roleCategories: string[],
-  roleCategory: RoleCategory
+  roleCategory?: RoleCategory
 }
