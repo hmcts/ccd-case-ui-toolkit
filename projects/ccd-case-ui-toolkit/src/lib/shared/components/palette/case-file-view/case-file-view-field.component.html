@@ -21,7 +21,9 @@
         <mv-media-viewer [url]="currentDocument.document_binary_url"
                          [downloadFileName]="currentDocument.document_filename"
                          [showToolbar]="true"
-                         [contentType]="currentDocument.content_type">
+                         [contentType]="currentDocument.content_type"
+                         [enableAnnotations]="true"
+                         [enableRedactions]="true">
         </mv-media-viewer>
       </ng-container>
     </div>

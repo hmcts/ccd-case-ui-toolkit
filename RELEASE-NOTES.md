@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.25-case-file-view-print-and-download-functions
+**EUI-6866** Implement print and download functions for the document context menu
+
 ### Version 5.0.25-merge-from-angular11-upgrade
 **EUI-5297** Merge from angular upgrade
 
