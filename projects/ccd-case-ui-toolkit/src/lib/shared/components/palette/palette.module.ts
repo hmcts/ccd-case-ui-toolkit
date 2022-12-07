@@ -2,7 +2,7 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
@@ -32,6 +32,7 @@ import { CaseFileViewFolderSelectorComponent } from './case-file-view/components
 import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
+import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -69,6 +70,7 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { CaseFlagRefdataService } from '../../services/case-flag';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -115,6 +117,7 @@ const PALETTE_COMPONENTS = [
     ReadComplexFieldRawComponent,
     ReadComplexFieldTableComponent,
     ReadComplexFieldCollectionTableComponent,
+    ReadCaseFlagFieldComponent,
 
     // Write
     WriteJudicialUserFieldComponent,
@@ -131,6 +134,7 @@ const PALETTE_COMPONENTS = [
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteCaseFlagFieldComponent,
 
     // new
     WriteYesNoFieldComponent,
@@ -191,7 +195,15 @@ const PALETTE_COMPONENTS = [
     DynamicRadioListPipe,
     DocumentUrlPipe,
 
-    ...PALETTE_COMPONENTS,
+    CaseFlagTableComponent,
+    SelectFlagTypeComponent,
+    SearchLanguageInterpreterComponent,
+    SelectFlagLocationComponent,
+    ManageCaseFlagsComponent,
+    AddCommentsComponent,
+    UpdateFlagComponent,
+    CaseFlagSummaryListComponent,
+    ...PALETTE_COMPONENTS
   ],
   exports: [
     NgxMatDatetimePickerModule,
@@ -203,6 +215,8 @@ const PALETTE_COMPONENTS = [
     ...PALETTE_COMPONENTS
   ],
   providers: [
+    ChangeDetectorRef as Provider,
+    CaseFlagRefdataService,
     YesNoService,
     CollectionCreateCheckerService,
     PaletteService,

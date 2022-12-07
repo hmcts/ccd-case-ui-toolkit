@@ -4,6 +4,7 @@ export * from './alert';
 export * from './auth';
 export * from './case-fields';
 export * from './case-file-view';
+export * from './case-flag';
 export * from './document-management';
 export * from './draft';
 export * from './error';

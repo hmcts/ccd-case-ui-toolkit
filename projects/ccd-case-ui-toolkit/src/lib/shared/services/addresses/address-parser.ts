@@ -1,5 +1,5 @@
 import { AddressModel } from '../../domain/addresses/address.model';
-import { AddressesService } from './addresses.service';
+import { AddressType } from './address-type.enum';
 
 /**
  * Moving all this logic here into Address Parser class, so that it
@@ -15,13 +15,13 @@ import { AddressesService } from './addresses.service';
         addressModel.AddressLine3 = this.parseAddressLine3(classification, address);
         addressModel.PostCode = address.POSTCODE;
         addressModel.PostTown = address.POST_TOWN;
-        addressModel.Country = AddressesService.UK;
+        addressModel.Country = AddressType.UK;
         return addressModel;
     }
 
     private parseAddressLine1(classification: string, address: any) {
         let addressLine = '';
-        if (classification === AddressesService.RD06) {
+        if (classification === AddressType.RD06) {
         addressLine =
             `${address.SUB_BUILDING_NAME} ${address.ORGANISATION_NAME} ${address.DEPARTMENT_NAME} ${address.PO_BOX_NUMBER}`;
         } else {
@@ -34,7 +34,7 @@ import { AddressesService } from './addresses.service';
 
     private parseAddressLine2(classification: string, address: any) {
         let addressLine = '';
-        if (classification === AddressesService.RD06) {
+        if (classification === AddressType.RD06) {
         addressLine = `${address.BUILDING_NAME} `;
         } else {
         addressLine =
@@ -45,7 +45,7 @@ import { AddressesService } from './addresses.service';
 
     private parseAddressLine3(classification: string, address: any) {
         let addressLine = '';
-        if (classification === AddressesService.RD06) {
+        if (classification === AddressType.RD06) {
         addressLine =
             `${address.BUILDING_NUMBER} ${address.THOROUGHFARE_NAME}`;
         } else {

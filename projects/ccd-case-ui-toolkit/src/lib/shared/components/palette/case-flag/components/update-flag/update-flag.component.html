@@ -1,0 +1,47 @@
+<div class="form-group" [formGroup]="formGroup">
+  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+    <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
+      <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" [for]="updateFlagControlName">
+          {{updateFlagTitle}}
+        </label>
+      </h1>
+      <div id="update-flag-hint" class="govuk-hint">
+        {{updateFlagHint}}
+      </div>
+      <div id="update-flag-not-entered-error-message" class="govuk-error-message"
+        *ngIf="updateFlagNotEnteredErrorMessage">
+        <span class="govuk-visually-hidden">Error:</span> {{updateFlagNotEnteredErrorMessage}}
+      </div>
+      <div id="update-flag-char-limit-error" class="govuk-error-message"
+        *ngIf="updateFlagCharLimitErrorMessage">
+        <span class="govuk-visually-hidden">Error:</span> {{updateFlagCharLimitErrorMessage}}
+      </div>
+      <textarea class="govuk-textarea" [id]="updateFlagControlName"
+        [name]="updateFlagControlName" [formControlName]="updateFlagControlName" rows="5"
+        aria-describedby="update-flag-hint update-flag-char-limit-info update-flag-char-limit-error">
+      </textarea>
+      <div id="update-flag-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+        {{updateFlagCharLimitInfo}}
+      </div>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <p>Flag status:
+        <span>
+          <strong class="govuk-tag" [ngClass]="{'govuk-tag--grey': selectedFlag.flagDetailDisplay.flagDetail.status === 'Inactive'}">
+            {{selectedFlag.flagDetailDisplay.flagDetail.status}}
+          </strong>
+        </span>
+      </p>
+    </div>
+    <div class="govuk-grid-column-one-half">
+      <button class="button button-secondary" type="button" (click)="onChangeStatus()" *ngIf="selectedFlag.flagDetailDisplay.flagDetail.status === 'Active'">
+        Make inactive
+      </button>
+    </div>
+  </div>
+  <div class="govuk-button-group">
+    <button class="button button-primary" type="button" (click)="onNext()">Next</button>
+  </div>
+</div>
