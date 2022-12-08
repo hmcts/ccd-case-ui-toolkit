@@ -328,4 +328,44 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.categoriesAndDocumentsSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.documentFilterSubscription.unsubscribe).toHaveBeenCalled();
   });
+
+  it('should call the printDocument function when the triggerDocumentAction function is called with actionType "document"', () => {
+    const documentTreeNode = {
+      name: 'Test',
+      type: DocumentTreeNodeType.DOCUMENT,
+      document_filename: 'Document1.pdf',
+      document_binary_url: 'http://dummy.hmcts.net/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary'
+    } as DocumentTreeNode;
+    spyOn(component, 'printDocument').and.callThrough();
+    const fakeWindow = createSpyObj('window', ['print']);
+    spyOn(window, 'open').and.returnValue(fakeWindow);
+    component.triggerDocumentAction('print', documentTreeNode);
+    expect(component.printDocument).toHaveBeenCalledWith('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary');
+    expect(window.open).toHaveBeenCalled();
+    expect(fakeWindow.print).toHaveBeenCalled();
+  });
+
+  it('should call the downloadFile function when the triggerDocumentAction function is called with actionType "download"', () => {
+    const documentTreeNode = {
+      name: 'Test',
+      type: DocumentTreeNodeType.DOCUMENT,
+      document_filename: 'Document1.pdf',
+      document_binary_url: 'http://dummy.hmcts.net/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary'
+    } as DocumentTreeNode;
+    spyOn(component, 'downloadFile').and.callThrough();
+    const fakeAnchorElement = createSpyObj('a', ['setAttribute', 'click', 'remove']);
+    fakeAnchorElement.href = null;
+    fakeAnchorElement.download = null;
+    spyOn(document, 'createElement').and.returnValue(fakeAnchorElement);
+    spyOn(document.body, 'appendChild');
+    component.triggerDocumentAction('download', documentTreeNode);
+    expect(component.downloadFile).toHaveBeenCalledWith('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary', 'Document1.pdf');
+    expect(document.createElement).toHaveBeenCalledWith('a');
+    expect(document.body.appendChild).toHaveBeenCalledWith(fakeAnchorElement);
+    expect(fakeAnchorElement.setAttribute).toHaveBeenCalledWith('style', 'display: none');
+    expect(fakeAnchorElement.href).toEqual('/documents/8c464dd2-b7d6-4929-a909-8109875b6c26/binary');
+    expect(fakeAnchorElement.download).toEqual('Document1.pdf');
+    expect(fakeAnchorElement.click).toHaveBeenCalled();
+    expect(fakeAnchorElement.remove).toHaveBeenCalled();
+  });
 });
