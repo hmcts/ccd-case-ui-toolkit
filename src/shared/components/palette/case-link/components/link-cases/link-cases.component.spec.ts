@@ -78,6 +78,7 @@ describe('LinkCasesComponent', () => {
     editMode: true,
     caseId: '1682374819203471',
     linkedCases: [],
+    linkedCasesFrom: [],
     linkCaseReasons: linkCaseReasons,
     caseFieldValue: [],
     mapLookupIDToValueFromJurisdictions() {},

@@ -19,6 +19,7 @@ export class LinkedCasesService {
   public caseName: string;
   public linkCaseReasons: LovRefDataModel[] = [];
   public linkedCases: CaseLink[] = [];
+  public linkedCasesFrom: CaseLink[] = [];
   public initialCaseLinks: CaseLink[] = [];
   public editMode = false;
   public jurisdictionsResponse: Jurisdiction[] = [];

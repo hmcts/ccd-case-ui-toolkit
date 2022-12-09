@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.12-linked-cases-display-name-instead-of-description",
+  "version": "7.0.13-linked-cases-from-table-check",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

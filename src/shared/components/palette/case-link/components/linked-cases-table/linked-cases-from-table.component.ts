@@ -2,7 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import { CaseField } from '../../../../../domain/definition';
 import { CaseView } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { CaseLinkResponse, LinkedCasesResponse } from '../../domain/linked-cases.model';
+import { CaseLink, CaseLinkResponse, LinkedCasesResponse } from '../../domain/linked-cases.model';
 import { ActivatedRoute } from '@angular/router';
 import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { Observable } from 'rxjs';
@@ -44,7 +44,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private readonly casesService: CasesService,
     private readonly linkedCasesService: LinkedCasesService,
-    ) {
+  ) {
   }
 
   public ngAfterViewInit(): void {
@@ -66,6 +66,9 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     this.getLinkedCases().subscribe(
       response => {
         this.isServerError = false;
+        if (response.linkedCases) {
+          this.setLinkiedCasesFrom(response.linkedCases);
+        }
         this.getLinkedCasesResponse = response.linkedCases && response.linkedCases.map(item => {
           const mappedCasetype = this.mapLookupIDToValueFromJurisdictions('CASE_TYPE', item.ccdCaseType);
           const mappedCasetypeDescription = this.mapLookupIDToValueFromJurisdictions('CASE_TYPE_DESCRIPTION', item.ccdCaseType);
@@ -88,7 +91,18 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
         this.isServerError = true;
         this.notifyAPIFailure.emit(true);
       }
-      );
+    );
+  }
+
+  setLinkiedCasesFrom(linkedCases: CaseLinkResponse[]) {
+    const caseLinks = linkedCases.map(item => {
+      return {
+        caseReference: item.caseReference,
+        caseService: item.ccdJurisdiction,
+        caseType: item.ccdCaseType,
+      } as CaseLink
+    });
+    this.linkedCasesService.linkedCasesFrom = caseLinks;
   }
 
   public getLinkedCases(): Observable<LinkedCasesResponse> {
