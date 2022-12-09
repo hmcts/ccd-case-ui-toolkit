@@ -2,7 +2,7 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatFormFieldModule, MatInputModule, MAT_DATE_LOCALE } from '@angular/material';
+import { MatAutocompleteModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MAT_DATE_LOCALE } from '@angular/material';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
@@ -12,6 +12,7 @@ import { HeadersModule } from '../../../components/header/headers.module';
 import { TabsModule } from '../../../components/tabs/tabs.module';
 import { LabelSubstitutorModule } from '../../directives/substitutor/label-substitutor.module';
 import { PipesModule } from '../../pipes/pipes.module';
+import { AuthService, HttpErrorService, JurisdictionService } from '../../services';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { MarkdownModule } from '../markdown/markdown.module';
 import { AddressModule } from './address/address.module';
@@ -37,6 +38,8 @@ import { WriteEmailFieldComponent } from './email/write-email-field.component';
 import { FixedListModule } from './fixed-list/fixed-list.module';
 import { FixedRadioListModule } from './fixed-radio-list/fixed-radio-list.module';
 import { CaseHistoryViewerModule } from './history/case-history-viewer.module';
+import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
+import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
 import { MoneyGbpModule } from './money-gbp/money-gbp.module';
 import { MultiSelectListModule } from './multi-select-list/multi-select-list.module';
@@ -95,6 +98,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
+    MatAutocompleteModule,
     PaymentLibModule
   ],
   declarations: [
@@ -111,6 +115,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadJudicialUserFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -121,6 +126,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteJudicialUserFieldComponent
   ],
   entryComponents: [
     UnsupportedFieldComponent,
@@ -137,6 +143,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadCollectionFieldComponent,
     ReadCaseLinkFieldComponent,
     ReadOrganisationFieldComponent,
+    ReadJudicialUserFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -149,7 +156,8 @@ import { YesNoModule } from './yes-no/yes-no.module';
     DatetimePickerComponent,
     WriteCaseLinkFieldComponent,
     WriteDateContainerFieldComponent,
-    WriteOrganisationFieldComponent
+    WriteOrganisationFieldComponent,
+    WriteJudicialUserFieldComponent
   ],
   exports: [
     BaseFieldModule,
@@ -168,6 +176,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     ReadPhoneUKFieldComponent,
     ReadDateFieldComponent,
     ReadCollectionFieldComponent,
+    ReadJudicialUserFieldComponent,
 
     // Write
     WriteCollectionFieldComponent,
@@ -178,6 +187,7 @@ import { YesNoModule } from './yes-no/yes-no.module';
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
     WriteDateContainerFieldComponent,
+    WriteJudicialUserFieldComponent
   ],
   providers: [
     CollectionCreateCheckerService,
@@ -185,6 +195,9 @@ import { YesNoModule } from './yes-no/yes-no.module';
     FormValidatorsService,
     FileUploadStateService,
     FileUploadProgressGuard,
+    AuthService,
+    HttpErrorService,
+    JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ]
 })

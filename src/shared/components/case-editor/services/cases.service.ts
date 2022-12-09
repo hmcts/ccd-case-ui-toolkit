@@ -304,7 +304,7 @@ export class CasesService {
   /*
   Checks if the user has role of pui-case-manager and returns true or false
   */
-  private isPuiCaseManager(): boolean {
+  public isPuiCaseManager(): boolean {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);

@@ -1,11 +1,12 @@
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { EventStartGuard } from './event-start.guard';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { of } from 'rxjs';
-import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-
-import createSpyObj = jasmine.createSpyObj;
 import { AbstractAppConfig } from '../../../../app.config';
 import { UserInfo } from '../../../domain/user/user-info.model';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { CasesService } from '../../case-editor';
+import { EventStartGuard } from './event-start.guard';
+
+import createSpyObj = jasmine.createSpyObj;
 
 describe('EventStartGuard', () => {
   const WORK_ALLOCATION_API_URL = 'workallocation2';
@@ -32,6 +33,7 @@ describe('EventStartGuard', () => {
   route.queryParams = {};
   const router = createSpyObj('router', ['navigate']);
   const service = createSpyObj('service', ['getTasksByCaseIdAndEventId']);
+  const casesService = createSpyObj<CasesService>('casesService', ['isPuiCaseManager']);
   const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getWAServiceConfig']);
   const sessionStorageService = createSpyObj('sessionStorageService', ['getItem', 'removeItem', 'setItem']);
   sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
@@ -39,7 +41,7 @@ describe('EventStartGuard', () => {
 
   it('canActivate should return false', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
-    const guard = new EventStartGuard(service, router, sessionStorageService);
+    const guard = new EventStartGuard(service, router, sessionStorageService, casesService);
     const payload: TaskPayload = {
       task_required_for_event: true,
       tasks
@@ -53,11 +55,26 @@ describe('EventStartGuard', () => {
 
   it('canActivate should return true', () => {
     appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
-    const guard = new EventStartGuard(service, router, sessionStorageService);
+    const guard = new EventStartGuard(service, router, sessionStorageService, casesService);
     const payload: TaskPayload = {
       task_required_for_event: false,
       tasks: []
     }
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
+    const canActivate$ = guard.canActivate(route);
+    canActivate$.subscribe(canActivate => {
+      expect(canActivate).toEqual(true);
+    });
+  });
+
+  it('canActivate should return true for soliciter', () => {
+    appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
+    const guard = new EventStartGuard(service, router, sessionStorageService, casesService);
+    const payload: TaskPayload = {
+      task_required_for_event: false,
+      tasks: []
+    }
+    casesService.isPuiCaseManager.and.returnValue(true);
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
     const canActivate$ = guard.canActivate(route);
     canActivate$.subscribe(canActivate => {
@@ -82,7 +99,7 @@ describe('EventStartGuard', () => {
     const caseId = '1234567890';
     const eventId = 'testEvent';
 
-    const guard = new EventStartGuard(service, router, sessionStorageService);
+    const guard = new EventStartGuard(service, router, sessionStorageService, casesService);
 
     it('should return true if there are no tasks in the payload', () => {
       const mockEmptyPayload: TaskPayload = {task_required_for_event: false, tasks: []};

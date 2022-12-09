@@ -189,6 +189,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       .subscribe(
         response => {
           this.caseNotifier.cachedCaseView = null;
+          this.sessionStorageService.removeItem('eventUrl');
           const confirmation: Confirmation = this.buildConfirmation(response);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
             this.caseEdit.confirm(confirmation);

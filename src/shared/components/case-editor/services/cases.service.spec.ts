@@ -1,4 +1,4 @@
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 
 import { AbstractAppConfig } from '../../../../app.config';
@@ -595,4 +595,43 @@ describe('CasesService', () => {
     });
   });
 
+  describe('getCourtOrHearingCentreName()', () => {
+    beforeEach(() => {
+      httpService.post.and.callThrough();
+    });
+    it('should get court name', () => {
+      casesService.getCourtOrHearingCentreName(1);
+      expect(httpService.post).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateChallengedAccessRequestAttributes()', () => {
+    it('should update challenged access request', () => {
+      const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
+      CasesService.updateChallengedAccessRequestAttributes(httpClient, 'exampleId', {attribute: true})
+      expect(httpClient.post).toHaveBeenCalledWith('/api/challenged-access-request/update-attributes',
+       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
+    });
+  });
+
+  describe('updateSpecificAccessRequestAttributes()', () => {
+    it('should update specific access request', () => {
+      const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
+      CasesService.updateSpecificAccessRequestAttributes(httpClient, 'exampleId', {attribute: true})
+      expect(httpClient.post).toHaveBeenCalledWith('/api/specific-access-request/update-attributes',
+       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
+
+    });
+  });
+
+  describe('isPuiCaseManager()', () => {
+    it('should be false', () => {
+      expect(casesService.isPuiCaseManager()).toEqual(false);
+    });
+    it('should be true', () => {
+      sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
+      "roles": ["caseworker-role1", "caseworker-role3", "pui-case-manager"], "email": "test@mail.com","token": null}`);
+      expect(casesService.isPuiCaseManager()).toEqual(true);
+    });
+  });
 });
