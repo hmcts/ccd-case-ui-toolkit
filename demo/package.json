@@ -47,7 +47,7 @@
     "cucumber-pretty": "1.5.0",
     "cucumberjs-allure-reporter": "1.0.3",
     "enhanced-resolve": "3.3.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "extract-text-webpack-plugin": "next",
     "file-loader": "^2.0.0",
     "govuk-elements-sass": "3.1.2",
