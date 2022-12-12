@@ -7,7 +7,6 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagSummaryListDisplayMode } from './enums';
-import { CaseFlagType } from './enums/case-flag-type.enum';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
