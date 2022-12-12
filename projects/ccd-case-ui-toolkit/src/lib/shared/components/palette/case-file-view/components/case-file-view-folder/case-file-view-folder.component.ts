@@ -256,7 +256,9 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(newCatId => {
-      this.moveDocument.emit({newCategory: newCatId, document: node});
+      if (newCatId) {
+        this.moveDocument.emit({newCategory: newCatId, document: node});
+      }
     });
   }
 }

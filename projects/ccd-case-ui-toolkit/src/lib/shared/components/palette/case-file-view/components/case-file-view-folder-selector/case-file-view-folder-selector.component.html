@@ -1,5 +1,5 @@
-<h2 class="govuk-fieldset__heading">Move File</h2>
-<p>Where do you want to move {{ data.document.document_filename }} file?</p>
+<h2 class="govuk-heading-l">Move File</h2>
+<p>Where do you want to move "{{ data.document.document_filename }}" file?</p>
 <div class="folders govuk-radios govuk-radios--conditional">
     <ng-container *ngFor="let cat of currentCategories">
         <ng-container *ngTemplateOutlet="folder;context:{cat:cat,level:1}"></ng-container>
@@ -7,7 +7,7 @@
 </div>
 <div class="govuk-button-group">
     <button class="button button-primary" type="button" (click)="save()">Save</button>
-    <a (click)="cancel()">Cancel</a>
+    <a (click)="cancel()" class="cancel">Cancel</a>
 </div>
 <div class="close" (click)="cancel()"></div>
 

@@ -1,5 +1,9 @@
+:host {
+    position: relative;
+    display: block;
+}
+
 .folders {
-    border-top: 1px solid #CCC;
     margin-bottom: 20px;
 }
 
@@ -38,4 +42,22 @@ input:checked ~ .folder {
 
 p {
     font-weight: bold;
+}
+
+button {
+    margin-right: 20px;
+}
+
+.close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 30px;
+    height: 30px;
+    background: url('/assets/img/x.PNG') no-repeat center center;
+    cursor: pointer;
+}
+
+.cancel {
+    cursor: pointer;
 }
