@@ -16,6 +16,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public categoriesAndDocumentsSubscription: Subscription;
   public getCategoriesAndDocumentsError = false;
   public currentDocument: { document_binary_url: string, document_filename: string, content_type: string } | undefined;
+  private caseVersion: number;
 
   constructor(private readonly elementRef: ElementRef,
               private readonly route: ActivatedRoute,
@@ -28,7 +29,9 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
     this.categoriesAndDocuments$ = this.caseFileViewService.getCategoriesAndDocuments(cid);
     this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments$.subscribe({
-      next: _ => {},
+      next: data => {
+        this.caseVersion = data.case_version;
+      },
       error: _ => this.getCategoriesAndDocumentsError = true
     });
   }
@@ -69,6 +72,13 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
       document_filename: document.document_filename
     });
     this.currentDocument = JSON.parse(mediaViewerInfo);
+  }
+
+  public moveDocument(data:any) {
+    const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
+    this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory).subscribe(_ => {
+      location.reload();
+    });
   }
 
   public ngOnDestroy(): void {

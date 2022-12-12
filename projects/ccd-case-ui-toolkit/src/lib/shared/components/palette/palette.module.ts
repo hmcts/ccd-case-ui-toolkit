@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
@@ -27,6 +28,7 @@ import { WriteAddressFieldComponent } from './address/write-address-field.compon
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
+import { CaseFileViewFolderSelectorComponent } from './case-file-view/components/case-file-view-folder-selector/case-file-view-folder-selector.component';
 import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
@@ -152,37 +154,39 @@ const PALETTE_COMPONENTS = [
     CaseFileViewFolderComponent,
     CaseFileViewFolderSortComponent,
     CaseFileViewOverlayMenuComponent,
-    CaseFileViewFolderDocumentActionsComponent
+    CaseFileViewFolderDocumentActionsComponent,
+    CaseFileViewFolderSelectorComponent
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
-    PaletteUtilsModule,
-    PipesModule,
-    BannersModule,
-    HeadersModule,
-    FootersModule,
-    BodyModule,
-    FormModule,
-    TabsModule,
-    LabelSubstitutorModule,
-    NgxMdModule,
-    NgxMatDatetimePickerModule,
-    NgxMatTimepickerModule,
-    NgxMatNativeDateModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatAutocompleteModule,
-    CdkTreeModule,
-    OverlayModule,
-    PaymentLibModule,
-    ScrollToModule.forRoot(),
-    MediaViewerModule
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        PaletteUtilsModule,
+        PipesModule,
+        BannersModule,
+        HeadersModule,
+        FootersModule,
+        BodyModule,
+        FormModule,
+        TabsModule,
+        LabelSubstitutorModule,
+        NgxMdModule,
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule,
+        NgxMatNativeDateModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MatAutocompleteModule,
+        CdkTreeModule,
+        OverlayModule,
+        PaymentLibModule,
+        ScrollToModule.forRoot(),
+        MatDialogModule,
+        MediaViewerModule
   ],
   declarations: [
     FixedListPipe,
@@ -221,7 +225,8 @@ const PALETTE_COMPONENTS = [
     FileUploadProgressGuard,
     WindowService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
-  ]
+  ],
+  entryComponents: [ CaseFileViewFolderSelectorComponent ]
 })
 export class PaletteModule {
 }

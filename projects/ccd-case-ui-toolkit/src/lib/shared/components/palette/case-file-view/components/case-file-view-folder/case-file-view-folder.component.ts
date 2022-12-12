@@ -1,6 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
@@ -12,6 +13,7 @@ import {
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
 import { DocumentManagementService, WindowService } from '../../../../../services';
+import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 
 @Component({
@@ -26,6 +28,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
   @Output() public clickedDocument = new EventEmitter<DocumentTreeNode>();
+  @Output() public moveDocument = new EventEmitter<any>();
 
   public nestedTreeControl: NestedTreeControl<DocumentTreeNode>;
   public nestedDataSource: DocumentTreeNode[];
@@ -54,7 +57,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   constructor(
     private readonly windowService: WindowService,
     private readonly router: Router,
-    private readonly documentManagementService: DocumentManagementService
+    private readonly documentManagementService: DocumentManagementService,
+    private readonly dialog: MatDialog
   ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
@@ -79,6 +83,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     // Subscribe to the input categories and documents, and generate tree data and initialise cdk tree
     this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocuments => {
       const categories = categoriesAndDocuments.categories;
+      this.categories = categories;
       // Generate document tree data from categories
       this.documentTreeData = this.generateTreeData(categories);
       // Append uncategorised documents
@@ -115,6 +120,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
+      documentTreeNode.attribute_path = document.attribute_path;
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -130,6 +136,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
+      documentTreeNode.attribute_path = document.attribute_path;
 
       documents.push(documentTreeNode);
     });
@@ -170,7 +177,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   ): void {
     switch(actionType) {
       case('changeFolder'):
-        console.log('changeFolder!');
+        this.openMoveDialog(documentTreeNode);
         break;
       case('openInANewTab'):
         this.windowService.setLocalStorage(MEDIA_VIEWER_LOCALSTORAGE_KEY,
@@ -245,6 +252,19 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     this.documentFilterSubscription?.unsubscribe();
   }
 
+  private openMoveDialog(node: DocumentTreeNode): void {
+    const dialogRef = this.dialog.open(CaseFileViewFolderSelectorComponent, {
+      width: '570px',
+      data: { categories: this.categories, document: node }
+    });
+
+    dialogRef.afterClosed().subscribe(newCatId => {
+      if (newCatId) {
+        this.moveDocument.emit({newCategory: newCatId, document: node});
+      }
+    });
+  }
+  
   public printDocument(url: string): void {
     const printWindow = window.open(url);
     printWindow.print();

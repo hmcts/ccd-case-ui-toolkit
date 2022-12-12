@@ -12,10 +12,7 @@ import { mockDocumentManagementService } from '../../../../../services/document-
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
   categorisedTreeData,
-  treeData,
-  treeDataSortedAlphabeticallyAsc,
-  treeDataSortedAlphabeticallyDesc,
-  uncategorisedTreeData
+  treeData
 } from '../../test-data/document-tree-node-test-data';
 import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 
