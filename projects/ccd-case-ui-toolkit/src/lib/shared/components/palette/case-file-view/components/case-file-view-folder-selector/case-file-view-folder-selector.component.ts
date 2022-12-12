@@ -20,6 +20,12 @@ export class CaseFileViewFolderSelectorComponent {
         this.currentCategories = [...this.data.categories];
     }
 
+    public handleChange(evt) {
+        if (evt.target.checked) {
+            this.select(evt.target.id);
+        }
+    }
+
     public select(categoryId: string) {
         this.selected = categoryId;
     }

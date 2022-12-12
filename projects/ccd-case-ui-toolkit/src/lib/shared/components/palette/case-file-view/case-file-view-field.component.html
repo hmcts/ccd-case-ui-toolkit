@@ -11,6 +11,7 @@
         class="document-tree-container__tree"
         [categoriesAndDocuments]="categoriesAndDocuments$"
         (clickedDocument)="setMediaViewerFile($event)"
+        (moveDocument)="moveDocument($event)"
       ></ccd-case-file-view-folder>
     </div>
     <!-- Slider -->

@@ -1,0 +1,41 @@
+.folders {
+    border-top: 1px solid #CCC;
+    margin-bottom: 20px;
+}
+
+.folder {
+    display: none;
+    border-bottom: 1px solid #CCC;
+    border-top: 1px solid #CCC;
+    margin: 0 0 -1px 0;
+}
+
+.folders > .folder {
+    display: block;
+}
+
+input:checked ~ .folder {
+    display: block;
+}
+
+.iconImg {
+    position: relative;
+    display: inline-block;
+    height: 28px;
+}
+
+.folder > .folder {
+    margin-left: 20px;
+}
+
+.folder label:before {
+    top: 3px;
+}
+
+.folder label:after {
+    top: 13px;
+}
+
+p {
+    font-weight: bold;
+}

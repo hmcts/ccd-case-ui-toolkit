@@ -28,6 +28,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
   @Output() public clickedDocument = new EventEmitter<DocumentTreeNode>();
+  @Output() public moveDocument = new EventEmitter<any>();
 
   public nestedTreeControl: NestedTreeControl<DocumentTreeNode>;
   public nestedDataSource: DocumentTreeNode[];
@@ -82,6 +83,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     // Subscribe to the input categories and documents, and generate tree data and initialise cdk tree
     this.categoriesAndDocumentsSubscription = this.categoriesAndDocuments.subscribe(categoriesAndDocuments => {
       const categories = categoriesAndDocuments.categories;
+      this.categories = categories;
       // Generate document tree data from categories
       this.documentTreeData = this.generateTreeData(categories);
       // Append uncategorised documents
@@ -118,6 +120,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
+      documentTreeNode.attribute_path = document.attribute_path;
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -133,6 +136,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.type = DocumentTreeNodeType.DOCUMENT;
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
+      documentTreeNode.attribute_path = document.attribute_path;
 
       documents.push(documentTreeNode);
     });
@@ -247,12 +251,12 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   private openMoveDialog(node: DocumentTreeNode): void {
     const dialogRef = this.dialog.open(CaseFileViewFolderSelectorComponent, {
-      width: '350px',
+      width: '570px',
       data: { categories: this.categories, document: node }
     });
 
-    dialogRef.afterClosed().subscribe(data => {
-      console.log(data);
+    dialogRef.afterClosed().subscribe(newCatId => {
+      this.moveDocument.emit({newCategory: newCatId, document: node});
     });
   }
 }
