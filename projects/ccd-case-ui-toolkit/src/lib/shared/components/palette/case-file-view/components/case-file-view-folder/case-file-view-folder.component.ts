@@ -264,7 +264,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   public printDocument(url: string): void {
     const printWindow = window.open(url);
     printWindow.print();
