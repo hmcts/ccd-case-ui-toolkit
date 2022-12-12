@@ -191,10 +191,13 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         );
         break;
       case('download'):
-        console.log('download!');
+        // Create a URL from the document_binary_url property (absolute URL) and use the path portion (relative URL).
+        // This is necessary because the Manage Cases application will automatically apply a proxy to the request, with
+        // the correct remote endpoint
+        this.downloadFile(new URL(documentTreeNode.document_binary_url).pathname, documentTreeNode.document_filename);
         break;
       case('print'):
-        console.log('print!');
+        this.printDocument(new URL(documentTreeNode.document_binary_url).pathname);
         break;
       default:
         return;
@@ -260,5 +263,20 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
         this.moveDocument.emit({newCategory: newCatId, document: node});
       }
     });
+  }
+  
+  public printDocument(url: string): void {
+    const printWindow = window.open(url);
+    printWindow.print();
+  }
+
+  public downloadFile(url: string, downloadFileName: string): void {
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.setAttribute('style', 'display: none');
+    a.href = url;
+    a.download = downloadFileName;
+    a.click();
+    a.remove();
   }
 }
