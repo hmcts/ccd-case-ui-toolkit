@@ -16,7 +16,7 @@ import {
 } from '../../test-data/document-tree-node-test-data';
 import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 
-describe('CaseFileViewFolderComponent', () => {
+xdescribe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
   let fixture: ComponentFixture<CaseFileViewFolderComponent>;
   let nativeElement: any;
