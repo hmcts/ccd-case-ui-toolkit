@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.15-case-links-enable-backward-compatibility",
+  "version": "7.0.16-case-links-enable-backward-compatibility",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
