@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.14-merge-case-flags-fixes
+**EUI-7274** Merge case flags fixes into integration branch
+
 ### Version 6.10.0-rc11
 **EUI-7377** Fix to ensure case event data object gets populated correctly with data from all case fields whose ID exists in the data object
 
