@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.16-case-links-enable-backward-compatibility
+**EUI-7413** Case links enable backward compatibility
+
 ### Version 7.0.14-merge-case-flags-fixes
 **EUI-7274** Merge case flags fixes into integration branch
 
