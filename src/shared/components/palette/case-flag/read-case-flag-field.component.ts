@@ -24,7 +24,6 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
-  public flagType = CaseFlagType;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
   private readonly createMode = '#ARGUMENT(CREATE)';
