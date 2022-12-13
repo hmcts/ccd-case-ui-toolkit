@@ -527,14 +527,16 @@ export class FormValueService {
       // (or sub-fields of Complex fields in a collection)
       caseFields.filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField))
         .forEach(caseField => {
-          if (data[caseField.id]) {
+          // Ensure that the data object is populated for all case field IDs it contains, even if there is currently
+          // nothing for a given case field ID (hence the use of hasOwnProperty())
+          if (data.hasOwnProperty(caseField.id) && caseField.value) {
+            // Create new object for the case field ID within the data object, if necessary
+            if (!data[caseField.id]) {
+              data[caseField.id] = {};
+            }
             // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
             // Flags field within a Complex field or a collection of Complex fields) is copied across
-            Object.keys(data[caseField.id]).forEach(key => {
-              if (caseField.value && caseField.value.hasOwnProperty(key)) {
-                data[caseField.id][key] = caseField.value[key];
-              }
-            });
+            Object.keys(caseField.value).forEach(key => data[caseField.id][key] = caseField.value[key]);
           }
         });
     }

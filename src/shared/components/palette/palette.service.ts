@@ -89,8 +89,6 @@ export class PaletteService {
             return write ? WriteOrderSummaryFieldComponent : ReadOrderSummaryFieldComponent;
           case 'Organisation':
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
-          case 'CaseLink':
-              return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
           case 'JudicialUser':
             return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
           default:
@@ -99,7 +97,10 @@ export class PaletteService {
       case 'Collection':
         switch (caseField.field_type.collection_field_type.id) {
           case 'CaseLink':
-            return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
+            if (caseField.id === 'caseLinks') {
+              return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
+            }
+            return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
           default:
             return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
           }
