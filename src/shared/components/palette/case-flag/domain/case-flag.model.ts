@@ -52,5 +52,6 @@ export interface FlagsWithFormGroupPath {
 export interface FlagDetailDisplayWithFormGroupPath {
   flagDetailDisplay: FlagDetailDisplay;
   pathToFlagsFormGroup: string;
-  caseField: CaseField
+  caseField: CaseField;
+  label?: string;
 }

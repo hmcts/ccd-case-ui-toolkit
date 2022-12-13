@@ -10,6 +10,9 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } f
 })
 export class ManageCaseFlagsComponent implements OnInit {
 
+	private static readonly CASE_LEVEL_CASE_FLAGS_FIELD_ID = 'caseFlags';
+	private static readonly SELECTED_CONTROL_NAME = 'selectedManageCaseLocation';
+
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
   @Input() public caseTitle: string;
@@ -20,8 +23,6 @@ export class ManageCaseFlagsComponent implements OnInit {
   public manageCaseFlagSelectedErrorMessage: SelectFlagErrorMessage = null;
   public flagsDisplayData: FlagDetailDisplayWithFormGroupPath[];
   public noFlagsError = false;
-  public readonly selectedControlName = 'selectedManageCaseLocation';
-  public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
@@ -30,6 +31,7 @@ export class ManageCaseFlagsComponent implements OnInit {
     if (this.flagsData) {
       this.flagsDisplayData = this.flagsData.reduce((displayData, flagsInstance) => {
         if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
+					console.log('DETAILS', flagsInstance.flags.details);
           displayData = [
             ...displayData,
             ...flagsInstance.flags.details.map(detail =>
@@ -40,11 +42,17 @@ export class ManageCaseFlagsComponent implements OnInit {
         }
         return displayData;
       }, []);
+
+			this.flagsDisplayData.forEach(flagDisplayData => {
+				flagDisplayData.label = this.processLabel(flagDisplayData);
+			});
+
+			console.log('FLAG DISPLAY DATA', this.flagsDisplayData);
     }
 
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
     if (this.flagsDisplayData && this.flagsDisplayData.length > 0) {
-      this.formGroup.addControl(this.selectedControlName, new FormControl(null));
+      this.formGroup.addControl(ManageCaseFlagsComponent.SELECTED_CONTROL_NAME, new FormControl(null));
     } else {
       // No flags display data means there are no flags to select from. The user cannot proceed with a flag update.
       // (Will need to be extended to check for case-level flags in future)
@@ -66,36 +74,61 @@ export class ManageCaseFlagsComponent implements OnInit {
   }
 
   public processLabel(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
-    const partyName = flagDisplay.pathToFlagsFormGroup && flagDisplay.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId
-      ? `${this.caseTitle} - `
-      : flagDisplay.flagDetailDisplay.partyName
-        ? `${flagDisplay.flagDetailDisplay.partyName} - `
-        :  '';
+		const flagDetail = flagDisplay.flagDetailDisplay.flagDetail;
+		const partyName = this.getPartyName(flagDisplay);
+		const flagName = this.getFlagName(flagDetail);
+		const flagDescription = this.getFlagDescription(flagDetail);
+		const flagComment = this.getFlagComments(flagDetail);
 
-    const flagDetail = flagDisplay.flagDetailDisplay.flagDetail;
+		console.log('PARTY NAME', partyName);
+		console.log('FLAG NAME', flagName);
+		console.log('FLAG DESCRIPTION', flagDescription);
+		console.log('FLAG COMMENT', flagComment);
 
-    const flagPathOrName = flagDetail && flagDetail.path && flagDetail.path.length > 1
-      ? flagDetail.path[1].value
-      : flagDetail.subTypeKey && flagDetail.subTypeValue
-        ? flagDetail.subTypeValue
-        : flagDetail.name;
-
-    const flagOtherDescriptionOrName = flagDetail && flagDetail.name
-      ? flagDetail.name === 'Other'
-        ? flagDetail.otherDescription
-        : flagDetail.subTypeKey && flagDetail.subTypeValue
-          ? flagDetail.subTypeValue
-          : flagDetail.name
-      : '';
-
-    const comment = flagDetail.flagComment
-      ? ` (${flagDetail.flagComment})`
-      : '';
-
-    return flagPathOrName === flagOtherDescriptionOrName
-      ? `${partyName}${flagOtherDescriptionOrName}${comment}`
-      : `${partyName}${flagPathOrName}, ${flagOtherDescriptionOrName}${comment}`;
+    return flagName === flagDescription
+      ? `${partyName} - ${flagDescription} ${flagComment}`
+      : `${partyName} - ${flagName}, ${flagDescription} ${flagComment}`;
   }
+
+	public getPartyName(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
+		if (flagDisplay.pathToFlagsFormGroup && flagDisplay.pathToFlagsFormGroup === ManageCaseFlagsComponent.CASE_LEVEL_CASE_FLAGS_FIELD_ID) {
+			return 'Case level';
+		}
+		if (flagDisplay.flagDetailDisplay.partyName) {
+			return `${flagDisplay.flagDetailDisplay.partyName} - `;
+		}
+		return '';
+	}
+
+	public getFlagName(flagDetail: FlagDetail): string {
+		if (flagDetail && flagDetail.path && flagDetail.path.length > 1) {
+			return flagDetail.path[1].value;
+		}
+		if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
+			return flagDetail.subTypeValue;
+		}
+		return flagDetail.name;
+	}
+
+	public getFlagDescription(flagDetail: FlagDetail): string {
+		if (flagDetail && flagDetail.name && flagDetail.name === 'Other') {
+			if (flagDetail.otherDescription) {
+				return flagDetail.otherDescription;
+			}
+			if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
+				return flagDetail.subTypeValue;
+			}
+			return flagDetail.name;
+		}
+		return '';
+	}
+
+	public getFlagComments(flagDetail: FlagDetail): string {
+		if (flagDetail.flagComment) {
+			return `(${flagDetail.flagComment})`;
+		}
+		return '';
+	}
 
   public onNext(): void {
     // Validate flag selection
