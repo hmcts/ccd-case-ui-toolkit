@@ -13,7 +13,6 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } f
 export class ManageCaseFlagsComponent implements OnInit {
 
   private static readonly CASE_LEVEL_CASE_FLAGS_FIELD_ID = 'caseFlags';
-  private static readonly SELECTED_CONTROL_NAME = 'selectedManageCaseLocation';
 
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
@@ -26,6 +25,7 @@ export class ManageCaseFlagsComponent implements OnInit {
   public flagsDisplayData: FlagDetailDisplayWithFormGroupPath[];
   public flags: Flags;
   public noFlagsError = false;
+  public selectedControlName = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
@@ -47,13 +47,11 @@ export class ManageCaseFlagsComponent implements OnInit {
       this.flagsDisplayData.forEach(flagDisplayData => {
         flagDisplayData.label = this.processLabel(flagDisplayData);
       });
-
-      console.log('FLAG DISPLAY DATA', this.flagsDisplayData);
     }
 
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
     if (this.flagsDisplayData && this.flagsDisplayData.length > 0) {
-      this.formGroup.addControl(ManageCaseFlagsComponent.SELECTED_CONTROL_NAME, new FormControl(null));
+      this.formGroup.addControl(this.selectedControlName, new FormControl(null));
     } else {
       // No flags display data means there are no flags to select from. The user cannot proceed with a flag update.
       // (Will need to be extended to check for case-level flags in future)
@@ -83,8 +81,8 @@ export class ManageCaseFlagsComponent implements OnInit {
     const flagComment = this.getFlagComments(flagDetail);
 
     return flagName === flagDescription
-      ? `${partyName} ${roleOnCase} - <span class="flag-name-and-description">${flagDescription}</span> ${flagComment}`
-      : `${partyName} ${roleOnCase} - <span class="flag-name-and-description">${flagName}, ${flagDescription}</span> ${flagComment}`;
+      ? `${partyName}${roleOnCase} - <span class="flag-name-and-description">${flagDescription}</span>${flagComment}`
+      : `${partyName}${roleOnCase} - <span class="flag-name-and-description">${flagName}, ${flagDescription}</span>${flagComment}`;
   }
 
   public getPartyName(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
@@ -122,14 +120,14 @@ export class ManageCaseFlagsComponent implements OnInit {
 
   public getRoleOnCase(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
     if (flagDisplay && flagDisplay.roleOnCase) {
-      return `(${flagDisplay.roleOnCase})`;
+      return ` (${flagDisplay.roleOnCase})`;
     }
     return '';
   }
 
   public getFlagComments(flagDetail: FlagDetail): string {
     if (flagDetail.flagComment) {
-      return `(${flagDetail.flagComment})`;
+      return ` (${flagDetail.flagComment})`;
     }
     return '';
   }
@@ -141,8 +139,8 @@ export class ManageCaseFlagsComponent implements OnInit {
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: this.errorMessages,
-      selectedFlag: this.formGroup.get(ManageCaseFlagsComponent.SELECTED_CONTROL_NAME).value
-        ? this.formGroup.get(ManageCaseFlagsComponent.SELECTED_CONTROL_NAME).value as FlagDetailDisplayWithFormGroupPath
+      selectedFlag: this.formGroup.get(this.selectedControlName).value
+        ? this.formGroup.get(this.selectedControlName).value as FlagDetailDisplayWithFormGroupPath
         : null
     });
   }
@@ -150,7 +148,7 @@ export class ManageCaseFlagsComponent implements OnInit {
   private validateSelection(): void {
     this.manageCaseFlagSelectedErrorMessage = null;
     this.errorMessages = [];
-    if (!this.formGroup.get(ManageCaseFlagsComponent.SELECTED_CONTROL_NAME).value) {
+    if (!this.formGroup.get(this.selectedControlName).value) {
       this.manageCaseFlagSelectedErrorMessage = SelectFlagErrorMessage.FLAG_NOT_SELECTED;
       this.errorMessages.push({
         title: '',
