@@ -195,17 +195,23 @@ describe('ManageCaseFlagsComponent', () => {
       flagCode: '123',
       status: 'active'
     } as FlagDetail;
-    const flagsCaseFieldId = 'CaseFlag2';
-    const partyName = 'Wayne Sleep';
-    const caseField = {
-      id: 'CaseFlag2'
-    } as CaseField;
-    const displayResult = component.mapFlagDetailForDisplay(flagDetail, partyName, flagsCaseFieldId, caseField);
-    expect(displayResult.flagDetailDisplay.partyName).toEqual(partyName);
+    const flagsInstance: FlagsWithFormGroupPath = {
+      caseField: {
+        id: 'CaseFlag2'
+      } as CaseField,
+      flags: {
+        flagsCaseFieldId: 'CaseFlag2',
+        partyName: 'Wayne Sleep'
+      },
+      pathToFlagsFormGroup: ''
+    }
+
+    const displayResult = component.mapFlagDetailForDisplay(flagDetail, flagsInstance);
+    expect(displayResult.flagDetailDisplay.partyName).toEqual(flagsInstance.flags.partyName);
     expect(displayResult.flagDetailDisplay.flagDetail.name).toEqual(flagDetail.name);
     expect(displayResult.flagDetailDisplay.flagDetail.flagComment).toEqual(flagDetail.flagComment);
     expect(displayResult.flagDetailDisplay.flagDetail.flagCode).toEqual(flagDetail.flagCode);
-    expect(displayResult.pathToFlagsFormGroup).toEqual(flagsCaseFieldId);
+    expect(displayResult.pathToFlagsFormGroup).toEqual(flagsInstance.flags.flagsCaseFieldId);
   });
 
   it('should map all parties and their flags to a single array for display purposes', () => {

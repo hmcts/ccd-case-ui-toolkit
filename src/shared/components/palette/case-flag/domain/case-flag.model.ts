@@ -53,5 +53,6 @@ export interface FlagDetailDisplayWithFormGroupPath {
   flagDetailDisplay: FlagDetailDisplay;
   pathToFlagsFormGroup: string;
   caseField: CaseField;
+  roleOnCase?: string;
   label?: string;
 }
