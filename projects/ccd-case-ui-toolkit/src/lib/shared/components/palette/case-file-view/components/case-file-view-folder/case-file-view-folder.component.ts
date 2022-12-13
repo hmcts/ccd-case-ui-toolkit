@@ -27,6 +27,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private static readonly MINIMUM_SEARCH_CHARACTERS = 3;
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
+  @Input() public allowMoving: boolean;
   @Output() public clickedDocument = new EventEmitter<DocumentTreeNode>();
   @Output() public moveDocument = new EventEmitter<any>();
 

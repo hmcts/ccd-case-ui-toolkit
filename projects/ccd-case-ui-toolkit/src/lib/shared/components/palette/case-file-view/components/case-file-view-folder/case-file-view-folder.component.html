@@ -38,7 +38,9 @@
               (changeFolderAction)="triggerDocumentAction('changeFolder', node)"
               (openInANewTabAction)="triggerDocumentAction('openInANewTab', node)"
               (downloadAction)="triggerDocumentAction('download', node)"
-              (printAction)="triggerDocumentAction('print', node)">
+              (printAction)="triggerDocumentAction('print', node)"
+              [allowMoving]="allowMoving"
+            >
             </ccd-case-file-view-folder-document-actions>
           </div>
         </button>
