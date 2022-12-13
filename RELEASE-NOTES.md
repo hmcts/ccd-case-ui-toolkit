@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 7.0.17-case-flags-title-and-styles
+**EUI-7353** Case flags title and style changes
 
 ### Version 7.0.12-linked-cases-display-name-instead-of-description
 **EUI-7323** Linked cases display name instead of description
