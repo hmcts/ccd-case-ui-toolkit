@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CaseField, ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
@@ -6,7 +6,9 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } f
 
 @Component({
   selector: 'ccd-manage-case-flags',
-  templateUrl: './manage-case-flags.component.html'
+  templateUrl: './manage-case-flags.component.html',
+	styleUrls: ['./manage-case-flags.component.scss'],
+	encapsulation: ViewEncapsulation.None
 })
 export class ManageCaseFlagsComponent implements OnInit {
 
@@ -86,8 +88,8 @@ export class ManageCaseFlagsComponent implements OnInit {
 		console.log('FLAG COMMENT', flagComment);
 
     return flagName === flagDescription
-      ? `${partyName} - ${flagDescription} ${flagComment}`
-      : `${partyName} - ${flagName}, ${flagDescription} ${flagComment}`;
+      ? `${partyName} - <span class="flag-name-and-description">${flagDescription}</span> ${flagComment}`
+      : `${partyName} - <span class="flag-name-and-description">${flagName}, ${flagDescription}</span> ${flagComment}`;
   }
 
 	public getPartyName(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
@@ -95,7 +97,7 @@ export class ManageCaseFlagsComponent implements OnInit {
 			return 'Case level';
 		}
 		if (flagDisplay.flagDetailDisplay.partyName) {
-			return `${flagDisplay.flagDetailDisplay.partyName} - `;
+			return `${flagDisplay.flagDetailDisplay.partyName}`;
 		}
 		return '';
 	}
@@ -111,8 +113,8 @@ export class ManageCaseFlagsComponent implements OnInit {
 	}
 
 	public getFlagDescription(flagDetail: FlagDetail): string {
-		if (flagDetail && flagDetail.name && flagDetail.name === 'Other') {
-			if (flagDetail.otherDescription) {
+		if (flagDetail && flagDetail.name) {
+			if (flagDetail.name === 'Other' && flagDetail.otherDescription) {
 				return flagDetail.otherDescription;
 			}
 			if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
@@ -137,8 +139,8 @@ export class ManageCaseFlagsComponent implements OnInit {
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: this.errorMessages,
-      selectedFlag: this.formGroup.get(this.selectedControlName).value
-        ? this.formGroup.get(this.selectedControlName).value as FlagDetailDisplayWithFormGroupPath
+      selectedFlag: this.formGroup.get(ManageCaseFlagsComponent.SELECTED_CONTROL_NAME).value
+        ? this.formGroup.get(ManageCaseFlagsComponent.SELECTED_CONTROL_NAME).value as FlagDetailDisplayWithFormGroupPath
         : null
     });
   }
@@ -146,7 +148,7 @@ export class ManageCaseFlagsComponent implements OnInit {
   private validateSelection(): void {
     this.manageCaseFlagSelectedErrorMessage = null;
     this.errorMessages = [];
-    if (!this.formGroup.get(this.selectedControlName).value) {
+    if (!this.formGroup.get(ManageCaseFlagsComponent.SELECTED_CONTROL_NAME).value) {
       this.manageCaseFlagSelectedErrorMessage = SelectFlagErrorMessage.FLAG_NOT_SELECTED;
       this.errorMessages.push({
         title: '',
