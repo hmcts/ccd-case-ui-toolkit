@@ -25,19 +25,22 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
         name: 'Lager encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Lager encyclopedia',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
       {
         name: 'Beers encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Beers encyclopedia',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
       {
         name: 'Ale encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Ale encyclopedia',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
     ]
   },
@@ -88,7 +91,8 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
                     name: 'Details about Whisky Lowland 1',
                     type: DocumentTreeNodeType.DOCUMENT,
                     document_filename: 'Details about Whisky Lowland 1',
-                    document_binary_url: '/test/binary'
+                    document_binary_url: '/test/binary',
+                    attribute_path: ''
                   }
                 ]
               },
@@ -107,13 +111,15 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
                 name: 'Details about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'Details about Whisky Islay',
-                document_binary_url: '/test/binary'
+                document_binary_url: '/test/binary',
+                attribute_path: ''
               },
               {
                 name: 'More information about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'More information about Whisky Islay',
-                document_binary_url: '/test/binary'
+                document_binary_url: '/test/binary',
+                attribute_path: ''
               }
             ]
           },
@@ -141,13 +147,15 @@ export const uncategorisedTreeData: DocumentTreeNode = plainToClass(DocumentTree
       name: 'Uncategorised document 1',
       type: DocumentTreeNodeType.DOCUMENT,
       document_filename: 'Uncategorised document 1',
-      document_binary_url: '/test/binary'
+      document_binary_url: '/test/binary',
+      attribute_path: ''
     },
     {
       name: 'Uncategorised document 2',
       type: DocumentTreeNodeType.DOCUMENT,
       document_filename: 'Uncategorised document 2',
-      document_binary_url: '/test/binary'
+      document_binary_url: '/test/binary',
+      attribute_path: ''
     }
   ]
 });
@@ -181,19 +189,22 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
         name: 'Ale encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Ale encyclopedia',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
       {
         name: 'Beers encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Beers encyclopedia',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
       {
         name: 'Lager encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Lager encyclopedia',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
     ]
   },
@@ -244,7 +255,8 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
                     name: 'Details about Whisky Lowland 1',
                     type: DocumentTreeNodeType.DOCUMENT,
                     document_filename: 'Details about Whisky Lowland 1',
-                    document_binary_url: '/test/binary'
+                    document_binary_url: '/test/binary',
+                    attribute_path: ''
                   }
                 ]
               },
@@ -263,13 +275,15 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
                 name: 'Details about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'Details about Whisky Islay',
-                document_binary_url: '/test/binary'
+                document_binary_url: '/test/binary',
+                attribute_path: ''
               },
               {
                 name: 'More information about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'More information about Whisky Islay',
-                document_binary_url: '/test/binary'
+                document_binary_url: '/test/binary',
+                attribute_path: ''
               }
             ]
           },
@@ -295,13 +309,15 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
         name: 'Uncategorised document 1',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Uncategorised document 1',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
       {
         name: 'Uncategorised document 2',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Uncategorised document 2',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       }
     ]
   }
@@ -331,19 +347,22 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
         name: 'Lager encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Lager encyclopedia',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
       {
         name: 'Beers encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Beers encyclopedia',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
       {
         name: 'Ale encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Ale encyclopedia',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
     ]
   },
@@ -394,7 +413,8 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
                     name: 'Details about Whisky Lowland 1',
                     type: DocumentTreeNodeType.DOCUMENT,
                     document_filename: 'Details about Whisky Lowland 1',
-                    document_binary_url: '/test/binary'
+                    document_binary_url: '/test/binary',
+                    attribute_path: ''
                   }
                 ]
               },
@@ -413,13 +433,15 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
                 name: 'More information about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'More information about Whisky Islay',
-                document_binary_url: '/test/binary'
+                document_binary_url: '/test/binary',
+                attribute_path: ''
               },
               {
                 name: 'Details about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'Details about Whisky Islay',
-                document_binary_url: '/test/binary'
+                document_binary_url: '/test/binary',
+                attribute_path: ''
               },
             ]
           },
@@ -445,13 +467,15 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
         name: 'Uncategorised document 2',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Uncategorised document 2',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       },
       {
         name: 'Uncategorised document 1',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Uncategorised document 1',
-        document_binary_url: '/test/binary'
+        document_binary_url: '/test/binary',
+        attribute_path: ''
       }
     ]
   }
