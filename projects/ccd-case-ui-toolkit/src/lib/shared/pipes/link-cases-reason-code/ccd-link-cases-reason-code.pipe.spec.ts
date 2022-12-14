@@ -8,6 +8,7 @@ import { LinkCasesReasonValuePipe } from './ccd-link-cases-reason-code.pipe';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('LinkCasesReasonValuePipe', () => {
+  const searchService: any = undefined;
   let linkCasesReasonValuePipe: LinkCasesReasonValuePipe;
   const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
   jurisdictionService.getJurisdictions.and.returnValue(of());

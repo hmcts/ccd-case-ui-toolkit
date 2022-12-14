@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -18,11 +18,11 @@ describe('ReadLinkedCases', () => {
   let appConfig: any;
   let linkedCasesService: any;
   const caseFieldValue = {
-    list_items: [],
+    _list_items: [],
     id: 'caseLinks',
     label: 'Linked cases',
     hidden: false,
-    value: [
+    _value: [
       {
         id: '1651226230511462',
         value: {
@@ -374,7 +374,7 @@ describe('ReadLinkedCases', () => {
     getAllLinkedCaseInformation() {}
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
     commonDataService = createSpyObj('commonDataService', ['getRefData']);
     TestBed.configureTestingModule({
