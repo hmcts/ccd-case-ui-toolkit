@@ -40,9 +40,13 @@ describe('PaletteService', () => {
 
   let paletteService: PaletteService;
 
-  const assertComponent = (type, write, component, fieldTypeId) => {
+  const assertComponent = (type, write, component, fieldTypeId, collectionFieldTypeId?) => {
     const caseField = new CaseField();
-    caseField.field_type = { id: fieldTypeId, type };
+    if (collectionFieldTypeId) {
+      caseField.field_type = { id: fieldTypeId, type, collection_field_type: { id: collectionFieldTypeId, type } };
+    } else {
+      caseField.field_type = { id: fieldTypeId, type };
+    }
     expect(paletteService.getFieldComponentClass(caseField, write)).toBe(component);
   };
 
@@ -145,11 +149,11 @@ describe('PaletteService', () => {
     });
 
     it('should get ReadCollectionField component class for Collection input', () => {
-      assertComponent('Collection', false, ReadCollectionFieldComponent, 'AnID');
+      assertComponent('Collection', false, ReadCollectionFieldComponent, 'AnID', 'AnID');
     });
 
     it('should get WriteCollectionField component class for Collection input', () => {
-      assertComponent('Collection', true, WriteCollectionFieldComponent, 'AnID');
+      assertComponent('Collection', true, WriteCollectionFieldComponent, 'AnID', 'AnID');
     });
 
     it('should get ReadTextAreaField component class for TextArea input', () => {

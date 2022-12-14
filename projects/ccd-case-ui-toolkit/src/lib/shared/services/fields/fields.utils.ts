@@ -79,6 +79,13 @@ export class FieldsUtils {
     return pageFormFields[0]['value'] !== undefined;
   }
 
+  public static isLinkedCasesCaseField(caseField: CaseField): boolean {
+    if (!caseField) {
+      return false;
+    }
+    return caseField.field_type.collection_field_type.id === 'CaseLink';
+  }
+
   public static cloneObject(obj: any): any {
     return Object.assign({}, obj);
   }
@@ -165,6 +172,9 @@ export class FieldsUtils {
   };
 
   private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
+    if (!result) {
+      result = {}
+    }
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
     }
@@ -386,7 +396,7 @@ export class FieldsUtils {
             // If the Flags CaseField has a value, it is a root-level Complex field; if it does not, it is a Flags
             // CaseField that is a sub-field within another Complex field, so use the currentValue value (if any)
             // instead. The exception to this is the "caseFlags" Flags CaseField, which will have an empty object value
-            // initially, because no party name is required
+            // initially or could be null or undefined, because no party name is required
             if (caseField.value && FieldsUtils.isNonEmptyObject(caseField.value) ||
               caseField.id === this.caseLevelCaseFlagsFieldId) {
               flags.push(this.mapCaseFieldToFlagsWithFormGroupPathObject(caseField, pathToFlagsFormGroup));

@@ -85,8 +85,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly crf: ChangeDetectorRef
+    private readonly crf: ChangeDetectorRef,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -234,7 +234,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     let matTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
-    if (!url.includes('#') && !url.includes('roles-and-access') && !url.includes('tasks')) {
+    if (!url.includes('#') && !url.includes('roles-and-access') && !url.includes('tasks') && !url.includes('hearings')) {
       const paths = url.split('/');
       // lastPath can be /caseId, or the tabs /tasks, /hearings etc.
       const lastPath = decodeURIComponent(paths[paths.length - 1]);
@@ -266,8 +266,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     } else {
       const regExp = new RegExp(CaseFullAccessViewComponent.UNICODE_SPACE, 'g');
       hashValue = hashValue.replace(regExp, CaseFullAccessViewComponent.EMPTY_SPACE);
-      if (hashValue.includes('roles-and-access') || hashValue.includes('tasks')) {
-        hashValue = hashValue.includes('roles-and-access') ? 'roles and access' : 'tasks';
+      if (hashValue.includes('hearings')) {
+        hashValue = 'hearings';
+      } else {
+        if (hashValue.includes('roles-and-access') || hashValue.includes('tasks')) {
+          hashValue = hashValue.includes('roles-and-access') ? 'roles and access' : 'tasks';
+        }
       }
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
@@ -286,8 +290,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     const id = (tab.element.nativeElement as HTMLElement).id;
     // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
     // so have to hard code the hearings id here
-    if ((tabChangeEvent.index <= 1 && this.prependedTabs.length) ||
-      (this.appendedTabs.length && id === 'hearings')) {
+    if ((tabChangeEvent.index <= 1 && this.prependedTabs && this.prependedTabs.length) ||
+      (this.appendedTabs && this.appendedTabs.length && id === 'hearings')) {
       this.router.navigate([id], {relativeTo: this.route});
     } else {
       const label = tabChangeEvent.tab.textLabel;

@@ -140,7 +140,10 @@ describe('CaseEventTriggerComponent', () => {
     alertService = createSpyObj<AlertService>('alertService', ['success', 'warning']);
     activityPollingService = createSpyObj<ActivityPollingService>('activityPollingService', ['postEditActivity']);
     activityPollingService.postEditActivity.and.returnValue(of());
-    router = createSpyObj('router', ['navigate']);
+    router = {
+      navigate: jasmine.createSpy('navigate'),
+      url: ''
+    };
     router.navigate.and.returnValue({then: f => f()});
 
     TestBed
@@ -229,6 +232,14 @@ describe('CaseEventTriggerComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path]);
   });
 
+  it('should cancel navigate to linked cases tab', () => {
+    const routerWithModifiedUrl = TestBed.get(Router);
+    routerWithModifiedUrl.url = 'linkCases';
+    component.caseDetails.case_id = '1111-2222-3333-4444';
+    component.cancel();
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444']);
+  });
+
   it('should bypass validation if the CaseEventData data object contains a FlagLauncher field', (done) => {
     CASE_DETAILS.tabs = [
       {
@@ -254,5 +265,13 @@ describe('CaseEventTriggerComponent', () => {
       done();
     });
     expect(casesService.validateCase).not.toHaveBeenCalled();
+  });
+
+  it('should cancel navigate to linked cases tab', () => {
+    const routerWithModifiedUrl = TestBed.get(Router);
+    routerWithModifiedUrl.url = 'linkCases';
+    component.caseDetails.case_id = '1111-2222-3333-4444';
+    component.cancel();
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444']);
   });
 });

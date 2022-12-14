@@ -1,0 +1,45 @@
+<div>
+  <div class="govuk-!-margin-bottom-2">
+    <h1 class="heading-h1">Linked cases</h1>
+    <label class="table-sub-heading">This case is linked to</label>
+    <ccd-linked-cases-to-table [caseField]="caseField" (notifyAPIFailure)="getFailureLinkedToNotification($event)"
+      reloadPage="reload"></ccd-linked-cases-to-table>
+    <ng-container
+      *ngIf="(isServerLinkedToError && isServerJurisdictionError && isServerReasonCodeError); then multiApisError;">
+    </ng-container>
+    <ng-container
+      *ngIf="!(isServerLinkedToError && isServerJurisdictionError && isServerReasonCodeError) && (isServerLinkedToError || isServerJurisdictionError || isServerReasonCodeError); then singleApiError;">
+    </ng-container>
+  </div>
+  <div class="govuk-!-margin-top-8">
+    <label class="table-sub-heading">This case is linked from</label>
+    <br>
+    <ccd-linked-cases-from-table [caseField]="caseField" (notifyAPIFailure)="getFailureLinkedFromNotification($event)"
+      reloadPage="reload"></ccd-linked-cases-from-table>
+    <ng-container
+      *ngIf="(isServerLinkedFromError && isServerJurisdictionError && isServerReasonCodeError); then multiApisError;">
+    </ng-container>
+    <ng-container
+      *ngIf="!(isServerLinkedFromError && isServerJurisdictionError && isServerReasonCodeError) && (isServerLinkedFromError || isServerJurisdictionError || isServerReasonCodeError); then singleApiError;">
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #singleApiError>
+  <div class="govuk-main-wrapper">
+    <p class="govuk-body">{{serverLinkedApiError.message}}</p>
+    <span class="govuk-body align-left">
+      <a href="javascript:void(0)" (click)="reloadCurrentRoute()" id="reload-linked-cases-tab" class="govuk-link">Reload
+        the Linked cases tab</a>
+    </span>
+  </div>
+</ng-template>
+<ng-template #multiApisError>
+  <div class="govuk-main-wrapper">
+    <p class="govuk-body">{{serverError.message}}</p>
+    <span class="govuk-body align-left">
+      <a href="javascript:void(0)" (click)="reloadCurrentRoute()" id="reload-linked-cases-tab" class="govuk-link">Reload
+        the Linked cases tab</a>
+    </span>
+  </div>
+</ng-template>

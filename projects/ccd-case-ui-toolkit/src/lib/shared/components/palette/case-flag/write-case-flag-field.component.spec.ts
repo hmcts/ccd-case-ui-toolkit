@@ -189,8 +189,8 @@ describe('WriteCaseFlagFieldComponent', () => {
                 id: 'Flags',
                 type: 'Complex'
               } as FieldType,
-              formatted_value: {},
-              value: {}
+              formatted_value: null,
+              value: null
             }
           ] as CaseField[]
         }
@@ -401,8 +401,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].flags.details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
     expect(component.flagsData[1].flags.details[1].hearingRelevant).toBe(true);
     expect(component.flagsData[2].flags.flagsCaseFieldId).toEqual(caseFlagsFieldId);
-    expect(component.flagsData[2].flags.partyName).toBeUndefined();
-    expect(component.flagsData[2].flags.roleOnCase).toBeUndefined();
+    expect(component.flagsData[2].flags.partyName).toBeNull();
+    expect(component.flagsData[2].flags.roleOnCase).toBeNull();
     expect(component.flagsData[2].flags.details).toBeNull();
   });
 
@@ -474,6 +474,26 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[2].value.name).toBeUndefined();
     component.selectedFlagsLocation = null;
     populateNewFlagDetailInstanceSpy.calls.reset();
+  });
+
+  it('should add flag to collection when creating a flag for a CaseField whose value is null initially', () => {
+    expect(component.flagsData[2].caseField.id).toEqual(caseFlagsFieldId);
+    expect(component.flagsData[2].caseField.value).toBeNull();
+    spyOn(component, 'populateNewFlagDetailInstance');
+    const newFlag = {
+      flags: null,
+      pathToFlagsFormGroup: '',
+      caseField: component.flagsData[2].caseField
+    } as FlagsWithFormGroupPath
+    component.selectedFlagsLocation = newFlag;
+    component.addFlagToCollection();
+    expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
+    // Check that the caseFlags object has a value containing a details array, containing an object with a value property
+    // of undefined
+    expect(component.flagsData[2].caseField.value).toBeTruthy();
+    expect(component.flagsData[2].caseField.value.details).toBeTruthy();
+    expect(component.flagsData[2].caseField.value.details.length).toBe(1);
+    expect(component.flagsData[2].caseField.value.details[0].value).toBeUndefined();
   });
 
   it('should update flag in collection when updating a case flag', () => {

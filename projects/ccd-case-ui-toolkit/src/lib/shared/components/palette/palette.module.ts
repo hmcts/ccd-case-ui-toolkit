@@ -24,11 +24,17 @@ import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from
 import { RouterModule } from '@angular/router';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
+import { CaseFlagRefdataService } from '../../services/case-flag/case-flag-refdata.service';
+import { CommonDataService } from '../../services/common-data-service/common-data-service';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
+import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
+import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, UnLinkCasesComponent, WriteLinkedCasesComponent } from './case-link';
+import { ReadLinkedCasesComponent } from './case-link/components/read-linked-cases.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
+import { LinkedCasesService } from './case-link/services';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
@@ -64,7 +70,6 @@ import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { CaseFlagRefdataService } from '../../services/case-flag';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -112,6 +117,7 @@ const PALETTE_COMPONENTS = [
     ReadComplexFieldTableComponent,
     ReadComplexFieldCollectionTableComponent,
     ReadCaseFlagFieldComponent,
+    ReadLinkedCasesComponent,
 
     // Write
     WriteJudicialUserFieldComponent,
@@ -141,7 +147,15 @@ const PALETTE_COMPONENTS = [
     WriteFixedListFieldComponent,
     WriteFixedRadioListFieldComponent,
     WriteCaseLinkFieldComponent,
-    WriteCollectionFieldComponent
+    WriteCollectionFieldComponent,
+    LinkedCasesToTableComponent,
+    LinkedCasesFromTableComponent,
+    BeforeYouStartComponent,
+    LinkCasesComponent,
+    CheckYourAnswersComponent,
+    WriteLinkedCasesComponent,
+    UnLinkCasesComponent,
+    NoLinkedCasesComponent
 ];
 
 @NgModule({
@@ -205,6 +219,9 @@ const PALETTE_COMPONENTS = [
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
+    LinkedCasesService,
+    CommonDataService,
+    JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ]
 })

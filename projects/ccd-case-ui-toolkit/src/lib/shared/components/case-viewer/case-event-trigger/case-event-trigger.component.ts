@@ -2,7 +2,6 @@ import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
-
 import { Activity, CaseEventData, CaseEventTrigger, CaseField, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils } from '../../../services';
@@ -111,7 +110,13 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   public cancel(): Promise<boolean> {
-    return this.router.navigate([this.parentUrl]);
+    if (this.router.url && this.router.url.includes('linkCases')) {
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
+        window.location.hash = 'Linked cases';
+      });
+    } else {
+      return this.router.navigate([this.parentUrl]);
+    }
   }
 
   public isDataLoaded(): boolean {
