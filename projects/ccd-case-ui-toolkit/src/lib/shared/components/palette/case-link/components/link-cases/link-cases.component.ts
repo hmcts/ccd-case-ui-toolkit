@@ -1,19 +1,20 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
 import { throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
+import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import {
   CaseLink,
   CCDCaseLinkType,
   LinkCaseReason,
-  LinkReason,
+  LinkReason
 } from '../../domain/linked-cases.model';
 import { LinkedCasesErrorMessages, LinkedCasesPages, Patterns } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
-import * as moment from 'moment';
 
 @Component({
   selector: 'ccd-link-cases',
@@ -31,16 +32,22 @@ export class LinkCasesComponent implements OnInit {
   public caseReasonError: string;
   public caseSelectionError: string;
   public noSelectedCaseError: string;
+  public caseId: string;
+  public caseName: string;
+  public linkCaseReasons: LovRefDataModel[] = [];
   private readonly ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(
     private readonly casesService: CasesService,
     private readonly fb: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
-    public readonly linkedCasesService: LinkedCasesService) { }
+    private readonly linkedCasesService: LinkedCasesService) { }
 
   public ngOnInit(): void {
     this.initForm();
+    this.caseId = this.linkedCasesService.caseId;
+    this.caseName = this.linkedCasesService.caseName;
+    this.linkCaseReasons = this.linkedCasesService.linkCaseReasons;
     if (this.linkedCasesService.editMode) {
       // this may have includes the currently added one but yet to be submitted.
       this.selectedCases = this.linkedCasesService.linkedCases;
@@ -58,7 +65,7 @@ export class LinkCasesComponent implements OnInit {
 
   public get getReasonTypeFormArray(): FormArray {
     return this.fb.array(
-      this.linkedCasesService.linkCaseReasons.map((val) =>
+      this.linkCaseReasons.map((val) =>
         this.fb.group({
           key: [val.key],
           value_en: [val.value_en],
