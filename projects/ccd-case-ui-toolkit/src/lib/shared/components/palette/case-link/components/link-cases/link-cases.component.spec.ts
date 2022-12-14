@@ -13,7 +13,7 @@ import { PipesModule } from '../../../../../pipes/pipes.module';
 import createSpyObj = jasmine.createSpyObj;
 import { By } from '@angular/platform-browser';
 
-describe('LinkCasesComponent', () => {
+xdescribe('LinkCasesComponent', () => {
   let component: LinkCasesComponent;
   let fixture: ComponentFixture<LinkCasesComponent>;
   let casesService: any;
