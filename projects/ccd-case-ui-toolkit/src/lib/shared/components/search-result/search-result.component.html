@@ -1,27 +1,27 @@
 <table *ngIf="hasResults() || hasDrafts()">
   <caption>
-    <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Your cases' : 'Search result' }}</h2>
+    <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Your cases' : 'Search result' | rpxTranslate}}</h2>
 
     <div class="govuk-warning-text pagination-limit-warning" *ngIf="paginationLimitEnforced">
       <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
       <strong class="govuk-warning-text__text">
-        <span class="govuk-warning-text__assistive">Warning</span>
-        The total size of the result set is {{paginationMetadata.total_results_count | number}}. Only the first 10,000 records are available for display.
+        <span class="govuk-warning-text__assistive">{{'Warning' | rpxTranslate}}</span>
+        {{'The total size of the result set is' | rpxTranslate}} {{paginationMetadata.total_results_count | number}}. {{'Only the first 10,000 records are available for display.' | rpxTranslate}}
       </strong>
     </div>
 
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
-      attr.aria-label="{{ getTotalResults() }} results have been found" role="status">
-      <span class="text-16" id="search-result-summary__text">Showing 
+      [attr.aria-label]="getTotalResults() + ' results have been found' | rpxTranslate" role="status">
+      <span class="text-16" id="search-result-summary__text">{{'Showing' | rpxTranslate}}
         <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
-        to
+        {{'to' | rpxTranslate}}
         <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
-        of
-        <span class="govuk-!-font-weight-bold">{{ getTotalResults() }}</span> results</span>
+        {{'of' | rpxTranslate}}
+        <span class="govuk-!-font-weight-bold">{{ getTotalResults() }}</span> {{'results' | rpxTranslate}}</span>
     </div>
     <div *ngIf="(hasResults() || hasDrafts()) && selectionEnabled" class="reset-selection"
-      attr.aria-label="Reset selection">
-      <span><a class="search-result-reset-link" href="javascript:void()" (click)="clearSelection()">Reset case selection</a></span>
+    [attr.aria-label]="'Reset selection' | rpxTranslate">
+      <span><a class="search-result-reset-link" href="javascript:void()" (click)="clearSelection()">{{'Reset case selection' | rpxTranslate}}</a></span>
     </div>
   </caption>
   <thead>
@@ -127,10 +127,10 @@
   </tbody>
 </table>
 
-<ccd-pagination 
+<ccd-pagination
   *ngIf="hasResults()"
   (pageChange)="goToPage($event)"
-  [visibilityLabel]="hideRows ? 'hidden' : 'visible'" 
+  [visibilityLabel]="hideRows ? 'hidden' : 'visible'"
   [autoHide]="true"
   [maxSize]="8"
   [screenReaderPaginationLabel]="'Pagination'"
@@ -138,6 +138,6 @@
   [screenReaderCurrentLabel]="'You\'re on page'"></ccd-pagination>
 
 <div *ngIf="!(hasResults() || hasDrafts())" class="notification"
-  aria-label="No cases found. Try using different filters.">
-  No cases found. Try using different filters.
+[attr.aria-describedby]="'No cases found. Try using different filters.' | rpxTranslate">
+{{'No cases found. Try using different filters.' | rpxTranslate}}
 </div>
