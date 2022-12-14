@@ -338,13 +338,6 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set the first column header for case-level flags if the case title is available', () => {
-    component.caseEditPageComponent.getCaseTitle = createSpy().and.returnValue('Dummy case title');
-    component.ngOnInit();
-    expect(component.caseEditPageComponent.getCaseTitle).toHaveBeenCalled();
-    expect(component.caseLevelFirstColumnHeader).toEqual('Dummy case title');
-  });
-
   it('should extract all flags-related data from the CaseView object in the snapshot data', () => {
     component.caseField = flagLauncherCaseField;
     component.ngOnInit();

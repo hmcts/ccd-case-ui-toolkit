@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.18-case-flags-title-and-styles
+**EUI-7353** Case flags title and style changes
+
 ### Version 7.0.16-case-links-enable-backward-compatibility
 **EUI-7413** Case links enable backward compatibility
 

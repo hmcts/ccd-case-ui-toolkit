@@ -1,14 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CaseField, ErrorMessage } from '../../../../../domain';
-import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
+import { ErrorMessage } from '../../../../../domain';
+import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 
 @Component({
   selector: 'ccd-manage-case-flags',
-  templateUrl: './manage-case-flags.component.html'
+  templateUrl: './manage-case-flags.component.html',
+  styleUrls: ['./manage-case-flags.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ManageCaseFlagsComponent implements OnInit {
+
+  private static readonly CASE_LEVEL_CASE_FLAGS_FIELD_ID = 'caseFlags';
 
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
@@ -19,9 +23,9 @@ export class ManageCaseFlagsComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public manageCaseFlagSelectedErrorMessage: SelectFlagErrorMessage = null;
   public flagsDisplayData: FlagDetailDisplayWithFormGroupPath[];
+  public flags: Flags;
   public noFlagsError = false;
-  public readonly selectedControlName = 'selectedManageCaseLocation';
-  public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
+  public selectedControlName = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
@@ -33,13 +37,16 @@ export class ManageCaseFlagsComponent implements OnInit {
           displayData = [
             ...displayData,
             ...flagsInstance.flags.details.map(detail =>
-              this.mapFlagDetailForDisplay(detail, flagsInstance.flags.partyName, flagsInstance.pathToFlagsFormGroup,
-                flagsInstance.caseField)
+              this.mapFlagDetailForDisplay(detail, flagsInstance)
             )
           ];
         }
         return displayData;
       }, []);
+
+      this.flagsDisplayData.forEach(flagDisplayData => {
+        flagDisplayData.label = this.processLabel(flagDisplayData);
+      });
     }
 
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
@@ -52,49 +59,77 @@ export class ManageCaseFlagsComponent implements OnInit {
     }
   }
 
-  public mapFlagDetailForDisplay(flagDetail: FlagDetail, partyName: string,
-    pathToFlagsFormGroup: string, caseField: CaseField): FlagDetailDisplayWithFormGroupPath {
-      return {
-        flagDetailDisplay: {
-          partyName,
-          flagDetail,
-          flagsCaseFieldId: caseField.id
-        },
-        pathToFlagsFormGroup,
-        caseField
-      };
+  public mapFlagDetailForDisplay(flagDetail: FlagDetail, flagsInstance: FlagsWithFormGroupPath): FlagDetailDisplayWithFormGroupPath {
+    return {
+      flagDetailDisplay: {
+        partyName: flagsInstance.flags.partyName,
+        flagDetail,
+        flagsCaseFieldId: flagsInstance.caseField.id
+      },
+      pathToFlagsFormGroup: flagsInstance.pathToFlagsFormGroup,
+      caseField: flagsInstance.caseField,
+      roleOnCase: flagsInstance.flags.roleOnCase
+    };
   }
 
   public processLabel(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
-    const partyName = flagDisplay.pathToFlagsFormGroup && flagDisplay.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId
-      ? `${this.caseTitle} - `
-      : flagDisplay.flagDetailDisplay.partyName
-        ? `${flagDisplay.flagDetailDisplay.partyName} - `
-        :  '';
-
     const flagDetail = flagDisplay.flagDetailDisplay.flagDetail;
+    const partyName = this.getPartyName(flagDisplay);
+    const flagName = this.getFlagName(flagDetail);
+    const flagDescription = this.getFlagDescription(flagDetail);
+    const roleOnCase = this.getRoleOnCase(flagDisplay);
+    const flagComment = this.getFlagComments(flagDetail);
 
-    const flagPathOrName = flagDetail && flagDetail.path && flagDetail.path.length > 1
-      ? flagDetail.path[1].value
-      : flagDetail.subTypeKey && flagDetail.subTypeValue
-        ? flagDetail.subTypeValue
-        : flagDetail.name;
+    return flagName === flagDescription
+      ? `${partyName}${roleOnCase} - <span class="flag-name-and-description">${flagDescription}</span>${flagComment}`
+      : `${partyName}${roleOnCase} - <span class="flag-name-and-description">${flagName}, ${flagDescription}</span>${flagComment}`;
+  }
 
-    const flagOtherDescriptionOrName = flagDetail && flagDetail.name
-      ? flagDetail.name === 'Other'
-        ? flagDetail.otherDescription
-        : flagDetail.subTypeKey && flagDetail.subTypeValue
-          ? flagDetail.subTypeValue
-          : flagDetail.name
-      : '';
+  public getPartyName(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
+    if (flagDisplay.pathToFlagsFormGroup && flagDisplay.pathToFlagsFormGroup === ManageCaseFlagsComponent.CASE_LEVEL_CASE_FLAGS_FIELD_ID) {
+      return 'Case level';
+    }
+    if (flagDisplay.flagDetailDisplay.partyName) {
+      return `${flagDisplay.flagDetailDisplay.partyName}`;
+    }
+    return '';
+  }
 
-    const comment = flagDetail.flagComment
-      ? ` (${flagDetail.flagComment})`
-      : '';
+  public getFlagName(flagDetail: FlagDetail): string {
+    if (flagDetail && flagDetail.path && flagDetail.path.length > 1) {
+      return flagDetail.path[1].value;
+    }
+    if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
+      return flagDetail.subTypeValue;
+    }
+    return flagDetail.name;
+  }
 
-    return flagPathOrName === flagOtherDescriptionOrName
-      ? `${partyName}${flagOtherDescriptionOrName}${comment}`
-      : `${partyName}${flagPathOrName}, ${flagOtherDescriptionOrName}${comment}`;
+  public getFlagDescription(flagDetail: FlagDetail): string {
+    if (flagDetail && flagDetail.name) {
+      if (flagDetail.name === 'Other' && flagDetail.otherDescription) {
+        return flagDetail.otherDescription;
+      }
+      if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
+        return flagDetail.subTypeValue;
+      }
+      return flagDetail.name;
+    }
+    return '';
+  }
+
+  public getRoleOnCase(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
+    if (flagDisplay && flagDisplay.roleOnCase) {
+      return ` (${flagDisplay.roleOnCase})`;
+    }
+    return '';
+  }
+
+  public getFlagComments(flagDetail: FlagDetail): string {
+    if (flagDetail.flagComment) {
+      return ` (${flagDetail.flagComment})`;
+    }
+    return '';
   }
 
   public onNext(): void {

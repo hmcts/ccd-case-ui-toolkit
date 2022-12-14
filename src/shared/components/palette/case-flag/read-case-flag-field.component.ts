@@ -22,7 +22,6 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public caseLevelCaseFlagData: FlagsWithFormGroupPath;
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
-  public caseLevelFirstColumnHeader: string;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
@@ -84,10 +83,6 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         }
       }
     }
-
-    this.caseLevelFirstColumnHeader = this.caseEditPageComponent.getCaseTitle()
-      ? this.caseEditPageComponent.getCaseTitle()
-      : this.caseNameMissing;
   }
 
   private extractNewFlagToFlagDetailDisplayObject(selectedFlagsLocation: FlagsWithFormGroupPath): FlagDetailDisplay {
