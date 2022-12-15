@@ -55,6 +55,16 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       // There will be only one case-level flags instance containing all case-level flag details
       this.caseLevelCaseFlagData = this.flagsData.find(
         instance => instance.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
+      // If no case level flags found, then initialise to empty values to display case level flags table
+      if (!this.caseLevelCaseFlagData) {
+        this.caseLevelCaseFlagData = {
+          caseField: null,
+          flags: {
+            details: []
+          },
+          pathToFlagsFormGroup: null
+        };
+      }
     } else if (this.context === PaletteContext.CHECK_YOUR_ANSWER) {
       // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the FormGroup.
       // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to:
