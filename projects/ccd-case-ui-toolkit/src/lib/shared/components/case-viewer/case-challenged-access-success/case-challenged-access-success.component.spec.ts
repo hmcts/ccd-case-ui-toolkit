@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success.component';
 
 describe('CaseChallengedAccessSuccessComponent', () => {
@@ -18,7 +19,7 @@ describe('CaseChallengedAccessSuccessComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CaseChallengedAccessSuccessComponent ],
+      declarations: [ CaseChallengedAccessSuccessComponent, MockRpxTranslatePipe ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
       ]

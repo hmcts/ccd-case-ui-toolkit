@@ -9,6 +9,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { DocumentData } from '../../../domain/document';
 import { DocumentManagementService } from '../../../services/document-management';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import { FieldLabelPipe } from '../utils';
@@ -139,6 +140,7 @@ describe('WriteDocumentFieldComponent', () => {
           DocumentDialogComponent,
           // Mock
           ReadDocumentComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: DocumentManagementService, useValue: mockDocumentManagementService},
@@ -489,6 +491,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           DocumentDialogComponent,
           // Mock
           ReadDocumentComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: DocumentManagementService, useValue: mockDocumentManagementService},

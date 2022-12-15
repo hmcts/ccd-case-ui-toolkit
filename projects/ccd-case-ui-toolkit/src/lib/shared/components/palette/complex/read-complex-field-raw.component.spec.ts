@@ -8,6 +8,7 @@ import { CaseField, FieldType } from '../../../domain';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldRawComponent } from './read-complex-field-raw.component';
@@ -27,6 +28,7 @@ const initTests = (caseField, mocks) => {
         ReadComplexFieldRawComponent,
         FieldsFilterPipe,
         ReadFieldsFilterPipe,
+        MockRpxTranslatePipe,
         ...mocks
       ],
       providers: []

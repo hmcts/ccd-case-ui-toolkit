@@ -2,8 +2,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { AlertModule } from '../../../../components/banners/alert';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request.component';
@@ -32,9 +34,11 @@ describe('CaseSpecificAccessRequestComponent', () => {
     casesService.createSpecificAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({
       imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule ],
-      declarations: [ CaseSpecificAccessRequestComponent, ErrorMessageComponent ],
+      declarations: [ CaseSpecificAccessRequestComponent, ErrorMessageComponent, MockRpxTranslatePipe ],
       providers: [
         FormBuilder,
+        { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
+        ['getTranslation', 'translate']) },
         { provide: CasesService, useValue: casesService },
         { provide: ActivatedRoute, useValue: mockRoute }
       ]

@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { Activity, DisplayMode } from '../../domain/activity/activity.model';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { ActivityComponent } from './activity.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -104,7 +105,8 @@ describe('CcdActivityComponent', () => {
           ActivityComponent,
           // Mocks
           ActivityIconComponent,
-          ActivityBannerComponent
+          ActivityBannerComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: ActivityPollingService, useValue: activityPollingService}
