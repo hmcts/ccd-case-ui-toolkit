@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
-import { CaseFileViewService, DocumentManagementService } from '../../../services';
+import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -22,7 +22,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   constructor(private readonly elementRef: ElementRef,
               private readonly route: ActivatedRoute,
               private caseFileViewService: CaseFileViewService,
-              private documentManagementService: DocumentManagementService
+              private documentManagementService: DocumentManagementService,
+              private readonly loadingService: LoadingService
   ) {
   }
 
@@ -77,8 +78,10 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
   public moveDocument(data:any) {
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
+    const loadingToken = this.loadingService.register();
     this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory).subscribe(_ => {
       location.reload();
+      this.loadingService.unregister(loadingToken);
     });
   }
 

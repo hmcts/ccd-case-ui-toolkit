@@ -22,6 +22,7 @@ import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
+import { LoadingModule } from '../../services/loading/loading.module';
 import { CaseFlagRefdataService } from '../../services/case-flag';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { WindowService } from '../../services/window';
@@ -188,7 +189,8 @@ const PALETTE_COMPONENTS = [
         PaymentLibModule,
         ScrollToModule.forRoot(),
         MatDialogModule,
-        MediaViewerModule
+        MediaViewerModule,
+        LoadingModule
   ],
   declarations: [
     FixedListPipe,

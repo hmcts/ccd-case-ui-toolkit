@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
-import { CaseFileViewService, DocumentManagementService } from '../../../services';
+import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
@@ -13,6 +13,8 @@ describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
   let fixture: ComponentFixture<CaseFileViewFieldComponent>;
   let mockCaseFileViewService: jasmine.SpyObj<CaseFileViewService>;
+  let mockLoadingService: jasmine.SpyObj<LoadingService>;
+
   const mockSnapshot = {
     paramMap: createSpyObj('paramMap', ['get']),
   };
@@ -24,6 +26,11 @@ describe('CaseFileViewFieldComponent', () => {
   beforeEach(async(() => {
     mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService', ['getCategoriesAndDocuments']);
     mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(of(null));
+
+    mockLoadingService = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+    mockLoadingService.register.and.returnValue('loadingToken');
+    mockLoadingService.unregister.and.returnValue(null);
+
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule
@@ -37,7 +44,8 @@ describe('CaseFileViewFieldComponent', () => {
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseFileViewService, useValue: mockCaseFileViewService },
-        { provide: DocumentManagementService, useValue: mockDocumentManagementService }
+        { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+        { provide: LoadingService, useValue: mockLoadingService }
       ]
     })
     .compileComponents();
