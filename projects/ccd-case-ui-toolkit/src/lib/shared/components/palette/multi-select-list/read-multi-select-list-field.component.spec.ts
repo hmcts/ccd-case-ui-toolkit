@@ -6,6 +6,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FixedListPipe } from '../fixed-list/fixed-list.pipe';
 import { ReadMultiSelectListFieldComponent } from './read-multi-select-list-field.component';
 
@@ -60,7 +61,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
           declarations: [
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
-
+            MockRpxTranslatePipe,
             // Mock
             FieldReadComponent
           ],
@@ -138,7 +139,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
           declarations: [
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
-
+            MockRpxTranslatePipe,
             // Mock
             FieldReadComponent
           ],

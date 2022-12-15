@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CaseField, FieldType } from '../../../domain/definition';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils';
 import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 
@@ -44,6 +45,7 @@ describe('WriteCaseLinkFieldComponent', () => {
       ],
       declarations: [
         WriteCaseLinkFieldComponent,
+        MockRpxTranslatePipe
       ],
       providers: []
     })

@@ -10,6 +10,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
@@ -152,6 +153,7 @@ describe('ReadComplexFieldTableComponent', () => {
 
             // Mock
             FieldReadComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             FieldsUtils,
@@ -343,6 +345,7 @@ describe('ReadComplexFieldTableComponent', () => {
 
             // Mock
             FieldReadComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             FieldsUtils,

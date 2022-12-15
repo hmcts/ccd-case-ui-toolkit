@@ -14,6 +14,7 @@ import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.se
 import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { AbstractFieldWriteComponent } from '../palette/base-field/abstract-field-write.component';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -207,7 +208,8 @@ describe('WorkbasketFiltersComponent', () => {
           ],
           declarations: [
             WorkbasketFiltersComponent,
-            FieldWriteComponent
+            FieldWriteComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: Router, useValue: router },
@@ -623,7 +625,8 @@ describe('WorkbasketFiltersComponent', () => {
           ],
           declarations: [
             WorkbasketFiltersComponent,
-            FieldWriteComponent
+            FieldWriteComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: Router, useValue: router },
@@ -724,7 +727,8 @@ describe('WorkbasketFiltersComponent', () => {
           ],
           declarations: [
             WorkbasketFiltersComponent,
-            FieldWriteComponent
+            FieldWriteComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: Router, useValue: router },
@@ -800,7 +804,8 @@ describe('WorkbasketFiltersComponent', () => {
           ],
           declarations: [
             WorkbasketFiltersComponent,
-            FieldWriteComponent
+            FieldWriteComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: Router, useValue: router },
@@ -883,7 +888,8 @@ describe('WorkbasketFiltersComponent', () => {
           ],
           declarations: [
             WorkbasketFiltersComponent,
-            FieldWriteComponent
+            FieldWriteComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: Router, useValue: router },
@@ -969,7 +975,8 @@ describe('WorkbasketFiltersComponent', () => {
           ],
           declarations: [
             WorkbasketFiltersComponent,
-            FieldWriteComponent
+            FieldWriteComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: Router, useValue: router },
@@ -1050,7 +1057,8 @@ describe('WorkbasketFiltersComponent', () => {
           ],
           declarations: [
             WorkbasketFiltersComponent,
-            FieldWriteComponent
+            FieldWriteComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: Router, useValue: router },

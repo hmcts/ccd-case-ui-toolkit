@@ -11,20 +11,21 @@ import { CaseEventData, CaseEventTrigger, CaseField, Draft, FieldType, HttpError
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { CcdCaseTitlePipe } from '../../../pipes/case-title';
+import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
+import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValueService } from '../../../services';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
-import { CaseEditPageComponent } from './case-edit-page.component';
 import { CaseEditPageText } from './case-edit-page-text.enum';
+import { CaseEditPageComponent } from './case-edit-page.component';
 import createSpyObj = jasmine.createSpyObj;
-import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
-import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
-import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
 
 describe('CaseEditPageComponent', () => {
 
@@ -120,7 +121,7 @@ describe('CaseEditPageComponent', () => {
       TestBed.configureTestingModule({
         imports: [FormsModule, ReactiveFormsModule],
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
+          CaseReferencePipe, CcdCaseTitlePipe, MockRpxTranslatePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -394,7 +395,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
+          CaseReferencePipe, CcdCaseTitlePipe, MockRpxTranslatePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -492,7 +493,7 @@ describe('CaseEditPageComponent', () => {
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
+          CaseReferencePipe, CcdCaseTitlePipe, MockRpxTranslatePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -602,7 +603,8 @@ describe('CaseEditPageComponent', () => {
           CcdPageFieldsPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -803,7 +805,7 @@ describe('CaseEditPageComponent', () => {
 
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
+          CaseReferencePipe, CcdCaseTitlePipe, MockRpxTranslatePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
@@ -915,7 +917,7 @@ describe('CaseEditPageComponent', () => {
       spyOn(caseEditComponentStub, 'previous');
       TestBed.configureTestingModule({
         declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
+          CaseReferencePipe, CcdCaseTitlePipe, MockRpxTranslatePipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {provide: FormValueService, useValue: formValueService},
