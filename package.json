@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.18-case-flags-title-and-styles",
+  "version": "7.0.19-case-flags-case-level-flag-table-display",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

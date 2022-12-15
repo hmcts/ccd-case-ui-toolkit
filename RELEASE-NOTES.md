@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.19-case-flags-case-level-flag-table-display
+**EUI-7267** Case flags case level flags table display
+
 ### Version 7.0.18-case-flags-title-and-styles
 **EUI-7353** Case flags title and style changes
 
