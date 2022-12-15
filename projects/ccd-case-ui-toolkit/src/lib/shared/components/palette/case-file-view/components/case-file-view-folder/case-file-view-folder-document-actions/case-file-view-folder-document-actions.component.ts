@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay-menu/case-file-view-overlay-menu-item.model';
 
 @Component({
@@ -6,7 +6,7 @@ import { CaseFileViewOverlayMenuItem } from '../../shared/case-file-view-overlay
   templateUrl: './case-file-view-folder-document-actions.component.html',
   styleUrls: ['./case-file-view-folder-document-actions.component.scss']
 })
-export class CaseFileViewFolderDocumentActionsComponent {
+export class CaseFileViewFolderDocumentActionsComponent implements OnInit {
   public isOpen = false;
 
   @Input() public allowMoving: boolean;

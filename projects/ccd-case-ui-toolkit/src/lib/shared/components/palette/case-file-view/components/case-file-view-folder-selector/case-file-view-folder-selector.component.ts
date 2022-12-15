@@ -23,7 +23,7 @@ export class CaseFileViewFolderSelectorComponent {
     public handleChange(evt) {
         if (evt.target.checked) {
             this.select(evt.target.id);
-            //get level of this checkbox so we can clear all lower levels
+            // get level of this checkbox so we can clear all lower levels
             let level = parseInt(evt.target.name.split('-')[1], 10) + 1;
             let nodes = document.getElementsByName(`level-${level}`);
             while (nodes.length > 0) {

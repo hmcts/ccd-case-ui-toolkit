@@ -23,6 +23,7 @@ describe('CaseFileViewFolderDocumentActionsComponent', () => {
     fixture = TestBed.createComponent(CaseFileViewFolderDocumentActionsComponent);
     component = fixture.componentInstance;
     component.isOpen = true;
+    component.allowMoving = true;
     fixture.detectChanges();
     overlayMenuButtons = fixture.debugElement.queryAll(By.css('.overlay-menu__item'));
   });

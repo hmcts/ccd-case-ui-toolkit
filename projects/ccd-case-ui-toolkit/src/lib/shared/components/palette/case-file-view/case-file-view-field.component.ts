@@ -11,8 +11,8 @@ import { CaseFileViewService, DocumentManagementService, LoadingService } from '
   styleUrls: ['./case-file-view-field.component.scss'],
 })
 export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDestroy {
-  public allowMoving = true;
   public static readonly PARAM_CASE_ID = 'cid';
+  public allowMoving = true;
   public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
   public categoriesAndDocumentsSubscription: Subscription;
   public getCategoriesAndDocumentsError = false;
