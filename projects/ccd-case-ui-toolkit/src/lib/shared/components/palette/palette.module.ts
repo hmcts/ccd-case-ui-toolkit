@@ -22,11 +22,13 @@ import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
+import { CaseFlagRefdataService } from '../../services/case-flag';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view';
+import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { CaseFileViewFolderSelectorComponent } from './case-file-view/components/case-file-view-folder-selector/case-file-view-folder-selector.component';
 import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
@@ -70,7 +72,6 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { CaseFlagRefdataService } from '../../services/case-flag';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -151,6 +152,7 @@ const PALETTE_COMPONENTS = [
 
     // ComponentLauncher web components
     CaseFileViewFieldComponent,
+    CaseFileViewFieldReadComponent,
     CaseFileViewFolderComponent,
     CaseFileViewFolderSortComponent,
     CaseFileViewOverlayMenuComponent,

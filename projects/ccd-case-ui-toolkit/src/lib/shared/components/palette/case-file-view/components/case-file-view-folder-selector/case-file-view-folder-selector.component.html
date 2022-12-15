@@ -13,7 +13,7 @@
 
 <ng-template #folder let-cat="cat" let-level="level">
     <div class="folder govuk-radios__item">
-        <input class="govuk-radios__input" type="radio" name="level-{{level}}" [id]="cat.category_id" (change)="handleChange($event)" />
+        <input class="govuk-radios__input" type="radio" name="level-{{level}}" [id]="cat.category_id" (click)="handleChange($event)" />
         <label class="govuk-label govuk-radios__label" [for]="cat.category_id">
             <img class="iconImg" src="/assets/images/folder.png" alt="Folder icon" />
             {{ cat.category_name }}
