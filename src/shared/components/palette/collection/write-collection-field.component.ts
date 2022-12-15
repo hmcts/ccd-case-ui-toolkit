@@ -1,3 +1,4 @@
+import { templateJitUrl } from '@angular/compiler';
 import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material';
@@ -5,6 +6,7 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { CRUD } from '../../../domain';
 
 import { CaseField, FieldType } from '../../../domain/definition/case-field.model';
 import { Profile } from '../../../domain/profile';
@@ -169,8 +171,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       field_type: fieldType,
       display_context: isNotAuthorisedToUpdate ? 'READONLY' : this.caseField.display_context,
       value: item.value,
-      label: null,
-      acls: this.caseField.acls
+      label: null
     });
   }
 
@@ -279,14 +280,17 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    return !this.getCollectionPermission(this.caseField, 'allowInsert');
+    return !this.getCollectionPermission(this.caseField, CRUD.allowInsert);
   }
 
   getCollectionPermission(field: CaseField, type: string) {
-    return field.display_context_parameter &&
-            field.display_context_parameter.split('#')
-              .filter(item => item.startsWith('COLLECTION('))[0]
-                .includes(type);
+    // let x = field.display_context_parameter &&
+    //         field.display_context_parameter.split('#')
+    //           .filter(item => item.startsWith('COLLECTION('))[0]
+    //             .includes(type);
+    //             debugger;
+
+    return new CaseField().checkPermission(field.display_context_parameter, type);
   }
 
   isNotAuthorisedToUpdate(index) {
@@ -296,16 +300,17 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     // Was reassesed as part of EUI-3505. There is still a caveat around CRD, but that was deemed an unlikely scenario
     const id = this.getControlIdAt(index);
     if (id) {
-      if (!!this.profile.user && !!this.profile.user.idam) {
-        const updateRole = this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
+
+        const updateRole = role => this.hasUpdateAccess(role);
         return !updateRole;
-      }
+
     }
     return false;
   }
 
   hasUpdateAccess(role: any): boolean {
-    return !!this.caseField.acls.find( acl => acl.role === role && acl.update === true);
+    // !!this.caseField.acls.find( acl => acl.role === role && acl.update === true);
+    return new CaseField().checkPermission(this.caseField.display_context_parameter, CRUD.allowUpdate);
   }
 
   isNotAuthorisedToDelete(index: number) {
@@ -314,7 +319,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
     // Should be able to delete if creating a case even if "D" is absent, hence:
     const id = this.getControlIdAt(index);
-    return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
+    return !!id && !this.getCollectionPermission(this.caseField, CRUD.allowDelete);
   }
 
   openModal(i: number) {

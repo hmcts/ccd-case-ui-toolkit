@@ -14,16 +14,21 @@ describe('CollectionCreateCheckerService', () => {
 
   let collectionCreateCheckerService: CollectionCreateCheckerService = new CollectionCreateCheckerService();
   const DATE_TEXT_FIELD = createCaseField('date', 'Date', '', textFieldType(), 'READONLY', undefined, undefined, [acl1, acl2]);
+  DATE_TEXT_FIELD.display_context_parameter = '#COLLECTION(allowInsert)';
   const DESCRIPTION_TEXT_FIELD = createCaseField('description', 'Description', '', textFieldType(), 'READONLY',
     undefined, undefined, [acl3]);
   const CATEGORY_TEXT_FIELD = createCaseField('categoryText', 'Category name', '', textFieldType(),
     'READONLY', undefined, undefined, [acl1, acl2]);
+  CATEGORY_TEXT_FIELD.display_context_parameter = '#COLLECTION(allowInsert)';
   const COLOR_TEXT_FIELD = createCaseField('colorText', 'Category', '', textFieldType(), 'READONLY', undefined, undefined, [acl1, acl2]);
+  COLOR_TEXT_FIELD.display_context_parameter = '#COLLECTION(allowInsert)';
   const CATEGORY_COMPLEX_TYPE = createFieldType('TimelineEvent', 'Complex', [CATEGORY_TEXT_FIELD, COLOR_TEXT_FIELD]);
   const CATEGORY = createCaseField('categoy', 'Category', '', CATEGORY_COMPLEX_TYPE, 'READONLY', undefined, undefined, [acl1]);
+  CATEGORY.display_context_parameter = '#COLLECTION(allowInsert)';
   const TAGS_COLLECTION = createCaseField('tags', 'Tags', '',
     createFieldType('tagss-bbcd64b3a', 'Collection', [], textFieldType()), 'READONLY',
     undefined, undefined, [acl1]);
+  TAGS_COLLECTION.display_context_parameter = '#COLLECTION(allowInsert)';
   const TIMELINE_EVENT_COMPLEX = createFieldType('TimelineEvent', 'Complex',
     [DATE_TEXT_FIELD, DESCRIPTION_TEXT_FIELD, CATEGORY, TAGS_COLLECTION]);
   const TIMELINE_EVENTS_COLLECTION = createCaseField('defendantTimeLineEvents', 'Timeline Events', '',

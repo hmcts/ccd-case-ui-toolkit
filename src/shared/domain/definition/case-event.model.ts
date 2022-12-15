@@ -10,5 +10,5 @@ export class CaseEvent implements Orderable {
   case_fields: EventCaseField[];
   description: string;
   order?: number;
-  acls?: AccessControlList[];
+    acls?: AccessControlList[];
 }

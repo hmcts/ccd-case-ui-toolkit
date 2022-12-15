@@ -87,15 +87,15 @@ describe('WriteCollectionFieldComponent', () => {
       display_context: 'OPTIONAL',
       display_context_parameter: '#COLLECTION(allowInsert)',
       value: VALUES.slice(0),
-      acls: [
-        {
-          role: 'caseworker-divorce',
-          create: true,
-          read: true,
-          update: true,
-          delete: true
-        }
-      ]
+      // acls: [
+      //   {
+      //     role: 'caseworker-divorce',
+      //     create: true,
+      //     read: true,
+      //     update: true,
+      //     delete: true
+      //   }
+      // ]
     });
     formGroup = new FormGroup({
       field1: new FormControl()
@@ -334,15 +334,15 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
       field_type: SIMPLE_FIELD_TYPE,
       display_context: 'OPTIONAL',
       value: collectionValues.slice(),
-      acls: [
-        {
-          role: 'caseworker-divorce',
-          create: false,
-          read: true,
-          update: true,
-          delete: false
-        }
-      ]
+      // acls: [
+      //   {
+      //     role: 'caseworker-divorce',
+      //     create: false,
+      //     read: true,
+      //     update: true,
+      //     delete: false
+      //   }
+      // ]
     });
     formGroup = new FormGroup({
       field1: new FormControl()
@@ -449,15 +449,16 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
       field_type: SIMPLE_FIELD_TYPE,
       display_context: 'OPTIONAL',
       value: collectionValues,
-      acls: [
-        {
-          role: 'caseworker-divorce',
-          create: false,
-          read: true,
-          update: USER_HAS_UPDATE_ROLE,
-          delete: false
-        }
-      ]
+      display_context_parameter: '#COLLECTION(allowUpdate)'
+      // acls: [
+      //   {
+      //     role: 'caseworker-divorce',
+      //     create: false,
+      //     read: true,
+      //     update: USER_HAS_UPDATE_ROLE,
+      //     delete: false
+      //   }
+      // ]
     });
     formGroup = new FormGroup({
       field1: new FormControl()
@@ -500,6 +501,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     fixture.detectChanges();
   }));
 
+  // anymore it is not role based , due to EUI-3812 there will be no role based authentication
   it('should change the displayContext to READONLY when user does not have update right', () => {
     let collectionItem = collectionValues[0];
 
@@ -537,15 +539,15 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
       display_context: 'OPTIONAL',
       display_context_parameter: '#COLLECTION(allowInsert)',
       value: VALUES.slice(0),
-      acls: [
-        {
-          role: 'caseworker-divorce',
-          create: true,
-          read: true,
-          update: true,
-          delete: true
-        }
-      ]
+      // acls: [
+      //   {
+      //     role: 'caseworker-divorce',
+      //     create: true,
+      //     read: true,
+      //     update: true,
+      //     delete: true
+      //   }
+      // ]
     });
     formGroup = new FormGroup({
       field1: new FormControl()
