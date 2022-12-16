@@ -21,7 +21,7 @@ export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        let path = this.findPath();
+        const path = this.findPath();
         path.forEach(p => (document.getElementById(p) as HTMLInputElement).checked = true);
     }
 
@@ -52,8 +52,8 @@ export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
     }
 
     private findPath(): string[] {
-        for (let c of this.data.categories) {
-            let r = this.containsDocument(c, this.data.document);
+        for (const c of this.data.categories) {
+            const r = this.containsDocument(c, this.data.document);
             if (r) {
                 return r;
             }
@@ -64,8 +64,8 @@ export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
         if (cat.documents.findIndex(doc => doc.document_binary_url === document.document_binary_url) > -1) {
             return [cat.category_id];
         }
-        for (let c of cat.sub_categories) {
-            let r = this.containsDocument(c, document);
+        for (const c of cat.sub_categories) {
+            const r = this.containsDocument(c, document);
             if (r) {
                 return [cat.category_id, ...r];
             }
