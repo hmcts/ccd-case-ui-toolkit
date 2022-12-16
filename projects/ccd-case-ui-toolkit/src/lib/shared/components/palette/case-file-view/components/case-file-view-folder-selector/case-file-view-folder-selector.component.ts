@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DocumentTreeNode } from '../../../../../domain/case-file-view';
 import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-file-view-category.model';
@@ -8,7 +8,7 @@ import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-
     templateUrl: './case-file-view-folder-selector.component.html',
     styleUrls: ['./case-file-view-folder-selector.component.scss']
 })
-export class CaseFileViewFolderSelectorComponent {
+export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
 
     public currentCategories: CaseFileViewCategory[] = [];
     public selected: string = '';
@@ -18,6 +18,11 @@ export class CaseFileViewFolderSelectorComponent {
         @Inject(MAT_DIALOG_DATA) public data: { categories: CaseFileViewCategory[], document: DocumentTreeNode }
     ) {
         this.currentCategories = [...this.data.categories];
+    }
+
+    public ngAfterViewInit(): void {
+        let path = this.findPath();
+        path.forEach(p => (document.getElementById(p) as HTMLInputElement).checked = true);
     }
 
     public handleChange(evt) {
@@ -44,5 +49,27 @@ export class CaseFileViewFolderSelectorComponent {
 
     public save() {
         this.dialogRef.close(this.selected.length > 0 ? this.selected : null);
+    }
+
+    private findPath(): string[] {
+        for (let c of this.data.categories) {
+            let r = this.containsDocument(c, this.data.document);
+            if (r) {
+                return r;
+            }
+        }
+    }
+
+    private containsDocument(cat: CaseFileViewCategory, document: DocumentTreeNode): string[] | null {
+        if (cat.documents.findIndex(doc => doc.document_binary_url === document.document_binary_url) > -1) {
+            return [cat.category_id];
+        }
+        for (let c of cat.sub_categories) {
+            let r = this.containsDocument(c, document);
+            if (r) {
+                return [cat.category_id, ...r];
+            }
+        }
+        return null;
     }
 }

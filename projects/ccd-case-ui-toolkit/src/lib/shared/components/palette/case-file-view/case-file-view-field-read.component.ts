@@ -7,5 +7,5 @@ import { CaseFileViewFieldComponent } from './case-file-view-field.component';
   styleUrls: ['./case-file-view-field.component.scss'],
 })
 export class CaseFileViewFieldReadComponent extends CaseFileViewFieldComponent {
-  public allowMoving = false;
+  public allowMoving = true;
 }
