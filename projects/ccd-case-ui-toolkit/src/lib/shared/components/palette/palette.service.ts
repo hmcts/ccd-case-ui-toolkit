@@ -1,6 +1,8 @@
 import { Injectable, Type } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
+import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -51,6 +53,9 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 
 @Injectable()
 export class PaletteService {
+  private readonly componentLauncherRegistry = {
+    CaseFileView: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent]
+  };
 
   public getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
     switch (caseField.field_type.type) {
@@ -116,10 +121,22 @@ export class PaletteService {
         return CaseHistoryViewerFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
+      case 'ComponentLauncher':
+        return this.getComponentLauncherComponent(caseField, write);
       case 'FlagLauncher':
         return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }
+  }
+
+  private getComponentLauncherComponent(caseField: CaseField, write: boolean): any {
+    // Extract the value passed for #ARGUMENT(...) in the CaseField display_context_parameter and return the matching
+    // component from the componentLauncherRegistry
+    const argumentValue = caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[1];
+    if (argumentValue && this.componentLauncherRegistry.hasOwnProperty(argumentValue)) {
+      return this.componentLauncherRegistry[argumentValue][write ? 0 : 1];
+    }
+    return UnsupportedFieldComponent;
   }
 }

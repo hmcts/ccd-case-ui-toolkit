@@ -9,6 +9,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
@@ -1256,7 +1258,9 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
                 }
               ]
             }
-          ])
+          ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
@@ -1381,7 +1385,9 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
                 }
               ]
             }
-          ])
+          ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
@@ -1575,6 +1581,8 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
               ]
             }
           ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
@@ -1712,7 +1720,9 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
                 }
               ]
             }
-          ])
+          ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
@@ -1883,7 +1893,9 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
                 }
               ]
             }
-          ])
+          ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [

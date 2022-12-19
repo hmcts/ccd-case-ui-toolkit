@@ -1,0 +1,55 @@
+.overlay-toggle {
+  $padding-y: 6px;
+
+  display: block;
+  background: none;
+  border: 0;
+  padding: 0 $padding-y;
+  margin-right: -$padding-y;
+  cursor: pointer;
+}
+
+.overlay-menu {
+  $border-color: grey;
+  $border-size: 1px;
+
+  $padding-x: 10px;
+  $padding-y: 10px;
+
+  background-color: #fafafa;
+  border: $border-size solid $border-color;
+  margin-top: 8px;
+  font-size: 1rem;
+
+  &__title, &__item {
+    padding: $padding-x $padding-y;
+
+    border-bottom: $border-size solid $border-color;
+    &:last-child {
+      border: none;
+    }
+  }
+
+  &__title {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.875em;
+
+    &:hover {
+      background-color: #fff2cc;
+    }
+
+  }
+
+  &__itemIcon {
+    height: 1.25em;
+    width: 1.25em;
+    margin-right: 6px;
+  }
+}
