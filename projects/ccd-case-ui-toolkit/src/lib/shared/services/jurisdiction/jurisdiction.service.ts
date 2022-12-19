@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { Jurisdiction } from '../../domain';
+import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { JudicialUserModel } from '../../domain/jurisdiction';
 import { HttpService } from '../http';
 
@@ -12,6 +12,10 @@ export class JurisdictionService {
 
   constructor(private readonly httpService: HttpService) {
     this.selectedJurisdiction = this.selectedJurisdictionSource.asObservable();
+  }
+
+  public getJurisdictions(): Observable<Jurisdiction[]> {
+    return this.httpService.get('/aggregated/caseworkers/:uid/jurisdictions?access=read');
   }
 
   public announceSelectedJurisdiction(jurisdiction: Jurisdiction): void {

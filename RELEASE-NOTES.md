@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.36-prl-integration-merge-into-angular-11
+**EUI-5297** PrL integration merge into Angular 11
+
 ### Version 5.0.34-case-file-view-merge-into-angular-11
 **EUI-5297** Case file view merge into Angular 11
 
