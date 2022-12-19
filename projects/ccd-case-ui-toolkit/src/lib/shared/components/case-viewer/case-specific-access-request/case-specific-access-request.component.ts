@@ -7,8 +7,9 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ErrorMessage, SpecificAccessRequest } from '../../../domain';
-import { CasesService } from '../../case-editor';
+import { CaseNotifier, CasesService } from '../../case-editor';
 import {
   SpecificAccessRequestErrors,
   SpecificAccessRequestPageText
@@ -19,6 +20,7 @@ import {
   templateUrl: './case-specific-access-request.component.html',
 })
 export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
+  public static CANCEL_LINK_DESTINATION = '/work/my-work/list';
   public collapsed = false;
   public title: string;
   public hint: string;
@@ -35,7 +37,8 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
     private readonly fb: FormBuilder,
     private readonly router: Router,
     private readonly casesService: CasesService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly caseNotifier: CaseNotifier
   ) {}
 
   public ngOnInit(): void {
@@ -83,12 +86,13 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
     // Initiate Specific Access Request
     if (this.formGroup.valid) {
       // Get the Case Reference (for which access is being requested) from the ActivatedRouteSnapshot data
-      const caseId = this.route.snapshot.data.case.case_id;
+      const caseId = this.route.snapshot.params.cid;
       const specificAccessRequest = {
         specificReason: this.formGroup.get(this.specificReasonControlName).value
       } as SpecificAccessRequest;
 
       this.$roleAssignmentResponseSubscription = this.casesService.createSpecificAccessRequest(caseId, specificAccessRequest)
+        .pipe(switchMap(() => this.caseNotifier.fetchAndRefresh(caseId)))
         .subscribe(
           _response => {
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
@@ -104,7 +108,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
 
   public onCancel(): void {
     // Navigate to the page before previous one (should be Search Results or Case List page, for example)
-    window.history.go(-2);
+    this.router.navigateByUrl(CaseSpecificAccessRequestComponent.CANCEL_LINK_DESTINATION);
   }
 
   public ngOnDestroy(): void {

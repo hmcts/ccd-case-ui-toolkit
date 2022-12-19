@@ -2,8 +2,8 @@
   *ngIf="formGroup.invalid && submitted"
   [error]="errorMessage"></exui-error-message>
 <cut-alert type="information">
-  {{'This case requires specific access.' | rpxTranslate}}<br />
-  {{"This means it's outside your jurisdiction and requires authorisation. If you request access to the case, it will be logged for auditing purposes." | rpxTranslate}}
+  {{'Authorisation is needed to access this case.' | rpxTranslate}}<br />
+  {{"This could be because it's outside your jurisdiction, or you may be excluded from the case.  If you request access to this case, it will be logged for auditing purposes." | rpxTranslate}}
 </cut-alert>
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group"

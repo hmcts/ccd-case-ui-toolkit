@@ -37,12 +37,12 @@
   <form class="check-your-answers" [formGroup]="editForm" (submit)="submit()">
     <ng-container *ngIf="checkYourAnswerFieldsToDisplayExists()">
 
-      <h2 class="heading-h2">{{'Check your answers' | rpxTranslate}}</h2>
-      <span class="text-16">{{'Check the information below carefully.' | rpxTranslate}}</span>
+      <h2 class="heading-h2">{{pageTitle | rpxTranslate }}</h2>
+      <span class="text-16" *ngIf="!isCaseFlagSubmission">{{'Check the information below carefully.' | rpxTranslate}}</span>
 
       <table class="form-table" [attr.aria-describedby]="'check your answers table' | rpxTranslate">
         <tbody>
-        <ng-container *ngFor="let page of this.wizard.pages">
+        <ng-container *ngFor="let page of wizard.pages">
           <ng-container *ngIf="isShown(page)">
             <ng-container *ngFor="let field of page
             | ccdPageFields: editForm
@@ -51,7 +51,7 @@
               <ng-container *ngIf="canShowFieldInCYA(field)">
                 <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
                     [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                  <th *ngIf="!isLabel(field)" class="valign-top case-field-label"><span class="text-16">{{field.label | rpxTranslate}}</span></th>
+                  <th *ngIf="!isLabel(field) && !isCaseFlagSubmission" class="valign-top case-field-label"><span class="text-16">{{field.label | rpxTranslate}}</span></th>
                   <td class="form-cell case-field-content" [attr.colspan]="isLabel(field) ? '2' : '1'">
                     <ccd-field-read
                       [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
@@ -77,7 +77,7 @@
 
       <table class="summary-fields" [attr.aria-describedby]="'summary fields table' | rpxTranslate">
         <tbody>
-          <ng-container *ngFor="let field of this.showSummaryFields">
+          <ng-container *ngFor="let field of showSummaryFields">
               <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                 <tr *ngSwitchCase="true" ccdLabelSubstitutor [caseField]="field" [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
                   <th id="summary-field-label">{{field.label | rpxTranslate}}</th>

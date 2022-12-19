@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -850,9 +850,16 @@ describe('CaseEditPageComponent', () => {
 
     const F_GROUP = new FormGroup({
       data: new FormGroup({Invalidfield1: new FormControl(null, Validators.required)
-                              , Invalidfield2: new FormControl(null, Validators.required)
+                              , Invalidfield2: new FormControl(null,
+                                  [Validators.required, Validators.minLength(5), Validators.maxLength(10)])
                               , OrganisationField: new FormControl(null, Validators.required)
                               , complexField1: new FormControl(null, Validators.required)
+                              , FlagLauncherField: new FormControl(null, {
+                                validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+                                  // Dummy validator that always returns an error
+                                  return {error: true};
+                                }
+                              })
                             })
     });
 
@@ -907,7 +914,6 @@ describe('CaseEditPageComponent', () => {
         params: of({id: 123}),
         snapshot
       };
-
       matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
       dialog = createSpyObj<MatDialog>('dialog', ['open']);
       dialog.open.and.returnValue(matDialogRef);
@@ -952,8 +958,57 @@ describe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(3);
       comp.validationErrors.forEach(error => {
         expect(error.message).toEqual(`${error.id} is required`);
+      });
+    });
+
+    it('should validate minimum length field value and log error message', () => {
+      const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
+      wizardPage.case_fields.push(case_Field);
+      wizardPage.isMultiColumn = () => false;
+      F_GROUP.setValue({
+        data: {
+          Invalidfield2: 'test',
+          Invalidfield1: 'test1',
+          OrganisationField: '',
+          complexField1: '',
+          FlagLauncherField: null
+        }
+      });
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} is below the minimum length`);
+      });
+    });
+
+    it('should validate maximum length field value and log error message', () => {
+      const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
+      wizardPage.case_fields.push(case_Field);
+      wizardPage.isMultiColumn = () => false;
+      F_GROUP.setValue({
+        data: {
+          Invalidfield2: 'testing1234',
+          Invalidfield1: 'test1',
+          OrganisationField: '',
+          complexField1: '',
+          FlagLauncherField: null
+        }
+      });
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual(`${error.id} exceeds the maximum length`);
       });
     });
 
@@ -970,8 +1025,41 @@ describe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
       comp.validationErrors.forEach(error => {
         expect(error.message).toEqual(`${error.id} is required`);
+      });
+    });
+
+    it('should validate FlagLauncher type field and log error message', () => {
+      const flagLauncherField: CaseField = aCaseField(
+        'FlagLauncherField', 'flagLauncher', 'FlagLauncher', 'MANDATORY', 1, null, false, true);
+      // Add dummy functions for isComplex() and isCollection()
+      flagLauncherField.isComplex = () => false;
+      flagLauncherField.isCollection = () => false;
+      // Set DisplayContextParameter to signal "create" mode
+      flagLauncherField.display_context_parameter = '#ARGUMENT(CREATE)';
+      wizardPage.case_fields.push(flagLauncherField);
+
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual('Please select Next to complete the creation of the case flag');
+      });
+
+      // Change DisplayContextParameter to signal "update" mode
+      flagLauncherField.display_context_parameter = '#ARGUMENT(UPDATE)';
+      comp.validationErrors = [];
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
+      comp.validationErrors.forEach(error => {
+        expect(error.message).toEqual('Please select Next to complete the update of the selected case flag');
       });
     });
   });

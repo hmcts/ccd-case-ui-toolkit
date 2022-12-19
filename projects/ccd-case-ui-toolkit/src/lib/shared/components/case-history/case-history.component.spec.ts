@@ -68,7 +68,8 @@ describe('CaseHistoryComponent', () => {
   let component: CaseHistoryComponent;
   let fixture: ComponentFixture<CaseHistoryComponent>;
   let de: DebugElement;
-
+  let casesService: any;
+  casesService = createSpyObj('casesService', ['getCaseViewV2']);
   const mockRoute: any = {
     snapshot: {
       paramMap: createSpyObj('paramMap', ['get']),
@@ -98,7 +99,7 @@ describe('CaseHistoryComponent', () => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 
-    caseNotifier = new CaseNotifier();
+    caseNotifier = new CaseNotifier(casesService);
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(new Promise(any));

@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -74,7 +74,8 @@ describe('CasePrinterComponent', () => {
     appConfig = createSpyObj('AbstractAppConfig', ['getPrintServiceUrl']);
     appConfig.getPrintServiceUrl.and.returnValue(GATEWAY_PRINT_SERVICE_URL);
 
-    caseService = new CaseNotifier();
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
+    caseService = new CaseNotifier(casesService);
     caseService.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
     casesService = createSpyObj('CasesService', ['getPrintDocuments']);
     casesService.getPrintDocuments.and.returnValue(DOCUMENT_OBS);

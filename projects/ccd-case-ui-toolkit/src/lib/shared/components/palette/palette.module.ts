@@ -1,7 +1,8 @@
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,12 +21,21 @@ import { PaletteUtilsModule } from './utils';
 import { PipesModule } from '../../pipes/pipes.module';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 
-import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
+import { CaseFlagRefdataService } from '../../services/case-flag/case-flag-refdata.service';
+import { CommonDataService } from '../../services/common-data-service/common-data-service';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
+import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { WindowService } from '../../services/window';
+import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
+import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, UnLinkCasesComponent, WriteLinkedCasesComponent } from './case-link';
+import { ReadLinkedCasesComponent } from './case-link/components/read-linked-cases.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
+import { LinkedCasesService } from './case-link/services';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
@@ -35,12 +45,17 @@ import { DatetimePickerComponent } from './datetime-picker';
 import { DocumentUrlPipe } from './document';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
+import { ReadDocumentFieldComponent } from './document/read-document-field.component';
+import { WriteDocumentFieldComponent } from './document/write-document-field.component'
 import { DynamicListPipe, ReadDynamicListFieldComponent } from './dynamic-list';
+import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
 import { DynamicRadioListPipe, ReadDynamicRadioListFieldComponent } from './dynamic-radio-list';
+import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
 import { FixedListPipe, ReadFixedListFieldComponent, WriteFixedListFieldComponent } from './fixed-list';
 import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioListFieldComponent } from './fixed-radio-list';
 import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComponent, EventLogTableComponent } from './history';
+import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from './judicial-user';
 import { LabelFieldComponent } from './label';
 import { MarkdownComponent } from './markdown';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent, WriteMoneyGbpFieldComponent } from './money-gbp';
@@ -56,13 +71,6 @@ import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { WriteAddressFieldComponent } from './address/write-address-field.component';
-import { WriteDocumentFieldComponent } from './document/write-document-field.component'
-import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
-import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
-import { ReadDocumentFieldComponent } from './document/read-document-field.component';
-import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-import { RpxTranslationModule } from 'rpx-xui-translation';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -91,6 +99,7 @@ const PALETTE_COMPONENTS = [
     ReadDocumentFieldComponent,
 
     // new
+    ReadJudicialUserFieldComponent,
     ReadYesNoFieldComponent,
     ReadOrganisationFieldComponent,
     ReadOrganisationFieldTableComponent,
@@ -108,8 +117,11 @@ const PALETTE_COMPONENTS = [
     ReadComplexFieldRawComponent,
     ReadComplexFieldTableComponent,
     ReadComplexFieldCollectionTableComponent,
+    ReadCaseFlagFieldComponent,
+    ReadLinkedCasesComponent,
 
     // Write
+    WriteJudicialUserFieldComponent,
     WriteAddressFieldComponent,
     WriteComplexFieldComponent,
     WriteOrganisationComplexFieldComponent,
@@ -123,6 +135,7 @@ const PALETTE_COMPONENTS = [
     WriteNumberFieldComponent,
     WriteEmailFieldComponent,
     WriteDateFieldComponent,
+    WriteCaseFlagFieldComponent,
 
     // new
     WriteYesNoFieldComponent,
@@ -135,13 +148,20 @@ const PALETTE_COMPONENTS = [
     WriteFixedListFieldComponent,
     WriteFixedRadioListFieldComponent,
     WriteCaseLinkFieldComponent,
-    WriteCollectionFieldComponent
+    WriteCollectionFieldComponent,
+    LinkedCasesToTableComponent,
+    LinkedCasesFromTableComponent,
+    BeforeYouStartComponent,
+    LinkCasesComponent,
+    CheckYourAnswersComponent,
+    WriteLinkedCasesComponent,
+    UnLinkCasesComponent,
+    NoLinkedCasesComponent
 ];
 
 @NgModule({
   imports: [
     CommonModule,
-    BrowserModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
@@ -161,6 +181,7 @@ const PALETTE_COMPONENTS = [
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
+    MatAutocompleteModule,
     PaymentLibModule,
     ScrollToModule.forRoot(),
     RpxTranslationModule.forChild(),
@@ -171,7 +192,14 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
-
+    CaseFlagTableComponent,
+    SelectFlagTypeComponent,
+    SearchLanguageInterpreterComponent,
+    SelectFlagLocationComponent,
+    ManageCaseFlagsComponent,
+    AddCommentsComponent,
+    UpdateFlagComponent,
+    CaseFlagSummaryListComponent,
     ...PALETTE_COMPONENTS
   ],
   exports: [
@@ -184,6 +212,8 @@ const PALETTE_COMPONENTS = [
     ...PALETTE_COMPONENTS
   ],
   providers: [
+    ChangeDetectorRef as Provider,
+    CaseFlagRefdataService,
     YesNoService,
     CollectionCreateCheckerService,
     PaletteService,
@@ -191,6 +221,9 @@ const PALETTE_COMPONENTS = [
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
+    LinkedCasesService,
+    CommonDataService,
+    JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ]
 })

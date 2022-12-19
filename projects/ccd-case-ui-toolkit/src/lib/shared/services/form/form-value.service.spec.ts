@@ -538,6 +538,22 @@ describe('FormValueService', () => {
     });
   });
 
+  describe('removeUnnecessaryFields', () => {
+    it('should empty the collection field if it contains only id', () => {
+      const data = {collection1: [{id: '123'}]};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'collection1_1';
+      fieldType.min = 1;
+      fieldType.type = 'Complex';
+      caseField.field_type = fieldType;
+      caseField.id = 'collection1';
+
+      formValueService.removeUnnecessaryFields(data, [caseField]);
+      const actual = {collection1: [{id: '123'}]};
+      expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
+    });
+  });
   describe('removeInvalidCollectionData', () => {
     it('should empty the collection field if it contains only id', () => {
       const data = {collection1: [{id: '123'}]};
@@ -699,6 +715,197 @@ describe('FormValueService', () => {
       expect(DATA.array[1].data.b.c[0].id).toEqual('3');
       expect(DATA.array[1].data.b.c[0].data.cUnrelated).toEqual('C Unrelated');
       expect(DATA.array[1].data.b.c[0].data[`cc${FieldsUtils.LABEL_SUFFIX}`]).toBeUndefined();
+    });
+  });
+
+  describe('Case Flags functions', () => {
+    const caseFields: CaseField[] = [
+      {
+        id: 'caseFlagField1',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {
+          field1: 'One',
+          field2: 'Two'
+        }
+      } as CaseField,
+      {
+        id: 'caseFlagField2',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {
+          field1: 'One',
+          field2: 'Two'
+        }
+      } as CaseField,
+      {
+        id: 'caseFlagField3',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: null
+      } as CaseField,
+      {
+        id: 'caseFlagField4',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType
+      } as CaseField,
+      {
+        id: 'caseFlagField5',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {
+          string1: 'One',
+          object1: {
+            id: '123',
+            value: 'abc'
+          },
+          array1: ['Array1'],
+          array2: [{ id: '123', value: 'abc' }]
+        }
+      } as CaseField,
+      {
+        id: 'caseFlagField6',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {
+          string1: 'One',
+          object1: {
+            id: '123',
+            value: 'abc'
+          },
+          array1: ['Array1'],
+          array2: [{ id: '123', value: 'abc' }]
+        }
+      } as CaseField,
+      {
+        id: 'caseFlagFieldNotInData',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {
+          field1: 'One',
+          field2: 'Two'
+        }
+      } as CaseField,
+      {
+        id: 'flagLauncherField',
+        field_type: {
+          id: 'FlagLauncher',
+          type: 'FlagLauncher'
+        } as FieldType,
+        value: null
+      } as CaseField
+    ];
+    const data: object = {
+      caseFlagField1: {
+        field1: null,
+        field2: '2',
+        field3: '3'
+      },
+      caseFlagField2: {
+        field0: null,
+        field1: null,
+        field2: '2'
+      },
+      caseFlagField3: {
+        field0: 'a',
+        field1: 'b',
+        field2: null
+      },
+      caseFlagField4: {
+        field0: 'x',
+        field1: 'y',
+        field2: null
+      },
+      caseFlagField5: null,
+      caseFlagField6: undefined,
+      flagLauncherField: {}
+    };
+
+    it('should remove the FlagLauncher case field from the data to be persisted', () => {
+      formValueService.removeFlagLauncherField(data, caseFields);
+      expect(data).toEqual({
+        caseFlagField1: {
+          field1: null,
+          field2: '2',
+          field3: '3'
+        },
+        caseFlagField2: {
+          field0: null,
+          field1: null,
+          field2: '2'
+        },
+        caseFlagField3: {
+          field0: 'a',
+          field1: 'b',
+          field2: null
+        },
+        caseFlagField4: {
+          field0: 'x',
+          field1: 'y',
+          field2: null
+        },
+        caseFlagField5: null,
+        caseFlagField6: undefined
+      });
+    });
+
+    it('should populate the data to be persisted from corresponding case field objects', () => {
+      formValueService.removeFlagLauncherField(data, caseFields);
+      formValueService.populateFlagDetailsFromCaseFields(data, caseFields);
+      expect(data).toEqual({
+        caseFlagField1: {
+          field1: 'One',
+          field2: 'Two',
+          field3: '3'
+        },
+        caseFlagField2: {
+          field0: null,
+          field1: 'One',
+          field2: 'Two'
+        },
+        caseFlagField3: {
+          field0: 'a',
+          field1: 'b',
+          field2: null
+        },
+        caseFlagField4: {
+          field0: 'x',
+          field1: 'y',
+          field2: null
+        },
+        caseFlagField5: {
+          string1: 'One',
+          object1: {
+            id: '123',
+            value: 'abc'
+          },
+          array1: ['Array1'],
+          array2: [{ id: '123', value: 'abc' }]
+        },
+        caseFlagField6: {
+          string1: 'One',
+          object1: {
+            id: '123',
+            value: 'abc'
+          },
+          array1: ['Array1'],
+          array2: [{ id: '123', value: 'abc' }]
+        }
+      });
     });
   });
 });

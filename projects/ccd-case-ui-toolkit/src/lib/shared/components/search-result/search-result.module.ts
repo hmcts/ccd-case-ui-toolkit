@@ -10,6 +10,7 @@ import { BrowserService } from '../../services/browser/browser.service';
 import { SearchResultViewItemComparatorFactory } from '../../services/search-result/sorting/search-result-view-item-comparator-factory';
 import { ActivityModule } from '../activity/activity.module';
 import { PaginationModule } from '../pagination/pagination.module';
+import { PaletteModule } from '../palette/palette.module';
 import { SearchResultComponent } from './search-result.component';
 
 @NgModule({
@@ -23,7 +24,8 @@ import { SearchResultComponent } from './search-result.component';
     PipesModule,
     ActivityModule,
     PaginationModule,
-    RpxTranslationModule.forChild()
+    RpxTranslationModule.forChild(),
+    PaletteModule
   ],
   declarations: [
     SearchResultComponent

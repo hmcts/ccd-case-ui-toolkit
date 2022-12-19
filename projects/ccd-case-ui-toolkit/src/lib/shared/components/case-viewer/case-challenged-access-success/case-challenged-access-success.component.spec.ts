@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success.component';
 
@@ -9,10 +10,8 @@ describe('CaseChallengedAccessSuccessComponent', () => {
   const case_id = '1234123412341234';
   const mockRoute = {
     snapshot: {
-      data: {
-        case: {
-          case_id
-        }
+      params: {
+        cid: case_id
       }
     }
   };
@@ -20,6 +19,7 @@ describe('CaseChallengedAccessSuccessComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CaseChallengedAccessSuccessComponent, MockRpxTranslatePipe ],
+      imports: [ RouterTestingModule.withRoutes([]) ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
       ]
@@ -41,6 +41,6 @@ describe('CaseChallengedAccessSuccessComponent', () => {
 
   it('should have the correct Case Reference in the \"View case file\" link URL', () => {
     const viewCaseFileLinkElement = fixture.debugElement.nativeElement.querySelector('p.govuk-body a');
-    expect(viewCaseFileLinkElement.getAttribute('href')).toEqual(`cases/case-details/${case_id}`);
+    expect(viewCaseFileLinkElement.getAttribute('href')).toEqual(`/cases/case-details/${case_id}`);
   });
 });

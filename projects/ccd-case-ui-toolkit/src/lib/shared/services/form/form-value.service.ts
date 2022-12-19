@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { CaseField } from '../../domain/definition/case-field.model';
-import { FieldsUtils } from '../fields/fields.utils';
+
+import { CaseField } from '../../domain';
+import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 @Injectable()
@@ -23,13 +24,7 @@ export class FormValueService {
    * Other examples:
    * 1) simple field reference: form={ 'PersonFirstName': 'John' }, fieldKey=PersonFirstName, value=John
    * 2) complex field reference:
-   *      form= { complex1': {
-   *        'simple11': 'value11',
-   *        'simple12': 'value12',
-   *        'complex2': {
-   *          'simple21': 'value21'
-   *        }
-   *      }},
+   *      form= { complex1': { 'simple11': 'value11', 'simple12': 'value12', 'complex2': { 'simple21': 'value21' } }},
    *      fieldKey=complex1.complex2.simple21
    *      colIndex=0,
    *      value=value21
@@ -110,25 +105,21 @@ export class FormValueService {
    * If key is pointing at a complex or collection leaf (not simple, collection of simple or multiselect types) then undefined is returned.
    * Also no key referring a leaf that is contained within collection will contain index number. The index is passed as an argument to the
    * method.
-   * @param form form
-   * @param fieldKey dot separated reference to value
-   * @param colIndex index of collection item being referenced or 0 otherwise
-   * @returns string simple or combined value of a field
    */
   public static getFieldValue(form, fieldKey, colIndex) {
     const fieldIds = fieldKey.split('.');
     const currentFieldId = fieldIds[0];
     const currentForm = form[currentFieldId];
     if (FieldsUtils.isMultiSelectValue(currentForm)) {
-        return form[currentFieldId + FieldsUtils.LABEL_SUFFIX].join(', ');
+      return form[currentFieldId + FieldsUtils.LABEL_SUFFIX].join(', ');
     } else if (FieldsUtils.isCollectionOfSimpleTypes(currentForm)) {
-        return currentForm.map(fieldValue => fieldValue['value']).join(', ');
+      return currentForm.map(fieldValue => fieldValue['value']).join(', ');
     } else if (FieldsUtils.isCollection(currentForm)) {
-        return this.getFieldValue(currentForm[colIndex]['value'], fieldIds.slice(1).join('.'), colIndex);
+      return this.getFieldValue(currentForm[colIndex]['value'], fieldIds.slice(1).join('.'), colIndex);
     } else if (FieldsUtils.isNonEmptyObject(currentForm)) {
-        return this.getFieldValue(currentForm, fieldIds.slice(1).join('.'), colIndex);
+      return this.getFieldValue(currentForm, fieldIds.slice(1).join('.'), colIndex);
     } else {
-        return currentForm;
+      return currentForm;
     }
   }
 
@@ -179,7 +170,7 @@ export class FormValueService {
       for (const prop of Object.keys(data)) {
         const value = data[prop];
         if (value) {
-          if (typeof(value) === 'object') {
+          if (typeof (value) === 'object') {
             allEmpty = allEmpty && this.isEmptyData(value);
           } else {
             allEmpty = false;
@@ -234,13 +225,79 @@ export class FormValueService {
     return this.fieldTypeSanitiser.sanitiseLists(caseFields, editForm.data);
   }
 
+  private sanitiseObject(rawObject: object): object {
+    if (!rawObject) {
+      return rawObject;
+    }
+
+    let sanitisedObject = {};
+    const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
+    for (const key in rawObject) {
+      // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
+      // properties is null, the entire sanitised object to be returned should be null
+      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] === null) {
+        sanitisedObject = null;
+        break;
+      } else if ('CaseReference' === key) {
+        sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
+      } else {
+        sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
+        if (Array.isArray(sanitisedObject[key])) {
+          // If the 'sanitised' array is empty, whereas the original array had 1 or more items
+          // delete the property from the sanatised object
+          if (sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
+            delete sanitisedObject[key];
+          }
+        }
+      }
+    }
+    return sanitisedObject;
+  }
+
+  private sanitiseArray(rawArray: any[]): any[] {
+    if (!rawArray) {
+      return rawArray;
+    }
+
+    rawArray.forEach(item => {
+      if (item && item.hasOwnProperty('value')) {
+        item.value = this.sanitiseValue(item.value);
+      }
+    });
+
+    // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
+    // association of a value. In addition, if the array contains items with a "value" object property, return only
+    // those whose value object contains non-empty values, including for any descendant objects
+    return rawArray
+      .filter(item => !!item)
+      .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
+  }
+
+  private sanitiseValue(rawValue: any): any {
+    if (Array.isArray(rawValue)) {
+      return this.sanitiseArray(rawValue);
+    }
+
+    switch (typeof rawValue) {
+      case 'object':
+        return this.sanitiseObject(rawValue);
+      case 'string':
+        return rawValue.trim();
+      case 'number':
+        return String(rawValue);
+      default:
+        return rawValue;
+    }
+  }
+
   public clearNonCaseFields(data: object, caseFields: CaseField[]) {
     for (const dataKey in data) {
       if (!caseFields.find(cf => cf.id === dataKey)) {
-        delete data [dataKey];
+        delete data[dataKey];
       }
     }
   }
+
   // TODO refactor so that this and remove unnecessary fields have a common iterator that applies functions to each node visited
   public removeNullLabels(data: object, caseFields: CaseField[]) {
     if (data && caseFields && caseFields.length > 0) {
@@ -331,7 +388,8 @@ export class FormValueService {
    * @param clearEmpty Whether or not we should clear out empty, optional, complex objects.
    * @param clearNonCase Whether or not we should clear out non-case fields at the top level.
    */
-  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false): void {
+  public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false,
+    fromPreviousPage = false, currentPageCaseFields = []): void {
     if (data && caseFields && caseFields.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       if (clearNonCase) {
@@ -362,6 +420,10 @@ export class FormValueService {
               // Also remove any optional complex objects that are completely empty.
               // EUI-4244: Ritesh's fix, passing true instead of clearEmpty.
               if (FormValueService.clearOptionalEmpty(true, data[field.id], field)) {
+                delete data[field.id];
+              }
+              if (data[field.id] && FormValueService.isEmptyData(data[field.id]) && fromPreviousPage
+                && currentPageCaseFields.findIndex((cField: any) => cField.id === field.id) === -1) {
                 delete data[field.id];
               }
               break;
@@ -395,10 +457,7 @@ export class FormValueService {
   }
 
   /**
-   * Remove any empty or invalid arry with only id
-   *
-   * @param data The object tree of form values on which to perform the removal
-   * @param field domain model object for each field
+   * Remove any empty or invalid array with only id
    */
   public removeInvalidCollectionData(data: object, field: CaseField) {
     if (data[field.id] && data[field.id].length > 0) {
@@ -421,75 +480,54 @@ export class FormValueService {
     if (data && caseFields && caseFields.length > 0) {
       for (const field of caseFields) {
         if (field.field_type.type === 'Collection' && field.field_type.min > 0 && data[field.id] &&
-            Array.isArray(data[field.id]) && data[field.id].length === 0) {
+          Array.isArray(data[field.id]) && data[field.id].length === 0) {
           delete data[field.id];
         }
       }
     }
   }
 
-  private sanitiseObject(rawObject: object): object {
-    if (!rawObject) {
-      return rawObject;
+  /**
+   * Remove the FlagLauncher case field, which is not intended to be persisted.
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public removeFlagLauncherField(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      const flagLauncherCaseField = caseFields.filter(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
+      if (flagLauncherCaseField.length > 0) {
+        // There should be only one FlagLauncher case field
+        delete data[flagLauncherCaseField[0].id];
+      }
     }
+  }
 
-    let sanitisedObject = {};
-    const documentFieldKeys = ['document_url', 'document_binary_url', 'document_filename'];
-    for (const key in rawObject) {
-      // If the key is one of documentFieldKeys, it means the field is of Document type. If the value of any of these
-      // properties is null, the entire sanitised object to be returned should be null
-      if (documentFieldKeys.indexOf(key) > -1 && rawObject[key] == null) {
-        sanitisedObject = null;
-        break;
-      } else if ('CaseReference' === key) {
-        sanitisedObject[key] = this.sanitiseValue(this.sanitiseCaseReference(String(rawObject[key])));
-      } else {
-        sanitisedObject[key] = this.sanitiseValue(rawObject[key]);
-        if (Array.isArray(sanitisedObject[key])) {
-          // If the 'sanitised' array is empty, whereas the original array had 1 or more items
-          // delete the property from the sanatised object
-          if (sanitisedObject[key].length === 0 && rawObject[key].length > 0) {
-            delete sanitisedObject[key];
+  /**
+   * Populate the flag data for each Flags field, from the data held in its corresponding CaseField.
+   *
+   * @param data The object tree of form values on which to perform the data population
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public populateFlagDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
+      // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
+      // (or sub-fields of Complex fields in a collection)
+      caseFields.filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField))
+        .forEach(caseField => {
+          // Ensure that the data object is populated for all case field IDs it contains, even if there is currently
+          // nothing for a given case field ID (hence the use of hasOwnProperty())
+          if (data.hasOwnProperty(caseField.id) && caseField.value) {
+            // Create new object for the case field ID within the data object, if necessary
+            if (!data[caseField.id]) {
+              data[caseField.id] = {};
+            }
+            // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+            // Flags field within a Complex field or a collection of Complex fields) is copied across
+            Object.keys(caseField.value).forEach(key => data[caseField.id][key] = caseField.value[key]);
           }
-        }
-      }
-    }
-    return sanitisedObject;
-  }
-
-  private sanitiseArray(rawArray: any[]): any[] {
-    if (!rawArray) {
-      return rawArray;
-    }
-
-    rawArray.forEach(item => {
-      if (item && item.hasOwnProperty('value')) {
-        item.value = this.sanitiseValue(item.value);
-      }
-    });
-
-    // Filter the array to ensure only truthy values are returned; double-bang operator returns the boolean true/false
-    // association of a value. In addition, if the array contains items with a "value" object property, return only
-    // those whose value object contains non-empty values, including for any descendant objects
-    return rawArray
-      .filter(item => !!item)
-      .filter(item => item.hasOwnProperty('value') ? FieldsUtils.containsNonEmptyValues(item.value) : true);
-  }
-
-  private sanitiseValue(rawValue: any): any {
-    if (Array.isArray(rawValue)) {
-      return this.sanitiseArray(rawValue);
-    }
-
-    switch (typeof rawValue) {
-      case 'object':
-        return this.sanitiseObject(rawValue);
-      case 'string':
-        return rawValue.trim();
-      case 'number':
-        return String(rawValue);
-      default:
-        return rawValue;
+        });
     }
   }
 }

@@ -1,17 +1,21 @@
-import { WriteDateContainerFieldComponent } from '.';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
+import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
 import { WriteComplexFieldComponent } from './complex/write-complex-field.component';
 import { ReadDateFieldComponent } from './date/read-date-field.component';
+import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { ReadEmailFieldComponent } from './email/read-email-field.component';
 import { WriteEmailFieldComponent } from './email/write-email-field.component';
 import { ReadFixedListFieldComponent } from './fixed-list/read-fixed-list-field.component';
 import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-field.component';
+import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
+import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
@@ -36,9 +40,13 @@ describe('PaletteService', () => {
 
   let paletteService: PaletteService;
 
-  const assertComponent = (type, write, component, fieldTypeId) => {
+  const assertComponent = (type, write, component, fieldTypeId, collectionFieldTypeId?) => {
     const caseField = new CaseField();
-    caseField.field_type = { id: fieldTypeId, type };
+    if (collectionFieldTypeId) {
+      caseField.field_type = { id: fieldTypeId, type, collection_field_type: { id: collectionFieldTypeId, type } };
+    } else {
+      caseField.field_type = { id: fieldTypeId, type };
+    }
     expect(paletteService.getFieldComponentClass(caseField, write)).toBe(component);
   };
 
@@ -141,11 +149,11 @@ describe('PaletteService', () => {
     });
 
     it('should get ReadCollectionField component class for Collection input', () => {
-      assertComponent('Collection', false, ReadCollectionFieldComponent, 'AnID');
+      assertComponent('Collection', false, ReadCollectionFieldComponent, 'AnID', 'AnID');
     });
 
     it('should get WriteCollectionField component class for Collection input', () => {
-      assertComponent('Collection', true, WriteCollectionFieldComponent, 'AnID');
+      assertComponent('Collection', true, WriteCollectionFieldComponent, 'AnID', 'AnID');
     });
 
     it('should get ReadTextAreaField component class for TextArea input', () => {
@@ -196,10 +204,25 @@ describe('PaletteService', () => {
       assertComponent('Complex', true, WriteOrderSummaryFieldComponent, 'OrderSummary');
     });
 
+    it('should get ReadJudicialUserFieldComponent component class for Complex field with JudicialUser complex type', () => {
+      assertComponent('Complex', false, ReadJudicialUserFieldComponent, 'JudicialUser');
+    });
+
+    it('should get WriteJudicialUserFieldComponent component class for Complex field with JudicialUser complex type', () => {
+      assertComponent('Complex', true, WriteJudicialUserFieldComponent, 'JudicialUser');
+    });
+
     it('should get CasePaymentHistoryViewerFieldComponent component class for CasePaymentHistoryViewer regardless of read/write', () => {
       assertComponent('CasePaymentHistoryViewer', true, CasePaymentHistoryViewerFieldComponent, 'AnID');
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
     });
 
+    it('should get WriteCaseFlagFieldComponent component class for FlagLauncher input', () => {
+      assertComponent('FlagLauncher', true, WriteCaseFlagFieldComponent, 'AnID');
+    });
+
+    it('should get ReadCaseFlagFieldComponent component class for FlagLauncher input', () => {
+      assertComponent('FlagLauncher', false, ReadCaseFlagFieldComponent, 'AnID');
+    });
   });
 });
