@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { CaseView } from '../../../../domain/case-view';
 import { Jurisdiction } from '../../../../domain/definition/jurisdiction.model';
-import { SearchService } from '../../../../services';
+import { JurisdictionService, SearchService } from '../../../../services';
 import { LovRefDataModel } from '../../../../services/common-data-service/common-data-service';
 import { CaseLink, ESQueryType, LinkReason } from '../domain';
-import { JurisdictionService } from './jurisdiction.service';
 
 @Injectable()
 export class LinkedCasesService {
