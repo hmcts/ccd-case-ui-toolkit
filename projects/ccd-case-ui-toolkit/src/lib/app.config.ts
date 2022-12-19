@@ -89,6 +89,8 @@ export abstract class AbstractAppConfig {
         return undefined;
     }
     abstract getCaseFlagsRefdataApiUrl(): string;
+    abstract getRDCommonDataApiUrl(): string;
+    abstract getCaseDataStoreApiUrl(): string;
 }
 
 export class CaseEditorConfig {
@@ -152,4 +154,6 @@ export class CaseEditorConfig {
     public categories_and_documents_url: string;
     public document_data_url: string;
     public case_flags_refdata_api_url: string;
+    public rd_common_data_api_url: string;
+    public case_data_store_api_url: string;
 }

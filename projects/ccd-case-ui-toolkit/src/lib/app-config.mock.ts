@@ -172,4 +172,12 @@ export class AppMockConfig implements AbstractAppConfig {
   getCaseFlagsRefdataApiUrl(): string {
     return '';
   }
+
+  getRDCommonDataApiUrl(): string {
+    return '';
+  }
+
+  getCaseDataStoreApiUrl(): string {
+    return '';
+  }
 }

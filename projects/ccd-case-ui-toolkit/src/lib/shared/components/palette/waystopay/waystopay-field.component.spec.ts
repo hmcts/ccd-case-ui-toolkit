@@ -67,6 +67,8 @@ const APP_CONFIG: AbstractAppConfig = {
     getCategoriesAndDocumentsUrl: () => 'categoriesAndDocumentsUrl',
     getDocumentDataUrl: () => 'documentDataUrl',
     getCaseFlagsRefdataApiUrl: () => 'caseFlagsRefdataApiUrl',
+    getRDCommonDataApiUrl: () => 'rd_common_data_api_url',
+    getCaseDataStoreApiUrl: () => 'case_data_store_api_url',
     getWAServiceConfig: () => 'waServiceConfig'
   };
 

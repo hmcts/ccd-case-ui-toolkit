@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Jurisdiction } from '../../domain';
 import { JudicialUserModel } from '../../domain/jurisdiction';
 import { HttpService } from '../http';
@@ -15,7 +14,7 @@ export class JurisdictionService {
     this.selectedJurisdiction = this.selectedJurisdictionSource.asObservable();
   }
 
-  public announceSelectedJurisdiction(jurisdiction: Jurisdiction) {
+  public announceSelectedJurisdiction(jurisdiction: Jurisdiction): void {
     this.selectedJurisdictionSource.next(jurisdiction);
   }
 

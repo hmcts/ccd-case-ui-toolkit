@@ -338,7 +338,6 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-
   it('should extract all flags-related data from the CaseView object in the snapshot data', () => {
     component.caseField = flagLauncherCaseField;
     component.ngOnInit();

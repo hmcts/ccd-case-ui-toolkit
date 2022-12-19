@@ -23,8 +23,10 @@ import { FormModule } from '../../../components/form/form.module';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
 import { LoadingModule } from '../../services/loading/loading.module';
-import { CaseFlagRefdataService } from '../../services/case-flag';
+import { CaseFlagRefdataService } from '../../services/case-flag/case-flag-refdata.service';
+import { CommonDataService } from '../../services/common-data-service/common-data-service';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
+import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
@@ -36,7 +38,10 @@ import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/com
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
+import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, UnLinkCasesComponent, WriteLinkedCasesComponent } from './case-link';
+import { ReadLinkedCasesComponent } from './case-link/components/read-linked-cases.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
+import { LinkedCasesService } from './case-link/services';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
@@ -120,6 +125,7 @@ const PALETTE_COMPONENTS = [
     ReadComplexFieldTableComponent,
     ReadComplexFieldCollectionTableComponent,
     ReadCaseFlagFieldComponent,
+    ReadLinkedCasesComponent,
 
     // Write
     WriteJudicialUserFieldComponent,
@@ -158,7 +164,15 @@ const PALETTE_COMPONENTS = [
     CaseFileViewFolderSortComponent,
     CaseFileViewOverlayMenuComponent,
     CaseFileViewFolderDocumentActionsComponent,
-    CaseFileViewFolderSelectorComponent
+    CaseFileViewFolderSelectorComponent,
+    LinkedCasesToTableComponent,
+    LinkedCasesFromTableComponent,
+    BeforeYouStartComponent,
+    LinkCasesComponent,
+    CheckYourAnswersComponent,
+    WriteLinkedCasesComponent,
+    UnLinkCasesComponent,
+    NoLinkedCasesComponent
 ];
 
 @NgModule({
@@ -228,6 +242,9 @@ const PALETTE_COMPONENTS = [
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
+    LinkedCasesService,
+    CommonDataService,
+    JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   entryComponents: [ CaseFileViewFolderSelectorComponent ]

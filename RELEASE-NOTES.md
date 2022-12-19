@@ -35,8 +35,26 @@
 ### Version 5.0.22-case-file-view-get-categories-and-documents
 **EUI-5481** Service layer for HTTP GET call to CCD endpoint for retrieving categories and documents
 
-### Version 5.0.32-angular11-upgrade
+### Version 5.0.33-angular11-upgrade
 **EUI-6326** Angular 11 upgrade
+
+### Version 7.0.18-case-flags-title-and-styles
+**EUI-7353** Case flags title and style changes
+
+### Version 7.0.16-case-links-enable-backward-compatibility
+**EUI-7413** Case links enable backward compatibility
+
+### Version 7.0.14-merge-case-flags-fixes
+**EUI-7274** Merge case flags fixes into integration branch
+
+### Version 6.10.0-rc11
+**EUI-7377** Fix to ensure case event data object gets populated correctly with data from all case fields whose ID exists in the data object
+
+### Version 6.10.0-rc10
+**EUI-7265** Fix minor, unrelated bug causing console error when changing case tabs
+
+### Version 7.0.12-linked-cases-display-name-instead-of-description
+**EUI-7323** Linked cases display name instead of description
 
 ### Version 6.10.0-rc4
 **EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
@@ -152,6 +170,12 @@ caching previous data when the user elects to change the case flag being created
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
+
+### Version 4.20.24-linked-cases-private-law-integration
+Linked cases private law integration
+
+### Version 4.20.20-linked-cases-merge-from-release
+Linked cases merge from Release
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead

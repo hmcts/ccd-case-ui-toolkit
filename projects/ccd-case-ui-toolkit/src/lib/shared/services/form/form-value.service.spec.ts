@@ -1,4 +1,3 @@
-import { TestBed } from '@angular/core/testing';
 import { CaseField, FieldType } from '../../domain/definition';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
@@ -744,6 +743,64 @@ describe('FormValueService', () => {
         }
       } as CaseField,
       {
+        id: 'caseFlagField3',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: null
+      } as CaseField,
+      {
+        id: 'caseFlagField4',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType
+      } as CaseField,
+      {
+        id: 'caseFlagField5',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {
+          string1: 'One',
+          object1: {
+            id: '123',
+            value: 'abc'
+          },
+          array1: ['Array1'],
+          array2: [{ id: '123', value: 'abc' }]
+        }
+      } as CaseField,
+      {
+        id: 'caseFlagField6',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {
+          string1: 'One',
+          object1: {
+            id: '123',
+            value: 'abc'
+          },
+          array1: ['Array1'],
+          array2: [{ id: '123', value: 'abc' }]
+        }
+      } as CaseField,
+      {
+        id: 'caseFlagFieldNotInData',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {
+          field1: 'One',
+          field2: 'Two'
+        }
+      } as CaseField,
+      {
         id: 'flagLauncherField',
         field_type: {
           id: 'FlagLauncher',
@@ -755,14 +812,26 @@ describe('FormValueService', () => {
     const data: object = {
       caseFlagField1: {
         field1: null,
-        field2: null,
-        field3: null
+        field2: '2',
+        field3: '3'
       },
       caseFlagField2: {
         field0: null,
         field1: null,
+        field2: '2'
+      },
+      caseFlagField3: {
+        field0: 'a',
+        field1: 'b',
         field2: null
       },
+      caseFlagField4: {
+        field0: 'x',
+        field1: 'y',
+        field2: null
+      },
+      caseFlagField5: null,
+      caseFlagField6: undefined,
       flagLauncherField: {}
     };
 
@@ -771,14 +840,26 @@ describe('FormValueService', () => {
       expect(data).toEqual({
         caseFlagField1: {
           field1: null,
-          field2: null,
-          field3: null
+          field2: '2',
+          field3: '3'
         },
         caseFlagField2: {
           field0: null,
           field1: null,
+          field2: '2'
+        },
+        caseFlagField3: {
+          field0: 'a',
+          field1: 'b',
           field2: null
-        }
+        },
+        caseFlagField4: {
+          field0: 'x',
+          field1: 'y',
+          field2: null
+        },
+        caseFlagField5: null,
+        caseFlagField6: undefined
       });
     });
 
@@ -789,17 +870,42 @@ describe('FormValueService', () => {
         caseFlagField1: {
           field1: 'One',
           field2: 'Two',
-          field3: null
+          field3: '3'
         },
         caseFlagField2: {
           field0: null,
           field1: 'One',
           field2: 'Two'
         },
+        caseFlagField3: {
+          field0: 'a',
+          field1: 'b',
+          field2: null
+        },
+        caseFlagField4: {
+          field0: 'x',
+          field1: 'y',
+          field2: null
+        },
+        caseFlagField5: {
+          string1: 'One',
+          object1: {
+            id: '123',
+            value: 'abc'
+          },
+          array1: ['Array1'],
+          array2: [{ id: '123', value: 'abc' }]
+        },
+        caseFlagField6: {
+          string1: 'One',
+          object1: {
+            id: '123',
+            value: 'abc'
+          },
+          array1: ['Array1'],
+          array2: [{ id: '123', value: 'abc' }]
+        }
       });
     });
   });
 });
-function createSpyObj(arg0: string, arg1: string[]): any {
-  throw new Error('Function not implemented.');
-}
