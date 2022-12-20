@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
 import { LinkedCasesService } from './services';
@@ -20,9 +19,6 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   public formGroup: FormGroup;
 
   public formArray: FormArray;
-
-  @Input()
-  public caseEditPageComponent: CaseEditPageComponent;
 
   public caseReferenceControl: AbstractControl;
   public caseLinkGroup: FormGroup;
