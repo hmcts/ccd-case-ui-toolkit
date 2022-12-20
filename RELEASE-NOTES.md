@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.39-case-edit-module-for-integration
+**EUI-7457** Case edit module for integration
+
 ### Version 5.0.38-case-flags-table-alignment
 **EUI-7454** Case flags table alignment
 
