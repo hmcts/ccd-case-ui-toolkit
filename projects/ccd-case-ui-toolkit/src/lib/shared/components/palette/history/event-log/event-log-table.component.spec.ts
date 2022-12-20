@@ -175,8 +175,8 @@ describe('EventLogTableComponent', () => {
       const links = de.queryAll($TABLE_ROW_LINKS_STANDALONE);
 
       expect(links.length).toBe(2);
-      expect(links[0].nativeElement.getAttribute('href')).toBe('/event/5/history');
-      expect(links[1].nativeElement.getAttribute('href')).toBe('/event/4/history');
+      expect(links[0].nativeElement.getAttribute('href')).toContain('/event/5/history');
+      expect(links[1].nativeElement.getAttribute('href')).toContain('/event/4/history');
     });
 
     it('should display icon if significant item exist', () => {

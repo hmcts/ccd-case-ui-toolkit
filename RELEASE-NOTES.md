@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.37-case-flags-table-alignment
+**EUI-7454** Case flags table alignment
+
 ### Version 5.0.36-prl-integration-merge-into-angular-11
 **EUI-5297** PrL integration merge into Angular 11
 
