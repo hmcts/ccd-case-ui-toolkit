@@ -1,6 +1,6 @@
-import { BehaviorSubject } from "rxjs";
-import { LinkedCasesError } from "../../components";
-import { CaseEditValidationError } from "./case-edit-validation.model";
+import { BehaviorSubject } from 'rxjs';
+import { LinkedCasesError } from '../../components';
+import { CaseEditValidationError } from './case-edit-validation.model';
 
 export class CaseEditDataService {
     private title$ = new BehaviorSubject<string>(null);
