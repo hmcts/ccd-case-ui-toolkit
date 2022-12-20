@@ -78,6 +78,7 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { CaseEditDataModule } from '../../commons/case-edit-data';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -181,6 +182,7 @@ const PALETTE_COMPONENTS = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
+        CaseEditDataModule,
         PaletteUtilsModule,
         PipesModule,
         BannersModule,
