@@ -1,12 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { CaseEventData, Draft } from '../../../domain';
 import { CaseField, FieldType } from '../../../domain/definition';
-import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValidatorsService, FormValueService } from '../../../services';
-import { PageValidationService, Wizard, WizardPage } from '../../case-editor';
+import { FormValidatorsService } from '../../../services';
 import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils';
@@ -73,50 +71,14 @@ const linkedCasesService = {
 
 class FieldTestComponent {}
 
-function createWizardPage(fields: CaseField[], isMultiColumn = false, order = 0): WizardPage {
-  const wp: WizardPage = new WizardPage();
-  wp.case_fields = fields;
-  wp.label = 'Test Label';
-  wp.getCol1Fields = () => fields;
-  wp.getCol2Fields = () => fields;
-  wp.isMultiColumn = () => isMultiColumn;
-  wp.order = order;
-  return wp;
-}
-
-function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
-  const cf = new CaseField();
-  cf.id = id;
-  cf.value = value;
-  cf.display_context = display_context;
-  return cf;
-}
-
 describe('WriteCaseLinkFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
-  let caseEditPageComponent: CaseEditPageComponent;
   let formValidatorService: any;
   let component: WriteCaseLinkFieldComponent;
   let fixture: ComponentFixture<WriteCaseLinkFieldComponent>;
   let de: DebugElement;
-  const caseField2 = new CaseField();
   let route: any;
-  const fieldTypeSanitiser = new FieldTypeSanitiser();
-  const formValueService = new FormValueService(fieldTypeSanitiser);
-  const formErrorService = new FormErrorService();
-  const caseFieldService = new CaseFieldService();
-  const pageValidationService = new PageValidationService(caseFieldService);
-  const dialog: any = undefined;
   let paletteService: any;
-  let caseEditComponentStub: any;
-  const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
-  const WIZARD = new Wizard([wizardPage]);
-  const caseField1 = new CaseField();
-  const firstPage = new WizardPage();
-  const cancelled: any = undefined;
-  const someObservable = {
-    subscribe: () => new Draft()
-  };
 
   beforeEach(waitForAsync(() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -124,30 +86,12 @@ describe('WriteCaseLinkFieldComponent', () => {
       'getFieldComponentClass'
     ]);
     paletteService.getFieldComponentClass.and.returnValue(FieldTestComponent);
-    caseEditComponentStub = {
-      form: FORM_GROUP,
-      wizard: WIZARD,
-      data: '',
-      eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
-      hasPrevious: () => true,
-      getPage: () => firstPage,
-      first: () => true,
-      next: () => true,
-      previous: () => true,
-      cancel: () => undefined,
-      cancelled,
-      validate: (caseEventData: CaseEventData) => of(caseEventData),
-      saveDraft: (_: CaseEventData) => of(someObservable),
-      caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
-    };
     route = {
       params: of({id: 123}),
       snapshot: {
         queryParamMap: createSpyObj('queryParamMap', ['get'])
       }
     };
-    caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
-      route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService);
 
     TestBed.configureTestingModule({
       imports: [
@@ -160,15 +104,13 @@ describe('WriteCaseLinkFieldComponent', () => {
         WriteCaseLinkFieldComponent,
       ],
       providers: [
-        { provide: LinkedCasesService, useValue: linkedCasesService },
-        { provide: CaseEditPageComponent, useValue: caseEditPageComponent },
+        { provide: LinkedCasesService, useValue: linkedCasesService }
       ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(WriteCaseLinkFieldComponent);
     component = fixture.componentInstance;
-    component.caseEditPageComponent = caseEditComponentStub;
     component.caseField = CASE_FIELD;
     component.formGroup = FORM_GROUP;
     de = fixture.debugElement;
