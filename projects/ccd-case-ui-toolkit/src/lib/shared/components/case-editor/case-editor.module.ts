@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BannersModule } from '../../../components/banners/banners.module';
+import { CaseEditDataModule, CaseEditDataService } from '../../commons/case-edit-data';
 import { CallbackErrorsComponent } from '../../components/error';
 import { ConditionalShowModule } from '../../directives/conditional-show';
 import {
@@ -58,6 +59,7 @@ import { CaseworkerService } from './services/case-worker.service';
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
+    CaseEditDataModule,
     PaletteModule,
     LabelSubstitutorModule,
     ConditionalShowModule,
@@ -89,6 +91,7 @@ import { CaseworkerService } from './services/case-worker.service';
     CallbackErrorsComponent
   ],
   providers: [
+    CaseEditDataService,
     CaseNotifier,
     FieldsUtils,
     FieldsPurger,
