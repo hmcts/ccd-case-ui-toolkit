@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 5.0.42-angular11
+**EUI-5297** pay status development - Angular 11
+
 ### Version 5.0.36-prl-integration-merge-into-angular-11
 **EUI-5297** PrL integration merge into Angular 11
 
