@@ -47,6 +47,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public ngOnInit(): void {
+    this.caseEditDataService.clearFormValidationErrors();
     // Check for existing FlagLauncher control in parent and remove it - this is the only way to ensure its invalidity
     // is set correctly at the start, when the component is reloaded and the control is re-registered. Otherwise, the
     // validator state gets carried over
