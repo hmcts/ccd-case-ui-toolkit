@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.40-case-edit-module-for-integration",
+  "version": "5.0.41-case-link-integration-fixes",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
