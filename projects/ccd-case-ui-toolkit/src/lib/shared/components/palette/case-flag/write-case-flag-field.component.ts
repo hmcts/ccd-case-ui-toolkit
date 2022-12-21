@@ -100,6 +100,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
+    this.caseEditDataService.clearFormValidationErrors();
     // If the current state is CaseFlagFieldState.FLAG_LOCATION and a flag location (a Flags instance) has been selected,
     // set the parent Case Flag FormGroup for this component's children by using the provided pathToFlagsFormGroup, and
     // set the selected flag location on this component
@@ -125,7 +126,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       && caseFlagState.selectedFlag.pathToFlagsFormGroup) {
       this.setCaseFlagParentFormGroup(caseFlagState.selectedFlag.pathToFlagsFormGroup);
     }
-
 
     this.errorMessages = caseFlagState.errorMessages;
     this.selectedFlag = caseFlagState.selectedFlag;
