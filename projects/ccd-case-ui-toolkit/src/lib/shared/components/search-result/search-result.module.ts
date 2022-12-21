@@ -24,7 +24,8 @@ import { SearchResultComponent } from './search-result.component';
     LabelSubstitutorModule,
     PipesModule,
     ActivityModule,
-    PaginationModule
+    PaginationModule,
+    PaletteModule
   ],
   declarations: [
     SearchResultComponent

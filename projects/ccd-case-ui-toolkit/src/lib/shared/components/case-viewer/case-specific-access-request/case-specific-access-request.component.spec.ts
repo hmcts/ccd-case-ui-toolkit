@@ -1,42 +1,59 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Location } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { CaseNotifier, CasesService } from '../..';
 import { AlertModule } from '../../../../components/banners/alert';
-import { CasesService } from '../../case-editor/services/cases.service';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request.component';
 import { SpecificAccessRequestErrors, SpecificAccessRequestPageText } from './models';
 
 import createSpyObj = jasmine.createSpyObj;
+import { Component } from '@angular/core';
+
+@Component({template: ``})
+class StubComponent {}
 
 describe('CaseSpecificAccessRequestComponent', () => {
   let component: CaseSpecificAccessRequestComponent;
   let fixture: ComponentFixture<CaseSpecificAccessRequestComponent>;
   let casesService: jasmine.SpyObj<CasesService>;
+  const casesNotifier = createSpyObj<CaseNotifier>('CaseNotifier', ['fetchAndRefresh']);
   const case_id = '1234123412341234';
   const mockRoute = {
     snapshot: {
-      data: {
-        case: {
-          case_id
-        }
+      params: {
+        cid: case_id
       }
     }
   };
   let router: Router;
+  let location: Location;
 
   beforeEach(waitForAsync(() => {
     casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
     casesService.createSpecificAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({
-      imports: [ AlertModule, ReactiveFormsModule, RouterTestingModule ],
-      declarations: [ CaseSpecificAccessRequestComponent, ErrorMessageComponent ],
+      imports: [
+        AlertModule,
+        ReactiveFormsModule,
+        RouterTestingModule.withRoutes([
+          { path: '', component: CaseSpecificAccessRequestComponent },
+          { path: 'work/my-work/list', component: StubComponent }
+        ])
+      ],
+      declarations: [
+        CaseSpecificAccessRequestComponent,
+        ErrorMessageComponent,
+        StubComponent
+      ],
       providers: [
         FormBuilder,
         { provide: CasesService, useValue: casesService },
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: CaseNotifier, useValue: casesNotifier },
       ]
     })
     .compileComponents();
@@ -46,13 +63,14 @@ describe('CaseSpecificAccessRequestComponent', () => {
     fixture = TestBed.createComponent(CaseSpecificAccessRequestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    router = TestBed.inject(Router);
+    router = TestBed.get(Router);
+    location = TestBed.get(Location);
     spyOn(router, 'navigate');
   });
 
   it('should create component and show the \"specific access\" info message banner', () => {
     const infoBannerElement = fixture.debugElement.nativeElement.querySelector('.hmcts-banner');
-    expect(infoBannerElement.textContent).toContain('This case requires specific access.');
+    expect(infoBannerElement.textContent).toContain('Authorisation is needed to access this case.');
     const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
     expect(headingElement.textContent).toContain(SpecificAccessRequestPageText.TITLE);
     const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-hint');
@@ -82,11 +100,12 @@ describe('CaseSpecificAccessRequestComponent', () => {
     expect(errorMessageElement).toBeNull();
   });
 
-  it('should go back to the page before previous one when the \"Cancel\" link is clicked', () => {
+  it('should go back to the page before previous one when the \"Cancel\" link is clicked', fakeAsync(() => {
     const cancelLink = fixture.debugElement.nativeElement.querySelector('a.govuk-body');
     expect(cancelLink.text).toContain('Cancel');
-    spyOn(window.history, 'go');
     cancelLink.click();
-    expect(window.history.go).toHaveBeenCalledWith(-2);
-  });
+    tick();
+
+    expect(location.path()).toBe(CaseSpecificAccessRequestComponent.CANCEL_LINK_DESTINATION);
+  }));
 });

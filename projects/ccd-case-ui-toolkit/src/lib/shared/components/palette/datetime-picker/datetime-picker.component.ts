@@ -1,9 +1,9 @@
 import {
   NgxMatDateAdapter,
   NgxMatDateFormats,
+  NgxMatDatetimePicker,
   NGX_MAT_DATE_FORMATS
 } from '@angular-material-components/datetime-picker';
-import { NgxMatDatetimePicker } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
@@ -11,10 +11,10 @@ import { ThemePalette } from '@angular/material/core';
 import { Moment } from 'moment/moment';
 
 import * as moment from 'moment';
+import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
-import { CaseField } from '../../../domain/definition/case-field.model';
 
 @Component({
   selector: 'ccd-datetime-picker',

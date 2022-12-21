@@ -45,8 +45,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   public readonly collItems: CollectionItem[] = [];
 
   constructor(private readonly dialog: MatDialog,
-              private readonly scrollToService: ScrollToService,
-              private readonly profileNotifier: ProfileNotifier
+    private readonly scrollToService: ScrollToService,
+    private readonly profileNotifier: ProfileNotifier
   ) {
     super();
   }
@@ -186,83 +186,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
           offset: -150,
         })
           .pipe(finalize(() => this.focusLastItem()))
-          .subscribe(() => {}, console.error);
+          .subscribe(() => { }, console.error);
       });
     } else {
       setTimeout(() => this.focusLastItem());
     }
-  }
-
-  public itemLabel(index: number) {
-    if (index) {
-      return `${this.caseField.label} ${index + 1}`;
-    }
-    return this.caseField.label;
-  }
-
-  public isNotAuthorisedToCreate() {
-    if (this.isExpanded) {
-      return false;
-    }
-    return !this.getCollectionPermission(this.caseField, 'allowInsert');
-  }
-
-  public getCollectionPermission(field: CaseField, type: string) {
-    return field.display_context_parameter &&
-            field.display_context_parameter.split('#')
-              .filter(item => item.startsWith('COLLECTION('))[0]
-                .includes(type);
-  }
-
-  public isNotAuthorisedToUpdate(index) {
-    if (this.isExpanded) {
-      return false;
-    }
-    // Was reassesed as part of EUI-3505. There is still a caveat around CRD, but that was deemed an unlikely scenario
-    const id = this.getControlIdAt(index);
-    if (id) {
-      if (!!this.profile.user && !!this.profile.user.idam) {
-        const updateRole = this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
-        return !updateRole;
-      }
-    }
-    return false;
-  }
-
-  public hasUpdateAccess(role: any): boolean {
-    return !!this.caseField.acls.find( acl => acl.role === role && acl.update === true);
-  }
-
-  public isNotAuthorisedToDelete(index: number) {
-    if (this.isExpanded) {
-      return false;
-    }
-    // Should be able to delete if creating a case even if "D" is absent, hence:
-    const id = this.getControlIdAt(index);
-    return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
-  }
-
-  public openModal(i: number) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.ariaLabel = 'Label';
-    dialogConfig.height = '220px';
-    dialogConfig.width = '550px';
-    dialogConfig.panelClass = 'dialog';
-
-    dialogConfig.closeOnNavigation = false;
-    dialogConfig.position = {
-      top: window.innerHeight / 2 - 110 + 'px', left: window.innerWidth / 2 - 275 + 'px'
-    };
-
-    const dialogRef = this.dialog.open(RemoveDialogComponent, dialogConfig);
-
-    dialogRef.afterClosed().pipe(take(1)).subscribe(result => {
-      if (result === 'Remove') {
-        this.removeItem(i);
-      }
-    });
   }
 
   private newCaseField(id: string, item, index, isNew = false) {
@@ -305,8 +233,113 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   private removeItem(index: number): void {
     this.collItems.splice(index, 1);
+    this.resetIds(index);
     this.caseField.value.splice(index, 1);
     this.formArray.removeAt(index);
+  }
+
+  private resetIds(index: number): void {
+    for (let i = index; i < this.collItems.length; i++) {
+      const counter = i + 1;
+      if (this.collItems[i].index && this.collItems[i].index === counter) {
+        this.collItems[i].index = i;
+      }
+
+      if (this.collItems[i].caseField && this.collItems[i].caseField.id
+        && this.collItems[i].caseField.id === counter.toString()) {
+        this.collItems[i].caseField.id = i.toString();
+      }
+
+      const idPrefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
+      const idPrefix1Current = idPrefix1.replace('_' + i.toString(), '_' + counter.toString());
+
+      if (this.collItems[i].prefix && this.collItems[i].prefix === idPrefix1Current) {
+        this.collItems[i].prefix = idPrefix1;
+      }
+
+      const idPrefixAvailable = this.collItems[i].container && this.collItems[i].container['component']
+        && this.collItems[i].container['component'].idPrefix ? true : false;
+
+      const idPrefix2 = idPrefixAvailable ?
+        this.collItems[i].container['component'].idPrefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
+      const idPrefix2current = idPrefix2.replace('_' + i.toString(), '_' + counter.toString());
+
+      if (idPrefixAvailable && this.collItems[i].container['component'].idPrefix === idPrefix2current) {
+        this.collItems[i].container['component'].idPrefix = idPrefix2;
+      }
+    }
+  }
+
+  public itemLabel(index: number) {
+    if (index) {
+      return `${this.caseField.label} ${index + 1}`;
+    }
+    return this.caseField.label;
+  }
+
+  public isNotAuthorisedToCreate() {
+    if (this.isExpanded) {
+      return false;
+    }
+    return !this.getCollectionPermission(this.caseField, 'allowInsert');
+  }
+
+  public getCollectionPermission(field: CaseField, type: string) {
+    return field.display_context_parameter &&
+      field.display_context_parameter.split('#')
+        .filter(item => item.startsWith('COLLECTION('))[0]
+        .includes(type);
+  }
+
+  public isNotAuthorisedToUpdate(index) {
+    if (this.isExpanded) {
+      return false;
+    }
+    // Was reassesed as part of EUI-3505. There is still a caveat around CRD, but that was deemed an unlikely scenario
+    const id = this.getControlIdAt(index);
+    if (id) {
+      if (!!this.profile.user && !!this.profile.user.idam) {
+        const updateRole = this.profile.user.idam.roles.find(role => this.hasUpdateAccess(role));
+        return !updateRole;
+      }
+    }
+    return false;
+  }
+
+  public hasUpdateAccess(role: any): boolean {
+    return !!this.caseField.acls.find(acl => acl.role === role && acl.update === true);
+  }
+
+  public isNotAuthorisedToDelete(index: number) {
+    if (this.isExpanded) {
+      return false;
+    }
+    // Should be able to delete if creating a case even if "D" is absent, hence:
+    const id = this.getControlIdAt(index);
+    return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
+  }
+
+  public openModal(i: number) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.ariaLabel = 'Label';
+    dialogConfig.height = '220px';
+    dialogConfig.width = '550px';
+    dialogConfig.panelClass = 'dialog';
+
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.position = {
+      top: `${window.innerHeight / 2 - 110}px`, left: `${window.innerWidth / 2 - 275}px`
+    };
+
+    const dialogRef = this.dialog.open(RemoveDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'Remove') {
+        this.removeItem(i);
+      }
+    });
   }
 
   /**
@@ -323,6 +356,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   private isCollectionOfSimpleType(caseField: CaseField) {
     const notSimple = ['Collection', 'Complex'];
-    return notSimple.indexOf( caseField.field_type.collection_field_type.type ) < 0;
+    return notSimple.indexOf(caseField.field_type.collection_field_type.type) < 0;
   }
 }

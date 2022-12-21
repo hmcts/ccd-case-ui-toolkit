@@ -11,16 +11,18 @@ import { CaseField } from '../../domain/definition';
 export class CcdPageFieldsPipe implements PipeTransform {
 
   public transform(page: WizardPage, dataFormGroup: FormGroup): CaseField {
-    const complex_fields: CaseField[] = Object.keys(dataFormGroup.controls).map(key => {
-      const control: AbstractControl = dataFormGroup.controls[key];
+    const complex_fields: CaseField[] = Object.keys((dataFormGroup.controls['data'] as FormGroup).controls).map(key => {
+      const control: AbstractControl = (dataFormGroup.controls['data'] as FormGroup).get(key);
       return control['caseField'] as CaseField;
     }).filter(field => {
       return !!page.case_fields.find(pcf => pcf.id === field.id);
     }).sort((a, b) => a.order - b.order);
+
     const rawValue: any = dataFormGroup.value;
+
     const value: any = page.case_fields.reduce((acc: any, field: CaseField) => {
       const fieldValue: any = rawValue[field.id] || field.value;
-      return {...acc, [field.id]: fieldValue};
+      return { ...acc, [field.id]: fieldValue };
     }, {});
     return plainToClassFromExist(new CaseField(), {
       id: page.id,

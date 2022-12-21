@@ -45,4 +45,9 @@ describe('IsCompoundPipe', () => {
       .toBeFalsy();
   });
 
+  it('should identify Complex fields and JudicialUser as NOT compound', () => {
+    expect(isCompound.transform({ field_type: { type: 'Complex', id: 'JudicialUser' }} as CaseField))
+      .toBeFalsy();
+  });
+
 });

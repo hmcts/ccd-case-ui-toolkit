@@ -5,155 +5,179 @@ import {
 } from './app.config';
 
 export class AppMockConfig implements AbstractAppConfig {
-  public getActivityBatchCollectionDelayMs(): number {
+  getActivityBatchCollectionDelayMs(): number {
     return 0;
   }
 
-  public getActivityMaxRequestPerBatch(): number {
+  getActivityMaxRequestPerBatch(): number {
     return 0;
   }
 
-  public getActivityNexPollRequestMs(): number {
+  getActivityNexPollRequestMs(): number {
     return 0;
   }
 
-  public getActivityRetry(): number {
+  getActivityRetry(): number {
     return 0;
   }
 
-  public getActivityUrl(): string {
+  getActivityUrl(): string {
     return '';
   }
 
-  public getAnnotationApiUrl(): string {
+  getAnnotationApiUrl(): string {
     return '';
   }
 
-  public getApiUrl(): string {
+  getApiUrl(): string {
     return '';
   }
 
-  public getBannersUrl(): string {
+  getBannersUrl(): string {
     return '';
   }
 
-  public getCacheTimeOut(): number {
+  getCacheTimeOut(): number {
     return 0;
   }
 
-  public getCaseDataUrl(): string {
+  getCaseDataUrl(): string {
     return '';
   }
 
-  public getCaseHistoryUrl(caseId: string, eventId: string): string {
+  getCaseHistoryUrl(caseId: string, eventId: string): string {
     return '';
   }
 
-  public getCreateOrUpdateDraftsUrl(ctid: string): string {
+  getCreateOrUpdateDraftsUrl(ctid: string): string {
     return '';
   }
 
-  public getDocumentManagementUrl(): string {
+  getDocumentManagementUrl(): string {
     return '';
   }
 
-  public getHrsUrl(): string {
+  getHrsUrl(): string {
     return '';
   }
 
-  public getLoginUrl(): string {
+  getLoginUrl(): string {
     return '';
   }
 
-  public getOAuth2ClientId(): string {
+  getOAuth2ClientId(): string {
     return '';
   }
 
-  public getPaginationPageSize(): number {
+  getPaginationPageSize(): number {
     return 0;
   }
 
-  public getPayBulkScanBaseUrl(): string {
+  getPayBulkScanBaseUrl(): string {
     return '';
   }
 
-  public getPaymentsUrl(): string {
+  getPaymentsUrl(): string {
     return '';
   }
 
-  public getPostcodeLookupUrl(): string {
+  getPostcodeLookupUrl(): string {
     return '';
   }
 
-  public getPrdUrl(): string {
+  getPrdUrl(): string {
     return '';
   }
 
-  public getPrintServiceUrl(): string {
+  getPrintServiceUrl(): string {
     return '';
   }
 
-  public getRemoteDocumentManagementUrl(): string {
+  getRemoteDocumentManagementUrl(): string {
     return '';
   }
 
-  public getRemoteHrsUrl(): string {
+  getRemoteHrsUrl(): string {
     return '';
   }
 
-  public getRemotePrintServiceUrl(): string {
+  getRemotePrintServiceUrl(): string {
     return '';
   }
 
-  public getUserInfoApiUrl(): string {
+  getUserInfoApiUrl(): string {
     return '';
   }
 
-  public getViewOrDeleteDraftsUrl(did: string): string {
+  getViewOrDeleteDraftsUrl(did: string): string {
     return '';
   }
 
-  public getWorkAllocationApiUrl(): string {
+  getWorkAllocationApiUrl(): string {
     return '';
   }
 
-  public load(): Promise<void> {
+  load(): Promise<void> {
     return Promise.resolve(undefined);
   }
 
-  public getDocumentManagementUrlV2(): string {
+  getDocumentManagementUrlV2(): string {
     return '';
   }
 
-  public getDocumentSecureMode(): boolean {
+  getDocumentSecureMode(): boolean {
     return false;
   }
 
-  public getAccessManagementMode(): boolean {
+  getWAServiceConfig(): any {
+    return null;
+  }
+
+  getAccessManagementMode(): boolean {
     return false;
   }
 
-  public getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
+  getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return {};
   }
 
-  public getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
+  getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
     return {};
   }
 
-  public getLocationRefApiUrl(): string {
+  getLocationRefApiUrl(): string {
     return '';
   }
 
-  public getCamRoleAssignmentsApiUrl(): string {
+  getCamRoleAssignmentsApiUrl(): string {
     return '';
   }
 
-  public getRefundsUrl(): string {
+  getRefundsUrl(): string {
     return '';
   }
 
   public getPaymentReturnUrl(): string {
-      return '';
+    return '';
+  }
+
+  public getCategoriesAndDocumentsUrl(): string {
+    return '';
+  }
+
+  getDocumentDataUrl(): string {
+    return '';
+  }
+
+  getCaseFlagsRefdataApiUrl(): string {
+    return '';
+  }
+
+  getRDCommonDataApiUrl(): string {
+    return '';
+  }
+
+  getCaseDataStoreApiUrl(): string {
+    return '';
   }
 }

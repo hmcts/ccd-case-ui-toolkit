@@ -1,7 +1,6 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
-
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
@@ -37,7 +36,11 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
     // Ensure all field values are resolved by label interpolation before the component is fully initialised.
     Promise.resolve(null).then(() => {
       const componentClass = this.paletteService.getFieldComponentClass(this.caseField, false);
-      const injector = Injector.create([], this.fieldContainer.parentInjector);
+      const injector = Injector.create({
+        providers: [],
+        parent: this.fieldContainer.injector
+      });
+
       const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
       // Provide component @Inputs

@@ -1,4 +1,5 @@
 import { Type } from 'class-transformer';
+import { Flags } from '../../components/palette/case-flag';
 import { CaseField } from '../definition';
 import { CaseTab } from './case-tab.model';
 import { CaseViewEvent } from './case-view-event.model';
@@ -37,4 +38,5 @@ export class CaseView {
       baseLocation?: number
     }
   };
+  case_flag?: Flags;
 }

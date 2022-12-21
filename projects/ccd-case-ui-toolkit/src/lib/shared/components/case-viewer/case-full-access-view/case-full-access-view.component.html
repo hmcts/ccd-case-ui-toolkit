@@ -42,10 +42,17 @@
                         (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
   </div>
 </div>
+<div class="grid-row" *ngIf="activeCaseFlags">
+  <div class="column-full">
+    <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig" (linkClicked)="onLinkClicked($event)">
+    </ccd-notification-banner>
+  </div>
+</div>
 <div class="grid-row">
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
-      <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true">
+      <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true"
+        [selectedIndex]="selectedTabIndex">
         <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label">
         </mat-tab>
         <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
@@ -56,20 +63,20 @@
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
-                      <th>
+                      <th id="case-viewer-field-label" *ngIf="!isFieldToHaveNoLabel(field)">
                         <div class="case-viewer-label text-16">{{field.label}}</div>
                       </th>
-                      <td>
+                      <th [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
                           [caseField]="field" [caseReference]="caseDetails.case_id"
                           [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
                           </ccd-field-read>
                         </span>
-                      </td>
+                      </th>
                     </tr>
                     <tr *ngSwitchCase="false" class="compound-field">
-                      <th>
+                      <th [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
                           [caseField]="field" [caseReference]="caseDetails.case_id"

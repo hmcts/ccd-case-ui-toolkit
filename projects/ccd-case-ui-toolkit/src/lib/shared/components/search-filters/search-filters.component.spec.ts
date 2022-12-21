@@ -6,6 +6,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { ConditionalShowModule } from '../../directives/conditional-show/conditional-show.module';
 import { CaseType } from '../../domain/definition/case-type.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
+import { HttpService } from '../../services/http/http.service';
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { OrderService } from '../../services/order/order.service';
 import { SearchService } from '../../services/search/search.service';
@@ -152,13 +153,15 @@ describe('SearchFiltersComponent', () => {
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
   let de: DebugElement;
+  let httpService: HttpService;
   let jurisdictionService: JurisdictionService;
   let windowService;
   beforeEach(waitForAsync(() => {
     searchHandler = createSpyObj('searchHandler', ['applyFilters', 'resetFilters']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
     orderService = createSpyObj('orderService', ['sortAsc']);
-    jurisdictionService = new JurisdictionService();
+    httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
+    jurisdictionService = new JurisdictionService(httpService);
     windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage']);
 
     onJurisdictionHandler = createSpyObj('onJurisdictionHandler', ['applyJurisdiction']);
@@ -545,6 +548,7 @@ describe('Clear localStorage', () => {
   let fixture: ComponentFixture<SearchFiltersComponent>;
   let component: SearchFiltersComponent;
   let de: DebugElement;
+  let httpService: HttpService;
   let jurisdictionService: JurisdictionService;
   let windowService: WindowService;
 
@@ -552,7 +556,8 @@ describe('Clear localStorage', () => {
     searchHandler = createSpyObj('searchHandler', ['applyFilters', 'applyReset']);
     mockSearchService = createSpyObj('mockSearchService', ['getSearchInputs']);
     orderService = createSpyObj('orderService', ['sortAsc']);
-    jurisdictionService = new JurisdictionService();
+    httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
+    jurisdictionService = new JurisdictionService(httpService);
     windowService = createSpyObj('windowService', ['clearLocalStorage', 'locationAssign', 'getLocalStorage', 'removeLocalStorage']);
 
     TestBed
