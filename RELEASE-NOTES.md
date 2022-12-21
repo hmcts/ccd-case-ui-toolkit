@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 5.0.42-fee-pay-status
+**EUI-7457** Payment status - ng11
+
 ### Version 5.0.41-case-link-integration-fixes
 **EUI-7457** Case link integration fixes
 
