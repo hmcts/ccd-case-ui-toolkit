@@ -49,6 +49,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
   }
 
   public ngOnInit(): void {
+      this.caseEditDataService.clearFormValidationErrors();
       this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
       this.linkedCasesService.caseName = this.linkedCasesService.getCaseName(this.caseEdit.caseDetails);
       this.linkedCasesService.caseDetails = this.caseEdit.caseDetails;
@@ -58,7 +59,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
         next: reasons => {
           this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
         }
-      })
+      });
       this.getLinkedCases();
       this.caseEditDataService.caseEventTriggerName$.subscribe({
         next: name => {
