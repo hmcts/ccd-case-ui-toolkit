@@ -108,6 +108,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       });
     CaseEditPageComponent.setFocusToTop();
+    this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
+      next: state => {
+        if (state) {
+          this.caseEditDataService.setTriggerSubmitEvent(false);
+          this.submit();
+        }
+      }
+    });
   }
 
   public ngAfterViewChecked(): void {
@@ -468,6 +476,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   private syncCaseEditDataService(): void {
     this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
     this.caseEditDataService.setCaseLinkError(this.caseLinkError);
+    this.caseEditDataService.setCaseTitle(this.getCaseTitle());
     this.caseEditDataService.caseFormValidationErrors$.subscribe({
       next: (validationErrors) => this.validationErrors = validationErrors
     });

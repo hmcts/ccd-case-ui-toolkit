@@ -7,10 +7,13 @@ export class CaseEditDataService {
     private formValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
     private linkError$ = new BehaviorSubject<LinkedCasesError>(null);
     private eventTriggerName$ = new BehaviorSubject<string>(null);
+    private triggerSubmitEvent$ = new BehaviorSubject<boolean>(null);
 
+    public caseTitle$ = this.title$.asObservable();
     public caseFormValidationErrors$ = this.formValidationErrors$.asObservable();
     public caseLinkError$ = this.linkError$.asObservable();
     public caseEventTriggerName$ = this.eventTriggerName$.asObservable();
+    public caseTriggerSubmitEvent$ = this.triggerSubmitEvent$.asObservable();
 
     constructor() {}
 
@@ -42,5 +45,9 @@ export class CaseEditDataService {
         this.formValidationErrors$.next(
             this.formValidationErrors$.getValue().concat([validationError])
         );
+    }
+
+    public setTriggerSubmitEvent(state: boolean): void {
+        this.triggerSubmitEvent$.next(state);
     }
 }

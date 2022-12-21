@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
@@ -39,7 +40,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public readonly caseNameMissing = 'Case name missing';
 
   constructor(
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly caseEditDataService: CaseEditDataService
   ) {
     super();
   }
@@ -83,7 +85,11 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // Set starting field state
       this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
       // Get case title, to be used by child components
-      this.caseTitle = this.caseNameMissing;
+      this.caseEditDataService.caseTitle$.subscribe({
+        next: title => {
+          this.caseTitle = title.length > 0 ? title : this.caseNameMissing;
+        }
+      });
     }
   }
 
@@ -325,5 +331,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // Clear the "notAllCaseFlagStagesCompleted" error
     this.allCaseFlagStagesCompleted = true;
     this.formGroup.updateValueAndValidity();
+    this.caseEditDataService.setTriggerSubmitEvent(true);
   }
 }
