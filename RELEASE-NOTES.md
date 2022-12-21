@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.41-case-link-integration-fixes
+**EUI-7457** Case link integration fixes
+
 ### Version 5.0.40-case-edit-module-for-integration
 **EUI-7457** Case edit module for integration
 

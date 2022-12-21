@@ -25,7 +25,7 @@ export class ManageCaseFlagsComponent implements OnInit {
   public flagsDisplayData: FlagDetailDisplayWithFormGroupPath[];
   public flags: Flags;
   public noFlagsError = false;
-  public selectedControlName = 'selectedManageCaseLocation';
+  public readonly selectedControlName = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;

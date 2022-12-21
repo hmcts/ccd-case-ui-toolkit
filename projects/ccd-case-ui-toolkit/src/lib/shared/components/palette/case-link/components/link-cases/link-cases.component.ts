@@ -44,10 +44,10 @@ export class LinkCasesComponent implements OnInit {
     private readonly linkedCasesService: LinkedCasesService) { }
 
   public ngOnInit(): void {
-    this.initForm();
     this.caseId = this.linkedCasesService.caseId;
     this.caseName = this.linkedCasesService.caseName;
     this.linkCaseReasons = this.linkedCasesService.linkCaseReasons;
+    this.initForm();
     if (this.linkedCasesService.editMode) {
       // this may have includes the currently added one but yet to be submitted.
       this.selectedCases = this.linkedCasesService.linkedCases;
