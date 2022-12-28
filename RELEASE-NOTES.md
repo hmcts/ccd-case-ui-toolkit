@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 5.0.43-case-flags-integration-fixes
+### Version 5.0.44-case-flags-integration-fixes
 **EUI-7453** Case flags integration fixes
 
 ### Version 5.0.42-fee-pay-status
