@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DocumentTreeNode } from '../../../../../domain/case-file-view';
 import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-file-view-category.model';
@@ -6,7 +6,8 @@ import { CaseFileViewCategory } from '../../../../../domain/case-file-view/case-
 @Component({
     selector: 'xui-case-file-view-folder-selector',
     templateUrl: './case-file-view-folder-selector.component.html',
-    styleUrls: ['./case-file-view-folder-selector.component.scss']
+    styleUrls: ['./case-file-view-folder-selector.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
 
