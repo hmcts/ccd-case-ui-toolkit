@@ -1,36 +1,42 @@
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
-
 import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
 import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
-
-import { PaletteUtilsModule } from './utils';
-
-import { PipesModule } from '../../pipes/pipes.module';
-import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
-
-import { RouterModule } from '@angular/router';
-import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-import { RpxTranslationModule } from 'rpx-xui-translation';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
+import { PipesModule } from '../../pipes/pipes.module';
+import { LoadingModule } from '../../services/loading/loading.module';
 import { CaseFlagRefdataService } from '../../services/case-flag/case-flag-refdata.service';
 import { CommonDataService } from '../../services/common-data-service/common-data-service';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
+import { MediaViewerModule } from '@hmcts/media-viewer';
+import { CaseFileViewOverlayMenuComponent } from './case-file-view';
+import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
+import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
+import { CaseFileViewFolderSelectorComponent } from './case-file-view/components/case-file-view-folder-selector/case-file-view-folder-selector.component';
+import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
+import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
+import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
 import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, UnLinkCasesComponent, WriteLinkedCasesComponent } from './case-link';
 import { ReadLinkedCasesComponent } from './case-link/components/read-linked-cases.component';
@@ -69,8 +75,11 @@ import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-u
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
+import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { CaseEditDataModule } from '../../commons/case-edit-data';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -149,6 +158,15 @@ const PALETTE_COMPONENTS = [
     WriteFixedRadioListFieldComponent,
     WriteCaseLinkFieldComponent,
     WriteCollectionFieldComponent,
+
+    // ComponentLauncher web components
+    CaseFileViewFieldComponent,
+    CaseFileViewFieldReadComponent,
+    CaseFileViewFolderComponent,
+    CaseFileViewFolderSortComponent,
+    CaseFileViewOverlayMenuComponent,
+    CaseFileViewFolderDocumentActionsComponent,
+    CaseFileViewFolderSelectorComponent,
     LinkedCasesToTableComponent,
     LinkedCasesFromTableComponent,
     BeforeYouStartComponent,
@@ -185,6 +203,12 @@ const PALETTE_COMPONENTS = [
     PaymentLibModule,
     ScrollToModule.forRoot(),
     RpxTranslationModule.forChild(),
+    CaseEditDataModule,
+    CdkTreeModule,
+    OverlayModule,
+    MatDialogModule,
+    LoadingModule,
+    MediaViewerModule
   ],
   declarations: [
     FixedListPipe,
@@ -192,6 +216,7 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
+
     CaseFlagTableComponent,
     SelectFlagTypeComponent,
     SearchLanguageInterpreterComponent,
@@ -225,7 +250,8 @@ const PALETTE_COMPONENTS = [
     CommonDataService,
     JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
-  ]
+  ],
+  entryComponents: [ CaseFileViewFolderSelectorComponent ]
 })
 export class PaletteModule {
 }

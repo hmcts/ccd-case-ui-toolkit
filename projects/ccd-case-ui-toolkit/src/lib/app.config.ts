@@ -81,11 +81,13 @@ export abstract class AbstractAppConfig {
     getLocationRefApiUrl(): string {
         return undefined;
     }
+    public abstract getRefundsUrl(): string;
+    public abstract getPaymentReturnUrl(): string;
+    public abstract getCategoriesAndDocumentsUrl(): string;
+    public abstract getDocumentDataUrl(): string;
     getCamRoleAssignmentsApiUrl(): string {
         return undefined;
     }
-    abstract getRefundsUrl(): string;
-    abstract getPaymentReturnUrl(): string;
     abstract getCaseFlagsRefdataApiUrl(): string;
     abstract getRDCommonDataApiUrl(): string;
     abstract getCaseDataStoreApiUrl(): string;
@@ -144,12 +146,14 @@ export class CaseEditorConfig {
             reasonForCaseAccess: string;
         };
         accessProcess?: string;
-    }
-    location_ref_api_url?: string;
-    cam_role_assignments_api_url?: string;
-    refunds_url: string;
-    payment_return_url: string;
-    case_flags_refdata_api_url: string;
-    rd_common_data_api_url: string;
-    case_data_store_api_url: string;
+    };
+    public location_ref_api_url?: string;
+    public cam_role_assignments_api_url?: string;
+    public refunds_url: string;
+    public payment_return_url: string;
+    public categories_and_documents_url: string;
+    public document_data_url: string;
+    public case_flags_refdata_api_url: string;
+    public rd_common_data_api_url: string;
+    public case_data_store_api_url: string;
 }

@@ -6,3 +6,4 @@ export * from './pipes';
 export * from './services';
 export * from './test/test-route-snapshot-builder';
 export * from './services/fields';
+export * from './commons/case-edit-data';

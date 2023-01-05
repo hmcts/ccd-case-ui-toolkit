@@ -3,6 +3,7 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
@@ -75,7 +76,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     private readonly cdRef: ChangeDetectorRef,
     private readonly pageValidationService: PageValidationService,
     private readonly dialog: MatDialog,
-    private readonly caseFieldService: CaseFieldService
+    private readonly caseFieldService: CaseFieldService,
+    private readonly caseEditDataService: CaseEditDataService
   ) { }
 
   public ngOnInit(): void {
@@ -85,6 +87,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.wizard = this.caseEdit.wizard;
     this.caseFields = this.getCaseFields();
     this.triggerText = this.getTriggerText();
+
+    this.syncCaseEditDataService();
 
     this.route.params
       .subscribe(params => {
@@ -104,6 +108,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       });
     CaseEditPageComponent.setFocusToTop();
+    this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
+      next: state => {
+        if (state) {
+          this.caseEditDataService.setTriggerSubmitEvent(false);
+          this.submit();
+        }
+      }
+    });
   }
 
   public ngAfterViewChecked(): void {
@@ -128,7 +140,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
    * EUI-3732 - Breathing space data not persisted on Previous button click with ExpUI Demo
    */
   public toPreviousPage(): void {
-    this.validationErrors = [];
+    this.caseEditDataService.clearFormValidationErrors();
+
     const caseEventData: CaseEventData = this.buildCaseEventData(true);
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
@@ -154,16 +167,16 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
             }
           }
           if (fieldElement.hasError('required')) {
-            this.validationErrors.push({ id, message: `${label} is required` });
+            this.caseEditDataService.addFormValidationError({ id, message: `${label} is required` });
             fieldElement.markAsDirty();
           } else if (fieldElement.hasError('pattern')) {
-            this.validationErrors.push({ id, message: `${label} is not valid` });
+            this.caseEditDataService.addFormValidationError({ id, message: `${label} is not valid` });
             fieldElement.markAsDirty();
           } else if (fieldElement.hasError('minlength')) {
-            this.validationErrors.push({ id, message: `${label} is below the minimum length` });
+            this.caseEditDataService.addFormValidationError({ id, message: `${label} is below the minimum length` });
             fieldElement.markAsDirty();
           } else if (fieldElement.hasError('maxlength')) {
-            this.validationErrors.push({ id, message: `${label} exceeds the maximum length` });
+            this.caseEditDataService.addFormValidationError({ id, message: `${label} exceeds the maximum length` });
             fieldElement.markAsDirty();
           } else if (this.caseLinkError && FieldsUtils.isLinkedCasesCaseField(casefield)) {
             this.validationErrors.push({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
@@ -172,7 +185,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
               this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
               if (this.caseLinkError && FieldsUtils.isLinkedCasesCaseField(casefield)) {
-                this.validationErrors.push({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
+                this.caseEditDataService.addFormValidationError({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
+                // this.validationErrors.push({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
               } else {
                 const fieldArray = fieldElement as FormArray;
                 if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
@@ -216,7 +230,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   public submit(): void {
-    this.validationErrors = [];
+    this.caseEditDataService.clearFormValidationErrors();
+
     if (this.currentPageIsNotValid()) {
       this.generateErrorMessage(this.currentPage.case_fields);
     }
@@ -456,5 +471,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       fromPreviousPage, this.currentPage.case_fields);
 
     return caseEventData;
+  }
+
+  private syncCaseEditDataService(): void {
+    this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
+    this.caseEditDataService.setCaseLinkError(this.caseLinkError);
+    this.caseEditDataService.setCaseTitle(this.getCaseTitle());
+    this.caseEditDataService.caseFormValidationErrors$.subscribe({
+      next: (validationErrors) => this.validationErrors = validationErrors
+    });
   }
 }

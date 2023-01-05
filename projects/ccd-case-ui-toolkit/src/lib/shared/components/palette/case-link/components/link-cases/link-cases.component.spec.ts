@@ -1,19 +1,19 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
+import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
+import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { CaseLink, LinkCaseReason } from '../../domain';
+import { CaseLink } from '../../domain';
 import { LinkedCasesErrorMessages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { LinkCasesComponent } from './link-cases.component';
-import { PipesModule } from '../../../../../pipes/pipes.module';
-
 import createSpyObj = jasmine.createSpyObj;
-import { By } from '@angular/platform-browser';
 
-xdescribe('LinkCasesComponent', () => {
+describe('LinkCasesComponent', () => {
   let component: LinkCasesComponent;
   let fixture: ComponentFixture<LinkCasesComponent>;
   let casesService: any;
@@ -30,7 +30,7 @@ xdescribe('LinkCasesComponent', () => {
       caseService: 'Tribunal',
       caseName: 'SSCS 2.1'
   }];
-  const linkCaseReasons: LinkCaseReason[] = [
+  const linkCaseReasons: LovRefDataModel[] = [
     {
       key: 'progressed',
       value_en: 'Progressed as part of this lead case',
@@ -84,7 +84,7 @@ xdescribe('LinkCasesComponent', () => {
     getCaseName() {}
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     casesService = createSpyObj('casesService', ['getCaseViewV2', 'getCaseLinkResponses']);
     searchService = createSpyObj('searchService', ['searchCases']);
     TestBed.configureTestingModule({
@@ -104,19 +104,11 @@ xdescribe('LinkCasesComponent', () => {
   }));
 
   beforeEach(() => {
-    const caseInfo = {
-      case_id: '1682374819203471',
-      case_type: {
-        name: 'SSCS type',
-        jurisdiction: { name: '' }
-      }, state: { name: 'With FTA' },
-      metadataFields: {
-        caseNameHmctsInternal: ''
-      }
-    }
     fixture = TestBed.createComponent(LinkCasesComponent);
     component = fixture.componentInstance;
-    spyOn(linkedCasesService, 'linkCaseReasons').and.returnValue(of(linkCaseReasons));
+    component.caseId = '1682374819203471';
+    component.caseName = 'SSCS 2.1';
+    component.linkCaseReasons = linkCaseReasons;
     spyOn(component.linkedCasesStateEmitter, 'emit');
     fixture.detectChanges();
   });
@@ -167,7 +159,6 @@ xdescribe('LinkCasesComponent', () => {
   });
 
   it('should check isCaseSelected', () => {
-    component.linkedCasesService.caseFieldValue = [];
     expect(component.isCaseSelected(selectedCasesInfo)).toBe(false);
     component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
     expect(component.isCaseSelected(selectedCasesInfo)).toBe(true);

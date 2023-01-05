@@ -1,5 +1,6 @@
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { CaseFileViewFieldComponent, CaseFileViewFieldReadComponent } from './case-file-view';
 import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
@@ -215,6 +216,22 @@ describe('PaletteService', () => {
     it('should get CasePaymentHistoryViewerFieldComponent component class for CasePaymentHistoryViewer regardless of read/write', () => {
       assertComponent('CasePaymentHistoryViewer', true, CasePaymentHistoryViewerFieldComponent, 'AnID');
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
+    });
+
+    it('should get CaseFileViewFieldComponent component class for ComponentLauncher field with argument of "CaseFileView"', () => {
+      const caseField = new CaseField();
+      caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
+      caseField.display_context_parameter = '#ARGUMENT(CaseFileView)';
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(CaseFileViewFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(CaseFileViewFieldReadComponent);
+    });
+
+    it('should get UnsupportedFieldComponent component class for ComponentLauncher field with unknown argument', () => {
+      const caseField = new CaseField();
+      caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
+      caseField.display_context_parameter = '#ARGUMENT(abc)';
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(UnsupportedFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(UnsupportedFieldComponent);
     });
 
     it('should get WriteCaseFlagFieldComponent component class for FlagLauncher input', () => {

@@ -25,6 +25,7 @@ export type FieldTypeEnum =
   | 'CaseHistoryViewer'
   | 'Organisation'
   | 'WaysToPay'
+  | 'ComponentLauncher'
   | 'Flags'
   | 'FlagDetail'
   | 'FlagLauncher'

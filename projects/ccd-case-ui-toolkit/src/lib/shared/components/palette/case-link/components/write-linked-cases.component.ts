@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../../../app.config';
+import { CaseEditDataService } from '../../../../commons/case-edit-data';
 import { CaseField, ErrorMessage } from '../../../../domain';
 import { CaseView } from '../../../../domain/case-view';
 import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
-import { CaseEditPageComponent } from '../../../case-editor/case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../../../case-editor/case-edit/case-edit.component';
 import { CasesService } from '../../../case-editor/services/cases.service';
 import { AbstractFieldWriteComponent } from '../../base-field';
@@ -23,9 +23,6 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   @Input()
   public caseField: CaseField;
-
-  @Input()
-  public caseEditPageComponent: CaseEditPageComponent;
 
   @Output()
   public onLinkedCasesSelected = new EventEmitter<any>();
@@ -46,11 +43,13 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     private readonly appConfig: AbstractAppConfig,
     private readonly commonDataService: CommonDataService,
     private readonly casesService: CasesService,
-    private readonly linkedCasesService: LinkedCasesService) {
+    private readonly linkedCasesService: LinkedCasesService,
+    private readonly caseEditDataService: CaseEditDataService) {
     super();
   }
 
   public ngOnInit(): void {
+      this.caseEditDataService.clearFormValidationErrors();
       this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
       this.linkedCasesService.caseName = this.linkedCasesService.getCaseName(this.caseEdit.caseDetails);
       this.linkedCasesService.caseDetails = this.caseEdit.caseDetails;
@@ -60,10 +59,14 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
         next: reasons => {
           this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
         }
-      })
+      });
       this.getLinkedCases();
-      this.linkedCasesService.isLinkedCasesEventTrigger =
-      this.caseEditPageComponent.eventTrigger.name === LinkedCasesEventTriggers.LINK_CASES;
+      this.caseEditDataService.caseEventTriggerName$.subscribe({
+        next: name => {
+                this.linkedCasesService.isLinkedCasesEventTrigger
+                  = (name === LinkedCasesEventTriggers.LINK_CASES);
+        }
+      })
   }
 
   public ngAfterViewInit(): void {
@@ -79,7 +82,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
     this.errorMessages = [];
-    this.caseEditPageComponent.validationErrors = [];
+    this.caseEditDataService.clearFormValidationErrors();
 
     if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);
@@ -88,7 +91,7 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
     } else {
       if (linkedCasesState.errorMessages && linkedCasesState.errorMessages.length) {
         linkedCasesState.errorMessages.forEach((errorMessage, index) => {
-          this.caseEditPageComponent.validationErrors.push({ id: errorMessage.fieldId, message: errorMessage.description});
+          this.caseEditDataService.addFormValidationError({ id: errorMessage.fieldId, message: errorMessage.description})
         });
       }
     }
@@ -107,16 +110,16 @@ export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent imple
       ? 'back-button'
       : 'next-button';
 
-    this.caseEditPageComponent.caseLinkError = {
-      componentId: buttonId,
-      errorMessage
-    };
+    this.caseEditDataService.setCaseLinkError({
+        componentId: buttonId,
+        errorMessage
+    });
   }
 
   public proceedToNextPage(): void {
     if (this.isAtFinalPage()) {
       // Continue button event must be allowed in final page
-      this.caseEditPageComponent.caseLinkError = null;
+      this.caseEditDataService.clearCaseLinkError();
       // Trigger validation to clear the "notAtFinalPage" error if now at the final state
       this.formGroup.updateValueAndValidity();
       // update form value

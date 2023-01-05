@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField } from '../../../domain/definition';
 import { PaletteContext } from '../base-field';
 import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
@@ -293,7 +294,7 @@ describe('ReadCaseFlagFieldComponent', () => {
       [flagLauncherCaseField.id]: {
         controls: {},
         caseField: flagLauncherCaseField,
-        component: new WriteCaseFlagFieldComponent(null)
+        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService())
       }
     },
     get: (controlName: string) => {

@@ -1,4 +1,60 @@
 ## RELEASE NOTES
+### Version 5.0.44-case-flags-integration-fixes
+**EUI-7453** Case flags integration fixes
+
+### Version 5.0.42-fee-pay-status
+**EUI-7457** Payment status - ng11
+
+### Version 5.0.41-case-link-integration-fixes
+**EUI-7457** Case link integration fixes
+
+### Version 5.0.40-case-edit-module-for-integration
+**EUI-7457** Case edit module for integration
+
+### Version 5.0.38-case-flags-table-alignment
+**EUI-7454** Case flags table alignment
+
+### Version 5.0.36-prl-integration-merge-into-angular-11
+**EUI-5297** PrL integration merge into Angular 11
+
+### Version 5.0.34-case-file-view-merge-into-angular-11
+**EUI-5297** Case file view merge into Angular 11
+
+### Version 5.0.25-case-file-view-print-and-download-functions
+**EUI-6866** Implement print and download functions for the document context menu
+
+### Version 5.0.25-merge-from-angular11-upgrade
+**EUI-5297** Merge from angular upgrade
+
+### Version 5.0.25-case-file-view-error-message-display
+**EUI-6826** Display standard error message if Case File View component is unable to retrieve categories and documents data
+
+### Version 5.0.25-case-file-view-media-viewer-integration
+**EUI-5349** Integrate the Media Viewer component with Case File View
+
+### Version 5.0.25-case-file-view-document-tree-functionalities-v3
+**EUI-7066** Case file view search document exceptions
+**EUI-7160** Case file view hand icon for folder clicking
+**EUI-5458** Case file view document view and folder action
+
+### Version 5.0.24-case-file-view-folder-document-icons-v3
+**EUI-6974** Case file view folder and document icons display
+
+### Version 5.0.24-case-file-view-post-ccd-toolkit-angular11-upgrade
+**EUI-7062** Migrate Case File View to Angular 11-upgraded CCD Case UI Toolkit
+
+### Version 5.0.22-case-file-view-component-launcher-implementation
+**EUI-6965** Implement the ComponentLauncher mechanism for invoking the Case File View web component
+
+### Version 5.0.22-case-file-view-update-document-category
+**EUI-6815** Service layer for HTTP PUT call to CCD endpoint for updating the category associated with a document
+
+### Version 5.0.22-case-file-view-two-sections
+**EUI-6822** Two sections for case file view
+**EUI-5376** Slider function for case file view
+
+### Version 5.0.22-case-file-view-get-categories-and-documents
+**EUI-5481** Service layer for HTTP GET call to CCD endpoint for retrieving categories and documents
 
 ### Version 5.0.33-angular11-upgrade
 **EUI-6326** Angular 11 upgrade

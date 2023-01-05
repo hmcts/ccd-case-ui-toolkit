@@ -41,6 +41,6 @@ describe('CaseChallengedAccessSuccessComponent', () => {
 
   it('should have the correct Case Reference in the \"View case file\" link URL', () => {
     const viewCaseFileLinkElement = fixture.debugElement.nativeElement.querySelector('p.govuk-body a');
-    expect(viewCaseFileLinkElement.getAttribute('href')).toEqual(`/cases/case-details/${case_id}`);
+    expect(viewCaseFileLinkElement.getAttribute('href')).toContain(`/cases/case-details/${case_id}`);
   });
 });

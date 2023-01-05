@@ -4,10 +4,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig } from '../../../../../../app.config';
 import { PipesModule } from '../../../../../pipes';
-import { AuthService, HttpErrorService, HttpService, LoadingService, RequestOptionsBuilder, SearchService } from '../../../../../services';
+import { AuthService, HttpErrorService, HttpService, JurisdictionService, LoadingService, RequestOptionsBuilder, SearchService } from '../../../../../services';
 import { CaseLink } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
-import { JurisdictionService } from '../../services/jurisdiction.service';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { CheckYourAnswersComponent } from './check-your-answers.component';
 
