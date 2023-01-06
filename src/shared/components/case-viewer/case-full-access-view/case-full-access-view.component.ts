@@ -119,7 +119,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       });
     }
     this.router.events.subscribe((val) => {
-      console.log(val);
       const url = val && (val as any).url;
       if (url) {
         const tabUrl = url ? url.split('#') : null ;
