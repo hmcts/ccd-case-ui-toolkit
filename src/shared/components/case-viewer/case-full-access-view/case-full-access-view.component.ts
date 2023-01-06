@@ -129,6 +129,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         }
       }
     })
+    // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
   }
 
