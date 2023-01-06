@@ -118,8 +118,18 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.activitySubscription = this.postViewActivity().subscribe();
       });
     }
-
-    // Check for active Case Flags
+    this.router.events.subscribe((val) => {
+      console.log(val);
+      const url = val && (val as any).url;
+      if (url) {
+        const tabUrl = url ? url.split('#') : null ;
+        const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
+        const matTab = this.tabGroup._tabs.find( (x) => x.textLabel.toLowerCase() === tab.toLowerCase());
+        if (matTab && matTab.position) {
+          this.tabGroup.selectedIndex = matTab.position;
+        }
+      }
+    })
     this.activeCaseFlags = this.hasActiveCaseFlags();
   }
 
