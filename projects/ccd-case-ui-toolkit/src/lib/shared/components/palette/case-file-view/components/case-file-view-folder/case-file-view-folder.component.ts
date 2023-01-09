@@ -6,11 +6,11 @@ import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import {
-	CaseFileViewCategory,
-	CaseFileViewDocument,
-	CategoriesAndDocuments,
-	DocumentTreeNode,
-	DocumentTreeNodeType
+  CaseFileViewCategory,
+  CaseFileViewDocument,
+  CategoriesAndDocuments,
+  DocumentTreeNode,
+  DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
@@ -255,7 +255,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   private openMoveDialog(node: DocumentTreeNode): void {
     const dialogRef = this.dialog.open(CaseFileViewFolderSelectorComponent, {
-      width: '570px',
       data: { categories: this.categories, document: node }
     });
 
