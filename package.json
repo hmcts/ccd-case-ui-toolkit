@@ -39,7 +39,7 @@
     "test": "ng test ccd-case-ui-toolkit-lib  --code-coverage",
     "test:codacy-upload": "echo `cat ./coverage/ccd-case-ui-toolkit/lcov-report/lcov.info | codacy-coverage`",
     "test:coverage": "ng test ccd-case-ui-toolkit-lib --code-coverage",
-    "test:watch": "ng test ccd-case-ui-toolkit-lib --watch=true",
+    "test:watch": "ng test ccd-case-ui-toolkit-lib --code-coverage --watch=true",
     "test:audit": "./bin/run-yarn-audit.sh -f yarn-audit-known-issues",
     "tslint": "tslint",
     "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
