@@ -1,12 +1,12 @@
-
 <h2 class="heading-h2" aria-label="Filters">{{'Filters' | rpxTranslate }}</h2>
+
 <form class="global-display">
   <div class="form-group">
     <label class="form-label" for="wb-jurisdiction">{{'Jurisdiction' | rpxTranslate}}</label>
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-jurisdiction"
             name="jurisdiction" [(ngModel)]="selected.jurisdiction" aria-controls="search-result"
             (change)="onJurisdictionIdChange()">
-      <option *ngIf="!workbasketDefaults" [ngValue]="null">Select a value</option>
+      <option *ngIf="!workbasketDefaults" [ngValue]="null">{{'Select a value' | rpxTranslate}}</option>
       <option *ngFor="let j of jurisdictions" [ngValue]="j">{{j.name | rpxTranslate}}</option>
     </select>
   </div>
@@ -26,7 +26,7 @@
     <select class="form-control form-control-3-4 ccd-dropdown" id="wb-case-state"
             name="state" [(ngModel)]="selected.caseState" [disabled]="isCaseStatesDropdownDisabled()"
             aria-controls="search-result">
-      <option [ngValue]="null">Any</option>
+      <option [ngValue]="null">{{'Any' | rpxTranslate}}</option>
       <option *ngFor="let cs of selectedCaseTypeStates" [ngValue]="cs">{{cs.name | rpxTranslate}}</option>
     </select>
   </div>
@@ -34,7 +34,8 @@
   <ng-container ccdConditionalShowForm *ngIf="isSearchableAndWorkbasketInputsReady()" [formGroup]="formGroup" [contextFields]="caseFields">
     <div id="dynamicFilters">
       <div class="form-group" *ngFor="let workbasketInput of workbasketInputs">
-        <ccd-field-write [caseField]="workbasketInput.field" [formGroup]="formGroup" [isExpanded]="true" [isInSearchBlock]="true" (keyup.enter)="apply(null)"></ccd-field-write>
+        <ccd-field-write [caseField]="workbasketInput.field" [formGroup]="formGroup" [isExpanded]="true" [isInSearchBlock]="true" (keyup.enter)="apply(null)">
+        </ccd-field-write>
       </div>
     </div>
   </ng-container>
