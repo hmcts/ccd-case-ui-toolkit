@@ -9,6 +9,7 @@ import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain'
 import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 
 describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;
@@ -317,7 +318,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ReadCaseFlagFieldComponent ],
+      declarations: [ ReadCaseFlagFieldComponent, MockRpxTranslatePipe ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
       ]

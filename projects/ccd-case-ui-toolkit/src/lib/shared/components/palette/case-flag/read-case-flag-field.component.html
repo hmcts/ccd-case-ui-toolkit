@@ -4,19 +4,19 @@
       [summaryListDisplayMode]="summaryListDisplayMode"></ccd-case-flag-summary-list>
   </ng-container>
   <ng-container *ngSwitchDefault>
-    <h2 class="govuk-heading-l">Case flags</h2>
+    <h2 class="govuk-heading-l">{{ 'Case flags' | rpxTranslate }}</h2>
     <div *ngFor="let flagData of partyLevelCaseFlagData">
       <ccd-case-flag-table *ngIf="flagData.flags.partyName"
         [tableCaption]="flagData.flags.partyName"
         [flagData]="flagData"
-        [firstColumnHeader]="'Party level flags'"
+        [firstColumnHeader]="'Party level flags' | rpxTranslate"
       ></ccd-case-flag-table>
     </div>
     <div *ngIf="caseLevelCaseFlagData">
       <ccd-case-flag-table
-        [tableCaption]="'Case level flags'"
+        [tableCaption]="'Case level flags' | rpxTranslate"
         [flagData]="caseLevelCaseFlagData"
-        [firstColumnHeader]="'Case flags'"
+        [firstColumnHeader]="'Case flags' | rpxTranslate"
       ></ccd-case-flag-table>
     </div>
   </ng-container>

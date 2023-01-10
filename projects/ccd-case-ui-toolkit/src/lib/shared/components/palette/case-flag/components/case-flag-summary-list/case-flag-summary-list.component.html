@@ -1,10 +1,10 @@
 <dl class="govuk-summary-list" *ngIf="flagForSummaryDisplay">
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">
-      {{addUpdateFlagHeaderText}}
+      {{addUpdateFlagHeaderText | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagForSummaryDisplay.partyName || caseLevelLocation}}
+      {{flagForSummaryDisplay.partyName || caseLevelLocation | rpxTranslate}}
     </dd>
   </div>
   <div class="govuk-summary-list__row">
@@ -12,7 +12,7 @@
       Flag type
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagDescription}}
+      {{flagDescription | rpxTranslate}}
     </dd>
   </div>
   <div class="govuk-summary-list__row">
@@ -20,7 +20,7 @@
       Comments
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagComments}}
+      {{flagComments | rpxTranslate}}
     </dd>
   </div>
   <div class="govuk-summary-list__row" *ngIf="summaryListDisplayMode === displayMode.MANAGE">
@@ -28,7 +28,7 @@
       Status
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagStatus}}
+      {{flagStatus | rpxTranslate}}
     </dd>
   </div>
 </dl>

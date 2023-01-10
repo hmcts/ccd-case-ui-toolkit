@@ -17,7 +17,7 @@
             name="case-type" [(ngModel)]="selected.caseType" [disabled]="isCaseTypesDropdownDisabled()"
             (change)="onCaseTypeIdChange()" aria-controls="search-result">
       <option *ngIf="!workbasketDefaults" [ngValue]="null">Select a value</option>
-      <option *ngFor="let ct of selectedJurisdictionCaseTypes" [ngValue]="ct">{{ct.name}}</option>
+      <option *ngFor="let ct of selectedJurisdictionCaseTypes" [ngValue]="ct">{{ct.name | rpxTranslate}}</option>
     </select>
   </div>
 
@@ -27,7 +27,7 @@
             name="state" [(ngModel)]="selected.caseState" [disabled]="isCaseStatesDropdownDisabled()"
             aria-controls="search-result">
       <option [ngValue]="null">Any</option>
-      <option *ngFor="let cs of selectedCaseTypeStates" [ngValue]="cs">{{cs.name}}</option>
+      <option *ngFor="let cs of selectedCaseTypeStates" [ngValue]="cs">{{cs.name | rpxTranslate}}</option>
     </select>
   </div>
 
