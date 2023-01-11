@@ -116,17 +116,21 @@ describe('WorkAllocationService', () => {
   let errorService: any;
   let workAllocationService: WorkAllocationService;
   let alertService: any;
+  let sessionStorageService: any;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl', 'getWAServiceConfig']);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
     appConfig.getUserInfoApiUrl.and.returnValue('api/user/details');
+    appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['caseType'], release: '3.0'}]});
 
     httpService = createSpyObj<HttpService>('httpService', ['post', 'get']);
     httpService.get.and.returnValue(of(getExampleUserDetails()[1]));
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
     alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+    sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
+    workAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, sessionStorageService);
   });
 
   describe('searchTasks', () => {
@@ -200,6 +204,13 @@ describe('WorkAllocationService', () => {
         });
     });
 
+    it('should be blocked when not supported by WA', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      const userId = getExampleUserDetails()[1].userInfo.id;
+      workAllocationService.assignTask(MOCK_TASK_1.id, userId).subscribe();
+      expect(httpService.post).not.toHaveBeenCalled();
+    });
+
   });
 
   describe('completeTask', () => {
@@ -228,6 +239,12 @@ describe('WorkAllocationService', () => {
         });
     });
 
+    it('should be blocked when not supported by WA', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.post).not.toHaveBeenCalled();
+    });
+
   });
 
   describe('assignAndCompleteTask', () => {
@@ -254,6 +271,12 @@ describe('WorkAllocationService', () => {
           expect(alertService.warning).toHaveBeenCalled();
           done();
         });
+    });
+
+    it('should be blocked when not supported by WA', () => {
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.post).not.toHaveBeenCalled();
     });
 
   });
@@ -296,7 +319,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(of({
         tasks: []
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
         expect(result).toBeTruthy();
         expect(completeSpy).not.toHaveBeenCalled();
         done();
@@ -309,7 +332,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
         expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         done();
       });
@@ -320,7 +343,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_1, MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(() => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(() => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Processed multiple tasks instead of erroring');
       }, error => {
@@ -335,7 +358,7 @@ describe('WorkAllocationService', () => {
       httpService.post.and.returnValue(of({
         tasks: [ MOCK_TASK_2 ]
       }));
-      workAllocationService.completeAppropriateTask('1234567890', 'event', 'jurisdiction', 'caseType').subscribe(result => {
+      workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Completed task instead of erroring');
       }, error => {
@@ -352,6 +375,14 @@ describe('WorkAllocationService', () => {
       workAllocationService.getTask(MOCK_TASK_2.id).subscribe(result => {
         expect(getSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
         done();
+      });
+    });
+
+    it('should be blocked when not supported by WA', () => {
+      const completeSpy = spyOn(workAllocationService, 'completeTask');
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'CIVIL', jurisdiction: 'CIVIL'}));
+      workAllocationService.completeAppropriateTask(null, null, 'IA', 'Asylum').subscribe(result => {
+        expect(result).toBe(null);
       });
     });
 

@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import {
   AbstractAppConfig,
   AccessManagementBasicViewMockModel,
@@ -129,6 +131,10 @@ export class AppMockConfig implements AbstractAppConfig {
     return false;
   }
 
+  public getWAServiceConfig(): any {
+    return null;
+  }
+
   public getAccessManagementMode(): boolean {
     return false;
   }
@@ -154,6 +160,26 @@ export class AppMockConfig implements AbstractAppConfig {
   }
 
   public getPaymentReturnUrl(): string {
-      return '';
+    return '';
+  }
+
+  public getCategoriesAndDocumentsUrl(): string {
+    return '';
+  }
+
+  public getDocumentDataUrl(): string {
+    return '';
+  }
+
+  public getCaseFlagsRefdataApiUrl(): string {
+    return '';
+  }
+
+  public getRDCommonDataApiUrl(): string {
+    return '';
+  }
+
+  public getCaseDataStoreApiUrl(): string {
+    return '';
   }
 }

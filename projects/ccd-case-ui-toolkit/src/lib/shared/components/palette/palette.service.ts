@@ -1,6 +1,10 @@
 import { Injectable, Type } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
+import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
+import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
+import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
+import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
@@ -22,6 +26,8 @@ import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-fiel
 import { ReadFixedRadioListFieldComponent } from './fixed-radio-list/read-fixed-radio-list-field.component';
 import { WriteFixedRadioListFieldComponent } from './fixed-radio-list/write-fixed-radio-list-field.component';
 import { CaseHistoryViewerFieldComponent } from './history/case-history-viewer-field.component';
+import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
+import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
@@ -47,6 +53,9 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 
 @Injectable()
 export class PaletteService {
+  private readonly componentLauncherRegistry = {
+    CaseFileView: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent]
+  };
 
   public getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
     switch (caseField.field_type.type) {
@@ -83,15 +92,23 @@ export class PaletteService {
             return write ? WriteAddressFieldComponent : ReadComplexFieldComponent;
           case 'OrderSummary':
             return write ? WriteOrderSummaryFieldComponent : ReadOrderSummaryFieldComponent;
-          case 'CaseLink':
-            return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
           case 'Organisation':
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
+          case 'JudicialUser':
+            return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
       case 'Collection':
-        return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
+        switch (caseField.field_type.collection_field_type.id) {
+          case 'CaseLink':
+            if (caseField.id === 'caseLinks') {
+              return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
+            }
+            return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
+          default:
+            return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
+          }
       case 'MultiSelectList':
         return write ? WriteMultiSelectListFieldComponent : ReadMultiSelectListFieldComponent;
       case 'Document':
@@ -104,8 +121,22 @@ export class PaletteService {
         return CaseHistoryViewerFieldComponent;
       case 'WaysToPay':
         return WaysToPayFieldComponent;
+      case 'ComponentLauncher':
+        return this.getComponentLauncherComponent(caseField, write);
+      case 'FlagLauncher':
+        return write ? WriteCaseFlagFieldComponent : ReadCaseFlagFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }
+  }
+
+  private getComponentLauncherComponent(caseField: CaseField, write: boolean): any {
+    // Extract the value passed for #ARGUMENT(...) in the CaseField display_context_parameter and return the matching
+    // component from the componentLauncherRegistry
+    const argumentValue = caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[1];
+    if (argumentValue && this.componentLauncherRegistry.hasOwnProperty(argumentValue)) {
+      return this.componentLauncherRegistry[argumentValue][write ? 0 : 1];
+    }
+    return UnsupportedFieldComponent;
   }
 }

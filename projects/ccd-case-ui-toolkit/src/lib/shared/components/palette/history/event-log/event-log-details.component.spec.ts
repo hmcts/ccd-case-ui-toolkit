@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
+import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
 import { DashPipe, DatePipe } from '../../utils';
 import { EventLogDetailsComponent } from './event-log-details.component';
 
@@ -92,7 +93,8 @@ describe('EventLogDetails', () => {
         declarations: [
           EventLogDetailsComponent,
           DatePipe,
-          DashPipe
+          DashPipe,
+          MockRpxTranslatePipe
         ],
         providers: [FormatTranslatorService]
       })
@@ -107,13 +109,12 @@ describe('EventLogDetails', () => {
     fixture.detectChanges();
   }));
 
-  xit('should render a table with the case details', () => {
+  it('should render a table with the case details', () => {
     const rows = de.queryAll($TABLE_ROWS);
 
     expect(rows.length).toBe(6);
 
-    const resultDate = new DatePipe(null).transform(EVENT.timestamp, 'utc', null) +
-      ' Local: ' + new DatePipe(null).transform(EVENT.timestamp, 'local', null);
+    const resultDate = new DatePipe(null).transform(EVENT.timestamp, 'local', null);
     expectRow(rows[0]).toEqual('Date', resultDate);
     expectRow(rows[1]).toEqual('Author', 'Justin SMITH');
     expectRow(rows[2]).toEqual('End state', EVENT.state_name);

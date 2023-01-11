@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
@@ -11,6 +11,7 @@ import { createCaseHistory } from '../../fixture';
 import { CaseReferencePipe, CcdTabFieldsPipe, FieldsFilterPipe, ReadFieldsFilterPipe } from '../../pipes';
 import { AlertService, FieldsUtils, OrderService } from '../../services';
 import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { CaseNotifier } from '../case-editor';
 import { PaletteUtilsModule } from '../palette';
 import { CaseHistoryComponent } from './case-history.component';
@@ -67,7 +68,8 @@ describe('CaseHistoryComponent', () => {
   let component: CaseHistoryComponent;
   let fixture: ComponentFixture<CaseHistoryComponent>;
   let de: DebugElement;
-
+  let casesService: any;
+  casesService = createSpyObj('casesService', ['getCaseViewV2']);
   const mockRoute: any = {
     snapshot: {
       paramMap: createSpyObj('paramMap', ['get']),
@@ -97,7 +99,7 @@ describe('CaseHistoryComponent', () => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 
-    caseNotifier = new CaseNotifier();
+    caseNotifier = new CaseNotifier(casesService);
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
     router = createSpyObj<Router>('router', ['navigate']);
     router.navigate.and.returnValue(new Promise(any));
@@ -119,7 +121,8 @@ describe('CaseHistoryComponent', () => {
           CcdTabFieldsPipe,
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
-          markdownComponent
+          markdownComponent,
+          MockRpxTranslatePipe,
         ],
         providers: [
           FieldsUtils,

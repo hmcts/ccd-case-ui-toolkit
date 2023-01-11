@@ -1,36 +1,25 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
-import { PlaceholderService } from '../../directives/substitutor/services/placeholder.service';
-import { DisplayMode } from '../../domain/activity/activity.model';
-import { CaseField } from '../../domain/definition/case-field.model';
-import { CaseState } from '../../domain/definition/case-state.model';
-import { CaseType } from '../../domain/definition/case-type.model';
-import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
-import { DRAFT_PREFIX } from '../../domain/draft.model';
-import { PaginationMetadata } from '../../domain/pagination-metadata.model';
-import { SearchResultViewColumn } from '../../domain/search/search-result-view-column.model';
-import { SearchResultViewItem } from '../../domain/search/search-result-view-item.model';
-import { SearchResultView } from '../../domain/search/search-result-view.model';
-import { SearchResultViewItemComparator } from '../../domain/search/sorting/search-result-view-item-comparator';
-import { SortOrder } from '../../domain/search/sorting/sort-order';
-import { SortParameters } from '../../domain/search/sorting/sort-parameters';
-import { CaseReferencePipe } from '../../pipes/case-reference/case-reference.pipe';
-import { ActivityService } from '../../services/activity/activity.service';
-import { BrowserService } from '../../services/browser/browser.service';
-import { SearchResultViewItemComparatorFactory } from '../../services/search-result/sorting/search-result-view-item-comparator-factory';
+import { PlaceholderService } from '../../directives';
+import { CaseField, CaseState, CaseType, DisplayMode,
+  DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
+  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+import { CaseReferencePipe } from '../../pipes';
+import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
   templateUrl: './search-result.component.html',
-  styleUrls: ['./search-result.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./search-result.component.scss']
 })
-export class SearchResultComponent implements OnChanges, AfterViewInit {
+export class SearchResultComponent implements OnChanges, OnInit {
 
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
+
+  private readonly PAGINATION_MAX_ITEM_RESULT = 10000;
 
   public ICON = DisplayMode.ICON;
 
@@ -109,8 +98,6 @@ export class SearchResultComponent implements OnChanges, AfterViewInit {
 
   public selectedCases: SearchResultViewItem[] = [];
 
-  private readonly PAGINATION_MAX_ITEM_RESULT = 10000;
-
   constructor(
     searchResultViewItemComparatorFactory: SearchResultViewItemComparatorFactory,
     appConfig: AbstractAppConfig,
@@ -118,22 +105,14 @@ export class SearchResultComponent implements OnChanges, AfterViewInit {
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly placeholderService: PlaceholderService,
     private readonly browserService: BrowserService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly sessionStorageService: SessionStorageService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
     this.paginationPageSize = appConfig.getPaginationPageSize();
     this.hideRows = false;
   }
 
-  public get resultTotal(): number {
-    const total = this.paginationMetadata.total_results_count;
-    const maximumResultReached = total >= this.PAGINATION_MAX_ITEM_RESULT;
-    this.paginationLimitEnforced = maximumResultReached;
-
-    return maximumResultReached ? this.PAGINATION_MAX_ITEM_RESULT : total;
-  }
-
-  public ngAfterViewInit(): void {
+  public ngOnInit(): void {
     if (this.preSelectedCases) {
       for (const preSelectedCase of this.preSelectedCases) {
         if (this.selectedCases && !this.selectedCases.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
@@ -141,6 +120,7 @@ export class SearchResultComponent implements OnChanges, AfterViewInit {
         }
       }
     }
+    this.sessionStorageService.removeItem('eventUrl');
     this.selection.emit(this.selectedCases);
   }
 
@@ -163,13 +143,18 @@ export class SearchResultComponent implements OnChanges, AfterViewInit {
 
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
-
-      this.cdr.detectChanges();
     }
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
-      this.cdr.detectChanges();
     }
+  }
+
+  public get resultTotal(): number {
+    const total = this.paginationMetadata.total_results_count;
+    const maximumResultReached = total >= this.PAGINATION_MAX_ITEM_RESULT;
+    this.paginationLimitEnforced = maximumResultReached;
+
+    return maximumResultReached ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }
 
   public clearSelection(): void {
@@ -399,6 +384,31 @@ export class SearchResultComponent implements OnChanges, AfterViewInit {
     return result.case_id.startsWith(DRAFT_PREFIX) ? DRAFT_PREFIX : this.hyphenateIfCaseReferenceOrGet(col, result);
   }
 
+  public isSortAscending(column: SearchResultViewColumn): boolean {
+    const currentSortOrder = this.currentSortOrder(column);
+
+    return currentSortOrder === SortOrder.UNSORTED || currentSortOrder === SortOrder.DESCENDING;
+  }
+
+  private currentSortOrder(column: SearchResultViewColumn): SortOrder {
+
+    let isAscending = true;
+    let isDescending = true;
+
+    if (this.comparator(column) === undefined) {
+      return SortOrder.UNSORTED;
+    }
+    for (let i = 0; i < this.resultView.results.length - 1; i++) {
+      const comparison = this.comparator(column).compare(this.resultView.results[i], this.resultView.results[i + 1]);
+      isDescending = isDescending && comparison <= 0;
+      isAscending = isAscending && comparison >= 0;
+      if (!isAscending && !isDescending) {
+        break;
+      }
+    }
+    return isAscending ? SortOrder.ASCENDING : isDescending ? SortOrder.DESCENDING : SortOrder.UNSORTED;
+  }
+
   public getFirstResult(): number {
     const currentPage = (this.selected.page ? this.selected.page : 1);
     return ((currentPage - 1) * this.paginationPageSize) + 1 + this.getDraftsCountIfNotPageOne(currentPage);
@@ -424,6 +434,14 @@ export class SearchResultComponent implements OnChanges, AfterViewInit {
     return url;
   }
 
+  private getDraftsCountIfNotPageOne(currentPage): number {
+    return currentPage > 1 ? this.draftsCount : 0;
+  }
+
+  private numberOfDrafts(): number {
+    return this.resultView.results.filter(_ => _.case_id.startsWith(DRAFT_PREFIX)).length;
+  }
+
   public goToCase(caseId: string) {
     this.clickCase.emit({
       caseId
@@ -436,42 +454,5 @@ export class SearchResultComponent implements OnChanges, AfterViewInit {
         this.changeSelection(c);
       }
     }
-  }
-
-  public isSortAscending(column: SearchResultViewColumn): boolean {
-    const currentSortOrder = this.currentSortOrder(column);
-
-    return currentSortOrder === SortOrder.UNSORTED || currentSortOrder === SortOrder.DESCENDING;
-  }
-
-  public sortLabelText(label: string, isAscending: boolean): string {
-    return `Sort by ${label} ${ isAscending ? 'ascending' : 'descending'}`;
-  }
-
-  private currentSortOrder(column: SearchResultViewColumn): SortOrder {
-
-    let isAscending = true;
-    let isDescending = true;
-
-    if (this.comparator(column) === undefined) {
-      return SortOrder.UNSORTED;
-    }
-    for (let i = 0; i < this.resultView.results.length - 1; i++) {
-      const comparison = this.comparator(column).compare(this.resultView.results[i], this.resultView.results[i + 1]);
-      isDescending = isDescending && comparison <= 0;
-      isAscending = isAscending && comparison >= 0;
-      if (!isAscending && !isDescending) {
-        break;
-      }
-    }
-    return isAscending ? SortOrder.ASCENDING : isDescending ? SortOrder.DESCENDING : SortOrder.UNSORTED;
-  }
-
-  private getDraftsCountIfNotPageOne(currentPage): number {
-    return currentPage > 1 ? this.draftsCount : 0;
-  }
-
-  private numberOfDrafts(): number {
-    return this.resultView.results.filter(_ => _.case_id.startsWith(DRAFT_PREFIX)).length;
   }
 }

@@ -3,7 +3,10 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { AlertModule } from '../../../components/banners/alert';
+import { RpxTranslationModule } from 'rpx-xui-translation';
+import { AlertModule } from '../../../components/banners/alert/alert.module';
+import { BannersModule } from '../../../components/banners/banners.module';
+import { NotificationBannerModule } from '../../../components/banners/notification-banner/notification-banner.module';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CaseReferencePipe } from '../../pipes';
 import {
@@ -19,12 +22,13 @@ import { ActivityModule } from '../activity';
 import { CaseEditorModule, CaseNotifier, ConvertHrefToRouterService } from '../case-editor';
 import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
-import { ErrorsModule } from '../error/errors.module';
 import { EventMessageModule } from '../error-message/error-message.module';
+import { ErrorsModule } from '../error/errors.module';
 import { EventStartModule } from '../event-start/event-start.module';
 import { EventTriggerModule } from '../event-trigger';
+import { LoadingSpinnerModule } from '../loading-spinner/loading-spinner.module';
 import { PaletteModule } from '../palette';
-import { CaseBasicAccessViewComponent } from './case-basic-access-view/case-basic-access-view.component';
+import { CaseBasicAccessViewComponent } from './case-basic-access-view';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request/case-challenged-access-request.component';
 import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-success/case-challenged-access-success.component';
 import { CaseEventTriggerComponent } from './case-event-trigger';
@@ -37,7 +41,6 @@ import { CaseViewComponent } from './case-view';
 import { CaseViewerComponent } from './case-viewer.component';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseResolver, EventTriggerResolver } from './services';
-import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @NgModule({
   imports: [
@@ -48,7 +51,6 @@ import { RpxTranslationModule } from 'rpx-xui-translation';
     CaseHeaderModule,
     EventStartModule,
     EventTriggerModule,
-    EventMessageModule,
     PaletteModule,
     CaseEditorModule,
     ConditionalShowModule,
@@ -57,15 +59,19 @@ import { RpxTranslationModule } from 'rpx-xui-translation';
     ReactiveFormsModule,
     AlertModule,
     LabelSubstitutorModule,
-    RpxTranslationModule.forChild()
+    RpxTranslationModule.forChild(),
+    BannersModule,
+    LabelSubstitutorModule,
+    LoadingSpinnerModule,
+    EventMessageModule
   ],
   declarations: [
     CaseEventTriggerComponent,
     CasePrinterComponent,
     CaseViewerComponent,
-    CaseBasicAccessViewComponent,
     CaseFullAccessViewComponent,
     CaseViewComponent,
+    CaseBasicAccessViewComponent,
     PrintUrlPipe,
     CaseChallengedAccessRequestComponent,
     CaseSpecificAccessRequestComponent,

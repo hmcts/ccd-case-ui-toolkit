@@ -63,7 +63,13 @@ const APP_CONFIG: AbstractAppConfig = {
     getAccessManagementRequestReviewMockModel: () => ({}),
     getCamRoleAssignmentsApiUrl: () => 'camRoleAssignmentsApiUrl',
     getLocationRefApiUrl: () => 'locationRefApiUrl',
-    getPaymentReturnUrl: () => 'paymentReturnUrl'
+    getPaymentReturnUrl: () => 'paymentReturnUrl',
+    getCategoriesAndDocumentsUrl: () => 'categoriesAndDocumentsUrl',
+    getDocumentDataUrl: () => 'documentDataUrl',
+    getCaseFlagsRefdataApiUrl: () => 'caseFlagsRefdataApiUrl',
+    getRDCommonDataApiUrl: () => 'rd_common_data_api_url',
+    getCaseDataStoreApiUrl: () => 'case_data_store_api_url',
+    getWAServiceConfig: () => 'waServiceConfig'
   };
 
   let PaymentWebComponent;
@@ -89,7 +95,8 @@ describe('Ways To Pay Component', () => {
             'EXC_REFERENCE',
             'DCN_NUMBER',
             'LOGGEDINUSERROLES',
-            'CARDPAYMENTRETURNURL'
+            'CARDPAYMENTRETURNURL',
+            'ISPAYMENTSTATUSENABLED'
           ]});
 
         TestBed

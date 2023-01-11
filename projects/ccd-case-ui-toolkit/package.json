@@ -1,6 +1,6 @@
 {
     "name": "@hmcts/ccd-case-ui-toolkit",
-    "version": "5.0.13-angular11-upgrade",
+    "version": "5.0.44-angular11-updgrade-welsh-release-v5",
     "engines": {
       "yarn": "^1.22.15",
       "npm": "^8.10.0"
@@ -14,5 +14,4 @@
     "publishConfig": {
       "access": "public"
     }
-  }
-  
+}

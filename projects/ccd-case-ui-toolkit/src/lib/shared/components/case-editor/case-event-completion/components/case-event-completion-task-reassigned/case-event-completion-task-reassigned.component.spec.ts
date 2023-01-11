@@ -9,6 +9,7 @@ import { Caseworker } from '../../../../../domain/work-allocation/case-worker.mo
 import { Judicialworker } from '../../../../../domain/work-allocation/judicial-worker.model';
 import { Task } from '../../../../../domain/work-allocation/Task';
 import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../../../services';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { CaseworkerService, JudicialworkerService, WorkAllocationService } from '../../../services';
 import { COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
 import { CaseEventCompletionTaskReassignedComponent } from './case-event-completion-task-reassigned.component';
@@ -88,7 +89,7 @@ describe('TaskReassignedComponent', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = jasmine.createSpyObj('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockSessionStorageService);
   mockCaseworkerService = new CaseworkerService(httpService, appConfig, errorService);
   mockJudicialworkerService = new JudicialworkerService(httpService, appConfig, errorService);
 
@@ -106,7 +107,7 @@ describe('TaskReassignedComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(task));
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [CaseEventCompletionTaskReassignedComponent],
+      declarations: [CaseEventCompletionTaskReassignedComponent, MockRpxTranslatePipe],
       providers: [
         {provide: ActivatedRoute, useValue: mockRoute},
         {provide: AlertService, useValue: alertService},

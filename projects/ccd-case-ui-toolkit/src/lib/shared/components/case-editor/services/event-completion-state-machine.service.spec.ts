@@ -74,7 +74,7 @@ describe('EventCompletionStateMachineService', () => {
   httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
   errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
   alertService = createSpyObj<AlertService>('alertService', ['clear', 'warning', 'setPreserveAlerts']);
-  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService);
+  mockWorkAllocationService = new WorkAllocationService(httpService, appConfig, errorService, alertService, mockSessionStorageService);
 
   const context: EventCompletionStateMachineContext = {
     task: oneTask,

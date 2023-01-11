@@ -1,11 +1,11 @@
+<ccd-loading-spinner  *ngIf="showSpinner"></ccd-loading-spinner>
 <div>
-  <cut-alert type="information">{{'This case requires' | rpxTranslate}} {{accessType | rpxTranslate | lowercase}} {{'access' | rpxTranslate}}.<br />
-    <ng-container *ngIf="accessType === 'CHALLENGED'">
-      {{'This is because the case is outside your work area. If you request access to the case, it will be logged for auditing purposes.' | rpxTranslate}}
-    </ng-container>
-    <ng-container *ngIf="accessType === 'SPECIFIC'">
-      {{"This means it's outside your jurisdiction and requires authorisation. If you request access to the case, it will be logged for auditing purposes." | rpxTranslate}}
-    </ng-container>
+  <cut-alert type="information">
+    <ng-container *ngIf="accessType === 'CHALLENGED'">{{'This case requires' | rpxTranslate}} {{accessType | rpxTranslate | lowercase}} {{'access' | rpxTranslate}}.</ng-container>
+    <ng-container *ngIf="accessType === 'SPECIFIC'">{{'Authorisation is needed to access this case' | rpxTranslate}}</ng-container>
+    <br />
+    <ng-container *ngIf="accessType === 'CHALLENGED'">{{'This is because the case is outside your work area. If you request access to the case, it will be logged for auditing purposes' | rpxTranslate}}.</ng-container>
+    <ng-container *ngIf="accessType === 'SPECIFIC'">{{"This could be because it's outside your jurisdiction, or you may be excluded from the case. If you request access to this case, it will be logged for auditing purposes" | rpxTranslate }}.</ng-container>
   </cut-alert>
   <h1 class="heading-h1">#{{ caseDetails.case_id | ccdCaseReference}}</h1>
   <h2 class="govuk-heading-m">{{'Case details' | rpxTranslate}}</h2>

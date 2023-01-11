@@ -11,6 +11,7 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { ProfileNotifier } from '../../../services';
 import { FormValidatorsService } from '../../../services/form';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
 import { PaletteUtilsModule } from '../utils';
 import { CollectionCreateCheckerService } from './collection-create-checker.service';
@@ -50,11 +51,11 @@ const $ADD_BUTTON_TOP = By.css('.write-collection-add-item__top');
 const $ADD_BUTTON_BOTTOM = By.css('.write-collection-add-item__bottom');
 const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
-const FieldWriteComponent = MockComponent({
+const fieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
   inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
 });
-const FieldReadComponent = MockComponent({
+const fieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
   inputs: ['caseField', 'caseFields', 'formGroup', 'context']
 });
@@ -114,8 +115,9 @@ describe('WriteCollectionFieldComponent', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
-          FieldWriteComponent,
-          FieldReadComponent
+          MockRpxTranslatePipe,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -162,8 +164,8 @@ describe('WriteCollectionFieldComponent', () => {
     const field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
     const field2 = de.queryAll($WRITE_FIELDS)[1].componentInstance;
 
-    expect(field1.idPrefix).toEqual(caseField.id + '_');
-    expect(field2.idPrefix).toEqual(caseField.id + '_');
+    expect(field1.idPrefix).toEqual(`${caseField.id}_`);
+    expect(field2.idPrefix).toEqual(`${caseField.id}_`);
   });
 
   it('should pass ID prefix with index when Complex type', () => {
@@ -174,8 +176,8 @@ describe('WriteCollectionFieldComponent', () => {
     const field1 = de.queryAll($WRITE_FIELDS)[0].componentInstance;
     const field2 = de.queryAll($WRITE_FIELDS)[1].componentInstance;
 
-    expect(field1.idPrefix).toEqual(caseField.id + '_' + 0 + '_');
-    expect(field2.idPrefix).toEqual(caseField.id + '_' + 1 + '_');
+    expect(field1.idPrefix).toEqual(`${caseField.id}_${0}_`);
+    expect(field2.idPrefix).toEqual(`${caseField.id}_${1}_`);
   });
 
   it('should add empty item to collection when add button is clicked', () => {
@@ -362,8 +364,9 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
-          FieldWriteComponent,
-          FieldReadComponent
+          MockRpxTranslatePipe,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -477,8 +480,9 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
-          FieldWriteComponent,
-          FieldReadComponent
+          MockRpxTranslatePipe,
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -507,5 +511,111 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     const updatedCaseField = component.buildCaseField(collectionItem, 0);
 
     expect(updatedCaseField.display_context).toEqual('READONLY');
+  });
+});
+
+describe('WriteCollectionFieldComponent remove component from collection', () => {
+  let fixture: ComponentFixture<WriteCollectionFieldComponent>;
+  let component: WriteCollectionFieldComponent;
+  let de: DebugElement;
+  let formValidatorService: any;
+  let dialog: any;
+  let dialogRef: any;
+  let scrollToService: any;
+  let profileNotifier: any;
+  let caseField: CaseField;
+  let formGroup: FormGroup;
+  let collectionCreateCheckerService: CollectionCreateCheckerService;
+
+  beforeEach(waitForAsync(() => {
+    formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+    dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of());
+    dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
+    dialog.open.and.returnValue(dialogRef);
+    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
+    scrollToService.scrollTo.and.returnValue(of());
+    caseField = (({
+      id: FIELD_ID,
+      label: 'X',
+      field_type: COMPLEX_FIELD_TYPE,
+      display_context: 'OPTIONAL',
+      display_context_parameter: '#COLLECTION(allowInsert)',
+      value: VALUES.slice(0),
+      acls: [
+        {
+          role: 'caseworker-divorce',
+          create: true,
+          read: true,
+          update: true,
+          delete: true
+        }
+      ]
+    }) as CaseField);
+    formGroup = new FormGroup({
+      field1: new FormControl()
+    });
+
+    profileNotifier = new ProfileNotifier();
+    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+
+    collectionCreateCheckerService = new CollectionCreateCheckerService();
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          PaletteUtilsModule
+        ],
+        declarations: [
+          WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
+          fieldWriteComponent,
+          fieldReadComponent
+        ],
+        providers: [
+          { provide: FormValidatorsService, useValue: formValidatorService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: ScrollToService, useValue: scrollToService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
+          RemoveDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(WriteCollectionFieldComponent);
+    component = fixture.componentInstance;
+    component.caseField = caseField;
+    component.caseFields = [caseField];
+    component.formGroup = formGroup;
+    component.ngOnInit();
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  }));
+
+  it('should remove item from collection when remove button is clicked and update the index', () => {
+    const tempCaseField = ({
+      ...caseField,
+      display_context_parameter: '#COLLECTION(allowInsert,allowDelete)'
+    }) as CaseField;
+    component.caseField = tempCaseField;
+    component.caseFields = [tempCaseField];
+    fixture.detectChanges();
+    // Confirm removal through mock dialog
+    dialogRef.afterClosed.and.returnValue(of('Remove'));
+
+    const removeButtons = de.queryAll($REMOVE_BUTTONS);
+
+    const removeFirstButton = removeButtons[0];
+    removeFirstButton.nativeElement.click();
+    fixture.detectChanges();
+
+    const writeFields = de.queryAll($WRITE_FIELDS);
+    expect(writeFields.length).toBe(VALUES.length - 1);
+    expect(component.formArray.controls.length).toBe(1);
+    expect(component.formArray['component'].collItems[0].index).toEqual(0);
+    expect(component.formArray['component'].collItems[0].caseField.id).toEqual('0');
+    expect(component.formArray['component'].collItems[0].prefix).toEqual('Values_0_');
   });
 });

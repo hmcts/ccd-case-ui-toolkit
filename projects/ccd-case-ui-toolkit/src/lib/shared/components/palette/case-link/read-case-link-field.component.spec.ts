@@ -1,11 +1,11 @@
-import { DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { CaseField, FieldType } from '../../../domain';
+import { CaseReferencePipe } from '../../../pipes';
 import { ReadCaseLinkFieldComponent } from './read-case-link-field.component';
+
 
 const $LINK = By.css('a');
 const CASE_REFERENCE_RAW = '1234123412341238';
@@ -16,7 +16,11 @@ describe('ReadCaseLinkFieldComponent', () => {
   const FIELD_ID = 'ReadOnlyFieldId';
   const FIELD_TYPE: FieldType = {
     id: 'CaseLink',
-    type: 'Complex'
+    type: 'Complex',
+    collection_field_type: {
+      id: 'CaseLink',
+      type: 'Complex',
+    }
   };
   const VALUE = {
     CaseReference: CASE_REFERENCE_RAW
@@ -40,6 +44,7 @@ describe('ReadCaseLinkFieldComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
           declarations: [
             ReadCaseLinkFieldComponent,
             CaseReferencePipe
@@ -102,6 +107,7 @@ describe('ReadCaseLinkFieldComponent', () => {
       TestBed
         .configureTestingModule({
           imports: [],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
           declarations: [
             ReadCaseLinkFieldComponent,
             CaseReferencePipe

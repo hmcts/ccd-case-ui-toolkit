@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
+import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
 import { DatePipe } from '../../utils';
 import { EventLogTableComponent } from './event-log-table.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -72,7 +73,8 @@ describe('EventLogTableComponent', () => {
           imports: [RouterTestingModule],
           declarations: [
             EventLogTableComponent,
-            DatePipe
+            DatePipe,
+            MockRpxTranslatePipe
           ],
           providers: [FormatTranslatorService]
         })
@@ -175,8 +177,8 @@ describe('EventLogTableComponent', () => {
       const links = de.queryAll($TABLE_ROW_LINKS_STANDALONE);
 
       expect(links.length).toBe(2);
-      expect(links[0].nativeElement.getAttribute('href')).toBe('/event/5/history');
-      expect(links[1].nativeElement.getAttribute('href')).toBe('/event/4/history');
+      expect(links[0].nativeElement.getAttribute('href')).toContain('/event/5/history');
+      expect(links[1].nativeElement.getAttribute('href')).toContain('/event/4/history');
     });
 
     it('should display icon if significant item exist', () => {
@@ -208,7 +210,8 @@ describe('EventLogTableComponent', () => {
           imports: [RouterTestingModule],
           declarations: [
             EventLogTableComponent,
-            DatePipe
+            DatePipe,
+            MockRpxTranslatePipe
           ],
           providers: [FormatTranslatorService]
         })

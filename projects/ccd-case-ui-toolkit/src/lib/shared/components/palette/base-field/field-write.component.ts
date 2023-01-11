@@ -1,9 +1,8 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
-
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { CaseField } from '../../../domain/definition';
+import { FormValidatorsService } from '../../../services/form';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 
@@ -30,17 +29,15 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     super();
   }
 
+  protected addValidators(caseField: CaseField, control: AbstractControl): void {
+    FormValidatorsService.addValidators(caseField, control);
+  }
+
   public ngOnInit(): void {
     const componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
-    const injectorOptions = {
-      providers: [],
-      parent: this.fieldContainer?.injector
-    };
 
-    const injector = Injector.create(injectorOptions);
-
-    const factory = this.resolver.resolveComponentFactory(componentClass);
-    const component = this.fieldContainer.createComponent(factory, 0, injector);
+    const injector = Injector.create([], this.fieldContainer.parentInjector);
+    const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Only Fixed list use plainToClassFromExist
     // Better performance
@@ -60,14 +57,11 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     }
     component.instance['isExpanded'] = this.isExpanded;
     component.instance['isInSearchBlock'] = this.isInSearchBlock;
+
     this.fieldContainer.insert(component.hostView);
 
     // EUI-3267.
     // Set up the flag for whether this can have a grey bar.
     this.canHaveGreyBar = this.caseField.show_condition && this.caseField.field_type.type !== 'Collection';
-  }
-
-  protected addValidators(caseField: CaseField, control: AbstractControl): void {
-    FormValidatorsService.addValidators(caseField, control);
   }
 }

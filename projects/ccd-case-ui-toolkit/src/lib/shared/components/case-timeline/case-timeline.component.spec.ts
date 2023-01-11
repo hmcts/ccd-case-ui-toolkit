@@ -1,93 +1,95 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { CaseView, CaseViewEvent, HttpError } from '../../domain';
 import { AlertService } from '../../services';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { CaseNotifier, CasesService } from '../case-editor';
 import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
 import createSpyObj = jasmine.createSpyObj;
 
-const CASE_EVENTS: CaseViewEvent[] = [
-  {
-    id: 5,
-    timestamp: '2017-05-10T10:00:00.000',
-    summary: 'Case updated again!',
-    comment: 'Latest update',
-    event_id: 'updateCase',
-    event_name: 'Update a case',
-    state_id: 'CaseUpdated',
-    state_name: 'Case Updated',
-    user_id: 0,
-    user_last_name: 'smith',
-    user_first_name: 'justin',
-    significant_item: {
-      type: 'DOCUMENT',
-      description: 'First document description',
-      url: 'https://google.com'
-    }
-  },
-  {
-    id: 4,
-    timestamp: '2017-05-09T16:07:03.973',
-    summary: 'Case updated!',
-    comment: 'Plop plop',
-    event_id: 'updateCase',
-    event_name: 'Update a case',
-    state_id: 'CaseUpdated',
-    state_name: 'Case Updated',
-    user_id: 0,
-    user_last_name: 'chan',
-    user_first_name: 'phillip',
-    significant_item: {
-      type: 'NON-DOCUMENT',
-      description: 'Second document description',
-      url: 'https://google.com'
-    }
-  }
-];
-const CASE_REFERENCE = '1234123412341234';
-const CASE_VIEW: CaseView = {
-  case_id: CASE_REFERENCE,
-  case_type: {
-    id: 'TestAddressBookCase',
-    name: 'Test Address Book Case',
-    jurisdiction: {
-      id: 'TEST',
-      name: 'Test',
-    }
-  },
-  channels: [],
-  state: {
-    id: 'CaseCreated',
-    name: 'Case created'
-  },
-  tabs: [],
-  triggers: [],
-  events: CASE_EVENTS
-};
-const CASE_VIEW_OBS: Observable<CaseView> = of(CASE_VIEW);
-
-let EventLogComponent;
-let CaseHistoryComponent;
-let caseNotifier;
-let casesService;
-let alertService: any;
-
-let fixture: ComponentFixture<CaseTimelineComponent>;
-let component: CaseTimelineComponent;
-let de: DebugElement;
-
-EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
-  'events'
-]});
-
-CaseHistoryComponent = MockComponent({ selector: 'ccd-case-history', inputs: [
-  'event'
-]});
-
 describe('CaseTimelineComponent', () => {
+
+  const CASE_EVENTS: CaseViewEvent[] = [
+    {
+      id: 5,
+      timestamp: '2017-05-10T10:00:00.000',
+      summary: 'Case updated again!',
+      comment: 'Latest update',
+      event_id: 'updateCase',
+      event_name: 'Update a case',
+      state_id: 'CaseUpdated',
+      state_name: 'Case Updated',
+      user_id: 0,
+      user_last_name: 'smith',
+      user_first_name: 'justin',
+      significant_item: {
+        type: 'DOCUMENT',
+        description: 'First document description',
+        url: 'https://google.com'
+      }
+    },
+    {
+      id: 4,
+      timestamp: '2017-05-09T16:07:03.973',
+      summary: 'Case updated!',
+      comment: 'Plop plop',
+      event_id: 'updateCase',
+      event_name: 'Update a case',
+      state_id: 'CaseUpdated',
+      state_name: 'Case Updated',
+      user_id: 0,
+      user_last_name: 'chan',
+      user_first_name: 'phillip',
+      significant_item: {
+        type: 'NON-DOCUMENT',
+        description: 'Second document description',
+        url: 'https://google.com'
+      }
+    }
+  ];
+  const CASE_REFERENCE = '1234123412341234';
+  const CASE_VIEW: CaseView = {
+    case_id: CASE_REFERENCE,
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test',
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: CASE_EVENTS
+  };
+  const CASE_VIEW_OBS: Observable<CaseView> = of(CASE_VIEW);
+
+  let EventLogComponent;
+  let CaseHistoryComponent;
+  let caseNotifier;
+  let casesService;
+  let alertService: any;
+
+  let fixture: ComponentFixture<CaseTimelineComponent>;
+  let component: CaseTimelineComponent;
+  let de: DebugElement;
+  casesService = createSpyObj('casesService', ['getCaseViewV2']);
+  EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
+    'events'
+  ]});
+
+  CaseHistoryComponent = MockComponent({ selector: 'ccd-case-history', inputs: [
+    'event'
+  ]});
+
   describe('CaseTimelineComponent successfully resolves case view', () => {
 
     const $BACK_TO_TIMELINE_LINK = By.css('div>div>ol>li>a');
@@ -100,7 +102,7 @@ describe('CaseTimelineComponent', () => {
       alertService = createSpyObj('alertService', ['error']);
       alertService.error.and.returnValue(of({}));
 
-      caseNotifier = new CaseNotifier();
+      caseNotifier = new CaseNotifier(casesService);
       caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
       TestBed
@@ -112,6 +114,7 @@ describe('CaseTimelineComponent', () => {
             // Mocks
             EventLogComponent,
             CaseHistoryComponent,
+            MockRpxTranslatePipe,
           ],
           providers: [
             { provide: CaseNotifier, useValue: caseNotifier },
@@ -154,7 +157,7 @@ describe('CaseTimelineComponent', () => {
       fixture.detectChanges();
 
       const link = de.query($BACK_TO_TIMELINE_LINK);
-      expect(link.nativeElement.textContent).toBe('Back to case timeline');
+      expect(link.nativeElement.textContent).toBe(' Back to case timeline ');
 
       const caseHistoryDe = de.query(By.directive(CaseHistoryComponent));
       expect(caseHistoryDe).toBeDefined();
@@ -211,6 +214,7 @@ describe('CaseTimelineComponent', () => {
             // Mocks
             EventLogComponent,
             CaseHistoryComponent,
+            MockRpxTranslatePipe,
           ],
           providers: [
             { provide: CaseNotifier, useValue: caseNotifier },

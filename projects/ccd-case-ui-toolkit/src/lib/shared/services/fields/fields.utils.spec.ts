@@ -1,5 +1,5 @@
 import { CaseTab, CaseView } from '../../domain/case-view';
-import { CaseField } from '../../domain/definition/case-field.model';
+import { CaseField, FieldType } from '../../domain/definition';
 import { aCaseField } from '../../fixture/shared.test.fixture';
 import { FieldsUtils } from './fields.utils';
 
@@ -541,5 +541,188 @@ describe('FieldsUtils', () => {
 
       expect(callbackResponse).toEqual(expected);
     });
+  });
+
+  describe('isFlagsCaseField() function test', () => {
+    it('should return false if case field is null', () => {
+      expect(FieldsUtils.isFlagsCaseField(null)).toBe(false);
+    });
+
+    it('should return false if field type ID is not "Flags"', () => {
+      const caseField = aCaseField('flags', 'flags', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isFlagsCaseField(caseField)).toBe(false);
+    });
+
+    it('should return false if field type ID is "Flags" but field type is not Complex', () => {
+      const caseField = aCaseField('flags', 'flags', 'Flags', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isFlagsCaseField(caseField)).toBe(false);
+    });
+
+    it('should return true if field type ID is "Flags" and field type is Complex', () => {
+      const caseField = aCaseField('flags', 'flags', 'Complex', 'OPTIONAL', null, [], false, true);
+      caseField.field_type.id = 'Flags';
+      expect(FieldsUtils.isFlagsCaseField(caseField)).toBe(true);
+    });
+  });
+
+  describe('isFlagLauncherCaseField() function test', () => {
+    it('should return false if case field is null', () => {
+      expect(FieldsUtils.isFlagLauncherCaseField(null)).toBe(false);
+    });
+
+    it('should return false if case field is not of type FlagLauncher', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isFlagLauncherCaseField(caseField)).toBe(false);
+    });
+
+    it('should return true if case field is of type FlagLauncher', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isFlagLauncherCaseField(caseField)).toBe(true);
+    });
+  });
+
+  describe('isFlagsFieldType() function test', () => {
+    it('should return false if field type is null', () => {
+      expect(FieldsUtils.isFlagsFieldType(null)).toBe(false);
+    });
+
+    it('should return false if field type ID is not "Flags"', () => {
+      const fieldType = {
+        id: 'flags',
+        type: 'Complex'
+      } as FieldType;
+      expect(FieldsUtils.isFlagsFieldType(fieldType)).toBe(false);
+    });
+
+    it('should return false if field type ID is "Flags" but field type is not Complex', () => {
+      const fieldType = {
+        id: 'Flags',
+        type: 'Flags'
+      } as FieldType;
+      expect(FieldsUtils.isFlagsFieldType(fieldType)).toBe(false);
+    });
+
+    it('should return true if field type ID is "Flags" and field type is Complex', () => {
+      const fieldType = {
+        id: 'Flags',
+        type: 'Complex'
+      } as FieldType;
+      expect(FieldsUtils.isFlagsFieldType(fieldType)).toBe(true);
+    });
+  });
+
+  describe('extractFlagsDataFromCaseField() function test', () => {
+    it('should extract flags data from a root-level Flags case field', () => {
+      const caseField = {
+        id: 'party1Flags',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {
+          partyName: 'Party 1',
+          roleOnCase: null,
+          details: []
+        }
+      } as CaseField;
+      expect(FieldsUtils.extractFlagsDataFromCaseField([], caseField, caseField.id, caseField)).toEqual([
+        {
+          caseField,
+          pathToFlagsFormGroup: caseField.id,
+          flags: {
+            flagsCaseFieldId: caseField.id,
+            partyName: 'Party 1',
+            roleOnCase: null,
+            details: null
+          }
+        }
+      ]);
+    });
+
+    it('should not fail if the root-level Flags case field is the special "caseFlags" field and its value is an empty object', () => {
+      const caseField = {
+        id: 'caseFlags',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: {}
+      } as CaseField;
+      expect(FieldsUtils.extractFlagsDataFromCaseField([], caseField, caseField.id, caseField)).toEqual([
+        {
+          caseField,
+          pathToFlagsFormGroup: caseField.id,
+          flags: {
+            flagsCaseFieldId: caseField.id,
+            partyName: undefined,
+            roleOnCase: undefined,
+            details: null
+          }
+        }
+      ]);
+    });
+
+    it('should not fail if the root-level Flags case field is the special "caseFlags" field and its value is null', () => {
+      const caseField = {
+        id: 'caseFlags',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        value: null
+      } as CaseField;
+      expect(FieldsUtils.extractFlagsDataFromCaseField([], caseField, caseField.id, caseField)).toEqual([
+        {
+          caseField,
+          pathToFlagsFormGroup: caseField.id,
+          flags: {
+            flagsCaseFieldId: caseField.id,
+            partyName: null,
+            roleOnCase: null,
+            details: null
+          }
+        }
+      ]);
+    });
+
+    it('should not fail if the root-level Flags case field is the special "caseFlags" field and its value is undefined', () => {
+      const caseField = {
+        id: 'caseFlags',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType
+      } as CaseField;
+      expect(FieldsUtils.extractFlagsDataFromCaseField([], caseField, caseField.id, caseField)).toEqual([
+        {
+          caseField,
+          pathToFlagsFormGroup: caseField.id,
+          flags: {
+            flagsCaseFieldId: caseField.id,
+            partyName: null,
+            roleOnCase: null,
+            details: null
+          }
+        }
+      ]);
+    });
+  });
+});
+
+describe('isLinkedCasesCaseField function test', () => {
+  it('should return false if case field is null', () => {
+    expect(FieldsUtils.isLinkedCasesCaseField(null)).toBe(false);
+  });
+
+  it('should return false if case field is not of type LinkedCases', () => {
+    const caseField = aCaseField('collection', 'Collection', 'Collection', 'OPTIONAL', null);
+    caseField.field_type.collection_field_type = { id: 'SomethingElse', type: null };
+    expect(FieldsUtils.isLinkedCasesCaseField(caseField)).toBe(false);
+  });
+
+  it('should return true if case field is of type LinkedCases', () => {
+    const caseField = aCaseField('collection', 'Collection', 'Collection', 'OPTIONAL', null);
+    caseField.field_type.collection_field_type = { id: 'CaseLink', type: null };
+    expect(FieldsUtils.isLinkedCasesCaseField(caseField)).toBe(true);
   });
 });

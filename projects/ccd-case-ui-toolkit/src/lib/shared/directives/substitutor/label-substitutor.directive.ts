@@ -43,8 +43,12 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.caseField.label = this.initialLabel;
-    this.caseField.hint_text = this.initialHintText;
+    if (this.initialLabel) {
+      this.caseField.label = this.initialLabel;
+    }
+    if (this.initialHintText) {
+      this.caseField.hint_text = this.initialHintText;
+    }
   }
 
   private shouldSubstitute(element: string): boolean {

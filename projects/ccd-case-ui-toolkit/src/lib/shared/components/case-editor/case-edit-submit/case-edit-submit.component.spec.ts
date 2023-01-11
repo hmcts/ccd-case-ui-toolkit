@@ -1,5 +1,6 @@
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,6 +27,7 @@ import {
   SessionStorageService
 } from '../../../services';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CallbackErrorsContext } from '../../error';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
@@ -273,6 +275,8 @@ describe('CaseEditSubmitComponent', () => {
   let profileNotifier: ProfileNotifier;
   let profileNotifierSpy: jasmine.Spy;
   let casesReferencePipe: jasmine.SpyObj<CaseReferencePipe>;
+  let populateFlagDetailsSpy: jasmine.Spy;
+  let removeFlagLauncherFieldSpy: jasmine.Spy;
   const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
   const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
@@ -300,6 +304,7 @@ describe('CaseEditSubmitComponent', () => {
     nestedComplexCaseField.field_type);
   const nestedComplexCollectionField: CaseField = createCaseField('collectionField1', 'collectionField1', '',
     nestedComplexCollectionFieldType, 'OPTIONAL', 1, null, null, true);
+  const flagLauncherCaseField: CaseField = aCaseField('flagLauncher1', 'flagLauncher1', 'FlagLauncher', 'OPTIONAL', 1);
   const $EVENT_NOTES = By.css('#fieldset-event');
   let cancelled: any;
 
@@ -357,6 +362,7 @@ describe('CaseEditSubmitComponent', () => {
   const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
   const ERROR_HEADING_SPECIFIC = 'The event could not be created';
   const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors';
+  const REVIEW_FLAG_DETAILS_PAGE_TITLE = 'Review flag details';
 
   describe('Save and Resume disabled', () => {
     const pages: WizardPage[] = [
@@ -394,7 +400,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -406,7 +412,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -693,7 +700,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -705,7 +712,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdPageFieldsPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -833,7 +841,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -845,7 +853,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1072,7 +1081,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1083,7 +1092,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1211,7 +1221,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1222,7 +1232,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1353,7 +1364,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1364,7 +1375,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1494,7 +1506,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1505,7 +1517,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1521,7 +1534,7 @@ describe('CaseEditSubmitComponent', () => {
           {provide: SessionStorageService, useValue: sessionStorageService},
           {provide: Router, useValue: mockRouter},
           PlaceholderService,
-          {provide: CaseNotifier, useValue: mockCaseNotifier},
+          {provide: CaseNotifier, useValue: mockCaseNotifier}
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -1559,6 +1572,8 @@ describe('CaseEditSubmitComponent', () => {
     firstPage.case_fields = [complexCollectionField, caseField3];
     const wizard: Wizard = new Wizard(pages);
     const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    let casesService: any;
+    casesService = createSpyObj('casesService', ['getCaseViewV2']);
     const snapshotNoProfile = {
       pathFromRoot: [
         {},
@@ -1588,7 +1603,7 @@ describe('CaseEditSubmitComponent', () => {
     };
     const CASE_CACHED: CaseView = new CaseView();
     CASE_CACHED.case_id = 'CACHED_CASE_ID_1';
-    mockCaseNotifier = new CaseNotifier();
+    mockCaseNotifier = new CaseNotifier(casesService);
     mockCaseNotifier.cachedCaseView = CASE_CACHED;
 
     beforeEach(() => {
@@ -1642,7 +1657,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1653,7 +1668,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1831,7 +1847,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1842,7 +1858,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1965,7 +1982,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -1976,7 +1993,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2098,7 +2116,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2109,7 +2127,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2242,7 +2261,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2253,7 +2272,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2395,7 +2415,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2406,7 +2426,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2554,7 +2575,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2565,7 +2586,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2694,7 +2716,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2705,7 +2727,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2837,7 +2860,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2848,7 +2871,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2980,7 +3004,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -2991,7 +3015,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3122,7 +3147,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3133,7 +3158,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3269,7 +3295,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3280,7 +3306,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3418,7 +3445,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3429,7 +3456,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3567,7 +3595,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3578,7 +3606,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3727,7 +3756,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3738,7 +3767,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3886,7 +3916,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -3897,7 +3927,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -4039,7 +4070,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
       TestBed.configureTestingModule({
@@ -4050,7 +4081,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -4196,7 +4228,7 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
-      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
 
       TestBed.configureTestingModule({
         declarations: [
@@ -4206,7 +4238,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -4295,6 +4328,133 @@ describe('CaseEditSubmitComponent', () => {
         event_token: undefined,
         ignore_warning: false
       });
+    });
+  });
+
+  describe('Tests for Case Flag submission', () => {
+    const pages: WizardPage[] = [
+      aWizardPage('page1', 'Page 1', 1),
+    ];
+    const firstPage = pages[0];
+    const WP_FIELD_1: WizardPageField = {case_field_id: flagLauncherCaseField.id};
+    firstPage.wizard_page_fields = [WP_FIELD_1];
+    firstPage.case_fields = [flagLauncherCaseField];
+    const wizard: Wizard = new Wizard(pages);
+    const queryParamMapNoProfile = createSpyObj('queryParamMap', ['get']);
+    const snapshotNoProfile = {
+      pathFromRoot: [
+        {},
+        {
+          data: {
+            nonProfileData: {
+              user: {
+                idam: {
+                  id: 'userId',
+                  email: 'string',
+                  forename: 'string',
+                  surname: 'string',
+                  roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
+                }
+              },
+              isSolicitor: () => false,
+            }
+          }
+        }
+      ],
+      queryParamMap: queryParamMapNoProfile,
+    };
+    const mockRouteNoProfile = {
+      params: of({id: 123}),
+      snapshot: snapshotNoProfile
+    };
+
+    beforeEach(waitForAsync(() => {
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit']);
+      caseEditComponent = {
+        form: new FormGroup({
+          data: new FormGroup({
+            [flagLauncherCaseField.id]: createSimpleElementHidden(null)
+          })
+        }),
+        fieldsPurger: new FieldsPurger(fieldsUtils),
+        data: '',
+        eventTrigger: {
+          case_fields: [flagLauncherCaseField],
+          can_save_draft: true
+        },
+        wizard,
+        hasPrevious: () => true,
+        getPage: () => firstPage,
+        navigateToPage: () => undefined,
+        next: () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        cancel: () => undefined,
+        cancelled,
+        submit: createSpy('submit').and.returnValue({
+          // Provide a dummy subscribe function to be called in place of the real one
+          subscribe: () => {}
+        })
+      };
+      formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
+      const formValueServiceReal = new FormValueService(null);
+      populateFlagDetailsSpy = spyOn(formValueServiceReal, 'populateFlagDetailsFromCaseFields').and.callThrough();
+      removeFlagLauncherFieldSpy = spyOn(formValueServiceReal, 'removeFlagLauncherField').and.callThrough();
+
+      profileNotifier = new ProfileNotifier();
+      profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+      profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
+
+      sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+      sessionStorageService.getItem.and.returnValue(null);
+
+      TestBed.configureTestingModule({
+        declarations: [
+          CaseEditSubmitComponent,
+          IsCompoundPipe,
+          ReadFieldsFilterPipe,
+          CcdCYAPageLabelFilterPipe,
+          CcdPageFieldsPipe,
+          CaseReferencePipe,
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          {provide: CaseEditComponent, useValue: caseEditComponent},
+          {provide: FormValueService, useValue: formValueServiceReal},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseFieldService, useValue: caseFieldService},
+          {provide: FieldsUtils, useValue: fieldsUtils},
+          {provide: CaseReferencePipe, useValue: casesReferencePipe},
+          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+          {provide: OrderService, useValue: orderService},
+          {provide: ProfileNotifier, useValue: profileNotifier},
+          {provide: SessionStorageService, useValue: sessionStorageService},
+          {provide: Router, useValue: mockRouter},
+          PlaceholderService,
+          {provide: CaseNotifier, useValue: mockCaseNotifier}
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditSubmitComponent);
+      comp = fixture.componentInstance;
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    });
+
+    it('should set the page title correctly', () => {
+      expect(comp.pageTitle).toEqual(REVIEW_FLAG_DETAILS_PAGE_TITLE);
+    });
+
+    it('should populate flag details data for each Flags field and remove the FlagLauncher field prior to submission', () => {
+      // Submit the form and check calls are made to the correct functions in FormValueService
+      comp.submit();
+      expect(populateFlagDetailsSpy).toHaveBeenCalled();
+      expect(removeFlagLauncherFieldSpy).toHaveBeenCalled();
     });
   });
 });

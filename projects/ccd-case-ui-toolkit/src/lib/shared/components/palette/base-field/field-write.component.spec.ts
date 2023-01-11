@@ -2,10 +2,14 @@ import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
+import { of } from 'rxjs';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { FormValidatorsService } from '../../../services';
+import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
+import { WizardPage } from '../../case-editor/domain';
 import { PaletteService } from '../palette.service';
 import { FieldWriteComponent } from './field-write.component';
+
 import createSpyObj = jasmine.createSpyObj;
 
 const CLASS = 'person-first-name-cls';
@@ -39,6 +43,9 @@ describe('FieldWriteComponent', () => {
   let formGroup: FormGroup;
   const caseFields: CaseField[] = [CASE_FIELD];
 
+  let cancelled: any;
+  let route: any;
+
   beforeEach(async() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     paletteService = createSpyObj<PaletteService>('paletteService', [
@@ -47,6 +54,14 @@ describe('FieldWriteComponent', () => {
     paletteService.getFieldComponentClass.and.returnValue(FieldTestComponent);
 
     formGroup = new FormGroup({});
+
+    cancelled = createSpyObj('cancelled', ['emit']);
+    route = {
+      params: of({id: 123}),
+      snapshot: {
+        queryParamMap: createSpyObj('queryParamMap', ['get'])
+      }
+    };
 
     TestBed
       .configureTestingModule({
@@ -92,4 +107,23 @@ describe('FieldWriteComponent', () => {
     expect(fieldTest.caseFields).toBe(caseFields);
     expect(fieldTest.formGroup).toBe(formGroup);
   });
+
+  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+    const cf = new CaseField();
+    cf.id = id;
+    cf.value = value;
+    cf.display_context = display_context;
+    return cf;
+  }
+
+  function createWizardPage(fields: CaseField[], isMultiColumn = false, order = 0): WizardPage {
+    const wp: WizardPage = new WizardPage();
+    wp.case_fields = fields;
+    wp.label = 'Test Label';
+    wp.getCol1Fields = () => fields;
+    wp.getCol2Fields = () => fields;
+    wp.isMultiColumn = () => isMultiColumn;
+    wp.order = order;
+    return wp;
+  }
 });

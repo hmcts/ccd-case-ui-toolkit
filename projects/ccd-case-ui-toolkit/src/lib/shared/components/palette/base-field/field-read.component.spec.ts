@@ -3,10 +3,12 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { plainToClassFromExist } from 'class-transformer';
+import { of } from 'rxjs';
 import { CaseField } from '../../../domain/definition';
 import { PaletteService } from '../palette.service';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteContext } from './palette-context.enum';
+
 import createSpyObj = jasmine.createSpyObj;
 
 const $FIELD_READ_LABEL = By.css('ccd-field-read-label');
@@ -25,8 +27,6 @@ const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
 });
 
 const CLASS = 'text-cls';
-
-const FORM_GROUP: FormGroup = new FormGroup({});
 
 @Component({
   template: `
@@ -65,12 +65,22 @@ describe('FieldReadComponent', () => {
 
   const formGroup: FormGroup = new FormGroup({});
   const caseFields: CaseField[] = [CASE_FIELD];
+  let cancelled: any;
+  let route: any;
 
   beforeEach(waitForAsync(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
       'getFieldComponentClass'
     ]);
     paletteService.getFieldComponentClass.and.returnValue(FieldTestComponent);
+
+    cancelled = createSpyObj('cancelled', ['emit']);
+    route = {
+      params: of({id: 123}),
+      snapshot: {
+        queryParamMap: createSpyObj('queryParamMap', ['get'])
+      }
+    };
 
     TestBed
       .configureTestingModule({
