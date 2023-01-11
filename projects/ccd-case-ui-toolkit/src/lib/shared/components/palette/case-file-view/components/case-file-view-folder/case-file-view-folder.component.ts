@@ -24,7 +24,7 @@ export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
   private static readonly DOCUMENT_SEARCH_FORM_CONTROL_NAME = 'documentSearchFormControl';
-  private static readonly MINIMUM_SEARCH_CHARACTERS = 3;
+  private static readonly MINIMUM_SEARCH_CHARACTERS = 1;
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
   @Input() public allowMoving: boolean;
@@ -158,7 +158,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
 
     let filteredData = this.documentTreeData;
-    if (searchTerm && searchTerm.length >= CaseFileViewFolderComponent.MINIMUM_SEARCH_CHARACTERS && this.documentFilterFormGroup.controls[CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME].value.length > 2) {
+    if (searchTerm && searchTerm.length >= CaseFileViewFolderComponent.MINIMUM_SEARCH_CHARACTERS && this.documentFilterFormGroup.controls[CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME].value.length > 0) {
       filteredData = this.documentTreeData.map(copy).filter(function filterTreeData(node: DocumentTreeNode) {
         if (node.name && node.name.toLowerCase().includes(searchTerm) && node.type === DocumentTreeNodeType.DOCUMENT) {
           return true;
@@ -255,7 +255,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   private openMoveDialog(node: DocumentTreeNode): void {
     const dialogRef = this.dialog.open(CaseFileViewFolderSelectorComponent, {
-      width: '570px',
       data: { categories: this.categories, document: node }
     });
 
