@@ -24,7 +24,7 @@ export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
 export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   private static readonly UNCATEGORISED_DOCUMENTS_TITLE = 'Uncategorised documents';
   private static readonly DOCUMENT_SEARCH_FORM_CONTROL_NAME = 'documentSearchFormControl';
-  private static readonly MINIMUM_SEARCH_CHARACTERS = 3;
+  private static readonly MINIMUM_SEARCH_CHARACTERS = 1;
 
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
   @Input() public allowMoving: boolean;
