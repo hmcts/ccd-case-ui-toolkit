@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 5.0.45-case-file-view-styling-fixes
+### Version 5.0.46-case-file-view-styling-fixes
 **EUI-7481** Case file view styling issues
 
 ### Version 5.0.44-case-flags-integration-fixes
