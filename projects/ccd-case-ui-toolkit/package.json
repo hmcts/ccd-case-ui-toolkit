@@ -1,0 +1,17 @@
+{
+  "name": "@hmcts/ccd-case-ui-toolkit",
+  "version": "5.0.44-case-flags-integration-fixes",
+  "engines": {
+    "yarn": "^1.22.15",
+    "npm": "^8.10.0"
+  },
+  "description": "Case UI Toolkit",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hmcts/ccd-case-ui-toolkit.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

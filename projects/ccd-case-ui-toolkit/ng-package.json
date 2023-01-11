@@ -1,0 +1,21 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/ccd-case-ui-toolkit",
+  "lib": {
+    "entryFile": "src/public-api.ts",
+    "umdModuleIds": {
+      "@angular-material-components/datetime-picker": "@angular-material-components/datetime-picker",
+      "@angular-material-components/moment-adapter": "@angular-material-components/moment-adapter",
+      "@nicky-lenaers/ngx-scroll-to": "@nicky-lenaers/ngx-scroll-to",
+      "ngx-md": "ngx-md",
+      "moment": "moment",
+      "underscore": "underscore",
+      "rx-polling": "rx-polling",
+      "class-transformer": "class-transformer",
+      "@hmcts/ccpay-web-component": "@hmcts/ccpay-web-component",
+      "@edium/fsm": "@edium/fsm",
+      "util": "util",
+      "ngx-pagination": "ngx-pagination"
+      }
+    }
+  }
