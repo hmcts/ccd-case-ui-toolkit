@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 5.0.44-case-file-view-media-viewer-scrolling-behaviour
+### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
 **EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary
 
 ### Version 5.0.46-case-file-view-styling-fixes
