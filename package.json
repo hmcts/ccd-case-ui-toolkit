@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "4.18.24-wa-service-config-changes",
+  "version": "4.18.24-add-ctsc-request",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"
