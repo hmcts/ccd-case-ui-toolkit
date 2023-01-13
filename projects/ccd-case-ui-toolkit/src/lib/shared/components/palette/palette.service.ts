@@ -101,6 +101,8 @@ export class PaletteService {
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
+      case 'CaseLink':
+        return write ? WriteCaseLinkFieldComponent : ReadCaseLinkFieldComponent;
       case 'Collection':
         switch (caseField.field_type.collection_field_type.id) {
           case 'CaseLink':

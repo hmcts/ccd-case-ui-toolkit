@@ -17,7 +17,8 @@ export class ReadCaseLinkFieldComponent extends AbstractFieldReadComponent {
     return (
       this.caseField.field_type &&
       this.caseField.field_type.type === 'Collection' &&
-      this.caseField.field_type.collection_field_type.id === 'CaseLink'
+      this.caseField.field_type.collection_field_type.id === 'CaseLink' &&
+			this.caseField.id === 'caseLinks'
     );
   }
 }

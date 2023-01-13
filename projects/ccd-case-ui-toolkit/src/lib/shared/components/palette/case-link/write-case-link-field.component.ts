@@ -36,8 +36,11 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     this.formArray['caseField'] = this.caseField;
 
     if (!this.hasCaseLinkCollection()) {
+
+      this.caseReferenceControl = new FormControl(this.caseField.value.CaseReference, Validators.required);
+
       this.caseLinkGroup = this.registerControl(new FormGroup({
-        CaseReference: new FormControl(this.caseField.value.CaseReference, Validators.required),
+        CaseReference: this.caseReferenceControl,
       }), true) as FormGroup;
     }
     // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although a CaseLink
@@ -72,7 +75,8 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     return (
       this.caseField.field_type &&
       this.caseField.field_type.type === 'Collection' &&
-      this.caseField.field_type.collection_field_type.id === 'CaseLink'
+      this.caseField.field_type.collection_field_type.id === 'CaseLink' &&
+      this.caseField.id === 'caseLinks'
     );
   }
 }
