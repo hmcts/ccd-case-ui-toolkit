@@ -167,7 +167,8 @@
           "options": {
             "main": "projects/ccd-case-ui-toolkit/src/test.ts",
             "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.spec.json",
-            "karmaConfig": "projects/ccd-case-ui-toolkit/src/karma.conf.js"
+            "karmaConfig": "projects/ccd-case-ui-toolkit/src/karma.conf.js",
+            "codeCoverageExclude": ["**/*.stories.ts"]
           },
           "codeCoverage": {
             "exclude": [
