@@ -1,6 +1,12 @@
 ## RELEASE NOTES
+### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
+**EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary
+
 ### Version 5.0.46-case-file-view-styling-fixes
 **EUI-7481** Case file view styling issues
+
+### Version 5.0.45-fix-case-acccess-table
+**EUI-7454** Fixed table alignment on case view
 
 ### Version 5.0.44-case-flags-integration-fixes
 **EUI-7453** Case flags integration fixes
