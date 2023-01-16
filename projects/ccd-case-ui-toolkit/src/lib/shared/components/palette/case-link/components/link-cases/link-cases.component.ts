@@ -91,7 +91,8 @@ export class LinkCasesComponent implements OnInit {
       this.linkCaseForm.valid &&
       !this.isCaseSelected(this.selectedCases) &&
       !this.isCaseSelected(this.linkedCasesService.linkedCases) &&
-      !this.isCaseSelectedSameAsCurrentCase()
+      !this.isCaseSelectedSameAsCurrentCase() &&
+      !this.isCaseSelected(this.linkedCasesService.linkedCasesFrom)
     ) {
       this.getCaseInfo();
     } else {
@@ -146,6 +147,14 @@ export class LinkCasesComponent implements OnInit {
         fieldId: 'caseNumber',
       });
     }
+    if (this.isCaseSelected(this.linkedCasesService.linkedCasesFrom)) {
+      this.caseSelectionError = LinkedCasesErrorMessages.CasesLinkedError;
+      this.errorMessages.push({
+        title: 'dummy-case-number',
+        description: LinkedCasesErrorMessages.CasesLinkedError,
+        fieldId: 'caseNumber',
+      });
+    }
     if (this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('')) {
       this.errorMessages.push({
         title: 'dummy-case-number',
@@ -180,7 +189,7 @@ export class LinkCasesComponent implements OnInit {
             CaseType: caseView.case_type.id,
             CreatedDateTime: moment(new Date()).format(this.ISO_FORMAT),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
-          }
+          };
           if (!this.linkedCasesService.caseFieldValue) {
             this.linkedCasesService.caseFieldValue = [];
           }
