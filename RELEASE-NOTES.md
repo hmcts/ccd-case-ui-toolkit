@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.47-fee-pay-props
+**EUI-7489** Added additional props to nested ccpay instance
+
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
 
