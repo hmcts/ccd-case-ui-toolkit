@@ -21,7 +21,7 @@ export abstract class PaymentField extends AbstractFieldReadComponent {
     public getRefundsUrl() {
         return this.appConfig.getRefundsUrl();
     }
-    
+
     public getNotificationUrl() {
         return this.appConfig.getNotificationUrl();
     }
