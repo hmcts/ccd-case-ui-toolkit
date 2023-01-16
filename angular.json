@@ -168,12 +168,12 @@
             "main": "projects/ccd-case-ui-toolkit/src/test.ts",
             "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.spec.json",
             "karmaConfig": "projects/ccd-case-ui-toolkit/src/karma.conf.js",
-            "codeCoverageExclude": ["**/*.stories.ts"],
+            "codeCoverageExclude": ["**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"],
             "codeCoverage": true
           },
           "codeCoverage": {
             "exclude": [
-              "**/*.stories.ts"
+              "**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"
             ]
           }
         },
