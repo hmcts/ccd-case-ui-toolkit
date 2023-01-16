@@ -112,14 +112,14 @@ export class CaseAccessUtils {
                 beginTime: beginTime,
                 endTime: endTime,
                 attributes: {
-                    caseId,
-                    isNew,
-                    accessReason: JSON.stringify(details),
+                  caseId,
+                  isNew,
+                  accessReason: JSON.stringify(details),
                 },
                 notes: [{
-                    userId: assignerId,
-                    time: new Date(),
-                    comment: JSON.stringify(details)
+                  userId: assignerId,
+                  time: new Date(),
+                  comment: JSON.stringify(details)
                 }]
             }]
         };
