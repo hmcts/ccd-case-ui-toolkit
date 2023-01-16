@@ -36,16 +36,16 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
     if (!this.containsCaseLinkCollection) {
       if (this.caseField.value) {
         this.caseLinkGroup = this.registerControl(new FormGroup({
-          'CaseReference': new FormControl(this.caseField.value.CaseReference, Validators.required),
+          CaseReference: new FormControl(this.caseField.value.CaseReference, Validators.required),
         }), true) as FormGroup;
       } else {
         this.caseLinkGroup = this.registerControl(new FormGroup({
-          'CaseReference': new FormControl(null, Validators.required),
+          CaseReference: new FormControl(null, Validators.required),
         }), true) as FormGroup;
       }
       this.caseReferenceControl = this.caseLinkGroup.controls['CaseReference'];
       this.caseReferenceControl.setValidators(this.caseReferenceValidator());
-  
+
       // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although a CaseLink
       // field uses the Complex type, it is meant to be treated as one field
       if (this.caseField && this.caseField.field_type.type === 'Complex') {
@@ -53,7 +53,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
           caseLinkSubField.retain_hidden_value = this.caseField.retain_hidden_value;
         }
       }
-    }    
+    }
   }
 
   private caseReferenceValidator(): ValidatorFn {
@@ -62,10 +62,10 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
         if ( this.validCaseReference(control.value) ) {
           return null;
         }
-        return {'error': 'Please use a valid 16 Digit Case Reference'};
+        return {error: 'Please use a valid 16 Digit Case Reference'};
       } else {
         if (control.touched) {
-          return {'error': 'Please use a valid 16 Digit Case Reference'};
+          return {error: 'Please use a valid 16 Digit Case Reference'};
         }
       }
       return null;
