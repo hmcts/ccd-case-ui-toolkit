@@ -83,7 +83,7 @@ export class FieldsUtils {
     if (!caseField) {
       return false;
     }
-    return caseField.field_type.collection_field_type.id === 'CaseLink';
+    return caseField.field_type.collection_field_type.id === 'CaseLink' && caseField.id === 'caseLinks';
   }
 
   public static cloneObject(obj: any): any {

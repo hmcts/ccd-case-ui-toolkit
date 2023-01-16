@@ -1,13 +1,16 @@
 <ng-container>
-  <div *ngIf="!containsCaseLinkCollection" class="form-group">
-    <label [for]="id()">
+
+  <div *ngIf="!containsCaseLinkCollection" class="form-group" [formGroup]="caseLinkGroup" [ngClass]="{'form-group-error': !caseReferenceControl.valid && (caseReferenceControl.dirty || caseReferenceControl.touched)}">
+    <label [for]="caseReferenceControl">
       <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
     </label>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-    <input class="form-control bottom-30" [id]="id()" type="text" [formControl]="caseReferenceControl">
+    <span class="error-message" *ngIf="caseReferenceControl.errors && (caseReferenceControl.dirty || caseReferenceControl.touched)">{{caseReferenceControl.errors | ccdFirstError:caseField.label}}</span>
+    <input class="form-control bottom-30" [id]="caseReferenceControl" type="text" [formControl]="caseReferenceControl">
   </div>
-	<div class="form-group" *ngIf="containsCaseLinkCollection">
-		<ccd-write-linked-cases [caseFields]="caseFields" [caseField]="caseField" [formGroup]="formGroup"
+  
+  <div class="form-group" *ngIf="containsCaseLinkCollection">
+    <ccd-write-linked-cases [caseFields]="caseFields" [caseField]="caseField" [formGroup]="formGroup"
             (onLinkedCasesSelected)="submitLinkedCases();" [isLinkedCasesJourney]="linkedCasesService.isLinkedCasesEventTrigger"></ccd-write-linked-cases>
-	</div>
+  </div>
 </ng-container>

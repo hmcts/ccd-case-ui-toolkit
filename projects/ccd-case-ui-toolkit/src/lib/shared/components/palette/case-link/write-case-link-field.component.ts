@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
@@ -18,8 +18,6 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   @Input()
   public formGroup: FormGroup;
 
-  public formArray: FormArray;
-
   public caseReferenceControl: AbstractControl;
   public caseLinkGroup: FormGroup;
   public containsCaseLinkCollection: boolean;
@@ -32,36 +30,46 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public ngOnInit(): void {
-    this.formArray = this.registerControl(new FormArray([]), true) as FormArray;
-    this.formArray['caseField'] = this.caseField;
-
-    if (!this.hasCaseLinkCollection()) {
-
-      this.caseReferenceControl = new FormControl(this.caseField.value.CaseReference, Validators.required);
-
-      this.caseLinkGroup = this.registerControl(new FormGroup({
-        CaseReference: this.caseReferenceControl,
-      }), true) as FormGroup;
-    }
-    // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although a CaseLink
-    // field uses the Complex type, it is meant to be treated as one field
-    if (this.caseField && this.caseField.field_type.type === 'Complex') {
-      for (const caseLinkSubField of this.caseField.field_type.complex_fields) {
-        caseLinkSubField.retain_hidden_value = this.caseField.retain_hidden_value;
-      }
-    }
+    // Will be TRUE for new Case link/unlink journey
     this.containsCaseLinkCollection = this.hasCaseLinkCollection();
+
+    if (!this.containsCaseLinkCollection) {
+      if (this.caseField.value) {
+        this.caseLinkGroup = this.registerControl(new FormGroup({
+          'CaseReference': new FormControl(this.caseField.value.CaseReference, Validators.required),
+        }), true) as FormGroup;
+      } else {
+        this.caseLinkGroup = this.registerControl(new FormGroup({
+          'CaseReference': new FormControl(null, Validators.required),
+        }), true) as FormGroup;
+      }
+      this.caseReferenceControl = this.caseLinkGroup.controls['CaseReference'];
+      this.caseReferenceControl.setValidators(this.caseReferenceValidator());
+  
+      // Ensure that all sub-fields inherit the same value for retain_hidden_value as this parent; although a CaseLink
+      // field uses the Complex type, it is meant to be treated as one field
+      if (this.caseField && this.caseField.field_type.type === 'Complex') {
+        for (const caseLinkSubField of this.caseField.field_type.complex_fields) {
+          caseLinkSubField.retain_hidden_value = this.caseField.retain_hidden_value;
+        }
+      }
+    }    
   }
 
-  public submitLinkedCases(): void {
-    const formGroup = this.formGroup;
-    if (!this.linkedCasesService.isLinkedCasesEventTrigger) {
-      const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
-      this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue
-                                        .filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);
-    } else if (formGroup.value && formGroup.value.caseLinks && this.linkedCasesService.linkedCases) {
-      this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
-    }
+  private caseReferenceValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+      if (control.value) {
+        if ( this.validCaseReference(control.value) ) {
+          return null;
+        }
+        return {'error': 'Please use a valid 16 Digit Case Reference'};
+      } else {
+        if (control.touched) {
+          return {'error': 'Please use a valid 16 Digit Case Reference'};
+        }
+      }
+      return null;
+    };
   }
 
   public validCaseReference(valueString: string): boolean {
@@ -78,5 +86,19 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
       this.caseField.field_type.collection_field_type.id === 'CaseLink' &&
       this.caseField.id === 'caseLinks'
     );
+  }
+
+  /**
+   * This method is applicable only for new Case link/unlink journey
+   */
+  public submitLinkedCases(): void {
+    const formGroup = this.formGroup;
+    if (!this.linkedCasesService.isLinkedCasesEventTrigger) {
+      const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
+      this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue
+                                        .filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);
+    } else if (formGroup.value && formGroup.value.caseLinks && this.linkedCasesService.linkedCases) {
+      this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
+    }
   }
 }
