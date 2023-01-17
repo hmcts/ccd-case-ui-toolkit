@@ -1,0 +1,29 @@
+#case-file-view {
+  display: flex;
+  border: 2px solid #C9C9C9;
+  height: 100vh;
+  position: relative;
+
+  .document-tree-container {
+    background-color: #FAF8F8;
+    width: 30%;
+    min-height: 400px;
+    min-width: 10%;
+  }
+
+  .slider {
+    width: 0.2%;
+    background-color: #6B6B6B;
+  }
+
+  .slider:hover,
+  .slider:focus {
+    cursor: col-resize;
+  }
+
+  .media-viewer-container {
+    background-color: #dee0e2;
+    flex: 1 1 0;
+    overflow: hidden;
+  }
+}
