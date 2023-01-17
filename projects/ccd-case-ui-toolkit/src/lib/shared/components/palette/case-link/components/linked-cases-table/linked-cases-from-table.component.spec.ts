@@ -1,16 +1,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../../../../app.config';
+import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
-import { LinkedCasesFromTableComponent } from './linked-cases-from-table.component';
-import { PipesModule } from '../../../../../pipes/pipes.module';
-
-import createSpyObj = jasmine.createSpyObj;
-import { ActivatedRoute } from '@angular/router';
-import { AbstractAppConfig } from '../../../../../../app.config';
+import { CaseLink, CaseLinkResponse } from '../../domain/linked-cases.model';
 import { LinkedCasesService } from '../../services';
-import { CaseLink } from '../../domain/linked-cases.model';
+import { LinkedCasesFromTableComponent } from './linked-cases-from-table.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
@@ -49,7 +48,7 @@ describe('LinkCasesFromTableComponent', () => {
   linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases,
-    getAllLinkedCaseInformation() {},
+    getAllLinkedCaseInformation() { },
     jurisdictionsResponse: [
       {
         id: 'SSCS',
@@ -160,6 +159,32 @@ describe('LinkCasesFromTableComponent', () => {
     expect(casesService.getLinkedCases).toHaveBeenCalled();
   });
 
+  it('should have called setLinkiedCasesFrom', () => {
+    const linkedCasesMock: CaseLinkResponse[] = [
+      {
+        caseNameHmctsInternal: 'Smith vs Peterson',
+        caseReference: '1234123412341234',
+        ccdCaseType: 'benefit',
+        ccdCaseTypeDescription: 'SSCS',
+        ccdJurisdiction: 'SSCS',
+        state: 'withDwp',
+        stateDescription: 'description',
+        linkDetails: [
+          {
+            createdDateTime: new Date(),
+            reasons: [
+              {
+                reasonCode: 'Bail'
+              },
+            ],
+          }
+        ]
+      }
+    ];
+    component.setLinkiedCasesFrom(linkedCasesMock);
+    expect(component.linkedCasesService.linkedCasesFrom.length).toBeGreaterThan(0);
+  });
+
   it('should render linkedCases from table', () => {
     component.ngOnInit();
     fixture.detectChanges();
@@ -192,7 +217,7 @@ describe('LinkCasesFromTableComponent', () => {
   });
 
   it('should render the none as table row when no linked cases to be displayed', () => {
-    casesService.getLinkedCases.and.returnValue(of({linkedCases: []}));
+    casesService.getLinkedCases.and.returnValue(of({ linkedCases: [] }));
     component.ngOnInit();
     fixture.detectChanges();
     expect(

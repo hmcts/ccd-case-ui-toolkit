@@ -94,13 +94,13 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
       );
   }
 
-  setLinkiedCasesFrom(linkedCases: CaseLinkResponse[]) {
+  public setLinkiedCasesFrom(linkedCases: CaseLinkResponse[]) {
     const caseLinks = linkedCases.map(item => {
       return {
         caseReference: item.caseReference,
         caseService: item.ccdJurisdiction,
         caseType: item.ccdCaseType,
-      } as CaseLink
+      } as CaseLink;
     });
     this.linkedCasesService.linkedCasesFrom = caseLinks;
   }
