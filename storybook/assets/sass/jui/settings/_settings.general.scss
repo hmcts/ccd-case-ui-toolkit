@@ -1,0 +1,34 @@
+/* ==========================================================================
+   #GENERAL CONFIGURATIONS
+   ========================================================================== */
+
+$jui-page-width: 1220px;
+$jui-gutter: govuk-spacing(6);
+$jui-gutter-half: $govuk-gutter / 2;
+
+// Assets path
+$jui-assets-path : "/public/images/";
+
+@mixin jui-width-container {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: $jui-page-width;
+
+  @include govuk-if-ie8 {
+    width: $jui-page-width;
+  }
+
+  // On mobile, add half width gutters
+  margin: 0 $jui-gutter-half;
+
+  // On tablet, add full width gutters
+  @include mq($from: tablet) {
+    margin: 0 $jui-gutter;
+  }
+
+  // As soon as the viewport is greater than the width of the page plus the
+  // gutters, just centre the content instead of adding gutters.
+  @include mq($and: "(min-width: #{($jui-page-width + $jui-gutter * 2)})") {
+    margin: 0 auto;
+  }
+}

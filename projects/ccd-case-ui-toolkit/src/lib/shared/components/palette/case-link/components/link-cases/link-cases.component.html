@@ -1,0 +1,86 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <div>
+      <span class="govuk-caption-l">Link cases to {{caseName}} {{caseId | ccdCaseReference}}</span>
+      <h1 class="govuk-heading-xl">Select a&nbsp;case you want to link to this case</h1>
+      <div class="form-group" [formGroup]="linkCaseForm" *ngIf="linkCaseForm">
+        <h3 class="govuk-heading-s">Enter case reference</h3>
+        <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!caseNumberError}">
+          <span class="govuk-error-message" *ngIf="caseNumberError">
+            <span class="govuk-visually-hidden">Error:</span> {{caseNumberError}}
+          </span>
+          <input class="govuk-input govuk-input--width-20" formControlName="caseNumber" id="width-20" name="width-20"
+            type="text">
+        </div>
+        <h3 class="govuk-heading-s">Why should these cases be linked?</h3>
+        <div id="waste-hint" class="govuk-hint">
+          Select all that apply.
+        </div>
+        <span class="govuk-error-message" *ngIf="caseReasonError">
+          <span class="govuk-visually-hidden">Error:</span> {{caseReasonError}}
+        </span>
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes" formArrayName="reasonType" id="caseReason"
+          [ngClass]="{'govuk-form-group--error': !!caseReasonError}">
+          <div class="govuk-checkboxes__item" *ngFor="let reason of linkCaseReasons;index as pos" [formGroupName]="pos">
+            <input class="govuk-checkboxes__input" id="{{reason.key}}" formControlName="selected" name="pos"
+              type="checkbox" [value]="reason.value_en">
+            <label class="govuk-label govuk-checkboxes__label" for="{{reason.key}}">{{reason.value_en}}</label>
+          </div>
+        </div>
+
+        <br><br>
+        <span class="govuk-error-message" *ngIf="caseSelectionError">
+          <span class="govuk-visually-hidden">Error:</span> {{caseSelectionError}}
+        </span>
+
+        <button id="propose" type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"
+          (click)="submitCaseInfo()">Propose case link</button>
+      </div>
+      <hr>
+      <br><br>
+      <div class="govuk-form-group" id="caseNumber" [ngClass]="{'govuk-form-group--error': !!noSelectedCaseError}">
+        <span class="govuk-error-message" *ngIf="noSelectedCaseError">
+          <span class="govuk-visually-hidden">Error:</span> {{noSelectedCaseError}}
+        </span>
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--m">Proposed case links </caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header" width="300">Case name and number</th>
+              <th scope="col" class="govuk-table__header" width="150">Case type </th>
+              <th scope="col" class="govuk-table__header" width="200">Service</th>
+              <th scope="col" class="govuk-table__header" width="200">State</th>
+              <th scope="col" class="govuk-table__header" width="400">Reasons for case link</th>
+              <th scope="col" class="govuk-table__header" width="50"></th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row" *ngFor="let case of selectedCases; let pos = index">
+              <td class="govuk-table__cell">
+                <div class="govuk-form-group--error"
+                  [ngClass]="{'table-group-error':caseSelectionError && case.caseReference === linkCaseForm.value.caseNumber}">
+                </div>
+                <span>{{case.caseName}} <br> {{case.caseReference | ccdCaseReference}}</span>
+              </td>
+              <td class="govuk-table__cell" [title]="case.caseTypeDescription">{{case.caseType}}</td>
+              <td class="govuk-table__cell">{{case.caseService}}</td>
+              <td class="govuk-table__cell" [title]="case.caseStateDescription">{{case.caseState}}</td>
+              <td class="govuk-table__cell"><span
+                  *ngFor="let reason of case.reasons">{{reason.reasonCode | ccdLinkCasesReasonValue}}<br></span></td>
+              <td class="govuk-table__cell"><a [attr.id]="case.caseReference" (click)="onSelectedLinkedCaseRemove(pos, case.caseReference);"
+                  class="govuk-link no-visited-state">Remove</a></td>
+            </tr>
+            <tr class="govuk-table__row" *ngIf="!selectedCases.length">
+              <td class="govuk-table__cell" colspan="6">
+                None
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="govuk-button-group">
+        <button class="button button-primary" type="button" id="next-button" (click)="onNext()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>

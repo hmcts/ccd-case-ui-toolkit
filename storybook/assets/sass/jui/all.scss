@@ -1,0 +1,20 @@
+@import "settings/manifest";
+@import "objects/manifest";
+
+// Reference to all components
+@import "../../components/all";
+
+
+// TODO REMOVE THIS WHEN UX VERSION GETS BUMPED UP OR WHEN MENU COMPONENT IS DONE INSTEAD
+// DOTO NEEDS TO BE REMOVED
+.hmcts-page-heading__title-wrapper {
+    @include mq($from: tablet) {
+        float: left;
+    }
+}
+
+.hmcts-page-heading__actions-wrapper {
+    @include mq($from: tablet) {
+        float: right;
+    }
+}
