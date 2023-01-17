@@ -17,6 +17,9 @@ export class CaseAccessUtils {
     public static readonly CITIZEN_ROLE = 'citizen';
     public static readonly CITIZEN_ROLE_CATEGORY = 'CITIZEN';
     public static readonly CITIZEN_ROLE_NAME = 'citizen';
+    public static readonly CTSC_ROLE = 'ctsc';
+    public static readonly CTSC_ROLE_CATEGORY = 'CTSC';
+    public static readonly CTSC_ROLE_NAME = 'ctsc';
 
     public getMappedRoleCategory(roles: string[] = [], roleCategories: string[] = []): RoleCategory {
 
@@ -25,14 +28,17 @@ export class CaseAccessUtils {
         if (this.roleOrCategoryExists(CaseAccessUtils.JUDGE_ROLE, CaseAccessUtils.JUDGE_ROLE_CATEGORY, roleKeywords, roleCategories)) {
             return CaseAccessUtils.JUDGE_ROLE_CATEGORY;
         } else if (this.roleOrCategoryExists(CaseAccessUtils.PROFESSIONAL_ROLE,
-                    CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY, roleKeywords, roleCategories)) {
+            CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY, roleKeywords, roleCategories)) {
             return CaseAccessUtils.PROFESSIONAL_ROLE_CATEGORY;
         } else if (this.roleOrCategoryExists(CaseAccessUtils.CITIZEN_ROLE,
-                    CaseAccessUtils.CITIZEN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
+            CaseAccessUtils.CITIZEN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
             return CaseAccessUtils.CITIZEN_ROLE_CATEGORY;
         } else if (this.roleOrCategoryExists(CaseAccessUtils.ADMIN_ROLE,
-                    CaseAccessUtils.ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
+            CaseAccessUtils.ADMIN_ROLE_CATEGORY, roleKeywords, roleCategories)) {
             return CaseAccessUtils.ADMIN_ROLE_CATEGORY;
+        } else if (this.roleOrCategoryExists(CaseAccessUtils.CTSC_ROLE,
+            CaseAccessUtils.CTSC_ROLE_CATEGORY, roleKeywords, roleCategories)) {
+            return CaseAccessUtils.CTSC_ROLE_CATEGORY;
         } else {
             return CaseAccessUtils.LEGAL_OPERATIONS_ROLE_CATEGORY;
         }
@@ -61,6 +67,9 @@ export class CaseAccessUtils {
                 break;
             case CaseAccessUtils.ADMIN_ROLE_CATEGORY:
                 roleName = `${accessType}-access-${CaseAccessUtils.ADMIN_ROLE_NAME}`;
+                break;
+            case CaseAccessUtils.CTSC_ROLE_CATEGORY:
+                roleName = `${accessType}-access-${CaseAccessUtils.CTSC_ROLE_NAME}`;
                 break;
             default:
                 roleName = `${accessType}-access-${CaseAccessUtils.LEGAL_OPERATIONS_ROLE_NAME}`;

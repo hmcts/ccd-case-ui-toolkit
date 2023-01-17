@@ -4,7 +4,6 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { WorkAllocationService } from '../../case-editor';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
-import { AbstractAppConfig } from '../../../../app.config';
 import { SessionStorageService } from '../../../services';
 
 @Injectable()
