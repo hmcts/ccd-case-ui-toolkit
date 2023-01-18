@@ -5,6 +5,9 @@
 ### Version 5.0.46-case-file-view-styling-fixes
 **EUI-7481** Case file view styling issues
 
+### Version 5.0.46-fix-case-link
+**EUI-7521** Fix case link hyperlink on applications tab
+
 ### Version 5.0.45-fix-case-acccess-table
 **EUI-7454** Fixed table alignment on case view
 
