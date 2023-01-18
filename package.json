@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.0-EUI-3729-AND-OR-logic-combination-rc1",
+  "version": "6.10.1-EUI-3729",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
