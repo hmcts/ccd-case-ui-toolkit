@@ -456,15 +456,6 @@ export class FormValueService {
     FormValueService.removeMultiSelectLabels(data);
   }
 
-  /**
-   * Remove any empty or invalid array with only id
-<<<<<<< HEAD:projects/ccd-case-ui-toolkit/src/lib/shared/services/form/form-value.service.ts
-=======
-   *
-   * @param data The object tree of form values on which to perform the removal
-   * @param field {@link CaseField} domain model object for each field
->>>>>>> 3f4684bcecfbda59db6172ace3ea5e915184bc99:src/shared/services/form/form-value.service.ts
-   */
   public removeInvalidCollectionData(data: object, field: CaseField) {
     if (data[field.id] && data[field.id].length > 0) {
       for (const objCollection of data[field.id]) {
