@@ -483,12 +483,12 @@ export class FieldsUtils {
                   // These two fields are date-time fields
                   case 'dateTimeModified':
                   case 'dateTimeCreated':
-                    return {[k]: detail.value[k] ? new Date(detail.value[k]) : null, 'id': detail.id};
+                    return {[k]: detail.value[k] ? new Date(detail.value[k]) : null, id: detail.id};
                   // This field is a "yes/no" field
                   case 'hearingRelevant':
-                    return detail.value[k].toUpperCase() === 'YES' ? {[k]: true, 'id': detail.id} : {[k]: false, 'id': detail.id};
+                    return detail.value[k].toUpperCase() === 'YES' ? {[k]: true, id: detail.id} : {[k]: false, id: detail.id};
                   default:
-                    return {[k]: detail.value[k], 'id': detail.id};
+                    return {[k]: detail.value[k], id: detail.id};
                 }
               }));
             }) as FlagDetail[]

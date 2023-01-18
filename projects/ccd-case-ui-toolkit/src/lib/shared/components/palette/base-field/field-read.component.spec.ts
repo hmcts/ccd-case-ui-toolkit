@@ -75,11 +75,11 @@ describe('FieldReadComponent', () => {
 
   let paletteService: any;
 
-  let formGroup: FormGroup = new FormGroup({});
-  let caseFields: CaseField[] = [CASE_FIELD];
+  const formGroup: FormGroup = new FormGroup({});
+  const caseFields: CaseField[] = [CASE_FIELD];
   let caseEditComponentStub: any;
   const FORM_GROUP = new FormGroup({
-    'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
+    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);
@@ -87,7 +87,7 @@ describe('FieldReadComponent', () => {
   const firstPage = new WizardPage();
   let cancelled: any;
   const someObservable = {
-    'subscribe': () => new Draft()
+    subscribe: () => new Draft()
   };
   const caseField2 = new CaseField();
   let route: any;
@@ -97,7 +97,7 @@ describe('FieldReadComponent', () => {
   const caseFieldService = new CaseFieldService();
   const caseEditDataService = new CaseEditDataService();
   const pageValidationService = new PageValidationService(caseFieldService);
-  let dialog: any;
+  const dialog: any = '';
   let caseEditPageComponent: CaseEditPageComponent;
 
   beforeEach(waitForAsync(() => {
@@ -108,20 +108,20 @@ describe('FieldReadComponent', () => {
 
     cancelled = createSpyObj('cancelled', ['emit']);
     caseEditComponentStub = {
-      'form': FORM_GROUP,
-      'wizard': WIZARD,
-      'data': '',
-      'eventTrigger': {'case_fields': [caseField1], 'name': 'Test event trigger name', 'can_save_draft': true},
-      'hasPrevious': () => true,
-      'getPage': () => firstPage,
-      'first': () => true,
-      'next': () => true,
-      'previous': () => true,
-      'cancel': () => undefined,
-      'cancelled': cancelled,
-      'validate': (caseEventData: CaseEventData) => of(caseEventData),
-      'saveDraft': (_: CaseEventData) => of(someObservable),
-      'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': [caseField2]},
+      form: FORM_GROUP,
+      wizard: WIZARD,
+      data: '',
+      eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+      hasPrevious: () => true,
+      getPage: () => firstPage,
+      first: () => true,
+      next: () => true,
+      previous: () => true,
+      cancel: () => undefined,
+      cancelled,
+      validate: (caseEventData: CaseEventData) => of(caseEventData),
+      saveDraft: (_: CaseEventData) => of(someObservable),
+      caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
     };
     route = {
       params: of({id: 123}),
