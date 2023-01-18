@@ -8,61 +8,61 @@ describe('ConditionParser', () => {
         {
           input: 'a = "B"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'B' }
+            { fieldReference: 'a', comparator: '=', value: 'B' }
           ]
         },
         {
           input: 'a="B"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'B' }
+            { fieldReference: 'a', comparator: '=', value: 'B' }
           ]
         },
         {
           input: 'a!="B"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '!=', 'value': 'B' }
+            { fieldReference: 'a', comparator: '!=', value: 'B' }
           ]
         },
         {
           input: 'aCONTAINS"B"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': 'CONTAINS', 'value': 'B' }
+            { fieldReference: 'a', comparator: 'CONTAINS', value: 'B' }
           ]
         },
         {
           input: 'a= "B"',
           expected: [
-              { 'fieldReference': 'a', 'comparator': '=', 'value': 'B' }
+              { fieldReference: 'a', comparator: '=', value: 'B' }
           ]
         },
         {
           input: 'a != "B"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '!=', 'value': 'B' }
+            { fieldReference: 'a', comparator: '!=', value: 'B' }
           ]
         },
         {
           input: 'aCONTAINS "B"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': 'CONTAINS', 'value': 'B' }
+            { fieldReference: 'a', comparator: 'CONTAINS', value: 'B' }
           ]
         },
         {
           input: 'a="NoSpacesTest"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'NoSpacesTest' }
+            { fieldReference: 'a', comparator: '=', value: 'NoSpacesTest' }
           ]
         },
         {
           input: 'a="TooManySpaces"    ',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'TooManySpaces' }
+            { fieldReference: 'a', comparator: '=', value: 'TooManySpaces' }
           ]
         },
         {
           input: '   a="ThisTextNeedsTrimming"    ',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'ThisTextNeedsTrimming' }
+            { fieldReference: 'a', comparator: '=', value: 'ThisTextNeedsTrimming' }
           ]
         },
       ];
@@ -107,31 +107,31 @@ describe('ConditionParser', () => {
         {
           input: 'a = "Variable with spaces"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'Variable with spaces' }
+            { fieldReference: 'a', comparator: '=', value: 'Variable with spaces' }
           ]
         },
         {
           input: 'a="No spaces formula"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'No spaces formula' }
+            { fieldReference: 'a', comparator: '=', value: 'No spaces formula' }
           ]
         },
         {
           input: 'a = "Variable*"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'Variable*' }
+            { fieldReference: 'a', comparator: '=', value: 'Variable*' }
           ]
         },
         {
           input: 'a = "Variable123"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'Variable123' }
+            { fieldReference: 'a', comparator: '=', value: 'Variable123' }
           ]
         },
         {
           input: 'a = "Variable.Hello"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'Variable.Hello' }
+            { fieldReference: 'a', comparator: '=', value: 'Variable.Hello' }
           ]
         },
       ];
@@ -151,31 +151,31 @@ describe('ConditionParser', () => {
         {
           input: 'a_p = "Hello World"',
           expected: [
-            { 'fieldReference': 'a_p', 'comparator': '=', 'value': 'Hello World' }
+            { fieldReference: 'a_p', comparator: '=', value: 'Hello World' }
           ]
         },
         {
           input: 'a_p="No spaces test"',
           expected: [
-            { 'fieldReference': 'a_p', 'comparator': '=', 'value': 'No spaces test' }
+            { fieldReference: 'a_p', comparator: '=', value: 'No spaces test' }
           ]
         },
         {
           input: 'HELLO_WORLD = "Hello World"',
           expected: [
-            { 'fieldReference': 'HELLO_WORLD', 'comparator': '=', 'value': 'Hello World' }
+            { fieldReference: 'HELLO_WORLD', comparator: '=', value: 'Hello World' }
           ]
         },
         {
           input: 'Hello_World1 = "Hello World"',
           expected: [
-            { 'fieldReference': 'Hello_World1', 'comparator': '=', 'value': 'Hello World' }
+            { fieldReference: 'Hello_World1', comparator: '=', value: 'Hello World' }
           ]
         },
         {
           input: 'H1 = "Hello World"',
           expected: [
-            { 'fieldReference': 'H1', 'comparator': '=', 'value': 'Hello World' }
+            { fieldReference: 'H1', comparator: '=', value: 'Hello World' }
           ]
         },
       ];
@@ -195,57 +195,57 @@ describe('ConditionParser', () => {
         {
           input: 'a = "b" AND x = "y"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            { fieldReference: 'a', comparator: '=', value: 'b' },
             'AND',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' }
+            { fieldReference: 'x', comparator: '=', value: 'y' }
           ]
         },
         {
           input: 'a = "b"ANDx = "y"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            { fieldReference: 'a', comparator: '=', value: 'b' },
             'AND',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' }
+            { fieldReference: 'x', comparator: '=', value: 'y' }
           ]
         },
         {
           input: 'a="b"ANDx="No spaces test"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            { fieldReference: 'a', comparator: '=', value: 'b' },
             'AND',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'No spaces test' }
+            { fieldReference: 'x', comparator: '=', value: 'No spaces test' }
           ]
         },
         {
           input: 'a = "b" OR x = "y"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            { fieldReference: 'a', comparator: '=', value: 'b' },
             'OR',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' }
+            { fieldReference: 'x', comparator: '=', value: 'y' }
           ]
         },
         {
           input: 'a = "b" OR a = "y" AND x = "z"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            { fieldReference: 'a', comparator: '=', value: 'b' },
             'OR',
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'y' },
+            { fieldReference: 'a', comparator: '=', value: 'y' },
             'AND',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'z' },
+            { fieldReference: 'x', comparator: '=', value: 'z' },
           ]
         },
         {
           input: 'a = "b" OR a = "y" AND x = "z" AND a = "b" OR a = "y"',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            { fieldReference: 'a', comparator: '=', value: 'b' },
             'OR',
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'y' },
+            { fieldReference: 'a', comparator: '=', value: 'y' },
             'AND',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'z' },
+            { fieldReference: 'x', comparator: '=', value: 'z' },
             'AND',
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            { fieldReference: 'a', comparator: '=', value: 'b' },
             'OR',
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'y' }
+            { fieldReference: 'a', comparator: '=', value: 'y' }
           ]
         },
       ];
@@ -288,42 +288,42 @@ describe('ConditionParser', () => {
         {
           input: '(a = "b" AND x = "y") OR x = "x"',
           expected: [
-            [{ 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            [{ fieldReference: 'a', comparator: '=', value: 'b' },
                 'AND',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' }],
+            { fieldReference: 'x', comparator: '=', value: 'y' }],
             'OR',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'x' }
+            { fieldReference: 'x', comparator: '=', value: 'x' }
           ]
         },
         {
           input: '(a="b"ANDx="y")ORx="TEST WITH NO SPACES"',
           expected: [
-            [{ 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            [{ fieldReference: 'a', comparator: '=', value: 'b' },
                 'AND',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' }],
+            { fieldReference: 'x', comparator: '=', value: 'y' }],
             'OR',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'TEST WITH NO SPACES' }
+            { fieldReference: 'x', comparator: '=', value: 'TEST WITH NO SPACES' }
           ]
         },
         {
           input: '(a = "b" OR x = "y") OR x = "x"',
           expected: [
-            [{ 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            [{ fieldReference: 'a', comparator: '=', value: 'b' },
                 'OR',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' }],
+            { fieldReference: 'x', comparator: '=', value: 'y' }],
             'OR',
-            { 'fieldReference': 'x', 'comparator': '=', 'value': 'x' }
+            { fieldReference: 'x', comparator: '=', value: 'x' }
           ]
         },
         {
           input: 'a = "b" OR (x = "y" OR x = "x")',
           expected: [
-            { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' },
+            { fieldReference: 'a', comparator: '=', value: 'b' },
             'OR',
             [
-              { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' },
+              { fieldReference: 'x', comparator: '=', value: 'y' },
               'OR',
-              { 'fieldReference': 'x', 'comparator': '=', 'value': 'x' }
+              { fieldReference: 'x', comparator: '=', value: 'x' }
             ]
           ]
         },
@@ -331,15 +331,15 @@ describe('ConditionParser', () => {
           input: '(x = "x" AND a = "b") OR (x = "y" OR x = "x")',
           expected: [
             [
-              { 'fieldReference': 'x', 'comparator': '=', 'value': 'x' },
+              { fieldReference: 'x', comparator: '=', value: 'x' },
               'AND',
-              { 'fieldReference': 'a', 'comparator': '=', 'value': 'b' }
+              { fieldReference: 'a', comparator: '=', value: 'b' }
             ],
             'OR',
             [
-              { 'fieldReference': 'x', 'comparator': '=', 'value': 'y' },
+              { fieldReference: 'x', comparator: '=', value: 'y' },
               'OR',
-              { 'fieldReference': 'x', 'comparator': '=', 'value': 'x' }
+              { fieldReference: 'x', comparator: '=', value: 'x' }
             ]
           ]
         }
@@ -380,20 +380,20 @@ describe('ConditionParser', () => {
   describe('evaluate', () => {
     describe('should evaluate simple, single fomulas', () => {
       const conditions = [
-        { 'fieldReference': 'TextField', 'comparator': '=', 'value': 'hello' }
+        { fieldReference: 'TextField', comparator: '=', value: 'hello' }
       ];
 
       const testCases = [
         {
-          input: { 'TextField': 'hello' },
+          input: { TextField: 'hello' },
           expected: true
         },
         {
-          input: { 'TextField': 'hellos' },
+          input: { TextField: 'hellos' },
           expected: false
         },
         {
-          input: { 'TextField': 'hell' },
+          input: { TextField: 'hell' },
           expected: false
         },
       ];
@@ -408,26 +408,26 @@ describe('ConditionParser', () => {
 
     describe('should evaluate simple, compound fomulas with equals', () => {
       const conditions = [
-        { 'fieldReference': 'TextField0', 'comparator': '=', 'value': 'hello' },
+        { fieldReference: 'TextField0', comparator: '=', value: 'hello' },
         'AND',
-        { 'fieldReference': 'TextField1', 'comparator': '=', 'value': 'bye' },
+        { fieldReference: 'TextField1', comparator: '=', value: 'bye' },
       ];
 
       const testCases = [
         {
-          input: { 'TextField0': 'hello', 'TextField1': 'bye' },
+          input: { TextField0: 'hello', TextField1: 'bye' },
           expected: true
         },
         {
-          input: { 'TextField0': 'hello', 'TextField1': 'hello' },
+          input: { TextField0: 'hello', TextField1: 'hello' },
           expected: false
         },
         {
-          input: { 'TextField0': 'bye', 'TextField1': 'hello' },
+          input: { TextField0: 'bye', TextField1: 'hello' },
           expected: false
         },
         {
-          input: { 'TextField0': 'bye', 'TextField1': 'bye' },
+          input: { TextField0: 'bye', TextField1: 'bye' },
           expected: false
         },
       ];
@@ -442,26 +442,26 @@ describe('ConditionParser', () => {
 
     describe('should evaluate simple, compound fomulas with does not equal', () => {
       const conditions = [
-        { 'fieldReference': 'TextField0', 'comparator': '!=', 'value': 'hello' },
+        { fieldReference: 'TextField0', comparator: '!=', value: 'hello' },
         'AND',
-        { 'fieldReference': 'TextField1', 'comparator': '!=', 'value': 'bye' },
+        { fieldReference: 'TextField1', comparator: '!=', value: 'bye' },
       ];
 
       const testCases = [
         {
-          input: { 'TextField0': 'hello', 'TextField1': 'bye' },
+          input: { TextField0: 'hello', TextField1: 'bye' },
           expected: false
         },
         {
-          input: { 'TextField0': 'hello', 'TextField1': 'hello' },
+          input: { TextField0: 'hello', TextField1: 'hello' },
           expected: false
         },
         {
-          input: { 'TextField0': 'bye', 'TextField1': 'hello' },
+          input: { TextField0: 'bye', TextField1: 'hello' },
           expected: true
         },
         {
-          input: { 'TextField0': 'bye', 'TextField1': 'bye' },
+          input: { TextField0: 'bye', TextField1: 'bye' },
           expected: false
         },
       ];
@@ -476,26 +476,26 @@ describe('ConditionParser', () => {
 
     describe('should evaluate simple, compound fomulas with CONTAINS', () => {
       const conditions = [
-        { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'hello' },
+        { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'hello' },
         'AND',
-        { 'fieldReference': 'TextField1', 'comparator': 'CONTAINS', 'value': 'bye' },
+        { fieldReference: 'TextField1', comparator: 'CONTAINS', value: 'bye' },
       ];
 
       const testCases = [
         {
-          input: { 'TextField0': ['hello', 'world'], 'TextField1': ['bye'] },
+          input: { TextField0: ['hello', 'world'], TextField1: ['bye'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['hello'], 'TextField1': ['hello'] },
+          input: { TextField0: ['hello'], TextField1: ['hello'] },
           expected: false
         },
         {
-          input: { 'TextField0': ['bye', 'hello'], 'TextField1': ['bye', 'hello'] },
+          input: { TextField0: ['bye', 'hello'], TextField1: ['bye', 'hello'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['bye'], 'TextField1': ['bye'] },
+          input: { TextField0: ['bye'], TextField1: ['bye'] },
           expected: false
         },
       ];
@@ -510,26 +510,26 @@ describe('ConditionParser', () => {
 
     describe('should evaluate simple, compound fomulas with equals', () => {
       const conditions = [
-        { 'fieldReference': 'TextField0', 'comparator': '=', 'value': 'hello' },
+        { fieldReference: 'TextField0', comparator: '=', value: 'hello' },
         'OR',
-        { 'fieldReference': 'TextField1', 'comparator': '=', 'value': 'bye' },
+        { fieldReference: 'TextField1', comparator: '=', value: 'bye' },
       ];
 
       const testCases = [
         {
-          input: { 'TextField0': 'hello', 'TextField1': 'bye' },
+          input: { TextField0: 'hello', TextField1: 'bye' },
           expected: true
         },
         {
-          input: { 'TextField0': 'hello', 'TextField1': 'hello' },
+          input: { TextField0: 'hello', TextField1: 'hello' },
           expected: true
         },
         {
-          input: { 'TextField0': 'bye', 'TextField1': 'hello' },
+          input: { TextField0: 'bye', TextField1: 'hello' },
           expected: false
         },
         {
-          input: { 'TextField0': 'bye', 'TextField1': 'bye' },
+          input: { TextField0: 'bye', TextField1: 'bye' },
           expected: true
         },
       ];
@@ -545,29 +545,29 @@ describe('ConditionParser', () => {
     describe('should evaluate simple, compound enclosed fomulas - left', () => {
       const conditions = [
         [
-          { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'hello' },
+          { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'hello' },
           'AND',
-          { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'bye' }
+          { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'bye' }
         ],
         'OR',
-        { 'fieldReference': 'TextField1', 'comparator': '=', 'value': 'nope' },
+        { fieldReference: 'TextField1', comparator: '=', value: 'nope' },
       ];
 
       const testCases = [
         {
-          input: { 'TextField0': ['hello', 'bye'], 'TextField1': ['nope'] },
+          input: { TextField0: ['hello', 'bye'], TextField1: ['nope'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['hello', 'bye'], 'TextField1': ['nope'] },
+          input: { TextField0: ['hello', 'bye'], TextField1: ['nope'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['bye'], 'TextField1': ['nope'] },
+          input: { TextField0: ['bye'], TextField1: ['nope'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['bye'], 'TextField1': ['bye'] },
+          input: { TextField0: ['bye'], TextField1: ['bye'] },
           expected: false
         },
       ];
@@ -583,29 +583,29 @@ describe('ConditionParser', () => {
     describe('should evaluate simple, compound enclosed fomulas - with OR inner join', () => {
       const conditions = [
         [
-          { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'hello' },
+          { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'hello' },
           'OR',
-          { 'fieldReference': 'TextField1', 'comparator': '=', 'value': 'show' }
+          { fieldReference: 'TextField1', comparator: '=', value: 'show' }
         ],
         'AND',
-        { 'fieldReference': 'TextField2', 'comparator': '=', 'value': 'must' },
+        { fieldReference: 'TextField2', comparator: '=', value: 'must' },
       ];
 
       const testCases = [
         {
-          input: { 'TextField0': [''], 'TextField1': ['show'], 'TextField2': ['must'] },
+          input: { TextField0: [''], TextField1: ['show'], TextField2: ['must'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['hello'], 'TextField1': [''], 'TextField2': ['must'] },
+          input: { TextField0: ['hello'], TextField1: [''], TextField2: ['must'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['hellow'], 'TextField1': ['show'], 'TextField2': [''] },
+          input: { TextField0: ['hellow'], TextField1: ['show'], TextField2: [''] },
           expected: false
         },
         {
-          input: { 'TextField0': ['he'], 'TextField1': ['sho'], 'TextField2': ['must'] },
+          input: { TextField0: ['he'], TextField1: ['sho'], TextField2: ['must'] },
           expected: false
         },
       ];
@@ -620,30 +620,30 @@ describe('ConditionParser', () => {
 
     describe('should evaluate simple, compound enclosed fomulas - right', () => {
       const conditions = [
-        { 'fieldReference': 'TextField1', 'comparator': '=', 'value': 'nope' },
+        { fieldReference: 'TextField1', comparator: '=', value: 'nope' },
         'OR',
         [
-          { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'hello' },
+          { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'hello' },
           'AND',
-          { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'bye' }
+          { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'bye' }
         ],
       ];
 
       const testCases = [
         {
-          input: { 'TextField0': ['hello', 'bye'], 'TextField1': ['nope'] },
+          input: { TextField0: ['hello', 'bye'], TextField1: ['nope'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['hello', 'bye'], 'TextField1': ['hello'] },
+          input: { TextField0: ['hello', 'bye'], TextField1: ['hello'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['bye'], 'TextField1': ['nope'] },
+          input: { TextField0: ['bye'], TextField1: ['nope'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['bye'], 'TextField1': ['bye'] },
+          input: { TextField0: ['bye'], TextField1: ['bye'] },
           expected: false
         },
       ];
@@ -659,33 +659,33 @@ describe('ConditionParser', () => {
     describe('should evaluate simple, compound enclosed fomulas - both', () => {
       const conditions = [
         [
-          { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'hello' },
+          { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'hello' },
           'AND',
-          { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'bye' }
+          { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'bye' }
         ],
         'OR',
         [
-          { 'fieldReference': 'TextField1', 'comparator': 'CONTAINS', 'value': 'night' },
+          { fieldReference: 'TextField1', comparator: 'CONTAINS', value: 'night' },
           'AND',
-          { 'fieldReference': 'TextField1', 'comparator': 'CONTAINS', 'value': 'day' }
+          { fieldReference: 'TextField1', comparator: 'CONTAINS', value: 'day' }
         ],
       ];
 
       const testCases = [
         {
-          input: { 'TextField0': ['hello', 'bye'], 'TextField1': ['night', 'day'] },
+          input: { TextField0: ['hello', 'bye'], TextField1: ['night', 'day'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['hello', 'bye'], 'TextField1': ['night'] },
+          input: { TextField0: ['hello', 'bye'], TextField1: ['night'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['hello'], 'TextField1': ['night', 'day'] },
+          input: { TextField0: ['hello'], TextField1: ['night', 'day'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['hello'], 'TextField1': ['night'] },
+          input: { TextField0: ['hello'], TextField1: ['night'] },
           expected: false
         },
       ];
@@ -701,33 +701,33 @@ describe('ConditionParser', () => {
     describe('should evaluate simple, compound enclosed fomulas - both', () => {
       const conditions = [
         [
-          { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'hello' },
+          { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'hello' },
           'AND',
-          { 'fieldReference': 'TextField0', 'comparator': 'CONTAINS', 'value': 'bye' }
+          { fieldReference: 'TextField0', comparator: 'CONTAINS', value: 'bye' }
         ],
         'AND',
         [
-          { 'fieldReference': 'TextField1', 'comparator': 'CONTAINS', 'value': 'night' },
+          { fieldReference: 'TextField1', comparator: 'CONTAINS', value: 'night' },
           'AND',
-          { 'fieldReference': 'TextField1', 'comparator': 'CONTAINS', 'value': 'day' }
+          { fieldReference: 'TextField1', comparator: 'CONTAINS', value: 'day' }
         ],
       ];
 
       const testCases = [
         {
-          input: { 'TextField0': ['hello', 'bye'], 'TextField1': ['night', 'day'] },
+          input: { TextField0: ['hello', 'bye'], TextField1: ['night', 'day'] },
           expected: true
         },
         {
-          input: { 'TextField0': ['hello', 'bye'], 'TextField1': ['night'] },
+          input: { TextField0: ['hello', 'bye'], TextField1: ['night'] },
           expected: false
         },
         {
-          input: { 'TextField0': ['hello'], 'TextField1': ['night day']},
+          input: { TextField0: ['hello'], TextField1: ['night day']},
           expected: false
         },
         {
-          input: { 'TextField0': ['hello'], 'TextField1': ['night'] },
+          input: { TextField0: ['hello'], TextField1: ['night'] },
           expected: false
         },
       ];

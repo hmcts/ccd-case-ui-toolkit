@@ -90,7 +90,7 @@ export class ShowCondition {
   }
 
   private static getConditions(formula: any): string {
-    let conditionList: string[] = [];
+    const conditionList: string[] = [];
     if (!!formula) {
       const newFormula = typeof formula === 'string' ? JSON.parse(formula) : formula;
       if (Array.isArray(newFormula)) {
@@ -176,6 +176,7 @@ export class ShowCondition {
 
   private updatePathName(path: string): string {
     if (path && path.split(/[_]+/g).length > 0) {
+       /* tslint:disable-next-line */
       let [pathName, ...pathTail] = path.split(/[_]+/g);
       const pathFinalIndex = pathTail.pop();
       const pathTailString = pathTail.toString();

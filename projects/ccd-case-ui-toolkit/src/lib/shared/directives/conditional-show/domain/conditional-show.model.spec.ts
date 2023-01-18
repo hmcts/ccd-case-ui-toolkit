@@ -556,7 +556,7 @@ describe('conditional-show', () => {
 
     it('should evaluate AND conditions correctly for a mix of EQUALS and CONTAINS', () => {
       caseField2.value = ['s4', 's2', 's3'];
-      let sc = new ShowCondition('field4="s1 AND s2" AND field2CONTAINS"s3,s4"');
+      const sc = new ShowCondition('field4="s1 AND s2" AND field2CONTAINS"s3,s4"');
 
       const matched = sc.matchByContextFields(contextFields);
 
@@ -648,7 +648,7 @@ describe('conditional-show', () => {
         County: ['Middlesex', 'London'],
       };
       caseField1.value = ['s1', 's2', 's3'];
-      let sc = new ShowCondition('field1CONTAINS"s1,s3" AND (claimantDetails.AddressUKCode.CountyCONTAINS"Middlesex" OR claimantDetails.AddressUKCode.CountyCONTAINS"London")');
+      const sc = new ShowCondition('field1CONTAINS"s1,s3" AND (claimantDetails.AddressUKCode.CountyCONTAINS"Middlesex" OR claimantDetails.AddressUKCode.CountyCONTAINS"London")');
 
       const matched = sc.matchByContextFields(contextFields);
 
@@ -803,18 +803,18 @@ describe('conditional-show', () => {
         expect(matched).toBe(false);
       });
       it('OR condition mixed with AND => not equals condition', () => {
-        let sc = new ShowCondition('field1!="field1NoMatchValue" OR (field2="field2NoMatchValue" AND field3="field3NoMatchValue")');
-        let matched = sc.matchByContextFields(contextFields);
+        const sc = new ShowCondition('field1!="field1NoMatchValue" OR (field2="field2NoMatchValue" AND field3="field3NoMatchValue")');
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(true);
       });
       it('AND condition mixed with OR => equals condition', () => {
-        let sc = new ShowCondition('field1="field1NoMatchValue" AND (field2="field2NoMatchValue" OR field3="field3NoMatchValue")');
-        let matched = sc.matchByContextFields(contextFields);
+        const sc = new ShowCondition('field1="field1NoMatchValue" AND (field2="field2NoMatchValue" OR field3="field3NoMatchValue")');
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(false);
       });
       it('AND condition mixed with OR => not equals condition', () => {
-        let sc = new ShowCondition('field1!="field1NoMatchValue" AND (field2="field2NoMatchValue" OR field3="field3NoMatchValue")');
-        let matched = sc.matchByContextFields(contextFields);
+        const sc = new ShowCondition('field1!="field1NoMatchValue" AND (field2="field2NoMatchValue" OR field3="field3NoMatchValue")');
+        const matched = sc.matchByContextFields(contextFields);
         expect(matched).toBe(false);
       });
     });

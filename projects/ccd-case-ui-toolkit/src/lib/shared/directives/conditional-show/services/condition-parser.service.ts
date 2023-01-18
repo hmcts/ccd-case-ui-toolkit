@@ -182,7 +182,7 @@ export class ConditionParser {
       const [_, ...pathTail] = path.split(/[_]+/g);
       if (pathTail.length > 0) {
         try {
-          let arrayIndex = Number.parseInt(pathTail[0], 10);
+          const arrayIndex = Number.parseInt(pathTail[0], 10);
           const [__, ...dropNumberPath] = pathTail;
           return (fields[head][arrayIndex] !== undefined) ? this.findValueForComplexCondition(
           fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
