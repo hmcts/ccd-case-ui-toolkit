@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.49-restricted-case-access
+**EUI-7382** Restricted case access
+
 ### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
 **EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary
 
