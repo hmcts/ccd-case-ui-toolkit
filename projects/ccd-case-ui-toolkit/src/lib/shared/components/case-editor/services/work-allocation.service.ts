@@ -18,8 +18,6 @@ export class WorkAllocationService {
 
   private features: WAFeatureConfig;
 
-  private features: WAFeatureConfig;
-
   constructor(
     private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
