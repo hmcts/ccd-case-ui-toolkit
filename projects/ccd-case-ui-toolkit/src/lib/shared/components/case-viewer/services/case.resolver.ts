@@ -96,8 +96,8 @@ export class CaseResolver implements Resolve<CaseView> {
       this.router.navigate(['/search/noresults']);
       return of(null);
     }
-    // TODO: 404 is used for testing purpose. Should be changed to 403
-    if (error.status === 404) {
+    // Error 403, navigate to restricted case access page
+    if (error.status === 403) {
       this.router.navigate([`/cases/restricted-case-access/${caseReference}`]);
       return of(null);
     }

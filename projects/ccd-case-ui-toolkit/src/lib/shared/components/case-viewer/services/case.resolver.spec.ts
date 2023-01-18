@@ -289,6 +289,34 @@ describe('CaseResolver', () => {
       expect(caseNotifier.fetchAndRefresh).not.toHaveBeenCalled();
       expect(caseNotifier.cachedCaseView).toBe(CASE);
     });
+
+    it('should redirect to restricted case access page when error code is 403', () => {
+      const error = {
+        status: 403
+      };
+      caseNotifier.fetchAndRefresh.and.returnValue(throwError(error));
+
+      const userInfo = {
+        id: '2',
+        forename: 'G',
+        surname: 'Testing',
+        email: 'testing2@mail.com',
+        active: true,
+        roles: ['caseworker-ia-caseofficer']
+      };
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
+      caseResolver
+        .resolve(route)
+        .then(data => {
+          expect(data).toBeFalsy();
+        }, err => {
+          expect(err).toBeTruthy();
+        });
+
+      expect(router.navigate).toHaveBeenCalledWith(['/cases/restricted-case-access/42']);
+    });
   });
 
   describe('resolve()', () => {
