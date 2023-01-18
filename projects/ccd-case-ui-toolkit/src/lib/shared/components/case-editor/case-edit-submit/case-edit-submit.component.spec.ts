@@ -4330,7 +4330,11 @@ describe('CaseEditSubmitComponent', () => {
                   roles: ['caseworker', 'caseworker-test', 'caseworker-probate-solicitor']
                 }
               },
+<<<<<<< HEAD:projects/ccd-case-ui-toolkit/src/lib/shared/components/case-editor/case-edit-submit/case-edit-submit.component.spec.ts
               isSolicitor: () => false,
+=======
+              'isSolicitor': () => false,
+>>>>>>> 3f4684bcecfbda59db6172ace3ea5e915184bc99:src/shared/components/case-editor/case-edit-submit/case-edit-submit.component.spec.ts
             }
           }
         }
@@ -4342,16 +4346,26 @@ describe('CaseEditSubmitComponent', () => {
       snapshot: snapshotNoProfile
     };
 
+<<<<<<< HEAD:projects/ccd-case-ui-toolkit/src/lib/shared/components/case-editor/case-edit-submit/case-edit-submit.component.spec.ts
     beforeEach(waitForAsync(() => {
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
       cancelled = createSpyObj('cancelled', ['emit']);
       caseEditComponent = {
         form: new FormGroup({
+=======
+    beforeEach(async(() => {
+      orderService = new OrderService();
+      casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
+      cancelled = createSpyObj('cancelled', ['emit'])
+      caseEditComponent = {
+        'form': new FormGroup({
+>>>>>>> 3f4684bcecfbda59db6172ace3ea5e915184bc99:src/shared/components/case-editor/case-edit-submit/case-edit-submit.component.spec.ts
           data: new FormGroup({
             [flagLauncherCaseField.id]: createSimpleElementHidden(null)
           })
         }),
+<<<<<<< HEAD:projects/ccd-case-ui-toolkit/src/lib/shared/components/case-editor/case-edit-submit/case-edit-submit.component.spec.ts
         fieldsPurger: new FieldsPurger(fieldsUtils),
         data: '',
         eventTrigger: {
@@ -4367,6 +4381,23 @@ describe('CaseEditSubmitComponent', () => {
         cancel: () => undefined,
         cancelled,
         submit: createSpy('submit').and.returnValue({
+=======
+        'fieldsPurger': new FieldsPurger(fieldsUtils),
+        'data': '',
+        'eventTrigger': {
+          'case_fields': [flagLauncherCaseField],
+          'can_save_draft': true
+        },
+        'wizard': wizard,
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'navigateToPage': () => undefined,
+        'next': () => new FieldsPurger(fieldsUtils).clearHiddenFields(
+          caseEditComponent.form, caseEditComponent.wizard, caseEditComponent.eventTrigger, firstPage.id),
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'submit': createSpy('submit').and.returnValue({
+>>>>>>> 3f4684bcecfbda59db6172ace3ea5e915184bc99:src/shared/components/case-editor/case-edit-submit/case-edit-submit.component.spec.ts
           // Provide a dummy subscribe function to be called in place of the real one
           subscribe: () => {}
         })

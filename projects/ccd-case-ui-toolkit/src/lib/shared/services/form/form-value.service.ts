@@ -458,6 +458,12 @@ export class FormValueService {
 
   /**
    * Remove any empty or invalid array with only id
+<<<<<<< HEAD:projects/ccd-case-ui-toolkit/src/lib/shared/services/form/form-value.service.ts
+=======
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param field {@link CaseField} domain model object for each field
+>>>>>>> 3f4684bcecfbda59db6172ace3ea5e915184bc99:src/shared/services/form/form-value.service.ts
    */
   public removeInvalidCollectionData(data: object, field: CaseField) {
     if (data[field.id] && data[field.id].length > 0) {
@@ -520,14 +526,17 @@ export class FormValueService {
           // nothing for a given case field ID (hence the use of hasOwnProperty())
           if (data.hasOwnProperty(caseField.id) && caseField.value) {
             // Create new object for the case field ID within the data object, if necessary
-            if (!data[caseField.id]) {
-              data[caseField.id] = {};
+            if (data[caseField.id]) {
+              // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+              // Flags field within a Complex field or a collection of Complex fields) is copied across
+              Object.keys(data[caseField.id]).forEach(key => {
+                if (caseField.value.hasOwnProperty(key)) {
+                  data[caseField.id][key] = caseField.value[key];
+                }
+              });
             }
-            // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
-            // Flags field within a Complex field or a collection of Complex fields) is copied across
-            Object.keys(caseField.value).forEach(key => data[caseField.id][key] = caseField.value[key]);
-          }
-        });
+        };
+      });
     }
   }
 }

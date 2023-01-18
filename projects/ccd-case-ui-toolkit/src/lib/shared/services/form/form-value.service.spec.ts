@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { CaseField, FieldType } from '../../domain/definition';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
@@ -909,3 +910,6 @@ describe('FormValueService', () => {
     });
   });
 });
+function createSpyObj(arg0: string, arg1: string[]): any {
+  throw new Error('Function not implemented.');
+}
