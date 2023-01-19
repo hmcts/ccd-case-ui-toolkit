@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.50-sscs-sit-release
+**EUI-7564** SSCS SIT release
+
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
 
