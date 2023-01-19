@@ -9,6 +9,8 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 export class ReadCaseLinkFieldComponent extends AbstractFieldReadComponent {
   public paletteContext = PaletteContext;
 
+	public isWrite = false;
+
   public hasReference(): boolean {
     return this.caseField.value && this.caseField.value.CaseReference;
   }

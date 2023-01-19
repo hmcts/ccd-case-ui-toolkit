@@ -29,7 +29,7 @@ export class CaseField implements Orderable {
   public metadata?: boolean;
   public formatted_value?: any;
   public retain_hidden_value: boolean;
-
+	
   @Type(() => WizardPageField)
   public wizardProps?: WizardPageField;
 
