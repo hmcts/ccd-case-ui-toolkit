@@ -259,11 +259,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   public updateFormData(jsonData: CaseEventData): void {
     for (const caseFieldId of Object.keys(jsonData.data)) {
-      if (this.pageWithFieldExists(caseFieldId)) {
-        this.updateEventTriggerCaseFields(caseFieldId, jsonData, this.caseEdit.eventTrigger);
-        this.updateFormControlsValue(this.editForm, caseFieldId, jsonData.data[caseFieldId]);
+        if (this.pageWithFieldExists(caseFieldId)) {
+          this.updateEventTriggerCaseFields(caseFieldId, jsonData, this.caseEdit.eventTrigger);
+          this.updateFormControlsValue(this.editForm, caseFieldId, jsonData.data[caseFieldId]);
+        }
       }
-    }
   }
 
   // we do the check, becasue the data comes from the external source
@@ -272,11 +272,41 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   public updateEventTriggerCaseFields(caseFieldId: string, jsonData: CaseEventData, eventTrigger: CaseEventTrigger) {
-    if (eventTrigger.case_fields) {
+    if (eventTrigger?.case_fields) {
       eventTrigger.case_fields
         .filter(element => element.id === caseFieldId)
-        .forEach(element => element.value = jsonData.data[caseFieldId]);
+        .forEach(element => {
+          if(this.isAnObject(element.value)) {
+            const updatedJsonDataObject = this.updateJsonDataObject(caseFieldId, jsonData, element);
+
+            element.value = {
+              ...element.value,
+              ...updatedJsonDataObject,
+            };
+          }
+          else {
+            element.value = jsonData.data[caseFieldId];
+          }
+        });
     }
+  }
+
+  private updateJsonDataObject(caseFieldId: string, jsonData: CaseEventData, element: CaseField) : Record<string, unknown> {
+    return Object.keys(jsonData.data[caseFieldId]).reduce((acc, key) => {
+      const elementValue = element.value[key];
+      const jsonDataValue = jsonData.data[caseFieldId][key];
+      const hasElementGotValueProperty = this.isAnObject(elementValue) && elementValue.value !== undefined;
+      const jsonDataOrElementValue = jsonDataValue?.value !== null && jsonDataValue?.value !== undefined ? jsonDataValue : elementValue;
+
+      return {
+        ...acc,
+        [`${key}`]: hasElementGotValueProperty ? jsonDataOrElementValue : jsonDataValue
+      };
+    },{});
+  }
+
+  private isAnObject(property: unknown): boolean {
+    return typeof property === 'object' && !Array.isArray(property) && property !== null;
   }
 
   public updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {

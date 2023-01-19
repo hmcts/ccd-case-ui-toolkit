@@ -1,19 +1,42 @@
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  CUSTOM_ELEMENTS_SCHEMA,
+  DebugElement,
+} from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PlaceholderService } from '../../../directives/substitutor/services/placeholder.service';
-import { CaseEventData, CaseEventTrigger, CaseField, Draft, FieldType, HttpError } from '../../../domain';
+import {
+  CaseEventData,
+  CaseEventTrigger,
+  CaseField,
+  Draft,
+  FieldType,
+  HttpError,
+} from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
 import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
-import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValueService } from '../../../services';
+import {
+  CaseFieldService,
+  FieldTypeSanitiser,
+  FormErrorService,
+  FormValueService,
+} from '../../../services';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
@@ -27,27 +50,245 @@ import { CaseEditPageComponent } from './case-edit-page.component';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 
-xdescribe('CaseEditPageComponent', () => {
+describe('CaseEditPageComponent', () => {
+  let component: CaseEditPageComponent;
 
+  const mockFormBuilder = jasmine.createSpyObj('FormBuilder', ['group']);
+  const mockSearchService = jasmine.createSpyObj('SearchService', [
+    'retrieveState',
+    'storeState',
+  ]);
+  const mockStore = jasmine.createSpyObj('Store', ['dispatch']);
+
+  const initializeComponent = ({
+    caseEdit = {},
+    formValueService = {},
+    formErrorService = {},
+    route = {},
+    cdRef = {},
+    pageValidationService = {},
+    dialog = {},
+    caseFieldService = {},
+    caseEditDataService = {},
+  }) =>
+    new CaseEditPageComponent(
+      caseEdit as CaseEditComponent,
+      route as ActivatedRoute,
+      formValueService as FormValueService,
+      formErrorService as FormErrorService,
+      cdRef as ChangeDetectorRef,
+      pageValidationService as PageValidationService,
+      dialog as MatDialog,
+      caseFieldService as CaseFieldService,
+      caseEditDataService as CaseEditDataService
+    );
+
+  it('should create', () => {
+    component = initializeComponent({});
+
+    expect(component).toBeTruthy();
+  });
+
+  describe('updateEventTriggerCaseFields', () => {
+    it(`should NOT update event trigger's case fields as eventTrigger is null`, () => {
+      component = initializeComponent({});
+      const caseFieldIdMock = 'bothDefendants';
+      const jsonDataMock = {} as unknown as CaseEventData;
+      const eventTriggerMock = null;
+
+      component.updateEventTriggerCaseFields(caseFieldIdMock, jsonDataMock, eventTriggerMock);
+
+      expect(eventTriggerMock).toBeNull();
+    });
+
+    it(`should NOT update event trigger's case fields as eventTrigger has no case fields`, () => {
+      component = initializeComponent({});
+      const caseFieldIdMock = 'bothDefendants';
+      const jsonDataMock = {} as unknown as CaseEventData;
+      const eventTriggerMock = { id: 'noCaseFields' } as unknown as CaseEventTrigger;
+
+      component.updateEventTriggerCaseFields(caseFieldIdMock, jsonDataMock, eventTriggerMock);
+
+      expect(eventTriggerMock).toEqual(jasmine.objectContaining({ id: 'noCaseFields' }));
+    });
+
+    it(`should update event trigger's case fields value`, () => {
+      component = initializeComponent({});
+      const caseFieldIdMock = 'bothDefendants';
+      const jsonDataMock = {
+        data: {
+          bothDefendants: true
+        }
+      } as unknown as CaseEventData;
+      const eventTriggerMock = {
+        ['case_fields']: [
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: null
+          }
+        ],
+      } as unknown as CaseEventTrigger;
+      component.updateEventTriggerCaseFields(caseFieldIdMock, jsonDataMock, eventTriggerMock);
+
+      expect(eventTriggerMock['case_fields'][0].value).toEqual(true);
+    });
+
+    it(`should update event trigger's case fields value with jsonData's object`, () => {
+      component = initializeComponent({});
+      const caseFieldIdMock = 'bothDefendants';
+      const result = {
+        value: true
+      };
+      const jsonDataMock = {
+        data: {
+          bothDefendants: {
+            value: true
+          }
+        }
+      } as unknown as CaseEventData;
+      const eventTriggerMock = {
+        ['case_fields']: [
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: null
+          }
+        ],
+      } as unknown as CaseEventTrigger;
+      component.updateEventTriggerCaseFields(caseFieldIdMock, jsonDataMock, eventTriggerMock);
+
+      expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
+    });
+
+    it(`should NOT update event trigger's case fields value as jsonData's value is null`, () => {
+      component = initializeComponent({});
+      const caseFieldIdMock = 'bothDefendants';
+      const result = {
+        people: {
+          value: false
+        }
+      };
+      const jsonDataMock = {
+        data: {
+          bothDefendants: {
+            people: {
+              list: ['sample', 'sample'],
+              value: null
+            }
+          }
+
+        }
+      } as unknown as CaseEventData;
+      const eventTriggerMock = {
+        ['case_fields']: [
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: result
+          }
+        ],
+      } as unknown as CaseEventTrigger;
+      component.updateEventTriggerCaseFields(caseFieldIdMock, jsonDataMock, eventTriggerMock);
+
+      expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
+    });
+
+    it(`should NOT update event trigger's case fields value as jsonData's value is undefined`, () => {
+      component = initializeComponent({});
+      const caseFieldIdMock = 'bothDefendants';
+      const result = {
+        people: {
+          value: false
+        }
+      };
+      const jsonDataMock = {
+        data: {
+          bothDefendants: {
+            people: {
+            list: ['sample', 'sample']
+            }
+          }
+        }
+      } as unknown as CaseEventData;
+      const eventTriggerMock = {
+        ['case_fields']: [
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: result
+          }
+        ],
+      } as unknown as CaseEventTrigger;
+      component.updateEventTriggerCaseFields(caseFieldIdMock, jsonDataMock, eventTriggerMock);
+
+      expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
+    });
+
+    it(`should update event trigger's case fields value as jsonData's value is present`, () => {
+      component = initializeComponent({});
+      const caseFieldIdMock = 'bothDefendants';
+      const result = {
+          people: {
+            value: true
+          }
+      };
+      const jsonDataMock = {
+        data: {
+          bothDefendants: result
+        }
+      } as unknown as CaseEventData;
+      const eventTriggerMock = {
+        ['case_fields']: [
+          {
+            id: 'bothDefendants',
+            label: 'Both Defendants',
+            value: {
+              people: {
+                value: true
+                }
+            }
+          }
+        ],
+      } as unknown as CaseEventTrigger;
+      component.updateEventTriggerCaseFields(caseFieldIdMock, jsonDataMock, eventTriggerMock);
+
+      expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
+    });
+  });
+});
+
+xdescribe('CaseEditPageComponent', () => {
   let de: DebugElement;
   const $SELECT_SUBMIT_BUTTON = By.css('button[type=submit]');
   const $SELECT_ERROR_SUMMARY = By.css('.error-summary');
   const $SELECT_ERROR_HEADING_GENERIC = By.css('.error-summary>h1:first-child');
-  const $SELECT_ERROR_MESSAGE_GENERIC = By.css('.govuk-error-summary__body>p:first-child');
-  const $SELECT_ERROR_HEADING_SPECIFIC = By.css('.error-summary>h3:first-child');
-  const $SELECT_ERROR_MESSAGE_SPECIFIC = By.css('.error-summary>p:nth-child(2)');
+  const $SELECT_ERROR_MESSAGE_GENERIC = By.css(
+    '.govuk-error-summary__body>p:first-child'
+  );
+  const $SELECT_ERROR_HEADING_SPECIFIC = By.css(
+    '.error-summary>h3:first-child'
+  );
+  const $SELECT_ERROR_MESSAGE_SPECIFIC = By.css(
+    '.error-summary>p:nth-child(2)'
+  );
   const $SELECT_CALLBACK_DATA_FIELD_ERROR_LIST = By.css('.error-summary-list');
   const $SELECT_FIRST_FIELD_ERROR = By.css('li:first-child');
   const $SELECT_SECOND_FIELD_ERROR = By.css('li:nth-child(2)');
 
   const ERROR_HEADING_GENERIC = 'Something went wrong';
-  const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
+  const ERROR_MESSAGE_GENERIC =
+    'We\'re working to fix the problem. Try again shortly.';
   const ERROR_HEADING_SPECIFIC = 'The event could not be created';
   const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors';
 
   let comp: CaseEditPageComponent;
   let fixture: ComponentFixture<CaseEditPageComponent>;
-  let wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
+  let wizardPage = createWizardPage(
+    [createCaseField('field1', 'field1Value')],
+    false,
+    0
+  );
   const readOnly = new CaseField();
   const fieldTypeSanitiser = new FieldTypeSanitiser();
   const formValueService = new FormValueService(fieldTypeSanitiser);
@@ -58,11 +299,11 @@ xdescribe('CaseEditPageComponent', () => {
   let route: any;
   let snapshot: any;
   const FORM_GROUP = new FormGroup({
-    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
+    data: new FormGroup({ field1: new FormControl('SOME_VALUE') }),
   });
   const WIZARD = new Wizard([wizardPage]);
   const someObservable = {
-    subscribe: () => new Draft()
+    subscribe: () => new Draft(),
   };
   let dialog: any;
   let matDialogRef: any;
@@ -74,85 +315,113 @@ xdescribe('CaseEditPageComponent', () => {
   const eventData = new CaseEventData();
   const caseEventDataPrevious: CaseEventData = {
     data: {
-      field1: 'Updated value'
+      field1: 'Updated value',
     },
-    event: {id: '', summary: '', description: ''},
+    event: { id: '', summary: '', description: '' },
     event_token: '',
-    ignore_warning: true
+    ignore_warning: true,
   };
 
   describe('Save and Resume enabled', () => {
-    const eventTrigger = {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true};
+    const eventTrigger = {
+      case_fields: [caseField1],
+      name: 'Test event trigger name',
+      can_save_draft: true,
+    };
 
-    beforeEach(waitForAsync(() => {
-      firstPage.id = 'first page';
-      cancelled = createSpyObj('cancelled', ['emit']);
-      caseEditComponentStub = {
-        form: FORM_GROUP,
-        wizard: WIZARD,
-        data: '',
-        eventTrigger,
-        hasPrevious: () => true,
-        getPage: () => firstPage,
-        first: () => true,
-        next: () => true,
-        previous: () => true,
-        cancel: () => undefined,
-        cancelled,
-        validate: (caseEventData: CaseEventData) => of(caseEventData),
-        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
-        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
-      };
-      snapshot = {
-        queryParamMap: createSpyObj('queryParamMap', ['get']),
-      };
-      route = {
-        params: of({id: 123}),
-        snapshot
-      };
+    beforeEach(
+      waitForAsync(() => {
+        firstPage.id = 'first page';
+        cancelled = createSpyObj('cancelled', ['emit']);
+        caseEditComponentStub = {
+          form: FORM_GROUP,
+          wizard: WIZARD,
+          data: '',
+          eventTrigger,
+          hasPrevious: () => true,
+          getPage: () => firstPage,
+          first: () => true,
+          next: () => true,
+          previous: () => true,
+          cancel: () => undefined,
+          cancelled,
+          validate: (caseEventData: CaseEventData) => of(caseEventData),
+          saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+          caseDetails: {
+            case_id: '1234567812345678',
+            tabs: [],
+            metadataFields: [caseField2],
+          },
+        };
+        snapshot = {
+          queryParamMap: createSpyObj('queryParamMap', ['get']),
+        };
+        route = {
+          params: of({ id: 123 }),
+          snapshot,
+        };
 
-      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
-      dialog = createSpyObj<MatDialog>('dialog', ['open']);
-      dialog.open.and.returnValue(matDialogRef);
+        matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>(
+          'MatDialogRef',
+          ['afterClosed', 'close']
+        );
+        dialog = createSpyObj<MatDialog>('dialog', ['open']);
+        dialog.open.and.returnValue(matDialogRef);
 
-      spyOn(caseEditComponentStub, 'first');
-      spyOn(caseEditComponentStub, 'next');
-      spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'first');
+        spyOn(caseEditComponentStub, 'next');
+        spyOn(caseEditComponentStub, 'previous');
 
-      caseEditDataService = {
-        caseEventTriggerName$: of('ADD'),
-        clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
-        addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
-        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
-        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
-        setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
-      };
+        caseEditDataService = {
+          caseEventTriggerName$: of('ADD'),
+          clearFormValidationErrors: createSpyObj('caseEditDataService', [
+            'clearFormValidationErrors',
+          ]),
+          addFormValidationError: createSpyObj('caseEditDataService', [
+            'addFormValidationError',
+          ]),
+          setCaseLinkError: createSpyObj('caseEditDataService', [
+            'setCaseLinkError',
+          ]),
+          clearCaseLinkError: createSpyObj('caseEditDataService', [
+            'clearCaseLinkError',
+          ]),
+          setCaseEventTriggerName: createSpyObj('caseEditDataService', [
+            'setCaseEventTriggerName',
+          ]),
+        };
 
-      TestBed.configureTestingModule({
-        imports: [FormsModule, ReactiveFormsModule],
-        declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseEditComponent, useValue: caseEditComponentStub},
-          {provide: PageValidationService, useValue: pageValidationService},
-          {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: CaseEditDataService, useValue: caseEditDataService},
-          FieldsUtils,
-          PlaceholderService,
-        ]
-      }).compileComponents();
-      fixture = TestBed.createComponent(CaseEditPageComponent);
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callThrough();
-      spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      comp = fixture.componentInstance;
-      readOnly.display_context = 'READONLY';
-      wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
-    }));
+        TestBed.configureTestingModule({
+          imports: [FormsModule, ReactiveFormsModule],
+          declarations: [
+            CaseEditPageComponent,
+            CaseReferencePipe,
+            CcdCaseTitlePipe,
+          ],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          providers: [
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: CaseEditComponent, useValue: caseEditComponentStub },
+            { provide: PageValidationService, useValue: pageValidationService },
+            { provide: ActivatedRoute, useValue: route },
+            { provide: MatDialog, useValue: dialog },
+            { provide: CaseFieldService, useValue: caseFieldService },
+            { provide: CaseEditDataService, useValue: caseEditDataService },
+            FieldsUtils,
+            PlaceholderService,
+          ],
+        }).compileComponents();
+        fixture = TestBed.createComponent(CaseEditPageComponent);
+        spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callThrough();
+        spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
+        comp = fixture.componentInstance;
+        readOnly.display_context = 'READONLY';
+        wizardPage = createWizardPage([
+          createCaseField('field1', 'field1Value'),
+        ]);
+      })
+    );
 
     it('should display a page with two columns when wizard page is multicolumn', () => {
       wizardPage.isMultiColumn = () => true;
@@ -206,7 +475,7 @@ xdescribe('CaseEditPageComponent', () => {
     it('should return true on hasPrevious check', () => {
       const errorContext = {
         ignore_warning: true,
-        trigger_text: 'Some error!'
+        trigger_text: 'Some error!',
       };
       comp.callbackErrorsNotify(errorContext);
       expect(comp.ignoreWarning).toBeTruthy();
@@ -218,7 +487,7 @@ xdescribe('CaseEditPageComponent', () => {
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       comp.formValuesChanged = false;
-      snapshot.queryParamMap.get.and.callFake(key => {
+      snapshot.queryParamMap.get.and.callFake((key) => {
         // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
@@ -230,7 +499,9 @@ xdescribe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({
+        status: CaseEditPageText.RESUMED_FORM_DISCARD,
+      });
     });
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
@@ -243,14 +514,16 @@ xdescribe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({
+        status: CaseEditPageText.NEW_FORM_DISCARD,
+      });
     });
 
     it('should emit RESUMED_FORM_DISCARD on create event if discard triggered with value changed', () => {
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       comp.formValuesChanged = true;
-      snapshot.queryParamMap.get.and.callFake(key => {
+      snapshot.queryParamMap.get.and.callFake((key) => {
         // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
@@ -262,7 +535,9 @@ xdescribe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({
+        status: CaseEditPageText.RESUMED_FORM_DISCARD,
+      });
     });
 
     it('should emit NEW_FORM_DISCARD on create case if discard triggered with no value changed', () => {
@@ -276,7 +551,9 @@ xdescribe('CaseEditPageComponent', () => {
 
       comp.cancel();
 
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({
+        status: CaseEditPageText.NEW_FORM_DISCARD,
+      });
     });
 
     it('should emit RESUMED_FORM_SAVE on create case if discard triggered with no value changed', () => {
@@ -284,7 +561,7 @@ xdescribe('CaseEditPageComponent', () => {
       comp.eventTrigger = eventTrigger as CaseEventTrigger;
       comp.currentPage = wizardPage;
       comp.formValuesChanged = true;
-      snapshot.queryParamMap.get.and.callFake(key => {
+      snapshot.queryParamMap.get.and.callFake((key) => {
         // tslint:disable-next-line: switch-default
         switch (key) {
           case CaseEditComponent.ORIGIN_QUERY_PARAM:
@@ -299,7 +576,7 @@ xdescribe('CaseEditPageComponent', () => {
 
       expect(cancelled.emit).toHaveBeenCalledWith({
         status: CaseEditPageText.RESUMED_FORM_SAVE,
-        data: {data: {field1: 'SOME_VALUE'}}
+        data: { data: { field1: 'SOME_VALUE' } },
       });
     });
 
@@ -313,7 +590,7 @@ xdescribe('CaseEditPageComponent', () => {
       comp.cancel();
       expect(cancelled.emit).toHaveBeenCalledWith({
         status: CaseEditPageText.NEW_FORM_SAVE,
-        data: {data: {field1: 'SOME_VALUE'}}
+        data: { data: { field1: 'SOME_VALUE' } },
       });
     });
 
@@ -342,7 +619,9 @@ xdescribe('CaseEditPageComponent', () => {
     });
 
     it('should allow empty values when field is OPTIONAL', () => {
-      wizardPage.case_fields.push(aCaseField('fieldX', 'fieldX', 'Text', 'OPTIONAL', null));
+      wizardPage.case_fields.push(
+        aCaseField('fieldX', 'fieldX', 'Text', 'OPTIONAL', null)
+      );
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
@@ -372,68 +651,94 @@ xdescribe('CaseEditPageComponent', () => {
   });
 
   describe('Save and Resume disabled', () => {
-    beforeEach(waitForAsync(() => {
-      firstPage.id = 'first page';
-      cancelled = createSpyObj('cancelled', ['emit']);
-      caseEditComponentStub = {
-        form: FORM_GROUP,
-        wizard: WIZARD,
-        data: '',
-        eventTrigger: {case_fields: [], name: 'Test event trigger name', can_save_draft: false},
-        hasPrevious: () => true,
-        getPage: () => firstPage,
-        first: () => true,
-        next: () => true,
-        previous: () => true,
-        cancel: () => undefined,
-        cancelled,
-        validate: (caseEventData: CaseEventData) => of(caseEventData),
-        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
-        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: []},
-      };
-      snapshot = {
-        queryParamMap: createSpyObj('queryParamMap', ['get']),
-      };
-      route = {
-        params: of({id: 123}),
-        snapshot
-      };
+    beforeEach(
+      waitForAsync(() => {
+        firstPage.id = 'first page';
+        cancelled = createSpyObj('cancelled', ['emit']);
+        caseEditComponentStub = {
+          form: FORM_GROUP,
+          wizard: WIZARD,
+          data: '',
+          eventTrigger: {
+            case_fields: [],
+            name: 'Test event trigger name',
+            can_save_draft: false,
+          },
+          hasPrevious: () => true,
+          getPage: () => firstPage,
+          first: () => true,
+          next: () => true,
+          previous: () => true,
+          cancel: () => undefined,
+          cancelled,
+          validate: (caseEventData: CaseEventData) => of(caseEventData),
+          saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+          caseDetails: {
+            case_id: '1234567812345678',
+            tabs: [],
+            metadataFields: [],
+          },
+        };
+        snapshot = {
+          queryParamMap: createSpyObj('queryParamMap', ['get']),
+        };
+        route = {
+          params: of({ id: 123 }),
+          snapshot,
+        };
 
-      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
-      dialog = createSpyObj<MatDialog>('dialog', ['open']);
-      dialog.open.and.returnValue(matDialogRef);
+        matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>(
+          'MatDialogRef',
+          ['afterClosed', 'close']
+        );
+        dialog = createSpyObj<MatDialog>('dialog', ['open']);
+        dialog.open.and.returnValue(matDialogRef);
 
-      spyOn(caseEditComponentStub, 'first');
-      spyOn(caseEditComponentStub, 'next');
-      spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'first');
+        spyOn(caseEditComponentStub, 'next');
+        spyOn(caseEditComponentStub, 'previous');
 
-      caseEditDataService = {
-        caseEventTriggerName$: of('ADD'),
-        clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
-        addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
-        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
-        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
-        setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
-      };
+        caseEditDataService = {
+          caseEventTriggerName$: of('ADD'),
+          clearFormValidationErrors: createSpyObj('caseEditDataService', [
+            'clearFormValidationErrors',
+          ]),
+          addFormValidationError: createSpyObj('caseEditDataService', [
+            'addFormValidationError',
+          ]),
+          setCaseLinkError: createSpyObj('caseEditDataService', [
+            'setCaseLinkError',
+          ]),
+          clearCaseLinkError: createSpyObj('caseEditDataService', [
+            'clearCaseLinkError',
+          ]),
+          setCaseEventTriggerName: createSpyObj('caseEditDataService', [
+            'setCaseEventTriggerName',
+          ]),
+        };
 
-      TestBed.configureTestingModule({
-        declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseEditComponent, useValue: caseEditComponentStub},
-          {provide: PageValidationService, useValue: pageValidationService},
-          {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: CaseEditDataService, useValue: caseEditDataService},
-          FieldsUtils,
-          PlaceholderService,
-        ]
-      }).compileComponents();
-    }));
+        TestBed.configureTestingModule({
+          declarations: [
+            CaseEditPageComponent,
+            CaseReferencePipe,
+            CcdCaseTitlePipe,
+          ],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          providers: [
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: CaseEditComponent, useValue: caseEditComponentStub },
+            { provide: PageValidationService, useValue: pageValidationService },
+            { provide: ActivatedRoute, useValue: route },
+            { provide: MatDialog, useValue: dialog },
+            { provide: CaseFieldService, useValue: caseFieldService },
+            { provide: CaseEditDataService, useValue: caseEditDataService },
+            FieldsUtils,
+            PlaceholderService,
+          ],
+        }).compileComponents();
+      })
+    );
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -441,7 +746,10 @@ xdescribe('CaseEditPageComponent', () => {
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
-      wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], true);
+      wizardPage = createWizardPage(
+        [createCaseField('field1', 'field1Value')],
+        true
+      );
       comp.currentPage = wizardPage;
     });
 
@@ -459,10 +767,18 @@ xdescribe('CaseEditPageComponent', () => {
       comp.cancel();
 
       expect(cancelled.emit).toHaveBeenCalled();
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_SAVE});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_SAVE});
+      expect(cancelled.emit).not.toHaveBeenCalledWith({
+        status: CaseEditPageText.RESUMED_FORM_DISCARD,
+      });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({
+        status: CaseEditPageText.NEW_FORM_DISCARD,
+      });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({
+        status: CaseEditPageText.RESUMED_FORM_SAVE,
+      });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({
+        status: CaseEditPageText.NEW_FORM_SAVE,
+      });
     });
   });
 
@@ -476,74 +792,89 @@ xdescribe('CaseEditPageComponent', () => {
       wizard_pages: WIZARD.pages,
 
       hasFields: () => true,
-      hasPages: () => true
+      hasPages: () => true,
     };
 
     const formGroup: FormGroup = new FormGroup({
-      data: new FormGroup({field1: new FormControl('SOME_VALUE')})
+      data: new FormGroup({ field1: new FormControl('SOME_VALUE') }),
     });
 
-    beforeEach(waitForAsync(() => {
-      firstPage.id = 'first page';
+    beforeEach(
+      waitForAsync(() => {
+        firstPage.id = 'first page';
 
-      caseEditComponentStub = {
-        form: formGroup,
-        wizard: WIZARD,
-        data: '',
-        eventTrigger,
-        hasPrevious: () => true,
-        getPage: () => firstPage,
-        first: () => true,
-        next: () => true,
-        previous: () => true,
-        cancel: () => undefined,
-        cancelled,
-        validate: (caseEventData: CaseEventData) => of(caseEventData),
-        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
-        caseDetails: {
-          case_id: '1234567812345678',
-          tabs: [],
-          metadataFields: [],
-          state: {
-            id: 'incompleteApplication',
-            name: 'Incomplete Application',
-            title_display: '# 1234567812345678: test'
-          }
-        },
-      };
+        caseEditComponentStub = {
+          form: formGroup,
+          wizard: WIZARD,
+          data: '',
+          eventTrigger,
+          hasPrevious: () => true,
+          getPage: () => firstPage,
+          first: () => true,
+          next: () => true,
+          previous: () => true,
+          cancel: () => undefined,
+          cancelled,
+          validate: (caseEventData: CaseEventData) => of(caseEventData),
+          saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+          caseDetails: {
+            case_id: '1234567812345678',
+            tabs: [],
+            metadataFields: [],
+            state: {
+              id: 'incompleteApplication',
+              name: 'Incomplete Application',
+              title_display: '# 1234567812345678: test',
+            },
+          },
+        };
 
-      route = {
-        params: of({id: 123}),
-        snapshot
-      };
+        route = {
+          params: of({ id: 123 }),
+          snapshot,
+        };
 
-      caseEditDataService = {
-        caseEventTriggerName$: of('ADD'),
-        clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
-        addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
-        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
-        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
-        setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
-      };
+        caseEditDataService = {
+          caseEventTriggerName$: of('ADD'),
+          clearFormValidationErrors: createSpyObj('caseEditDataService', [
+            'clearFormValidationErrors',
+          ]),
+          addFormValidationError: createSpyObj('caseEditDataService', [
+            'addFormValidationError',
+          ]),
+          setCaseLinkError: createSpyObj('caseEditDataService', [
+            'setCaseLinkError',
+          ]),
+          clearCaseLinkError: createSpyObj('caseEditDataService', [
+            'clearCaseLinkError',
+          ]),
+          setCaseEventTriggerName: createSpyObj('caseEditDataService', [
+            'setCaseEventTriggerName',
+          ]),
+        };
 
-      TestBed.configureTestingModule({
-        declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseEditComponent, useValue: caseEditComponentStub},
-          {provide: PageValidationService, useValue: pageValidationService},
-          {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: CaseEditDataService, useValue: caseEditDataService},
-          FieldsUtils,
-          PlaceholderService,
-        ]
-      }).compileComponents();
-    }));
+        TestBed.configureTestingModule({
+          declarations: [
+            CaseEditPageComponent,
+            CaseReferencePipe,
+            CcdCaseTitlePipe,
+          ],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          providers: [
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: CaseEditComponent, useValue: caseEditComponentStub },
+            { provide: PageValidationService, useValue: pageValidationService },
+            { provide: ActivatedRoute, useValue: route },
+            { provide: MatDialog, useValue: dialog },
+            { provide: CaseFieldService, useValue: caseFieldService },
+            { provide: CaseEditDataService, useValue: caseEditDataService },
+            FieldsUtils,
+            PlaceholderService,
+          ],
+        }).compileComponents();
+      })
+    );
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -562,18 +893,21 @@ xdescribe('CaseEditPageComponent', () => {
       const updatedValue = 'Updated value';
       const jsonData: CaseEventData = {
         data: {
-          field1: updatedValue
+          field1: updatedValue,
         },
-        event: {id: '', summary: '', description: ''},
+        event: { id: '', summary: '', description: '' },
         event_token: '',
-        ignore_warning: true
+        ignore_warning: true,
       };
       comp.currentPage = wizardPage;
       comp.updateFormData(jsonData);
 
       fixture.detectChanges();
 
-      expect(eventTrigger.case_fields.filter(element => element.id === id).pop().value).toBe(updatedValue);
+      expect(
+        eventTrigger.case_fields.filter((element) => element.id === id).pop()
+          .value
+      ).toBe(updatedValue);
     });
 
     it('should show valid title on the page', () => {
@@ -586,92 +920,126 @@ xdescribe('CaseEditPageComponent', () => {
   });
 
   describe('submit the form', () => {
-    beforeEach(waitForAsync(() => {
-      firstPage.id = 'first page';
-      cancelled = createSpyObj('cancelled', ['emit']);
-      const validateResult = {
-        data: {
-          field1: 'EX12345678'
-        }
-      };
+    beforeEach(
+      waitForAsync(() => {
+        firstPage.id = 'first page';
+        cancelled = createSpyObj('cancelled', ['emit']);
+        const validateResult = {
+          data: {
+            field1: 'EX12345678',
+          },
+        };
 
-      const caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
+        const caseFields: CaseField[] = [
+          createCaseField('field1', 'field1Value'),
+        ];
 
-      caseEditComponentStub = {
-        form: FORM_GROUP,
-        wizard: WIZARD,
-        data: '',
-        eventTrigger: {case_fields: caseFields, name: 'Test event trigger name', can_save_draft: true},
-        hasPrevious: () => true,
-        getPage: () => firstPage,
-        first: () => true,
-        next: () => true,
-        previous: () => true,
-        cancel: () => undefined,
-        cancelled,
-        validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
-        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
-        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
-      };
-      snapshot = {
-        queryParamMap: createSpyObj('queryParamMap', ['get']),
-      };
-      route = {
-        params: of({id: 123}),
-        snapshot
-      };
+        caseEditComponentStub = {
+          form: FORM_GROUP,
+          wizard: WIZARD,
+          data: '',
+          eventTrigger: {
+            case_fields: caseFields,
+            name: 'Test event trigger name',
+            can_save_draft: true,
+          },
+          hasPrevious: () => true,
+          getPage: () => firstPage,
+          first: () => true,
+          next: () => true,
+          previous: () => true,
+          cancel: () => undefined,
+          cancelled,
+          validate: (caseEventData: CaseEventData, pageId: string) =>
+            of(caseEventData),
+          saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+          caseDetails: {
+            case_id: '1234567812345678',
+            tabs: [],
+            metadataFields: [caseField2],
+          },
+        };
+        snapshot = {
+          queryParamMap: createSpyObj('queryParamMap', ['get']),
+        };
+        route = {
+          params: of({ id: 123 }),
+          snapshot,
+        };
 
-      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
-      dialog = createSpyObj<MatDialog>('dialog', ['open']);
-      dialog.open.and.returnValue(matDialogRef);
+        matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>(
+          'MatDialogRef',
+          ['afterClosed', 'close']
+        );
+        dialog = createSpyObj<MatDialog>('dialog', ['open']);
+        dialog.open.and.returnValue(matDialogRef);
 
-      spyOn(caseEditComponentStub, 'first');
-      spyOn(caseEditComponentStub, 'next');
-      spyOn(caseEditComponentStub, 'previous');
-      spyOn(caseEditComponentStub, 'form');
-      spyOn(caseEditComponentStub, 'validate').and.returnValue(of(validateResult));
-      spyOn(formValueService, 'sanitise').and.returnValue(eventData);
-      spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(eventData);
+        spyOn(caseEditComponentStub, 'first');
+        spyOn(caseEditComponentStub, 'next');
+        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'form');
+        spyOn(caseEditComponentStub, 'validate').and.returnValue(
+          of(validateResult)
+        );
+        spyOn(formValueService, 'sanitise').and.returnValue(eventData);
+        spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(
+          eventData
+        );
 
-      caseEditDataService = {
-        caseEventTriggerName$: of('ADD'),
-        clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
-        addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
-        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
-        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
-        setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
-      };
+        caseEditDataService = {
+          caseEventTriggerName$: of('ADD'),
+          clearFormValidationErrors: createSpyObj('caseEditDataService', [
+            'clearFormValidationErrors',
+          ]),
+          addFormValidationError: createSpyObj('caseEditDataService', [
+            'addFormValidationError',
+          ]),
+          setCaseLinkError: createSpyObj('caseEditDataService', [
+            'setCaseLinkError',
+          ]),
+          clearCaseLinkError: createSpyObj('caseEditDataService', [
+            'clearCaseLinkError',
+          ]),
+          setCaseEventTriggerName: createSpyObj('caseEditDataService', [
+            'setCaseEventTriggerName',
+          ]),
+        };
 
-      TestBed.configureTestingModule({
-        declarations: [
-          CaseEditPageComponent,
-          FieldsFilterPipe,
-          CcdPageFieldsPipe,
-          CcdCYAPageLabelFilterPipe,
-          CaseReferencePipe,
-          CcdCaseTitlePipe
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseEditComponent, useValue: caseEditComponentStub},
-          {provide: PageValidationService, useValue: pageValidationService},
-          {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: CaseEditDataService, useValue: caseEditDataService},
-          FieldsUtils,
-          PlaceholderService,
-        ]
-      }).compileComponents();
-    }));
+        TestBed.configureTestingModule({
+          declarations: [
+            CaseEditPageComponent,
+            FieldsFilterPipe,
+            CcdPageFieldsPipe,
+            CcdCYAPageLabelFilterPipe,
+            CaseReferencePipe,
+            CcdCaseTitlePipe,
+          ],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          providers: [
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: CaseEditComponent, useValue: caseEditComponentStub },
+            { provide: PageValidationService, useValue: pageValidationService },
+            { provide: ActivatedRoute, useValue: route },
+            { provide: MatDialog, useValue: dialog },
+            { provide: CaseFieldService, useValue: caseFieldService },
+            { provide: CaseEditDataService, useValue: caseEditDataService },
+            FieldsUtils,
+            PlaceholderService,
+          ],
+        }).compileComponents();
+      })
+    );
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
       comp = fixture.componentInstance;
 
-      wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
+      wizardPage = createWizardPage(
+        [createCaseField('field1', 'field1Value')],
+        false,
+        0
+      );
       comp.wizard = new Wizard([wizardPage]);
       comp.editForm = FORM_GROUP;
       comp.currentPage = wizardPage;
@@ -692,8 +1060,13 @@ xdescribe('CaseEditPageComponent', () => {
       comp.submit();
 
       fixture.whenStable().then(() => {
-        expect(eventData.case_reference).toEqual(caseEditComponentStub.caseDetails.case_id);
-        expect(caseEditComponentStub.validate).toHaveBeenCalledWith(eventData, wizardPage.id);
+        expect(eventData.case_reference).toEqual(
+          caseEditComponentStub.caseDetails.case_id
+        );
+        expect(caseEditComponentStub.validate).toHaveBeenCalledWith(
+          eventData,
+          wizardPage.id
+        );
         // TODO: Figure out what on Earth is going on with these unit tests as there seems
         // to be no way to affect eventData with the current configuration.
         // I will likely create an additional unit test for the buildCaseEventData method.
@@ -711,7 +1084,7 @@ xdescribe('CaseEditPageComponent', () => {
         status: 200,
         callbackErrors: null,
         callbackWarnings: null,
-        details: null
+        details: null,
       } as HttpError;
 
       fixture.detectChanges();
@@ -734,14 +1107,14 @@ xdescribe('CaseEditPageComponent', () => {
         details: {
           field_errors: [
             {
-              message: 'First field error'
+              message: 'First field error',
             },
             {
-              message: 'Second field error'
-            }
-          ]
+              message: 'Second field error',
+            },
+          ],
         },
-        message: 'There are field validation errors'
+        message: 'There are field validation errors',
       } as HttpError;
 
       fixture.detectChanges();
@@ -768,7 +1141,7 @@ xdescribe('CaseEditPageComponent', () => {
         status: 422,
         callbackErrors: ['First error', 'Second error'],
         callbackWarnings: null,
-        details: null
+        details: null,
       } as HttpError;
 
       fixture.detectChanges();
@@ -782,7 +1155,7 @@ xdescribe('CaseEditPageComponent', () => {
         status: 422,
         callbackErrors: null,
         callbackWarnings: ['First warning', 'Second warning'],
-        details: null
+        details: null,
       } as HttpError;
 
       fixture.detectChanges();
@@ -792,91 +1165,130 @@ xdescribe('CaseEditPageComponent', () => {
     });
 
     it('should change button label when callback warnings notified ', () => {
-      const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+      const callbackErrorsContext: CallbackErrorsContext =
+        new CallbackErrorsContext();
       callbackErrorsContext.trigger_text = CaseEditPageText.TRIGGER_TEXT_START;
       comp.callbackErrorsNotify(callbackErrorsContext);
 
       fixture.detectChanges();
       const button = de.query($SELECT_SUBMIT_BUTTON);
-      expect(button.nativeElement.textContent).toEqual(CaseEditPageText.TRIGGER_TEXT_START);
+      expect(button.nativeElement.textContent).toEqual(
+        CaseEditPageText.TRIGGER_TEXT_START
+      );
       expect(comp.ignoreWarning).toBeFalsy();
 
       callbackErrorsContext.ignore_warning = true;
-      callbackErrorsContext.trigger_text = CaseEditPageText.TRIGGER_TEXT_CONTINUE;
+      callbackErrorsContext.trigger_text =
+        CaseEditPageText.TRIGGER_TEXT_CONTINUE;
       comp.callbackErrorsNotify(callbackErrorsContext);
 
       fixture.detectChanges();
-      expect(button.nativeElement.textContent).toEqual(CaseEditPageText.TRIGGER_TEXT_CONTINUE);
+      expect(button.nativeElement.textContent).toEqual(
+        CaseEditPageText.TRIGGER_TEXT_CONTINUE
+      );
       expect(comp.ignoreWarning).toBeTruthy();
     });
   });
 
   describe('previous the form', () => {
-    beforeEach(waitForAsync(() => {
-      firstPage.id = 'first page';
-      cancelled = createSpyObj('cancelled', ['emit']);
-      const caseFields: CaseField[] = [createCaseField('field1', 'field1Value')];
+    beforeEach(
+      waitForAsync(() => {
+        firstPage.id = 'first page';
+        cancelled = createSpyObj('cancelled', ['emit']);
+        const caseFields: CaseField[] = [
+          createCaseField('field1', 'field1Value'),
+        ];
 
-      caseEditComponentStub = {
-        form: FORM_GROUP,
-        wizard: WIZARD,
-        data: '',
-        eventTrigger: {case_fields: caseFields, name: 'Test event trigger name', can_save_draft: true},
-        hasPrevious: () => true,
-        getPage: () => firstPage,
-        first: () => true,
-        next: () => true,
-        previous: () => true,
-        cancel: () => undefined,
-        cancelled,
-        validate: (caseEventData: CaseEventData, pageId: string) => of(caseEventData),
-        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
-        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
-      };
-      snapshot = {
-        queryParamMap: createSpyObj('queryParamMap', ['get']),
-      };
-      route = {
-        params: of({id: 123}),
-        snapshot
-      };
+        caseEditComponentStub = {
+          form: FORM_GROUP,
+          wizard: WIZARD,
+          data: '',
+          eventTrigger: {
+            case_fields: caseFields,
+            name: 'Test event trigger name',
+            can_save_draft: true,
+          },
+          hasPrevious: () => true,
+          getPage: () => firstPage,
+          first: () => true,
+          next: () => true,
+          previous: () => true,
+          cancel: () => undefined,
+          cancelled,
+          validate: (caseEventData: CaseEventData, pageId: string) =>
+            of(caseEventData),
+          saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+          caseDetails: {
+            case_id: '1234567812345678',
+            tabs: [],
+            metadataFields: [caseField2],
+          },
+        };
+        snapshot = {
+          queryParamMap: createSpyObj('queryParamMap', ['get']),
+        };
+        route = {
+          params: of({ id: 123 }),
+          snapshot,
+        };
 
-      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
-      dialog = createSpyObj<MatDialog>('dialog', ['open']);
-      dialog.open.and.returnValue(matDialogRef);
+        matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>(
+          'MatDialogRef',
+          ['afterClosed', 'close']
+        );
+        dialog = createSpyObj<MatDialog>('dialog', ['open']);
+        dialog.open.and.returnValue(matDialogRef);
 
-      spyOn(caseEditComponentStub, 'previous');
-      spyOn(caseEditComponentStub, 'form');
-      spyOn(formValueService, 'sanitise').and.returnValue(caseEventDataPrevious);
-      spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(caseEventDataPrevious);
+        spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'form');
+        spyOn(formValueService, 'sanitise').and.returnValue(
+          caseEventDataPrevious
+        );
+        spyOn(formValueService, 'sanitiseDynamicLists').and.returnValue(
+          caseEventDataPrevious
+        );
 
-      caseEditDataService = {
-        caseEventTriggerName$: of('ADD'),
-        clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
-        addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
-        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
-        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
-        setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
-      };
+        caseEditDataService = {
+          caseEventTriggerName$: of('ADD'),
+          clearFormValidationErrors: createSpyObj('caseEditDataService', [
+            'clearFormValidationErrors',
+          ]),
+          addFormValidationError: createSpyObj('caseEditDataService', [
+            'addFormValidationError',
+          ]),
+          setCaseLinkError: createSpyObj('caseEditDataService', [
+            'setCaseLinkError',
+          ]),
+          clearCaseLinkError: createSpyObj('caseEditDataService', [
+            'clearCaseLinkError',
+          ]),
+          setCaseEventTriggerName: createSpyObj('caseEditDataService', [
+            'setCaseEventTriggerName',
+          ]),
+        };
 
-      TestBed.configureTestingModule({
-        declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseEditComponent, useValue: caseEditComponentStub},
-          {provide: PageValidationService, useValue: pageValidationService},
-          {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: CaseEditDataService, useValue: caseEditDataService},
-          FieldsUtils,
-          PlaceholderService,
-        ]
-      }).compileComponents();
-    }));
+        TestBed.configureTestingModule({
+          declarations: [
+            CaseEditPageComponent,
+            CaseReferencePipe,
+            CcdCaseTitlePipe,
+          ],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          providers: [
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: CaseEditComponent, useValue: caseEditComponentStub },
+            { provide: PageValidationService, useValue: pageValidationService },
+            { provide: ActivatedRoute, useValue: route },
+            { provide: MatDialog, useValue: dialog },
+            { provide: CaseFieldService, useValue: caseFieldService },
+            { provide: CaseEditDataService, useValue: caseEditDataService },
+            FieldsUtils,
+            PlaceholderService,
+          ],
+        }).compileComponents();
+      })
+    );
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -895,10 +1307,16 @@ xdescribe('CaseEditPageComponent', () => {
       fixture.detectChanges();
       comp.toPreviousPage();
       fixture.whenStable().then(() => {
-        expect(caseEventDataPrevious.case_reference).toEqual(caseEditComponentStub.caseDetails.case_id);
+        expect(caseEventDataPrevious.case_reference).toEqual(
+          caseEditComponentStub.caseDetails.case_id
+        );
         expect(caseEventDataPrevious.event_data).toEqual(FORM_GROUP.value.data);
-        expect(caseEventDataPrevious.ignore_warning).toEqual(comp.ignoreWarning);
-        expect(caseEventDataPrevious.event_token).toEqual(comp.eventTrigger.event_token);
+        expect(caseEventDataPrevious.ignore_warning).toEqual(
+          comp.ignoreWarning
+        );
+        expect(caseEventDataPrevious.event_token).toEqual(
+          comp.eventTrigger.event_token
+        );
         expect(formValueService.sanitise).toHaveBeenCalled();
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
       });
@@ -906,20 +1324,25 @@ xdescribe('CaseEditPageComponent', () => {
   });
 
   describe('Check for Validation Error', () => {
-
     const F_GROUP = new FormGroup({
-      data: new FormGroup({Invalidfield1: new FormControl(null, Validators.required)
-                              , Invalidfield2: new FormControl(null,
-                                  [Validators.required, Validators.minLength(5), Validators.maxLength(10)])
-                              , OrganisationField: new FormControl(null, Validators.required)
-                              , complexField1: new FormControl(null, Validators.required)
-                              , FlagLauncherField: new FormControl(null, {
-                                validators: (_: AbstractControl): {[key: string]: boolean} | null => {
-                                  // Dummy validator that always returns an error
-                                  return {error: true};
-                                }
-                              })
-                            })
+      data: new FormGroup({
+        Invalidfield1: new FormControl(null, Validators.required),
+        Invalidfield2: new FormControl(null, [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(10),
+        ]),
+        OrganisationField: new FormControl(null, Validators.required),
+        complexField1: new FormControl(null, Validators.required),
+        FlagLauncherField: new FormControl(null, {
+          validators: (
+            _: AbstractControl
+          ): { [key: string]: boolean } | null => {
+            // Dummy validator that always returns an error
+            return { error: true };
+          },
+        }),
+      }),
     });
 
     const FIELD_TYPE_WITH_VALUES: FieldType = {
@@ -932,82 +1355,108 @@ xdescribe('CaseEditPageComponent', () => {
           display_context: 'MANDATORY',
           field_type: {
             id: 'Text',
-            type: 'Text'
-          }
-        } as CaseField
-      ]
+            type: 'Text',
+          },
+        } as CaseField,
+      ],
     };
 
-    const CASE_FIELD: CaseField = ({
+    const CASE_FIELD: CaseField = {
       id: 'OrganisationField',
       label: 'OrganisationField',
       display_context: 'MANDATORY',
       field_type: FIELD_TYPE_WITH_VALUES,
-      value: ''
-    }) as CaseField;
+      value: '',
+    } as CaseField;
 
-    beforeEach(waitForAsync(() => {
-      firstPage.id = 'first page';
-      cancelled = createSpyObj('cancelled', ['emit']);
+    beforeEach(
+      waitForAsync(() => {
+        firstPage.id = 'first page';
+        cancelled = createSpyObj('cancelled', ['emit']);
 
-      caseEditComponentStub = {
-        form: F_GROUP,
-        wizard: WIZARD,
-        data: '',
-        eventTrigger: {case_fields: [], name: 'Test event trigger name', can_save_draft: false},
-        hasPrevious: () => true,
-        getPage: () => firstPage,
-        first: () => true,
-        next: () => true,
-        previous: () => true,
-        cancel: () => undefined,
-        cancelled,
-        validate: (caseEventData: CaseEventData) => of(caseEventData),
-        saveDraft: (caseEventData: CaseEventData) => of(someObservable),
-        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: []},
-      };
-      snapshot = {
-        queryParamMap: createSpyObj('queryParamMap', ['get']),
-      };
-      route = {
-        params: of({id: 123}),
-        snapshot
-      };
-      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
-      dialog = createSpyObj<MatDialog>('dialog', ['open']);
-      dialog.open.and.returnValue(matDialogRef);
+        caseEditComponentStub = {
+          form: F_GROUP,
+          wizard: WIZARD,
+          data: '',
+          eventTrigger: {
+            case_fields: [],
+            name: 'Test event trigger name',
+            can_save_draft: false,
+          },
+          hasPrevious: () => true,
+          getPage: () => firstPage,
+          first: () => true,
+          next: () => true,
+          previous: () => true,
+          cancel: () => undefined,
+          cancelled,
+          validate: (caseEventData: CaseEventData) => of(caseEventData),
+          saveDraft: (caseEventData: CaseEventData) => of(someObservable),
+          caseDetails: {
+            case_id: '1234567812345678',
+            tabs: [],
+            metadataFields: [],
+          },
+        };
+        snapshot = {
+          queryParamMap: createSpyObj('queryParamMap', ['get']),
+        };
+        route = {
+          params: of({ id: 123 }),
+          snapshot,
+        };
+        matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>(
+          'MatDialogRef',
+          ['afterClosed', 'close']
+        );
+        dialog = createSpyObj<MatDialog>('dialog', ['open']);
+        dialog.open.and.returnValue(matDialogRef);
 
-      spyOn(caseEditComponentStub, 'first');
-      spyOn(caseEditComponentStub, 'next');
-      spyOn(caseEditComponentStub, 'previous');
+        spyOn(caseEditComponentStub, 'first');
+        spyOn(caseEditComponentStub, 'next');
+        spyOn(caseEditComponentStub, 'previous');
 
-      caseEditDataService = {
-        caseEventTriggerName$: of('ADD'),
-        clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
-        addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
-        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
-        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
-        setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
-      };
+        caseEditDataService = {
+          caseEventTriggerName$: of('ADD'),
+          clearFormValidationErrors: createSpyObj('caseEditDataService', [
+            'clearFormValidationErrors',
+          ]),
+          addFormValidationError: createSpyObj('caseEditDataService', [
+            'addFormValidationError',
+          ]),
+          setCaseLinkError: createSpyObj('caseEditDataService', [
+            'setCaseLinkError',
+          ]),
+          clearCaseLinkError: createSpyObj('caseEditDataService', [
+            'clearCaseLinkError',
+          ]),
+          setCaseEventTriggerName: createSpyObj('caseEditDataService', [
+            'setCaseEventTriggerName',
+          ]),
+        };
 
-      TestBed.configureTestingModule({
-        declarations: [CaseEditPageComponent,
-          CaseReferencePipe, CcdCaseTitlePipe],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseEditComponent, useValue: caseEditComponentStub},
-          {provide: PageValidationService, useValue: pageValidationService},
-          {provide: ActivatedRoute, useValue: route},
-          {provide: MatDialog, useValue: dialog},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: CaseEditDataService, useValue: caseEditDataService},
-          FieldsUtils,
-          PlaceholderService,
-        ]
-      }).compileComponents();
-    }));
+        TestBed.configureTestingModule({
+          declarations: [
+            CaseEditPageComponent,
+            CaseReferencePipe,
+            CcdCaseTitlePipe,
+          ],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          providers: [
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: CaseEditComponent, useValue: caseEditComponentStub },
+            { provide: PageValidationService, useValue: pageValidationService },
+            { provide: ActivatedRoute, useValue: route },
+            { provide: MatDialog, useValue: dialog },
+            { provide: CaseFieldService, useValue: caseFieldService },
+            { provide: CaseEditDataService, useValue: caseEditDataService },
+            FieldsUtils,
+            PlaceholderService,
+          ],
+        }).compileComponents();
+      })
+    );
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -1015,13 +1464,20 @@ xdescribe('CaseEditPageComponent', () => {
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
-      wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], true);
+      wizardPage = createWizardPage(
+        [createCaseField('field1', 'field1Value')],
+        true
+      );
       comp.currentPage = wizardPage;
     });
 
     it('should validate Mandatory Fields and log error message ', () => {
-      wizardPage.case_fields.push(aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null));
-      wizardPage.case_fields.push(aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null));
+      wizardPage.case_fields.push(
+        aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null)
+      );
+      wizardPage.case_fields.push(
+        aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null)
+      );
       wizardPage.case_fields.push(CASE_FIELD);
       wizardPage.isMultiColumn = () => false;
       comp.editForm = F_GROUP;
@@ -1031,13 +1487,19 @@ xdescribe('CaseEditPageComponent', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(3);
-      comp.validationErrors.forEach(error => {
+      comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`${error.id} is required`);
       });
     });
 
     it('should validate minimum length field value and log error message', () => {
-      const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
+      const case_Field = aCaseField(
+        'Invalidfield2',
+        'Invalidfield2',
+        'Text',
+        'MANDATORY',
+        null
+      );
       wizardPage.case_fields.push(case_Field);
       wizardPage.isMultiColumn = () => false;
       F_GROUP.setValue({
@@ -1046,8 +1508,8 @@ xdescribe('CaseEditPageComponent', () => {
           Invalidfield1: 'test1',
           OrganisationField: '',
           complexField1: '',
-          FlagLauncherField: null
-        }
+          FlagLauncherField: null,
+        },
       });
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
@@ -1055,13 +1517,21 @@ xdescribe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
-      comp.validationErrors.forEach(error => {
-        expect(error.message).toEqual(`${error.id} is below the minimum length`);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(
+          `${error.id} is below the minimum length`
+        );
       });
     });
 
     it('should validate maximum length field value and log error message', () => {
-      const case_Field = aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null);
+      const case_Field = aCaseField(
+        'Invalidfield2',
+        'Invalidfield2',
+        'Text',
+        'MANDATORY',
+        null
+      );
       wizardPage.case_fields.push(case_Field);
       wizardPage.isMultiColumn = () => false;
       F_GROUP.setValue({
@@ -1070,8 +1540,8 @@ xdescribe('CaseEditPageComponent', () => {
           Invalidfield1: 'test1',
           OrganisationField: '',
           complexField1: '',
-          FlagLauncherField: null
-        }
+          FlagLauncherField: null,
+        },
       });
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
@@ -1079,16 +1549,44 @@ xdescribe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
-      comp.validationErrors.forEach(error => {
+      comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`${error.id} exceeds the maximum length`);
       });
     });
 
     it('should validate mandatory complex type fields and log error message', () => {
-      const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'MANDATORY', 1, null, true, true);
-      const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'MANDATORY', 2, null, false, true);
-      wizardPage.case_fields.push(aCaseField('complexField1', 'complexField1', 'Complex', 'MANDATORY', 1,
-        [complexSubField1, complexSubField2], true, true));
+      const complexSubField1: CaseField = aCaseField(
+        'childField1',
+        'childField1',
+        'Text',
+        'MANDATORY',
+        1,
+        null,
+        true,
+        true
+      );
+      const complexSubField2: CaseField = aCaseField(
+        'childField2',
+        'childField2',
+        'Text',
+        'MANDATORY',
+        2,
+        null,
+        false,
+        true
+      );
+      wizardPage.case_fields.push(
+        aCaseField(
+          'complexField1',
+          'complexField1',
+          'Complex',
+          'MANDATORY',
+          1,
+          [complexSubField1, complexSubField2],
+          true,
+          true
+        )
+      );
 
       wizardPage.isMultiColumn = () => false;
       comp.editForm = F_GROUP;
@@ -1098,14 +1596,22 @@ xdescribe('CaseEditPageComponent', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
-      comp.validationErrors.forEach(error => {
+      comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`${error.id} is required`);
       });
     });
 
     it('should validate FlagLauncher type field and log error message', () => {
       const flagLauncherField: CaseField = aCaseField(
-        'FlagLauncherField', 'flagLauncher', 'FlagLauncher', 'MANDATORY', 1, null, false, true);
+        'FlagLauncherField',
+        'flagLauncher',
+        'FlagLauncher',
+        'MANDATORY',
+        1,
+        null,
+        false,
+        true
+      );
       // Add dummy functions for isComplex() and isCollection()
       flagLauncherField.isComplex = () => false;
       flagLauncherField.isCollection = () => false;
@@ -1121,8 +1627,10 @@ xdescribe('CaseEditPageComponent', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
-      comp.validationErrors.forEach(error => {
-        expect(error.message).toEqual('Please select Next to complete the creation of the case flag');
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(
+          'Please select Next to complete the creation of the case flag'
+        );
       });
 
       // Change DisplayContextParameter to signal "update" mode
@@ -1130,13 +1638,19 @@ xdescribe('CaseEditPageComponent', () => {
       comp.validationErrors = [];
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
-      comp.validationErrors.forEach(error => {
-        expect(error.message).toEqual('Please select Next to complete the update of the selected case flag');
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(
+          'Please select Next to complete the update of the selected case flag'
+        );
       });
     });
   });
 
-  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+  function createCaseField(
+    id: string,
+    value: any,
+    display_context = 'READONLY'
+  ): CaseField {
     const cf = new CaseField();
     cf.id = id;
     cf.value = value;
@@ -1144,7 +1658,11 @@ xdescribe('CaseEditPageComponent', () => {
     return cf;
   }
 
-  function createWizardPage(fields: CaseField[] = [], isMultiColumn = false, order = 0): WizardPage {
+  function createWizardPage(
+    fields: CaseField[] = [],
+    isMultiColumn = false,
+    order = 0
+  ): WizardPage {
     const wp: WizardPage = new WizardPage();
     wp.case_fields = fields;
     wp.label = 'Test Label';

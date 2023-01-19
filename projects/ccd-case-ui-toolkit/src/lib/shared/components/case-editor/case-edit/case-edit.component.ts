@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
-import { CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
 import { FieldsPurger, FieldsUtils, SessionStorageService, WindowService } from '../../../services';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { WizardFactoryService } from '../services';
@@ -23,13 +23,13 @@ export class CaseEditComponent implements OnInit {
   public eventTrigger: CaseEventTrigger;
 
   @Input()
-  public submit: (CaseEventData, profile?: Profile) => Observable<object>;
+  public submit: (caseEventData: CaseEventData, profile?: Profile) => Observable<object>;
 
   @Input()
-  public validate: (CaseEventData, pageId: string) => Observable<object>;
+  public validate: (caseEventData: CaseEventData, pageId: string) => Observable<object>;
 
   @Input()
-  public saveDraft: (CaseEventData) => Observable<Draft>;
+  public saveDraft: (caseEventData: CaseEventData) => Observable<Draft>;
 
   @Input()
   public caseDetails: CaseView;
