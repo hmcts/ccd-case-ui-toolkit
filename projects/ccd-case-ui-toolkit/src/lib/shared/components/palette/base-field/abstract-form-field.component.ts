@@ -3,8 +3,7 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
-import { ReadCaseLinkFieldComponent, WriteCaseLinkFieldComponent } from '../case-link';
-
+import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 
 type FormContainer = FormGroup | FormArray;
 
@@ -66,7 +65,6 @@ export abstract class AbstractFormFieldComponent {
     return control;
   }
 
-		// ** MY FIXES */
   private addControlToFormGroup(control: AbstractControl, parent: FormGroup, replace: boolean): AbstractControl {
     if (!replace) {
       parent.addControl(this.caseField.id, control);
@@ -76,27 +74,10 @@ export abstract class AbstractFormFieldComponent {
         && this.caseField.field_type.type === 'Complex'
         && this.caseField.field_type.complex_fields.some(cf => cf.id === 'CaseReference')
         && this.caseField.id !== 'caseLinks'
-				&& (this.caseField as unknown as ReadCaseLinkFieldComponent | WriteCaseLinkFieldComponent).isWrite) {
-					parent.setControl('CaseReference', control['controls']['CaseReference']);
+        && this instanceof AbstractFieldWriteComponent) {
+          parent.setControl('CaseReference', control['controls']['CaseReference']);
     } else {
       parent.setControl(this.caseField.id, control);
-    }
-    return control;
-  }
-
-
-	//** MASTER CODE */
-	private addControlToFormGroup1(control: AbstractControl, parent: FormGroup, replace: boolean): AbstractControl {
-    if (replace) {
-      if (this.caseField.field_type && this.caseField.field_type.collection_field_type
-          && this.caseField.field_type.collection_field_type.id === 'CaseLink'
-          && this.caseField.field_type.type === 'Complex' && /^-?\d+$/.test(this.caseField.id)) {
-        parent.setControl('CaseReference', control['controls']['CaseReference']);
-      } else {
-        parent.setControl(this.caseField.id, control);
-      }
-    } else {
-      parent.addControl(this.caseField.id, control);
     }
     return control;
   }
