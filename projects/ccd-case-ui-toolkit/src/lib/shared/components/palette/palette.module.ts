@@ -79,6 +79,7 @@ import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
 import { CaseEditDataModule } from '../../commons/case-edit-data';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 
 const PALETTE_COMPONENTS = [
     UnsupportedFieldComponent,
@@ -136,6 +137,9 @@ const PALETTE_COMPONENTS = [
     WriteDocumentFieldComponent,
     WriteDynamicListFieldComponent,
     WriteDynamicRadioListFieldComponent,
+    WriteDynamicMultiSelectListFieldComponent,
+    ReadDynamicMultiSelectListFieldComponent,
+    WriteDynamicMultiSelectListFieldComponent,
     WriteTextFieldComponent,
     WriteDateContainerFieldComponent,
     WriteTextAreaFieldComponent,
@@ -173,7 +177,17 @@ const PALETTE_COMPONENTS = [
     CheckYourAnswersComponent,
     WriteLinkedCasesComponent,
     UnLinkCasesComponent,
-    NoLinkedCasesComponent
+    NoLinkedCasesComponent,
+
+    // component for dynamic list
+    WriteDynamicMultiSelectListFieldComponent,
+    WriteDynamicRadioListFieldComponent,
+    WriteDynamicListFieldComponent,
+    ReadDynamicMultiSelectListFieldComponent,
+    ReadDynamicListFieldComponent,
+    ReadDynamicRadioListFieldComponent
+
+
 ];
 
 @NgModule({

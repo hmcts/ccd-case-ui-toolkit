@@ -15,6 +15,8 @@ export * from './datetime-picker';
 export * from './document';
 export * from './dynamic-list';
 export * from './dynamic-radio-list';
+export * from './dynamic-multi-select-list';
+
 export * from './email';
 export * from './fixed-list';
 export * from './fixed-radio-list';
