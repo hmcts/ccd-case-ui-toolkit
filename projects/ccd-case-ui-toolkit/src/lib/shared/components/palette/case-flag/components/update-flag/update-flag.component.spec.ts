@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { EnumDisplayDescriptionPipe } from '../../../../../pipes/generic/enum-display-description/enum-display-description.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
@@ -48,7 +49,7 @@ describe('UpdateFlagComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ UpdateFlagComponent ]
+      declarations: [ UpdateFlagComponent, EnumDisplayDescriptionPipe ]
     })
     .compileComponents();
   }));
@@ -93,7 +94,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
-      fieldId: component.updateFlagControlName
+      fieldId: component.FLAG_COMMENTS_CONTROL_NAME
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
@@ -107,7 +108,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
-      fieldId: component.updateFlagControlName
+      fieldId: component.FLAG_COMMENTS_CONTROL_NAME
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED);
@@ -123,43 +124,14 @@ describe('UpdateFlagComponent', () => {
     expect(errorMessageElement).toBeNull();
   });
 
-  it('should render the "Active" flag status correctly', () => {
-    const statusElement = fixture.debugElement.nativeElement.querySelector('.govuk-tag');
-    expect(statusElement.getAttribute('class')).not.toContain('govuk-tag--grey');
-  });
+  it('should render flag status checkboxes correctly', () => {
+    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${component.FLAG_STATUS_CONTROL_NAME} label`);
 
-  it('should render the "Inactive" flag status correctly', () => {
-    component.selectedFlag = selectedFlag2;
-    fixture.detectChanges();
-    const statusElement = fixture.debugElement.nativeElement.querySelector('.govuk-tag');
-    expect(statusElement.getAttribute('class')).toContain('govuk-tag--grey');
-  });
+    const displayedStatuses = [] as string[];
+    for (const element of statusCheckboxLabelsElements.values()) {
+      displayedStatuses.push(element.textContent.trim());
+    }
 
-  it('should update the flag comments and status', () => {
-    spyOn(component, 'onChangeStatus').and.callThrough();
-    spyOn(component, 'onNext').and.callThrough();
-    spyOn(component.caseFlagStateEmitter, 'emit');
-    // Edit existing flag comments
-    textarea.value = 'Edited comment';
-    textarea.dispatchEvent(new Event('input'));
-    // Click the "Make inactive" button to change the flag status
-    fixture.debugElement.nativeElement.querySelector('.button-secondary').click();
-    nextButton.click();
-    fixture.detectChanges();
-    expect(component.onChangeStatus).toHaveBeenCalled();
-    expect(component.onNext).toHaveBeenCalled();
-    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
-      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
-      errorMessages: component.errorMessages,
-      selectedFlag: component.selectedFlag
-    });
-    expect(component.selectedFlag.flagDetailDisplay.flagDetail.flagComment).toEqual(textarea.value);
-    expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
-  });
-
-  it('should not change an inactive flag status to active', () => {
-    component.selectedFlag = selectedFlag2;
-    component.onChangeStatus();
-    expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
+    expect(displayedStatuses).toEqual(Object.values(CaseFlagStatus));
   });
 });

@@ -9,7 +9,6 @@ import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlag
   templateUrl: './update-flag.component.html'
 })
 export class UpdateFlagComponent implements OnInit {
-
   @Input() public formGroup: FormGroup;
   @Input() public selectedFlag: FlagDetailDisplayWithFormGroupPath;
 
@@ -19,25 +18,28 @@ export class UpdateFlagComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public updateFlagNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
   public updateFlagCharLimitErrorMessage: UpdateFlagErrorMessage = null;
-  public updateFlagHint: UpdateFlagStep;
-  public updateFlagCharLimitInfo: UpdateFlagStep;
-  public readonly updateFlagControlName = 'flagComments';
+  public updateFlagStepEnum = UpdateFlagStep;
+  public readonly caseFlagStatuses = CaseFlagStatus;
+  public readonly FLAG_COMMENTS_CONTROL_NAME = 'flagComment';
+  public readonly FLAG_STATUS_CONTROL_NAME = 'flagStatus';
+  public readonly FLAG_STATUS_CHANGE_REASON_CONTROL_NAME = 'flagStatusReasonChange';
+  public readonly FLAG_WELSH_TRANSLATION_CONTROL_NAME = 'flagWelshTranslation';
+
   private readonly commentsMaxCharLimit = 200;
 
   public ngOnInit(): void {
-    this.updateFlagHint = UpdateFlagStep.HINT_TEXT ;
-    this.updateFlagCharLimitInfo = UpdateFlagStep.CHARACTER_LIMIT_INFO;
-    this.formGroup.addControl(this.updateFlagControlName, new FormControl(''));
-
     if (this.selectedFlag && this.selectedFlag.flagDetailDisplay && this.selectedFlag.flagDetailDisplay.flagDetail) {
       const flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
+
+      this.formGroup.addControl(this.FLAG_STATUS_CONTROL_NAME, new FormControl(flagDetail.status));
+      this.formGroup.addControl(this.FLAG_STATUS_CHANGE_REASON_CONTROL_NAME, new FormControl(''));
+      this.formGroup.addControl(this.FLAG_WELSH_TRANSLATION_CONTROL_NAME, new FormControl(false));
       // Populate flag comments text area with existing comments
-      this.formGroup.get(this.updateFlagControlName).setValue(flagDetail.flagComment);
+      this.formGroup.addControl(this.FLAG_COMMENTS_CONTROL_NAME, new FormControl(flagDetail.flagComment));
+
       if (flagDetail.name) {
         this.updateFlagTitle =
-          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${flagDetail.subTypeValue
-            ? `, ${flagDetail.subTypeValue}"`
-            : '"'}`;
+          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} ‘${flagDetail.name}${flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}’` : '’'}`;
       }
     }
   }
@@ -48,7 +50,7 @@ export class UpdateFlagComponent implements OnInit {
     // If validation has passed, update the flag details with the comments entered
     if (this.errorMessages.length === 0) {
       this.selectedFlag.flagDetailDisplay.flagDetail = {
-        ...this.selectedFlag.flagDetailDisplay.flagDetail, flagComment: this.formGroup.get(this.updateFlagControlName).value
+        ...this.selectedFlag.flagDetailDisplay.flagDetail, flagComment: this.formGroup.get(this.FLAG_COMMENTS_CONTROL_NAME).value
       };
     }
     // Return case flag field state, error messages, and selected flag detail to the parent. The selected flag must be
@@ -60,26 +62,17 @@ export class UpdateFlagComponent implements OnInit {
     });
   }
 
-  public onChangeStatus(): void {
-    this.selectedFlag.flagDetailDisplay.flagDetail = {
-      ...this.selectedFlag.flagDetailDisplay.flagDetail,
-      status: this.selectedFlag.flagDetailDisplay.flagDetail.status === CaseFlagStatus.ACTIVE
-        ? CaseFlagStatus.INACTIVE
-        : this.selectedFlag.flagDetailDisplay.flagDetail.status
-    };
-  }
-
   private validateTextEntry(): void {
     this.updateFlagNotEnteredErrorMessage = null;
     this.updateFlagCharLimitErrorMessage = null;
     this.errorMessages = [];
-    const comment = this.formGroup.get(this.updateFlagControlName).value;
+    const comment = this.formGroup.get(this.FLAG_COMMENTS_CONTROL_NAME).value;
     if (!comment) {
       this.updateFlagNotEnteredErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
-        fieldId: this.updateFlagControlName
+        fieldId: this.FLAG_COMMENTS_CONTROL_NAME
       });
     }
     if (comment && comment.length > this.commentsMaxCharLimit) {
@@ -87,7 +80,7 @@ export class UpdateFlagComponent implements OnInit {
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
-        fieldId: this.updateFlagControlName
+        fieldId: this.FLAG_COMMENTS_CONTROL_NAME
       });
     }
   }
