@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.47-fix-related-cases-tab
+**EUI-7561** Related cases tab not displaying correctly
+
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
 
