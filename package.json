@@ -49,6 +49,9 @@
     "demo": "yarn && yarn build:esm && yarn build:demo && yarn start",
     "build:test:functional": "yarn && yarn build:esm && yarn --cwd demo  test:functional",
     "test:functional": "yarn --cwd demo  test:functional"
+    "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
+    "storybook": "yarn docs:json && start-storybook -p 6006",
+    "build-storybook": "yarn docs:json && build-storybook"
   },
   "dependencies": {
     "@angular-material-components/datetime-picker": "6.0.0",

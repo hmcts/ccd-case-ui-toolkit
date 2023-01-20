@@ -1636,6 +1636,7 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@devtools-ds/object-inspector/-/object-inspector-1.2.0.tgz#64a132fbd4159affa5a87c8cf6cf8540c337aed2"
   integrity sha512-VztcwqVwScSvYdvJVZBJYsVO/2Pew3JPpFV3T9fuCHQLlHcLYOV3aU/kBS2ScuE2O1JN0ZbobLqFLa3vQF54Fw==
+
   dependencies:
     "@babel/runtime" "7.7.2"
     "@devtools-ds/object-parser" "^1.2.0"
