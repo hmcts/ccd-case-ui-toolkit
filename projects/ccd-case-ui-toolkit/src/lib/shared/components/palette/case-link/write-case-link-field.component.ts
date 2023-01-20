@@ -21,7 +21,6 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   public caseReferenceControl: AbstractControl;
   public caseLinkGroup: FormGroup;
   public containsCaseLinkCollection: boolean;
-	public isWrite = true;
 
   @ViewChild('writeComplexFieldComponent', /* TODO: add static flag */ {})
   public writeComplexFieldComponent: WriteComplexFieldComponent;
