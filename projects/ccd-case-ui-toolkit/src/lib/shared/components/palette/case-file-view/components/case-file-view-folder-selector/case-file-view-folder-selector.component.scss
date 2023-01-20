@@ -14,6 +14,10 @@
     margin: 0 0 -1px 0;
 }
 
+.folder:last-child {
+  border-bottom: 1px solid #CCC;  
+}
+
 .folders > .folder {
     display: block;
 }
@@ -49,9 +53,7 @@ button {
 }
 
 .close {
-    position: absolute;
-    top: 0px;
-    right: 0px;
+    float: right;
     width: 30px;
     height: 30px;
     background: url('/assets/img/x.PNG') no-repeat center center;
@@ -60,4 +62,31 @@ button {
 
 .cancel {
     cursor: pointer;
+}
+
+.cdk-overlay-pane {
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #AAAAAA;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background: #EEE;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #CCC;
+  }
 }
