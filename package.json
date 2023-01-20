@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.1-EUI-3729-rc2",
+  "version": "6.10.1-EUI-3729-rc3",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
@@ -42,13 +42,6 @@
     "test:watch": "ng test ccd-case-ui-toolkit-lib --watch=true",
     "test:audit": "./bin/run-yarn-audit.sh -f yarn-audit-known-issues",
     "tslint": "tslint",
-    "install:demo": "yarn --cwd demo install",
-    "build:demo": "yarn --cwd demo build",
-    "start": "yarn --cwd demo start",
-    "heroku-postbuild": "yarn build:esm && yarn --cwd demo install && yarn --cwd demo build",
-    "demo": "yarn && yarn build:esm && yarn build:demo && yarn start",
-    "build:test:functional": "yarn && yarn build:esm && yarn --cwd demo  test:functional",
-    "test:functional": "yarn --cwd demo  test:functional"
     "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
     "storybook": "yarn docs:json && start-storybook -p 6006",
     "build-storybook": "yarn docs:json && build-storybook"
