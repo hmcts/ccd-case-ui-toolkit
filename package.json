@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.50-sscs-sit-release",
+  "version": "6.0.10-eui-7534-table-headers-fix",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
