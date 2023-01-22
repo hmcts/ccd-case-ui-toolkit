@@ -13,7 +13,6 @@ import { CaseFieldService } from '../../../services/case-fields/case-field.servi
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { FormValueService } from '../../../services/form/form-value.service';
-import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { WizardPage } from '../../case-editor/domain/wizard-page.model';
 import { Wizard } from '../../case-editor/domain/wizard.model';
 import { PageValidationService } from '../../case-editor/services/page-validation.service';
@@ -98,7 +97,6 @@ describe('FieldReadComponent', () => {
   const caseEditDataService = new CaseEditDataService();
   const pageValidationService = new PageValidationService(caseFieldService);
   const dialog: any = '';
-  let caseEditPageComponent: CaseEditPageComponent;
 
   beforeEach(waitForAsync(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
@@ -129,8 +127,6 @@ describe('FieldReadComponent', () => {
         queryParamMap: createSpyObj('queryParamMap', ['get'])
       }
     };
-    caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
-      route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, caseEditDataService);
 
     TestBed
       .configureTestingModule({
@@ -147,7 +143,6 @@ describe('FieldReadComponent', () => {
         ],
         providers: [
           { provide: PaletteService, useValue: paletteService },
-          { provide: CaseEditPageComponent, useValue: caseEditPageComponent },
         ]
       })
       .compileComponents();

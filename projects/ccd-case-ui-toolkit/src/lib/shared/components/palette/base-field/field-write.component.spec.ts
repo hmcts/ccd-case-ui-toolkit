@@ -67,7 +67,6 @@ describe('FieldWriteComponent', () => {
   const caseEditDataService = new CaseEditDataService();
   const pageValidationService = new PageValidationService(caseFieldService);
   const dialog: any = '';
-  let caseEditPageComponent: CaseEditPageComponent;
 
   beforeEach(async() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -101,8 +100,6 @@ describe('FieldWriteComponent', () => {
         queryParamMap: createSpyObj('queryParamMap', ['get'])
       }
     };
-    caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
-      route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, caseEditDataService);
 
     TestBed
       .configureTestingModule({
@@ -116,7 +113,6 @@ describe('FieldWriteComponent', () => {
         providers: [
           { provide: PaletteService, useValue: paletteService },
           { provide: FormValidatorsService, useValue: formValidatorService },
-          { provide: CaseEditPageComponent, useValue: caseEditPageComponent },
         ]
       })
       .compileComponents();
