@@ -21,7 +21,7 @@
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-location>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
-      <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup" [jurisdiction]="jurisdiction"
+      <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup" [jurisdiction]="jurisdiction" [caseTypeId]="caseTypeId"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
         (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"></ccd-select-flag-type>
     </ng-container>

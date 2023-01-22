@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.50-case-flags-multiple-service-codes-for-jurisdiction
+**EUI-7529** Fix flag types retrieval to use HMCTS service code associated with case type ID, falling back on jurisdiction only if the case type ID is not recognised, since there could be multiple service codes per jurisdiction
+
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
 
