@@ -27,8 +27,8 @@ const pipeDeclarations = [
   declarations: [
     ...pipeDeclarations
   ],
-    exports: [
-        ...pipeDeclarations,
-    ]
+  exports: [
+    ...pipeDeclarations,
+  ]
 })
 export class PipesModule {}
