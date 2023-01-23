@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.5-angular-upgrade-r3.5",
+  "version": "6.10.5-fix-multiple-complete-task2",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
