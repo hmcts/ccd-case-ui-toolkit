@@ -27,6 +27,7 @@
         <strong *ngIf="flagDetail.status === caseFlagStatus.ACTIVE" class="govuk-tag">Active</strong>
         <strong *ngIf="flagDetail.status === caseFlagStatus.INACTIVE" class="govuk-tag govuk-tag--grey">Inactive</strong>
         <strong *ngIf="flagDetail.status === caseFlagStatus.REQUESTED" class="govuk-tag govuk-tag--grey">Requested</strong>
+        <strong *ngIf="flagDetail.status === caseFlagStatus.NOT_APPROVED" class="govuk-tag govuk-tag--red">Not approved</strong>
       </td>
     </tr>
   </tbody>

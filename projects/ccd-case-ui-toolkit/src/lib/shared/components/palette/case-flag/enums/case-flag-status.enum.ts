@@ -1,5 +1,6 @@
 export enum CaseFlagStatus {
   ACTIVE = 'Active',
   INACTIVE = 'Inactive',
-  REQUESTED = 'Requested'
+  REQUESTED = 'Requested',
+  NOT_APPROVED = 'Not approved'
 }
