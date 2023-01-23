@@ -1,0 +1,25 @@
+<h2 class="govuk-heading-l">Move File</h2>
+<p>Where do you want to move "{{ data.document.document_filename }}" file?</p>
+<div class="folders govuk-radios govuk-radios--conditional">
+    <ng-container *ngFor="let cat of currentCategories">
+        <ng-container *ngTemplateOutlet="folder;context:{cat:cat,level:1}"></ng-container>
+    </ng-container>
+</div>
+<div class="govuk-button-group">
+    <button class="button button-primary" type="button" (click)="save()">Save</button>
+    <a (click)="cancel()" class="cancel">Cancel</a>
+</div>
+<div class="close" (click)="cancel()"></div>
+
+<ng-template #folder let-cat="cat" let-level="level">
+    <div class="folder govuk-radios__item">
+        <input class="govuk-radios__input" type="radio" name="level-{{level}}" [id]="cat.category_id" (click)="handleChange($event)" />
+        <label class="govuk-label govuk-radios__label" [for]="cat.category_id">
+            <img class="iconImg" src="/assets/images/folder.png" alt="Folder icon" />
+            {{ cat.category_name }}
+        </label>
+        <ng-container *ngFor="let subcat of cat.sub_categories">
+            <ng-container *ngTemplateOutlet="folder;context:{cat:subcat,level:level+1}"></ng-container>
+        </ng-container>
+    </div>
+</ng-template>
