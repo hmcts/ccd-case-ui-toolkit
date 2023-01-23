@@ -201,7 +201,6 @@ export class CasesService {
     return this.http
       .post(url, eventData, { headers, observe: 'body' })
       .pipe(
-        map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -246,7 +245,6 @@ export class CasesService {
     return this.http
       .post(url, eventData, { headers, observe: 'body' })
       .pipe(
-        map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -298,11 +296,6 @@ export class CasesService {
     return url;
   }
 
-  private processResponseBody(body: any, eventData: CaseEventData): any {
-    this.processTasksOnSuccess(body, eventData.event);
-    return body;
-  }
-
   private initialiseEventTrigger(eventTrigger: CaseEventTrigger) {
     if (!eventTrigger.wizard_pages) {
       eventTrigger.wizard_pages = [];
@@ -313,23 +306,6 @@ export class CasesService {
       wizardPage.case_fields = this.orderService.sort(
         this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
     });
-  }
-
-  private processTasksOnSuccess(caseData: any, eventData: any): void {
-    // The following code is work allocation 1 related
-    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation') {
-      // This is used a feature toggle to
-      // control the work allocation
-      if (!this.isPuiCaseManager()) {
-        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
-          .subscribe(() => {
-            // Success. Do nothing.
-          }, error => {
-            // Show an appropriate warning about something that went wrong.
-            console.warn('Could not process tasks for this case event', error);
-          });
-      }
-    }
   }
 
   /*
