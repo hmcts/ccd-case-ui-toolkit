@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.50-case-file-view-restrict-document-move
+**EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
+
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
 
@@ -11,7 +14,7 @@
 ### Version 5.0.46-case-file-view-styling-fixes
 **EUI-7481** Case file view styling issues
 
-### Version 5.0.45-fix-case-acccess-table
+### Version 5.0.45-fix-case-access-table
 **EUI-7454** Fixed table alignment on case view
 
 ### Version 5.0.44-case-flags-integration-fixes
