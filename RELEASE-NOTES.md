@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 5.0.49-restricted-case-access-v2
+### Version 5.0.51-restricted-case-access
 **EUI-7382** Restricted case access after merge
 
 ### Version 5.0.50-sscs-sit-release

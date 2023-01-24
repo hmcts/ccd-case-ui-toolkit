@@ -96,13 +96,13 @@ export class CaseResolver implements Resolve<CaseView> {
       this.router.navigate(['/search/noresults']);
       return of(null);
     }
-    // Error 403, navigate to restricted case access page
-    if (error.status === 403) {
-      this.router.navigate([`/cases/restricted-case-access/${caseReference}`]);
-      return of(null);
-    }
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case']);
+      return of(null);
+    }
+		// Error 403, navigate to restricted case access page
+    if (error.status === 403) {
+      this.router.navigate([`/cases/restricted-case-access/${caseReference}`]);
       return of(null);
     }
     if (error.status !== 401) {

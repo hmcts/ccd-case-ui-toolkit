@@ -309,11 +309,10 @@ describe('CaseResolver', () => {
       caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
       caseResolver
         .resolve(route)
-        .then(data => {
-          expect(data).toBeFalsy();
-        }, err => {
-          expect(err).toBeTruthy();
-        });
+        .then(
+          data => expect(data).toBeFalsy(),
+          err => expect(err).toBeTruthy()
+        );
 
       expect(router.navigate).toHaveBeenCalledWith(['/cases/restricted-case-access/42']);
     });
