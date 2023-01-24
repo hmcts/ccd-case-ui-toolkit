@@ -39,7 +39,7 @@ export class UpdateFlagComponent implements OnInit {
 
       if (flagDetail.name) {
         this.updateFlagTitle =
-          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} ‘${flagDetail.name}${flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}’` : '’'}`;
+          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}"` : '"'}`;
       }
     }
   }
