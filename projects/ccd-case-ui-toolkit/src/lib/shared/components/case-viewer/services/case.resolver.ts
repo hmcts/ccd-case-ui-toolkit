@@ -90,7 +90,6 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private checkAuthorizationError(error: any, caseReference: string) {
-    console.error(error);
     // TODO Should be logged to remote logging infrastructure
     if (error.status === 400) {
       this.router.navigate(['/search/noresults']);
@@ -100,7 +99,7 @@ export class CaseResolver implements Resolve<CaseView> {
       this.router.navigate(['/list/case']);
       return of(null);
     }
-		// Error 403, navigate to restricted case access page
+    // Error 403, navigate to restricted case access page
     if (error.status === 403) {
       this.router.navigate([`/cases/restricted-case-access/${caseReference}`]);
       return of(null);
