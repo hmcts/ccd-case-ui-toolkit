@@ -41,18 +41,16 @@
         </div>
 
         <div class="govuk-!-margin-bottom-4">
-          <fieldset class="govuk-fieldset">
-            <div class="govuk-radios" data-module="govuk-radios" [id]="FLAG_STATUS_CONTROL_NAME">
-              <div class="govuk-radios__item" *ngFor="let status of caseFlagStatuses | enumDisplayDescription">
-                <input class="govuk-radios__input" type="radio"
-                       [name]="FLAG_STATUS_CONTROL_NAME"
-                       [value]="status | lowercase">
-                <label class="govuk-label govuk-radios__label" [for]="FLAG_STATUS_CONTROL_NAME">
-                  {{ status }}
-                </label>
-              </div>
+          <div class="govuk-radios" data-module="govuk-radios" [id]="FLAG_STATUS_CONTROL_NAME">
+            <div class="govuk-radios__item" *ngFor="let status of caseFlagStatuses | enumDisplayDescription">
+              <input class="govuk-radios__input" type="radio"
+                     [name]="FLAG_STATUS_CONTROL_NAME"
+                     [value]="status | lowercase">
+              <label class="govuk-label govuk-radios__label" [for]="FLAG_STATUS_CONTROL_NAME">
+                {{ status }}
+              </label>
             </div>
-          </fieldset>
+          </div>
         </div>
 
         <div>
