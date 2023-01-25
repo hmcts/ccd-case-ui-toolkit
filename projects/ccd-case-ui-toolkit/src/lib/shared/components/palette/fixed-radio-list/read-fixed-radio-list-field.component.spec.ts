@@ -5,6 +5,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { FixedRadioListPipe } from './fixed-radio-list.pipe';
 import { ReadFixedRadioListFieldComponent } from './read-fixed-radio-list-field.component';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 
 describe('ReadFixedRadioListFieldComponent', () => {
 
@@ -53,7 +54,8 @@ describe('ReadFixedRadioListFieldComponent', () => {
           imports: [],
           declarations: [
             ReadFixedRadioListFieldComponent,
-            FixedRadioListPipe
+            FixedRadioListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -110,7 +112,8 @@ describe('ReadFixedRadioListFieldComponent', () => {
           imports: [],
           declarations: [
             ReadFixedRadioListFieldComponent,
-            FixedRadioListPipe
+            FixedRadioListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
