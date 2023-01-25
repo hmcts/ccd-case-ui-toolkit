@@ -1,9 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { EnumDisplayDescriptionPipe } from '../../../../../pipes/generic/enum-display-description/enum-display-description.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
+import { UpdateFlagStatesEnum } from '../../enums/update-flag-states.enum';
 import { UpdateFlagComponent } from './update-flag.component';
 
 describe('UpdateFlagComponent', () => {
@@ -16,7 +18,7 @@ describe('UpdateFlagComponent', () => {
     name: 'Flag 1',
     flagComment: 'First flag',
     dateTimeCreated: new Date(),
-    path: [{ id: null, value: 'Reasonable adjustment' }],
+    path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active'
@@ -25,7 +27,7 @@ describe('UpdateFlagComponent', () => {
     name: 'Flag 2',
     flagComment: 'Rose\'s second flag',
     dateTimeCreated: new Date(),
-    path: [{ id: null, value: 'Reasonable adjustment' }],
+    path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
     flagCode: 'FL2',
     status: 'Inactive'
@@ -47,11 +49,11 @@ describe('UpdateFlagComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ UpdateFlagComponent, EnumDisplayDescriptionPipe ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [UpdateFlagComponent, EnumDisplayDescriptionPipe]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -59,13 +61,14 @@ describe('UpdateFlagComponent', () => {
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({});
     component.selectedFlag = selectedFlag1;
-    nextButton = fixture.debugElement.nativeElement.querySelector('.button-primary');
-    textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
       '5555555555' + '6666666666' + '7777777777' + '8888888888' + '9999999999';
     fixture.detectChanges();
+
+    nextButton = fixture.debugElement.query(By.css('#updateFlagNextButton')).nativeElement;
+    textarea = fixture.debugElement.query(By.css(`#${component.FLAG_COMMENTS_CONTROL_NAME}`)).nativeElement;
   });
 
   it('should create component', () => {
@@ -133,5 +136,25 @@ describe('UpdateFlagComponent', () => {
     }
 
     expect(displayedStatuses).toEqual(Object.values(CaseFlagStatus));
+  });
+
+  it('should start with currentFormStep as FLAG_FORM', () => {
+    expect(component.currentFormStep === UpdateFlagStatesEnum.FLAG_FORM);
+  });
+
+  it('should set currentFormStep to WELSH_TRANSLATION_FORM when clicking onNext() if welsh checkbox is selected', () => {
+    component.formGroup.get(component.FLAG_WELSH_TRANSLATION_CONTROL_NAME).setValue(true);
+    fixture.detectChanges();
+    component.onNext();
+
+    expect(component.currentFormStep === UpdateFlagStatesEnum.WELSH_TRANSLATION_FORM).toBe(true);
+  });
+
+  it('should set currentForm back to FLAG_FORM if it`s WELSH_TRANSLATION_FORM', () => {
+    component.currentFormStep = UpdateFlagStatesEnum.WELSH_TRANSLATION_FORM as UpdateFlagStatesEnum;
+    fixture.detectChanges();
+    component.onBack();
+
+    expect(component.currentFormStep === UpdateFlagStatesEnum.FLAG_FORM).toBe(true);
   });
 });
