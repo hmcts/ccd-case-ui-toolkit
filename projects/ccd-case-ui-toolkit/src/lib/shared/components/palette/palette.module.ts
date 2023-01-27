@@ -39,6 +39,7 @@ import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/com
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
+import { UpdateFlagWelshTranslationFormComponent } from './case-flag/components/update-flag/update-flag-welsh-translation-form/update-flag-welsh-translation-form.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -161,7 +162,9 @@ const PALETTE_COMPONENTS = [
     CaseFileViewFolderSortComponent,
     CaseFileViewOverlayMenuComponent,
     CaseFileViewFolderDocumentActionsComponent,
-    CaseFileViewFolderSelectorComponent
+    CaseFileViewFolderSelectorComponent,
+
+    UpdateFlagWelshTranslationFormComponent
 ];
 
 @NgModule({
