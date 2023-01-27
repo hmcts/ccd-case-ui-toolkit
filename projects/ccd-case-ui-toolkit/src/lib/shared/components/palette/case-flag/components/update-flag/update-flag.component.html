@@ -1,47 +1,113 @@
-<div class="form-group" [formGroup]="formGroup">
-  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
-    <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
-      <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" [for]="updateFlagControlName">
-          {{updateFlagTitle}}
-        </label>
-      </h1>
-      <div id="update-flag-hint" class="govuk-hint">
-        {{updateFlagHint}}
+<ng-container [ngSwitch]="currentFormStep">
+  <ng-container *ngSwitchCase="updateFlagStates.FLAG_FORM">
+    <ng-container [formGroup]="formGroup">
+      <div>
+        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+          <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
+            <h1 class="govuk-label-wrapper govuk-!-margin-bottom-6">
+              <label class="govuk-label govuk-label--l">
+                {{ updateFlagTitle }}
+              </label>
+            </h1>
+
+            <div class="govuk-!-margin-bottom-4">
+              <div>
+                <label class="govuk-label govuk-label--s" [for]="FLAG_COMMENTS_CONTROL_NAME">
+                  {{ updateFlagTitle }} comments
+                </label>
+              </div>
+              <div id="update-flag-hint" class="govuk-hint">
+                {{updateFlagStepEnum.COMMENT_HINT_TEXT}}
+              </div>
+              <div id="update-flag-not-entered-error-message" class="govuk-error-message"
+                   *ngIf="updateFlagNotEnteredErrorMessage">
+                <span class="govuk-visually-hidden">Error:</span> {{updateFlagNotEnteredErrorMessage}}
+              </div>
+              <div id="update-flag-char-limit-error" class="govuk-error-message"
+                   *ngIf="updateFlagCharLimitErrorMessage">
+                <span class="govuk-visually-hidden">Error:</span> {{updateFlagCharLimitErrorMessage}}
+              </div>
+              <textarea class="govuk-textarea" [id]="FLAG_COMMENTS_CONTROL_NAME"
+                        [name]="FLAG_COMMENTS_CONTROL_NAME" [formControlName]="FLAG_COMMENTS_CONTROL_NAME" rows="5"
+                        aria-describedby="update-flag-hint update-flag-char-limit-info update-flag-char-limit-error">
+              </textarea>
+              <div id="update-flag-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                {{updateFlagStepEnum.COMMENT_CHARACTER_LIMIT_INFO}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div>
+            <label class="govuk-label govuk-label--s govuk-!-margin-bottom-2">
+              {{ updateFlagTitle }} status
+            </label>
+          </div>
+
+          <div class="govuk-!-margin-bottom-4">
+            <div class="govuk-radios" data-module="govuk-radios" [id]="FLAG_STATUS_CONTROL_NAME">
+              <div class="govuk-radios__item" *ngFor="let status of caseFlagStatuses | enumDisplayDescription">
+                <input class="govuk-radios__input" type="radio"
+                       [id]="FLAG_STATUS_CONTROL_NAME + '_' + status"
+                       [name]="FLAG_STATUS_CONTROL_NAME"
+                       [formControlName]="FLAG_STATUS_CONTROL_NAME"
+                       [value]="status">
+                <label class="govuk-label govuk-radios__label" [for]="FLAG_STATUS_CONTROL_NAME + '_' + status">
+                  {{ status }}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div id="update-flag-status-hint" class="govuk-hint">
+              {{updateFlagStepEnum.STATUS_HINT_TEXT}}
+            </div>
+
+            <textarea class="govuk-textarea"
+                      [id]="FLAG_STATUS_CHANGE_REASON_CONTROL_NAME"
+                      [name]="FLAG_STATUS_CHANGE_REASON_CONTROL_NAME"
+                      [formControlName]="FLAG_STATUS_CHANGE_REASON_CONTROL_NAME"
+                      rows="5">
+          </textarea>
+          </div>
+        </div>
       </div>
-      <div id="update-flag-not-entered-error-message" class="govuk-error-message"
-        *ngIf="updateFlagNotEnteredErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{updateFlagNotEnteredErrorMessage}}
+
+
+      <div class="govuk-!-margin-bottom-6">
+        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" type="checkbox"
+                   [formControlName]="FLAG_WELSH_TRANSLATION_CONTROL_NAME"
+                   [id]="FLAG_WELSH_TRANSLATION_CONTROL_NAME" [name]="FLAG_WELSH_TRANSLATION_CONTROL_NAME">
+            <label class="govuk-label govuk-checkboxes__label" [for]="FLAG_WELSH_TRANSLATION_CONTROL_NAME">
+              I need to add a Welsh translation
+            </label>
+          </div>
+        </div>
       </div>
-      <div id="update-flag-char-limit-error" class="govuk-error-message"
-        *ngIf="updateFlagCharLimitErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{updateFlagCharLimitErrorMessage}}
-      </div>
-      <textarea class="govuk-textarea" [id]="updateFlagControlName"
-        [name]="updateFlagControlName" [formControlName]="updateFlagControlName" rows="5"
-        aria-describedby="update-flag-hint update-flag-char-limit-info update-flag-char-limit-error">
-      </textarea>
-      <div id="update-flag-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-        {{updateFlagCharLimitInfo}}
-      </div>
-    </div>
-  </div>
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
-      <p>Flag status:
-        <span>
-          <strong class="govuk-tag" [ngClass]="{'govuk-tag--grey': selectedFlag.flagDetailDisplay.flagDetail.status === 'Inactive'}">
-            {{selectedFlag.flagDetailDisplay.flagDetail.status}}
-          </strong>
-        </span>
-      </p>
-    </div>
-    <div class="govuk-grid-column-one-half">
-      <button class="button button-secondary" type="button" (click)="onChangeStatus()" *ngIf="selectedFlag.flagDetailDisplay.flagDetail.status === 'Active'">
-        Make inactive
-      </button>
-    </div>
-  </div>
-  <div class="govuk-button-group">
-    <button class="button button-primary" type="button" (click)="onNext()">Next</button>
-  </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="updateFlagStates.WELSH_TRANSLATION_FORM">
+    <ccd-update-flag-welsh-translation-form
+      [formGroup]="formGroup"
+      [FLAG_COMMENTS_CONTROL_NAME]="FLAG_COMMENTS_CONTROL_NAME"
+      [FLAG_STATUS_CHANGE_REASON_CONTROL_NAME]="FLAG_STATUS_CHANGE_REASON_CONTROL_NAME"
+    ></ccd-update-flag-welsh-translation-form>
+  </ng-container>
+</ng-container>
+
+<div class="govuk-button-group">
+  <button *ngIf="currentFormStep === updateFlagStates.WELSH_TRANSLATION_FORM"
+          (click)="onBack()"
+    class="govuk-button govuk-button--secondary" type="button" data-module="govuk-button">
+    Back
+  </button>
+  <button id="updateFlagNextButton" class="govuk-button" type="button" (click)="onNext()">
+    Next
+  </button>
 </div>
+
