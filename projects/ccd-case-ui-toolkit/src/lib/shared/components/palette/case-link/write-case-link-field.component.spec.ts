@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 import { DebugElement } from '@angular/core';
-import { CaseField, FieldType } from '../../../domain/definition';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CaseField, FieldType } from '../../../domain/definition';
 import { PaletteUtilsModule } from '../utils';
+import { WriteCaseLinkFieldComponent } from './write-case-link-field.component';
 
 const VALUE = {
   CaseReference: '1234-5678-1234-5678'
@@ -36,7 +36,7 @@ describe('WriteCaseLinkFieldComponent', () => {
   let fixture: ComponentFixture<WriteCaseLinkFieldComponent>;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
@@ -60,12 +60,19 @@ describe('WriteCaseLinkFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should render the case reference with null value', () => {
+    component.caseLinkGroup.controls['CaseReference'].setValue(null);
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+  })
+
   it('should validate the case reference number', () => {
     expect(component.validCaseReference('InvalidCharacters')).toBeFalsy();
     expect(component.validCaseReference('1234567812345678')).toBeTruthy();
     expect(component.validCaseReference('1234-5678-1234-5678')).toBeTruthy();
     expect(component.validCaseReference('123456781234567890')).toBeFalsy();
     expect(component.validCaseReference('1234Invalid')).toBeFalsy();
+    expect(component.validCaseReference(null)).toBeFalsy();
   });
 
   it('should set retain_hidden_value to true for all sub-fields that are part of a CaseLink field', () => {
@@ -73,4 +80,7 @@ describe('WriteCaseLinkFieldComponent', () => {
     expect(component.caseField.field_type.complex_fields[0].retain_hidden_value).toEqual(true);
   });
 
+  afterEach(() => {
+    fixture.destroy();
+  });
 });
