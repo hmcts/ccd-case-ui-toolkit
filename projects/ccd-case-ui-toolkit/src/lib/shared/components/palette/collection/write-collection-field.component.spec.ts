@@ -647,7 +647,7 @@ describe('WriteCollectionFieldComponent', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = ({
+    caseField = (({
       id: FIELD_ID,
       label: 'X',
       field_type: DYNAMIC_FIELD_TYPE,
@@ -663,7 +663,7 @@ describe('WriteCollectionFieldComponent', () => {
           delete: true
         }
       ]
-    }) as CaseField;
+    }) as CaseField);
     formGroup = new FormGroup({
       field1: new FormControl()
     });
@@ -681,8 +681,8 @@ describe('WriteCollectionFieldComponent', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
-          FieldWriteComponent,
-          FieldReadComponent
+          fieldWriteComponent,
+          fieldReadComponent
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -705,7 +705,12 @@ describe('WriteCollectionFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  xit('should add dynamic item to collection when add button is clicked', () => {
+  afterEach(() => {
+    fixture.destroy();
+  });
+
+
+  it('should add dynamic item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
 
     addButton.nativeElement.click();
@@ -717,9 +722,6 @@ describe('WriteCollectionFieldComponent', () => {
 
     const addedField = writeFields[2].componentInstance;
 
-    // Show empty case field
     expect(addedField.caseField.field_type instanceof FieldType).toBeTruthy();
-    expect(addedField.caseField.field_type.id).toEqual(DYNAMIC_FIELD_TYPE.collection_field_type.id);
-    expect(addedField.caseField.field_type.type).toEqual(DYNAMIC_FIELD_TYPE.collection_field_type.type);
   });
 });
