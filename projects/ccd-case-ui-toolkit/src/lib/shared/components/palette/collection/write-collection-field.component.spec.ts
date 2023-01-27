@@ -725,3 +725,84 @@ describe('WriteCollectionFieldComponent', () => {
     expect(addedField.caseField.field_type instanceof FieldType).toBeTruthy();
   });
 });
+
+
+describe('WriteCollectionFieldComponent', () => {
+  let fixture: ComponentFixture<WriteCollectionFieldComponent>;
+  let component: WriteCollectionFieldComponent;
+  let de: DebugElement;
+  let formValidatorService: any;
+  let dialog: any;
+  let dialogRef: any;
+  let scrollToService: any;
+  let profileNotifier: any;
+  let caseField: CaseField;
+  let formGroup: FormGroup;
+  let collectionCreateCheckerService: CollectionCreateCheckerService;
+
+  beforeEach(waitForAsync(() => {
+    formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
+    dialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of());
+    dialog = createSpyObj<MatDialog>('MatDialog', ['open']);
+    dialog.open.and.returnValue(dialogRef);
+    scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
+    scrollToService.scrollTo.and.returnValue(of());
+    caseField = {} as CaseField;
+    formGroup = new FormGroup({
+      field1: new FormControl()
+    });
+
+    profileNotifier = new ProfileNotifier();
+    profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
+
+    collectionCreateCheckerService = new CollectionCreateCheckerService();
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          PaletteUtilsModule
+        ],
+        declarations: [
+          WriteCollectionFieldComponent,
+          fieldWriteComponent,
+          fieldReadComponent
+        ],
+        providers: [
+          { provide: FormValidatorsService, useValue: formValidatorService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: ScrollToService, useValue: scrollToService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: CollectionCreateCheckerService, useValue: collectionCreateCheckerService },
+          RemoveDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(WriteCollectionFieldComponent);
+    component = fixture.componentInstance;
+    component.caseField = caseField;
+    component.caseFields = [caseField];
+    component.formGroup = formGroup;
+    component.ngOnInit();
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  }));
+
+  afterEach(() => {
+    fixture.destroy();
+  });
+
+
+  it('should add dynamic item to collection when add button is clicked', () => {
+    const addButton = de.query($ADD_BUTTON_TOP);
+
+    addButton.nativeElement.click();
+    fixture.detectChanges();
+
+    const writeFields = de.queryAll($WRITE_FIELDS);
+
+    expect(writeFields.length).toEqual(0);
+  });
+});
