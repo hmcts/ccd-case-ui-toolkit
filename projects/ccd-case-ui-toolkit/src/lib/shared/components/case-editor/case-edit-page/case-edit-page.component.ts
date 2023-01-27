@@ -54,7 +54,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public caseFields: CaseField[];
   public validationErrors: { id: string, message: string }[] = [];
   public showSpinner: boolean;
-  public caseLinkError: LinkedCasesError;
   public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private static scrollToTop(): void {
@@ -178,24 +177,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           } else if (fieldElement.hasError('maxlength')) {
             this.caseEditDataService.addFormValidationError({ id, message: `${label} exceeds the maximum length` });
             fieldElement.markAsDirty();
-          } else if (this.caseLinkError && FieldsUtils.isLinkedCasesCaseField(casefield)) {
-            this.validationErrors.push({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
               this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
-              if (this.caseLinkError && FieldsUtils.isLinkedCasesCaseField(casefield)) {
-                this.caseEditDataService.addFormValidationError({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
-                // this.validationErrors.push({ id: this.caseLinkError.componentId, message: this.caseLinkError.errorMessage });
-              } else {
-                const fieldArray = fieldElement as FormArray;
-                if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
-                  id = `${fieldArray['component']['collItems'][0].prefix}`;
-                }
-                fieldArray.controls.forEach((c: AbstractControl) => {
-                  this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
-                });
+              const fieldArray = fieldElement as FormArray;
+              if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
+                id = `${fieldArray['component']['collItems'][0].prefix}`;
               }
+              fieldArray.controls.forEach((c: AbstractControl) => {
+                this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
+              });
             } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {
               // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
               // (expected always to be one of the two), to set the correct error message
@@ -475,7 +467,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   private syncCaseEditDataService(): void {
     this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
-    this.caseEditDataService.setCaseLinkError(this.caseLinkError);
     this.caseEditDataService.setCaseTitle(this.getCaseTitle());
     this.caseEditDataService.caseFormValidationErrors$.subscribe({
       next: (validationErrors) => this.validationErrors = validationErrors

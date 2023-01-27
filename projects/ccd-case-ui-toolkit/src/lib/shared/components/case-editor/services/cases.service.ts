@@ -119,41 +119,6 @@ export class CasesService {
       );
   }
 
-  /**
-   * TODO: Gets case link responses
-   * @returns case link responses
-   */
-   public getCaseLinkResponses(): Observable<LinkCaseReason[]> {
-    const headers = new HttpHeaders()
-      .set('experimental', 'true')
-      .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
-      .set('Content-Type', 'application/json');
-    const loadingToken = this.loadingService.register();
-    return this.http
-      .get('assets/getCaseReasons.json', { headers, observe: 'body' })
-      .pipe(
-        map((reasons) => {
-          return reasons.sort((reasonA, reasonB) => reasonA.value_en > reasonB.value_en ? 1 : -1);
-        }),
-        catchError(error => {
-          this.errorService.setError(error);
-          return throwError(error);
-        }),
-        finalize(() => this.loadingService.unregister(loadingToken))
-      );
-  }
-
-  public getLinkedCases(caseId: string): Observable<LinkedCasesResponse> {
-    const url = `${this.appConfig.getCaseDataStoreApiUrl()}/${caseId}`
-    return this.http
-    .get(url)
-    .pipe(
-      catchError(error => {
-        return throwError(error);
-      })
-    );
-  }
-
   getEventTrigger(caseTypeId: string,
     eventTriggerId: string,
     caseId?: string,
