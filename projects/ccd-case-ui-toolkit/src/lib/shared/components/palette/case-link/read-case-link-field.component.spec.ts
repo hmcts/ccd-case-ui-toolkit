@@ -24,13 +24,13 @@ describe('ReadCaseLinkFieldComponent', () => {
 
   describe('Non-persistable readonly case-link field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = {
       id: 'aCaseLink',
       label: 'A case link',
       field_type: FIELD_TYPE,
       value: VALUE,
       display_context: 'READONLY'
-    });
+    } as CaseField;
 
     let fixture: ComponentFixture<ReadCaseLinkFieldComponent>;
     let component: ReadCaseLinkFieldComponent;
@@ -86,13 +86,13 @@ describe('ReadCaseLinkFieldComponent', () => {
 
   describe('Persistable readonly case-link field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
-    const CASE_FIELD: CaseField = <CaseField>({
+    const CASE_FIELD: CaseField = {
       id: FIELD_ID,
       label: 'A case link',
       field_type: FIELD_TYPE,
       value: VALUE,
       display_context: 'READONLY'
-    });
+    } as CaseField;
 
     let fixture: ComponentFixture<ReadCaseLinkFieldComponent>;
     let component: ReadCaseLinkFieldComponent;

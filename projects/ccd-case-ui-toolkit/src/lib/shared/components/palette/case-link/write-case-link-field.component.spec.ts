@@ -13,13 +13,13 @@ const FIELD_TYPE: FieldType = {
   id: 'CaseLink',
   type: 'Complex',
 };
-const CASE_REFERENCE: CaseField = <CaseField>({
+const CASE_REFERENCE: CaseField = {
   id: 'CaseReference',
   label: 'Case Reference',
   field_type: {id: 'TextCaseReference', type: 'Text'}
-});
+} as CaseField;
 
-const CASE_FIELD: CaseField = <CaseField>({
+const CASE_FIELD: CaseField = {
   id: FIELD_ID,
   label: 'New Case Link',
   display_context: 'OPTIONAL',
@@ -29,7 +29,7 @@ const CASE_FIELD: CaseField = <CaseField>({
   },
   value: VALUE,
   retain_hidden_value: true
-});
+} as CaseField;
 
 describe('WriteCaseLinkFieldComponent', () => {
   let component: WriteCaseLinkFieldComponent;
