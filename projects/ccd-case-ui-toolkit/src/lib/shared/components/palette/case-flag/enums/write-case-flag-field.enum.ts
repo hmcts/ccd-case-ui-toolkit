@@ -4,8 +4,7 @@ export enum CaseFlagFieldState {
   FLAG_LANGUAGE_INTERPRETER,
   FLAG_COMMENTS,
   FLAG_MANAGE_CASE_FLAGS,
-  FLAG_UPDATE,
-  FLAG_UPDATE_EXTRA_STEP,
+  FLAG_UPDATE
 }
 
 export enum CaseFlagText {
