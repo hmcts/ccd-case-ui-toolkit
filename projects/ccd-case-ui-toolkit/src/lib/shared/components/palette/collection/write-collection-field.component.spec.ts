@@ -46,6 +46,12 @@ const DYNAMIC_FIELD_TYPE: FieldType = {
   }
 };
 
+const DYNAMIC_FIELD_TYPE_NULL: FieldType = {
+  id: 'Address',
+  type: 'Collection',
+  collection_field_type: null
+};
+
 const VALUES = [
   {
     id: '123',
@@ -748,7 +754,23 @@ describe('WriteCollectionFieldComponent', () => {
     dialog.open.and.returnValue(dialogRef);
     scrollToService = createSpyObj<ScrollToService>('scrollToService', ['scrollTo']);
     scrollToService.scrollTo.and.returnValue(of());
-    caseField = {} as CaseField;
+    caseField = (({
+      id: FIELD_ID,
+      label: 'X',
+      field_type: DYNAMIC_FIELD_TYPE,
+      display_context: 'OPTIONAL',
+      display_context_parameter: '#COLLECTION(allowInsert)',
+      value: VALUES.slice(0),
+      acls: [
+        {
+          role: 'caseworker-divorce',
+          create: true,
+          read: true,
+          update: true,
+          delete: true
+        }
+      ]
+    }) as CaseField);
     formGroup = new FormGroup({
       field1: new FormControl()
     });
@@ -797,12 +819,13 @@ describe('WriteCollectionFieldComponent', () => {
 
   it('should add dynamic item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
-
+    component.caseField = ({ ...component.caseField, field_type: null } as unknown as CaseField);
+    component.caseFields = [({...component.caseField, field_type: null } as unknown as CaseField)];
     addButton.nativeElement.click();
     fixture.detectChanges();
 
     const writeFields = de.queryAll($WRITE_FIELDS);
 
-    expect(writeFields.length).toEqual(0);
+    expect(writeFields.length).toEqual(2);
   });
 });
