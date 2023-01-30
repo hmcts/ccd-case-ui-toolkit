@@ -1636,6 +1636,7 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@devtools-ds/object-inspector/-/object-inspector-1.2.0.tgz#64a132fbd4159affa5a87c8cf6cf8540c337aed2"
   integrity sha512-VztcwqVwScSvYdvJVZBJYsVO/2Pew3JPpFV3T9fuCHQLlHcLYOV3aU/kBS2ScuE2O1JN0ZbobLqFLa3vQF54Fw==
+
   dependencies:
     "@babel/runtime" "7.7.2"
     "@devtools-ds/object-parser" "^1.2.0"
@@ -3241,6 +3242,11 @@
   resolved "https://registry.yarnpkg.com/@types/parse5/-/parse5-5.0.3.tgz#e7b5aebbac150f8b5fdd4a46e7f0bd8e65e19109"
   integrity sha512-kUNnecmtkunAoQ3CnjmMkzNU/gtxG8guhi+Fk2U/kOpIKjIMKnXGp4IJCgQJrXSgMsWYimYG4TGjz/UzbGEBTw==
 
+"@types/pegjs@^0.10.0":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@types/pegjs/-/pegjs-0.10.2.tgz#25ecdef12a210bb2e8b6ef3105bacb4a85a666bc"
+  integrity sha512-HSiQX7133jjMBOrN3kWaLlpelS6Bg95uJaesr3nwf8qz9MTQorXqbLlErYGxKqXuYgRCKmSLUk0faCKS4yzT3g==
+
 "@types/pretty-hrtime@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/pretty-hrtime/-/pretty-hrtime-1.0.1.tgz#72a26101dc567b0d68fd956cf42314556e42d601"
@@ -3305,6 +3311,11 @@
   integrity sha512-GkewRA4i5oXacU/n4MA9+bLgt5/L3F1mKrYvFGm7r2ouLXhRKjuWwo9XHNnbx6WF3vlGW21S3fCvgqxvxXXc5g==
   dependencies:
     source-map "^0.6.1"
+
+"@types/underscore@^1.11.4":
+  version "1.11.4"
+  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.11.4.tgz#62e393f8bc4bd8a06154d110c7d042a93751def3"
+  integrity sha512-uO4CD2ELOjw8tasUrAhvnn2W4A0ZECOvMjCivJr4gA9pGgjv+qxKWY9GLTMVEK8ej85BxQOocUyE7hImmSQYcg==
 
 "@types/unist@*", "@types/unist@^2.0.0", "@types/unist@^2.0.2", "@types/unist@^2.0.3":
   version "2.0.6"
@@ -13355,6 +13366,11 @@ pdfmake@^0.2.0:
     "@foliojs-fork/pdfkit" "^0.13.0"
     iconv-lite "^0.6.3"
     xmldoc "^1.1.2"
+
+pegjs@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/pegjs/-/pegjs-0.10.0.tgz#cf8bafae6eddff4b5a7efb185269eaaf4610ddbd"
+  integrity sha1-z4uvrm7d/0tafvsYUmnqr0YQ3b0=
 
 performance-now@^2.1.0:
   version "2.1.0"

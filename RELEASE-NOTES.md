@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 6.10.0-EUI-3729-show-hide-conditionals
+**EUI-3729** Support combinations of AND and OR boolean logic
+
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
 
@@ -13,7 +17,6 @@
 
 ### Version 5.0.46-case-file-view-styling-fixes
 **EUI-7481** Case file view styling issues
-
 ### Version 5.0.45-fix-case-acccess-table
 **EUI-7454** Fixed table alignment on case view
 
