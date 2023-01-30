@@ -1,20 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { UpdateFlagWelshTranslationFormComponent } from './update-flag-welsh-translation-form.component';
 
 describe('UpdateFlagWelshTranslationFormComponent', () => {
-  let component: UpdateFlagWelshTranslationFormComponent;
-  let fixture: ComponentFixture<UpdateFlagWelshTranslationFormComponent>;
+  let component: UpdateFlagWelshTranslationFormComponent;let fixture: ComponentFixture<UpdateFlagWelshTranslationFormComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
       declarations: [ UpdateFlagWelshTranslationFormComponent ],
       imports: [ ReactiveFormsModule ]
     })
     .compileComponents();
-  });
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagWelshTranslationFormComponent);
@@ -34,7 +33,7 @@ describe('UpdateFlagWelshTranslationFormComponent', () => {
     expect(component.formGroup.get(component.FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME)).toBeTruthy();
   });
 
-  it('should have all four textareas based on names and the English textiareas  should be readonly', () => {
+  it('should have all four textareas based on names and the English textareas should be readonly', () => {
     const flagCommentsControl = fixture.debugElement.query(By.css(`#${component.FLAG_COMMENTS_CONTROL_NAME}`));
     expect(flagCommentsControl?.name).toEqual('textarea');
     expect(Object.keys(flagCommentsControl.attributes)).toContain('readonly');

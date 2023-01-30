@@ -3,8 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ccd-update-flag-welsh-translation-form',
-  templateUrl: './update-flag-welsh-translation-form.component.html',
-  styleUrls: ['./update-flag-welsh-translation-form.component.scss']
+  templateUrl: './update-flag-welsh-translation-form.component.html'
 })
 export class UpdateFlagWelshTranslationFormComponent implements OnInit {
   @Input() public formGroup: FormGroup;
@@ -12,9 +11,6 @@ export class UpdateFlagWelshTranslationFormComponent implements OnInit {
   @Input() public readonly FLAG_STATUS_CHANGE_REASON_CONTROL_NAME = 'flagStatusReasonChange';
   public readonly FLAG_COMMENTS_WELSH_CONTROL_NAME = 'flagCommentWelsh';
   public readonly FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME = 'flagStatusReasonChangeWelsh';
-
-  constructor() {
-  }
 
   public ngOnInit(): void {
     if (this.formGroup) {

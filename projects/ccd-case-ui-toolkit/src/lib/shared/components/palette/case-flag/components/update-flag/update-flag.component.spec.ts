@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { EnumDisplayDescriptionPipe } from '../../../../../pipes/generic/enum-display-description/enum-display-description.pipe';
@@ -47,13 +47,12 @@ describe('UpdateFlagComponent', () => {
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [UpdateFlagComponent, EnumDisplayDescriptionPipe]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -150,7 +149,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.currentFormStep === UpdateFlagStatesEnum.WELSH_TRANSLATION_FORM).toBe(true);
   });
 
-  it('should set currentForm back to FLAG_FORM if it`s WELSH_TRANSLATION_FORM', () => {
+  it('should set currentForm back to FLAG_FORM if it\'s WELSH_TRANSLATION_FORM', () => {
     component.currentFormStep = UpdateFlagStatesEnum.WELSH_TRANSLATION_FORM as UpdateFlagStatesEnum;
     fixture.detectChanges();
     component.onBack();
