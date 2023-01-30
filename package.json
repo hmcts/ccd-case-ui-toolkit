@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.50-sscs-sit-release",
+  "version": "5.0.50-EUI-7538-datetime-picker-upgrade",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
@@ -44,11 +44,11 @@
     "tslint": "tslint",
     "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
     "storybook": "yarn docs:json && start-storybook -p 6006",
-    "build-storybook": "yarn docs:json && build-storybook"
+    "build:storybook": "yarn docs:json && build-storybook"
   },
   "dependencies": {
-    "@angular-material-components/datetime-picker": "6.0.0",
-    "@angular-material-components/moment-adapter": "6.0.0",
+    "@angular-material-components/datetime-picker": "5.1.1",
+    "@angular-material-components/moment-adapter": "5.0.0",
     "@angular/animations": "~11.2.14",
     "@angular/cdk": "^11.2.13",
     "@angular/common": "~11.2.14",
