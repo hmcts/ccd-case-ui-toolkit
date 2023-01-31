@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.55-configure-linked-cases
+**EUI-7676** Configure linked cases
+
 ### Version 5.0.54-rollback-case-link
 **EUI-7675** Rollback case link
 

@@ -123,6 +123,8 @@ xdescribe('CaseEditPageComponent', () => {
         caseEventTriggerName$: of('ADD'),
         clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
         addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
+        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
+        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
         setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
       };
 
@@ -146,6 +148,7 @@ xdescribe('CaseEditPageComponent', () => {
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditPageComponent);
       spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callThrough();
+      spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage([createCaseField('field1', 'field1Value')]);
@@ -408,6 +411,8 @@ xdescribe('CaseEditPageComponent', () => {
         caseEventTriggerName$: of('ADD'),
         clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
         addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
+        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
+        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
         setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
       };
 
@@ -433,6 +438,7 @@ xdescribe('CaseEditPageComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
       spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callThrough();
+      spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], true);
@@ -515,6 +521,8 @@ xdescribe('CaseEditPageComponent', () => {
         caseEventTriggerName$: of('ADD'),
         clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
         addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
+        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
+        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
         setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
       };
 
@@ -545,6 +553,7 @@ xdescribe('CaseEditPageComponent', () => {
       comp.wizard = new Wizard([wizardPage]);
       comp.editForm = FORM_GROUP;
       spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callThrough();
+      spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       fixture.detectChanges();
     });
 
@@ -628,6 +637,8 @@ xdescribe('CaseEditPageComponent', () => {
         caseEventTriggerName$: of('ADD'),
         clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
         addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
+        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
+        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
         setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
       };
 
@@ -667,6 +678,7 @@ xdescribe('CaseEditPageComponent', () => {
 
       de = fixture.debugElement;
       spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callThrough();
+      spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       comp.ngOnInit();
       fixture.detectChanges();
     });
@@ -842,6 +854,8 @@ xdescribe('CaseEditPageComponent', () => {
         caseEventTriggerName$: of('ADD'),
         clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
         addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
+        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
+        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
         setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
       };
 
@@ -873,6 +887,7 @@ xdescribe('CaseEditPageComponent', () => {
 
       de = fixture.debugElement;
       spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callThrough();
+      spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       fixture.detectChanges();
     });
 
@@ -970,6 +985,8 @@ xdescribe('CaseEditPageComponent', () => {
         caseEventTriggerName$: of('ADD'),
         clearFormValidationErrors: createSpyObj('caseEditDataService', ['clearFormValidationErrors']),
         addFormValidationError: createSpyObj('caseEditDataService', ['addFormValidationError']),
+        setCaseLinkError: createSpyObj('caseEditDataService', ['setCaseLinkError']),
+        clearCaseLinkError: createSpyObj('caseEditDataService', ['clearCaseLinkError']),
         setCaseEventTriggerName: createSpyObj('caseEditDataService', ['setCaseEventTriggerName'])
       };
 
@@ -995,6 +1012,7 @@ xdescribe('CaseEditPageComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
       spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callThrough();
+      spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], true);

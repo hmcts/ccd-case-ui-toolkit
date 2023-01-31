@@ -1,0 +1,36 @@
+<a *ngIf="!noLinkedCases && !isServerError" id="show-hide-link" class="govuk-link" href="javascript:void(0)"
+  (click)="onClick()">{{showHideLinkText}}</a>
+<table *ngIf="(getLinkedCasesResponse && showHideLinkText === 'Hide') || noLinkedCases"
+  aria-describedby="table to display cases linked from">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header case-table-column" width="20%">Case name and number</th>
+      <th scope="col" class="govuk-table__header case-table-column" width="20%">Case type </th>
+      <th scope="col" class="govuk-table__header case-table-column" width="20%">Service</th>
+      <th scope="col" class="govuk-table__header case-table-column" width="20%">State</th>
+      <th scope="col" class="govuk-table__header case-table-column" width="20%">Reasons for case link</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body" *ngIf="getLinkedCasesResponse && (!isServerError && !linkedCasesService.isServerReasonCodeError)">
+    <tr class="govuk-table__row" *ngFor="let case of getLinkedCasesResponse">
+      <td class="govuk-table__header case-table-column width-20">
+        <p class="govuk-body"><a target="_blank" class="govuk-link" href="cases/case-details/{{case.caseReference}}"
+            rel="noopener"><span>{{case.caseNameHmctsInternal}} <br>
+              {{case.caseReference | ccdCaseReference}}</span></a></p>
+      </td>
+      <td class="case-table-column"><span [title]="case.ccdCaseTypeDescription">{{case.ccdCaseType}}</span></td>
+      <td class="case-table-column"><span>{{case.ccdJurisdiction}}</span></td>
+      <td class="case-table-column"><span [title]="case.stateDescription">{{case.state}}</span></td>
+      <td class="case-table-column" *ngFor="let details of case.linkDetails">
+        <span *ngFor="let reason of details.reasons; let i = index; let isLast = last">
+          {{reason.reasonCode | ccdLinkCasesReasonValue}} <br>
+        </span>
+      </td>
+    </tr>
+    <tr class="govuk-table__row" *ngIf="noLinkedCases">
+      <td class="govuk-table__cell" colspan="5">
+        None
+      </td>
+    </tr>
+    </tbody>  
+</table>

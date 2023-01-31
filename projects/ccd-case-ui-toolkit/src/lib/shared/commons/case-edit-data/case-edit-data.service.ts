@@ -1,42 +1,53 @@
 import { BehaviorSubject } from 'rxjs';
+import { LinkedCasesError } from '../../components';
 import { CaseEditValidationError } from './case-edit-validation.model';
 
 export class CaseEditDataService {
-    private title$ = new BehaviorSubject<string>(null);
-    private formValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
-    private eventTriggerName$ = new BehaviorSubject<string>(null);
-    private triggerSubmitEvent$ = new BehaviorSubject<boolean>(null);
+  private title$ = new BehaviorSubject<string>(null);
+  private formValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
+  private linkError$ = new BehaviorSubject<LinkedCasesError>(null);
+  private eventTriggerName$ = new BehaviorSubject<string>(null);
+  private triggerSubmitEvent$ = new BehaviorSubject<boolean>(null);
 
-    public caseTitle$ = this.title$.asObservable();
-    public caseFormValidationErrors$ = this.formValidationErrors$.asObservable();
-    public caseEventTriggerName$ = this.eventTriggerName$.asObservable();
-    public caseTriggerSubmitEvent$ = this.triggerSubmitEvent$.asObservable();
+  public caseTitle$ = this.title$.asObservable();
+  public caseFormValidationErrors$ = this.formValidationErrors$.asObservable();
+  public caseLinkError$ = this.linkError$.asObservable();
+  public caseEventTriggerName$ = this.eventTriggerName$.asObservable();
+  public caseTriggerSubmitEvent$ = this.triggerSubmitEvent$.asObservable();
 
-    constructor() {}
+  constructor() {}
 
-    public setCaseTitle(caseTitle: string): void {
-        this.title$.next(caseTitle);
-    }
+  public setCaseTitle(caseTitle: string): void {
+      this.title$.next(caseTitle);
+  }
 
-    public setCaseEventTriggerName(triggerName: string): void {
-        this.eventTriggerName$.next(triggerName);
-    }
+  public setCaseEventTriggerName(triggerName: string): void {
+      this.eventTriggerName$.next(triggerName);
+  }
 
-    public setFormValidationErrors(validationErrors: any[]): void {
-        this.formValidationErrors$.next(validationErrors);
-    }
+  public setCaseLinkError(error: LinkedCasesError): void {
+      this.linkError$.next(error);
+  }
 
-    public clearFormValidationErrors(): void {
-        this.formValidationErrors$.next([]);
-    }
+  public setFormValidationErrors(validationErrors: any[]): void {
+      this.formValidationErrors$.next(validationErrors);
+  }
 
-    public addFormValidationError(validationError: CaseEditValidationError): void {
-        this.formValidationErrors$.next(
-            this.formValidationErrors$.getValue().concat([validationError])
-        );
-    }
+  public clearFormValidationErrors(): void {
+      this.formValidationErrors$.next([]);
+  }
 
-    public setTriggerSubmitEvent(state: boolean): void {
-        this.triggerSubmitEvent$.next(state);
-    }
+  public clearCaseLinkError(): void {
+      this.linkError$.next(null);
+  }
+
+  public addFormValidationError(validationError: CaseEditValidationError): void {
+      this.formValidationErrors$.next(
+          this.formValidationErrors$.getValue().concat([validationError])
+      );
+  }
+
+  public setTriggerSubmitEvent(state: boolean): void {
+      this.triggerSubmitEvent$.next(state);
+  }
 }

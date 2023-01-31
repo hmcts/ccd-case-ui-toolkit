@@ -61,6 +61,9 @@ import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioLi
 import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComponent, EventLogTableComponent } from './history';
 import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from './judicial-user';
 import { LabelFieldComponent } from './label';
+import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, UnLinkCasesComponent, WriteLinkedCasesComponent } from './linked-cases';
+import { ReadLinkedCasesComponent } from './linked-cases/components/read-linked-cases.component';
+import { LinkedCasesService } from './linked-cases/services';
 import { MarkdownComponent } from './markdown';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent, WriteMoneyGbpFieldComponent } from './money-gbp';
 import { ReadMultiSelectListFieldComponent, WriteMultiSelectListFieldComponent } from './multi-select-list';
@@ -123,6 +126,7 @@ const PALETTE_COMPONENTS = [
     ReadComplexFieldTableComponent,
     ReadComplexFieldCollectionTableComponent,
     ReadCaseFlagFieldComponent,
+    ReadLinkedCasesComponent,
 
     // Write
     WriteJudicialUserFieldComponent,
@@ -161,7 +165,15 @@ const PALETTE_COMPONENTS = [
     CaseFileViewFolderSortComponent,
     CaseFileViewOverlayMenuComponent,
     CaseFileViewFolderDocumentActionsComponent,
-    CaseFileViewFolderSelectorComponent
+    CaseFileViewFolderSelectorComponent,
+    LinkedCasesToTableComponent,
+    LinkedCasesFromTableComponent,
+    BeforeYouStartComponent,
+    LinkCasesComponent,
+    CheckYourAnswersComponent,
+    WriteLinkedCasesComponent,
+    UnLinkCasesComponent,
+    NoLinkedCasesComponent
 ];
 
 @NgModule({
@@ -232,6 +244,7 @@ const PALETTE_COMPONENTS = [
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
+    LinkedCasesService,
     CommonDataService,
     JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
