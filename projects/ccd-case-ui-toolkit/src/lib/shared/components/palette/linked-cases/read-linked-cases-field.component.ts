@@ -1,14 +1,14 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AbstractAppConfig } from '../../../../../app.config';
-import { CaseField } from '../../../../domain';
-import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
-import { LinkedCasesService } from '../services';
+import { AbstractAppConfig } from '../../../../app.config';
+import { CaseField } from '../../../domain';
+import { CommonDataService } from '../../../services/common-data-service/common-data-service';
+import { LinkedCasesService } from './services';
 
 @Component({
-  selector: 'ccd-read-linked-cases',
-  templateUrl: './read-linked-cases.component.html',
-  styleUrls: ['./read-linked-cases.component.scss']
+  selector: 'ccd-read-linked-cases-field',
+  templateUrl: './read-linked-cases-field.component.html',
+  styleUrls: ['./read-linked-cases-field.component.scss']
 })
 export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
 

@@ -5,5 +5,3 @@ export * from './linked-cases-table/linked-cases-from-table.component';
 export * from './linked-cases-table/linked-cases-to-table.component';
 export * from './no-linked-cases/no-linked-cases.component';
 export * from './unlink-cases/unlink-cases.component';
-export * from './write-linked-cases.component';
-export * from './read-linked-cases.component';

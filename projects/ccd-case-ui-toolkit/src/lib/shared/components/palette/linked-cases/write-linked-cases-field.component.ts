@@ -1,20 +1,20 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { AbstractAppConfig } from '../../../../../app.config';
-import { CaseEditDataService } from '../../../../commons/case-edit-data';
-import { CaseField, ErrorMessage } from '../../../../domain';
-import { CaseView } from '../../../../domain/case-view';
-import { CommonDataService } from '../../../../services/common-data-service/common-data-service';
-import { CaseEditComponent } from '../../../case-editor/case-edit/case-edit.component';
-import { CasesService } from '../../../case-editor/services/cases.service';
-import { AbstractFieldWriteComponent } from '../../base-field';
-import { CaseLink, LinkedCasesState } from '../domain';
-import { LinkedCasesErrorMessages, LinkedCasesEventTriggers, LinkedCasesPages } from '../enums';
-import { LinkedCasesService } from '../services';
+import { AbstractAppConfig } from '../../../../app.config';
+import { CaseEditDataService } from '../../../commons/case-edit-data';
+import { CaseField, ErrorMessage } from '../../../domain';
+import { CaseView } from '../../../domain/case-view';
+import { CommonDataService } from '../../../services/common-data-service/common-data-service';
+import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.component';
+import { CasesService } from '../../case-editor/services/cases.service';
+import { AbstractFieldWriteComponent } from '../base-field';
+import { CaseLink, LinkedCasesState } from './domain';
+import { LinkedCasesErrorMessages, LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
+import { LinkedCasesService } from './services';
 
 @Component({
-  selector: 'ccd-write-linked-cases',
-  templateUrl: './write-linked-cases.component.html'
+  selector: 'ccd-write-linked-cases-field',
+  templateUrl: './write-linked-cases-field.component.html'
 })
 export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
 

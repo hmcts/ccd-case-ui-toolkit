@@ -1,15 +1,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { of, throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
+import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
+import { CaseLink } from './domain';
+import { ReadLinkedCasesComponent } from './read-linked-cases-field.component';
+import { LinkedCasesService } from './services';
 
 import createSpyObj = jasmine.createSpyObj;
-import { of, throwError } from 'rxjs';
-import { AbstractAppConfig } from '../../../../../app.config';
-import { CommonDataService, LovRefDataByServiceModel } from '../../../../services/common-data-service/common-data-service';
-import { CaseLink } from '../domain';
-import { LinkedCasesService } from '../services';
-import { ReadLinkedCasesComponent } from './read-linked-cases.component';
 
 describe('ReadLinkedCases', () => {
   let component: ReadLinkedCasesComponent;

@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { LinkedCasesError } from '../../components';
+import { LinkedCasesError } from '../../components/palette/linked-cases/domain/linked-cases-state.model';
 import { CaseEditValidationError } from './case-edit-validation.model';
 
 export class CaseEditDataService {

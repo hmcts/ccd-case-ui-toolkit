@@ -16,7 +16,7 @@ import { FormValueService } from '../../../services/form/form-value.service';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { initDialog } from '../../helpers';
-import { LinkedCasesError } from '../../palette';
+import { LinkedCasesError } from '../../palette/linked-cases/domain/linked-cases-state.model';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
