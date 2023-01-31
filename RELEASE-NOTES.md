@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 5.0.50-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs
+
 ### Version 5.0.46-case-flags-not-approved-status
 **EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
 

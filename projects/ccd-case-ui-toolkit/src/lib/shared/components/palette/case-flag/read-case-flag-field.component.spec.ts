@@ -14,8 +14,15 @@ describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;
   let fixture: ComponentFixture<ReadCaseFlagFieldComponent>;
   const flaglauncherId = 'FlagLauncher';
-  const flagLauncherCaseField: CaseField = {
+  const flagLauncher1CaseField: CaseField = {
     id: 'FlagLauncher1',
+    field_type: {
+      id: flaglauncherId,
+      type: flaglauncherId
+    }
+  } as CaseField;
+  const flagLauncher2CaseField: CaseField = {
+    id: 'FlagLauncher2',
     field_type: {
       id: flaglauncherId,
       type: flaglauncherId
@@ -106,6 +113,22 @@ describe('ReadCaseFlagFieldComponent', () => {
       details: witnessComplexFieldFlagDetailsArray
     }
   };
+  const caseFlag3FieldId = 'CaseFlag3';
+  const caseFlag3PartyName = 'Jack Daniels';
+  const caseFlag3RoleOnCase = 'Applicant';
+  const caseFlag3DetailsValue1 = {
+    name: 'Wheelchair access',
+    dateTimeModified: '2022-02-13T00:00:00.000',
+    dateTimeCreated: '2022-02-11T00:00:00.000',
+    path: [
+      { id: null, value: 'Party' },
+      { id: null, value: 'Reasonable adjustment' },
+      { id: null, value: 'Mobility support' }
+    ],
+    hearingRelevant: 'No',
+    flagCode: 'WCA',
+    status: CaseFlagStatus.ACTIVE
+  };
   const mockRoute = {
     snapshot: {
       data: {
@@ -122,7 +145,7 @@ describe('ReadCaseFlagFieldComponent', () => {
             {
               id: 'Case flags',
               fields: [
-                flagLauncherCaseField,
+                flagLauncher1CaseField,
                 {
                   id: caseFlag1FieldId,
                   field_type: {
@@ -212,6 +235,29 @@ describe('ReadCaseFlagFieldComponent', () => {
                   value: witnessComplexFieldValue
                 }
               ]
+            },
+            {
+              id: 'Support',
+              fields: [
+                flagLauncher2CaseField,
+                {
+                  id: caseFlag3FieldId,
+                  field_type: {
+                    id: 'Flags',
+                    type: 'Complex'
+                  },
+                  value: {
+                    partyName: caseFlag3PartyName,
+                    roleOnCase: caseFlag3RoleOnCase,
+                    details: [
+                      {
+                        id: '6e8784ca-d679-4f36-a986-edc6ad255dfa',
+                        value: caseFlag3DetailsValue1
+                      }
+                    ]
+                  }
+                }
+              ]
             }
           ]
         }
@@ -291,9 +337,9 @@ describe('ReadCaseFlagFieldComponent', () => {
           }
         }
       },
-      [flagLauncherCaseField.id]: {
+      [flagLauncher1CaseField.id]: {
         controls: {},
-        caseField: flagLauncherCaseField,
+        caseField: flagLauncher1CaseField,
         component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService())
       }
     },
@@ -328,6 +374,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ReadCaseFlagFieldComponent);
     component = fixture.componentInstance;
+    component.caseField = flagLauncher1CaseField;
     fixture.detectChanges();
   });
 
@@ -340,8 +387,6 @@ describe('ReadCaseFlagFieldComponent', () => {
   });
 
   it('should extract all flags-related data from the CaseView object in the snapshot data', () => {
-    component.caseField = flagLauncherCaseField;
-    component.ngOnInit();
     expect(component.flagsData).toBeTruthy();
     expect(component.flagsData.length).toBe(4);
     expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
@@ -381,6 +426,25 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.caseLevelCaseFlagData).toEqual(component.flagsData[2]);
   });
 
+  it('should extract the correct flags-related data for a given FlagLauncher field instance', () => {
+    expect(component.flagsData).toBeTruthy();
+    expect(component.flagsData.length).toBe(4);
+    expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
+    expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
+    expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag1RoleOnCase);
+    expect(component.flagsData[0].flags.details.length).toBe(2);
+    expect(component.flagsData[0].flags.details[0].name).toEqual(caseFlag1DetailsValue1.name);
+    component.caseField = flagLauncher2CaseField;
+    component.ngOnInit();
+    expect(component.flagsData).toBeTruthy();
+    expect(component.flagsData.length).toBe(1);
+    expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag3FieldId);
+    expect(component.flagsData[0].flags.partyName).toEqual(caseFlag3PartyName);
+    expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag3RoleOnCase);
+    expect(component.flagsData[0].flags.details.length).toBe(1);
+    expect(component.flagsData[0].flags.details[0].name).toEqual(caseFlag3DetailsValue1.name);
+  });
+
   it('should not map a Flags case field to a Flags object when the case field value is falsy', () => {
     // Clear caseField.value for both party-level case flags
     TestBed.inject(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value = null;
@@ -393,10 +457,10 @@ describe('ReadCaseFlagFieldComponent', () => {
     TestBed.inject(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value.details = null;
     TestBed.inject(ActivatedRoute).snapshot.data.case.tabs[2].fields[2].value.details = undefined;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
-    formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
@@ -409,10 +473,10 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   it('should select the correct (i.e. new) flag to display on the summary page, as part of the Create Case Flag journey', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
-    formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
@@ -424,10 +488,10 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   it('should select the correct (i.e. new) flag to display on the summary page, when the flag is contained in a Complex field', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
-    formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocationInComplexField;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocationInComplexField;
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
@@ -439,11 +503,11 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   it('should show nothing on the summary page if the flag\'s CaseField object has no value', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
     selectedFlagsLocation.caseField.value = null;
-    formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeNull();
@@ -453,12 +517,12 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Case Flags journey', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: updateMode
     };
     component.formGroup = formGroup;
     // Simulate presence of selected flag
-    formGroup.controls[flagLauncherCaseField.id]['component'].selectedFlag = {
+    formGroup.controls[flagLauncher1CaseField.id]['component'].selectedFlag = {
       flagDetailDisplay: {
         partyName: caseFlag2PartyName,
         flagDetail: caseFlag2DetailsValue1,
