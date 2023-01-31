@@ -119,6 +119,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       });
     }
 
+    this.checkRouteAndSetCaseViewTab ();
+
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
   }
@@ -151,6 +153,20 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     if (subscription) {
       subscription.unsubscribe();
     }
+  }
+
+  private checkRouteAndSetCaseViewTab(): void {
+    this.router.events.subscribe((val) => {
+      const url = val && (val as any).url;
+      if (url) {
+        const tabUrl = url ? url.split('#') : null ;
+        const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
+        const matTab = this.tabGroup._tabs.find( (x) => x.textLabel.toLowerCase() === tab.toLowerCase());
+        if (matTab && matTab.position) {
+          this.tabGroup.selectedIndex = matTab.position;
+        }
+      }
+    })
   }
 
   public postViewActivity(): Observable<Activity[]> {
