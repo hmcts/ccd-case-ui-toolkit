@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 5.0.55-rollback-case-link
+### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
 ### Version 5.0.50-sscs-sit-release
