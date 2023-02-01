@@ -1,4 +1,10 @@
 ## RELEASE NOTES
+### Version 6.10.6-r3.5-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs (re-release following update to Release 3.5)
+
+### Version 5.0.50-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs
+
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
 
