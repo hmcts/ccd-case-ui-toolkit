@@ -54,6 +54,16 @@ describe('CaseAccessUtils', () => {
             const response = camUtils.getMappedRoleCategory(roles, roleCategories);
             expect(response).toEqual('CITIZEN');
         });
+
+        it('should return CTSC as response', () => {
+            const roles = [
+                'ctsc',
+                'role22'
+            ];
+            const roleCategories = [];
+            const response = camUtils.getMappedRoleCategory(roles, roleCategories);
+            expect(response).toEqual('CTSC');
+        });
     });
 
     describe('roleOrCategoryExists', () => {
@@ -99,6 +109,11 @@ describe('CaseAccessUtils', () => {
         it('should return admin role name', () => {
             const response = camUtils.getAMRoleName('dummy', 'ADMIN');
             expect(response).toEqual('dummy-access-admin');
+        });
+
+        it('should return ctsc role name', () => {
+            const response = camUtils.getAMRoleName('dummy', 'CTSC');
+            expect(response).toEqual('dummy-access-ctsc');
         });
     });
 
