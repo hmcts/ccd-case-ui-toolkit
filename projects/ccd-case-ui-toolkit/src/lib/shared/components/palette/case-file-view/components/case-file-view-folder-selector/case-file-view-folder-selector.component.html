@@ -1,3 +1,4 @@
+<div class="close" (click)="cancel()"></div>
 <h2 class="govuk-heading-l">Move File</h2>
 <p>Where do you want to move "{{ data.document.document_filename }}" file?</p>
 <div class="folders govuk-radios govuk-radios--conditional">
@@ -9,7 +10,6 @@
     <button class="button button-primary" type="button" (click)="save()">Save</button>
     <a (click)="cancel()" class="cancel">Cancel</a>
 </div>
-<div class="close" (click)="cancel()"></div>
 
 <ng-template #folder let-cat="cat" let-level="level">
     <div class="folder govuk-radios__item">
