@@ -1,9 +1,18 @@
 ## RELEASE NOTES
-### Version 5.0.46-case-flags-not-approved-status
-**EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
+### Version 5.0.50-sscs-sit-release
+**EUI-7564** SSCS SIT release
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
+
+### Version 5.0.46-fix-case-link
+**EUI-7521** Fix case link hyperlink on applications tab
+
+### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
+**EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary
+
+### Version 5.0.46-case-file-view-styling-fixes
+**EUI-7481** Case file view styling issues
 
 ### Version 5.0.45-fix-case-acccess-table
 **EUI-7454** Fixed table alignment on case view
@@ -201,13 +210,14 @@ caching previous data when the user elects to change the case flag being created
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
 
-
 ### Version 4.20.24-linked-cases-private-law-integration
 Linked cases private law integration
 
 ### Version 4.20.20-linked-cases-merge-from-release
 Linked cases merge from Release
 
+### Version 4.22.0-judicial-user-typeahead
+**EUI-6746** CR-52 JOH typeahead
 
 ### Version 4.18.16-EUI-6309-mandatory-field-issue
 **EUI-6309** mandatory-field-issue
