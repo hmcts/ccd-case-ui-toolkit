@@ -1,8 +1,8 @@
 ## RELEASE NOTES
-### Version 5.0.55-configure-linked-cases
+### Version 6.10.8-configure-linked-cases
 **EUI-7676** Configure linked cases
 
-### Version 5.0.54-rollback-case-link
+### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
 ### Version 5.0.50-sscs-sit-release
