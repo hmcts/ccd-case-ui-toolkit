@@ -31,5 +31,4 @@ export type FieldTypeEnum =
   | 'FlagDetail'
   | 'FlagLauncher'
   | 'CaseFlag' // Temporary field type for faking Flags field type; to be removed
-  | 'CaseLink'
   | 'JudicialUserField';
