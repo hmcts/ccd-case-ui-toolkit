@@ -62,7 +62,6 @@ import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComp
 import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from './judicial-user';
 import { LabelFieldComponent } from './label';
 import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, UnLinkCasesComponent, WriteLinkedCasesComponent } from './linked-cases';
-import { ReadLinkedCasesComponent } from './linked-cases/components/read-linked-cases.component';
 import { LinkedCasesService } from './linked-cases/services';
 import { MarkdownComponent } from './markdown';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent, WriteMoneyGbpFieldComponent } from './money-gbp';
