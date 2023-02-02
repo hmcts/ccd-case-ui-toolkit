@@ -126,7 +126,6 @@ const PALETTE_COMPONENTS = [
     ReadComplexFieldTableComponent,
     ReadComplexFieldCollectionTableComponent,
     ReadCaseFlagFieldComponent,
-    ReadLinkedCasesComponent,
 
     // Write
     WriteJudicialUserFieldComponent,
@@ -165,15 +164,7 @@ const PALETTE_COMPONENTS = [
     CaseFileViewFolderSortComponent,
     CaseFileViewOverlayMenuComponent,
     CaseFileViewFolderDocumentActionsComponent,
-    CaseFileViewFolderSelectorComponent,
-    LinkedCasesToTableComponent,
-    LinkedCasesFromTableComponent,
-    BeforeYouStartComponent,
-    LinkCasesComponent,
-    CheckYourAnswersComponent,
-    WriteLinkedCasesComponent,
-    UnLinkCasesComponent,
-    NoLinkedCasesComponent
+    CaseFileViewFolderSelectorComponent
 ];
 
 @NgModule({
@@ -244,7 +235,6 @@ const PALETTE_COMPONENTS = [
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
-    LinkedCasesService,
     CommonDataService,
     JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
