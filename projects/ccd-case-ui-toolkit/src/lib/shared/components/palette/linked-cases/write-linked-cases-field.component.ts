@@ -16,7 +16,7 @@ import { LinkedCasesService } from './services';
   selector: 'ccd-write-linked-cases-field',
   templateUrl: './write-linked-cases-field.component.html'
 })
-export class WriteLinkedCasesComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
+export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
 
   @Input()
   public caseFields: CaseField[];

@@ -6,14 +6,14 @@ import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
 import { CaseLink } from './domain';
-import { ReadLinkedCasesComponent } from './read-linked-cases-field.component';
+import { ReadLinkedCasesFieldComponent } from './read-linked-cases-field.component';
 import { LinkedCasesService } from './services';
 
 import createSpyObj = jasmine.createSpyObj;
 
-describe('ReadLinkedCases', () => {
-  let component: ReadLinkedCasesComponent;
-  let fixture: ComponentFixture<ReadLinkedCasesComponent>;
+describe('ReadLinkedCasesFieldComponent', () => {
+  let component: ReadLinkedCasesFieldComponent;
+  let fixture: ComponentFixture<ReadLinkedCasesFieldComponent>;
   let commonDataService: any;
   let appConfig: any;
   let linkedCasesService: any;
@@ -388,7 +388,7 @@ describe('ReadLinkedCases', () => {
         { provide: AbstractAppConfig, useValue: appConfig },
         { provide: LinkedCasesService, useValue: linkedCasesService },
       ],
-      declarations: [ReadLinkedCasesComponent],
+      declarations: [ReadLinkedCasesFieldComponent],
     })
       .compileComponents();
   }));
@@ -441,7 +441,7 @@ describe('ReadLinkedCases', () => {
   };
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReadLinkedCasesComponent);
+    fixture = TestBed.createComponent(ReadLinkedCasesFieldComponent);
     component = fixture.componentInstance;
     commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
     component.caseField = caseFieldValue as any;

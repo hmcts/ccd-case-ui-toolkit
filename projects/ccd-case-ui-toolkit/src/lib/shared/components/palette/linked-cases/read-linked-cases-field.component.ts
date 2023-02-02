@@ -10,7 +10,7 @@ import { LinkedCasesService } from './services';
   templateUrl: './read-linked-cases-field.component.html',
   styleUrls: ['./read-linked-cases-field.component.scss']
 })
-export class ReadLinkedCasesComponent implements OnInit, AfterViewInit {
+export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
 
   @Input()
   public caseField: CaseField;

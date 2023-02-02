@@ -23,16 +23,16 @@ import { PageValidationService } from '../../case-editor/services/page-validatio
 import { CaseLink, LinkedCasesState } from './domain';
 import { LinkedCasesPages } from './enums';
 import { LinkedCasesService } from './services';
-import { WriteLinkedCasesComponent } from './write-linked-cases-field.component';
+import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.component';
 import createSpyObj = jasmine.createSpyObj;
 
 /** Excluding these tests due to current business urgency for Angular 11 and shortage of time
  *  JIRA: https://tools.hmcts.net/jira/browse/EUI-7464
  *  has been created to fix these tests.
  */
-xdescribe('WriteLinkedCasesComponent', () => {
-  let component: WriteLinkedCasesComponent;
-  let fixture: ComponentFixture<WriteLinkedCasesComponent>;
+describe('WriteLinkedCasesFieldComponent', () => {
+  let component: WriteLinkedCasesFieldComponent;
+  let fixture: ComponentFixture<WriteLinkedCasesFieldComponent>;
   let caseEditPageComponent: CaseEditPageComponent;
   let caseEditComponentStub: any;
   let casesService: any;
@@ -247,7 +247,7 @@ xdescribe('WriteLinkedCasesComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        WriteLinkedCasesComponent
+        WriteLinkedCasesFieldComponent
       ],
       providers: [
         { provide: Router, useValue: router },
@@ -264,7 +264,7 @@ xdescribe('WriteLinkedCasesComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WriteLinkedCasesComponent);
+    fixture = TestBed.createComponent(WriteLinkedCasesFieldComponent);
     casesService.getCaseViewV2.and.returnValue(of(caseInfo));
     component = fixture.componentInstance;
     spyOn(caseEditPageComponent, 'getCaseId').and.returnValue(of('1111222233334444'));
