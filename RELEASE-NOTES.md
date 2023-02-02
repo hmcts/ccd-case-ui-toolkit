@@ -4,6 +4,9 @@
 
 **EUI-3729** Support combinations of AND and OR boolean logic
 
+### Version 6.10.7-rollback-case-link
+**EUI-7675** Rollback case link
+
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
 
