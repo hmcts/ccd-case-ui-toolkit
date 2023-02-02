@@ -4345,7 +4345,7 @@ describe('CaseEditSubmitComponent', () => {
     beforeEach(waitForAsync(() => {
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj('cancelled', ['emit']);
+      cancelled = createSpyObj(cancelled, ['emit'])
       caseEditComponent = {
         form: new FormGroup({
           data: new FormGroup({

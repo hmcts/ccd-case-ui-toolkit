@@ -1,4 +1,5 @@
 ## RELEASE NOTES
+
 ### Version 5.0.50-fee-pay-props
 **EUI-7489** Added additional props to nested ccpay instance
 

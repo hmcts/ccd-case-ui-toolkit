@@ -6,18 +6,17 @@ import { catchError, finalize, map, tap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
 import {
-  CaseEventData,
-  CaseEventTrigger,
-  CasePrintDocument,
-  CaseView,
-  ChallengedAccessRequest, Draft,
-  RoleAssignmentResponse,
-  RoleCategory,
-  RoleRequestPayload, SpecificAccessRequest
+	CaseEventData,
+	CaseEventTrigger,
+	CasePrintDocument,
+	CaseView,
+	ChallengedAccessRequest, Draft,
+	RoleAssignmentResponse,
+	RoleCategory,
+	RoleRequestPayload, SpecificAccessRequest
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
-import { LinkCaseReason, LinkedCasesResponse } from '../../palette/case-link/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -119,41 +118,6 @@ export class CasesService {
       );
   }
 
-  /**
-   * TODO: Gets case link responses
-   * @returns case link responses
-   */
-   public getCaseLinkResponses(): Observable<LinkCaseReason[]> {
-    const headers = new HttpHeaders()
-      .set('experimental', 'true')
-      .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
-      .set('Content-Type', 'application/json');
-    const loadingToken = this.loadingService.register();
-    return this.http
-      .get('assets/getCaseReasons.json', { headers, observe: 'body' })
-      .pipe(
-        map((reasons) => {
-          return reasons.sort((reasonA, reasonB) => reasonA.value_en > reasonB.value_en ? 1 : -1);
-        }),
-        catchError(error => {
-          this.errorService.setError(error);
-          return throwError(error);
-        }),
-        finalize(() => this.loadingService.unregister(loadingToken))
-      );
-  }
-
-  public getLinkedCases(caseId: string): Observable<LinkedCasesResponse> {
-    const url = `${this.appConfig.getCaseDataStoreApiUrl()}/${caseId}`
-    return this.http
-    .get(url)
-    .pipe(
-      catchError(error => {
-        return throwError(error);
-      })
-    );
-  }
-
   getEventTrigger(caseTypeId: string,
     eventTriggerId: string,
     caseId?: string,
@@ -201,7 +165,6 @@ export class CasesService {
     return this.http
       .post(url, eventData, { headers, observe: 'body' })
       .pipe(
-        map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -246,7 +209,6 @@ export class CasesService {
     return this.http
       .post(url, eventData, { headers, observe: 'body' })
       .pipe(
-        map(body => this.processResponseBody(body, eventData)),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -298,11 +260,6 @@ export class CasesService {
     return url;
   }
 
-  private processResponseBody(body: any, eventData: CaseEventData): any {
-    this.processTasksOnSuccess(body, eventData.event);
-    return body;
-  }
-
   private initialiseEventTrigger(eventTrigger: CaseEventTrigger) {
     if (!eventTrigger.wizard_pages) {
       eventTrigger.wizard_pages = [];
@@ -313,23 +270,6 @@ export class CasesService {
       wizardPage.case_fields = this.orderService.sort(
         this.wizardPageFieldToCaseFieldMapper.mapAll(wizardPage.wizard_page_fields, eventTrigger.case_fields));
     });
-  }
-
-  private processTasksOnSuccess(caseData: any, eventData: any): void {
-    // The following code is work allocation 1 related
-    if (this.appConfig.getWorkAllocationApiUrl().toLowerCase() === 'workallocation') {
-      // This is used a feature toggle to
-      // control the work allocation
-      if (!this.isPuiCaseManager()) {
-        this.workAllocationService.completeAppropriateTask(caseData.id, eventData.id, caseData.jurisdiction, caseData.case_type)
-          .subscribe(() => {
-            // Success. Do nothing.
-          }, error => {
-            // Show an appropriate warning about something that went wrong.
-            console.warn('Could not process tasks for this case event', error);
-          });
-      }
-    }
   }
 
   /*
@@ -358,7 +298,7 @@ export class CasesService {
       userInfo = JSON.parse(userInfoStr);
     }
 
-    const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
     const roleName = camUtils.getAMRoleName('challenged', roleCategory);
     const beginTime = new Date();
     const endTime = new Date(new Date().setUTCHours(23, 59, 59, 999));
@@ -390,7 +330,7 @@ export class CasesService {
       userInfo = JSON.parse(userInfoStr);
     }
 
-    const roleCategory: RoleCategory = camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
+    const roleCategory: RoleCategory = userInfo.roleCategory || camUtils.getMappedRoleCategory(userInfo.roles, userInfo.roleCategories);
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,

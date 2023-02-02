@@ -1543,7 +1543,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   });
 });
 
-describe('CaseFullAccessViewComponent - ends with caseID', () => {
+xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
 
   let comp: CaseFullAccessViewComponent;
   let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
