@@ -40,7 +40,9 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
         this.flagsData = (this.route.snapshot.data.case.tabs as CaseTab[])
         .filter(tab => tab.fields && tab.fields
-          .some(caseField => caseField.field_type.type === 'FlagLauncher'))
+          // There could be more than one FlagLauncher field instance so an additional check of caseField ID is
+          // required to ensure the correct instance is obtained
+          .some(caseField => caseField.field_type.type === 'FlagLauncher' && caseField.id === this.caseField.id))
         [0].fields.reduce((flags, caseField) => {
           return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
         }, []);

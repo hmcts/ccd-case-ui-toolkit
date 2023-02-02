@@ -1,9 +1,15 @@
 ## RELEASE NOTES
+### Version 6.10.6-r3.5-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs (re-release following update to Release 3.5)
+
+### Version 5.0.50-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs
+
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
 
-### Version 5.0.46-fix-case-link
-**EUI-7521** Fix case link hyperlink on applications tab
+### Version 5.0.46-case-flags-not-approved-status
+**EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
