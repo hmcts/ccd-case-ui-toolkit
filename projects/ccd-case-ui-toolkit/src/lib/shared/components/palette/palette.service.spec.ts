@@ -237,6 +237,7 @@ describe('PaletteService', () => {
 
     it('should get ReadDynamicMultiSelectList component class for input', () => {
       assertComponent('DynamicMultiSelectList', false, ReadDynamicMultiSelectListFieldComponent, 'AnID');
+    });
 
     it('should get LabelFieldComponent component class for Label regardless of read/write', () => {
       assertComponent('Label', true, LabelFieldComponent, 'AnID');
