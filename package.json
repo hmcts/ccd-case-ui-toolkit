@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.0.2-migration-dynamic-list",
+  "version": "6.0.2-migration-dynamic-list-rc1",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
