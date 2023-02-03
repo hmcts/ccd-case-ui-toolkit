@@ -43,7 +43,6 @@ import { UpdateFlagWelshTranslationFormComponent } from './case-flag/components/
 import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, UnLinkCasesComponent, WriteLinkedCasesComponent } from './case-link';
 import { ReadLinkedCasesComponent } from './case-link/components/read-linked-cases.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
-import { LinkedCasesService } from './case-link/services';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
@@ -127,7 +126,6 @@ const PALETTE_COMPONENTS = [
     ReadComplexFieldTableComponent,
     ReadComplexFieldCollectionTableComponent,
     ReadCaseFlagFieldComponent,
-    ReadLinkedCasesComponent,
 
     // Write
     WriteJudicialUserFieldComponent,
@@ -246,7 +244,6 @@ const PALETTE_COMPONENTS = [
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
-    LinkedCasesService,
     CommonDataService,
     JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}

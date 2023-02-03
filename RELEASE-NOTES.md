@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-rollback-case-link
+**EUI-7675** Rollback case link
+
 ### Version 6.10.6-r3.5-case-flags-multiple-case-flags-tabs-support
 **EUI-7688** Support multiple Case Flags tabs (re-release following update to Release 3.5)
 
