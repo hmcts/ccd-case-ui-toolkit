@@ -56,7 +56,7 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 export class PaletteService {
   private readonly componentLauncherRegistry = {
     CaseFileView: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent],
-		LinkedCases: [ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent]
+    LinkedCases: [WriteLinkedCasesFieldComponent, ReadLinkedCasesFieldComponent]
   };
 
   public getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
@@ -130,9 +130,10 @@ export class PaletteService {
     // Extract the value passed for #ARGUMENT(...) in the CaseField display_context_parameter and return the matching
     // component from the componentLauncherRegistry
 
-		console.log('CASE FIELD', caseField);
-		console.log('CASE FIELD DISPLAY CONTEXT PARAMETER', caseField.display_context_parameter);
-
+    console.log('CASE FIELD', caseField);
+    console.log('CASE FIELD DISPLAY CONTEXT PARAMETER', caseField.display_context_parameter);
+    console.log('ZERO', caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[0]);
+    console.log('ONE', caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[1]);
 
     const argumentValue = caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[1];
     if (argumentValue && this.componentLauncherRegistry.hasOwnProperty(argumentValue)) {

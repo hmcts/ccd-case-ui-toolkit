@@ -469,6 +469,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 		this.caseEditDataService.setCaseDetails(this.caseEdit.caseDetails);
     this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
     this.caseEditDataService.setCaseTitle(this.getCaseTitle());
+		this.caseEditDataService.setCaseEditForm(this.editForm);
     this.caseEditDataService.caseFormValidationErrors$.subscribe({
       next: (validationErrors) => this.validationErrors = validationErrors
     });

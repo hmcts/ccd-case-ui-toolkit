@@ -26,7 +26,7 @@ export class CaseEditDataService {
   public setCaseDetails(caseDetails: CaseView): void {
     this.details$.next(caseDetails);
   }
-  
+
   public setCaseTitle(caseTitle: string): void {
     this.title$.next(caseTitle);
   }

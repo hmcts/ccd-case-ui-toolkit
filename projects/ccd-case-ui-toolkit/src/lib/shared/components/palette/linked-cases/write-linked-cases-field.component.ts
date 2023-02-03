@@ -56,11 +56,13 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     this.linkedCasesService.editMode = false;
     this.caseEditDataService.caseDetails$.subscribe({
       next: caseDetails => {
-        this.caseDetails = caseDetails;
-        this.linkedCasesService.caseDetails = caseDetails;
-        this.linkedCasesService.caseId = caseDetails.case_id;
-        this.linkedCasesService.caseName = this.linkedCasesService.getCaseName(caseDetails);
-        this.getLinkedCases();
+        if (caseDetails) {
+          this.caseDetails = caseDetails;
+          this.linkedCasesService.caseDetails = caseDetails;
+          this.linkedCasesService.caseId = caseDetails.case_id;
+          this.linkedCasesService.caseName = this.linkedCasesService.getCaseName(caseDetails);
+          this.getLinkedCases();
+        }
       }
     });
     this.caseEditDataService.caseEventTriggerName$.subscribe({
