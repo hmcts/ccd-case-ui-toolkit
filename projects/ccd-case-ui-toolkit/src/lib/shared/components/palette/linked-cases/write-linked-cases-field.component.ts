@@ -5,7 +5,6 @@ import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { CaseField, ErrorMessage } from '../../../domain';
 import { CaseView } from '../../../domain/case-view';
 import { CommonDataService } from '../../../services/common-data-service/common-data-service';
-import { CaseEditComponent } from '../../case-editor/case-edit/case-edit.component';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractFieldWriteComponent } from '../base-field';
 import { CaseLink, LinkedCasesState } from './domain';
@@ -32,6 +31,8 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   @Input()
   public formGroup: FormGroup;
 
+  public caseEditForm: FormGroup;
+  public caseDetails: CaseView;
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
@@ -39,7 +40,6 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public errorMessages: ErrorMessage[] = [];
 
   constructor(
-    private readonly caseEdit: CaseEditComponent,
     private readonly appConfig: AbstractAppConfig,
     private readonly commonDataService: CommonDataService,
     private readonly casesService: CasesService,
@@ -49,24 +49,26 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public ngOnInit(): void {
-      this.caseEditDataService.clearFormValidationErrors();
-      this.linkedCasesService.caseId = this.caseEdit.caseDetails.case_id;
-      this.linkedCasesService.caseName = this.linkedCasesService.getCaseName(this.caseEdit.caseDetails);
-      this.linkedCasesService.caseDetails = this.caseEdit.caseDetails;
-      this.linkedCasesService.editMode = false;
-      const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
-      this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
-        next: reasons => {
-          this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
-        }
-      });
-      this.getLinkedCases();
-      this.caseEditDataService.caseEventTriggerName$.subscribe({
-        next: name => {
-                this.linkedCasesService.isLinkedCasesEventTrigger
-                  = (name === LinkedCasesEventTriggers.LINK_CASES);
-        }
-      })
+    // Clear validation errors
+    this.caseEditDataService.clearFormValidationErrors();
+    // Get linked case reasons from ref data
+    this.getLinkedCaseReasons();
+    this.linkedCasesService.editMode = false;
+    this.caseEditDataService.caseDetails$.subscribe({
+      next: caseDetails => {
+        this.caseDetails = caseDetails;
+        this.linkedCasesService.caseDetails = caseDetails;
+        this.linkedCasesService.caseId = caseDetails.case_id;
+        this.linkedCasesService.caseName = this.linkedCasesService.getCaseName(caseDetails);
+        this.getLinkedCases();
+      }
+    });
+    this.caseEditDataService.caseEventTriggerName$.subscribe({
+      next: name => this.linkedCasesService.isLinkedCasesEventTrigger = (name === LinkedCasesEventTriggers.LINK_CASES)
+    });
+    this.caseEditDataService.caseEditForm$.subscribe({
+      next: editForm => this.caseEditForm = editForm
+    });
   }
 
   public ngAfterViewInit(): void {
@@ -97,6 +99,15 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     }
   }
 
+  public getLinkedCaseReasons(): void {
+    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+      this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
+        next: reasons => {
+          this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
+        }
+    });
+  }
+
   public isAtFinalState(): boolean {
     return this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
   }
@@ -124,7 +135,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
       this.formGroup.updateValueAndValidity();
       // update form value
       this.onLinkedCasesSelected.emit();
-      (this.caseEdit.form.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue)});
+      (this.caseEditForm.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue)});
     }
   }
 

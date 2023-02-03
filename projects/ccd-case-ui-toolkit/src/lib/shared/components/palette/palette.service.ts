@@ -29,6 +29,7 @@ import { CaseHistoryViewerFieldComponent } from './history/case-history-viewer-f
 import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
 import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
+import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
@@ -54,7 +55,8 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 @Injectable()
 export class PaletteService {
   private readonly componentLauncherRegistry = {
-    CaseFileView: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent]
+    CaseFileView: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent],
+		LinkedCases: [ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent]
   };
 
   public getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
@@ -127,6 +129,11 @@ export class PaletteService {
   private getComponentLauncherComponent(caseField: CaseField, write: boolean): any {
     // Extract the value passed for #ARGUMENT(...) in the CaseField display_context_parameter and return the matching
     // component from the componentLauncherRegistry
+
+		console.log('CASE FIELD', caseField);
+		console.log('CASE FIELD DISPLAY CONTEXT PARAMETER', caseField.display_context_parameter);
+
+
     const argumentValue = caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[1];
     if (argumentValue && this.componentLauncherRegistry.hasOwnProperty(argumentValue)) {
       return this.componentLauncherRegistry[argumentValue][write ? 0 : 1];
