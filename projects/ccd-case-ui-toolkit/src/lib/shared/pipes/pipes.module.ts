@@ -4,7 +4,6 @@ import { CaseReferencePipe } from './case-reference';
 import { CcdCaseTitlePipe } from './case-title';
 import { CcdCollectionTableCaseFieldsFilterPipe, CcdCYAPageLabelFilterPipe, CcdPageFieldsPipe, CcdTabFieldsPipe, ReadFieldsFilterPipe } from './complex';
 import { EnumDisplayDescriptionPipe } from './generic/enum-display-description/enum-display-description.pipe';
-import { LinkCasesReasonValuePipe } from './link-cases-reason-code';
 import { SortSearchResultPipe } from './search-result/sorting/sort-search-result.pipe';
 
 const pipeDeclarations = [
@@ -16,7 +15,6 @@ const pipeDeclarations = [
   ReadFieldsFilterPipe,
   CcdTabFieldsPipe,
   CcdPageFieldsPipe,
-  LinkCasesReasonValuePipe,
   EnumDisplayDescriptionPipe
 ];
 
