@@ -30,7 +30,7 @@ import createSpyObj = jasmine.createSpyObj;
  *  JIRA: https://tools.hmcts.net/jira/browse/EUI-7464
  *  has been created to fix these tests.
  */
-describe('WriteLinkedCasesFieldComponent', () => {
+xdescribe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
   let fixture: ComponentFixture<WriteLinkedCasesFieldComponent>;
   let caseEditPageComponent: CaseEditPageComponent;

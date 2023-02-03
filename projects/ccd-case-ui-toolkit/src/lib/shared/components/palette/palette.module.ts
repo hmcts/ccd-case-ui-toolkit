@@ -214,7 +214,6 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
-    LinkCasesReasonValuePipe,
 
     CaseFlagTableComponent,
     SelectFlagTypeComponent,
