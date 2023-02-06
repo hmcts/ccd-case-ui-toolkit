@@ -25,8 +25,6 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
 
   @Output()
   public onLinkedCasesSelected = new EventEmitter<any>();
-  @Input()
-  public isLinkedCasesJourney = false;
 
   @Input()
   public formGroup: FormGroup;
@@ -148,7 +146,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public getNextPage(linkedCasesState: LinkedCasesState): number {
     if ((this.linkedCasesPage === LinkedCasesPages.BEFORE_YOU_START) ||
         (linkedCasesState.currentLinkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS && linkedCasesState.navigateToPreviousPage)) {
-          return this.isLinkedCasesJourney
+          return this.linkedCasesService.isLinkedCasesEventTrigger
             ? LinkedCasesPages.LINK_CASE
             : LinkedCasesPages.UNLINK_CASE;
     }

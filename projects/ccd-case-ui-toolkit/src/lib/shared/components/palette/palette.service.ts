@@ -1,5 +1,6 @@
 import { Injectable, Type } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
+import { DisplayContextCustomParameter, DisplayContextParameter } from '../../domain/definition/display-context-enum.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
@@ -55,8 +56,8 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 @Injectable()
 export class PaletteService {
   private readonly componentLauncherRegistry = {
-    CaseFileView: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent],
-    LinkedCases: [WriteLinkedCasesFieldComponent, ReadLinkedCasesFieldComponent]
+    [DisplayContextCustomParameter.CaseFileView]: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent],
+    [DisplayContextCustomParameter.LinkedCases]: [WriteLinkedCasesFieldComponent, ReadLinkedCasesFieldComponent]
   };
 
   public getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
@@ -127,17 +128,19 @@ export class PaletteService {
   }
 
   private getComponentLauncherComponent(caseField: CaseField, write: boolean): any {
-    // Extract the value passed for #ARGUMENT(...) in the CaseField display_context_parameter and return the matching
-    // component from the componentLauncherRegistry
-
-    console.log('CASE FIELD', caseField);
-    console.log('CASE FIELD DISPLAY CONTEXT PARAMETER', caseField.display_context_parameter);
-    console.log('ZERO', caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[0]);
-    console.log('ONE', caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[1]);
-
-    const argumentValue = caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[1];
-    if (argumentValue && this.componentLauncherRegistry.hasOwnProperty(argumentValue)) {
-      return this.componentLauncherRegistry[argumentValue][write ? 0 : 1];
+    // Extract the value passed for #ARGUMENT(...) in the CaseField display_context_parameter and
+    // delete the default entries and return the matching component from the componentLauncherRegistry
+    const argumentValue = caseField?.display_context_parameter?.match(/#ARGUMENT\((.*?)\)/)[1];
+    if (argumentValue) {
+      const displayContextParameterArray = argumentValue.includes(',') ? argumentValue.split(',') : [argumentValue];
+      const componentToRender = displayContextParameterArray.filter(displayContextParameter => {
+        return !Object.values(DisplayContextParameter).find(displayContextParameterFromLookup => {
+           return displayContextParameter === displayContextParameterFromLookup;
+        });
+      });
+      if (componentToRender?.length > 0 && this.componentLauncherRegistry.hasOwnProperty(componentToRender[0].toUpperCase())) {
+        return this.componentLauncherRegistry[componentToRender[0]][write ? 0 : 1];
+      }
     }
     return UnsupportedFieldComponent;
   }
