@@ -6,7 +6,6 @@ import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
-import { CaseFlagStatus } from '../case-flag';
 import { CaseLink } from './domain';
 import { ReadLinkedCasesFieldComponent } from './read-linked-cases-field.component';
 import { LinkedCasesService } from './services';
@@ -345,7 +344,7 @@ describe('ReadLinkedCasesFieldComponent', () => {
         case: {
           tabs: [
             {
-              id: 'NameTab',
+              id: 'caseLinks',
               label: 'Name',
               order: 2,
               fields: [
@@ -416,73 +415,6 @@ describe('ReadLinkedCasesFieldComponent', () => {
               order: 3,
               fields: [],
               show_condition: ''
-            },
-            {
-              id: 'CaseFlagsTab',
-              label: 'Case flags',
-              fields: [
-                Object.assign(new CaseField(), {
-                  id: 'FlagLauncher1',
-                  label: 'Flag launcher',
-                  display_context: 'OPTIONAL',
-                  field_type: {
-                    id: 'FlagLauncher',
-                    type: 'FlagLauncher'
-                  },
-                  order: 4,
-                  value: null,
-                  show_condition: '',
-                  hint_text: ''
-                }),
-                Object.assign(new CaseField(), {
-                  id: 'CaseFlag1',
-                  label: 'First Case Flag',
-                  display_context: null,
-                  field_type: {
-                    id: 'Flags',
-                    type: 'Complex'
-                  },
-                  value: {
-                    partyName: 'John Smith',
-                    roleOnCase: '',
-                    details: [
-                      {
-                        id: '9c2129ba-3fc6-4bae-afc3-32808ffd9cbe',
-                        value: {
-                          name: 'Wheel chair access',
-                          subTypeValue: '',
-                          subTypeKey: '',
-                          otherDescription: '',
-                          flagComment: '',
-                          dateTimeModified: new Date('2021-09-09 00:00:00'),
-                          dateTimeCreated: new Date('2021-09-09 00:00:00'),
-                          path: [],
-                          hearingRelevant: false,
-                          flagCode: '',
-                          status: CaseFlagStatus.ACTIVE
-                        }
-                      },
-                      {
-                        id: '9125aac8-1506-4753-b820-b3a3be451235',
-                        value: {
-                          name: 'Sign language',
-                          subTypeValue: 'British Sign Language (BSL)',
-                          subTypeKey: '',
-                          otherDescription: '',
-                          flagComment: '',
-                          dateTimeModified: new Date('2021-09-09 00:00:00'),
-                          dateTimeCreated: new Date('2021-09-09 00:00:00'),
-                          path: [],
-                          hearingRelevant: false,
-                          flagCode: '',
-                          status: CaseFlagStatus.INACTIVE
-                        }
-                      }
-                    ]
-                  }
-                })
-              ],
-              show_condition: null
             }
           ]
         }
@@ -578,8 +510,7 @@ describe('ReadLinkedCasesFieldComponent', () => {
     commonDataService = createSpyObj('commonDataService', ['getRefData']);
     TestBed.configureTestingModule({
       imports: [
-        ActivatedRoute,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -599,14 +530,15 @@ describe('ReadLinkedCasesFieldComponent', () => {
     component = fixture.componentInstance;
     commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
     component.caseField = caseFieldValue as any;
+    fixture.detectChanges();
   });
 
-  xit('should map the linked cases reason for linked cases tab page', () => {
+  it('should map the linked cases reason for linked cases tab page', () => {
     component.ngOnInit();
     expect(commonDataService.getRefData).toHaveBeenCalled();
   });
 
-  xit('should trigger failure handler errors', () => {
+  it('should trigger failure handler errors', () => {
     component.ngAfterViewInit();
     component.getFailureLinkedToNotification({});
     component.getFailureLinkedFromNotification({});

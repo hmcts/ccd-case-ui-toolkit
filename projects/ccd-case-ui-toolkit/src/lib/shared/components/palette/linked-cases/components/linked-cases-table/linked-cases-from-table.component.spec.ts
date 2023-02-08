@@ -1,16 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../../../../app.config';
+import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
 import { CasesService } from '../../../../case-editor/services/cases.service';
+import { CaseLink } from '../../domain/linked-cases.model';
+import { LinkedCasesService } from '../../services';
 import { LinkedCasesFromTableComponent } from './linked-cases-from-table.component';
-import { PipesModule } from '../../../../../pipes/pipes.module';
 
 import createSpyObj = jasmine.createSpyObj;
-import { ActivatedRoute } from '@angular/router';
-import { AbstractAppConfig } from '../../../../../../app.config';
-import { LinkedCasesService } from '../../services';
-import { CaseLink } from '../../domain/linked-cases.model';
 
 describe('LinkCasesFromTableComponent', () => {
   let component: LinkedCasesFromTableComponent;
@@ -68,7 +68,7 @@ describe('LinkCasesFromTableComponent', () => {
     ],
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
       'getRDCommonDataApiUrl',
     ]);
@@ -169,7 +169,7 @@ describe('LinkCasesFromTableComponent', () => {
     expect(tableRows.length).not.toBeNull();
   });
 
-  xit('should render the failure panel when api returns non 200', () => {
+  it('should render the failure panel when api returns non 200', () => {
     component.getLinkedCases = jasmine
       .createSpy()
       .and.returnValue(throwError({}));

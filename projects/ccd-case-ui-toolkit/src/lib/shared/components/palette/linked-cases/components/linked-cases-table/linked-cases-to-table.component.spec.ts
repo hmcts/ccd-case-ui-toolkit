@@ -1,25 +1,25 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 import {
-  async,
-  ComponentFixture,
-  TestBed,
+	ComponentFixture,
+	TestBed,
+	waitForAsync
 } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../../../../app.config';
+import { CaseField } from '../../../../../domain';
 import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
+import {
+	CommonDataService
+} from '../../../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../../../case-editor/services/cases.service';
+import { LinkedCasesService } from '../../services';
+import { mockCaseLinkingReasonCode, mockCaseLinkResponse, mocklinkedCases, mockSearchByCaseIdsResponse } from '../__mocks__';
 import { LinkedCasesToTableComponent } from './linked-cases-to-table.component';
 
 import createSpyObj = jasmine.createSpyObj;
-import { CaseField } from '../../../../../domain';
-import {
-  CommonDataService,
-} from '../../../../../services/common-data-service/common-data-service';
-import { AbstractAppConfig } from '../../../../../../app.config';
-import { LinkedCasesService } from '../../services';
-import { mockCaseLinkingReasonCode, mockCaseLinkResponse, mocklinkedCases, mockSearchByCaseIdsResponse } from '../__mocks__';
 
 describe('LinkCasesToTableComponent', () => {
   let component: LinkedCasesToTableComponent;
@@ -59,7 +59,7 @@ describe('LinkCasesToTableComponent', () => {
     url: '',
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [
       'getRDCommonDataApiUrl',
     ]);
@@ -102,7 +102,7 @@ describe('LinkCasesToTableComponent', () => {
       ])
     );
     component.caseField = {
-      id: 'caseLink',
+      id: 'caseLinks',
       field_type: {
         id: 'Text',
         type: 'Text',
@@ -126,7 +126,7 @@ describe('LinkCasesToTableComponent', () => {
     expect(tableHeading).not.toBeNull();
   });
 
-  xit('should call searchCasesByCaseIds by casetype', () => {
+  it('should call searchCasesByCaseIds by casetype', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.searchCasesByCaseIds).toHaveBeenCalledTimes(2);
@@ -146,13 +146,12 @@ describe('LinkCasesToTableComponent', () => {
     expect(caseNameMissingEle).toBeGreaterThan(0);
   });
 
-  xit('should render linkedcases top table', () => {
+  it('should render linkedcases top table', () => {
     component.ngOnInit();
-    fixture.detectChanges();
     expect(component.linkedCasesFromResponse.length).toEqual(1);
   });
 
-  xit('should render the failure panel when api returns non 200', () => {
+  it('should render the failure panel when api returns non 200', () => {
     component.searchCasesByCaseIds = jasmine
       .createSpy()
       .and.returnValue(throwError({}));

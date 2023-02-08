@@ -59,7 +59,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public ngOnInit(): void {
     this.caseId = this.route.snapshot && this.route.snapshot.data && this.route.snapshot.data.case.case_id;
-    this.getAllLinkedCaseInformation()
+    this.getAllLinkedCaseInformation();
     if (this.route.snapshot.data.case) {
       this.linkedCasesService.caseDetails = this.route.snapshot.data.case;
     }
