@@ -128,10 +128,6 @@ export class UnLinkCasesComponent implements OnInit {
       this.unlinkErrorMessage = LinkedCasesErrorMessages.UnlinkCaseSelectionError;
       navigateToNextPage = false;
     }
-    const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
-    const updatedLinkedCases = this.linkedCasesService.caseFieldValue.filter
-                              (item => unlinkedCaseRefereneIds.indexOf(item.value.CaseReference) === -1);
-    (this.caseEdit.form.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(updatedLinkedCases || [])});
     // Return linked cases state and error messages to the parent
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.UNLINK_CASE,

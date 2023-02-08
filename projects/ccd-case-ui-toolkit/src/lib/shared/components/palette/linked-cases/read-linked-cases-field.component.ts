@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseField } from '../../../domain';
+import { CaseField, CaseTab } from '../../../domain';
 import { CommonDataService } from '../../../services/common-data-service/common-data-service';
 import { LinkedCasesService } from './services';
 
@@ -12,7 +12,6 @@ import { LinkedCasesService } from './services';
 })
 export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
 
-  @Input()
   public caseField: CaseField;
 
   public reasonListLoaded = false;
@@ -25,6 +24,7 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   public isServerLinkedToError = false;
 
   constructor(
+    private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly linkedCasesService: LinkedCasesService,
     private readonly appConfig: AbstractAppConfig,
@@ -32,6 +32,11 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   ) { }
 
   public ngOnInit(): void {
+    if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
+      const tabs = this.route.snapshot.data.case.tabs as CaseTab[];
+      const tab = tabs?.filter(tab => tab.fields?.some(field => field.id === 'caseLinks'))[0];
+      this.caseField = tab?.fields?.find(field => field.id === 'caseLinks');
+    }
     this.isServerJurisdictionError = this.linkedCasesService.serverJurisdictionError || false;
     const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({

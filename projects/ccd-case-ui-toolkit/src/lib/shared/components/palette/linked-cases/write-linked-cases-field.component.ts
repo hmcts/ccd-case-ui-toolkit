@@ -134,9 +134,21 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
       // Trigger validation to clear the "notAtFinalPage" error if now at the final state
       this.formGroup.updateValueAndValidity();
       // update form value
-      this.onLinkedCasesSelected.emit();
-      (this.caseEditForm.controls['data'] as any) =  new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue)});
+      this.submitLinkedCases();
     }
+  }
+
+  public submitLinkedCases(): void {
+    const caseFieldValue = this.linkedCasesService.caseFieldValue;
+    if (this.linkedCasesService.isLinkedCasesEventTrigger) {
+      this.formGroup.value.caseLinks = caseFieldValue;
+    } else {
+      const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
+      this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);
+      this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
+    }
+    (this.caseEditForm.controls['data'] as any) = new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue)});
+    this.caseEditDataService.setCaseEditForm(this.caseEditForm);
   }
 
   public isAtFinalPage(): boolean {
@@ -162,7 +174,9 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
         return linkField;
       });
       if (caseViewFiltered) {
-        const caseLinkFieldValue = caseViewFiltered.map(filtered => filtered.fields.length && filtered.fields[0].value)
+        const caseLinkFieldValue = caseViewFiltered.map(filtered =>
+          filtered.fields?.length > 0 && filtered.fields.filter(field => field.id === 'caseLinks')[0].value
+        );
         this.linkedCasesService.caseFieldValue = caseLinkFieldValue.length ? caseLinkFieldValue[0] : [];
         this.linkedCasesService.getAllLinkedCaseInformation();
       }

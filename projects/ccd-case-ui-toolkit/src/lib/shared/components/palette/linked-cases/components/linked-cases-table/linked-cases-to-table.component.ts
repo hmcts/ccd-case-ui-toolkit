@@ -97,7 +97,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public getAllLinkedCaseInformation() {
     const searchCasesResponse = [];
-    const caseFieldValue = this.caseField ? this.caseField.value : [];
+    const caseFieldValue = this.caseField && this.caseField.id === 'caseLinks' ? this.caseField.value : [];
     // Generate the list of observables
     caseFieldValue.forEach(fieldValue => {
       if (fieldValue && fieldValue.id) {

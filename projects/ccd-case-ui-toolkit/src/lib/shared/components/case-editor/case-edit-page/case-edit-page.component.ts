@@ -16,7 +16,6 @@ import { FormValueService } from '../../../services/form/form-value.service';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { initDialog } from '../../helpers';
-import { LinkedCasesError } from '../../palette/linked-cases/domain/linked-cases-state.model';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
@@ -107,6 +106,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       });
     CaseEditPageComponent.setFocusToTop();
+    this.caseEditDataService.caseEditForm$.subscribe({
+      next: editForm => this.editForm = editForm
+    });
     this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
       next: state => {
         if (state) {
@@ -466,10 +468,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   private syncCaseEditDataService(): void {
-		this.caseEditDataService.setCaseDetails(this.caseEdit.caseDetails);
+    this.caseEditDataService.setCaseDetails(this.caseEdit.caseDetails);
     this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
     this.caseEditDataService.setCaseTitle(this.getCaseTitle());
-		this.caseEditDataService.setCaseEditForm(this.editForm);
+    this.caseEditDataService.setCaseEditForm(this.editForm);
     this.caseEditDataService.caseFormValidationErrors$.subscribe({
       next: (validationErrors) => this.validationErrors = validationErrors
     });
