@@ -16,8 +16,7 @@ export class PageValidationService {
       .filter(caseField => !this.isHidden(caseField, editForm))
       .every(caseField => {
         const theControl = editForm.controls['data'].get(caseField.id);
-        return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl) &&
-              this.checkCaseLinksCollectionField(caseField, theControl);
+        return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
       });
   }
 
@@ -47,13 +46,5 @@ export class PageValidationService {
 
   private checkMandatoryField(caseField: CaseField, theControl: AbstractControl): boolean {
     return this.caseFieldService.isMandatory(caseField) && theControl === null;
-  }
-
-  private checkCaseLinksCollectionField(caseField: CaseField, theControl: AbstractControl): boolean {
-    if (caseField && caseField.id === 'caseLinks') {
-      return theControl && theControl.value && Array.isArray(theControl.value) &&
-        theControl.value.length ? true : false;
-    }
-    return true;
   }
 }
