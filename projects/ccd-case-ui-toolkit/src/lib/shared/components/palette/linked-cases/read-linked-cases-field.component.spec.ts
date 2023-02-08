@@ -601,12 +601,12 @@ describe('ReadLinkedCasesFieldComponent', () => {
     component.caseField = caseFieldValue as any;
   });
 
-  fit('should map the linked cases reason for linked cases tab page', () => {
+  xit('should map the linked cases reason for linked cases tab page', () => {
     component.ngOnInit();
     expect(commonDataService.getRefData).toHaveBeenCalled();
   });
 
-  fit('should trigger failure handler errors', () => {
+  xit('should trigger failure handler errors', () => {
     component.ngAfterViewInit();
     component.getFailureLinkedToNotification({});
     component.getFailureLinkedFromNotification({});

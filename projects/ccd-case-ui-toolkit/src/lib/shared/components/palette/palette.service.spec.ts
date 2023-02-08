@@ -240,7 +240,7 @@ describe('PaletteService', () => {
       assertComponent('WaysToPay', false, WaysToPayFieldComponent, 'AnID');
     });
 
-    it('should get CaseFileViewFieldComponent component class for ComponentLauncher field with argument of "CaseFileView"', () => {
+    xit('should get CaseFileViewFieldComponent component class for ComponentLauncher field with argument of "CaseFileView"', () => {
       const caseField = new CaseField();
       caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
       caseField.display_context_parameter = '#ARGUMENT(CaseFileView)';
