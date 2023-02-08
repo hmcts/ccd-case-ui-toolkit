@@ -17,18 +17,6 @@ import { LinkedCasesService } from './services';
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
 
-  @Input()
-  public caseFields: CaseField[];
-
-  @Input()
-  public caseField: CaseField;
-
-  @Output()
-  public onLinkedCasesSelected = new EventEmitter<any>();
-
-  @Input()
-  public formGroup: FormGroup;
-
   public caseEditForm: FormGroup;
   public caseDetails: CaseView;
   public linkedCasesPage: number;
@@ -139,15 +127,13 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public submitLinkedCases(): void {
-    const caseFieldValue = this.linkedCasesService.caseFieldValue;
-    if (this.linkedCasesService.isLinkedCasesEventTrigger) {
-      this.formGroup.value.caseLinks = caseFieldValue;
-    } else {
+    if (!this.linkedCasesService.isLinkedCasesEventTrigger) {
       const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
+			const caseFieldValue = this.linkedCasesService.caseFieldValue;
       this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);
-      this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
     }
-    (this.caseEditForm.controls['data'] as any) = new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue)});
+		this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
+    (this.caseEditForm.controls['data'] as any) = new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue || [])});
     this.caseEditDataService.setCaseEditForm(this.caseEditForm);
   }
 

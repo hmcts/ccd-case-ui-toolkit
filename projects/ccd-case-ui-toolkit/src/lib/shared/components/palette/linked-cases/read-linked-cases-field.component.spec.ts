@@ -1,10 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
+import { CaseField } from '../../../domain';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
+import { CaseFlagStatus } from '../case-flag';
 import { CaseLink } from './domain';
 import { ReadLinkedCasesFieldComponent } from './read-linked-cases-field.component';
 import { LinkedCasesService } from './services';
@@ -337,8 +339,158 @@ describe('ReadLinkedCasesFieldComponent', () => {
     ]
   };
 
-  let mockRouter: any;
-  mockRouter = {
+  const mockRoute = {
+    snapshot: {
+      data: {
+        case: {
+          tabs: [
+            {
+              id: 'NameTab',
+              label: 'Name',
+              order: 2,
+              fields: [
+                Object.assign(new CaseField(), {
+                  id: 'PersonFirstName',
+                  label: 'First name',
+                  display_context: 'OPTIONAL',
+                  field_type: {
+                    id: 'Text',
+                    type: 'Text'
+                  },
+                  order: 2,
+                  value: 'Janet',
+                  show_condition: '',
+                  hint_text: ''
+                }),
+                Object.assign(new CaseField(), {
+                  id: 'PersonLastName',
+                  label: 'Last name',
+                  display_context: 'OPTIONAL',
+                  field_type: {
+                    id: 'Text',
+                    type: 'Text'
+                  },
+                  order: 1,
+                  value: 'Parker',
+                  show_condition: 'PersonFirstName="Jane*"',
+                  hint_text: ''
+                }),
+                Object.assign(new CaseField(), {
+                  id: 'PersonComplex',
+                  label: 'Complex field',
+                  display_context: 'OPTIONAL',
+                  field_type: {
+                    id: 'Complex',
+                    type: 'Complex',
+                    complex_fields: []
+                  },
+                  order: 3,
+                  show_condition: 'PersonFirstName="Park"',
+                  hint_text: ''
+                })
+              ],
+              show_condition: 'PersonFirstName="Janet"'
+            },
+            {
+              id: 'HistoryTab',
+              label: 'History',
+              order: 1,
+              fields: [Object.assign(new CaseField(), {
+                id: 'CaseHistory',
+                label: 'Case History',
+                display_context: 'OPTIONAL',
+                field_type: {
+                  id: 'CaseHistoryViewer',
+                  type: 'CaseHistoryViewer'
+                },
+                order: 1,
+                value: null,
+                show_condition: '',
+                hint_text: ''
+              })],
+              show_condition: ''
+            },
+            {
+              id: 'SomeTab',
+              label: 'Some Tab',
+              order: 3,
+              fields: [],
+              show_condition: ''
+            },
+            {
+              id: 'CaseFlagsTab',
+              label: 'Case flags',
+              fields: [
+                Object.assign(new CaseField(), {
+                  id: 'FlagLauncher1',
+                  label: 'Flag launcher',
+                  display_context: 'OPTIONAL',
+                  field_type: {
+                    id: 'FlagLauncher',
+                    type: 'FlagLauncher'
+                  },
+                  order: 4,
+                  value: null,
+                  show_condition: '',
+                  hint_text: ''
+                }),
+                Object.assign(new CaseField(), {
+                  id: 'CaseFlag1',
+                  label: 'First Case Flag',
+                  display_context: null,
+                  field_type: {
+                    id: 'Flags',
+                    type: 'Complex'
+                  },
+                  value: {
+                    partyName: 'John Smith',
+                    roleOnCase: '',
+                    details: [
+                      {
+                        id: '9c2129ba-3fc6-4bae-afc3-32808ffd9cbe',
+                        value: {
+                          name: 'Wheel chair access',
+                          subTypeValue: '',
+                          subTypeKey: '',
+                          otherDescription: '',
+                          flagComment: '',
+                          dateTimeModified: new Date('2021-09-09 00:00:00'),
+                          dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                          path: [],
+                          hearingRelevant: false,
+                          flagCode: '',
+                          status: CaseFlagStatus.ACTIVE
+                        }
+                      },
+                      {
+                        id: '9125aac8-1506-4753-b820-b3a3be451235',
+                        value: {
+                          name: 'Sign language',
+                          subTypeValue: 'British Sign Language (BSL)',
+                          subTypeKey: '',
+                          otherDescription: '',
+                          flagComment: '',
+                          dateTimeModified: new Date('2021-09-09 00:00:00'),
+                          dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                          path: [],
+                          hearingRelevant: false,
+                          flagCode: '',
+                          status: CaseFlagStatus.INACTIVE
+                        }
+                      }
+                    ]
+                  }
+                })
+              ],
+              show_condition: null
+            }
+          ]
+        }
+      }
+    }
+  };
+
+  const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
     url: ''
   };
@@ -367,31 +519,6 @@ describe('ReadLinkedCasesFieldComponent', () => {
       caseName: 'SSCS 2.1'
     }
   ];
-
-  linkedCasesService = {
-    caseId: '1682374819203471',
-    linkedCases,
-    getAllLinkedCaseInformation() {}
-  };
-
-  beforeEach(waitForAsync(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
-    commonDataService = createSpyObj('commonDataService', ['getRefData']);
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        { provide: Router, useValue: mockRouter },
-        { provide: CommonDataService, useValue: commonDataService },
-        { provide: AbstractAppConfig, useValue: appConfig },
-        { provide: LinkedCasesService, useValue: linkedCasesService },
-      ],
-      declarations: [ReadLinkedCasesFieldComponent],
-    })
-      .compileComponents();
-  }));
 
   const linkCaseReasons: LovRefDataByServiceModel = {
     list_of_values: [
@@ -440,6 +567,33 @@ describe('ReadLinkedCasesFieldComponent', () => {
     ]
   };
 
+  linkedCasesService = {
+    caseId: '1682374819203471',
+    linkedCases,
+    getAllLinkedCaseInformation() {}
+  };
+
+  beforeEach(waitForAsync(() => {
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
+    commonDataService = createSpyObj('commonDataService', ['getRefData']);
+    TestBed.configureTestingModule({
+      imports: [
+        ActivatedRoute,
+        RouterTestingModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: Router, useValue: mockRouter },
+        { provide: CommonDataService, useValue: commonDataService },
+        { provide: AbstractAppConfig, useValue: appConfig },
+        { provide: LinkedCasesService, useValue: linkedCasesService },
+      ],
+      declarations: [ReadLinkedCasesFieldComponent],
+    })
+      .compileComponents();
+  }));
+
   beforeEach(() => {
     fixture = TestBed.createComponent(ReadLinkedCasesFieldComponent);
     component = fixture.componentInstance;
@@ -447,12 +601,12 @@ describe('ReadLinkedCasesFieldComponent', () => {
     component.caseField = caseFieldValue as any;
   });
 
-  it('should map the linked cases reason for linked cases tab page', () => {
+  fit('should map the linked cases reason for linked cases tab page', () => {
     component.ngOnInit();
     expect(commonDataService.getRefData).toHaveBeenCalled();
   });
 
-  it('should trigger failure handler errors', () => {
+  fit('should trigger failure handler errors', () => {
     component.ngAfterViewInit();
     component.getFailureLinkedToNotification({});
     component.getFailureLinkedFromNotification({});

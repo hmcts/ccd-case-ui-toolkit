@@ -105,9 +105,6 @@ export class PaletteService {
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
       case 'Collection':
-        if (caseField.id === 'caseLinks') {
-          return this.getComponentLauncherComponent(caseField, write);
-        }
         return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
       case 'MultiSelectList':
         return write ? WriteMultiSelectListFieldComponent : ReadMultiSelectListFieldComponent;
