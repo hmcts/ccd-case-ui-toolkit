@@ -1763,10 +1763,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.50-alpha.tgz#4c1f1bc87312a2929ac60e54cdd3fc28782b98f9"
   integrity sha512-can9fxgQxw0ihRvjvz/+O7xbG0OiQbTcs3CCMQct41a2BPC6iIja3vgwNIy5TD2Vt52kYUq+fg2HGGybyjprTg==
 
-"@hmcts/media-viewer@2.9.0":
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.9.1.tgz#0ecac4ddabe068bc82df4f5ce85dd6d672680309"
-  integrity sha512-0NwGHqwWaA8CX1jidc5EXBIA1/oRUG3MqG5xNNJMKJ4k4psgfVLQxZYANoHImxjzG7AX/nR/tOiod49O1GLIfw==
+"@hmcts/media-viewer@2.9.2":
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.9.2.tgz#164389986057dfb0c25f84fd4138f281501974e1"
+  integrity sha512-sG+Rp/PL6vzXuEZQ+WPYdw86FseNkOJloxRNCk5WPq6oshdCTvYNWYuZYxp9wtbpPytE3ynpHGrl/wzmGFstQg==
   dependencies:
     "@circlon/angular-tree-component" "^11.0.0"
     "@swimlane/ngx-datatable" "^19.0.0"
