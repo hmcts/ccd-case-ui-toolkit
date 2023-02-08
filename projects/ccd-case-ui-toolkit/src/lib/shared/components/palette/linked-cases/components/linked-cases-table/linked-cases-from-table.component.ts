@@ -8,11 +8,6 @@ import { LovRefDataModel } from '../../../../../services/common-data-service/com
 import { Observable } from 'rxjs';
 import { LinkedCasesService } from '../../services';
 
-export enum PageType {
-  LINKEDCASESTABLBEVIEW = 'linkedCasesTableView',
-  PROPOSEDCASELINK = 'proposedCaseLink',
-}
-
 @Component({
   selector: 'ccd-linked-cases-from-table',
   templateUrl: './linked-cases-from-table.component.html',
@@ -28,7 +23,6 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   @Output()
   public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
-  public pageType = PageType;
   public caseDetails: CaseView;
   public parentUrl: string;
   public isLoaded: boolean;

@@ -34,7 +34,7 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
       const tabs = this.route.snapshot.data.case.tabs as CaseTab[];
-      const tab = tabs?.filter(tab => tab.fields?.some(field => field.id === 'caseLinks'))[0];
+      const tab = tabs?.filter(tabItem => tabItem.fields?.some(field => field.id === 'caseLinks'))[0];
       this.caseField = tab?.fields?.find(field => field.id === 'caseLinks');
     }
     this.isServerJurisdictionError = this.linkedCasesService.serverJurisdictionError || false;
@@ -44,7 +44,7 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
         this.reasonListLoaded = true;
         this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
       },
-      error: error => {
+      error: () => {
         this.isServerReasonCodeError = true;
         this.linkedCasesService.isServerReasonCodeError = true;
       }

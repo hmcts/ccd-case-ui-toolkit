@@ -1,8 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { CaseView, ErrorMessage } from '../../../../../domain';
-import { CaseEditComponent } from '../../../../case-editor/case-edit';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLink, LinkedCasesState } from '../../domain';
 import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
@@ -30,8 +29,7 @@ export class UnLinkCasesComponent implements OnInit {
   public isLoaded: boolean;
   public isServerError = false;
 
-  constructor(private caseEdit: CaseEditComponent,
-    private readonly fb: FormBuilder,
+  constructor(private readonly fb: FormBuilder,
     private readonly casesService: CasesService,
     private readonly linkedCasesService: LinkedCasesService) {
   }
@@ -129,10 +127,15 @@ export class UnLinkCasesComponent implements OnInit {
       navigateToNextPage = false;
     }
     // Return linked cases state and error messages to the parent
+    this.emitLinkedCasesState(navigateToNextPage);
+  }
+
+  // Return linked cases state and error messages to the parent
+  public emitLinkedCasesState(isNavigateToNextPage: boolean): void {
     this.linkedCasesStateEmitter.emit({
       currentLinkedCasesPage: LinkedCasesPages.UNLINK_CASE,
       errorMessages: this.errorMessages,
-      navigateToNextPage
+      navigateToNextPage: isNavigateToNextPage,
     });
   }
 
