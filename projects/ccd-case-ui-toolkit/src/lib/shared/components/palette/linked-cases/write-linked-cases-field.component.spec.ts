@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CaseView } from 'ccd-case-ui-toolkit/public-api';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
@@ -94,7 +95,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     state: { name: 'With FTA' },
     tabs: [
       {
-        id: 'linked_cases_sscs',
+        id: 'caseLinks',
         fields: [
           {
             field_type: {
@@ -157,7 +158,8 @@ describe('WriteLinkedCasesFieldComponent', () => {
       caseState: 'state',
       caseStateDescription: 'state description',
       caseService: 'Tribunal',
-      caseName: 'SSCS 2.1'
+      caseName: 'SSCS 2.1',
+      unlink: true
     },
     {
       caseReference: '1682897456391875',
@@ -176,6 +178,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     caseId: '1682374819203471',
     isLinkedCasesEventTrigger: true,
     linkedCases,
+    caseFieldValue: linkedCases,
     getAllLinkedCaseInformation() {},
     getCaseName() {}
   };
@@ -265,20 +268,23 @@ describe('WriteLinkedCasesFieldComponent', () => {
   });
 
   it('should create component', () => {
-    spyOn(caseEditDataService, 'caseDetails$').and.returnValue(of({}));
+    spyOn(caseEditDataService, 'caseDetails$').and.returnValue(of(caseInfo));
+    spyOn(component, 'initialiseCaseDetails');
     expect(component).toBeTruthy();
+  });
+
+  it('should initialise case details', () => {
+    spyOn(component, 'getLinkedCases');
+    spyOn(linkedCasesService, 'getCaseName').and.returnValue('case name');
+    const caseView = caseInfo as CaseView;
+    component.initialiseCaseDetails(caseView);
+    expect(linkedCasesService.getCaseName).toHaveBeenCalled();
+    expect(component.getLinkedCases).toHaveBeenCalled();
   });
 
   it('should have called pre-required data', () => {
     commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
-    const caseDetail = {
-      case_id: '1231231231231231',
-      case_type: {
-        name: 'SSCS type',
-        jurisdiction: { name: '' }
-      }, state: { name: 'With FTA' }
-    }
-    casesService.getCaseViewV2.and.returnValue(of(caseDetail));
+    casesService.getCaseViewV2.and.returnValue(of(caseInfo));
     expect(component.ngOnInit).toBeTruthy();
     expect(linkedCasesService.linkedCases.length).not.toBeNull();
     expect(component.isAtFinalPage()).toBe(false);
@@ -323,19 +329,48 @@ describe('WriteLinkedCasesFieldComponent', () => {
     expect(caseEditDataService.addFormValidationError).toHaveBeenCalledTimes(1);
   });
 
-  xit('should proceedToNextState navigate to correct page', () => {
+  it('should navigate to correct page', () => {
     spyOn(component.formGroup, 'updateValueAndValidity');
+    spyOn(component, 'submitLinkedCases');
     spyOn(caseEditDataService, 'clearCaseLinkError').and.callThrough();
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     component.proceedToNextPage();
     expect(component.formGroup.updateValueAndValidity).not.toHaveBeenCalled();
-    // expect(component.linkedCasesPage).toEqual(LinkedCasesPages.LINK_CASE);
+    expect(component.submitLinkedCases).not.toHaveBeenCalled();
     component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
     component.proceedToNextPage();
     expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
+    expect(component.submitLinkedCases).toHaveBeenCalled();
   });
 
-  it('should isAtFinalState return correct value', () => {
+  it('should submit linked cases', () => {
+    spyOn(caseEditDataService, 'setCaseEditForm');
+    linkedCasesService.isLinkedCasesEventTrigger = true;
+    component.caseEditForm = FORM_GROUP;
+    console.log('FORM GROUP', component.formGroup);
+    component.submitLinkedCases();
+    expect(component.formGroup.value.caseLinks).toEqual(linkedCases);
+    expect(caseEditDataService.setCaseEditForm).toHaveBeenCalled();
+  });
+
+  it('should submit unlinked cases', () => {
+    spyOn(caseEditDataService, 'setCaseEditForm');
+    linkedCasesService.isLinkedCasesEventTrigger = false;
+    linkedCasesService.linkedCases = linkedCases;
+    component.caseEditForm = FORM_GROUP;
+    component.submitLinkedCases();
+    expect(component.formGroup.value.caseLinks).toEqual(linkedCases);
+    expect(caseEditDataService.setCaseEditForm).toHaveBeenCalled();
+  });
+
+  it('should set continue button validation error message', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = true;
+    spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
+    component.setContinueButtonValidationErrorMessage();
+    expect(caseEditDataService.setCaseLinkError).toHaveBeenCalled();
+  });
+
+  it('should isAtFinalPage return correct value', () => {
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     expect(component.isAtFinalPage()).toBe(false);
     component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
@@ -356,6 +391,12 @@ describe('WriteLinkedCasesFieldComponent', () => {
     };
     component.linkedCasesPage = LinkedCasesPages.LINK_CASE;
     expect(component.getNextPage(linkedCasesState2)).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
+  });
+
+  it('should not navigate to error element', () => {
+    spyOn(document, 'getElementById').and.returnValue(null);
+    component.navigateToErrorElement(null);
+    expect(document.getElementById).not.toHaveBeenCalled();
   });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {

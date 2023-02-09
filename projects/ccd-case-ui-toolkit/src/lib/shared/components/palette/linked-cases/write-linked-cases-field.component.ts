@@ -41,15 +41,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     this.getLinkedCaseReasons();
     this.linkedCasesService.editMode = false;
     this.caseEditDataService.caseDetails$.subscribe({
-      next: caseDetails => {
-        if (caseDetails) {
-          this.caseDetails = caseDetails;
-          this.linkedCasesService.caseDetails = caseDetails;
-          this.linkedCasesService.caseId = caseDetails.case_id;
-          this.linkedCasesService.caseName = this.linkedCasesService.getCaseName(caseDetails);
-          this.getLinkedCases();
-        }
-      }
+      next: caseDetails => this.initialiseCaseDetails(caseDetails)
     });
     this.caseEditDataService.caseEventTriggerName$.subscribe({
       next: name => this.linkedCasesService.isLinkedCasesEventTrigger = (name === LinkedCasesEventTriggers.LINK_CASES)
@@ -57,6 +49,16 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.caseEditForm = editForm
     });
+  }
+
+  public initialiseCaseDetails(caseDetails: CaseView): void {
+    if (caseDetails) {
+      this.caseDetails = caseDetails;
+      this.linkedCasesService.caseDetails = caseDetails;
+      this.linkedCasesService.caseId = caseDetails.case_id;
+      this.linkedCasesService.caseName = this.linkedCasesService.getCaseName(caseDetails);
+      this.getLinkedCases();
+    }
   }
 
   public ngAfterViewInit(): void {
@@ -96,10 +98,6 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     });
   }
 
-  public isAtFinalState(): boolean {
-    return this.linkedCasesPage === this.linkedCasesPages.CHECK_YOUR_ANSWERS;
-  }
-
   public setContinueButtonValidationErrorMessage(): void {
     const errorMessage = this.linkedCasesService.isLinkedCasesEventTrigger
         ? LinkedCasesErrorMessages.LinkCasesNavigationError
@@ -129,10 +127,10 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public submitLinkedCases(): void {
     if (!this.linkedCasesService.isLinkedCasesEventTrigger) {
       const unlinkedCaseRefereneIds = this.linkedCasesService.linkedCases.filter(item => item.unlink).map(item => item.caseReference);
-			const caseFieldValue = this.linkedCasesService.caseFieldValue;
+      const caseFieldValue = this.linkedCasesService.caseFieldValue;
       this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);
     }
-		this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
+    this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
     (this.caseEditForm.controls['data'] as any) = new FormGroup({caseLinks: new FormControl(this.linkedCasesService.caseFieldValue || [])});
     this.caseEditDataService.setCaseEditForm(this.caseEditForm);
   }
