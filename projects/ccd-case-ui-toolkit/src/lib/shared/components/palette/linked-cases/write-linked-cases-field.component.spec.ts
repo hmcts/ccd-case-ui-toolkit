@@ -26,10 +26,6 @@ import { LinkedCasesService } from './services';
 import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.component';
 import createSpyObj = jasmine.createSpyObj;
 
-/** Excluding these tests due to current business urgency for Angular 11 and shortage of time
- *  JIRA: https://tools.hmcts.net/jira/browse/EUI-7464
- *  has been created to fix these tests.
- */
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
   let fixture: ComponentFixture<WriteLinkedCasesFieldComponent>;
@@ -178,6 +174,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
 
   linkedCasesService = {
     caseId: '1682374819203471',
+    isLinkedCasesEventTrigger: true,
     linkedCases,
     getAllLinkedCaseInformation() {},
     getCaseName() {}
@@ -292,6 +289,38 @@ describe('WriteLinkedCasesFieldComponent', () => {
     expect(component.isAtFinalPage()).toEqual(true);
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     expect(component.isAtFinalPage()).toEqual(false);
+  });
+
+  it('should validate linked cases state emitter when navigate to next page is true', () => {
+    spyOn(component, 'setContinueButtonValidationErrorMessage');
+    spyOn(component, 'proceedToNextPage');
+    spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
+    component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
+    const linkedCasesState: LinkedCasesState = {
+      currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
+      navigateToNextPage: true
+    };
+    component.onLinkedCasesStateEmitted(linkedCasesState);
+    expect(component.setContinueButtonValidationErrorMessage).toHaveBeenCalled();
+    expect(component.proceedToNextPage).toHaveBeenCalled();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.LINK_CASE);
+  });
+
+  it('should validate linked cases state emitter when navigate to next page is false', () => {
+    spyOn(component, 'setContinueButtonValidationErrorMessage');
+    spyOn(component, 'proceedToNextPage');
+    spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
+    spyOn(caseEditDataService, 'addFormValidationError').and.callThrough();
+    component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
+    const linkedCasesState: LinkedCasesState = {
+      currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
+      errorMessages: [{title: 'Error title', description: 'Error descriptiom'}],
+      navigateToNextPage: false
+    };
+    component.onLinkedCasesStateEmitted(linkedCasesState);
+    expect(component.setContinueButtonValidationErrorMessage).not.toHaveBeenCalled();
+    expect(component.proceedToNextPage).not.toHaveBeenCalled();
+    expect(caseEditDataService.addFormValidationError).toHaveBeenCalledTimes(1);
   });
 
   xit('should proceedToNextState navigate to correct page', () => {
