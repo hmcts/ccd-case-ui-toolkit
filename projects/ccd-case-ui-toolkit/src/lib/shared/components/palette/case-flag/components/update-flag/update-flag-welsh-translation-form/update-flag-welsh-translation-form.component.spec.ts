@@ -34,13 +34,15 @@ describe('UpdateFlagWelshTranslationFormComponent', () => {
     expect(component.formGroup.get(component.FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME)).toBeTruthy();
   });
 
-  it('should have all four textareas based on names and the English textiareas  should be readonly', () => {
+  it('should have all four textareas based on names and the English textarea  should be readonly and the other ones maxlength 200', () => {
     const flagCommentsControl = fixture.debugElement.query(By.css(`#${component.FLAG_COMMENTS_CONTROL_NAME}`));
     expect(flagCommentsControl?.name).toEqual('textarea');
     expect(Object.keys(flagCommentsControl.attributes)).toContain('readonly');
 
     const flagCommentsWelshControl = fixture.debugElement.query(By.css(`#${component.FLAG_COMMENTS_WELSH_CONTROL_NAME}`));
     expect(flagCommentsWelshControl?.name).toEqual('textarea');
+    expect(flagCommentsWelshControl?.attributes.maxlength).toEqual('200');
+
 
     const flagStatusChangeReasonControl = fixture.debugElement.query(By.css(`#${component.FLAG_STATUS_CHANGE_REASON_CONTROL_NAME}`));
     expect(flagStatusChangeReasonControl?.name).toEqual('textarea');
@@ -48,5 +50,6 @@ describe('UpdateFlagWelshTranslationFormComponent', () => {
 
     const flagStatusChangeReasonWelshControl = fixture.debugElement.query(By.css(`#${component.FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME}`));
     expect(flagStatusChangeReasonWelshControl?.name).toEqual('textarea');
+    expect(flagStatusChangeReasonWelshControl?.attributes.maxlength).toEqual('200');
   });
 });
