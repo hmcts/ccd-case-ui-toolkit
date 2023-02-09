@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -13,9 +13,8 @@ import createSpyObj = jasmine.createSpyObj;
 describe('UnLinkCasesComponent', () => {
   let component: UnLinkCasesComponent;
   let fixture: ComponentFixture<UnLinkCasesComponent>;
-  let casesService: any;
-  let linkedCasesService: any;
   let nativeElement: any;
+  let casesService: any;
   let caseEditComponentStub: any;
 
   const caseInfo = {
@@ -100,7 +99,7 @@ describe('UnLinkCasesComponent', () => {
     }
   ];
 
-  linkedCasesService = {
+  const linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases,
     getAllLinkedCaseInformation() {},
@@ -108,7 +107,7 @@ describe('UnLinkCasesComponent', () => {
     caseFieldValue: [],
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const FORM_GROUP = new FormGroup({
       data: new FormGroup({caseLinks: new FormControl('SOME_VALUE')})
     });

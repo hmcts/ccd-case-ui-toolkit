@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LinkedCasesService } from '../../services/linked-cases.service';
@@ -8,22 +8,20 @@ import { NoLinkedCasesComponent } from './no-linked-cases.component';
 describe('NoLinkedCasesComponent', () => {
   let component: NoLinkedCasesComponent;
   let fixture: ComponentFixture<NoLinkedCasesComponent>;
-  let router: any;
-  let linkedCasesService: any;
-  const caseId = '1682374819203471';
 
-  router = {
+  const caseId = '1682374819203471';
+  const router = {
     navigate: jasmine.createSpy('navigate'),
     url: ''
   };
   router.navigate.and.returnValue({then: f => f()});
 
-  linkedCasesService = {
+  const linkedCasesService = {
     caseId: '1682374819203471',
     getAllLinkedCaseInformation() {}
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

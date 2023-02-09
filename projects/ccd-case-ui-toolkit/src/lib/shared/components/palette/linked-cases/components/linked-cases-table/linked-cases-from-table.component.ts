@@ -33,11 +33,12 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   public showHideLinkText = 'Show';
   public noLinkedCases = true;
   public isServerError = false;
+  public isServerReasonCodeError = false;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly casesService: CasesService,
-    public readonly linkedCasesService: LinkedCasesService,
+    private readonly linkedCasesService: LinkedCasesService,
     ) {
   }
 
@@ -53,6 +54,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
     if (this.route.snapshot.data.case) {
       this.linkedCasesService.caseDetails = this.route.snapshot.data.case;
     }
+    this.isServerReasonCodeError = this.linkedCasesService.isServerReasonCodeError;
   }
 
   public fetchPageData() {
@@ -82,7 +84,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
         this.isServerError = true;
         this.notifyAPIFailure.emit(true);
       }
-      );
+    );
   }
 
   public getLinkedCases(): Observable<LinkedCasesResponse> {

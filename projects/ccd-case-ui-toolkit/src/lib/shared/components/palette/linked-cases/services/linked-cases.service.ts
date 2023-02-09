@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { CaseView } from '../../../../domain/case-view';
 import { Jurisdiction } from '../../../../domain/definition/jurisdiction.model';
 import { JurisdictionService, SearchService } from '../../../../services';
@@ -54,7 +54,7 @@ export class LinkedCasesService {
     };
   }
 
-  public mapResponse(esSearchCasesResponse) {
+  public mapResponse(esSearchCasesResponse): any {
     const caseInfo = this.caseFieldValue.find(item => item.value && item.value.CaseReference === esSearchCasesResponse.case_id);
     return caseInfo && {
       caseReference: esSearchCasesResponse.case_id,
@@ -64,18 +64,18 @@ export class LinkedCasesService {
       state: this.mapLookupIDToValueFromJurisdictions('STATE', esSearchCasesResponse.case_fields['[STATE]']),
       reasons: caseInfo.value && caseInfo.value.ReasonForLink &&
         caseInfo.value.ReasonForLink.map(reason => reason.value && reason.value.Reason),
-    }
+    };
   }
 
-  public searchCasesByCaseIds(searchCasesResponse: any[]) {
+  public searchCasesByCaseIds(searchCasesResponse: any[]): Observable<unknown[]> {
     return forkJoin(searchCasesResponse);
   }
 
-  public getAllLinkedCaseInformation() {
+  public getAllLinkedCaseInformation(): void {
     const searchCasesResponse = [];
     const linkedCaseIds = this.groupLinkedCasesByCaseType(this.caseFieldValue, 'CaseType');
     Object.keys(linkedCaseIds).forEach(key => {
-      const esQuery = this.constructElasticSearchQuery(linkedCaseIds[key], 100)
+      const esQuery = this.constructElasticSearchQuery(linkedCaseIds[key], 100);
       const query = this.searchService.searchCasesByIds(key, esQuery, SearchService.VIEW_WORKBASKET);
       searchCasesResponse.push(query);
     });
@@ -98,9 +98,9 @@ export class LinkedCasesService {
             reasons: item.reasons && item.reasons.map(reason => {
               return {
                 reasonCode: reason
-              } as LinkReason
+              } as LinkReason;
             }),
-          } as CaseLink
+          } as CaseLink;
         });
         this.linkedCases = caseLinks;
         this.serverLinkedApiError = null;
@@ -108,9 +108,8 @@ export class LinkedCasesService {
       err => {
         this.serverLinkedApiError = {
           id: 'backendError', message: 'Some case information is not available at the moment'
-        }
-      }
-    )
+        };
+      });
     }
   }
 

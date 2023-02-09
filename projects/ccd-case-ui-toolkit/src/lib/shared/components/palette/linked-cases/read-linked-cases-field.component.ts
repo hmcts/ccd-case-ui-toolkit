@@ -13,9 +13,8 @@ import { LinkedCasesService } from './services';
 export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
 
   public caseField: CaseField;
-
   public reasonListLoaded = false;
-  public reload = false
+  public reload = false;
   public serverError: { id: string, message: string } = null;
   public serverLinkedApiError: { id: string, message: string } = null;
   public isServerReasonCodeError = false;
@@ -61,29 +60,29 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
     this.linkedCasesService.caseFieldValue = this.caseField?.value || [];
     let labelField = document.getElementsByClassName('govuk-heading-l');
     if (labelField && labelField.length) {
-      labelField[0].replaceWith('')
+      labelField[0].replaceWith('');
     }
     labelField = document.getElementsByClassName('heading-h2');
     if (labelField && labelField.length) {
-      labelField[0].replaceWith('')
+      labelField[0].replaceWith('');
     }
     labelField = document.getElementsByClassName('case-viewer-label');
     if (labelField && labelField.length) {
-      labelField[0].replaceWith('')
+      labelField[0].replaceWith('');
     }
   }
 
-  public reloadCurrentRoute() {
+  public reloadCurrentRoute(): void {
     this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseDetails.case_id]).then(() => {
       window.location.hash = 'Linked cases';
     });
   }
 
-  public getFailureLinkedToNotification(evt) {
+  public getFailureLinkedToNotification(evt): void {
     this.isServerLinkedToError = true;
   }
 
-  public getFailureLinkedFromNotification(evt) {
+  public getFailureLinkedFromNotification(evt): void {
     this.isServerLinkedFromError = true;
   }
 }

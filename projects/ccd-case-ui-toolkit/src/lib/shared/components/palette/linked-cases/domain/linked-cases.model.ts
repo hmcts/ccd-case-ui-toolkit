@@ -67,6 +67,6 @@ export class Terms {
 }
 
 export class ESQueryType {
-  query: Terms
-  size: number
+  query: Terms;
+  size: number;
 }

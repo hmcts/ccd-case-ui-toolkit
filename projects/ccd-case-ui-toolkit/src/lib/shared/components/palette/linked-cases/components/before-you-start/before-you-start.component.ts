@@ -15,11 +15,13 @@ export class BeforeYouStartComponent {
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
   public isLinkCasesJourney = false;
-
   public errorMessages: ErrorMessage[];
+  public serverLinkedApiError: { id: string, message: string };
 
-  constructor(private readonly router: Router, public readonly linkedCasesService: LinkedCasesService) {
+  constructor(private readonly router: Router,
+    private readonly linkedCasesService: LinkedCasesService) {
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
+    this.serverLinkedApiError = this.linkedCasesService.serverLinkedApiError;
     // re-initiate the state based on the casefield value
     const linkedCaseRefereneIds = this.linkedCasesService.caseFieldValue.filter(item => item).map(item => item.id);
     this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter

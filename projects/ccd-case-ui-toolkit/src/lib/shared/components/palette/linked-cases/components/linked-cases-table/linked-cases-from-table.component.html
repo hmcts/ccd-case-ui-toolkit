@@ -11,7 +11,7 @@
       <th scope="col" class="govuk-table__header case-table-column" width="20%">Reasons for case link</th>
     </tr>
   </thead>
-  <tbody class="govuk-table__body" *ngIf="getLinkedCasesResponse && (!isServerError && !linkedCasesService.isServerReasonCodeError)">
+  <tbody class="govuk-table__body" *ngIf="getLinkedCasesResponse && (!isServerError && !isServerReasonCodeError)">
     <tr class="govuk-table__row" *ngFor="let case of getLinkedCasesResponse">
       <td class="govuk-table__header case-table-column width-20">
         <p class="govuk-body"><a target="_blank" class="govuk-link" href="cases/case-details/{{case.caseReference}}"

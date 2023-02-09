@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 
@@ -6,10 +6,16 @@ import { LinkedCasesService } from '../../services/linked-cases.service';
   selector: 'ccd-no-linked-cases',
   templateUrl: './no-linked-cases.component.html'
 })
-export class NoLinkedCasesComponent {
+export class NoLinkedCasesComponent implements OnInit {
+
+  public serverLinkedApiError: { id: string, message: string };
 
   constructor(private readonly router: Router,
-    public linkedCasesService: LinkedCasesService) {
+    private readonly linkedCasesService: LinkedCasesService) {
+  }
+
+  public ngOnInit(): void {
+    this.serverLinkedApiError = this.linkedCasesService.serverLinkedApiError;
   }
 
   public onBack(): void {

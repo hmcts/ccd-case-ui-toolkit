@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,7 +10,6 @@ import { BeforeYouStartComponent } from './before-you-start.component';
 describe('BeforeYouStartComponent', () => {
   let component: BeforeYouStartComponent;
   let fixture: ComponentFixture<BeforeYouStartComponent>;
-  const nextButton: any = undefined;
 
   const linkedCasesService = {
     caseId: '1682374819203471',
@@ -20,13 +19,12 @@ describe('BeforeYouStartComponent', () => {
     serverLinkedApiError: null,
   };
 
-  let mockRouter: any;
-  mockRouter = {
+  const mockRouter = {
     navigate: jasmine.createSpy('navigate').and.returnValue(Promise.resolve()),
     url: ''
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

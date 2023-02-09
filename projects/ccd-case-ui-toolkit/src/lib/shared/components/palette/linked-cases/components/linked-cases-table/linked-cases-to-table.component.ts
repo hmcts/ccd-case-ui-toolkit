@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { CaseView } from '../../../../../domain';
 import { CaseField, Jurisdiction } from '../../../../../domain/definition';
 import { CasesService } from '../../../../case-editor/services/cases.service';
@@ -8,14 +8,14 @@ import { CaseLink, LinkReason } from '../../domain/linked-cases.model';
 import { LinkedCasesService } from '../../services';
 
 interface LinkedCasesResponse {
-  caseReference: string
-  caseName: string
+  caseReference: string;
+  caseName: string;
   caseType: string;
   caseTypeDescription: string;
   service: string;
   state: string;
   stateDescription: string;
-  reasons: []
+  reasons: [];
 }
 
 @Component({
@@ -23,7 +23,6 @@ interface LinkedCasesResponse {
   templateUrl: './linked-cases-to-table.component.html',
   styleUrls: ['./linked-cases-to-table.component.scss']
 })
-
 export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   private static readonly CASE_CONSOLIDATED_REASON_CODE = 'CLRC015';
@@ -39,21 +38,22 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public linkedCasesFromResponse: LinkedCasesResponse[] = [];
   public caseId: string;
   public isServerError = false;
+  public isServerReasonCodeError = false;
   public jurisdictionsResponse: Jurisdiction[] = [];
 
   constructor(
     private readonly route: ActivatedRoute,
-    public readonly linkedCasesService: LinkedCasesService,
-    private  readonly casesService: CasesService) { }
+    private readonly linkedCasesService: LinkedCasesService,
+    private readonly casesService: CasesService) { }
 
   public ngAfterViewInit(): void {
     let labelField = document.getElementsByClassName('govuk-heading-l');
     if (labelField && labelField.length) {
-      labelField[0].replaceWith('')
+      labelField[0].replaceWith('');
     }
     labelField = document.getElementsByClassName('heading-h2');
     if (labelField && labelField.length) {
-      labelField[0].replaceWith('')
+      labelField[0].replaceWith('');
     }
   }
 
@@ -63,13 +63,14 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     if (this.route.snapshot.data.case) {
       this.linkedCasesService.caseDetails = this.route.snapshot.data.case;
     }
+    this.isServerReasonCodeError = this.linkedCasesService.isServerReasonCodeError;
   }
 
-  public getCaseRefereneLink(caseRef) {
+  public getCaseRefereneLink(caseRef: string): string {
     return caseRef.slice(this.caseId.length - 4);
   }
 
-  public sortLinkedCasesByReasonCode(searchCasesResponse) {
+  public sortLinkedCasesByReasonCode(searchCasesResponse): LinkedCasesResponse[] {
     const topLevelresultArray = [];
     let secondLevelresultArray = [];
     searchCasesResponse.forEach((item: any) => {
@@ -80,22 +81,19 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       const progressedStateReason = reasons.map(x => x).find(
         reason => reason === LinkedCasesToTableComponent.CASE_PROGRESS_REASON_CODE
       );
-      let arrayItem;
+      const arrayItem = { ...item };
       if (progressedStateReason) {
-        arrayItem = { ...item };
         topLevelresultArray.push(arrayItem);
       } else if (consolidatedStateReason) {
-        arrayItem = { ...item };
-        secondLevelresultArray = [{ ...item }, ...secondLevelresultArray]
+        secondLevelresultArray = [{ ...item }, ...secondLevelresultArray];
       } else {
-        arrayItem = { ...item };
         secondLevelresultArray.push({ ...item });
       }
     })
-    return topLevelresultArray.concat(secondLevelresultArray)
+    return topLevelresultArray.concat(secondLevelresultArray);
   }
 
-  public getAllLinkedCaseInformation() {
+  public getAllLinkedCaseInformation(): void {
     const searchCasesResponse = [];
     const caseFieldValue = this.caseField && this.caseField.id === 'caseLinks' ? this.caseField.value : [];
     // Generate the list of observables
@@ -108,7 +106,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
         const casesResponse = [];
         searchCases.forEach(response => {
-          casesResponse.push(this.mapResponse(response))
+          casesResponse.push(this.mapResponse(response));
         });
         this.linkedCasesFromResponse = this.sortLinkedCasesByReasonCode(casesResponse);
         this.isLoaded = true;
@@ -122,9 +120,9 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
             reasons: item.reasons && item.reasons.map(reason => {
               return {
                 reasonCode: reason
-              } as LinkReason
+              } as LinkReason;
             }),
-          } as CaseLink
+          } as CaseLink;
         });
         this.linkedCasesService.initialCaseLinks = caseLinks;
         this.linkedCasesService.linkedCases = caseLinks;
@@ -132,17 +130,17 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       },
         err => {
           this.isServerError = true;
-          this.notifyAPIFailure.emit(true)
+          this.notifyAPIFailure.emit(true);
         }
       );
     }
   }
 
-  public searchCasesByCaseIds(searchCasesResponse: any[]) {
+  public searchCasesByCaseIds(searchCasesResponse: any[]): Observable<unknown[]> {
     return forkJoin(searchCasesResponse);
   }
 
-  public hasLeadCaseOrConsolidated(reasonCode: string) {
+  public hasLeadCaseOrConsolidated(reasonCode: string): boolean {
     return reasonCode === LinkedCasesToTableComponent.CASE_PROGRESS_REASON_CODE ||
       reasonCode === LinkedCasesToTableComponent.CASE_CONSOLIDATED_REASON_CODE;
   }

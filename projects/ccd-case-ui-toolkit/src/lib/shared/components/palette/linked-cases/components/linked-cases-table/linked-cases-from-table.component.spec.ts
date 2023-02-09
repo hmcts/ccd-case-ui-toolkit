@@ -19,7 +19,7 @@ describe('LinkCasesFromTableComponent', () => {
   let searchService: any;
   let nativeElement: any;
   let appConfig: any;
-  let linkedCasesService: any;
+	let linkedCasesService: any;
 
   const linkedCases: CaseLink[] = [
     {
@@ -45,28 +45,6 @@ describe('LinkCasesFromTableComponent', () => {
       caseName: 'SSCS 2.1',
     },
   ];
-
-  linkedCasesService = {
-    caseId: '1682374819203471',
-    linkedCases,
-    getAllLinkedCaseInformation() {},
-    jurisdictionsResponse: [
-      {
-        id: 'SSCS',
-        name: 'Tribunals',
-        description: 'Social Security and Child Support',
-        caseTypes: [
-          {
-            id: 'SSCS_ExceptionRecord',
-            description: 'Bulkscanning Exception',
-            version: null,
-            name: 'SSCS Bulkscanning',
-          },
-        ],
-        states: [{}],
-      },
-    ],
-  };
 
   beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', [

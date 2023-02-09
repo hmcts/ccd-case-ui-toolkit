@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { CaseView, ErrorMessage } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLink, LinkedCasesState } from '../../domain';
@@ -56,7 +56,7 @@ export class UnLinkCasesComponent implements OnInit {
     }
   }
 
-  public getAllLinkedCaseInformation() {
+  public getAllLinkedCaseInformation(): void {
     const searchCasesResponse = [];
     this.linkedCases.forEach(linkedCase => {
       searchCasesResponse.push(this.casesService.getCaseViewV2(linkedCase.caseReference));
@@ -81,7 +81,7 @@ export class UnLinkCasesComponent implements OnInit {
     }
   }
 
-  public searchCasesByCaseIds(searchCasesResponse: any[]) {
+  public searchCasesByCaseIds(searchCasesResponse: any[]): Observable<unknown[]> {
     return forkJoin(searchCasesResponse);
   }
 
@@ -91,7 +91,7 @@ export class UnLinkCasesComponent implements OnInit {
     });
   }
 
-  public get getLinkedCasesFormArray(): FormArray   {
+  public get getLinkedCasesFormArray(): FormArray {
     const formFieldArray = this.linkedCases.map(val => this.fb.group({
       caseReference: val.caseReference,
       reasons: val.reasons,

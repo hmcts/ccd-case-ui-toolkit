@@ -17,7 +17,7 @@ describe('ReadLinkedCasesFieldComponent', () => {
   let fixture: ComponentFixture<ReadLinkedCasesFieldComponent>;
   let commonDataService: any;
   let appConfig: any;
-  let linkedCasesService: any;
+
   const caseFieldValue = {
     _list_items: [],
     id: 'caseLinks',
@@ -499,7 +499,7 @@ describe('ReadLinkedCasesFieldComponent', () => {
     ]
   };
 
-  linkedCasesService = {
+  const linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases,
     getAllLinkedCaseInformation() {}
@@ -522,7 +522,7 @@ describe('ReadLinkedCasesFieldComponent', () => {
       ],
       declarations: [ReadLinkedCasesFieldComponent],
     })
-      .compileComponents();
+    .compileComponents();
   }));
 
   beforeEach(() => {

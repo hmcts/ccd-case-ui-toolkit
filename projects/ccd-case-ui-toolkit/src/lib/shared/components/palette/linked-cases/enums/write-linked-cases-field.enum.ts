@@ -15,7 +15,7 @@ export enum LinkedCasesErrorMessages {
   CaseSelectionError = 'You need to propose at least one case',
   CaseProposedError = 'This case has already been proposed',
   CasesLinkedError = 'These cases are already linked',
-  UnlinkCaseSelectionError = 'Select a case to unlink before continue',
+  UnlinkCaseSelectionError = 'Select a case to unlink before continuing',
   LinkCasesNavigationError = 'Please select Next to link case(s)',
   UnlinkCasesNavigationError = 'Please select Next to unlink case(s)',
   BackNavigationError = 'Please select Back to go to the previous page'

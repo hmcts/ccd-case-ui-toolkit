@@ -1,9 +1,9 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-xl" *ngIf="linkedCasesService.serverLinkedApiError">There is a problem</h1>
+    <h1 class="govuk-heading-xl" *ngIf="serverLinkedApiError">There is a problem</h1>
     <p id="unlink-cases-error" class="govuk-error-message"
-      *ngIf="linkedCasesService.serverLinkedApiError;else noLinkedCases;">
-      <span class="govuk-visually-hidden">Error:</span> {{linkedCasesService.serverLinkedApiError.message}}
+      *ngIf="serverLinkedApiError;else noLinkedCases;">
+      <span class="govuk-visually-hidden">Error:</span> {{serverLinkedApiError.message}}
     </p>
     <ng-template #noLinkedCases>
       <p class="govuk-body">There are no cases linked to this one.</p>

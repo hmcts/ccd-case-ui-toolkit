@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
-import { CaseField, ErrorMessage } from '../../../domain';
+import { ErrorMessage } from '../../../domain';
 import { CaseView } from '../../../domain/case-view';
 import { CommonDataService } from '../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../case-editor/services/cases.service';
@@ -64,11 +64,11 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public ngAfterViewInit(): void {
     let labelField = document.getElementsByClassName('govuk-heading-l');
     if (labelField && labelField.length) {
-      labelField[0].replaceWith('')
+      labelField[0].replaceWith('');
     }
     labelField = document.getElementsByClassName('heading-h2');
     if (labelField && labelField.length) {
-      labelField[0].replaceWith('')
+      labelField[0].replaceWith('');
     }
   }
 
@@ -83,7 +83,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     } else {
       if (linkedCasesState.errorMessages && linkedCasesState.errorMessages.length) {
         linkedCasesState.errorMessages.forEach((errorMessage, index) => {
-          this.caseEditDataService.addFormValidationError({ id: errorMessage.fieldId, message: errorMessage.description})
+          this.caseEditDataService.addFormValidationError({ id: errorMessage.fieldId, message: errorMessage.description});
         });
       }
     }

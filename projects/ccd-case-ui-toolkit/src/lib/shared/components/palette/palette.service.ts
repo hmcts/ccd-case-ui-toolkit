@@ -138,7 +138,7 @@ export class PaletteService {
            return displayContextParameter === displayContextParameterFromLookup;
         });
       });
-      if (componentToRender?.length > 0 && this.componentLauncherRegistry.hasOwnProperty(componentToRender[0].toUpperCase())) {
+      if (componentToRender?.length > 0 && this.componentLauncherRegistry.hasOwnProperty(componentToRender[0])) {
         return this.componentLauncherRegistry[componentToRender[0]][write ? 0 : 1];
       }
     }

@@ -397,10 +397,6 @@ export class CasesService {
     const url = `${this.appConfig.getCaseDataStoreApiUrl()}/${caseId}`
     return this.http
     .get(url)
-    .pipe(
-      catchError(error => {
-        return throwError(error);
-      })
-    );
+    .pipe(catchError(error => throwError(error)));
   }
 }

@@ -6,5 +6,5 @@ export enum DisplayContextParameter {
 
 export enum DisplayContextCustomParameter {
   CaseFileView = 'CaseFileView',
-  LinkedCases = 'LINKEDCASES'
+  LinkedCases = 'LinkedCases'
 }

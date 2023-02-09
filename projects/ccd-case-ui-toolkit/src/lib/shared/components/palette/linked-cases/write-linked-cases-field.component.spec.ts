@@ -33,7 +33,6 @@ describe('WriteLinkedCasesFieldComponent', () => {
   let caseEditPageComponent: CaseEditPageComponent;
   let caseEditComponentStub: any;
   let casesService: any;
-  let linkedCasesService: any;
   const dialog: any = undefined;
   let route: any;
   let commonDataService: any;
@@ -174,7 +173,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     }
   ];
 
-  linkedCasesService = {
+  const linkedCasesService = {
     caseId: '1682374819203471',
     isLinkedCasesEventTrigger: true,
     linkedCases,

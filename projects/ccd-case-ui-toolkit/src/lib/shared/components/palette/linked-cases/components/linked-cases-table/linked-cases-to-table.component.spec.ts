@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {
-	ComponentFixture,
-	TestBed,
-	waitForAsync
+  ComponentFixture,
+  TestBed,
+  waitForAsync
 } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -12,7 +12,7 @@ import { CaseField } from '../../../../../domain';
 import { PipesModule } from '../../../../../pipes/pipes.module';
 import { SearchService } from '../../../../../services';
 import {
-	CommonDataService
+  CommonDataService
 } from '../../../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesService } from '../../services';
@@ -130,6 +130,17 @@ describe('LinkCasesToTableComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.searchCasesByCaseIds).toHaveBeenCalledTimes(2);
+  });
+
+  it('should has lead case or consolidated return correct value', () => {
+    expect(component.hasLeadCaseOrConsolidated('CLRC015')).toEqual(true);
+    expect(component.hasLeadCaseOrConsolidated('CLRC016')).toEqual(true);
+    expect(component.hasLeadCaseOrConsolidated('RANDOM')).toEqual(false);
+  });
+
+  it('should get case reference link return ', () => {
+    component.caseId = '1111222233334444';
+    expect(component.getCaseRefereneLink('1111222233334444')).toEqual('4444');
   });
 
   /* Disabling this test for now to do the time constraint */

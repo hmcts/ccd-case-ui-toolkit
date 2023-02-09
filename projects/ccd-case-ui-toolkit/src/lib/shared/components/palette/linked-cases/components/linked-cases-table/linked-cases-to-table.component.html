@@ -30,7 +30,7 @@
             </span>
           </td>
         </tr>
-        <tr class="govuk-table__row" *ngIf="linkedCasesFromResponse && linkedCasesFromResponse.length === 0 && (!isServerError && !linkedCasesService.isServerReasonCodeError)">
+        <tr class="govuk-table__row" *ngIf="linkedCasesFromResponse && linkedCasesFromResponse.length === 0 && (!isServerError && !isServerReasonCodeError)">
           <td class="govuk-table__cell" colspan="5">
             None
           </td>
