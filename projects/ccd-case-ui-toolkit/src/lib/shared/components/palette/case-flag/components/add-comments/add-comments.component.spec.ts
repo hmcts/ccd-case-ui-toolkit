@@ -14,7 +14,7 @@ describe('AddCommentsComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ AddCommentsComponent ]
+      declarations: [ AddCommentsComponent ],
     })
     .compileComponents();
   }));

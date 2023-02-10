@@ -1,9 +1,12 @@
+import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField } from '../../../domain/definition';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { PaletteContext } from '../base-field';
 import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
@@ -13,6 +16,9 @@ import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;
   let fixture: ComponentFixture<ReadCaseFlagFieldComponent>;
+  let router: Router;
+  let route: ActivatedRoute;
+
   const flaglauncherId = 'FlagLauncher';
   const flagLauncher1CaseField: CaseField = {
     id: 'FlagLauncher1',
@@ -94,7 +100,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     hearingRelevant: 'Yes',
     flagCode: 'OT0001',
     status: CaseFlagStatus.ACTIVE
-  }
+  };
   const witnessComplexFieldId = 'witness1';
   const witnessCaseFlagPartyName = 'Sawit All';
   const witnessCaseFlagRoleOnCase = 'Witness';
@@ -340,7 +346,7 @@ describe('ReadCaseFlagFieldComponent', () => {
       [flagLauncher1CaseField.id]: {
         controls: {},
         caseField: flagLauncher1CaseField,
-        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService())
+        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), { getState: () => {} } as Location, new CaseFlagStateService() )
       }
     },
     get: (controlName: string) => {
@@ -363,6 +369,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      imports: [ RouterTestingModule ],
       declarations: [ ReadCaseFlagFieldComponent ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
@@ -375,6 +382,9 @@ describe('ReadCaseFlagFieldComponent', () => {
     fixture = TestBed.createComponent(ReadCaseFlagFieldComponent);
     component = fixture.componentInstance;
     component.caseField = flagLauncher1CaseField;
+    router = TestBed.get(Router);
+    route = TestBed.get(ActivatedRoute);
+
     fixture.detectChanges();
   });
 
@@ -460,7 +470,9 @@ describe('ReadCaseFlagFieldComponent', () => {
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
-    formGroup.controls[flagLauncher1CaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocation)
+    });
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
@@ -476,7 +488,9 @@ describe('ReadCaseFlagFieldComponent', () => {
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
-    formGroup.controls[flagLauncher1CaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocation)
+    });
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
@@ -491,7 +505,9 @@ describe('ReadCaseFlagFieldComponent', () => {
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
-    formGroup.controls[flagLauncher1CaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocationInComplexField;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocationInComplexField)
+    });
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
@@ -507,7 +523,9 @@ describe('ReadCaseFlagFieldComponent', () => {
       display_context_parameter: createMode
     };
     selectedFlagsLocation.caseField.value = null;
-    formGroup.controls[flagLauncher1CaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocation)
+    });
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeNull();
@@ -537,4 +555,18 @@ describe('ReadCaseFlagFieldComponent', () => {
     // Check the correct display mode for the "Review flag details" summary page has been set
     expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.MANAGE);
   });
+
+  it('should navigate back to form with field state', fakeAsync(() => {
+    spyOn(router, 'navigate').and.callThrough();
+
+    const fieldState = 123;
+    component.navigateBackToForm(fieldState);
+
+    tick();
+
+    expect(router.navigate).toHaveBeenCalledWith(['../createCaseFlagCaseFlagFormPage'], {
+      relativeTo: route,
+      state: {fieldState}
+    });
+  }));
 });

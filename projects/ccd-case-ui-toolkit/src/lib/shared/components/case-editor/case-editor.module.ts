@@ -51,6 +51,7 @@ import {
   WorkAllocationService
 } from './services';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
+import { CaseFlagStateService } from './services/case-flag-state.service';
 import { CaseworkerService } from './services/case-worker.service';
 
 @NgModule({
@@ -117,7 +118,8 @@ import { CaseworkerService } from './services/case-worker.service';
     JudicialworkerService,
     CaseworkerService,
     SessionStorageService,
-    EventCompletionStateMachineService
+    EventCompletionStateMachineService,
+    CaseFlagStateService
   ]
 })
 export class CaseEditorModule { }

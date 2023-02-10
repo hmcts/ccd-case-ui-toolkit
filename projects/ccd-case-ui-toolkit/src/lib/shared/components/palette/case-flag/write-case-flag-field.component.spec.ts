@@ -1,15 +1,20 @@
+import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 import createSpy = jasmine.createSpy;
+import * as _ from 'lodash';
+import { BehaviorSubject } from 'rxjs';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
-xdescribe('WriteCaseFlagFieldComponent', () => {
+describe('WriteCaseFlagFieldComponent', () => {
   let component: WriteCaseFlagFieldComponent;
   let fixture: ComponentFixture<WriteCaseFlagFieldComponent>;
   const flaglauncherId = 'FlagLauncher';
@@ -301,13 +306,26 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
 
   const updateMode = '#ARGUMENT(UPDATE)';
 
+  let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
+  let locationSpy: jasmine.SpyObj<Location>;
+  let caseEditDataServiceSpy: jasmine.SpyObj<CaseEditDataService>;
+
   beforeEach(waitForAsync(() => {
+    caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
+    caseFlagStateServiceSpy.formGroup = new FormGroup({});
+
+    locationSpy = jasmine.createSpyObj('Location', ['getState']);
+    caseEditDataServiceSpy = jasmine.createSpyObj('CaseEditDataService', ['clearFormValidationErrors', 'setTriggerSubmitEvent']);
+
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ WriteCaseFlagFieldComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: _.cloneDeep(mockRoute) },
+        { provide: CaseEditDataService, useValue: caseEditDataServiceSpy },
+        { provide: Location, useValue: locationSpy },
+        { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy },
       ]
     })
     .compileComponents();
@@ -319,6 +337,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     spyOn(component, 'setDisplayContextParameterUpdate').and.callThrough();
     component.formGroup = parentFormGroup;
     component.caseField = flagLauncherCaseField;
+    caseEditDataServiceSpy.caseTitle$ = new BehaviorSubject<string>('Mocked Case Title');
     fixture.detectChanges();
   });
 
@@ -326,8 +345,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have called ngOnInit, created a FormGroup with a validator, and set the correct Case Flag field starting state', () => {
-    expect(component.ngOnInit).toBeTruthy();
+  it('should have created a FormGroup with a validator, and set the correct Case Flag field starting state', () => {
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
     if (!component.isDisplayContextParameterUpdate) {
@@ -407,7 +425,6 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
   });
 
   // TODO: Need to add tests for when caseField.value is null and caseField.value.details is null
-
   it('should remove the existing FlagLauncher control from the parent before re-registering', () => {
     spyOn(parentFormGroup, 'removeControl').and.callThrough();
     spyOn(component, 'setFlagsCaseFieldValue');
@@ -443,12 +460,14 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[1].id).toBeTruthy();
     expect(component.flagsData[1].caseField.value.details[1].value).toBeTruthy();
     const populateNewFlagDetailInstanceSpy = spyOn(component, 'populateNewFlagDetailInstance').and.callThrough();
-    let newFlag = {
+    const newFlag1 = {
       flags: null,
-      pathToFlagsFormGroup: '',
+      pathToFlagsFormGroup: component.flagsData[0].pathToFlagsFormGroup,
       caseField: component.flagsData[0].caseField
     } as FlagsWithFormGroupPath;
-    component.selectedFlagsLocation = newFlag;
+    component.caseFlagParentFormGroup = new FormGroup({
+      selectedLocation: new FormControl({...newFlag1})
+    });
     component.addFlagToCollection();
     expect(populateNewFlagDetailInstanceSpy).toHaveBeenCalled();
     // // Check there are now three case flag values in the caseField object for caseFlag1, and two in caseFlag2
@@ -458,12 +477,14 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     // // populating the FlagDetail instance)
     expect(component.flagsData[0].caseField.value.details[2].value.name).toBeUndefined();
     expect(component.flagsData[1].caseField.value.details.length).toBe(2);
-    newFlag = {
+    const newFlag2 = {
       flags: null,
-      pathToFlagsFormGroup: '',
+      pathToFlagsFormGroup: component.flagsData[1].pathToFlagsFormGroup,
       caseField: component.flagsData[1].caseField
     } as FlagsWithFormGroupPath;
-    component.selectedFlagsLocation = newFlag;
+    component.caseFlagParentFormGroup = new FormGroup({
+      selectedLocation: new FormControl({...newFlag2})
+    });
     component.addFlagToCollection();
     // Check there are now two case flag values in the caseField object for caseFlag1, and three in caseFlag2
     expect(component.flagsData[0].caseField.value.details.length).toBe(2);
@@ -472,7 +493,9 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     // FlagDetail value expected to be undefined because no caseFlagParentFormGroup value was set (which is used for
     // populating the FlagDetail instance)
     expect(component.flagsData[1].caseField.value.details[2].value.name).toBeUndefined();
-    component.selectedFlagsLocation = null;
+    component.caseFlagParentFormGroup = new FormGroup({
+      selectedLocation: new FormControl(null)
+    });
     populateNewFlagDetailInstanceSpy.calls.reset();
   });
 
@@ -482,10 +505,12 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     spyOn(component, 'populateNewFlagDetailInstance');
     const newFlag = {
       flags: null,
-      pathToFlagsFormGroup: '',
-      caseField: component.flagsData[2].caseField
-    } as FlagsWithFormGroupPath
-    component.selectedFlagsLocation = newFlag;
+      pathToFlagsFormGroup: component.flagsData[2].pathToFlagsFormGroup,
+      caseField: { ...component.flagsData[2].caseField }
+    } as FlagsWithFormGroupPath;
+    component.caseFlagParentFormGroup = new FormGroup({
+      selectedLocation: new FormControl(newFlag)
+    });
     component.addFlagToCollection();
     expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
     // Check that the caseFlags object has a value containing a details array, containing an object with a value property
@@ -521,66 +546,34 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[1].value.status).toEqual(CaseFlagStatus.ACTIVE);
   });
 
-  it('should handle the caseFlagStateEmitter when the state is FLAG_LOCATION', () => {
-    const caseFlagState: CaseFlagState = {
-      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
-      selectedFlagsLocation: {
-        flags: null,
-        pathToFlagsFormGroup: caseFlag1FieldId,
-        caseField: null
-      },
-      errorMessages: []
-    };
-    spyOn(component, 'setCaseFlagParentFormGroup').and.callThrough();
-    component.onCaseFlagStateEmitted(caseFlagState);
-    expect(component.setCaseFlagParentFormGroup).toHaveBeenCalledWith(caseFlagState.selectedFlagsLocation.pathToFlagsFormGroup);
-    expect(component.caseFlagParentFormGroup).toEqual(parentFormGroup.get(caseFlag1FieldId) as FormGroup);
-    expect(component.selectedFlagsLocation).toEqual(caseFlagState.selectedFlagsLocation);
-  });
+  it('should handle the caseFlagStateEmitter  and increment fieldStte by 1 if not FLAG_COMMENTS or FLAG_UPDATE,' +
+    'has no errors and listOfValues is empty', () => {
+    component.caseFlagParentFormGroup = new FormGroup({
+      flagType: new FormControl({
+        listOfValues: []
+      })
+    });
 
-  it('should handle the caseFlagStateEmitter when the state is FLAG_TYPE', () => {
-    const caseFlagState: CaseFlagState = {
+    component.fieldState = 0;
+    component.onCaseFlagStateEmitted({
+        currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
+        errorMessages: []
+    });
+    expect(component.fieldState).toEqual(1);
+
+    component.fieldState = 0;
+    component.onCaseFlagStateEmitted({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
-      flagName: 'Other',
-      flagPath: [
-        {
-          id: '123',
-          value: 'Test'
-        }
-      ],
-      hearingRelevantFlag: false,
-      flagCode: 'OT0001',
-      listOfValues: [
-        {
-          key: 'Abc',
-          value: 'Value1'
-        }
-      ],
       errorMessages: []
-    };
-    component.onCaseFlagStateEmitted(caseFlagState);
-    expect(component.flagName).toEqual(caseFlagState.flagName);
-    expect(component.flagPath).toEqual(caseFlagState.flagPath);
-    expect(component.hearingRelevantFlag).toBe(caseFlagState.hearingRelevantFlag);
-    expect(component.flagCode).toEqual(caseFlagState.flagCode);
-    expect(component.listOfValues).toEqual(caseFlagState.listOfValues);
-  });
+    });
+    expect(component.fieldState).toEqual(1);
 
-  it('should handle the caseFlagStateEmitter when the state is FLAG_MANAGE_CASE_FLAGS', () => {
-    const caseFlagState: CaseFlagState = {
+    component.fieldState = 0;
+    component.onCaseFlagStateEmitted({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
-      selectedFlag: {
-        flagDetailDisplay: null,
-        pathToFlagsFormGroup: caseFlag1FieldId,
-        caseField: null
-      },
       errorMessages: []
-    };
-    spyOn(component, 'setCaseFlagParentFormGroup').and.callThrough();
-    component.onCaseFlagStateEmitted(caseFlagState);
-    expect(component.setCaseFlagParentFormGroup).toHaveBeenCalledWith(caseFlagState.selectedFlag.pathToFlagsFormGroup);
-    expect(component.caseFlagParentFormGroup).toEqual(parentFormGroup.get(caseFlag1FieldId) as FormGroup);
-    expect(component.selectedFlag).toEqual(caseFlagState.selectedFlag);
+    });
+    expect(component.fieldState).toEqual(1);
   });
 
   it('should move to the final review stage if there are no validation errors and the current state is FLAG_COMMENTS', () => {
@@ -672,14 +665,18 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
   });
 
-  it('should move to the next state', () => {
+  it('should move to the language interpreter step if selected Flag has listOfValues', () => {
     component.fieldState = CaseFlagFieldState.FLAG_TYPE;
-    component.listOfValues = [
-      {
-        key: 'Abc',
-        value: 'Value1'
-      }
-    ];
+    component.caseFlagParentFormGroup = new FormGroup({
+      flagType: new FormControl({
+        listOfValues: [
+          {
+            key: 'Abc',
+            value: 'Value1'
+          }
+        ],
+      })
+    });
     component.proceedToNextState();
     expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER);
   });
@@ -730,15 +727,29 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
   });
 
   it('should populate a new FlagDetail instance with data held by the component', () => {
-    component.flagName = 'Other',
     component.caseFlagParentFormGroup = new FormGroup({
+      flagType: new FormControl(null),
       languageSearchTerm: new FormControl(),
       manualLanguageEntry: new FormControl(),
       otherFlagTypeDescription: new FormControl(),
-      flagComments: new FormControl()
+      flagComments: new FormControl(),
     });
+
+    const flagType = {
+      name: 'Flag Name',
+      flagCode: 'OT0001',
+      path: [
+        {
+          id: '123',
+          value: 'Reasonable adjustment'
+        }
+      ],
+      hearingRelevantFlag: true
+    };
+
     component.caseFlagParentFormGroup.setValue(
       {
+        flagType,
         languageSearchTerm: {
           key: 'BSL',
           value: 'British Sign Language'
@@ -748,42 +759,34 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
         flagComments: 'Some comments'
       }
     );
-    component.flagCode = 'OT0001',
-    component.flagPath = [
-      {
-        id: '123',
-        value: 'Reasonable adjustment'
-      }
-    ];
-    component.hearingRelevantFlag = true;
+
     const newFlagDetailInstance = component.populateNewFlagDetailInstance();
-    expect(newFlagDetailInstance.name).toEqual(component.flagName);
+    expect(newFlagDetailInstance.name).toEqual(component.caseFlagParentFormGroup.value.flagType.name);
     expect(newFlagDetailInstance.subTypeValue).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.value);
     expect(newFlagDetailInstance.subTypeKey).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.key);
     expect(newFlagDetailInstance.otherDescription).toEqual(component.caseFlagParentFormGroup.value.otherFlagTypeDescription);
     expect(newFlagDetailInstance.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
     expect(newFlagDetailInstance.dateTimeCreated).toBeTruthy();
-    expect(newFlagDetailInstance.path).toEqual(component.flagPath);
+    expect(newFlagDetailInstance.path).toEqual(component.caseFlagParentFormGroup.value.flagType.flagPath);
     expect(newFlagDetailInstance.hearingRelevant).toEqual('Yes');
-    expect(newFlagDetailInstance.flagCode).toEqual(component.flagCode);
+    expect(newFlagDetailInstance.flagCode).toEqual(component.caseFlagParentFormGroup.value.flagType.flagCode);
     expect(newFlagDetailInstance.status).toBe(CaseFlagStatus.ACTIVE);
-    component.caseFlagParentFormGroup.setValue(
-      {
+    component.caseFlagParentFormGroup.setValue({
+        flagType: {...flagType, hearingRelevantFlag: false},
         languageSearchTerm: null,
         manualLanguageEntry: 'TypeScript',
         otherFlagTypeDescription: null,
         flagComments: null
       }
     );
-    component.hearingRelevantFlag = false;
     const newFlagDetailInstance2 = component.populateNewFlagDetailInstance();
     expect(newFlagDetailInstance2.subTypeValue).toEqual(component.caseFlagParentFormGroup.value.manualLanguageEntry);
     expect(newFlagDetailInstance2.subTypeKey).toBeNull();
     expect(newFlagDetailInstance2.otherDescription).toBeNull();
     expect(newFlagDetailInstance2.flagComment).toBeNull();
     expect(newFlagDetailInstance2.hearingRelevant).toEqual('No');
-    component.caseFlagParentFormGroup.setValue(
-      {
+    component.caseFlagParentFormGroup.setValue({
+        flagType,
         languageSearchTerm: null,
         manualLanguageEntry: null,
         otherFlagTypeDescription: null,
@@ -792,5 +795,29 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     );
     const newFlagDetailInstance3 = component.populateNewFlagDetailInstance();
     expect(newFlagDetailInstance3.subTypeValue).toBeNull();
+  });
+
+  it('should call resetCache on caseFlagStateService when location.getState() returns undefined or below 0', () => {
+    locationSpy.getState.and.returnValue(undefined);
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
+
+    locationSpy.getState.and.returnValue(-1);
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
+  });
+
+  it('should assign the form group from the case flag state service', () => {
+    expect(component.caseFlagParentFormGroup).toBe(caseFlagStateServiceSpy.formGroup);
+  });
+
+  it('should set the proper location based off the location state\'s fieldState property', () => {
+    locationSpy.getState.and.returnValue({fieldState: CaseFlagFieldState.FLAG_LOCATION});
+    component.ngOnInit();
+    expect(component.fieldState).toEqual(CaseFlagFieldState.FLAG_LOCATION);
+
+    locationSpy.getState.and.returnValue({fieldState: CaseFlagFieldState.FLAG_TYPE});
+    component.ngOnInit();
+    expect(component.fieldState).toEqual(CaseFlagFieldState.FLAG_TYPE);
   });
 });

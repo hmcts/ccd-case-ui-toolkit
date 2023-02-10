@@ -8,6 +8,7 @@ import { CaseFlagRefdataService } from '../../../../../services';
 import { RefdataCaseFlagType } from '../../../../../services/case-flag/refdata-case-flag-type.enum';
 import { CaseFlagState } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
+import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
 @Component({
   selector: 'ccd-select-flag-type',
@@ -15,7 +16,6 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage
   styleUrls: ['./select-flag-type.component.scss']
 })
 export class SelectFlagTypeComponent implements OnInit, OnDestroy {
-
   @Input()
   public formGroup: FormGroup;
 
@@ -29,37 +29,62 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public flagCommentsOptionalEmitter: EventEmitter<any> = new EventEmitter();
 
   public flagTypes: FlagType[];
-  public selectedFlagType: FlagType;
   public errorMessages: ErrorMessage[];
   public flagTypeNotSelectedErrorMessage = '';
   public flagTypeErrorMessage = '';
   public flagRefdata$: Subscription;
-  public otherFlagTypeSelected = false;
   public refdataError = false;
+  public cachedPath: FlagType[];
 
   public readonly flagTypeControlName = 'flagType';
   public readonly descriptionControlName = 'otherFlagTypeDescription';
+  public flagTypeControlChangesSubscription: Subscription;
+
   private readonly maxCharactersForOtherFlagType = 80;
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
-    return CaseFlagWizardStepTitle
+    return CaseFlagWizardStepTitle;
+  }
+  public get selectedFlagType(): FlagType | null {
+    return this.formGroup.get(this.flagTypeControlName)?.value;
+  }
+  public get otherFlagTypeSelected(): boolean {
+    return this.formGroup.get(this.flagTypeControlName)?.value?.flagCode === this.otherFlagTypeCode;
   }
 
   constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
 
   public ngOnInit(): void {
     this.flagTypes = [];
-    this.formGroup.addControl(this.flagTypeControlName, new FormControl(''));
-    this.formGroup.addControl(this.descriptionControlName, new FormControl(''));
-
     const flagType = this.formGroup['caseField']
       && this.formGroup['caseField'].id
       && this.formGroup['caseField'].id === this.caseLevelCaseFlagsFieldId
       ? RefdataCaseFlagType.CASE
       : RefdataCaseFlagType.PARTY;
+
+    if (!this.formGroup.get(this.flagTypeControlName)) {
+      this.formGroup.addControl(this.flagTypeControlName, new FormControl(''));
+    }
+    if (!this.formGroup.get(this.descriptionControlName)) {
+      this.formGroup.addControl(this.descriptionControlName, new FormControl(''));
+    }
+
+    // Should clear descriptionControlName if flagTypeControlName is changed
+    this.flagTypeControlChangesSubscription = this.formGroup.get(this.flagTypeControlName).valueChanges
+      .subscribe(value => {
+        this.formGroup.get(this.descriptionControlName).setValue('');
+        this.cachedPath = [];
+
+        // required to clear language interpreter
+        this.formGroup.patchValue({
+          [SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM]: '',
+          [SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY]: ''
+        });
+      }
+    );
 
     // HMCTS service code for a given jurisdiction is required to retrieve the relevant list of flag types
     this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetails(this.jurisdiction)
@@ -68,12 +93,23 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
         // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
         switchMap(serviceDetails => {
           return this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType);
-        })
+        }),
       )
       .subscribe({
         next: flagTypes => {
           // First (and only) object in the returned array should be the top-level "Party" flag type
           this.flagTypes = flagTypes[0].childFlags;
+
+          const formControl = this.formGroup.get(this.flagTypeControlName);
+          if (formControl?.value) {
+            // Cache Path based on existing flagCode -- needed for nested choices
+            const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
+            this.cachedPath = [
+              ...path,
+              foundFlagType
+            ];
+            formControl.setValue(this.cachedPath[0], { emitEvent: false });
+          }
         },
         error: error => {
           this.onRefdataError(error);
@@ -85,12 +121,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     if (this.flagRefdata$) {
       this.flagRefdata$.unsubscribe();
     }
-  }
-
-  public onFlagTypeChanged(flagType: FlagType): void {
-    this.selectedFlagType = flagType;
-    // Display description textbox if 'Other' flag type is selected
-    this.otherFlagTypeSelected = this.selectedFlagType.flagCode === this.otherFlagTypeCode;
+    this.flagTypeControlChangesSubscription?.unsubscribe();
   }
 
   public onNext(): void {
@@ -102,24 +133,18 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: this.selectedFlagType ? this.selectedFlagType.isParent : null,
       errorMessages: this.errorMessages,
-      flagName: this.selectedFlagType ? this.selectedFlagType.name : null,
-      flagPath: this.selectedFlagType ? this.selectedFlagType.Path.map(pathValue => Object.assign({ id: null, value: pathValue })) : null,
-      hearingRelevantFlag: this.selectedFlagType ? this.selectedFlagType.hearingRelevant : null,
-      flagCode: this.selectedFlagType ? this.selectedFlagType.flagCode : null,
       // Include the "list of values" (if any); currently applicable to language flag types
-      listOfValues: this.selectedFlagType && this.selectedFlagType.listOfValues && this.selectedFlagType.listOfValues.length > 0
-        ? this.selectedFlagType.listOfValues
-        : null
     });
     // Emit "flag comments optional" event if the user selects a flag type where comments are not mandatory
     if (this.selectedFlagType && !this.selectedFlagType.flagComment) {
       this.flagCommentsOptionalEmitter.emit(null);
     }
+
     // If the selected flag type is a parent, load the list of child flag types and reset the current selection
     if (this.selectedFlagType && this.selectedFlagType.isParent) {
       this.flagTypes = this.selectedFlagType.childFlags;
-      this.formGroup.get(this.flagTypeControlName).setValue('');
-      this.selectedFlagType = null;
+      this.cachedPath?.shift();
+      this.formGroup.get(this.flagTypeControlName).setValue(this.cachedPath?.length ? this.cachedPath[0] : null, { emitEvent: false });
     }
   }
 

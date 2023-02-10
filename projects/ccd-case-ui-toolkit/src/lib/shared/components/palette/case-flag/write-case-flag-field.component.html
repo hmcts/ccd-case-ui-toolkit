@@ -17,7 +17,8 @@
       {{createFlagCaption}}
     </div>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
-      <ccd-select-flag-location [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
+      <ccd-select-flag-location
+        [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-location>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
@@ -26,8 +27,9 @@
         (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"></ccd-select-flag-type>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">
-      <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup" [languages]="listOfValues" [flagCode]="flagCode"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
+      <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup" [languages]="flagType.listOfValues" [flagCode]="flagType.flagCode"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)">
+      </ccd-search-language-interpreter>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
       <ccd-add-comments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"

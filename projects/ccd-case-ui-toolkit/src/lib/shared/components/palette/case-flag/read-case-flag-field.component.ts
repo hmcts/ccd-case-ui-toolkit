@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
@@ -20,13 +20,15 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
+
+  public pathToFlagsFormGroup: string;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
   private readonly createMode = '#ARGUMENT(CREATE)';
   private readonly updateMode = '#ARGUMENT(UPDATE)';
-
   constructor(
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) {
     super();
   }
@@ -67,8 +69,11 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // which the new flag has been added
         if (flagLauncherComponent.caseField.display_context_parameter === this.createMode &&
           flagLauncherComponent.selectedFlagsLocation) {
-            this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
-              flagLauncherComponent.selectedFlagsLocation);
+          // this.flagLocation = flagLauncherComponent.selectedFlagsLocation;
+          this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
+          this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
+            flagLauncherComponent.selectedFlagsLocation
+          );
             // Set the display mode for the "Review flag details" summary page
             this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
@@ -102,5 +107,14 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
     }
 
     return null;
+  }
+
+  public navigateBackToForm(fieldState: number): void {
+    this.router.navigate(['../createCaseFlagCaseFlagFormPage'], {
+      relativeTo: this.route,
+      state: {
+        fieldState,
+      }
+    });
   }
 }

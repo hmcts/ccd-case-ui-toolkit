@@ -15,4 +15,19 @@ export class FlagType {
   public childFlags: FlagType[];
   public listOfValuesLength = 0;
   public listOfValues: {key: string, value: string}[] = [];
+
+  public static searchPathByFlagTypeObject(singleFlag: FlagType, flags: FlagType[], path: FlagType[] = []): [FlagType | undefined, FlagType[]] {
+    for (const flag of flags) {
+      if (flag.flagCode === singleFlag.flagCode && flag.Path.join(',') === singleFlag.Path.join(',')) {
+        return [flag, path];
+      }
+      if (flag.childFlags?.length) {
+        const [result, childPath] = FlagType.searchPathByFlagTypeObject(singleFlag, flag.childFlags, [...path, flag]);
+        if (result) {
+          return [result, childPath];
+        }
+      }
+    }
+    return [undefined, []];
+  }
 }

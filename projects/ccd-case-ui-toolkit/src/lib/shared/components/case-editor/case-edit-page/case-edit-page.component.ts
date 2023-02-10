@@ -27,7 +27,6 @@ import { PageValidationService } from '../services/page-validation.service';
   styleUrls: ['./case-edit-page.scss']
 })
 export class CaseEditPageComponent implements OnInit, AfterViewChecked {
-
   public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
   public static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
   public static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
