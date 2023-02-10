@@ -23,8 +23,6 @@ export class AddCommentsComponent implements OnInit {
   public readonly flagCommentsControlName = 'flagComments';
   private readonly commentsMaxCharLimit = 200;
 
-  constructor() {}
-
   public ngOnInit(): void {
     this.addCommentsTitle = CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS;
     this.addCommentsHint = AddCommentsStep.HINT_TEXT;

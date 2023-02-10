@@ -110,7 +110,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public navigateBackToForm(fieldState: number): void {
-    this.router.navigate(['../createCaseFlagCaseFlagFormPage'], {
+    const eidPathParam = this.route.snapshot.paramMap.get('eid');
+    this.router.navigate([`../${eidPathParam}`], {
       relativeTo: this.route,
       state: {
         fieldState,

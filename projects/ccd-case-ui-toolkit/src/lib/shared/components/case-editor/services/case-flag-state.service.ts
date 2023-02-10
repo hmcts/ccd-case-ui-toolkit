@@ -5,7 +5,7 @@ import { FormGroup } from '@angular/forms';
 export class CaseFlagStateService {
   public formGroup: FormGroup = new FormGroup({});
 
-  public resetCache() {
+  public resetCache(): void {
     this.formGroup = new FormGroup({});
   }
 }

@@ -21,8 +21,6 @@ export class CaseFlagSummaryListComponent implements OnInit {
   private readonly updateFlagHeaderText = 'Update flag for';
   private readonly addFlagHeaderText = 'Add flag to';
 
-  constructor() {}
-
   public ngOnInit(): void {
     if (this.flagForSummaryDisplay) {
       const flagDetail = this.flagForSummaryDisplay.flagDetail;
