@@ -16,7 +16,7 @@ export class FlagType {
   public listOfValuesLength = 0;
   public listOfValues: {key: string, value: string}[] = [];
 
-  public static searchPathByFlagTypeObject(singleFlag: FlagType, flags: FlagType[], path: FlagType[] = []): [FlagType | undefined, FlagType[]] {
+  public static searchPathByFlagTypeObject(singleFlag: FlagType, flags: FlagType[], path: FlagType[] = []): [FlagType | false, FlagType[]] {
     for (const flag of flags) {
       if (flag.flagCode === singleFlag.flagCode && flag.Path.join(',') === singleFlag.Path.join(',')) {
         return [flag, path];
@@ -28,6 +28,6 @@ export class FlagType {
         }
       }
     }
-    return [undefined, []];
+    return [false, []];
   }
 }
