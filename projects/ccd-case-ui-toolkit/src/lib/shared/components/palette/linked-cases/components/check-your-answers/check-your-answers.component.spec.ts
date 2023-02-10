@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig } from '../../../../../../app.config';
 import { PipesModule } from '../../../../../pipes';
@@ -81,7 +81,8 @@ describe('CheckYourAnswersComponent', () => {
         {
           reasonCode: 'Case has been marked for unlinking'
         }
-      ]
+      ],
+      unlink: true
     },
     {
       caseReference: '8245-9520-7332-4716',
@@ -96,11 +97,17 @@ describe('CheckYourAnswersComponent', () => {
         {
           reasonCode: 'Case has been marked for unlinking'
         }
-      ]
+      ],
+      unlink: true
     }
   ];
+  const linkedCasesService = {
+    caseId: '1682374819203471',
+    isLinkedCasesEventTrigger: true,
+    linkedCases
+  };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -109,8 +116,17 @@ describe('CheckYourAnswersComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CheckYourAnswersComponent],
-      providers: [LinkedCasesService, JurisdictionService, SearchService, AbstractAppConfig,
-                  HttpService, HttpErrorService, AuthService, RequestOptionsBuilder, LoadingService]
+      providers: [
+        JurisdictionService,
+        SearchService,
+        AbstractAppConfig,
+        HttpService,
+        HttpErrorService,
+        AuthService,
+        RequestOptionsBuilder,
+        LoadingService,
+        { provide: LinkedCasesService, useValue: linkedCasesService },
+      ]
     })
     .compileComponents();
   }));
@@ -133,7 +149,7 @@ describe('CheckYourAnswersComponent', () => {
     component.isLinkCasesJourney = true;
     fixture.detectChanges();
     const tableElement = nativeElement.querySelector('.govuk-table');
-    expect(tableElement.textContent).toContain('Linked cases');
+    expect(tableElement.textContent).toContain('Proposed case links');
     const errorMessageElement = nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
   });
@@ -147,6 +163,11 @@ describe('CheckYourAnswersComponent', () => {
     fixture.detectChanges();
     expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
       { currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS, navigateToPreviousPage: true, navigateToNextPage: true });
+  });
+
+  it('should set correct link cases table caption', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = true;
+    expect(component.linkedCasesTableCaption).toEqual('Proposed case links');
   });
 
   it('should display change link for link cases', () => {

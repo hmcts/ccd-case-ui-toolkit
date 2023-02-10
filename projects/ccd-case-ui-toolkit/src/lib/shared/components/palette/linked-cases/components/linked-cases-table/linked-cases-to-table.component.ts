@@ -15,7 +15,7 @@ interface LinkedCasesResponse {
   service: string;
   state: string;
   stateDescription: string;
-  reasons: [];
+  reasons: string[];
 }
 
 @Component({

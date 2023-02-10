@@ -153,9 +153,20 @@ describe('LinkCasesComponent', () => {
     expect(component.selectedCases.length).toBe(0);
   });
 
+  it('should get case info on error', () => {
+    spyOn(window, 'scrollTo');
+    casesService.getCaseViewV2.and.returnValue(throwError('error check'));
+    component.getCaseInfo();
+    expect(component.caseNumberError).toEqual(LinkedCasesErrorMessages.CaseCheckAgainError);
+    expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+  });
+
   it('should check onNext', () => {
     component.onNext();
     expect(component.noSelectedCaseError).toBe(LinkedCasesErrorMessages.CaseSelectionError);
+    component.selectedCases = selectedCasesInfo;
+    component.onNext();
+    expect(component.noSelectedCaseError).toEqual(null);
   });
 
   it('should check isCaseSelected', () => {
@@ -168,8 +179,8 @@ describe('LinkCasesComponent', () => {
     component.selectedCases = selectedCasesInfo;
     component.linkCaseForm.get('caseNumber').setValue('1682374819203471');
     component.showErrorInfo();
-    expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CaseProposedError);
+    expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CasesLinkedError);
     component.showErrorInfo();
-    expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CaseProposedError);
+    expect(component.caseSelectionError).toBe(LinkedCasesErrorMessages.CasesLinkedError);
   });
 });

@@ -21,6 +21,17 @@ import { LinkedCasesToTableComponent } from './linked-cases-to-table.component';
 
 import createSpyObj = jasmine.createSpyObj;
 
+interface LinkedCasesResponse {
+  caseReference: string;
+  caseName: string;
+  caseType: string;
+  caseTypeDescription: string;
+  service: string;
+  state: string;
+  stateDescription: string;
+  reasons: string[];
+}
+
 describe('LinkCasesToTableComponent', () => {
   let component: LinkedCasesToTableComponent;
   let fixture: ComponentFixture<LinkedCasesToTableComponent>;
@@ -28,12 +39,12 @@ describe('LinkCasesToTableComponent', () => {
   let searchService: any;
   let commonDataService: any;
   let appConfig: any;
-  let linkedCasesService: any;
 
-  linkedCasesService = {
+  const linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases: mocklinkedCases,
     getAllLinkedCaseInformation() {},
+    getCaseName() {},
     jurisdictionsResponse: [
       {
         id: 'SSCS',
@@ -53,8 +64,28 @@ describe('LinkCasesToTableComponent', () => {
     mapLookupIDToValueFromJurisdictions() {}
   };
 
-  let mockRouter: any;
-  mockRouter = {
+  const caseViewData = {
+    case_id: '1682374819203471',
+    case_type: {
+      id: 'Benefit_Xui',
+      name: 'Benefit_Xui',
+      description: 'some case_type description',
+      jurisdiction: {
+        id: 'JURI_1',
+        name: 'TEST',
+        description: 'some jurisdiction description'
+      }
+    },
+    state: {
+      name: 'state name'
+    },
+    channels: [],
+    tabs: [],
+    triggers: [],
+    events: []
+  };
+
+  const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
     url: '',
   };
@@ -141,6 +172,21 @@ describe('LinkCasesToTableComponent', () => {
   it('should get case reference link return ', () => {
     component.caseId = '1111222233334444';
     expect(component.getCaseRefereneLink('1111222233334444')).toEqual('4444');
+  });
+
+  it('should map api response', () => {
+    spyOn(linkedCasesService, 'getCaseName').and.returnValue('case name');
+    const linkCasesResponse: LinkedCasesResponse = {
+      caseReference: '1682374819203471',
+      caseName: 'case name',
+      caseType: 'Benefit_Xui',
+      caseTypeDescription: 'some case_type description',
+      service: 'some jurisdiction description',
+      state: 'state name',
+      stateDescription: '',
+      reasons: ['CLRC001']
+    };
+    expect(component.mapResponse(caseViewData)).toEqual(linkCasesResponse);
   });
 
   /* Disabling this test for now to do the time constraint */
