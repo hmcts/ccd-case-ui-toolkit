@@ -249,7 +249,7 @@ describe('PaletteService', () => {
       expect(paletteService.getFieldComponentClass(caseField, false)).toBe(CaseFileViewFieldReadComponent);
     });
 
-		it('should get LinkedCasesFieldComponent component class for ComponentLauncher field with argument of "LinkedCases"', () => {
+    it('should get LinkedCasesFieldComponent component class for ComponentLauncher field with argument of "LinkedCases"', () => {
       const caseField = new CaseField();
       caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
       caseField.display_context_parameter = '#ARGUMENT(CREATE,LinkedCases)';
