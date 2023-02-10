@@ -1,3 +1,5 @@
+import { from } from 'rxjs';
+
 export * from './activity';
 export * from './addresses';
 export * from './alert';
@@ -26,3 +28,4 @@ export * from './search-result/sorting/search-result-view-item-comparator-factor
 export * from './organisation';
 export * from './browser';
 export * from './loading';
+export * from './multiple';

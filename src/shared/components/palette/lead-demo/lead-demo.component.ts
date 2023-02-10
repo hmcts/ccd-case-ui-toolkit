@@ -33,7 +33,8 @@ export class LeadDemoComponent extends AbstractFieldReadComponent {
       .then((caseDetail) => {
         this.searchService
           .searchCases(
-            caseDetail.case_type,
+            //caseDetail.case_type,
+            'ET_EnglandWales',
             {},
             {
               multipleReference: caseDetail.data['multipleReference'],

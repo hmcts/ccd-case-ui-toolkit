@@ -1,0 +1,21 @@
+::ng-deep .mat-checkbox-ripple .mat-ripple-element {
+  background-color: #2199e8 !important;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background-color: #2199e8 !important;
+}
+
+::ng-deep .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: #2199e8 !important;
+}
+
+.searchText {
+  width: 40%;
+  padding-right: 15px;
+}
+
+.form-label, .form-label-bold {
+  display: inline !important; 
+  padding-right: 15px !important;
+}

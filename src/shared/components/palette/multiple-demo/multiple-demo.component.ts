@@ -11,15 +11,24 @@ import { CasesService } from "../../case-editor/services";
 import { PaginationInstance } from "ngx-pagination";
 import { HttpService, OptionsType } from "../../../services/http/http.service";
 import { RequestOptionsBuilder } from "../../../services/request/request.options.builder";
+import { SelectionModel } from "@angular/cdk/collections";
+import { MultipleService } from "../../../services/multiple/multiple.service";
+import { ActivatedRoute, Router } from "@angular/router";
+
 
 @Component({
   selector: "ccd-multiple-demo",
   templateUrl: "./multiple-demo.component.html",
+  styleUrls: ['./multiple-demo.component.scss']
 })
-export class MultipleDemoComponent extends AbstractFieldReadComponent {  
+export class MultipleDemoComponent extends AbstractFieldReadComponent {
+  static readonly CASE_REFERENCE = '[CASE_REFERENCE]';
   autoHide = true;
 
+
+
   pageChanged(event: number) {
+    this.selection.clear();
     this.config.currentPage = event;
     this.getPageData(event);
   }
@@ -31,13 +40,26 @@ export class MultipleDemoComponent extends AbstractFieldReadComponent {
 
   resultView: any[];
 
+  selection = new SelectionModel<any>(true, []);
+
+  public displayedColumns: string[] = [
+    'select',
+    'ethosCaseReference',
+    'claimant',
+    'respondent',
+    'leadClaimant',
+  ];
+
   constructor(
     private appConfig: AbstractAppConfig,
     private readonly sessionStorage: SessionStorageService,
     private httpService: HttpService,
     private searchService: SearchService,
     private casesService: CasesService,
-    private requestOptionsBuilder: RequestOptionsBuilder
+    private requestOptionsBuilder: RequestOptionsBuilder,
+    private multipleService: MultipleService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     super();
   }
@@ -57,15 +79,17 @@ export class MultipleDemoComponent extends AbstractFieldReadComponent {
         order: 0,
         type: 'Text'
       }
-    }        
+    }
 
     const metaCriteria = {
       'page': page,
-      'ctid': caseDetail.case_type,
-      'use_case': SearchService.VIEW_SEARCH,      
+      'ctid':  'ET_EnglandWales',
+      //'ctid':  caseDetail.case_type,
+      'use_case': SearchService.VIEW_SEARCH
     }
-    const caseCriteria = {  
-      'multipleReference':  caseDetail.data['multipleReference']
+
+    const caseCriteria = {
+      'multipleReference': caseDetail.data['multipleReference']
     }
 
     let options: OptionsType = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, SearchService.VIEW_SEARCH);
@@ -73,6 +97,34 @@ export class MultipleDemoComponent extends AbstractFieldReadComponent {
 
     this.config.totalItems = returnedRecords.total;
     this.resultView = returnedRecords.results.map(result => result.case_fields);
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.resultView.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.resultView.forEach(row => this.selection.select(row));
+  }
+
+  moveToMultiple(multipleRef: string) {
+
+    let caseIds = this.selection.selected.map(data => { return { caseId: data["[CASE_REFERENCE]"], caseReference: data.ethosCaseReference } });
+
+    let updateMultipleRequest = { multipleReference: multipleRef, cases: caseIds }
+
+    console.log(updateMultipleRequest);
+    console.log(this.selection.selected);
+
+    this.multipleService.removeCaseFromMultiple(updateMultipleRequest);
+
+    return this.router.navigate(['cases'], { relativeTo: this.route });
+
+
   }
 
   hasResults(): any {

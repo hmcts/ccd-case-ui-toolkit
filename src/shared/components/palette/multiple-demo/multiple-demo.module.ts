@@ -4,13 +4,15 @@ import { MultipleDemoComponent } from './multiple-demo.component';
 import { CdkTableModule } from '@angular/cdk/table';
 import { PaginationModule } from '../../pagination';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { MatCheckboxModule } from '@angular/material';
 
 @NgModule({
   imports: [
     CommonModule,
     CdkTableModule,
     PaginationModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    MatCheckboxModule
   ],
   declarations: [MultipleDemoComponent],
   entryComponents: [

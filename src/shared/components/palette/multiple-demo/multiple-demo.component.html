@@ -3,33 +3,78 @@
     <p></p>
     <h2 class="govuk-heading-m">Cases in Multiple</h2>
     <p></p>
-    <table class="govuk-table">
-      <caption></caption>
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th class="govuk-table__header" scope="col">Case Number</th>
-          <th class="govuk-table__header" scope="col">Claimant</th>
-          <th class="govuk-table__header" scope="col">Respondent</th>
-          <th class="govuk-table__header" scope="col">Lead Claimant</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="let result of resultView | paginate : config"
-          class="govuk-table__row"
-          scope="col"
-        >
-          <td class="govuk-table__cell">
-            {{ result.ethosCaseReference }}
-          </td>
-          <td class="govuk-table__cell">{{ result.claimant }}</td>
-          <td class="govuk-table__cell">{{ result.respondent }}</td>
-          <td class="govuk-table__cell">
-            {{ result.leadClaimant }}
-          </td>
-        </tr>
-      </tbody>
-    </table>    
+
+
+    <div class="form-group bottom-30">
+      <label for="multipleRef">
+        <span class="form-label form-label-bold">Multiple Reference</span>
+      </label>
+      <input type="text" id="multipleRef" name="multipleRef" class="form-control searchText" #multipleRef />
+      <button type="button" class="button button-30" (click)="moveToMultiple(multipleRef.value)">Move To Multiple</button>
+    </div>
+
+    <table cdk-table [dataSource]="resultView | paginate: config" class="govuk-table">
+
+      <ng-container cdkColumnDef="select">
+        <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="ethosCaseReference">
+        <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>
+          <h1 class="column-label">Case Reference</h1>
+        </th>
+        <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let row">
+          {{ row.ethosCaseReference }}
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="claimant">
+        <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>
+          <h1 class="column-label">Claimant</h1>
+        </th>
+        <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let row">
+          {{ row.claimant }}
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="respondent">
+        <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>
+          <h1 class="column-label">Respondent</h1>
+        </th>
+        <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let row">
+          {{ row.respondent }}
+        </td>
+      </ng-container>
+
+
+      <ng-container cdkColumnDef="leadClaimant">
+        <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>
+          <h1 class="column-label">Is Lead Claimant</h1>
+        </th>
+        <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let row">
+          {{row.leadClaimant}}
+        </td>
+      </ng-container>
+
+
+      <!-- Table Header Row -->
+      <tr class="govuk-table__row" cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+
+      <!-- Table Row -->
+      <tr class="govuk-table__row" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+
+
+    </table>
+
 
     <pagination-controls (pageChange)="pageChanged($event)" [autoHide]="autoHide"></pagination-controls>
   </div>
