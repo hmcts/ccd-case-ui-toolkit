@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CaseEditDataService } from '../../../commons/case-edit-data';
 
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -20,18 +21,18 @@ export class CaseEditConfirmComponent {
   public caseFields: CaseField[];
   public editForm: FormGroup;
 
-  private readonly caseId: string;
-
-  constructor(private readonly caseEdit: CaseEditComponent, private readonly router: Router) {
+  constructor(private readonly caseEdit: CaseEditComponent, private readonly caseEditDataService: CaseEditDataService, private readonly router: Router) {
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
     this.caseFields = this.getCaseFields();
-    if (this.caseEdit.confirmation) {
-      this.confirmation = this.caseEdit.confirmation;
-      this.caseId = this.caseEdit.confirmation.getCaseId();
-    } else {
-      this.router.navigate(['/']);
-    }
+    this.caseEditDataService.caseEditState$
+      .subscribe(({confirmation}) => {
+        if (confirmation) {
+          this.confirmation = confirmation;
+        } else {
+          this.router.navigate(['/']);
+        }
+      });
   }
 
   public submit(): void {

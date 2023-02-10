@@ -2,11 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
-import { CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
+import { CaseEditState, CaseEventData, CaseEventTrigger, CaseView, Draft, Profile } from '../../../domain';
 import { FieldsPurger, FieldsUtils, SessionStorageService, WindowService } from '../../../services';
-import { Confirmation, Wizard, WizardPage } from '../domain';
+import { Wizard, WizardPage } from '../domain';
 import { WizardFactoryService } from '../services';
 
 @Component({
@@ -23,13 +24,13 @@ export class CaseEditComponent implements OnInit {
   public eventTrigger: CaseEventTrigger;
 
   @Input()
-  public submit: (CaseEventData, profile?: Profile) => Observable<object>;
+  public submit: (caseEventData: CaseEventData, profile?: Profile) => Observable<object>;
 
   @Input()
-  public validate: (CaseEventData, pageId: string) => Observable<object>;
+  public validate: (caseEventData: CaseEventData, pageId: string) => Observable<object>;
 
   @Input()
-  public saveDraft: (CaseEventData) => Observable<Draft>;
+  public saveDraft: (caseEventData: CaseEventData) => Observable<Draft>;
 
   @Input()
   public caseDetails: CaseView;
@@ -44,7 +45,6 @@ export class CaseEditComponent implements OnInit {
 
   public form: FormGroup;
 
-  public confirmation: Confirmation;
 
   public navigationOrigin: any;
 
@@ -52,8 +52,11 @@ export class CaseEditComponent implements OnInit {
 
   public isPageRefreshed: boolean;
 
+  public caseEditState: Partial<CaseEditState>;
+
   constructor(
     private readonly fb: FormBuilder,
+    private readonly caseEditDataService: CaseEditDataService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly fieldsUtils: FieldsUtils,
@@ -62,7 +65,16 @@ export class CaseEditComponent implements OnInit {
     private readonly wizardFactory: WizardFactoryService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly windowsService: WindowService
-  ) {}
+  ) {
+    this.caseEditDataService.caseEditState$
+      .subscribe((state) => {
+        this.caseEditState = state;
+
+        if (!!state.submitResponse) {
+          this.emitSubmitted(state.submitResponse);
+        }
+      });
+  }
 
   public ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
@@ -118,11 +130,28 @@ export class CaseEditComponent implements OnInit {
       this.sessionStorageService.setItem('eventUrl', this.router.url);
     }
     this.fieldsPurger.clearHiddenFields(this.form, this.wizard, this.eventTrigger, currentPageId);
+    const nextPage = this.caseEditDataService.getNextPage({
+      currentPageId,
+      wizard: this.wizard,
+      eventTrigger: this.eventTrigger,
+      form: this.form,
+    });
+
+    if(!nextPage && !this.eventTrigger.show_summary) {
+      this.caseEditDataService.submitForm({
+        eventTrigger: this.eventTrigger,
+        form: this.form,
+        caseEditState: this.caseEditState,
+        submit: this.submit,
+        caseDetails: this.caseDetails,
+      });
+      return;
+    }
+
     this.registrarService.reset();
 
     const theQueryParams: Params = {};
     theQueryParams[CaseEditComponent.ORIGIN_QUERY_PARAM] = this.navigationOrigin;
-    const nextPage = this.wizard.nextPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(this.eventTrigger, this.form));
     return this.router.navigate([nextPage ? nextPage.id : 'submit'], { queryParams: theQueryParams, relativeTo: this.route });
   }
 
@@ -148,9 +177,8 @@ export class CaseEditComponent implements OnInit {
     this.cancelled.emit();
   }
 
-  public confirm(confirmation: Confirmation): Promise<boolean> {
-    this.confirmation = confirmation;
-    return this.router.navigate(['confirm'], {relativeTo: this.route});
+  public emitSubmitted(response: Record<string, any>): void {
+    this.submitted.emit({caseId: response['id'], status: this.caseEditDataService.getStatus(response)});
+    this.caseEditDataService.updateSubmitResponse(null);
   }
-
 }

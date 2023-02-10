@@ -30,33 +30,12 @@
   </div>
 </div>
 
-<!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
-<div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
-     role="status" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+<ccd-case-edit-generic-errors [error]="caseEditState.error"></ccd-case-edit-generic-errors>
 
-  <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
-    Something went wrong
-  </h1>
-  <div class="govuk-error-summary__body" id="edit-case-event_error-summary-body">
-    <p>We're working to fix the problem. Try again shortly.</p>
-    <p><a href="get-help" target="_blank">Contact us</a> if you're still having problems.</p>
-  </div>
-</div>
-<!-- Event error heading and error message to be displayed if there are specific error details -->
-<div *ngIf="error && error.details" class="error-summary" role="status"
-     aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-  <h3 class="heading-h3 error-summary-heading" id="edit-case-event_error-summary-heading-3">
-    The event could not be created
-  </h3>
-  <p>{{error.message}}</p>
-  <ul *ngIf="error.details?.field_errors" class="error-summary-list">
-    <li *ngFor="let fieldError of error.details.field_errors" class="ccd-error-summary-li">{{fieldError.message}}</li>
-  </ul>
-</div>
 <ccd-callback-errors
   [triggerTextContinue]="triggerTextStart"
   [triggerTextIgnore]="triggerTextIgnoreWarnings"
-  [callbackErrorsSubject]="callbackErrorsSubject"
+  [callbackErrorsSubject]="caseEditState.callbackErrors"
   (callbackErrorsContext)="callbackErrorsNotify($event)">
 </ccd-callback-errors>
 <div class="width-50">
@@ -92,3 +71,8 @@
 
   </form>
 </div>
+
+<ccd-case-event-completion *ngIf="caseEditState.isEventCompletionChecksRequired"
+  [eventCompletionParams]="caseEditState.eventCompletionParams"
+  (eventCanBeCompleted)="onEventCanBeCompleted($event)">
+</ccd-case-event-completion>

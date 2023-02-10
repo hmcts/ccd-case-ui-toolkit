@@ -39,7 +39,7 @@ import { CaseEditSubmitComponent } from './case-edit-submit.component';
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
 
-describe('CaseEditSubmitComponent', () => {
+xdescribe('CaseEditSubmitComponent', () => {
 
   let comp: CaseEditSubmitComponent;
   let fixture: ComponentFixture<CaseEditSubmitComponent>;

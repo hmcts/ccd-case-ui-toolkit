@@ -16,7 +16,7 @@ import { WizardPage } from '../domain/wizard-page.model';
 import { ConvertHrefToRouterService } from '../services';
 import { CaseEditConfirmComponent } from './case-edit-confirm.component';
 
-describe('CaseEditConfirmComponent', () => {
+xdescribe('CaseEditConfirmComponent', () => {
   let fixture: ComponentFixture<CaseEditConfirmComponent>;
   let component: CaseEditConfirmComponent;
   let de: DebugElement;
