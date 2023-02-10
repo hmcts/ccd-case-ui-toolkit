@@ -34,7 +34,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public flagTypeErrorMessage = '';
   public flagRefdata$: Subscription;
   public refdataError = false;
-  public cachedPath: FlagType[];
+  public cachedPath: (FlagType | false)[];
 
   public readonly flagTypeControlName = 'flagType';
   public readonly descriptionControlName = 'otherFlagTypeDescription';
