@@ -51,20 +51,7 @@ describe('CasesService', () => {
     triggers: [],
     events: []
   };
-  const CASE_REASONS = [{
-    key: 'progressed',
-    value_en: 'Progressed as part of this lead case',
-    value_cy: '',
-    hint_text_en: 'Progressed as part of this lead case',
-    hint_text_cy: '',
-    lov_order: 1,
-    parent_key: null,
-    category_key: 'caseLinkReason',
-    parent_category: '',
-    active_flag: 'Y',
-    child_nodes: null,
-    from: 'exui-default'
-  }]
+
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
 
@@ -160,29 +147,6 @@ describe('CasesService', () => {
         });
     }));
   });
-
-  describe('getCaseLinkResponses()', () => {
-    it('should call getCaseLinkResponses', () => {
-      httpService.get.and.returnValue(of(CASE_REASONS));
-      casesService
-        .getCaseLinkResponses()
-        .subscribe(
-          caseData => expect(caseData).toEqual(CASE_REASONS)
-        );
-    });
-    it('should call getCaseLinkResponses', () => {
-      httpService.get.and.returnValue(throwError(ERROR));
-      casesService
-        .getCaseLinkResponses()
-        .subscribe(data => {
-          expect(data).toEqual(CASE_REASONS);
-        }, err => {
-          expect(err).toEqual(ERROR);
-          expect(errorService.setError).toHaveBeenCalledWith(ERROR);
-        });
-    });
-
-  })
 
   describe('getCaseViewV2()', () => {
 

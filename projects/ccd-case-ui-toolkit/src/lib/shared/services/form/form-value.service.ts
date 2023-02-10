@@ -456,9 +456,6 @@ export class FormValueService {
     FormValueService.removeMultiSelectLabels(data);
   }
 
-  /**
-   * Remove any empty or invalid array with only id
-   */
   public removeInvalidCollectionData(data: object, field: CaseField) {
     if (data[field.id] && data[field.id].length > 0) {
       for (const objCollection of data[field.id]) {
@@ -520,14 +517,17 @@ export class FormValueService {
           // nothing for a given case field ID (hence the use of hasOwnProperty())
           if (data.hasOwnProperty(caseField.id) && caseField.value) {
             // Create new object for the case field ID within the data object, if necessary
-            if (!data[caseField.id]) {
-              data[caseField.id] = {};
+            if (data[caseField.id]) {
+              // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+              // Flags field within a Complex field or a collection of Complex fields) is copied across
+              Object.keys(data[caseField.id]).forEach(key => {
+                if (caseField.value.hasOwnProperty(key)) {
+                  data[caseField.id][key] = caseField.value[key];
+                }
+              });
             }
-            // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
-            // Flags field within a Complex field or a collection of Complex fields) is copied across
-            Object.keys(caseField.value).forEach(key => data[caseField.id][key] = caseField.value[key]);
-          }
-        });
+        };
+      });
     }
   }
 }
