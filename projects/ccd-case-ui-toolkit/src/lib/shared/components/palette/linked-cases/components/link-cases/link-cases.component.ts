@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
@@ -7,10 +7,10 @@ import { LovRefDataModel } from '../../../../../services/common-data-service/com
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import {
-  CaseLink,
-  CCDCaseLinkType,
-  LinkCaseReason,
-  LinkReason
+	CaseLink,
+	CCDCaseLinkType,
+	LinkCaseReason,
+	LinkReason
 } from '../../domain/linked-cases.model';
 import { LinkedCasesErrorMessages, LinkedCasesPages, Patterns } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
