@@ -19,7 +19,9 @@ export class IsCompoundPipe implements PipeTransform {
     'WaysToPay',
     'ComponentLauncher',
     'FlagLauncher',
-    'CaseFlag'
+    'CaseFlag',
+    'MultipleDemoType', 
+    'LeadDemoType'
   ];
 
   private static readonly EXCLUDE: string[] = [

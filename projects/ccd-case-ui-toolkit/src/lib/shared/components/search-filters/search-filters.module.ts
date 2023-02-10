@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConditionalShowModule } from '../../directives/conditional-show/conditional-show.module';
+import { MultipleService } from '../../services/multiple/multiple.service';
 import { DefinitionsService } from '../../services/definitions/definitions.service';
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { OrderService } from '../../services/order/order.service';
@@ -32,7 +33,8 @@ import { SearchFiltersComponent } from './search-filters.component';
         OrderService,
         JurisdictionService,
         DefinitionsService,
-        WindowService
+        WindowService,
+        MultipleService
     ]
 })
 export class SearchFiltersModule {}

@@ -29,10 +29,12 @@ import { CaseHistoryViewerFieldComponent } from './history/case-history-viewer-f
 import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
 import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
+import { LeadDemoComponent } from './lead-demo/lead-demo.component';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
 import { WriteMultiSelectListFieldComponent } from './multi-select-list/write-multi-select-list-field.component';
+import { MultipleDemoComponent } from './multiple-demo/multiple-demo.component';
 import { ReadNumberFieldComponent } from './number/read-number-field.component';
 import { WriteNumberFieldComponent } from './number/write-number-field.component';
 import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summary-field.component';
@@ -98,6 +100,10 @@ export class PaletteService {
             return write ? WriteOrganisationFieldComponent : ReadOrganisationFieldComponent;
           case 'JudicialUser':
             return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
+          case 'MultipleDemoType':
+            return write ? WriteComplexFieldComponent : MultipleDemoComponent;
+          case 'LeadDemoType':
+            return write ? WriteComplexFieldComponent : LeadDemoComponent;  
           default:
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }

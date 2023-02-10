@@ -1,5 +1,6 @@
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
@@ -61,9 +62,11 @@ import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioLi
 import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComponent, EventLogTableComponent } from './history';
 import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from './judicial-user';
 import { LabelFieldComponent } from './label';
+import { LeadDemoModule } from './lead-demo/lead-demo.module';
 import { MarkdownComponent } from './markdown';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent, WriteMoneyGbpFieldComponent } from './money-gbp';
 import { ReadMultiSelectListFieldComponent, WriteMultiSelectListFieldComponent } from './multi-select-list';
+import { MultipleDemoModule } from './multiple-demo/multiple-demo.module';
 import { ReadNumberFieldComponent, WriteNumberFieldComponent } from './number';
 import { ReadOrderSummaryFieldComponent, ReadOrderSummaryRowComponent, WriteOrderSummaryFieldComponent } from './order-summary';
 import { ReadOrganisationFieldComponent, ReadOrganisationFieldRawComponent, ReadOrganisationFieldTableComponent, WriteOrganisationComplexFieldComponent, WriteOrganisationFieldComponent } from './organisation';
@@ -194,7 +197,10 @@ const PALETTE_COMPONENTS = [
         ScrollToModule.forRoot(),
         MatDialogModule,
         MediaViewerModule,
-        LoadingModule
+        LoadingModule,
+        MultipleDemoModule,
+        LeadDemoModule,
+        CdkTableModule,
   ],
   declarations: [
     FixedListPipe,
