@@ -1,7 +1,3 @@
 <a *ngIf="hasReference()" href="/v2/case/{{caseField.value.CaseReference}}" target="_blank">
-  <span class="text-16">{{caseField.value.CaseReference ? (caseField.value.CaseReference | ccdCaseReference) :
-    ''}}</span>
+  <span class="text-16">{{caseField.value.CaseReference ? (caseField.value.CaseReference | ccdCaseReference) : ''}}</span>
 </a>
-<ng-container *ngIf="hasCaseLinkCollection()">
-  <ccd-read-linked-cases [caseField]="caseField"></ccd-read-linked-cases>
-</ng-container>

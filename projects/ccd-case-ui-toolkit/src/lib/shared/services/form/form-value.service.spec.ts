@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { FlagDetail, FlagsWithFormGroupPath } from '../../components';
 import { CaseField, FieldType } from '../../domain/definition';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
@@ -86,6 +86,133 @@ describe('FormValueService', () => {
     const actual = '{"value":{"code":"L2","label":"List 2"},"list_items":[{"code":"L1","label":"List 1"},{"code":"L2","label":"List 2"}]}';
     expect(JSON.stringify(formFields.data.dynamicList))
       .toEqual(actual);
+  });
+
+  it('should sanitise case reference', () => {
+    expect(formValueService.sanitiseCaseReference('1111-2222-3333-4444')).toEqual('1111222233334444');
+    expect(formValueService.sanitiseCaseReference('Invalid CaseReference')).toEqual('');
+  });
+
+  it('should populate flag details from case fields', () => {
+    const flagsData = [
+      {
+        flags: {
+          partyName: 'Rose Bank',
+          details: [
+            {
+              id: '1234',
+              name: 'Flag 1',
+              flagComment: 'First flag',
+              dateTimeCreated: new Date(),
+              path: [{ id: null, value: 'Reasonable adjustment' }],
+              hearingRelevant: false,
+              flagCode: 'FL1',
+              status: 'Active'
+            },
+            {
+              id: '2345',
+              name: 'Flag 2',
+              flagComment: 'Rose\'s second flag',
+              dateTimeCreated: new Date(),
+              path: [{ id: null, value: 'Reasonable adjustment' }],
+              hearingRelevant: false,
+              flagCode: 'FL2',
+              status: 'Inactive'
+            }
+          ] as FlagDetail[],
+          flagsCaseFieldId: 'CaseFlag1'
+        },
+        pathToFlagsFormGroup: '',
+        caseField: {
+          id: 'CaseFlag1'
+        } as CaseField
+      },
+      {
+        flags: {
+          partyName: 'Tom Atin',
+          details: [
+            {
+              id: '3456',
+              name: 'Flag 3',
+              flagComment: 'First flag',
+              dateTimeCreated: new Date(),
+              path: [{ id: null, value: 'Reasonable adjustment' }],
+              hearingRelevant: false,
+              flagCode: 'FL1',
+              status: 'Active'
+            }
+          ] as FlagDetail[],
+          flagsCaseFieldId: 'CaseFlag2'
+        },
+        pathToFlagsFormGroup: '',
+        caseField: {
+          id: 'CaseFlag2'
+        } as CaseField
+      },
+      {
+        flags: {
+          partyName: '',
+          details: [
+            {
+              id: '4567',
+              name: 'Flag 4',
+              flagComment: 'Fourth flag',
+              dateTimeCreated: new Date(),
+              path: [
+                { id: null, value: 'Level 1' },
+                { id: null, value: 'Level 2' }
+              ],
+              hearingRelevant: false,
+              flagCode: 'FL1',
+              status: 'Active'
+            }
+          ] as FlagDetail[],
+          flagsCaseFieldId: 'CaseFlag3'
+        },
+        pathToFlagsFormGroup: 'caseFlags',
+        caseField: {
+          id: 'CaseFlag3'
+        } as CaseField
+      },
+      {
+        flags: {
+          partyName: '',
+          details: [
+            {
+              id: '5678',
+              name: 'Flag 5',
+              flagComment: 'Fifth flag',
+              dateTimeCreated: new Date(),
+              path: [
+                { id: null, value: 'Level 1' }
+              ],
+              hearingRelevant: false,
+              flagCode: 'FL1',
+              status: 'Active',
+              subTypeKey: 'Dummy subtype key',
+              subTypeValue: 'Dummy subtype value'
+            }
+          ] as FlagDetail[],
+          flagsCaseFieldId: 'CaseFlag3'
+        },
+        pathToFlagsFormGroup: 'caseFlags',
+        caseField: {
+          id: 'CaseFlag3'
+        } as CaseField
+      }
+    ] as FlagsWithFormGroupPath[];
+    const caseField = [
+      {
+        id: 'CaseFlag1',
+        value: []
+      },
+      {
+        id: 'CaseFlag2',
+        value: []
+      }
+    ] as CaseField[];
+    spyOn(FieldsUtils, 'isFlagLauncherCaseField').and.returnValue(true);
+    expect(formValueService.populateFlagDetailsFromCaseFields(flagsData, caseField)).not.toBeDefined();
   });
 
   describe('sanitise for Document fields', () => {
