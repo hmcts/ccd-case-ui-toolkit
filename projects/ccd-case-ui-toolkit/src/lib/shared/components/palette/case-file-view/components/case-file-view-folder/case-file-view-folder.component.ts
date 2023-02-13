@@ -29,7 +29,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
   @Input() public allowMoving: boolean;
   @Output() public clickedDocument = new EventEmitter<DocumentTreeNode>();
-  @Output() public moveDocument = new EventEmitter<any>();
+  @Output() public moveDocument = new EventEmitter<{newCategory: string, document: DocumentTreeNode}>();
 
   public nestedTreeControl: NestedTreeControl<DocumentTreeNode>;
   public nestedDataSource: DocumentTreeNode[];
@@ -259,6 +259,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(newCatId => {
+      console.log(newCatId, node);
       if (newCatId) {
         this.moveDocument.emit({newCategory: newCatId, document: node});
       }

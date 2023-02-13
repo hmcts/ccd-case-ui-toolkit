@@ -1,3 +1,20 @@
+<ng-container *ngIf="errorMessages?.length">
+  <div class="govuk-error-summary govuk-!-margin-bottom-4" data-module="govuk-error-summary">
+    <div role="alert">
+      <h2 class="govuk-error-summary__title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li *ngFor="let errorMessage of errorMessages">
+            <a href="javascript:void(0);">{{ errorMessage }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
 <div *ngIf="getCategoriesAndDocumentsError" class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
   <p class="govuk-body">Try again later.</p>
@@ -10,7 +27,7 @@
       <ccd-case-file-view-folder
         class="document-tree-container__tree"
         [categoriesAndDocuments]="categoriesAndDocuments$"
-        (clickedDocument)="setMediaViewerFile($event)"
+        (clickedDocument)="setMediaViewerFile($event); resetErrorMessages()"
         (moveDocument)="moveDocument($event)"
         [allowMoving]="allowMoving"
       ></ccd-case-file-view-folder>
