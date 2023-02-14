@@ -365,14 +365,19 @@ describe('ReadCaseFlagFieldComponent', () => {
   } as FlagsWithFormGroupPath;
   const createMode = '#ARGUMENT(CREATE)';
   const updateMode = '#ARGUMENT(UPDATE)';
+  let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
 
   beforeEach(waitForAsync(() => {
+    caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
+    caseFlagStateServiceSpy.pageLocation = '../createCaseFlag/createCaseFlagCaseFlagFormPage';
+
     TestBed.configureTestingModule({
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       imports: [ RouterTestingModule ],
       declarations: [ ReadCaseFlagFieldComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy },
       ]
     })
     .compileComponents();
@@ -560,11 +565,11 @@ describe('ReadCaseFlagFieldComponent', () => {
     spyOn(router, 'navigate').and.callThrough();
 
     const fieldState = 123;
+    caseFlagStateServiceSpy.pageLocation = '../createCaseFlag/createCaseFlagCaseFlagFormPage';
     component.navigateBackToForm(fieldState);
-
     tick();
 
-    expect(router.navigate).toHaveBeenCalledWith(['../createCaseFlagCaseFlagFormPage'], {
+    expect(router.navigate).toHaveBeenCalledWith([`../${caseFlagStateServiceSpy.pageLocation}`], {
       relativeTo: route,
       state: {fieldState}
     });

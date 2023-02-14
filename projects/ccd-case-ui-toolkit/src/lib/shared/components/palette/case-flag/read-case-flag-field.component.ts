@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
@@ -28,7 +29,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   private readonly updateMode = '#ARGUMENT(UPDATE)';
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly caseFlagStateService: CaseFlagStateService
   ) {
     super();
   }
@@ -110,8 +112,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public navigateBackToForm(fieldState: number): void {
-    const eidPathParam = this.route.snapshot.paramMap.get('eid');
-    this.router.navigate([`../${eidPathParam}`], {
+    this.router.navigate([`../${this.caseFlagStateService.pageLocation}`], {
       relativeTo: this.route,
       state: {
         fieldState,

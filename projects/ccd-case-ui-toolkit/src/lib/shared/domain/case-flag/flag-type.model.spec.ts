@@ -105,7 +105,7 @@ describe('FlagType', () => {
     };
     const flags: FlagType[] = [flagA, flagB];
     const [result, path] = FlagType.searchPathByFlagTypeObject(flagA1, flags);
-    expect(result).toBeUndefined();
+    expect(result).toEqual(false);
     expect(path).toEqual([]);
   });
 });

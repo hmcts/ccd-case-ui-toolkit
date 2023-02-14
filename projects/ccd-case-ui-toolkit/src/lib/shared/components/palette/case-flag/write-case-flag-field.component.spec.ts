@@ -103,6 +103,10 @@ describe('WriteCaseFlagFieldComponent', () => {
   const caseFlagsFieldId = 'caseFlags';
   const mockRoute = {
     snapshot: {
+      params: {
+        eid: 'caseFlag',
+        page: 'caseFlagAction',
+      },
       data: {
         case: {
           case_id: '1111222233334444',

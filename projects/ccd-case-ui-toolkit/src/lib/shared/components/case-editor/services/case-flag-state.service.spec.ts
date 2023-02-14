@@ -16,11 +16,13 @@ describe('CaseFlagStateService', () => {
     expect(caseFlagStateService).toBeTruthy();
   });
 
-  it('calling resetCache should reset the form group', () => {
+  it('calling resetCache should reset the form group and set location', () => {
     const formControlName = 'test' ;
     caseFlagStateService.formGroup.addControl(formControlName, new FormControl());
     expect(caseFlagStateService.formGroup.get(formControlName)).toBeTruthy();
-    caseFlagStateService.resetCache();
+    const newLocation = 'newLocation';
+    caseFlagStateService.resetCache(newLocation);
     expect(caseFlagStateService.formGroup.get(formControlName)).toBeNull();
+    expect(caseFlagStateService.pageLocation).toBe(newLocation);
   });
 });

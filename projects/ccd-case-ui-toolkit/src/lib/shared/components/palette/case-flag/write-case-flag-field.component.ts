@@ -56,7 +56,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnInit(): void {
     if (!(this.location.getState()?.['fieldState'] >= 0)) {
-      this.caseFlagStateService.resetCache();
+      const params = this.route.snapshot.params;
+      this.caseFlagStateService.resetCache(`../${params['eid']}/${params['page']}`);
     }
     this.caseFlagParentFormGroup = this.caseFlagStateService.formGroup;
 
