@@ -529,13 +529,13 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
     component.caseFlagParentFormGroup = new FormGroup({
-      flagComments: new FormControl('An updated comment')
+      flagComment: new FormControl('An updated comment')
     });
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
     // Check the comments have been applied and the modified date/time has been set
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
-      component.caseFlagParentFormGroup.value.flagComments);
+      component.caseFlagParentFormGroup.value.flagComment);
     expect(component.flagsData[0].caseField.value.details[0].value.dateTimeModified).toBeTruthy();
     // Check all other existing changes have been discarded (i.e. values restored from corresponding values in formatted_value)
     expect(component.flagsData[0].caseField.value.details[0].value.status).toEqual(CaseFlagStatus.ACTIVE);

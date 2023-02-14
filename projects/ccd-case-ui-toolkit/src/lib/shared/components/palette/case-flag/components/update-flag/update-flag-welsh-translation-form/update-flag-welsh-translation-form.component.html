@@ -6,23 +6,23 @@
 <ng-container [formGroup]="formGroup">
   <div>
     <div class="govuk-!-margin-bottom-4">
-      <label [for]="FLAG_COMMENTS_CONTROL_NAME" class="govuk-label govuk-label--s">Other description</label>
+      <label [for]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION" class="govuk-label govuk-label--s">Other description</label>
       <textarea
         readonly
         class="govuk-textarea" rows="5"
-        [id]="FLAG_COMMENTS_CONTROL_NAME"
-        [name]="FLAG_COMMENTS_CONTROL_NAME"
-        [formControlName]="FLAG_COMMENTS_CONTROL_NAME">
+        [id]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION"
+        [name]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION"
+        [formControlName]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION">
       </textarea>
     </div>
 
     <div class="govuk-!-margin-bottom-4">
-      <label [for]="FLAG_COMMENTS_WELSH_CONTROL_NAME" class="govuk-label govuk-label--s">Other description (Welsh)</label>
+      <label [for]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH" class="govuk-label govuk-label--s">Other description (Welsh)</label>
       <textarea
         class="govuk-textarea" rows="5"
-        [id]="FLAG_COMMENTS_WELSH_CONTROL_NAME"
-        [name]="FLAG_COMMENTS_WELSH_CONTROL_NAME"
-        [formControlName]="FLAG_COMMENTS_WELSH_CONTROL_NAME"
+        [id]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH"
+        [name]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH"
+        [formControlName]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH"
         [attr.maxlength]="200"
       >
       </textarea>
@@ -31,28 +31,37 @@
 
   <div>
     <div class="govuk-!-margin-bottom-4">
-      <label [for]="FLAG_STATUS_CHANGE_REASON_CONTROL_NAME" class="govuk-label govuk-label--s">Flag comment</label>
+      <label [for]="caseFlagFormFields.COMMENTS" class="govuk-label govuk-label--s">Flag comment</label>
       <textarea
         readonly
         class="govuk-textarea" rows="5"
-        [id]="FLAG_STATUS_CHANGE_REASON_CONTROL_NAME"
-        [name]="FLAG_STATUS_CHANGE_REASON_CONTROL_NAME"
-        [formControlName]="FLAG_STATUS_CHANGE_REASON_CONTROL_NAME"
+        [id]="caseFlagFormFields.COMMENTS"
+        [name]="caseFlagFormFields.COMMENTS"
+        [formControlName]="caseFlagFormFields.COMMENTS"
       >
       </textarea>
     </div>
 
     <div class="govuk-!-margin-bottom-4">
-      <label [for]="FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME" class="govuk-label govuk-label--s">Flag comment (Welsh)</label>
+      <label [for]="caseFlagFormFields.COMMENTS_WELSH" class="govuk-label govuk-label--s">
+        Flag comment (Welsh)
+      </label>
       <textarea
         class="govuk-textarea" rows="5"
-        [id]="FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME"
-        [name]="FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME"
-        [formControlName]="FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME"
+        [id]="caseFlagFormFields.COMMENTS_WELSH"
+        [name]="caseFlagFormFields.COMMENTS_WELSH"
+        [formControlName]="caseFlagFormFields.COMMENTS_WELSH"
         [attr.maxlength]="200"
       >
       </textarea>
     </div>
   </div>
 </ng-container>
+
+<div class="govuk-button-group">
+  <button id="updateFlagNextButton" class="govuk-button" type="button" (click)="onNext()">
+    Next
+  </button>
+</div>
+
 

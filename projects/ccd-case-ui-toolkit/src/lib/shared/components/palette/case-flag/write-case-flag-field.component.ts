@@ -11,6 +11,7 @@ import { CaseFlagStateService } from '../../case-editor/services/case-flag-state
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
+import { CaseFlagFormFields } from './enums/case-flag-form-fields.enum';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
@@ -122,12 +123,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
     this.errorMessages = caseFlagState.errorMessages;
     this.selectedFlag = caseFlagState.selectedFlag;
+
     // Validation succeeded; proceed to next state or final review stage ("Check your answers")
     if (this.errorMessages.length === 0) {
       // If the current state is CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE, move to final
       // review stage
+      // First condition is for create case flag; Second condition is for the manage flag case journey
       if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
-          caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
+          ( caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE
+              && !this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value ||
+            caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION
+          )
+      ) {
         this.moveToFinalReviewStage();
         // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
         // means the user needs to select from the next set of flag types before they can move on
@@ -157,7 +164,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       case CaseFlagFieldState.FLAG_COMMENTS:
         this.addFlagToCollection();
         break;
-      case CaseFlagFieldState.FLAG_UPDATE:
+      case this.manageFlagFinalState:
         this.updateFlagInCollection();
         break;
     }
@@ -256,9 +263,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       const flagDetailToUpdate = flagsCaseFieldValue.details.find(
         detail => detail.id === this.selectedFlag.flagDetailDisplay.flagDetail.id);
       if (flagDetailToUpdate) {
-        flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value.flagComments
-          ? this.caseFlagParentFormGroup.value.flagComments
-          : null;
+        flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value;
         flagDetailToUpdate.value.status = this.selectedFlag.flagDetailDisplay.flagDetail.status;
         flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
       }
@@ -267,7 +272,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public isAtFinalState(): boolean {
     return this.isDisplayContextParameterUpdate
-      ? this.fieldState === CaseFlagFieldState.FLAG_UPDATE
+      ? this.fieldState === this.manageFlagFinalState
       : this.fieldState === CaseFlagFieldState.FLAG_COMMENTS;
   }
 
@@ -323,5 +328,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnDestroy(): void {
     this.caseTitleSubscription?.unsubscribe();
+  }
+
+  public get manageFlagFinalState() {
+    return this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value
+    ? CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION : CaseFlagFieldState.FLAG_UPDATE;
   }
 }

@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { EnumDisplayDescriptionPipe } from '../../../../../pipes/generic/enum-display-description/enum-display-description.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
-import { UpdateFlagStatesEnum } from '../../enums/update-flag-states.enum';
+import { CaseFlagFormFields } from '../../enums/case-flag-form-fields.enum';
 import { UpdateFlagComponent } from './update-flag.component';
 
 describe('UpdateFlagComponent', () => {
@@ -68,7 +68,7 @@ describe('UpdateFlagComponent', () => {
     fixture.detectChanges();
 
     nextButton = fixture.debugElement.query(By.css('#updateFlagNextButton')).nativeElement;
-    textarea = fixture.debugElement.query(By.css(`#${component.FLAG_COMMENTS_CONTROL_NAME}`)).nativeElement;
+    textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
   });
 
   it('should create component', () => {
@@ -97,7 +97,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
-      fieldId: component.FLAG_COMMENTS_CONTROL_NAME
+      fieldId: CaseFlagFormFields.COMMENTS
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
@@ -111,7 +111,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
-      fieldId: component.FLAG_COMMENTS_CONTROL_NAME
+      fieldId: CaseFlagFormFields.COMMENTS
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED);
@@ -128,7 +128,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should render flag status checkboxes correctly', () => {
-    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${component.FLAG_STATUS_CONTROL_NAME} label`);
+    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
 
     const displayedStatuses = [] as string[];
     for (const element of statusCheckboxLabelsElements.values()) {
@@ -136,25 +136,5 @@ describe('UpdateFlagComponent', () => {
     }
 
     expect(displayedStatuses).toEqual(Object.values(CaseFlagStatus));
-  });
-
-  it('should start with currentFormStep as FLAG_FORM', () => {
-    expect(component.currentFormStep === UpdateFlagStatesEnum.FLAG_FORM);
-  });
-
-  it('should set currentFormStep to WELSH_TRANSLATION_FORM when clicking onNext() if welsh checkbox is selected', () => {
-    component.formGroup.get(component.FLAG_WELSH_TRANSLATION_CONTROL_NAME).setValue(true);
-    fixture.detectChanges();
-    component.onNext();
-
-    expect(component.currentFormStep === UpdateFlagStatesEnum.WELSH_TRANSLATION_FORM).toBe(true);
-  });
-
-  it('should set currentForm back to FLAG_FORM if it`s WELSH_TRANSLATION_FORM', () => {
-    component.currentFormStep = UpdateFlagStatesEnum.WELSH_TRANSLATION_FORM as UpdateFlagStatesEnum;
-    fixture.detectChanges();
-    component.onBack();
-
-    expect(component.currentFormStep === UpdateFlagStatesEnum.FLAG_FORM).toBe(true);
   });
 });

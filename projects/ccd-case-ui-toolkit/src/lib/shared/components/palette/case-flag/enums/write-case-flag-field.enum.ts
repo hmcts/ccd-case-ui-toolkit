@@ -5,7 +5,7 @@ export enum CaseFlagFieldState {
   FLAG_COMMENTS,
   FLAG_MANAGE_CASE_FLAGS,
   FLAG_UPDATE,
-  FLAG_UPDATE_EXTRA_STEP,
+  FLAG_UPDATE_WELSH_TRANSLATION,
 }
 
 export enum CaseFlagText {

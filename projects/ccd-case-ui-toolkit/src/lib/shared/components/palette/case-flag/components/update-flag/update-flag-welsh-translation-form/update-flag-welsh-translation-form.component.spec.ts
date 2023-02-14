@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { CaseFlagFormFields } from '../../../enums/case-flag-form-fields.enum';
 import { UpdateFlagWelshTranslationFormComponent } from './update-flag-welsh-translation-form.component';
 
 describe('UpdateFlagWelshTranslationFormComponent', () => {
@@ -20,8 +21,8 @@ describe('UpdateFlagWelshTranslationFormComponent', () => {
     fixture = TestBed.createComponent(UpdateFlagWelshTranslationFormComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({});
-    component.formGroup.addControl(component.FLAG_COMMENTS_CONTROL_NAME, new FormControl(''));
-    component.formGroup.addControl(component.FLAG_STATUS_CHANGE_REASON_CONTROL_NAME, new FormControl(''));
+    component.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(''));
+    component.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
     fixture.detectChanges();
   });
 
@@ -30,26 +31,26 @@ describe('UpdateFlagWelshTranslationFormComponent', () => {
   });
 
   it('should add two form controls if formGroup exists', () => {
-    expect(component.formGroup.get(component.FLAG_COMMENTS_WELSH_CONTROL_NAME)).toBeTruthy();
-    expect(component.formGroup.get(component.FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME)).toBeTruthy();
+    expect(component.formGroup.get(CaseFlagFormFields.COMMENTS_WELSH)).toBeTruthy();
+    expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)).toBeTruthy();
   });
 
   it('should have all four textareas based on names and the English textarea  should be readonly and the other ones maxlength 200', () => {
-    const flagCommentsControl = fixture.debugElement.query(By.css(`#${component.FLAG_COMMENTS_CONTROL_NAME}`));
-    expect(flagCommentsControl?.name).toEqual('textarea');
-    expect(Object.keys(flagCommentsControl.attributes)).toContain('readonly');
-
-    const flagCommentsWelshControl = fixture.debugElement.query(By.css(`#${component.FLAG_COMMENTS_WELSH_CONTROL_NAME}`));
-    expect(flagCommentsWelshControl?.name).toEqual('textarea');
-    expect(flagCommentsWelshControl?.attributes.maxlength).toEqual('200');
-
-
-    const flagStatusChangeReasonControl = fixture.debugElement.query(By.css(`#${component.FLAG_STATUS_CHANGE_REASON_CONTROL_NAME}`));
+    const flagStatusChangeReasonControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.OTHER_FLAG_DESCRIPTION}`));
     expect(flagStatusChangeReasonControl?.name).toEqual('textarea');
     expect(Object.keys(flagStatusChangeReasonControl.attributes)).toContain('readonly');
 
-    const flagStatusChangeReasonWelshControl = fixture.debugElement.query(By.css(`#${component.FLAG_STATUS_CHANGE_REASON_WELSH_CONTROL_NAME}`));
+    const flagStatusChangeReasonWelshControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH}`));
     expect(flagStatusChangeReasonWelshControl?.name).toEqual('textarea');
     expect(flagStatusChangeReasonWelshControl?.attributes.maxlength).toEqual('200');
+
+
+    const flagCommentsControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`));
+    expect(flagCommentsControl?.name).toEqual('textarea');
+    expect(Object.keys(flagCommentsControl.attributes)).toContain('readonly');
+
+    const flagCommentsWelshControl = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS_WELSH}`));
+    expect(flagCommentsWelshControl?.name).toEqual('textarea');
+    expect(flagCommentsWelshControl?.attributes.maxlength).toEqual('200');
   });
 });

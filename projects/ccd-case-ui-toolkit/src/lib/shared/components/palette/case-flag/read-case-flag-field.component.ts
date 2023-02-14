@@ -71,19 +71,24 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // which the new flag has been added
         if (flagLauncherComponent.caseField.display_context_parameter === this.createMode &&
           flagLauncherComponent.selectedFlagsLocation) {
-          // this.flagLocation = flagLauncherComponent.selectedFlagsLocation;
           this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
           this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
             flagLauncherComponent.selectedFlagsLocation
           );
-            // Set the display mode for the "Review flag details" summary page
-            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+          // Set the display mode for the "Review flag details" summary page
+          this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
         } else if (flagLauncherComponent.caseField.display_context_parameter === this.updateMode &&
           flagLauncherComponent.selectedFlag) {
             this.flagForSummaryDisplay =
               this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
+          // TODO: not the best solution, the caseFlagStateService should have all the fields, then we can delete a lot of the transformations here
+          // in Create Case Flag it already has all fields
+          this.flagForSummaryDisplay.flagDetail = {
+              ...this.flagForSummaryDisplay.flagDetail,
+              ...this.caseFlagStateService.formGroup?.value
+            };
             // Set the display mode for the "Review flag details" summary page
             this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
         }
@@ -104,7 +109,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       return {
         partyName: flagsCaseFieldValue.partyName,
         // Look in the details array for the object that does *not* have an id - this indicates it is the new flag
-        flagDetail: flagsCaseFieldValue.details.find(element => !element.hasOwnProperty('id')).value
+        flagDetail: flagsCaseFieldValue.details.find(element => !element.hasOwnProperty('id'))?.value
       } as FlagDetailDisplay;
     }
 
