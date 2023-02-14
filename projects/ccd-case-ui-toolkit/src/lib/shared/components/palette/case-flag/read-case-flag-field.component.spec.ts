@@ -387,8 +387,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     fixture = TestBed.createComponent(ReadCaseFlagFieldComponent);
     component = fixture.componentInstance;
     component.caseField = flagLauncher1CaseField;
-    router = TestBed.get(Router);
-    route = TestBed.get(ActivatedRoute);
+    router = TestBed.inject(Router);
+    route = TestBed.inject(ActivatedRoute);
 
     fixture.detectChanges();
   });

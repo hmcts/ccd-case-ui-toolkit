@@ -16,7 +16,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public flagStatus: string;
   public displayMode = CaseFlagSummaryListDisplayMode;
   public addUpdateFlagHeaderText: string;
-  public CaseFlagFieldState = CaseFlagFieldState;
+  public caseFlagFieldState = CaseFlagFieldState;
   public readonly caseLevelLocation = 'Case level';
   private readonly updateFlagHeaderText = 'Update flag for';
   private readonly addFlagHeaderText = 'Add flag to';

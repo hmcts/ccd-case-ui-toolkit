@@ -321,7 +321,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.caseEditDataService.setTriggerSubmitEvent(true);
   }
 
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.caseTitleSubscription?.unsubscribe();
   }
 }

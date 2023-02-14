@@ -550,7 +550,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[1].value.status).toEqual(CaseFlagStatus.ACTIVE);
   });
 
-  it('should handle the caseFlagStateEmitter  and increment fieldStte by 1 if not FLAG_COMMENTS or FLAG_UPDATE,' +
+  it('should handle the caseFlagStateEmitter and increment fieldState by 1 if not FLAG_COMMENTS or FLAG_UPDATE,' +
     'has no errors and listOfValues is empty', () => {
     component.caseFlagParentFormGroup = new FormGroup({
       flagType: new FormControl({

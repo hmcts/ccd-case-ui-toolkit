@@ -7,7 +7,7 @@
       {{flagForSummaryDisplay.partyName || caseLevelLocation}}
     </dd>
     <dd class="govuk-summary-list__actions" *ngIf="summaryListDisplayMode === displayMode.CREATE">
-      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(CaseFlagFieldState.FLAG_LOCATION)">
+      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_LOCATION)">
         Change<span class="govuk-visually-hidden"> party name</span>
       </a>
     </dd>
@@ -20,7 +20,7 @@
       {{flagDescription}}
     </dd>
     <dd class="govuk-summary-list__actions" *ngIf="summaryListDisplayMode === displayMode.CREATE">
-      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(CaseFlagFieldState.FLAG_TYPE)">
+      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_TYPE)">
         Change<span class="govuk-visually-hidden"> description</span>
       </a>
     </dd>
@@ -33,7 +33,7 @@
       {{flagComments}}
     </dd>
     <dd class="govuk-summary-list__actions" *ngIf="summaryListDisplayMode === displayMode.CREATE">
-      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(CaseFlagFieldState.FLAG_COMMENTS)">
+      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_COMMENTS)">
         Change<span class="govuk-visually-hidden"> comments</span>
       </a>
     </dd>
