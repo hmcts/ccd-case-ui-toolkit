@@ -43,7 +43,6 @@ export class SelectFlagLocationComponent implements OnInit {
         formControl.setValue(
           this.filteredFlagsData.find(item => item.pathToFlagsFormGroup === formControl.value.pathToFlagsFormGroup)
         );
-        console.log(this.filteredFlagsData);
       }
     } else {
       // No filtered flags instances mean there are no parties to select from. The case has not been configured properly
