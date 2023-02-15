@@ -149,7 +149,7 @@ describe('ConditionParser', () => {
     describe('parse complex fieldReference comparisons', () => {
       const testCases = [
         {
-          input: 'a_p = "Hello World"',
+          input: '[a_p] = "Hello World"',
           expected: [
             { fieldReference: 'a_p', comparator: '=', value: 'Hello World' }
           ]

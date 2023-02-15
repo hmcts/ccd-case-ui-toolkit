@@ -12,6 +12,7 @@ export class ConditionParser {
    */
   public static parse(condition: string): any {
     if (!condition) { return null };
+    condition = condition.replace(/[[\]]/g,'');
     condition = condition.replace(/CONTAINS/g, ' CONTAINS');
     return peg.parse(condition.trim(), {});
   }
