@@ -204,7 +204,7 @@ export class ShowCondition {
       if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
         return this.checkValueNotEquals(expectedValue, currentValue);
       } else {
-        return currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // tslint:disable-line
+        return currentValue === undefined || currentValue == expectedValue || this.okIfBothEmpty(expectedValue, currentValue); // tslint:disable-line
       }
     }
   }
