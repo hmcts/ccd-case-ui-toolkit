@@ -71,7 +71,7 @@ const conditionSource =
    = [0-9]+
 
   quotedValue
-   = '"'val:[A-Za-z0-9.,* _-]*'"'
+   = '"'val:[A-Za-z0-9.,* _/-]*'"'
    { return val.join(""); }
 
   bracket
