@@ -15,7 +15,7 @@
     "**/*.d.ts"
   ],
   "exclude": [
-    "**/*.stories.ts"
+    "**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts",
   ]
 }
 
