@@ -43,6 +43,11 @@ export class ConditionParser {
       }
 
       if (condition.comparator) {
+        if (condition.fieldReference == condition.fieldReference.toUpperCase()) {
+          if (!(condition.fieldReference.startsWith('[') && condition.fieldReference.endsWith(']'))) {
+            condition.fieldReference = '[' + condition.fieldReference + ']';
+          }
+        }
         const formula = condition.fieldReference + condition.comparator + condition.value;
         currentConditionResult = this.matchEqualityCondition(fields, formula, path);
       }
