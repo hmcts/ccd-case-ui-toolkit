@@ -4,11 +4,11 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../services/case-flag';
-import { FlagPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
 describe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;
@@ -164,7 +164,7 @@ describe('SelectFlagTypeComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [SelectFlagTypeComponent],
       providers: [
-        { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService }
+        { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService },
       ]
     })
     .compileComponents();
@@ -207,19 +207,10 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-0').click();
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
-    const flagPaths: FlagPath[] = [];
-    flagTypes[0].childFlags[0].Path.forEach(flagPath => {
-      flagPaths.push({ id: null, value: flagPath })
-    });
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: true,
       errorMessages: component.errorMessages,
-      flagName: flagTypes[0].childFlags[0].name,
-      flagPath: flagPaths,
-      hearingRelevantFlag: flagTypes[0].childFlags[0].hearingRelevant,
-      flagCode: flagTypes[0].childFlags[0].flagCode,
-      listOfValues: null
     });
     expect(component.errorMessages.length).toBe(0);
   });
@@ -231,19 +222,10 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-1').click();
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
-    const flagPaths: FlagPath[] = [];
-    flagTypes[0].childFlags[1].Path.forEach(flagPath => {
-      flagPaths.push({ id: null, value: flagPath })
-    });
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
       errorMessages: component.errorMessages,
-      flagName: flagTypes[0].childFlags[1].name,
-      flagPath: flagPaths,
-      hearingRelevantFlag: flagTypes[0].childFlags[1].hearingRelevant,
-      flagCode: flagTypes[0].childFlags[1].flagCode,
-      listOfValues: null
     });
     expect(component.errorMessages.length).toBe(0);
   });
@@ -264,19 +246,10 @@ describe('SelectFlagTypeComponent', () => {
     // with list of values
     nativeElement.querySelector('#flag-type-0').click();
     nextButtonElement.click();
-    const flagPaths: FlagPath[] = [];
-    flagTypes[0].childFlags[0].childFlags[1].childFlags[0].Path.forEach(flagPath => {
-      flagPaths.push({ id: null, value: flagPath })
-    });
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
       errorMessages: component.errorMessages,
-      flagName: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].name,
-      flagPath: flagPaths,
-      hearingRelevantFlag: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].hearingRelevant,
-      flagCode: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].flagCode,
-      listOfValues: flagTypes[0].childFlags[0].childFlags[1].childFlags[0].listOfValues
     });
     expect(component.errorMessages.length).toBe(0);
   });
@@ -300,11 +273,6 @@ describe('SelectFlagTypeComponent', () => {
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: null,
       errorMessages: component.errorMessages,
-      flagName: null,
-      flagPath: null,
-      hearingRelevantFlag: null,
-      flagCode: null,
-      listOfValues: null
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -349,7 +317,7 @@ describe('SelectFlagTypeComponent', () => {
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags[0].childFlags);
-    expect(component.formGroup.get(component.flagTypeControlName).value).toEqual('');
+    expect(component.formGroup.get(component.flagTypeControlName).value).toEqual(null);
     expect(component.selectedFlagType).toBeNull();
   });
 
@@ -384,7 +352,29 @@ describe('SelectFlagTypeComponent', () => {
     component.ngOnInit();
     spyOn(component.flagRefdata$, 'unsubscribe');
     expect(component.flagRefdata$).toBeTruthy();
+    spyOn(component.flagTypeControlChangesSubscription, 'unsubscribe');
     component.ngOnDestroy();
     expect(component.flagRefdata$.unsubscribe).toHaveBeenCalled();
+    expect(component.flagTypeControlChangesSubscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should subscribe to the valueChanges of flagTypeControlName control' +
+    'and on new value it should clear descriptionControl value,' +
+    'clear languageSearchTerm, clear manualLanguageEntry and empty cachedPath', () => {
+    component.formGroup = new FormGroup({
+      [component.flagTypeControlName]: new FormControl(''),
+      [component.descriptionControlName]: new FormControl(''),
+      [SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM] : new FormControl('test1'),
+      [SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY] : new FormControl('test2')
+    });
+
+    component.cachedPath = [flagTypes[0], flagTypes[0][1]];
+    component.ngOnInit();
+    component.formGroup.get(component.flagTypeControlName).setValue('testValue');
+
+    expect(component.formGroup.get(component.descriptionControlName).value).toEqual('');
+    expect(component.cachedPath.length).toEqual(0);
+    expect(component.formGroup.get('languageSearchTerm').value).toEqual('');
+    expect(component.formGroup.get('manualLanguageEntry').value).toEqual('');
   });
 });

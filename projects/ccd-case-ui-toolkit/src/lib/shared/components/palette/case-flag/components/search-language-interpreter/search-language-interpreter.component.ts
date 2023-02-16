@@ -10,6 +10,7 @@ import {
   SearchLanguageInterpreterErrorMessage,
   SearchLanguageInterpreterStep
 } from '../../enums';
+import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';
 
 @Component({
   selector: 'ccd-search-language-interpreter',
@@ -17,6 +18,10 @@ import {
   styleUrls: ['./search-language-interpreter.component.scss']
 })
 export class SearchLanguageInterpreterComponent implements OnInit {
+  public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {
+    return SearchLanguageInterpreterStep;
+  }
+  public readonly SearchLanguageInterpreterControlNames = SearchLanguageInterpreterControlNames;
 
   @Input()
   public formGroup: FormGroup;
@@ -31,8 +36,6 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public readonly minSearchCharacters = 3;
-  public readonly languageSearchTermControlName = 'languageSearchTerm';
-  public readonly manualLanguageEntryControlName = 'manualLanguageEntry';
   public filteredLanguages$: Observable<Language[]>;
   public searchTerm = '';
   public isCheckboxEnabled = false;
@@ -47,10 +50,6 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   private readonly languageMaxCharLimit = 80;
   private readonly signLanguageFlagCode = 'RA0042';
 
-  public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {
-    return SearchLanguageInterpreterStep;
-  }
-
   public ngOnInit(): void {
     this.searchLanguageInterpreterTitle = this.flagCode === this.signLanguageFlagCode
       ? CaseFlagWizardStepTitle.SEARCH_SIGN_LANGUAGE_INTERPRETER
@@ -58,9 +57,9 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     this.searchLanguageInterpreterHint = this.flagCode === this.signLanguageFlagCode
       ? SearchLanguageInterpreterStep.SIGN_HINT_TEXT
       : SearchLanguageInterpreterStep.HINT_TEXT;
-    this.formGroup.addControl(this.languageSearchTermControlName, new FormControl());
-    this.formGroup.addControl(this.manualLanguageEntryControlName, new FormControl());
-    this.filteredLanguages$ = this.formGroup.get(this.languageSearchTermControlName).valueChanges.pipe(
+    this.formGroup.addControl(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM, new FormControl());
+    this.formGroup.addControl(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY, new FormControl());
+    this.filteredLanguages$ = this.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).valueChanges.pipe(
       // Need to check type of input because it changes to object (i.e. Language) when a value is selected from the
       // autocomplete panel, instead of string when a value is being typed in
       map(input => typeof input === 'string' ? input : input.value),
@@ -89,7 +88,7 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     // If the checkbox is disabled, i.e. unchecked, then clear the manual language entry FormControl of any value to
     // prevent it being retained even when the field itself is hidden
     if (!this.isCheckboxEnabled) {
-      this.formGroup.get(this.manualLanguageEntryControlName).setValue(null);
+      this.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).setValue(null);
     }
   }
 
@@ -104,37 +103,37 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     this.languageEnteredInBothFieldsErrorMessage = null;
     this.errorMessages = [];
     // Checkbox not enabled means the user has opted to search for and select the language
-    if (!this.isCheckboxEnabled && !this.formGroup.get(this.languageSearchTermControlName).value) {
+    if (!this.isCheckboxEnabled && !this.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).value) {
       this.languageNotSelectedErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
         description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
-        fieldId: this.languageSearchTermControlName
+        fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
       });
     }
     // Checkbox enabled means the user has opted to enter the language manually
     if (this.isCheckboxEnabled) {
-      if (!this.formGroup.get(this.manualLanguageEntryControlName).value) {
+      if (!this.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).value) {
         this.languageNotEnteredErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED;
         this.errorMessages.push({
           title: '',
           description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
-          fieldId: this.manualLanguageEntryControlName
+          fieldId: SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY
         });
-      } else if (this.formGroup.get(this.manualLanguageEntryControlName).value.length > this.languageMaxCharLimit) {
+      } else if (this.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).value.length > this.languageMaxCharLimit) {
         this.languageCharLimitErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_CHAR_LIMIT_EXCEEDED;
         this.errorMessages.push({
           title: '',
           description: SearchLanguageInterpreterErrorMessage.LANGUAGE_CHAR_LIMIT_EXCEEDED,
-          fieldId: this.manualLanguageEntryControlName
+          fieldId: SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY
         });
-      } else if (this.formGroup.get(this.languageSearchTermControlName).value) {
+      } else if (this.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).value) {
         // Language entry is permitted in only one field at a time
         this.languageEnteredInBothFieldsErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_ENTERED_IN_BOTH_FIELDS;
         this.errorMessages.push({
           title: '',
           description: SearchLanguageInterpreterErrorMessage.LANGUAGE_ENTERED_IN_BOTH_FIELDS,
-          fieldId: this.languageSearchTermControlName
+          fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
         });
       }
     }

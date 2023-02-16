@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
+import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';
 import { SearchLanguageInterpreterComponent } from './search-language-interpreter.component';
 
 describe('SearchLanguageInterpreterComponent', () => {
@@ -35,7 +36,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     fixture = TestBed.createComponent(SearchLanguageInterpreterComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({
-      [component.languageSearchTermControlName] : new FormControl('')
+      [SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM] : new FormControl('')
     });
     component.languages = languages;
     component.flagCode = languageFlagCode;
@@ -138,7 +139,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
-      fieldId: component.languageSearchTermControlName
+      fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('#language-not-selected-error-message');
     expect(errorMessageElement.textContent).toContain(SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED);
@@ -160,7 +161,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
-      fieldId: component.manualLanguageEntryControlName
+      fieldId: SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY
     });
     const selectedLanguageErrorMessageElement = nativeElement.querySelector('#language-not-selected-error-message');
     // There should be no error shown above the language search box because manual language entry has been selected
@@ -189,7 +190,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: SearchLanguageInterpreterErrorMessage.LANGUAGE_CHAR_LIMIT_EXCEEDED,
-      fieldId: component.manualLanguageEntryControlName
+      fieldId: SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY
     });
     const selectedLanguageErrorMessageElement = nativeElement.querySelector('#language-not-selected-error-message');
     // There should be no error shown above the language search box because manual language entry has been selected
@@ -229,7 +230,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     // It's not possible to programmatically test option selection from the Angular Material autocomplete component
     // without recreating the entire unit test from the library, so just set the language search FormControl value
     // manually, as if the user had selected an option
-    component.formGroup.get(component.languageSearchTermControlName).setValue(languages[3]);
+    component.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).setValue(languages[3]);
     const nativeElement = fixture.debugElement.nativeElement;
     const checkboxElement = nativeElement.querySelector('.govuk-checkboxes__input');
     checkboxElement.click();
@@ -237,7 +238,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     const manualLanguageEntryField = nativeElement.querySelector('#manual-language-entry');
     manualLanguageEntryField.value = fieldInput;
     manualLanguageEntryField.dispatchEvent(new Event('input'));
-    expect(component.formGroup.get(component.manualLanguageEntryControlName).value).toEqual(fieldInput);
+    expect(component.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).value).toEqual(fieldInput);
     nextButton.click();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
@@ -258,11 +259,11 @@ describe('SearchLanguageInterpreterComponent', () => {
     const manualLanguageEntryField = nativeElement.querySelector('#manual-language-entry');
     manualLanguageEntryField.value = fieldInput;
     manualLanguageEntryField.dispatchEvent(new Event('input'));
-    expect(component.formGroup.get(component.manualLanguageEntryControlName).value).toEqual(fieldInput);
+    expect(component.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).value).toEqual(fieldInput);
     // Uncheck "Enter the language manually" checkbox
     checkboxElement.click();
     expect(component.isCheckboxEnabled).toBe(false);
-    expect(component.formGroup.get(component.manualLanguageEntryControlName).value).toBeNull();
+    expect(component.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).value).toBeNull();
   });
 
   it('should show the correct page title and hint text depending on whether the flag type is sign language or not', () => {

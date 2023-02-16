@@ -1,4 +1,4 @@
-<div class="form-group" [formGroup]="formGroup">
+<div *ngIf="flagTypes?.length" class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
     <fieldset class="govuk-fieldset" aria-describedby="flag-type-heading">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -16,8 +16,8 @@
             unique by appending the index - radio buttons shouldn't share the same value.
             It is OK to amend flagCode this way because parent flag types cannot be selected as a final value -->
           <input class="govuk-radios__input" id="flag-type-{{i}}" [name]="flagTypeControlName"
-            type="radio" [value]="flagType.flagCode === 'CATGRY' ? flagType.flagCode + i : flagType.flagCode"
-            [formControlName]="flagTypeControlName" (change)="onFlagTypeChanged(flagType)"/>
+            type="radio" [value]="flagType"
+            [formControlName]="flagTypeControlName"/>
           <label class="govuk-label govuk-radios__label" for="flag-type-{{i}}">{{flagType.name}}</label>
         </div>
         <div class="govuk-radios__conditional" *ngIf="otherFlagTypeSelected" id="conditional-flagType">

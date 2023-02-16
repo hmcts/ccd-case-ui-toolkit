@@ -9,7 +9,6 @@ import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagW
   templateUrl: './add-comments.component.html'
 })
 export class AddCommentsComponent implements OnInit {
-
   @Input() public formGroup: FormGroup;
   @Input() public optional = false;
 
@@ -28,7 +27,10 @@ export class AddCommentsComponent implements OnInit {
     this.addCommentsTitle = CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS;
     this.addCommentsHint = AddCommentsStep.HINT_TEXT;
     this.addCommentsCharLimitInfo = AddCommentsStep.CHARACTER_LIMIT_INFO;
-    this.formGroup.addControl(this.flagCommentsControlName, new FormControl(''));
+
+    if (!this.formGroup.get(this.flagCommentsControlName)) {
+      this.formGroup.addControl(this.flagCommentsControlName, new FormControl(''));
+    }
   }
 
   public onNext(): void {

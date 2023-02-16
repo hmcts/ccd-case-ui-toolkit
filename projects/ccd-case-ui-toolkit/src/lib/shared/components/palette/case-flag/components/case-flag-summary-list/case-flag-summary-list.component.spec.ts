@@ -49,7 +49,7 @@ describe('CaseFlagSummaryListComponent', () => {
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd');
+    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
@@ -75,7 +75,7 @@ describe('CaseFlagSummaryListComponent', () => {
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd');
+    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
     expect(summaryListValues[2].textContent.trim()).toEqual('');
@@ -102,7 +102,7 @@ describe('CaseFlagSummaryListComponent', () => {
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd');
+    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(`${flag.flagDetail.name} - ${flag.flagDetail.otherDescription}`);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
@@ -129,7 +129,7 @@ describe('CaseFlagSummaryListComponent', () => {
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd');
+    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(`${flag.flagDetail.name} - ${flag.flagDetail.subTypeValue}`);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
@@ -155,7 +155,7 @@ describe('CaseFlagSummaryListComponent', () => {
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd');
+    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);

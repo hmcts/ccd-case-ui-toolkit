@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
@@ -75,7 +75,7 @@ describe('SelectFlagLocationComponent', () => {
     }
   ] as FlagsWithFormGroupPath[];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -117,7 +117,6 @@ describe('SelectFlagLocationComponent', () => {
   });
 
   it('should display a radio button for each party and one for case level', () => {
-    component.ngOnInit();
     expect(component.filteredFlagsData.length).toBe(3);
     const nativeElement = fixture.debugElement.nativeElement;
     const radioButtonElements = nativeElement.querySelectorAll('.govuk-radios__input');
@@ -148,7 +147,6 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
       errorMessages: component.errorMessages,
-      selectedFlagsLocation: flagsData[0]
     });
     expect(component.errorMessages.length).toBe(0);
   });
@@ -165,7 +163,6 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
       errorMessages: component.errorMessages,
-      selectedFlagsLocation: null
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
