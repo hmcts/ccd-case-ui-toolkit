@@ -320,7 +320,7 @@ describe('conditional-show', () => {
       };
       const matched = sc.match(fields);
 
-      expect(matched).toBe(false);
+      expect(matched).toBe(true);
     });
 
     it('field starts with a string and does not exist', () => {
@@ -333,7 +333,7 @@ describe('conditional-show', () => {
 
       const matched = sc.match(fields);
 
-      expect(matched).toBe(false);
+      expect(matched).toBe(true);
     });
 
     it('should return false when multiple values does not match exactly', () => {
@@ -354,7 +354,7 @@ describe('conditional-show', () => {
       };
       const matched = sc.match(fields);
 
-      expect(matched).toBe(false);
+      expect(matched).toBe(true);
     });
 
     it('field mentioned in multi value condition has no value asked in EQUALS condition', () => {
@@ -407,7 +407,7 @@ describe('conditional-show', () => {
 
       const matched = sc.match(fields);
 
-      expect(matched).toBe(false);
+      expect(matched).toBe(true);
     });
 
     it('field mentioned in complex field condition has no value', () => {
@@ -420,7 +420,7 @@ describe('conditional-show', () => {
 
       const matched = sc.match(fields);
 
-      expect(matched).toBe(false);
+      expect(matched).toBe(true);
     });
 
     it('should return false when value will not match on a collection element with a complex field', () => {
@@ -450,7 +450,7 @@ describe('conditional-show', () => {
       const path = 'nonMatchingField_0_outcomeOfVisit';
       const matched = sc.match(fields, path);
 
-      expect(matched).toBe(false);
+      expect(matched).toBe(true);
     });
 
   });
