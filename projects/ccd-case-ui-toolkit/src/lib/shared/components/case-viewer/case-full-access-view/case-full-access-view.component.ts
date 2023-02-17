@@ -4,9 +4,10 @@ import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnIn
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import {
   NotificationBannerConfig,
@@ -126,7 +127,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (!changes.prependedTabs.firstChange) {
+    if (changes && changes.prependedTabs && !changes.prependedTabs.firstChange) {
       this.init();
       this.crf.detectChanges();
       this.organiseTabPosition();
@@ -156,17 +157,19 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private checkRouteAndSetCaseViewTab(): void {
-    this.router.events.subscribe((val) => {
-      const url = val && (val as any).url;
-      if (url) {
-        const tabUrl = url ? url.split('#') : null ;
-        const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
-        const matTab = this.tabGroup._tabs.find( (x) => x.textLabel.toLowerCase() === tab.toLowerCase());
-        if (matTab && matTab.position) {
-          this.tabGroup.selectedIndex = matTab.position;
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const url = event && (event as any).url;
+        if (url) {
+          const tabUrl = url ? url.split('#') : null ;
+          const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
+          const matTab = this.tabGroup._tabs.find( (x) => x.textLabel.toLowerCase() === tab.toLowerCase());
+          if (matTab && matTab.position) {
+            this.tabGroup.selectedIndex = matTab.position;
+          }
         }
-      }
-    })
+      });
   }
 
   public postViewActivity(): Observable<Activity[]> {
