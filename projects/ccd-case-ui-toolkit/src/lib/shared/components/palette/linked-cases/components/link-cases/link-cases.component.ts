@@ -7,10 +7,10 @@ import { LovRefDataModel } from '../../../../../services/common-data-service/com
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import {
-	CaseLink,
-	CCDCaseLinkType,
-	LinkCaseReason,
-	LinkReason
+  CaseLink,
+  CCDCaseLinkType,
+  LinkCaseReason,
+  LinkReason
 } from '../../domain/linked-cases.model';
 import { LinkedCasesErrorMessages, LinkedCasesPages, Patterns } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
@@ -30,11 +30,13 @@ export class LinkCasesComponent implements OnInit {
   public selectedCases: CaseLink[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
+  public caseReasonCommentsError: string;
   public caseSelectionError: string;
   public noSelectedCaseError: string;
   public caseId: string;
   public caseName: string;
-  public linkCaseReasons: LovRefDataModel[] = [];
+  public linkCaseReasons: LovRefDataModel[];
+  public showComments = false;
   private readonly ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(
@@ -46,7 +48,10 @@ export class LinkCasesComponent implements OnInit {
   public ngOnInit(): void {
     this.caseId = this.linkedCasesService.caseId;
     this.caseName = this.linkedCasesService.caseName;
-    this.linkCaseReasons = this.linkedCasesService.linkCaseReasons;
+    this.linkCaseReasons = this.linkedCasesService.linkCaseReasons?.filter(reason => reason.value_en !== 'Other');
+    const linkCaseReasonOther = this.linkedCasesService.linkCaseReasons?.find(reason => reason.value_en === 'Other');
+    this.linkCaseReasons.push(linkCaseReasonOther);
+    console.log('LINK CASE REASONS', this.linkCaseReasons);
     this.initForm();
     if (this.linkedCasesService.editMode) {
       // this may have includes the currently added one but yet to be submitted.
@@ -60,6 +65,7 @@ export class LinkCasesComponent implements OnInit {
     this.linkCaseForm = this.fb.group({
       caseNumber: ['', [Validators.minLength(16), this.validatorsUtils.regexPattern(Patterns.CASE_REF)]],
       reasonType: this.getReasonTypeFormArray,
+      reasonCommentsDescription: ['', [Validators.maxLength(100)]]
     });
   }
 
@@ -81,9 +87,15 @@ export class LinkCasesComponent implements OnInit {
     );
   }
 
+  public toggleLinkCaseReasonOtherComments(event: any): void {
+    this.linkCaseReasons.find(reason => reason.value_en === event.target.value).selected = event.target.checked;
+    this.showComments = this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected;
+  }
+
   public submitCaseInfo(): void {
     this.errorMessages = [];
     this.caseReasonError = null;
+    this.caseReasonCommentsError = null;
     this.caseNumberError = null;
     this.caseSelectionError = null;
     this.noSelectedCaseError = null;
@@ -128,6 +140,16 @@ export class LinkCasesComponent implements OnInit {
         title: 'dummy-case-reason',
         description: LinkedCasesErrorMessages.ReasonSelectionError,
         fieldId: 'caseReason',
+      });
+    }
+    if (this.linkCaseForm.controls.reasonType.valid
+        && this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected
+        && this.linkCaseForm.controls.reasonCommentsDescription.value.trim().length === 0) {
+      this.caseReasonCommentsError = LinkedCasesErrorMessages.ReasonCommentsError;
+      this.errorMessages.push({
+        title: 'dummy-case-reason-comments',
+        description: LinkedCasesErrorMessages.ReasonCommentsError,
+        fieldId: 'reasonCommentsDescription',
       });
     }
     if (this.isCaseSelected(this.selectedCases)) {
@@ -218,7 +240,9 @@ export class LinkCasesComponent implements OnInit {
       (selectedReason: LinkCaseReason) => {
         if (selectedReason.selected) {
           selectedReasons.push({
-            reasonCode: selectedReason.key
+            reasonCode: selectedReason.value_en === 'Other'
+              ? this.linkCaseForm.controls.reasonCommentsDescription.value
+              : selectedReason.key
           } as LinkReason);
         }
       }
