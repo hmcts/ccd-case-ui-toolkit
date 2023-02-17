@@ -44,7 +44,7 @@ export class CaseCreateComponent implements OnInit {
         this.eventTriggerService.announceEventTrigger(eventTrigger);
       })
       .catch((error: HttpError) => {
-        this.alertService.error(error.message);
+        this.alertService.error({ phrase: error.message });
         return throwError(error);
       });
   }

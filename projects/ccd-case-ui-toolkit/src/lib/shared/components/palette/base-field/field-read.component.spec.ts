@@ -5,9 +5,11 @@ import { By } from '@angular/platform-browser';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
 import { CaseField } from '../../../domain/definition';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteService } from '../palette.service';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteContext } from './palette-context.enum';
+
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -94,6 +96,7 @@ describe('FieldReadComponent', () => {
           // Mock
           FieldTestComponent,
           FieldReadLabelComponent,
+          MockRpxTranslatePipe,
         ],
         providers: [
           { provide: PaletteService, useValue: paletteService }

@@ -83,7 +83,7 @@
     "ngx-md": "8.1.6",
     "ngx-pagination": "5.1.1",
     "npm-registry-fetch": "^4.0.5",
-    "rpx-xui-translation": "^0.1.2",
+    "rpx-xui-translation": "^0.1.6",
     "rx-polling": "1.1.0",
     "rxjs": "^6.6.7",
     "rxjs-compat": "^6.6.7",
