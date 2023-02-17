@@ -151,7 +151,7 @@ describe('ConditionParser', () => {
         {
           input: '[a_p] = "Hello World"',
           expected: [
-            { fieldReference: 'a_p', comparator: '=', value: 'Hello World' }
+            { fieldReference: '[a_p]', comparator: '=', value: 'Hello World' }
           ]
         },
         {
@@ -286,13 +286,13 @@ describe('ConditionParser', () => {
     describe('parse simple, enclosed compound formulas', () => {
       const testCases = [
         {
-          input: '(a = "b" AND x = "y") OR x = "x"',
+          input: '([a] = "b" AND x = "y") OR [x] = "x"',
           expected: [
-            [{ fieldReference: 'a', comparator: '=', value: 'b' },
+            [{ fieldReference: '[a]', comparator: '=', value: 'b' },
                 'AND',
             { fieldReference: 'x', comparator: '=', value: 'y' }],
             'OR',
-            { fieldReference: 'x', comparator: '=', value: 'x' }
+            { fieldReference: '[x]', comparator: '=', value: 'x' }
           ]
         },
         {

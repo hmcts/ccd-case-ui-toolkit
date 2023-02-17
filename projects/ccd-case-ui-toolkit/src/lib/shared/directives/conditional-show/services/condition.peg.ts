@@ -42,7 +42,7 @@ const conditionSource =
       { return [comp, f ] }
 
   OpenEqualityCheck
-    = fr:FieldReference _? op:operator _? val:Value
+    = fr:FieldRef _? op:operator _? val:Value
      { return { fieldReference: fr, comparator: op, value: val } }
 
   Comparator
@@ -64,8 +64,21 @@ const conditionSource =
    / v:number
    { return parseInt(v.join("")) }
 
+  FieldRef
+   = FieldReference / MetadataFieldReference
+
+  MetadataFieldReference
+    = s1:openSquare fr:FieldReference s2:closeSquare
+    { return s1 + fr + s2 }
+
   FieldReference
     = characters:[A-Za-z0-9._]+ { return characters.join(""); }
+
+  openSquare
+   = "["
+
+  closeSquare
+   = "]"
 
   number
    = [0-9]+
