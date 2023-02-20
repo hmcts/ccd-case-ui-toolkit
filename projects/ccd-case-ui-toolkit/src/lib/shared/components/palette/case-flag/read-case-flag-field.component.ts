@@ -14,19 +14,21 @@ import { CaseFlagSummaryListDisplayMode } from './enums';
   styleUrls: ['./read-case-flag-field.component.scss']
 })
 export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent implements OnInit {
-
   public flagsData: FlagsWithFormGroupPath[];
   public partyLevelCaseFlagData: FlagsWithFormGroupPath[];
   public caseLevelCaseFlagData: FlagsWithFormGroupPath;
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
+  public displayContextParameter = '';
 
   public pathToFlagsFormGroup: string;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
+  public readonly readSupportMode = '#ARGUMENT(READ,EXTERNAL)';
   private readonly createMode = '#ARGUMENT(CREATE)';
   private readonly updateMode = '#ARGUMENT(UPDATE)';
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -36,6 +38,11 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public ngOnInit(): void {
+    const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
+      controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.get(controlName)['caseField']));
+    const flagLauncherComponent = this.formGroup.get(flagLauncherControlName)?.['component'];
+    this.displayContextParameter = flagLauncherComponent.caseField.display_context_parameter;
+
     // If the context is PaletteContext.DEFAULT, the Flags fields need to be located by CaseTab (they won't be present
     // in the FormGroup - only the FlagLauncher field is present)
     if (this.context === PaletteContext.DEFAULT) {
@@ -63,10 +70,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to:
       // i) the parent FormGroup for the Flags instance where changes have been made;
       // ii) the currently selected flag (selectedFlag) if one exists
-      const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
-        controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.get(controlName)['caseField']));
-      if (flagLauncherControlName && this.formGroup.get(flagLauncherControlName)['component']) {
-        const flagLauncherComponent = this.formGroup.get(flagLauncherControlName)['component'];
+      if (flagLauncherComponent) {
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
         if (flagLauncherComponent.caseField.display_context_parameter === this.createMode &&
@@ -76,14 +80,14 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
             flagLauncherComponent.selectedFlagsLocation
           );
-            // Set the display mode for the "Review flag details" summary page
-            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+          // Set the display mode for the "Review flag details" summary page
+          this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
         } else if (flagLauncherComponent.caseField.display_context_parameter === this.updateMode &&
           flagLauncherComponent.selectedFlag) {
-            this.flagForSummaryDisplay =
-              this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
+          this.flagForSummaryDisplay =
+            this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
             // Set the display mode for the "Review flag details" summary page
             this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
         }

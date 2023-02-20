@@ -6,8 +6,17 @@
       (changeButtonEmitter)="navigateBackToForm($event)">
     </ccd-case-flag-summary-list>
   </ng-container>
-  <ng-container *ngSwitchDefault>
-    <h2 class="govuk-heading-l">Case flags</h2>
+  <ng-container>
+    <h2 id="read-case-flag-title" class="govuk-heading-l">
+      <ng-container [ngSwitch]="displayContextParameter">
+        <ng-container *ngSwitchCase="readSupportMode">
+          Support requested
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          Case flags
+        </ng-container>
+      </ng-container>
+    </h2>
     <div *ngFor="let flagData of partyLevelCaseFlagData">
       <ccd-case-flag-table *ngIf="flagData.flags.partyName"
         [tableCaption]="flagData.flags.partyName"
