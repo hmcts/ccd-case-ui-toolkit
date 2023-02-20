@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.10-linked-cases-other-description
+**EUI-7246** Linked cases other description
+
 ### Version 6.10.10-configure-linked-cases
 **EUI-7676** Configure linked cases
 
