@@ -71,14 +71,14 @@ describe('LinkCasesReasonValuePipe', () => {
   });
 
   it('should transform correct reason value when valid reason code is being passsed', () => {
-    expect(linkCasesReasonValuePipe.transform('CLR002')).toBe('Bail');
+    expect(linkCasesReasonValuePipe.transform({Reason: 'CLR002'})).toBe('Bail');
   });
 
   it('should transform as undefined when invalid reason code is being passsed', () => {
-    expect(linkCasesReasonValuePipe.transform('CLR005')).toBe(undefined);
+    expect(linkCasesReasonValuePipe.transform({Reason: 'CLR005'})).toBe(undefined);
   });
 
   it('should transform as undefined when no reason code is being passsed', () => {
-    expect(linkCasesReasonValuePipe.transform('')).toBe(undefined);
+    expect(linkCasesReasonValuePipe.transform({Reason: ''})).toBe(undefined);
   });
 });

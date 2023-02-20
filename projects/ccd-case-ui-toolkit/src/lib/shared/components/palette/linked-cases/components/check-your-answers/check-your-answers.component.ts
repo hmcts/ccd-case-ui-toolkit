@@ -22,7 +22,7 @@ export class CheckYourAnswersComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger
+    this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
     this.linkedCasesTableCaption = this.linkedCasesService.isLinkedCasesEventTrigger ? 'Proposed case links' : 'Linked cases';
     this.linkedCases = this.linkedCasesService.linkedCases.filter(linkedCase => !linkedCase.unlink);
     this.casesToUnlink = this.linkedCasesService.linkedCases.filter(linkedCase => linkedCase.unlink && linkedCase.unlink === true);

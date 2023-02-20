@@ -35,7 +35,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
   public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
   public caseDetails: CaseView;
   public isLoaded: boolean;
-  public linkedCasesFromResponse: LinkedCasesResponse[];
+  public linkedCasesFromResponse: LinkedCasesResponse[] = [];
   public caseId: string;
   public isServerError = false;
   public isServerReasonCodeError = false;
