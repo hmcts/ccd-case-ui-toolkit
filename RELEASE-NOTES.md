@@ -1,4 +1,5 @@
 ## RELEASE NOTES
+
 ### Version 5.0.50-case-flags-multiple-service-codes-for-jurisdiction
 **EUI-7529** Fix flag types retrieval to use HMCTS service code associated with case type ID, falling back on jurisdiction only if the case type ID is not recognised, since there could be multiple service codes per jurisdiction
 
@@ -7,8 +8,8 @@
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
-### Version 5.0.50-sscs-sit-release
-**EUI-7564** SSCS SIT release
+### Version 5.0.50-fee-pay-props
+**EUI-7489** Added additional props to nested ccpay instance
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
