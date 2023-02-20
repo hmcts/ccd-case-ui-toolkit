@@ -382,28 +382,27 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.formGroup.get('manualLanguageEntry').value).toEqual('');
   });
 
-  it('selectionTitlesString should return a string from selectionTitles delimited by >' +
-    'and it should be displayed in template in an element with id="flag-type-previous-selections"', () => {
-    // @ts-expect-error -- private property
-    component.selectionTitles = ['Path 1', 'Path 2', 'Path 3'];
-    const expectedString = 'Path 1 > Path 2 > Path 3';
-    expect(component.selectionTitlesString).toEqual(expectedString);
-    fixture.detectChanges();
-    const selectionTitleEl = fixture.debugElement.query(By.css('#flag-type-previous-selections'));
-    expect(selectionTitleEl.nativeElement.textContent.trim()).toEqual(expectedString);
-  });
 
-  it('should push name of selected flag type to selectionTitles on every onNext() call', () => {
+
+  it('should assign name of selected flag type from the formControl' +
+    'to selectionTitles property on every onNext() call' +
+    'and it should display it ', () => {
     const formControl = component.formGroup.get(component.flagTypeControlName);
-    // @ts-expect-error -- private property
-    expect(component.selectionTitles).toEqual([]);
+    const flagTypeHeadingEl = fixture.debugElement.query(By.css('#flag-type-heading'));
+
+    expect(component.selectionTitle).toEqual('');
     formControl.setValue(flagTypes[0].childFlags[0]);
     component.onNext();
-    // @ts-expect-error -- private property
-    expect(component.selectionTitles).toEqual(['Reasonable adjustment']);
+    const title1 = 'Reasonable adjustment';
+    expect(component.selectionTitle).toEqual(title1);
+    fixture.detectChanges();
+    expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(title1);
+
     formControl.setValue(flagTypes[0].childFlags[0].childFlags[0]);
     component.onNext();
-    // @ts-expect-error -- private property
-    expect(component.selectionTitles).toEqual(['Reasonable adjustment', 'I need help with forms']);
+    const title2 = 'I need help with forms';
+    expect(component.selectionTitle).toEqual(title2);
+    fixture.detectChanges();
+    expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(title2);
   });
 });

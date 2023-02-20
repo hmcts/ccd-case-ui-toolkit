@@ -35,10 +35,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public flagRefdata$: Subscription;
   public refdataError = false;
   public cachedPath: (FlagType | false)[];
-  private selectionTitles = [];
-  public get selectionTitlesString() {
-    return this.selectionTitles.join(' > ');
-  }
+  public selectionTitle = '';
 
   public readonly flagTypeControlName = 'flagType';
   public readonly descriptionControlName = 'otherFlagTypeDescription';
@@ -146,7 +143,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     // If the selected flag type is a parent, load the list of child flag types and reset the current selection
     if (this.selectedFlagType && this.selectedFlagType.isParent) {
-      this.selectionTitles.push(this.selectedFlagType.name);
+      this.selectionTitle = this.selectedFlagType.name;
 
       this.flagTypes = this.selectedFlagType.childFlags;
       this.cachedPath?.shift();
