@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
@@ -27,7 +27,7 @@ describe('SelectFlagTypeComponent', () => {
   ] as HmctsServiceDetail[];
   const sscsJurisdiction = 'SSCS';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     flagTypes = [
       {
         name: 'Party',
