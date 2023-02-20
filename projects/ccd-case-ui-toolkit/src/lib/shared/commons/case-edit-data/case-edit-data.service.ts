@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { scan } from 'rxjs/operators';
 import { CaseNotifier, Confirmation, WizardPage } from '../../components';
+import { LinkedCasesError } from '../../components/palette/linked-cases/domain/linked-cases-state.model';
 import {
   CaseEditCaseSubmit,
   CaseEditGenerateCaseEventData,
@@ -25,23 +26,28 @@ export class CaseEditDataService {
     isEventCompletionChecksRequired: false,
     isCaseFlagSubmission: false,
     ignoreWarning: false,
+    isLinkedCasesSubmission: false,
     error: null,
     callbackErrors: null,
   };
 
   private readonly title$ = new BehaviorSubject<string>(null);
-  private readonly formValidationErrors$ = new BehaviorSubject<
-    CaseEditValidationError[]
-  >([]);
+  private readonly formValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
   private readonly eventTriggerName$ = new BehaviorSubject<string>(null);
   private readonly triggerSubmitEvent$ = new BehaviorSubject<boolean>(null);
+  private readonly details$ = new BehaviorSubject<CaseView>(null);
+  private readonly editForm$ = new BehaviorSubject<FormGroup>(null);
+  private readonly linkError$ = new BehaviorSubject<LinkedCasesError>(null);
 
-  private readonly caseEditStateBehaviorSubject$ = new BehaviorSubject<Partial<CaseEditState>>(this.caseEditInitialState);
-
+  public caseDetails$ = this.details$.asObservable();
   public caseTitle$ = this.title$.asObservable();
+  public caseEditForm$ = this.editForm$.asObservable();
   public caseFormValidationErrors$ = this.formValidationErrors$.asObservable();
+  public caseLinkError$ = this.linkError$.asObservable();
   public caseEventTriggerName$ = this.eventTriggerName$.asObservable();
   public caseTriggerSubmitEvent$ = this.triggerSubmitEvent$.asObservable();
+
+  private readonly caseEditStateBehaviorSubject$ = new BehaviorSubject<Partial<CaseEditState>>(this.caseEditInitialState);
 
   public caseEditState$ = this.caseEditStateBehaviorSubject$.asObservable().pipe(scan((currentValue:Partial<CaseEditState>, newValue: Partial<CaseEditState>) => ({ ...currentValue, ...newValue})));
 
@@ -67,6 +73,9 @@ export class CaseEditDataService {
   public updateIsCaseFlagSubmission(isCaseFlagSubmission: CaseEditState['isCaseFlagSubmission']): void {
     this.caseEditStateBehaviorSubject$.next({isCaseFlagSubmission});
   }
+  public updateIsLinkedCasesSubmission(isLinkedCasesSubmission: CaseEditState['isLinkedCasesSubmission']): void {
+    this.caseEditStateBehaviorSubject$.next({isLinkedCasesSubmission});
+  }
   public updateIgnoreWarning(ignoreWarning: CaseEditState['ignoreWarning']): void {
     this.caseEditStateBehaviorSubject$.next({ignoreWarning});
   }
@@ -86,6 +95,10 @@ export class CaseEditDataService {
     this.caseEditStateBehaviorSubject$.next({submitResponse});
   }
 
+  public setCaseDetails(caseDetails: CaseView): void {
+    this.details$.next(caseDetails);
+  }
+
   public setCaseTitle(caseTitle: string): void {
     this.title$.next(caseTitle);
   }
@@ -94,12 +107,24 @@ export class CaseEditDataService {
     this.eventTriggerName$.next(triggerName);
   }
 
+  public setCaseLinkError(error: LinkedCasesError): void {
+    this.linkError$.next(error);
+  }
+
   public setFormValidationErrors(validationErrors: any[]): void {
     this.formValidationErrors$.next(validationErrors);
   }
 
+  public setCaseEditForm(editForm: FormGroup): void {
+    this.editForm$.next(editForm);
+  }
+
   public clearFormValidationErrors(): void {
     this.formValidationErrors$.next([]);
+  }
+
+  public clearCaseLinkError(): void {
+    this.linkError$.next(null);
   }
 
   public addFormValidationError(validationError: CaseEditValidationError): void {
@@ -171,6 +196,12 @@ export class CaseEditDataService {
       this.formValueService.populateFlagDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
       this.formValueService.removeFlagLauncherField(caseEventData.data, eventTrigger.case_fields);
     }
+
+    if (caseEditState.isLinkedCasesSubmission) {
+      this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
+      this.formValueService.removeComponentLauncherField(caseEventData.data, eventTrigger.case_fields);
+    }
+
     caseEventData.event_token = eventTrigger.event_token;
     caseEventData.ignore_warning = caseEditState.ignoreWarning;
     if (caseEditState.confirmation) {

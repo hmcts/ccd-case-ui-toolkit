@@ -108,6 +108,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       });
     CaseEditPageComponent.setFocusToTop();
+    this.caseEditDataService.caseEditForm$.subscribe({
+      next: editForm => this.editForm = editForm
+    });
     this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
       next: state => {
         if (state) {
@@ -292,7 +295,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   public next(): Promise<boolean> {
-    if (!this.doNotGoToSummaryPage()) {
+    if (!this.canNavigateToSummaryPage()) {
       this.showSpinner = false;
     }
 
@@ -356,7 +359,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return this.eventTrigger.can_save_draft ? 'Return to case list' : 'Cancel';
   }
 
-  private doNotGoToSummaryPage(): boolean {
+  private canNavigateToSummaryPage(): boolean {
     const nextPage = this.caseEditDataService.getNextPage({
       currentPageId: this.currentPage.id,
       wizard: this.wizard,
@@ -364,7 +367,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       form: this.editForm
     });
 
-    return !nextPage && !this.eventTrigger.show_summary
+    return !!nextPage || this.eventTrigger.show_summary;
   }
 
   private getTriggerText(): string {
@@ -375,11 +378,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       form: this.editForm
     });
 
-    return this.doNotGoToSummaryPage
-      ? 'Submit'
-      : this.eventTrigger && this.eventTrigger.can_save_draft
+    return this.canNavigateToSummaryPage
+      ? this.eventTrigger && this.eventTrigger.can_save_draft
         ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
-        : CaseEditPageComponent.TRIGGER_TEXT_START;
+        : CaseEditPageComponent.TRIGGER_TEXT_START
+      : 'Submit';
   }
 
   private discard(): void {
@@ -491,8 +494,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   private syncCaseEditDataService(): void {
+    this.caseEditDataService.setCaseDetails(this.caseEdit.caseDetails);
     this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
     this.caseEditDataService.setCaseTitle(this.getCaseTitle());
+    this.caseEditDataService.setCaseEditForm(this.editForm);
     this.caseEditDataService.caseFormValidationErrors$.subscribe({
       next: (validationErrors) => this.validationErrors = validationErrors
     });

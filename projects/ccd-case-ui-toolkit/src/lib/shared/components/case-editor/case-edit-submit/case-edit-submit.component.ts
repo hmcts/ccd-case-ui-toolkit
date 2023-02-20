@@ -36,7 +36,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public contextFields: CaseField[];
   public task: Task;
   public pageTitle: string;
-
   public caseEditState: Partial<CaseEditState>;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
@@ -92,6 +91,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
     // a FlagLauncher field in the event trigger
     this.caseEditDataService.updateIsCaseFlagSubmission(this.eventTrigger.case_fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)));
+    this.caseEditDataService.updateIsLinkedCasesSubmission(
+      this.eventTrigger.case_fields.some(caseField => FieldsUtils.isComponentLauncherCaseField(caseField))
+    );
     this.pageTitle = this.caseEditState.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
   }
 

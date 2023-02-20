@@ -153,9 +153,9 @@ describe('CaseHistoryComponent', () => {
     // we expect address section not to be rendered
     const headers = fixture.nativeElement.querySelectorAll($CASE_DETAIL_HEADERS);
 
-    expect(headers.length).toBe(CASE_HISTORY.tabs.length - 1);
+    expect(headers.length).toBe(CASE_HISTORY.tabs.length);
     expect(headers[0].textContent).toBe(CASE_HISTORY.tabs[1].label);
-    expect(headers[1].textContent).toBe(CASE_HISTORY.tabs[2].label);
+    expect(headers[1].textContent).toBe(CASE_HISTORY.tabs[0].label);
   });
 
   it('should render the event details first followed by case details', () => {
@@ -237,7 +237,7 @@ describe('CaseHistoryComponent', () => {
     const headers = fixture.nativeElement.querySelectorAll($CASE_DETAIL_HEADERS);
 
     expect(headers[0].textContent).toBe(CASE_HISTORY.tabs[1].label);
-    expect(headers[1].textContent).toBe(CASE_HISTORY.tabs[2].label);
+    expect(headers[1].textContent).toBe(CASE_HISTORY.tabs[0].label);
     expect(orderService.sort).toHaveBeenCalledWith(CASE_HISTORY.tabs);
   });
 

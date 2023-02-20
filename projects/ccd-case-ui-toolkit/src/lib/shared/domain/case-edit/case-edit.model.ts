@@ -8,6 +8,7 @@ import { CaseEventData, CaseEventTrigger, CaseView, HttpError, Profile } from '.
 export interface CaseEditState {
   eventCompletionParams: EventCompletionParams;
   isSubmitting: boolean;
+  isLinkedCasesSubmission: boolean;
   isEventCompletionChecksRequired: boolean;
   isCaseFlagSubmission: boolean;
   ignoreWarning: boolean;
