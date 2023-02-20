@@ -387,6 +387,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     fixture = TestBed.createComponent(ReadCaseFlagFieldComponent);
     component = fixture.componentInstance;
     component.caseField = flagLauncher1CaseField;
+    component.formGroup = new FormGroup({});
     router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
 

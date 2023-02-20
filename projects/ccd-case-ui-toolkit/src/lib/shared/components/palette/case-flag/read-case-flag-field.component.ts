@@ -41,7 +41,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
     const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
       controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.get(controlName)['caseField']));
     const flagLauncherComponent = this.formGroup.get(flagLauncherControlName)?.['component'];
-    this.displayContextParameter = flagLauncherComponent.caseField.display_context_parameter;
+    this.displayContextParameter = flagLauncherComponent?.caseField?.display_context_parameter;
 
     // If the context is PaletteContext.DEFAULT, the Flags fields need to be located by CaseTab (they won't be present
     // in the FormGroup - only the FlagLauncher field is present)
