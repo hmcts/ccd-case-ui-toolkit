@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "5.0.50-fee-pay-props-rc4",
+  "version": "6.13.0-rc6",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"

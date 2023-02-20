@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService } from '../../../../../services';
@@ -21,6 +21,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
   @Input()
   public jurisdiction: string;
+
+  @Input()
+  public caseTypeId: string;
 
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
@@ -45,7 +48,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
-    return CaseFlagWizardStepTitle
+    return CaseFlagWizardStepTitle;
   }
 
   constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
@@ -61,23 +64,19 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       ? RefdataCaseFlagType.CASE
       : RefdataCaseFlagType.PARTY;
 
-    // HMCTS service code for a given jurisdiction is required to retrieve the relevant list of flag types
-    this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetails(this.jurisdiction)
+    // HMCTS service code is required to retrieve the relevant list of flag types; attempt to obtain it by case type ID first
+    this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(this.caseTypeId)
       .pipe(
+        // If an error occurs retrieving HMCTS service details by case type ID, try by service name instead
+        catchError(_ => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
         // Use switchMap to return an inner Observable of the flag types data, having received the service details
         // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
-        switchMap(serviceDetails => {
-          return this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType);
-        })
+        switchMap(serviceDetails => this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType))
       )
       .subscribe({
-        next: flagTypes => {
-          // First (and only) object in the returned array should be the top-level "Party" flag type
-          this.flagTypes = flagTypes[0].childFlags;
-        },
-        error: error => {
-          this.onRefdataError(error);
-        }
+        // First (and only) object in the returned array should be the top-level "Party" flag type
+        next: flagTypes => this.flagTypes = flagTypes[0].childFlags,
+        error: error => this.onRefdataError(error)
       });
   }
 
