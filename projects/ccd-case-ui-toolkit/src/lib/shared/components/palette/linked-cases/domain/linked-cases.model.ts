@@ -35,9 +35,8 @@ export class CaseLink {
 }
 
 export class LinkReason {
-  reasonCode: string;
-  reasonDescription?: string;
-  otherDescription?: string;
+  Reason: string;
+  OtherDescription?: string;
 }
 
 export class LinkedCasesResponse {
@@ -52,12 +51,12 @@ export class CaseLinkResponse {
   ccdJurisdiction: string;
   state: string;
   stateDescription: string;
-  linkDetails: [LinkDetails];
+  linkDetails: LinkDetails[];
 }
 
 export class LinkDetails {
   createdDateTime: Date;
-  reasons: [LinkReason];
+  reasons: LinkReason[];
 }
 
 export class Terms {

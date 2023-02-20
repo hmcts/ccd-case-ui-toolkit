@@ -240,9 +240,10 @@ export class LinkCasesComponent implements OnInit {
       (selectedReason: LinkCaseReason) => {
         if (selectedReason.selected) {
           selectedReasons.push({
-            reasonCode: selectedReason.value_en === 'Other'
+						Reason: selectedReason.key,
+            OtherDescription: selectedReason.value_en === 'Other'
               ? this.linkCaseForm.controls.reasonCommentsDescription.value
-              : selectedReason.key
+              : ''
           } as LinkReason);
         }
       }
@@ -258,6 +259,9 @@ export class LinkCasesComponent implements OnInit {
           selectedReasons.push({
             value: {
               Reason: selectedReason.key,
+            	OtherDescription: selectedReason.value_en === 'Other'
+              	? this.linkCaseForm.controls.reasonCommentsDescription.value
+              	: ''
             }
           });
         }

@@ -26,7 +26,7 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   public caseDetails: CaseView;
   public parentUrl: string;
   public isLoaded: boolean;
-  public getLinkedCasesResponse: CaseLinkResponse[] = [];
+  public getLinkedCasesResponse: CaseLinkResponse[];
   public linkedCaseReasons: LovRefDataModel[];
 
   public caseId: string;
@@ -59,8 +59,9 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   public fetchPageData() {
     this.caseId = this.route.snapshot.data.case.case_id;
-    this.getLinkedCases().subscribe(
-      response => {
+    this.getLinkedCases().subscribe({
+      next: response => {
+				console.log('RESPONSE', response);
         this.isServerError = false;
         this.getLinkedCasesResponse = response.linkedCases && response.linkedCases.map(item => {
           const mappedCasetype = this.mapLookupIDToValueFromJurisdictions('CASE_TYPE', item.ccdCaseType);
@@ -75,16 +76,18 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
             ccdJurisdiction: mappedCaseService,
             state: mappedCaseState,
             stateDescription: mappedCaseStateDescription,
-            caseNameHmctsInternal: item.caseNameHmctsInternal || LinkedCasesFromTableComponent.CASE_NAME_MISSING_TEXT
+            caseNameHmctsInternal: item.caseNameHmctsInternal || LinkedCasesFromTableComponent.CASE_NAME_MISSING_TEXT,
+						linkDetails: item.linkDetails
           } as CaseLinkResponse;
-        })
+        });
+				console.log('GET LINKED CASES RESPONSE', this.getLinkedCasesResponse);
         this.noLinkedCases = !response.linkedCases || !response.linkedCases.length;
       },
-      err => {
+      error: () => {
         this.isServerError = true;
         this.notifyAPIFailure.emit(true);
       }
-    );
+		});
   }
 
   public getLinkedCases(): Observable<LinkedCasesResponse> {

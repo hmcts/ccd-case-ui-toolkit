@@ -75,7 +75,7 @@
               <td class="govuk-table__cell">{{case.caseService}}</td>
               <td class="govuk-table__cell" [title]="case.caseStateDescription">{{case.caseState}}</td>
               <td class="govuk-table__cell"><span
-                  *ngFor="let reason of case.reasons">{{reason.reasonCode | ccdLinkCasesReasonValue}}<br></span></td>
+                  *ngFor="let reason of case.reasons">{{reason | ccdLinkCasesReasonValue}}<br></span></td>
               <td class="govuk-table__cell"><a [attr.id]="case.caseReference" (click)="onSelectedLinkedCaseRemove(pos, case.caseReference);"
                   class="govuk-link no-visited-state">Remove</a></td>
             </tr>
