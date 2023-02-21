@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.13.0-rc11
+**EUI-7796** Re-tag for Release 6.13.0
+
 ### Version 6.13.0-rc7
 **EUI-7796** Fix flag types retrieval to use HMCTSServiceId from supplementary data in the first instance (if available); this caters for case types that are associated with multiple HMCTS service codes
 
