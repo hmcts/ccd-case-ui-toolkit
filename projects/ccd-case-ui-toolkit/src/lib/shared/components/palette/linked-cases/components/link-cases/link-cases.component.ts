@@ -48,9 +48,7 @@ export class LinkCasesComponent implements OnInit {
   public ngOnInit(): void {
     this.caseId = this.linkedCasesService.caseId;
     this.caseName = this.linkedCasesService.caseName;
-    this.linkCaseReasons = this.linkedCasesService.linkCaseReasons?.filter(reason => reason.value_en !== 'Other');
-    const linkCaseReasonOther = this.linkedCasesService.linkCaseReasons?.find(reason => reason.value_en === 'Other');
-    this.linkCaseReasons.push(linkCaseReasonOther);
+    this.linkCaseReasons = this.linkedCasesService.linkCaseReasons;
     this.initForm();
     if (this.linkedCasesService.editMode) {
       // this may have includes the currently added one but yet to be submitted.
@@ -239,7 +237,7 @@ export class LinkCasesComponent implements OnInit {
       (selectedReason: LinkCaseReason) => {
         if (selectedReason.selected) {
           selectedReasons.push({
-						Reason: selectedReason.key,
+            Reason: selectedReason.key,
             OtherDescription: selectedReason.value_en === 'Other'
               ? this.linkCaseForm.controls.reasonCommentsDescription.value
               : ''
@@ -258,9 +256,9 @@ export class LinkCasesComponent implements OnInit {
           selectedReasons.push({
             value: {
               Reason: selectedReason.key,
-            	OtherDescription: selectedReason.value_en === 'Other'
-              	? this.linkCaseForm.controls.reasonCommentsDescription.value
-              	: ''
+              OtherDescription: selectedReason.value_en === 'Other'
+                ? this.linkCaseForm.controls.reasonCommentsDescription.value
+                : ''
             }
           });
         }
