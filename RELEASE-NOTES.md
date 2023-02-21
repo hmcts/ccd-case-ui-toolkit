@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+### Version 6.13.0-rc11
+**EUI-7796** Re-tag for Release 6.13.0
+
+### Version 6.13.0-rc7
+**EUI-7796** Fix flag types retrieval to use HMCTSServiceId from supplementary data in the first instance (if available); this caters for case types that are associated with multiple HMCTS service codes
 
 ### Version 5.0.50-case-flags-multiple-service-codes-for-jurisdiction
 **EUI-7529** Fix flag types retrieval to use HMCTS service code associated with case type ID, falling back on jurisdiction only if the case type ID is not recognised, since there could be multiple service codes per jurisdiction
@@ -14,14 +19,12 @@
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
 
-### Version 5.0.46-fix-case-link
-**EUI-7521** Fix case link hyperlink on applications tab
-
 ### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
 **EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary
 
 ### Version 5.0.46-case-file-view-styling-fixes
 **EUI-7481** Case file view styling issues
+
 ### Version 5.0.45-fix-case-acccess-table
 **EUI-7454** Fixed table alignment on case view
 

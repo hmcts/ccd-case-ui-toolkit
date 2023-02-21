@@ -351,6 +351,18 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should retrieve the list of flag types for the specified case type ID', () => {
+    // Need to reset caseFlagRefdataService spy object method call because component.hmctsServiceId is undefined on the
+    // first call of ngOnInit() triggered by fixture.detectChanges() - this means getHmctsServiceDetailsByCaseType() gets
+    // called even though it's not expected to be
+    caseFlagRefdataService.getHmctsServiceDetailsByCaseType.calls.reset();
+    component.hmctsServiceId = 'ABC1';
+    component.ngOnInit();
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith('ABC1', RefdataCaseFlagType.PARTY);
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).not.toHaveBeenCalled();
+    expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
+  });
+
+  it('should retrieve the list of flag types for the specified case type ID', () => {
     component.ngOnInit();
     expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith(caseTypeId);
     expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).not.toHaveBeenCalled();
