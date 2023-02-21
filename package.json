@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.13.0-rc7",
+  "version": "6.13.0-rc10",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
@@ -62,9 +62,9 @@
     "@angular/router": "~11.2.14",
     "@angular/upgrade": "~11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "5.0.10-beta26",
+    "@hmcts/ccpay-web-component": "5.2.0",
     "@hmcts/frontend": "^0.0.50-alpha",
-    "@hmcts/media-viewer": "2.7.18-RC.3",
+    "@hmcts/media-viewer": "2.9.2",
     "@ngrx/effects": "^7.4.0",
     "@ngrx/store": "^7.4.0",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
