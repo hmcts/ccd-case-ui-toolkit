@@ -1546,14 +1546,6 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@circlon/angular-tree-component@^11.0.0":
-  version "11.0.4"
-  resolved "https://registry.yarnpkg.com/@circlon/angular-tree-component/-/angular-tree-component-11.0.4.tgz#7fb5ca294331d45d4d2a01cb7afc7197a45aa905"
-  integrity sha512-Ck86mG6Z9eWG03RiOACDzrCjuzEDXU8rcEDi0aw0+Ku62x6ZY2mx8G0VX3CLEkS1BAXM2ef6luOIcoSKAKtDaA==
-  dependencies:
-    mobx "~4.14.1"
-    tslib "^2.0.0"
-
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -1763,18 +1755,18 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.50-alpha.tgz#4c1f1bc87312a2929ac60e54cdd3fc28782b98f9"
   integrity sha512-can9fxgQxw0ihRvjvz/+O7xbG0OiQbTcs3CCMQct41a2BPC6iIja3vgwNIy5TD2Vt52kYUq+fg2HGGybyjprTg==
 
-"@hmcts/media-viewer@2.9.2":
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.9.2.tgz#164389986057dfb0c25f84fd4138f281501974e1"
-  integrity sha512-sG+Rp/PL6vzXuEZQ+WPYdw86FseNkOJloxRNCk5WPq6oshdCTvYNWYuZYxp9wtbpPytE3ynpHGrl/wzmGFstQg==
+"@hmcts/media-viewer@2.7.18-RC.3":
+  version "2.7.18-RC.3"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.18-RC.3.tgz#941c578358dba61545d3381118418759522d9675"
+  integrity sha512-UmGC9Kx3hdQQotXJ5/7YmLewTDtUYlIGdLElQ0hShdcHooo9opQcuY8JwMaL8kbm76DB150hHKyH2VUXrJG+HA==
   dependencies:
-    "@circlon/angular-tree-component" "^11.0.0"
-    "@swimlane/ngx-datatable" "^19.0.0"
+    "@swimlane/ngx-datatable" "^16.0.2"
+    angular-tree-component "^8.5.6"
     hammerjs "^2.0.8"
     mutable-div "0.0.11"
     pdfjs-dist "2.5.207"
     socket.io-client "^3.1.1"
-    tslib "^2.0.0"
+    tslib "^1.9.0"
     uuid "^3.4.0"
 
 "@istanbuljs/load-nyc-config@^1.0.0":
@@ -2979,12 +2971,12 @@
     regenerator-runtime "^0.13.7"
     resolve-from "^5.0.0"
 
-"@swimlane/ngx-datatable@^19.0.0":
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/@swimlane/ngx-datatable/-/ngx-datatable-19.0.0.tgz#7eed84ba276ebb9e4761233f8ac95d38fdff45b7"
-  integrity sha512-S8eknIQeZtr5aPZgBUItHmt+aQwrI32Hm3jvrxqJXK9J43oDzhIKT2qR1rre3s0XlBn6Zl8LAbmlKotQ5nnxnQ==
+"@swimlane/ngx-datatable@^16.0.2":
+  version "16.1.1"
+  resolved "https://registry.yarnpkg.com/@swimlane/ngx-datatable/-/ngx-datatable-16.1.1.tgz#1215e81f51400314ba6899f66acdbd4e3bde2915"
+  integrity sha512-h2A9xC/jo314eC/CzA19aoY/YadhdTupolCwpgB9Cbw3sDRi3x/LeGsdLSV0bj3XBKQUB3DA/gPuASKYuhm8iA==
   dependencies:
-    tslib "^2.0.0"
+    tslib "^1.9.0"
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
@@ -3889,6 +3881,14 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha512-S2Hw0TtNkMJhIabBwIojKL9YHO5T0n5eNqWJ7Lrlel/zDbftQpxpapi8tZs3X1HWa+u+QeydGmzzNU0m09+Rcg==
+
+angular-tree-component@^8.5.6:
+  version "8.5.6"
+  resolved "https://registry.yarnpkg.com/angular-tree-component/-/angular-tree-component-8.5.6.tgz#b32ea769e17b8e4462b31b5b67c17269a7295fa5"
+  integrity sha512-cxNem6872diZz9kIGqrjSJbKt0P3WSq9wTqZIeVJ8zsddI4Y6ShAVZlZNXUMRyJq246c9pJ6JJEAOzKVLk9xgA==
+  dependencies:
+    lodash "^4.17.11"
+    mobx "^4.15.1"
 
 angular2-template-loader@^0.6.2:
   version "0.6.2"
@@ -12001,10 +12001,10 @@ mkdirp@^1.0.3, mkdirp@^1.0.4, mkdirp@~1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-mobx@~4.14.1:
-  version "4.14.1"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-4.14.1.tgz#0dc5622523363f6f5b467a5a0c4c99846b789748"
-  integrity sha512-Oyg7Sr7r78b+QPYLufJyUmxTWcqeQ96S1nmtyur3QL8SeI6e0TqcKKcxbG+sVJLWANhHQkBW/mDmgG5DDC4fdw==
+mobx@^4.15.1:
+  version "4.15.7"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-4.15.7.tgz#933281268c3b4658b6cf2526e872cf78ea48ab95"
+  integrity sha512-X4uQvuf2zYKHVO5kRT5Utmr+J9fDnRgxWWnSqJ4oiccPTQU38YG+/O3nPmOhUy4jeHexl7XJJpWDBgEnEfp+8w==
 
 mocha@^8.1.1:
   version "8.4.0"
