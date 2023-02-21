@@ -28,15 +28,18 @@
             </div>
           </div>
         </div>
-        <div [ngClass]="{'govuk-form-group--error': !!caseReasonCommentsError}" class="govuk-!-margin-top-3" *ngIf="showComments">
+        <div id="other-description-char-limit-error" [ngClass]="{'govuk-form-group--error': !!caseReasonCommentsError}" class="govuk-!-margin-top-3" *ngIf="showComments">
           <h3 class="govuk-heading-s">Comments</h3>
           <span class="govuk-error-message" *ngIf="caseReasonCommentsError">
             <span class="govuk-visually-hidden">Error:</span> {{caseReasonCommentsError}}
           </span>
-          <textarea class="govuk-textarea" id="reasonCommentsDescription"
-            name="reasonCommentsDescription" formControlName="reasonCommentsDescription" rows="5"
-            aria-describedby="">
+          <textarea class="govuk-textarea govuk-input--width-30" id="otherDescription"
+            name="otherDescription" formControlName="otherDescription" rows="5"
+            aria-describedby="other-description-hint other-description-char-limit-info other-description-char-limit-error">
           </textarea>
+          <div id="other-description-char-limit-info" aria-live="polite" class="govuk-hint govuk-character-count__message">
+            You can enter up to 100 characters
+          </div>
         </div>
         <br><br>
         <span class="govuk-error-message" *ngIf="caseSelectionError">

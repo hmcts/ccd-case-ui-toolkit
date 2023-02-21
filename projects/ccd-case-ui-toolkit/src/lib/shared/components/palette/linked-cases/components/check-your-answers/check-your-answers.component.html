@@ -42,14 +42,15 @@
           <td class="govuk-table__cell">
             <span>{{case.caseName}}  <br> {{case.caseReference | ccdCaseReference}} </span>
           </td>
-          <td class="govuk-table__cell" *ngIf="isLinkCasesJourney">
+          <td class="govuk-table__cell">
             <span *ngFor="let reason of case.reasons; last as isLast">
-              {{reason | ccdLinkCasesReasonValue}}<br *ngIf="!isLast">
-            </span>
-          </td>
-          <td class="govuk-table__cell" *ngIf="!isLinkCasesJourney">
-            <span *ngFor="let reason of case.reasons; last as isLast">
-              {{reason.Reason.value | ccdLinkCasesReasonValue}}<br *ngIf="!isLast">
+              <span *ngIf="isLinkCasesJourney">
+                {{reason | ccdLinkCasesReasonValue}}
+              </span>
+              <span *ngIf="!isLinkCasesJourney">
+                {{reason.Reason.value | ccdLinkCasesReasonValue}}
+              </span>
+              <br *ngIf="!isLast">
             </span>
           </td>
           <td class="govuk-table__cell"></td>

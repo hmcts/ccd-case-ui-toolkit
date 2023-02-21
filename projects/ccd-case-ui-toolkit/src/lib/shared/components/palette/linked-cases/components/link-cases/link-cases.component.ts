@@ -62,7 +62,7 @@ export class LinkCasesComponent implements OnInit {
     this.linkCaseForm = this.fb.group({
       caseNumber: ['', [Validators.minLength(16), this.validatorsUtils.regexPattern(Patterns.CASE_REF)]],
       reasonType: this.getReasonTypeFormArray,
-      reasonCommentsDescription: ['', [Validators.maxLength(100)]]
+      otherDescription: ['', [Validators.maxLength(100)]]
     });
   }
 
@@ -100,7 +100,8 @@ export class LinkCasesComponent implements OnInit {
       this.linkCaseForm.valid &&
       !this.isCaseSelected(this.selectedCases) &&
       !this.isCaseSelected(this.linkedCasesService.linkedCases) &&
-      !this.isCaseSelectedSameAsCurrentCase()
+      !this.isCaseSelectedSameAsCurrentCase() &&
+      !this.isOtherOptionSelectedButOtherDescriptionNotEntered()
     ) {
       this.getCaseInfo();
     } else {
@@ -122,6 +123,10 @@ export class LinkCasesComponent implements OnInit {
     return this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('');
   }
 
+  private isOtherOptionSelectedButOtherDescriptionNotEntered(): boolean {
+    return this.showComments && this.linkCaseForm.value.otherDescription.trim().length === 0;
+  }
+
   public showErrorInfo(): void {
     if (this.linkCaseForm.controls.caseNumber.invalid) {
       this.caseNumberError = LinkedCasesErrorMessages.CaseNumberError;
@@ -140,14 +145,23 @@ export class LinkCasesComponent implements OnInit {
       });
     }
     if (this.linkCaseForm.controls.reasonType.valid
-        && this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected
-        && this.linkCaseForm.controls.reasonCommentsDescription.value.trim().length === 0) {
-      this.caseReasonCommentsError = LinkedCasesErrorMessages.ReasonCommentsError;
-      this.errorMessages.push({
-        title: 'dummy-case-reason-comments',
-        description: LinkedCasesErrorMessages.ReasonCommentsError,
-        fieldId: 'reasonCommentsDescription',
-      });
+        && this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected) {
+      if (this.linkCaseForm.controls.otherDescription.value.trim().length === 0) {
+        this.caseReasonCommentsError = LinkedCasesErrorMessages.otherDescriptionError;
+        this.errorMessages.push({
+          title: 'dummy-case-reason-comments',
+          description: LinkedCasesErrorMessages.otherDescriptionError,
+          fieldId: 'otherDescription',
+        });
+      }
+      if (this.linkCaseForm.controls.otherDescription.value.trim().length > 100) {
+        this.caseReasonCommentsError = LinkedCasesErrorMessages.otherDescriptionMaxLengthError;
+        this.errorMessages.push({
+          title: 'dummy-case-reason-comments',
+          description: LinkedCasesErrorMessages.otherDescriptionMaxLengthError,
+          fieldId: 'otherDescription',
+        });
+      }
     }
     if (this.isCaseSelected(this.selectedCases)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CaseProposedError;
@@ -205,6 +219,7 @@ export class LinkCasesComponent implements OnInit {
           }
           this.linkedCasesService.caseFieldValue.push({ id: caseView.case_id.toString(), value: ccdApiCaseLinkData });
           this.selectedCases.push(caseLink);
+          this.linkCaseReasons.forEach(reason => reason.selected = false);
           this.initForm();
           this.emitLinkedCasesState(false);
         },
@@ -239,7 +254,7 @@ export class LinkCasesComponent implements OnInit {
           selectedReasons.push({
             Reason: selectedReason.key,
             OtherDescription: selectedReason.value_en === 'Other'
-              ? this.linkCaseForm.controls.reasonCommentsDescription.value
+              ? this.linkCaseForm.controls.otherDescription.value
               : ''
           } as LinkReason);
         }
@@ -257,7 +272,7 @@ export class LinkCasesComponent implements OnInit {
             value: {
               Reason: selectedReason.key,
               OtherDescription: selectedReason.value_en === 'Other'
-                ? this.linkCaseForm.controls.reasonCommentsDescription.value
+                ? this.linkCaseForm.controls.otherDescription.value
                 : ''
             }
           });

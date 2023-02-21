@@ -19,7 +19,8 @@ export enum LinkedCasesErrorMessages {
   LinkCasesNavigationError = 'Please select Next to link case(s)',
   UnlinkCasesNavigationError = 'Please select Next to unlink case(s)',
   BackNavigationError = 'Please select Back to go to the previous page',
-  ReasonCommentsError = 'Provide a description of the reason'
+  otherDescriptionError = 'Provide a description of the reason',
+  otherDescriptionMaxLengthError = 'Description provided must be 100 characters or fewer',
 }
 
 export enum LinkedCasesEventTriggers {
