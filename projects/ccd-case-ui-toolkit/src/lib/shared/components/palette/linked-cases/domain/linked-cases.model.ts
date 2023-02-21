@@ -39,6 +39,11 @@ export class LinkReason {
   OtherDescription?: string;
 }
 
+export class LinkFromReason {
+  reasonCode: string;
+  otherDescription?: string;
+}
+
 export class LinkedCasesResponse {
   linkedCases: CaseLinkResponse[];
 }
@@ -56,7 +61,7 @@ export class CaseLinkResponse {
 
 export class LinkDetails {
   createdDateTime: Date;
-  reasons: LinkReason[];
+  reasons: LinkFromReason[];
 }
 
 export class Terms {

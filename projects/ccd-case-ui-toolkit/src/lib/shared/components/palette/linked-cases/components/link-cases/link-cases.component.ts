@@ -51,7 +51,6 @@ export class LinkCasesComponent implements OnInit {
     this.linkCaseReasons = this.linkedCasesService.linkCaseReasons?.filter(reason => reason.value_en !== 'Other');
     const linkCaseReasonOther = this.linkedCasesService.linkCaseReasons?.find(reason => reason.value_en === 'Other');
     this.linkCaseReasons.push(linkCaseReasonOther);
-    console.log('LINK CASE REASONS', this.linkCaseReasons);
     this.initForm();
     if (this.linkedCasesService.editMode) {
       // this may have includes the currently added one but yet to be submitted.

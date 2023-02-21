@@ -25,7 +25,7 @@
             <span *ngFor="let reason of case.reasons; let i = index; let isLast = last">
               {{reason.value | ccdLinkCasesReasonValue}}<span><a class="govuk-!-padding-left-1"
                   href="cases/case-details/{{ case.caseReference }}"
-                  *ngIf="hasLeadCaseOrConsolidated(reason)">{{getCaseRefereneLink(case.caseReference)}}</a></span>
+                  *ngIf="hasLeadCaseOrConsolidated(reason.value.Reason)">{{getCaseRefereneLink(case.caseReference)}}</a></span>
               <br *ngIf="!isLast" />
             </span>
           </td>

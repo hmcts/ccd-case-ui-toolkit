@@ -26,9 +26,6 @@ export class CheckYourAnswersComponent implements OnInit {
     this.linkedCasesTableCaption = this.linkedCasesService.isLinkedCasesEventTrigger ? 'Proposed case links' : 'Linked cases';
     this.linkedCases = this.linkedCasesService.linkedCases.filter(linkedCase => !linkedCase.unlink);
     this.casesToUnlink = this.linkedCasesService.linkedCases.filter(linkedCase => linkedCase.unlink && linkedCase.unlink === true);
-
-		console.log('CASES TO UNLINK', this.casesToUnlink);
-		console.log('LINKED CASES', this.linkedCases);
   }
 
   public onChange(): void {

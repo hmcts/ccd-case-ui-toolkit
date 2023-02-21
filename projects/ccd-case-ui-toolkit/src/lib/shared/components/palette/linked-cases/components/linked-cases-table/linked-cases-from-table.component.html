@@ -23,7 +23,7 @@
       <td class="case-table-column"><span [title]="case.stateDescription">{{case.state}}</span></td>
       <td class="case-table-column" *ngFor="let details of case.linkDetails">
         <span *ngFor="let reason of details.reasons; let i = index; let isLast = last">
-          {{reason | ccdLinkCasesReasonValue}} <br>
+          {{reason | ccdLinkCasesFromReasonValue}} <br>
         </span>
       </td>
     </tr>
