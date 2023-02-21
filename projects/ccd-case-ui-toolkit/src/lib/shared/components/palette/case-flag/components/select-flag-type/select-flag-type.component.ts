@@ -157,8 +157,10 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     this.errorMessages = [];
 
     if (!this.selectedFlagType) {
-      this.flagTypeNotSelectedErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
-      this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED}`, fieldId: 'conditional-radios-list'});
+      // If there is any selection then the message will differ. we use the selectionTitle property
+      const errorMessage = !this.selectionTitle ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED : SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
+      this.flagTypeNotSelectedErrorMessage = errorMessage;
+      this.errorMessages.push({title: '', description: errorMessage, fieldId: 'conditional-radios-list'});
     }
     if (this.otherFlagTypeSelected) {
       const otherFlagTypeDescription = this.formGroup.get(this.descriptionControlName).value;
