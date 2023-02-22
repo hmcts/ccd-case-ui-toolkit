@@ -16,6 +16,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
   public categoriesAndDocumentsSubscription: Subscription;
   public getCategoriesAndDocumentsError = false;
+  public updateDocumentCategoryError = false;
   public currentDocument: { document_binary_url: string, document_filename: string, content_type: string } | undefined;
   private caseVersion: number;
 
@@ -82,16 +83,12 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     const loadingToken = this.loadingService.register();
     this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory).subscribe({
       next: () => {
-        // location.reload();
-        // this.router.navigate(['cases', 'case-details', cid]).then(() => {
-        //   window.location.hash = 'Case File View';
-        // });
-        this.ngOnInit();
+        location.reload();
         this.loadingService.unregister(loadingToken);
       },
-      error: () => {
+      error: _ => {
+        this.updateDocumentCategoryError = true;
         this.loadingService.unregister(loadingToken);
-        this.router.navigate(['/service-down']);
       }
     });
   }
