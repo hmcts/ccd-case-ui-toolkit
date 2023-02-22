@@ -178,6 +178,7 @@ describe('SelectFlagTypeComponent', () => {
       otherFlagTypeDescription: new FormControl('')
     });
     component.jurisdiction = sscsJurisdiction;
+    component.isDisplayContextParameterExternal = false;
     fixture.detectChanges();
   });
 
@@ -324,9 +325,10 @@ describe('SelectFlagTypeComponent', () => {
   it('should retrieve the list of flag types for the specified jurisdiction', () => {
     component.ngOnInit();
     expect(caseFlagRefdataService.getHmctsServiceDetails).toHaveBeenCalledWith(sscsJurisdiction);
-    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY, false, component.isDisplayContextParameterExternal);
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
   });
+
 
   it('should set an error condition if an error occurs retrieving the list of flag types', () => {
     caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(throwError(new Error('Unable to retrieve flag data')));
