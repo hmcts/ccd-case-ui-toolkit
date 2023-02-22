@@ -3,6 +3,8 @@ import { WriteAddressFieldComponent } from './address/write-address-field.compon
 import { CaseFileViewFieldComponent, CaseFileViewFieldReadComponent } from './case-file-view';
 import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
+import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
+import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent } from './collection/read-collection-field.component';
 import { WriteCollectionFieldComponent } from './collection/write-collection-field.component';
 import { ReadComplexFieldComponent } from './complex/read-complex-field.component';
@@ -17,6 +19,8 @@ import { ReadFixedListFieldComponent } from './fixed-list/read-fixed-list-field.
 import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-field.component';
 import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
 import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
+import { LabelFieldComponent } from './label/label-field.component';
+import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
@@ -34,6 +38,7 @@ import { WriteTextAreaFieldComponent } from './text-area/write-text-area-field.c
 import { ReadTextFieldComponent } from './text/read-text-field.component';
 import { WriteTextFieldComponent } from './text/write-text-field.component';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
+import { WaysToPayFieldComponent } from './waystopay/waystopay-field.component';
 import { ReadYesNoFieldComponent } from './yes-no/read-yes-no-field.component';
 import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component';
 
@@ -205,6 +210,14 @@ describe('PaletteService', () => {
       assertComponent('Complex', true, WriteOrderSummaryFieldComponent, 'OrderSummary');
     });
 
+    it('should get ReadCaseLinkFieldComponent component class for Complex field with CaseLink complex type', () => {
+      assertComponent('Complex', false, ReadCaseLinkFieldComponent, 'CaseLink');
+    });
+
+    it('should get WriteCaseLinkFieldComponent component class for Complex field with CaseLink complex type', () => {
+      assertComponent('Complex', true, WriteCaseLinkFieldComponent, 'CaseLink');
+    });
+
     it('should get ReadJudicialUserFieldComponent component class for Complex field with JudicialUser complex type', () => {
       assertComponent('Complex', false, ReadJudicialUserFieldComponent, 'JudicialUser');
     });
@@ -218,12 +231,30 @@ describe('PaletteService', () => {
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
     });
 
+    it('should get LabelFieldComponent component class for Label regardless of read/write', () => {
+      assertComponent('Label', true, LabelFieldComponent, 'AnID');
+      assertComponent('Label', false, LabelFieldComponent, 'AnID');
+    });
+
+    it('should get WaysToPayFieldComponent component class for WaysToPayFieldComponent regardless of read/write', () => {
+      assertComponent('WaysToPay', true, WaysToPayFieldComponent, 'AnID');
+      assertComponent('WaysToPay', false, WaysToPayFieldComponent, 'AnID');
+    });
+
     it('should get CaseFileViewFieldComponent component class for ComponentLauncher field with argument of "CaseFileView"', () => {
       const caseField = new CaseField();
       caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
       caseField.display_context_parameter = '#ARGUMENT(CaseFileView)';
       expect(paletteService.getFieldComponentClass(caseField, true)).toBe(CaseFileViewFieldComponent);
       expect(paletteService.getFieldComponentClass(caseField, false)).toBe(CaseFileViewFieldReadComponent);
+    });
+
+    it('should get LinkedCasesFieldComponent component class for ComponentLauncher field with argument of "LinkedCases"', () => {
+      const caseField = new CaseField();
+      caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
+      caseField.display_context_parameter = '#ARGUMENT(CREATE,LinkedCases)';
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(WriteLinkedCasesFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(ReadLinkedCasesFieldComponent);
     });
 
     it('should get UnsupportedFieldComponent component class for ComponentLauncher field with unknown argument', () => {

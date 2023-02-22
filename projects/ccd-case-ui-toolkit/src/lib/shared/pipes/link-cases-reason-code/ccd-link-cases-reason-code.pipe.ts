@@ -1,10 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { LinkedCasesService } from '../../components/palette/case-link/services';
+import { LinkedCasesService } from '../../components/palette/linked-cases/services';
 
 @Pipe({
   name: 'ccdLinkCasesReasonValue'
 })
-
 export class LinkCasesReasonValuePipe implements PipeTransform {
 
   constructor(private readonly linkedCasesService: LinkedCasesService) {}

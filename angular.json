@@ -167,9 +167,15 @@
           "options": {
             "main": "projects/ccd-case-ui-toolkit/src/test.ts",
             "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.spec.json",
-            "karmaConfig": "projects/ccd-case-ui-toolkit/src/karma.conf.js"
+            "karmaConfig": "projects/ccd-case-ui-toolkit/src/karma.conf.js",
+            "codeCoverageExclude": ["**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"],
+            "codeCoverage": true
           },
-          "codeCoverage": true
+          "codeCoverage": {
+            "exclude": [
+              "**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"
+            ]
+          }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",

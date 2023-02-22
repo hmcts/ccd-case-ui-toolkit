@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { LinkedCasesService } from '../../components/palette/case-link/services';
+import { LinkedCasesService } from '../../components/palette/linked-cases/services';
 import { JurisdictionService, SearchService } from '../../services';
 import { LovRefDataByServiceModel } from '../../services/common-data-service/common-data-service';
 import { LinkCasesReasonValuePipe } from './ccd-link-cases-reason-code.pipe';

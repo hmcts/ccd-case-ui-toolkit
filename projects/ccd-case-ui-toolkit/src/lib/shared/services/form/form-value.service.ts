@@ -400,7 +400,7 @@ export class FormValueService {
           // Retain anything that is readonly and not a label.
           continue;
         }
-        if (field.hidden === true && field.display_context !== 'HIDDEN') {
+        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.id !== 'caseLinks') {
           // Delete anything that is hidden (that is NOT readonly), and that
           // hasn't had its display_context overridden to make it hidden.
           delete data[field.id];
@@ -456,9 +456,6 @@ export class FormValueService {
     FormValueService.removeMultiSelectLabels(data);
   }
 
-  /**
-   * Remove any empty or invalid array with only id
-   */
   public removeInvalidCollectionData(data: object, field: CaseField) {
     if (data[field.id] && data[field.id].length > 0) {
       for (const objCollection of data[field.id]) {
@@ -520,12 +517,48 @@ export class FormValueService {
           // nothing for a given case field ID (hence the use of hasOwnProperty())
           if (data.hasOwnProperty(caseField.id) && caseField.value) {
             // Create new object for the case field ID within the data object, if necessary
-            if (!data[caseField.id]) {
-              data[caseField.id] = {};
+            if (data[caseField.id]) {
+              // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+              // Flags field within a Complex field or a collection of Complex fields) is copied across
+              Object.keys(data[caseField.id]).forEach(key => {
+                if (caseField.value.hasOwnProperty(key)) {
+                  data[caseField.id][key] = caseField.value[key];
+                }
+              });
             }
-            // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
-            // Flags field within a Complex field or a collection of Complex fields) is copied across
-            Object.keys(caseField.value).forEach(key => data[caseField.id][key] = caseField.value[key]);
+        };
+      });
+    }
+  }
+
+  /**
+   * Remove the ComponentLauncher case field, which is not intended to be persisted.
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public removeComponentLauncherField(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      const componentLauncherCaseField = caseFields.filter(caseField => FieldsUtils.isComponentLauncherCaseField(caseField));
+      if (componentLauncherCaseField.length > 0) {
+        // There should be only one ComponentLauncher case field
+        delete data[componentLauncherCaseField[0].id];
+      }
+    }
+  }
+
+  /**
+   * Populate the linked cases from the data held in its corresponding CaseField.
+   *
+   * @param data The object tree of form values on which to perform the data population
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public populateLinkedCasesDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      caseFields.filter(caseField => !FieldsUtils.isComponentLauncherCaseField(caseField))
+        .forEach(caseField => {
+          if (data.hasOwnProperty('caseLinks') && caseField.value) {
+            data[caseField.id] = caseField.value;
           }
         });
     }
