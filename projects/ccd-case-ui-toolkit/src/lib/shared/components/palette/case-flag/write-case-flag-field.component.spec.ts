@@ -10,21 +10,15 @@ import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 import createSpy = jasmine.createSpy;
-import * as _ from 'lodash';
 import { BehaviorSubject } from 'rxjs';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
 describe('WriteCaseFlagFieldComponent', () => {
   let component: WriteCaseFlagFieldComponent;
   let fixture: ComponentFixture<WriteCaseFlagFieldComponent>;
+  let mockRoute: any;
   const flaglauncherId = 'FlagLauncher';
-  const flagLauncherCaseField: CaseField = {
-    id: 'FlagLauncher1',
-    field_type: {
-      id: flaglauncherId,
-      type: flaglauncherId
-    }
-  } as CaseField;
+  let flagLauncherCaseField: CaseField;
   const caseFlag1FieldId = 'CaseFlag1';
   const caseFlag1PartyName = 'John Smith';
   const caseFlag1RoleOnCase = 'Claimant';
@@ -101,111 +95,6 @@ describe('WriteCaseFlagFieldComponent', () => {
     status: CaseFlagStatus.INACTIVE
   };
   const caseFlagsFieldId = 'caseFlags';
-  const mockRoute = {
-    snapshot: {
-      params: {
-        eid: 'caseFlag',
-        page: 'caseFlagAction',
-      },
-      data: {
-        case: {
-          case_id: '1111222233334444',
-          case_type: {
-            id: 'TEST',
-            name: 'Test',
-            jurisdiction: {
-              id: 'SSCS',
-              name: 'Social Security and Child Support'
-            }
-          }
-        },
-        eventTrigger: {
-          case_fields: [
-            flagLauncherCaseField,
-            {
-              id: caseFlag1FieldId,
-              field_type: {
-                id: 'Flags',
-                type: 'Complex'
-              } as FieldType,
-              formatted_value: {
-                partyName: caseFlag1PartyName,
-                roleOnCase: caseFlag1RoleOnCase,
-                details: [
-                  {
-                    id: '6e8784ca-d679-4f36-a986-edc6ad255dfa',
-                    value: caseFlag1DetailsValue1
-                  },
-                  {
-                    id: '9a179b7c-50a8-479f-a99b-b191ec8ec192',
-                    value: caseFlag1DetailsValue2
-                  }
-                ]
-              },
-              value: {
-                partyName: caseFlag1PartyName,
-                roleOnCase: caseFlag1RoleOnCase,
-                details: [
-                  {
-                    id: '6e8784ca-d679-4f36-a986-edc6ad255dfa',
-                    value: caseFlag1DetailsValue1
-                  },
-                  {
-                    id: '9a179b7c-50a8-479f-a99b-b191ec8ec192',
-                    value: caseFlag1DetailsValue2
-                  }
-                ]
-              }
-            },
-            {
-              id: caseFlag2FieldId,
-              field_type: {
-                id: 'Flags',
-                type: 'Complex'
-              } as FieldType,
-              formatted_value: {
-                partyName: caseFlag2PartyName,
-                roleOnCase: caseFlag2RoleOnCase,
-                details: [
-                  {
-                    id: '61160453-647b-4065-a786-9443556055f1',
-                    value: caseFlag2DetailsValue1
-                  },
-                  {
-                    id: '0629f5cd-52bc-41ac-a2e0-5da9bbee2068',
-                    value: caseFlag2DetailsValue2
-                  }
-                ]
-              },
-              value: {
-                partyName: caseFlag2PartyName,
-                roleOnCase: caseFlag2RoleOnCase,
-                details: [
-                  {
-                    id: '61160453-647b-4065-a786-9443556055f1',
-                    value: caseFlag2DetailsValue1
-                  },
-                  {
-                    id: '0629f5cd-52bc-41ac-a2e0-5da9bbee2068',
-                    value: caseFlag2DetailsValue2
-                  }
-                ]
-              }
-            },
-            {
-              id: caseFlagsFieldId,
-              field_type: {
-                id: 'Flags',
-                type: 'Complex'
-              } as FieldType,
-              formatted_value: null,
-              value: null
-            }
-          ] as CaseField[]
-        }
-      }
-    }
-  };
   const parentFormGroup = new FormGroup({
     [caseFlag1FieldId]: new FormGroup({}),
     [caseFlag2FieldId]: new FormGroup({})
@@ -309,7 +198,8 @@ describe('WriteCaseFlagFieldComponent', () => {
   } as FlagDetailDisplayWithFormGroupPath;
 
   const updateMode = '#ARGUMENT(UPDATE)';
-
+  const createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
+  const updateExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
   let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
   let locationSpy: jasmine.SpyObj<Location>;
   let caseEditDataServiceSpy: jasmine.SpyObj<CaseEditDataService>;
@@ -320,13 +210,126 @@ describe('WriteCaseFlagFieldComponent', () => {
 
     locationSpy = jasmine.createSpyObj('Location', ['getState']);
     caseEditDataServiceSpy = jasmine.createSpyObj('CaseEditDataService', ['clearFormValidationErrors', 'setTriggerSubmitEvent']);
+    flagLauncherCaseField = {
+      id: 'FlagLauncher1',
+      field_type: {
+        id: flaglauncherId,
+        type: flaglauncherId
+      }
+    } as CaseField;
+    mockRoute = {
+      snapshot: {
+        params: {
+          eid: 'caseFlag',
+          page: 'caseFlagAction',
+        },
+        data: {
+          case: {
+            case_id: '1111222233334444',
+            case_type: {
+              id: 'TEST',
+              name: 'Test',
+              jurisdiction: {
+                id: 'SSCS',
+                name: 'Social Security and Child Support'
+              }
+            }
+          },
+          eventTrigger: {
+            case_fields: [
+              flagLauncherCaseField,
+              {
+                id: caseFlag1FieldId,
+                field_type: {
+                  id: 'Flags',
+                  type: 'Complex'
+                } as FieldType,
+                formatted_value: {
+                  partyName: caseFlag1PartyName,
+                  roleOnCase: caseFlag1RoleOnCase,
+                  details: [
+                    {
+                      id: '6e8784ca-d679-4f36-a986-edc6ad255dfa',
+                      value: caseFlag1DetailsValue1
+                    },
+                    {
+                      id: '9a179b7c-50a8-479f-a99b-b191ec8ec192',
+                      value: caseFlag1DetailsValue2
+                    }
+                  ]
+                },
+                value: {
+                  partyName: caseFlag1PartyName,
+                  roleOnCase: caseFlag1RoleOnCase,
+                  details: [
+                    {
+                      id: '6e8784ca-d679-4f36-a986-edc6ad255dfa',
+                      value: caseFlag1DetailsValue1
+                    },
+                    {
+                      id: '9a179b7c-50a8-479f-a99b-b191ec8ec192',
+                      value: caseFlag1DetailsValue2
+                    }
+                  ]
+                }
+              },
+              {
+                id: caseFlag2FieldId,
+                field_type: {
+                  id: 'Flags',
+                  type: 'Complex'
+                } as FieldType,
+                formatted_value: {
+                  partyName: caseFlag2PartyName,
+                  roleOnCase: caseFlag2RoleOnCase,
+                  details: [
+                    {
+                      id: '61160453-647b-4065-a786-9443556055f1',
+                      value: caseFlag2DetailsValue1
+                    },
+                    {
+                      id: '0629f5cd-52bc-41ac-a2e0-5da9bbee2068',
+                      value: caseFlag2DetailsValue2
+                    }
+                  ]
+                },
+                value: {
+                  partyName: caseFlag2PartyName,
+                  roleOnCase: caseFlag2RoleOnCase,
+                  details: [
+                    {
+                      id: '61160453-647b-4065-a786-9443556055f1',
+                      value: caseFlag2DetailsValue1
+                    },
+                    {
+                      id: '0629f5cd-52bc-41ac-a2e0-5da9bbee2068',
+                      value: caseFlag2DetailsValue2
+                    }
+                  ]
+                }
+              },
+              {
+                id: caseFlagsFieldId,
+                field_type: {
+                  id: 'Flags',
+                  type: 'Complex'
+                } as FieldType,
+                formatted_value: null,
+                value: null
+              }
+            ] as CaseField[]
+          }
+        }
+      }
+    };
+
 
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ WriteCaseFlagFieldComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: _.cloneDeep(mockRoute) },
+        { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseEditDataService, useValue: caseEditDataServiceSpy },
         { provide: Location, useValue: locationSpy },
         { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy },
@@ -368,6 +371,33 @@ describe('WriteCaseFlagFieldComponent', () => {
     ];
     caseFields[0].display_context_parameter = updateMode;
     expect(component.setDisplayContextParameterUpdate(caseFields)).toBe(true);
+  });
+
+  it('should call isDisplayContextParameterExternal on ngOnInit', () => {
+    spyOn(component, 'setDisplayContextParameterExternal').and.callThrough();
+    component.ngOnInit();
+    expect(component.setDisplayContextParameterExternal)
+      .toHaveBeenCalledWith(mockRoute.snapshot.data.eventTrigger.case_fields);
+  });
+
+  it('when calling setDisplayContextParameterExternal it should return true' +
+    'if one of the caseFields have the createExternalMode display_context_parameter', () => {
+    const caseFields: CaseField[] = [
+      flagLauncherCaseField
+    ];
+    expect(component.setDisplayContextParameterExternal(caseFields)).toBe(false);
+    caseFields[0].display_context_parameter = createExternalMode;
+    expect(component.setDisplayContextParameterExternal(caseFields)).toBe(true);
+  });
+
+  it('when calling setDisplayContextParameterExternal it should return true' +
+    'if one of the caseFields have the createExternalMode display_context_parameter', () => {
+    const caseFields: CaseField[] = [
+      flagLauncherCaseField
+    ];
+    expect(component.setDisplayContextParameterExternal(caseFields)).toBe(false);
+    caseFields[0].display_context_parameter = updateExternalMode;
+    expect(component.setDisplayContextParameterExternal(caseFields)).toBe(true);
   });
 
   it('should set the correct Case Flag field starting state for the Manage Case Flags journey', () => {

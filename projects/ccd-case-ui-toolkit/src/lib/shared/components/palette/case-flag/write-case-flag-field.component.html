@@ -33,7 +33,9 @@
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
       <ccd-add-comments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-add-comments>
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
+        [isDisplayContextParameterExternal]="isDisplayContextParameterExternal"
+      ></ccd-add-comments>
     </ng-container>
   </div>
 </div>
