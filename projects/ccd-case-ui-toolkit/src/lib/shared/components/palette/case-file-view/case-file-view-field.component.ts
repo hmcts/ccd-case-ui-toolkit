@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
@@ -22,7 +22,6 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
   constructor(private readonly elementRef: ElementRef,
               private readonly route: ActivatedRoute,
-              private readonly router: Router,
               private caseFileViewService: CaseFileViewService,
               private documentManagementService: DocumentManagementService,
               private readonly loadingService: LoadingService

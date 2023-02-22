@@ -1,13 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
 import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
-import createSpyObj = jasmine.createSpyObj;
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
@@ -23,8 +23,8 @@ describe('CaseFileViewFieldComponent', () => {
     snapshot: mockSnapshot
   };
 
-  beforeEach(async(() => {
-    mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService', ['getCategoriesAndDocuments']);
+  beforeEach(waitForAsync(() => {
+    mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService', ['getCategoriesAndDocuments', 'updateDocumentCategory']);
     mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(of(null));
 
     mockLoadingService = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
@@ -86,6 +86,23 @@ describe('CaseFileViewFieldComponent', () => {
     expect(caseFileViewHeadingElement).toBeNull();
     const caseFileViewElement = nativeElement.querySelector('#case-file-view');
     expect(caseFileViewElement).toBeNull();
+  });
+
+  it('should display an error message if the update document category fails', () => {
+    mockCaseFileViewService.updateDocumentCategory.and.returnValue(throwError(new Error('Unable to update document')));
+    const data = {
+      document: {
+        attribute_path: '/some/path',
+        newCategory: 'some new category'
+      }
+    };
+    component.moveDocument(data);
+    expect(component.updateDocumentCategoryError).toBe(true);
+    expect(mockLoadingService.unregister).toHaveBeenCalled();
+    fixture.detectChanges();
+    const nativeElement = fixture.debugElement.nativeElement;
+    const errorMessageHeadingElement = nativeElement.querySelector('.govuk-heading-m');
+    expect(errorMessageHeadingElement).toBeTruthy();
   });
 
   it('should set currentDocument when calling setMediaViewerFile', () => {
