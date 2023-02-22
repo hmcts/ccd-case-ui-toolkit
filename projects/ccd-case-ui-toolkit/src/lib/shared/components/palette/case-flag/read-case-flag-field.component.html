@@ -6,30 +6,43 @@
       (changeButtonEmitter)="navigateBackToForm($event)">
     </ccd-case-flag-summary-list>
   </ng-container>
+
   <ng-container>
-    <h2 id="read-case-flag-title" class="govuk-heading-l">
-      <ng-container [ngSwitch]="displayContextParameter">
-        <ng-container *ngSwitchCase="readSupportMode">
+    <ng-container [ngSwitch]="displayContextParameter">
+      <ng-container *ngSwitchCase="readSupportMode">
+        <h2 id="read-case-flag-title" class="govuk-heading-l">
           Support requested
-        </ng-container>
-        <ng-container *ngSwitchDefault>
-          Case flags
-        </ng-container>
+        </h2>
+
+        <div *ngFor="let flagData of partyLevelCaseFlagData">
+          <ccd-case-flag-table *ngIf="flagData.flags.partyName"
+                               [tableCaption]="''"
+                               [flagData]="flagData"
+                               [firstColumnHeader]="flagData.flags.partyName"
+          ></ccd-case-flag-table>
+        </div>
       </ng-container>
-    </h2>
-    <div *ngFor="let flagData of partyLevelCaseFlagData">
-      <ccd-case-flag-table *ngIf="flagData.flags.partyName"
-        [tableCaption]="flagData.flags.partyName"
-        [flagData]="flagData"
-        [firstColumnHeader]="'Party level flags'"
-      ></ccd-case-flag-table>
-    </div>
-    <div *ngIf="caseLevelCaseFlagData">
-      <ccd-case-flag-table
-        [tableCaption]="'Case level flags'"
-        [flagData]="caseLevelCaseFlagData"
-        [firstColumnHeader]="'Case flags'"
-      ></ccd-case-flag-table>
-    </div>
+
+      <ng-container *ngSwitchDefault>
+        <h2 id="read-case-flag-title" class="govuk-heading-l">
+          Case flags
+        </h2>
+
+        <div *ngFor="let flagData of partyLevelCaseFlagData">
+          <ccd-case-flag-table *ngIf="flagData.flags.partyName"
+                               [tableCaption]="flagData.flags.partyName"
+                               [flagData]="flagData"
+                               [firstColumnHeader]="'Party level flags'"
+          ></ccd-case-flag-table>
+        </div>
+        <div *ngIf="caseLevelCaseFlagData">
+          <ccd-case-flag-table
+            [tableCaption]="'Case level flags'"
+            [flagData]="caseLevelCaseFlagData"
+            [firstColumnHeader]="'Case flags'"
+          ></ccd-case-flag-table>
+        </div>
+      </ng-container>
+    </ng-container>
   </ng-container>
 </ng-container>
