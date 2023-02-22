@@ -1,4 +1,11 @@
 ## RELEASE NOTES
+### Version 6.10.10-linked-cases-and-case-file-view
+**EUI-7676** Configure linked cases
+**EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
+
+### Version 6.10.7-rollback-case-link
+**EUI-7675** Rollback case link
+
 ### Version 5.0.50-case-file-view-restrict-document-move
 **EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
 
