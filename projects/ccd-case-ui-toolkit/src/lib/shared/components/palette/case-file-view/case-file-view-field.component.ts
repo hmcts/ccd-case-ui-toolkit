@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
@@ -21,6 +21,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
   constructor(private readonly elementRef: ElementRef,
               private readonly route: ActivatedRoute,
+              private readonly router: Router,
               private caseFileViewService: CaseFileViewService,
               private documentManagementService: DocumentManagementService,
               private readonly loadingService: LoadingService
@@ -79,9 +80,19 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public moveDocument(data:any) {
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
     const loadingToken = this.loadingService.register();
-    this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory).subscribe(_ => {
-      location.reload();
-      this.loadingService.unregister(loadingToken);
+    this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory).subscribe({
+      next: () => {
+        // location.reload();
+        // this.router.navigate(['cases', 'case-details', cid]).then(() => {
+        //   window.location.hash = 'Case File View';
+        // });
+        this.ngOnInit();
+        this.loadingService.unregister(loadingToken);
+      },
+      error: () => {
+        this.loadingService.unregister(loadingToken);
+        this.router.navigate(['/service-down']);
+      }
     });
   }
 
