@@ -72,7 +72,7 @@ const conditionSource =
     { return s1 + fr + s2 }
 
   FieldReference
-    = characters:[A-Za-z0-9._]+ { return characters.join(""); }
+    = characters:[A-Za-z0-9._-]+ { return characters.join(""); }
 
   openSquare
    = "["
