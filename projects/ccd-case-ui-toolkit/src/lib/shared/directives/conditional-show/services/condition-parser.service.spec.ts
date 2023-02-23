@@ -442,22 +442,22 @@ describe('ConditionParser', () => {
 
     describe('should evaluate simple, compound fomulas with does not equal', () => {
       const conditions = [
-        { fieldReference: 'TextField0', comparator: '!=', value: 'hello' },
+        { fieldReference: 'TextField0', comparator: '!=', value: 'hell(o)' },
         'AND',
         { fieldReference: 'TextField1', comparator: '!=', value: 'bye' },
       ];
 
       const testCases = [
         {
-          input: { TextField0: 'hello', TextField1: 'bye' },
+          input: { TextField0: 'hell(o)', TextField1: 'bye' },
           expected: false
         },
         {
-          input: { TextField0: 'hello', TextField1: 'hello' },
+          input: { TextField0: 'hell(o)', TextField1: 'hell(o)' },
           expected: false
         },
         {
-          input: { TextField0: 'bye', TextField1: 'hello' },
+          input: { TextField0: 'bye', TextField1: 'hell(o)' },
           expected: true
         },
         {
