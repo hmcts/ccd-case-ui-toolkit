@@ -199,7 +199,7 @@ describe('WriteCaseFlagFieldComponent', () => {
 
   const updateMode = '#ARGUMENT(UPDATE)';
   const createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
-  const updateExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
+  const updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
   let locationSpy: jasmine.SpyObj<Location>;
   let caseEditDataServiceSpy: jasmine.SpyObj<CaseEditDataService>;

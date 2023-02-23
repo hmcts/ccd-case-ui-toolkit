@@ -35,7 +35,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   private allCaseFlagStagesCompleted = false;
   private readonly updateMode = '#ARGUMENT(UPDATE)';
   private readonly createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
-  private readonly updateExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
+  private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   public readonly caseNameMissing = 'Case name missing';
