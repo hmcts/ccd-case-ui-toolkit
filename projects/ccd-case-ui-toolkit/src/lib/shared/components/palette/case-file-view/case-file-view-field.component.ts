@@ -78,6 +78,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   }
 
   public moveDocument(data:any) {
+    this.updateDocumentCategoryError = false;
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
     const loadingToken = this.loadingService.register();
     this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory).subscribe({
