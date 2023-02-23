@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.11.0-case-file-view-move-document
+**EUI-7855** Case file view move document error handling
+
 ### Version 6.10.10-configure-linked-cases
 **EUI-7676** Configure linked cases
 
