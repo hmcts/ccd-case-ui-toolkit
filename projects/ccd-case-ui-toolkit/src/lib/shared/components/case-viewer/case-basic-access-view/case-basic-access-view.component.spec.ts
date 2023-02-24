@@ -1,7 +1,6 @@
-import { Location } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { Location } from '@angular/common';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import createSpyObj = jasmine.createSpyObj;
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -10,6 +9,7 @@ import { CaseReferencePipe } from '../../../pipes/case-reference';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CasesService } from '../../case-editor/services';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view.component';
+import createSpyObj = jasmine.createSpyObj;
 
 const META_DATA_FIELD_WITH_CHALLENGED_ACCESS: CaseField = new CaseField();
 META_DATA_FIELD_WITH_CHALLENGED_ACCESS.id = '[ACCESS_PROCESS]';
