@@ -26,6 +26,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
   private readonly createMode = '#ARGUMENT(CREATE)';
+  private readonly createModeExternal = '#ARGUMENT(CREATE,EXTERNAL)';
   private readonly updateMode = '#ARGUMENT(UPDATE)';
   constructor(
     private readonly route: ActivatedRoute,
@@ -69,14 +70,16 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         const flagLauncherComponent = this.formGroup.get(flagLauncherControlName)['component'];
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
-        if (flagLauncherComponent.caseField.display_context_parameter === this.createMode &&
+        if ((flagLauncherComponent.caseField.display_context_parameter === this.createMode ||
+            flagLauncherComponent.caseField.display_context_parameter === this.createModeExternal
+          ) &&
           flagLauncherComponent.selectedFlagsLocation) {
           // this.flagLocation = flagLauncherComponent.selectedFlagsLocation;
           this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
           this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
             flagLauncherComponent.selectedFlagsLocation
           );
-            // Set the display mode for the "Review flag details" summary page
+          // Set the display mode for the "Review flag details" summary page
             this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
