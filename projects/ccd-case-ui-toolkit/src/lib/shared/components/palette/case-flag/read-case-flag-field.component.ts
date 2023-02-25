@@ -21,12 +21,12 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
-
   public pathToFlagsFormGroup: string;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
   private readonly createMode = '#ARGUMENT(CREATE)';
   private readonly updateMode = '#ARGUMENT(UPDATE)';
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
