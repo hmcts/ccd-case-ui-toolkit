@@ -11,6 +11,7 @@ import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagW
 export class AddCommentsComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public optional = false;
+  @Input() public isDisplayContextParameterExternal = false;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -24,7 +25,8 @@ export class AddCommentsComponent implements OnInit {
   private readonly commentsMaxCharLimit = 200;
 
   public ngOnInit(): void {
-    this.addCommentsTitle = CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS;
+    this.addCommentsTitle = !this.isDisplayContextParameterExternal ?
+      CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS : CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS_EXTERNAL_MODE;
     this.addCommentsHint = AddCommentsStep.HINT_TEXT;
     this.addCommentsCharLimitInfo = AddCommentsStep.CHARACTER_LIMIT_INFO;
 
