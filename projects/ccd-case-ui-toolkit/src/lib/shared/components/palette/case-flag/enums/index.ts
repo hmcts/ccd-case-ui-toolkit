@@ -3,6 +3,7 @@ export * from './add-comments-step.enum';
 export * from './case-flag-status.enum';
 export * from './case-flag-summary-list-display-mode.enum';
 export * from './case-flag-wizard-step-title.enum';
+export * from './confirm-status-step.enum';
 export * from './search-language-interpreter-error-message.enum';
 export * from './search-language-interpreter-step.enum';
 export * from './select-flag-error-message.enum';
