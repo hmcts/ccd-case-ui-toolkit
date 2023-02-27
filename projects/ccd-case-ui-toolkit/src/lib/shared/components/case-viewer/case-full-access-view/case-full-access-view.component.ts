@@ -98,7 +98,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public ngOnInit(): void {
     initDialog();
-    this.httpClient.get(`/workallocation/getSpecificAccess`).subscribe((roleAssignments) => {
+    this.httpClient.get(`/workallocation/my-work/myaccess`).subscribe((roleAssignments) => {
       this.roleAssignments = roleAssignments;
       this.getAccessType();
     });
