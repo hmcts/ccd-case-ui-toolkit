@@ -391,8 +391,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.formGroup.valid).toBe(false);
     nextButton.click();
     fixture.detectChanges();
-    // Field is expected to move to final state (flag comments) and the form to become valid
-    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
+    // Field is expected to move to final state (flag status) and the form to become valid
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_STATUS);
     expect(component.isAtFinalState()).toBe(true);
     // Form validation should not be called until reaching the final state, hence expecting only one call
     expect(component.formGroup.updateValueAndValidity).toHaveBeenCalledTimes(1);
@@ -474,11 +474,11 @@ describe('WriteCaseFlagFieldComponent', () => {
     });
     component.addFlagToCollection();
     expect(populateNewFlagDetailInstanceSpy).toHaveBeenCalled();
-    // // Check there are now three case flag values in the caseField object for caseFlag1, and two in caseFlag2
+    // Check there are now three case flag values in the caseField object for caseFlag1, and two in caseFlag2
     expect(component.flagsData[0].caseField.value.details.length).toBe(3);
     expect(component.flagsData[0].caseField.value.details[2].id).toBeUndefined();
-    // // FlagDetail value expected to be undefined because no caseFlagParentFormGroup value was set (which is used for
-    // // populating the FlagDetail instance)
+    // FlagDetail value expected to be undefined because no caseFlagParentFormGroup value was set (which is used for
+    // populating the FlagDetail instance)
     expect(component.flagsData[0].caseField.value.details[2].value.name).toBeUndefined();
     expect(component.flagsData[1].caseField.value.details.length).toBe(2);
     const newFlag2 = {
@@ -580,9 +580,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.fieldState).toEqual(1);
   });
 
-  it('should move to the final review stage if there are no validation errors and the current state is FLAG_COMMENTS', () => {
+  it('should move to the final review stage if there are no validation errors and the current state is FLAG_STATUS', () => {
     const caseFlagState: CaseFlagState = {
-      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_COMMENTS,
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_STATUS,
       errorMessages: []
     };
     spyOn(component, 'moveToFinalReviewStage');
@@ -604,7 +604,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.proceedToNextState).not.toHaveBeenCalled();
   });
 
-  it('should proceed to next state if no validation errors, state not FLAG_COMMENTS or FLAG_UPDATE, and non-parent flag type', () => {
+  it('should proceed to next state if no validation errors, state not FLAG_STATUS or FLAG_UPDATE, and non-parent flag type', () => {
     const caseFlagState: CaseFlagState = {
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       errorMessages: []
@@ -631,7 +631,7 @@ describe('WriteCaseFlagFieldComponent', () => {
 
   it('should not move to the final review stage if there is a validation error', () => {
     const caseFlagState: CaseFlagState = {
-      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_COMMENTS,
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_STATUS,
       errorMessages: [
         {
           title: 'Error',
@@ -687,9 +687,9 @@ describe('WriteCaseFlagFieldComponent', () => {
 
   it('should not move to the next state if already at the final state for the Create Case Flag journey', () => {
     component.isDisplayContextParameterUpdate = false;
-    component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
+    component.fieldState = CaseFlagFieldState.FLAG_STATUS;
     component.proceedToNextState();
-    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_STATUS);
   });
 
   it('should not move to the next state if already at the final state for the Manage Case Flags journey', () => {
@@ -709,7 +709,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     spyOn(component, 'addFlagToCollection');
     spyOn(component, 'updateFlagInCollection');
     spyOn(component.formGroup, 'updateValueAndValidity');
-    component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
+    component.fieldState = CaseFlagFieldState.FLAG_STATUS;
     component.moveToFinalReviewStage();
     expect(component.setFlagsCaseFieldValue).toHaveBeenCalled();
     expect(component.addFlagToCollection).toHaveBeenCalled();
@@ -737,10 +737,13 @@ describe('WriteCaseFlagFieldComponent', () => {
       manualLanguageEntry: new FormControl(),
       otherFlagTypeDescription: new FormControl(),
       flagComments: new FormControl(),
+      statusReason: new FormControl(),
+      selectedStatus: new FormControl()
     });
 
     const flagType = {
       name: 'Flag Name',
+      name_cy: 'Enw Fflag (Cymraeg)',
       flagCode: 'OT0001',
       path: [
         {
@@ -748,7 +751,8 @@ describe('WriteCaseFlagFieldComponent', () => {
           value: 'Reasonable adjustment'
         }
       ],
-      hearingRelevantFlag: true
+      hearingRelevantFlag: true,
+      externallyAvailable: false
     };
 
     component.caseFlagParentFormGroup.setValue(
@@ -760,27 +764,35 @@ describe('WriteCaseFlagFieldComponent', () => {
         },
         manualLanguageEntry: null,
         otherFlagTypeDescription: 'A flag type',
-        flagComments: 'Some comments'
+        flagComments: 'Some comments',
+        statusReason: 'A reason for the status',
+        selectedStatus: 'ACTIVE'
       }
     );
 
     const newFlagDetailInstance = component.populateNewFlagDetailInstance();
     expect(newFlagDetailInstance.name).toEqual(component.caseFlagParentFormGroup.value.flagType.name);
+    expect(newFlagDetailInstance.name_cy).toEqual(component.caseFlagParentFormGroup.value.flagType.name_cy);
     expect(newFlagDetailInstance.subTypeValue).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.value);
     expect(newFlagDetailInstance.subTypeKey).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.key);
     expect(newFlagDetailInstance.otherDescription).toEqual(component.caseFlagParentFormGroup.value.otherFlagTypeDescription);
     expect(newFlagDetailInstance.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
+    expect(newFlagDetailInstance.flagUpdateComment).toEqual(component.caseFlagParentFormGroup.value.statusReason);
     expect(newFlagDetailInstance.dateTimeCreated).toBeTruthy();
     expect(newFlagDetailInstance.path).toEqual(component.caseFlagParentFormGroup.value.flagType.flagPath);
     expect(newFlagDetailInstance.hearingRelevant).toEqual('Yes');
     expect(newFlagDetailInstance.flagCode).toEqual(component.caseFlagParentFormGroup.value.flagType.flagCode);
     expect(newFlagDetailInstance.status).toBe(CaseFlagStatus.ACTIVE);
-    component.caseFlagParentFormGroup.setValue({
-        flagType: {...flagType, hearingRelevantFlag: false},
+    expect(newFlagDetailInstance.availableExternally).toEqual('No');
+    component.caseFlagParentFormGroup.setValue(
+      {
+        flagType: {...flagType, hearingRelevantFlag: false, externallyAvailable: true},
         languageSearchTerm: null,
         manualLanguageEntry: 'TypeScript',
         otherFlagTypeDescription: null,
-        flagComments: null
+        flagComments: null,
+        statusReason: null,
+        selectedStatus: 'REQUESTED'
       }
     );
     const newFlagDetailInstance2 = component.populateNewFlagDetailInstance();
@@ -788,13 +800,19 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(newFlagDetailInstance2.subTypeKey).toBeNull();
     expect(newFlagDetailInstance2.otherDescription).toBeNull();
     expect(newFlagDetailInstance2.flagComment).toBeNull();
+    expect(newFlagDetailInstance2.flagUpdateComment).toBeNull();
     expect(newFlagDetailInstance2.hearingRelevant).toEqual('No');
-    component.caseFlagParentFormGroup.setValue({
+    expect(newFlagDetailInstance2.status).toBe(CaseFlagStatus.REQUESTED);
+    expect(newFlagDetailInstance2.availableExternally).toEqual('Yes');
+    component.caseFlagParentFormGroup.setValue(
+      {
         flagType,
         languageSearchTerm: null,
         manualLanguageEntry: null,
         otherFlagTypeDescription: null,
-        flagComments: null
+        flagComments: null,
+        statusReason: null,
+        selectedStatus: 'ACTIVE'
       }
     );
     const newFlagDetailInstance3 = component.populateNewFlagDetailInstance();
