@@ -32,10 +32,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public isDisplayContextParameterExternal: boolean;
   public caseTitle: string;
   public caseTitleSubscription: Subscription;
+  public displayContextParameter: string;
   private allCaseFlagStagesCompleted = false;
   private readonly updateMode = '#ARGUMENT(UPDATE)';
-  private readonly createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
   private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
+  private readonly createMode = '#ARGUMENT(CREATE)';
+  private readonly createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   public readonly caseNameMissing = 'Case name missing';
@@ -82,7 +84,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
     }), true) as FormGroup;
 
-    this.createFlagCaption = CaseFlagText.CAPTION;
     // Get the jurisdiction from the CaseView object in the snapshot data (required for retrieving the available flag
     // types for a case)
     if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type &&
@@ -91,22 +92,30 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
     if (this.route.snapshot.data.eventTrigger && this.route.snapshot.data.eventTrigger.case_fields) {
-      this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
+      this.flagsData = (this.route.snapshot.data.eventTrigger.case_fields as CaseField[])
         .reduce((flags, caseField) => {
           return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
         }, []);
 
+      // Set displayContextParameter (to be passed as an input to ManageCaseFlagsComponent for setting correct title)
+      this.displayContextParameter =
+        this.setDisplayContextParameter(this.route.snapshot.data.eventTrigger.case_fields as CaseField[]);
+
       // Set boolean indicating the display_context_parameter is "update"
-      this.isDisplayContextParameterUpdate =
-        this.setDisplayContextParameterUpdate((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
-      this.isDisplayContextParameterExternal =
-        this.setDisplayContextParameterExternal((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
+      this.isDisplayContextParameterUpdate = this.setDisplayContextParameterUpdate(this.displayContextParameter);
+
+      // Set boolean indicating the display_context_parameter is "external"
+      this.isDisplayContextParameterExternal = this.setDisplayContextParameterExternal(this.displayContextParameter);
+
       // Set starting field state if fieldState not the right value
       if (!(this.location.getState()?.['fieldState'] >= 0)) {
         this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
       } else {
         this.fieldState = this.location.getState()['fieldState'];
       }
+
+      // Set Create Case Flag component title caption text (appearing above child component <h1> title)
+      this.createFlagCaption = this.setCreateFlagCaption(this.displayContextParameter);
 
       // Get case title, to be used by child components
       this.caseTitleSubscription = this.caseEditDataService.caseTitle$.subscribe({
@@ -117,19 +126,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  public setDisplayContextParameterUpdate(caseFields: CaseField[]): boolean {
-    return caseFields.some(
-      caseField => FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.display_context_parameter === this.updateMode);
+  public setDisplayContextParameterUpdate(displayContextParameter: string): boolean {
+    return displayContextParameter === this.updateMode || displayContextParameter === this.updateExternalMode;
   }
 
-  public setDisplayContextParameterExternal(caseFields: CaseField[]): boolean {
-    return caseFields.some(
-      caseField => FieldsUtils.isFlagLauncherCaseField(caseField) &&
-        (
-          caseField.display_context_parameter === this.createExternalMode ||
-          caseField.display_context_parameter === this.updateExternalMode
-        )
-    );
+  public setDisplayContextParameterExternal(displayContextParameter: string): boolean {
+    return displayContextParameter === this.createExternalMode || displayContextParameter === this.updateExternalMode;
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
@@ -341,5 +343,20 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnDestroy(): void {
     this.caseTitleSubscription?.unsubscribe();
+  }
+
+  public setDisplayContextParameter(caseFields: CaseField[]): string {
+    return caseFields.find(caseField => FieldsUtils.isFlagLauncherCaseField(caseField))?.display_context_parameter;
+  }
+
+  public setCreateFlagCaption(displayContextParameter: string): CaseFlagText {
+    switch (displayContextParameter) {
+      case this.createMode:
+        return CaseFlagText.CAPTION_INTERNAL;
+      case this.createExternalMode:
+        return CaseFlagText.CAPTION_EXTERNAL;
+      default:
+        return CaseFlagText.CAPTION_NONE;
+    }
   }
 }

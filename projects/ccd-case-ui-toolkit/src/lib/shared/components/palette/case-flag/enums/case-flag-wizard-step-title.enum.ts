@@ -8,5 +8,7 @@ export enum CaseFlagWizardStepTitle {
   CONFIRM_FLAG_STATUS = 'Confirm the status of the flag',
   FLAG_STATUS = 'Flag status',
   MANAGE_CASE_FLAGS = 'Manage case flags',
-  UPDATE_FLAG_TITLE = 'Update flag'
+  MANAGE_SUPPORT = 'Manage support',
+  UPDATE_FLAG_TITLE = 'Update flag',
+  NONE = ''
 }
