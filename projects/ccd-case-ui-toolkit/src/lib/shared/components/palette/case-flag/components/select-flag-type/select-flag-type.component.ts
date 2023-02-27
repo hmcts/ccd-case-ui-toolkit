@@ -8,6 +8,7 @@ import { CaseFlagRefdataService } from '../../../../../services';
 import { RefdataCaseFlagType } from '../../../../../services/case-flag/refdata-case-flag-type.enum';
 import { CaseFlagState } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
+import { CaseFlagFormFields } from '../../enums/case-flag-form-fields.enum';
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
 @Component({
@@ -36,11 +37,10 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public refdataError = false;
   public cachedPath: (FlagType | false)[];
 
-  public readonly flagTypeControlName = 'flagType';
-  public readonly descriptionControlName = 'otherFlagTypeDescription';
   public flagTypeControlChangesSubscription: Subscription;
 
   private readonly maxCharactersForOtherFlagType = 80;
+  public caseFlagFormField = CaseFlagFormFields;
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
@@ -49,10 +49,10 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     return CaseFlagWizardStepTitle;
   }
   public get selectedFlagType(): FlagType | null {
-    return this.formGroup.get(this.flagTypeControlName)?.value;
+    return this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.value;
   }
   public get otherFlagTypeSelected(): boolean {
-    return this.formGroup.get(this.flagTypeControlName)?.value?.flagCode === this.otherFlagTypeCode;
+    return this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.value?.flagCode === this.otherFlagTypeCode;
   }
 
   constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
@@ -65,17 +65,13 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       ? RefdataCaseFlagType.CASE
       : RefdataCaseFlagType.PARTY;
 
-    if (!this.formGroup.get(this.flagTypeControlName)) {
-      this.formGroup.addControl(this.flagTypeControlName, new FormControl(''));
-    }
-    if (!this.formGroup.get(this.descriptionControlName)) {
-      this.formGroup.addControl(this.descriptionControlName, new FormControl(''));
-    }
+    this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
+    this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
 
     // Should clear descriptionControlName if flagTypeControlName is changed
-    this.flagTypeControlChangesSubscription = this.formGroup.get(this.flagTypeControlName).valueChanges
+    this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).valueChanges
       .subscribe(value => {
-        this.formGroup.get(this.descriptionControlName).setValue('');
+        this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).setValue('');
         this.cachedPath = [];
 
         // required to clear language interpreter
@@ -100,7 +96,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
           // First (and only) object in the returned array should be the top-level "Party" flag type
           this.flagTypes = flagTypes[0].childFlags;
 
-          const formControl = this.formGroup.get(this.flagTypeControlName);
+          const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
           if (formControl?.value) {
             // Cache Path based on existing flagCode -- needed for nested choices
             const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
@@ -144,7 +140,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     if (this.selectedFlagType && this.selectedFlagType.isParent) {
       this.flagTypes = this.selectedFlagType.childFlags;
       this.cachedPath?.shift();
-      this.formGroup.get(this.flagTypeControlName).setValue(this.cachedPath?.length ? this.cachedPath[0] : null, { emitEvent: false });
+      this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).setValue(this.cachedPath?.length ? this.cachedPath[0] : null, { emitEvent: false });
     }
   }
 
@@ -158,7 +154,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED}`, fieldId: 'conditional-radios-list'});
     }
     if (this.otherFlagTypeSelected) {
-      const otherFlagTypeDescription = this.formGroup.get(this.descriptionControlName).value;
+      const otherFlagTypeDescription = this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
       if (!otherFlagTypeDescription) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
         this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description'});

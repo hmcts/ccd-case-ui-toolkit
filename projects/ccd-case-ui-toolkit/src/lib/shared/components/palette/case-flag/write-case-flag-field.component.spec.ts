@@ -771,7 +771,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       flagType: new FormControl(null),
       languageSearchTerm: new FormControl(),
       manualLanguageEntry: new FormControl(),
-      otherFlagTypeDescription: new FormControl(),
+      otherDescription: new FormControl(),
       flagComments: new FormControl(),
       statusReason: new FormControl(),
       selectedStatus: new FormControl()
@@ -799,7 +799,7 @@ describe('WriteCaseFlagFieldComponent', () => {
           value: 'British Sign Language'
         },
         manualLanguageEntry: null,
-        otherFlagTypeDescription: 'A flag type',
+        otherDescription: 'A flag type',
         flagComments: 'Some comments',
         statusReason: 'A reason for the status',
         selectedStatus: 'ACTIVE'
@@ -811,7 +811,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(newFlagDetailInstance.name_cy).toEqual(component.caseFlagParentFormGroup.value.flagType.name_cy);
     expect(newFlagDetailInstance.subTypeValue).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.value);
     expect(newFlagDetailInstance.subTypeKey).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.key);
-    expect(newFlagDetailInstance.otherDescription).toEqual(component.caseFlagParentFormGroup.value.otherFlagTypeDescription);
+    expect(newFlagDetailInstance.otherDescription).toEqual(component.caseFlagParentFormGroup.value.otherDescription);
     expect(newFlagDetailInstance.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
     expect(newFlagDetailInstance.flagUpdateComment).toEqual(component.caseFlagParentFormGroup.value.statusReason);
     expect(newFlagDetailInstance.dateTimeCreated).toBeTruthy();
@@ -825,7 +825,7 @@ describe('WriteCaseFlagFieldComponent', () => {
         flagType: {...flagType, hearingRelevantFlag: false, externallyAvailable: true},
         languageSearchTerm: null,
         manualLanguageEntry: 'TypeScript',
-        otherFlagTypeDescription: null,
+        otherDescription: null,
         flagComments: null,
         statusReason: null,
         selectedStatus: 'REQUESTED'
@@ -845,7 +845,7 @@ describe('WriteCaseFlagFieldComponent', () => {
         flagType,
         languageSearchTerm: null,
         manualLanguageEntry: null,
-        otherFlagTypeDescription: null,
+        otherDescription: null,
         flagComments: null,
         statusReason: null,
         selectedStatus: 'ACTIVE'

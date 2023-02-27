@@ -146,7 +146,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // If the current state is CaseFlagFieldState.FLAG_STATUS or CaseFlagFieldState.FLAG_UPDATE, move to final
       // review stage
       // First condition is for create case flag; Second condition is for the manage flag case journey
-      if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
+      if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_STATUS ||
           ( caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE
               && !this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value ||
             caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION
@@ -323,8 +323,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         ? formValues?.languageSearchTerm.key
         : null,
       otherDescription: formValues?.flagType?.flagCode === this.otherFlagTypeCode &&
-        formValues?.otherFlagTypeDescription
-        ? formValues?.otherFlagTypeDescription
+        formValues?.otherDescription
+        ? formValues?.otherDescription
         : null,
       flagComment: formValues?.flagComments,
       flagUpdateComment: formValues?.statusReason,

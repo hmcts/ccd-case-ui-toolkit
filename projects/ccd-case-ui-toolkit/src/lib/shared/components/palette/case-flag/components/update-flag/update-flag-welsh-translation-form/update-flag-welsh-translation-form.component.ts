@@ -21,15 +21,11 @@ export class UpdateFlagWelshTranslationFormComponent implements OnInit {
   public ngOnInit(): void {
     const flagDetail = this.selectedFlag?.flagDetailDisplay?.flagDetail;
 
-    if (!this.formGroup?.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)) {
-      this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(flagDetail?.otherDescription, [Validators.maxLength(200)]));
-    }
-    if (!this.formGroup?.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)) {
-      this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH, new FormControl('', [Validators.maxLength(200)]));
-    }
-    if (!this.formGroup?.get(CaseFlagFormFields.COMMENTS_WELSH)) {
-      this.formGroup.addControl(CaseFlagFormFields.COMMENTS_WELSH, new FormControl('', [Validators.maxLength(200)]));
-    }
+    this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(flagDetail?.otherDescription, [Validators.maxLength(200)]));
+
+    this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH, new FormControl('', [Validators.maxLength(200)]));
+
+    this.formGroup.addControl(CaseFlagFormFields.COMMENTS_WELSH, new FormControl('', [Validators.maxLength(200)]));
   }
 
   public onNext(): void {
