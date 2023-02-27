@@ -1,6 +1,9 @@
 import { Location } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
-  SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {
+  ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
+  SimpleChanges, ViewChild, ViewContainerRef
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
@@ -14,7 +17,7 @@ import {
   NotificationBannerType
 } from '../../../../components/banners/notification-banner';
 import { ShowCondition } from '../../../directives';
-import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DRAFT_QUERY_PARAM, DisplayMode, Draft } from '../../../domain';
 import {
   ActivityPollingService,
   AlertService,
@@ -30,6 +33,7 @@ import { ConvertHrefToRouterService } from '../../case-editor/services/convert-h
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
 import { initDialog } from '../../helpers';
+import { CaseViewerComponent } from '../case-viewer.component';
 
 @Component({
   selector: 'ccd-case-full-access-view',
@@ -68,6 +72,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public notificationBannerConfig: NotificationBannerConfig;
   public selectedTabIndex = 0;
   public activeCaseFlags = false;
+  public roleAssignments;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
@@ -86,12 +91,17 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location,
     private readonly crf: ChangeDetectorRef,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private httpClient: HttpClient,
   ) {
   }
 
   public ngOnInit(): void {
     initDialog();
+    this.httpClient.get(`/workallocation/getSpecificAccess`).subscribe((roleAssignments) => {
+      this.roleAssignments = roleAssignments;
+      this.getAccessType();
+    });
     this.init();
     this.callbackErrorsSubject.subscribe(errorEvent => {
       this.error = errorEvent;
@@ -179,9 +189,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
             .subscribe(_ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.DRAFT_DELETED});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.DRAFT_DELETED });
             }, _ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.ERROR_DELETING_DRAFT});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.ERROR_DELETING_DRAFT });
             });
         }
       });
@@ -244,7 +254,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
-        foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
+        foundTab = additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
       }
       // found tasks or hearing tab
       if (foundTab) {
@@ -252,13 +262,13 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
           this.tabGroup.selectedIndex = matTab.position;
         });
-      // last path is caseId
+        // last path is caseId
       } else {
         // sort with the order of CCD predefined tabs
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // preselect the 1st order of CCD predefined tabs
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], {fragment: preSelectTab.label}).then(() => {
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           this.tabGroup.selectedIndex = matTab.position;
         });
@@ -275,11 +285,44 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
-                                hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
+        hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
       if (matTab && matTab.position) {
         this.tabGroup.selectedIndex = matTab.position;
       }
     }
+
+  }
+
+  public getAccessType(): string {
+    let accessType: string;
+    const access_granted = this.caseDetails.metadataFields.find(metadataField =>
+      metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_GRANTED_ID);
+    if (access_granted.value.includes('SPECIFIC')) {
+      accessType = 'SPECIFIC'
+    } else if (access_granted.value.includes('CHALLENGED')) {
+      accessType = 'CHALLENGED'
+    }
+    return accessType;
+  }
+
+  public specificAccessType(): string {
+    let response;
+    if (this.roleAssignments && this.getAccessType() === 'SPECIFIC') {
+      const specificAccess = this.roleAssignments.cases.find((access) => access.case_id.toString() === this.caseDetails.case_id);
+      if (specificAccess) {
+        const thisMoment = new Date().getTime();
+        const beginTime = new Date(specificAccess.startDate).getTime();
+        const endTime = new Date(specificAccess.endDate).getTime();
+        if (beginTime < thisMoment && !endTime) {
+          response = `You have been given indefinite specific access to this case.`;
+        } else if (beginTime < thisMoment) {
+          response = `You have been given specific access to this case until midnight on ${specificAccess.endDate}.`;
+        } else {
+          response = `You have been given specific access to this case from ${specificAccess.startDate} until midnight on ${specificAccess.endDate}.`;
+        }
+      }
+    }
+    return response;
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
@@ -292,7 +335,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     // so have to hard code the hearings id here
     if ((tabChangeEvent.index <= 1 && this.prependedTabs && this.prependedTabs.length) ||
       (this.appendedTabs && this.appendedTabs.length && id === 'hearings')) {
-      this.router.navigate([id], {relativeTo: this.route});
+      this.router.navigate([id], { relativeTo: this.route });
     } else {
       const label = tabChangeEvent.tab.textLabel;
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
@@ -375,7 +418,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
-      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
+      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
       .filter(tab => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
@@ -403,7 +446,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         };
       });
     }
-    return new FormGroup({data: new FormControl(value)});
+    return new FormGroup({ data: new FormControl(value) });
   }
 
   private resetErrors(): void {
