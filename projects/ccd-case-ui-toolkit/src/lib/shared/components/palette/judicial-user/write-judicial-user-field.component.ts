@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { catchError, debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
-import { JurisdictionService } from '../../../services';
+import { JurisdictionService, SessionStorageService } from '../../../services';
 import { AbstractFieldWriteComponent } from '../base-field';
 
 @Component({
@@ -27,14 +27,12 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
   public showAutocomplete = false;
   public sub: Subscription;
 
-  constructor(private readonly route: ActivatedRoute,
-              private readonly cd: ChangeDetectorRef,
-              private readonly jurisdictionService: JurisdictionService) {
+  constructor(private readonly jurisdictionService: JurisdictionService,
+              private readonly sessionStorageService: SessionStorageService) {
     super();
   }
 
   public ngOnInit(): void {
-    this.jurisdictionId = this.route.snapshot.params[this.JURISDICTION_ID];
     this.judicialUserFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
     this.idamIdFormControl = new FormControl('');
     this.judicialUserFormGroup.addControl(this.IDAM_ID, this.idamIdFormControl);
@@ -53,10 +51,33 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
     ).subscribe((judicialUsers: JudicialUserModel[]) => {
       this.filteredJudicialUsers = judicialUsers;
     });
+
+    if (this.caseField.value?.personalCode) {
+      this.loadJudicialUser(this.caseField.value.personalCode);
+    }
   }
 
   public filter(searchTerm: string): Observable<JudicialUserModel[]> {
-    return this.jurisdictionService.searchJudicialUsers(searchTerm, this.jurisdictionId);
+    return this.jurisdictionService.searchJudicialUsers(searchTerm, this.getJurisdictionId());
+  }
+
+  public loadJudicialUser(personalCode: string): void {
+    if (personalCode) {
+      this.jurisdictionService.searchJudicialUsersByPersonalCodes([personalCode]).subscribe(judicialUsers => {
+        const judicialUser = judicialUsers[0];
+        this.idamIdFormControl.setValue(`${judicialUser.fullName} (${judicialUser.emailId})`);
+        this.personalCodeFormControl.setValue(judicialUser.personalCode);
+      });
+    }
+  }
+
+  public getJurisdictionId(): string {
+    const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
+    if (caseInfoStr) {
+      const caseInfo = JSON.parse(caseInfoStr);
+      return caseInfo?.jurisdiction;
+    }
+    return null;
   }
 
   public onSelectionChange(judicialUser: JudicialUserModel): void {
