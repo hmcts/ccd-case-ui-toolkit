@@ -7,6 +7,7 @@ export enum CaseFlagFieldState {
   FLAG_UPDATE
 }
 
-export enum CaseFlagText {
-  CAPTION = 'Create a case flag',
+export enum CaseFlagCaption {
+  CREATE_CASE_FLAG = 'Create a case flag',
+  REQUEST_SUPPORT = 'Request support'
 }

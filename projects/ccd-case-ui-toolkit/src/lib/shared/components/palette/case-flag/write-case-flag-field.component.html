@@ -14,12 +14,14 @@
 <div *ngIf="!isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="fieldState">
     <div id="create-flag-caption" class="govuk-caption-l" [ngClass]="{'form-group-error': errorMessages.length > 0}">
-      {{createFlagCaption}}
+      {{writeCaseFlagFieldCaption}}
     </div>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
       <ccd-select-flag-location
         [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-location>
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
+        [isDisplayContextParameterExternal]="isDisplayContextParameterExternal"
+      ></ccd-select-flag-location>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
       <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup" [jurisdiction]="jurisdiction"

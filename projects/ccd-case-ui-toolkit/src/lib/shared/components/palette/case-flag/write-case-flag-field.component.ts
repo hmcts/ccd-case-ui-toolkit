@@ -10,7 +10,7 @@ import { FieldsUtils } from '../../../services/fields';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
+import { CaseFlagCaption, CaseFlagFieldState, CaseFlagStatus } from './enums';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
@@ -22,7 +22,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];
-  public createFlagCaption: CaseFlagText;
+  public writeCaseFlagFieldCaption: CaseFlagCaption;
   public flagsData: FlagsWithFormGroupPath[];
   public selectedFlag: FlagDetailDisplayWithFormGroupPath;
   public caseFlagParentFormGroup: FormGroup;
@@ -82,7 +82,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
     }), true) as FormGroup;
 
-    this.createFlagCaption = CaseFlagText.CAPTION;
     // Get the jurisdiction from the CaseView object in the snapshot data (required for retrieving the available flag
     // types for a case)
     if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type &&
@@ -101,6 +100,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         this.setDisplayContextParameterUpdate((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
       this.isDisplayContextParameterExternal =
         this.setDisplayContextParameterExternal((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
+      this.writeCaseFlagFieldCaption = this.isDisplayContextParameterExternal
+        ? CaseFlagCaption.REQUEST_SUPPORT : CaseFlagCaption.CREATE_CASE_FLAG;
+
       // Set starting field state if fieldState not the right value
       if (!(this.location.getState()?.['fieldState'] >= 0)) {
         this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
