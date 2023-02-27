@@ -25,7 +25,6 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   const PAYMENTS_URL = 'http://payment-api:123';
   const BULKSCAN_API_URL = 'http://bulkscant-api:123';
   const REFUNDS_URL = 'http://refunds-api:123';
-  const NOTIFICATION_URL = 'http://notification-api:123';
 
   let appConfig;
   let paymentWebComponent = null;
@@ -35,11 +34,10 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   let de: DebugElement;
 
   beforeEach(waitForAsync(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl', 'getRefundsUrl', 'getNotificationUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getPaymentsUrl', 'getPayBulkScanBaseUrl', 'getRefundsUrl']);
     appConfig.getPaymentsUrl.and.returnValue(PAYMENTS_URL);
     appConfig.getPayBulkScanBaseUrl.and.returnValue(BULKSCAN_API_URL);
     appConfig.getRefundsUrl.and.returnValue(REFUNDS_URL);
-    appConfig.getNotificationUrl.and.returnValue(NOTIFICATION_URL);
 
     paymentWebComponent = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
         'API_ROOT',
@@ -49,7 +47,6 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
         'SELECTED_OPTION',
         'VIEW',
         'REFUNDS_API_ROOT',
-        'NOTIFICATION_API_ROOT',
         'TAKEPAYMENT',
         'SERVICEREQUEST',
         'PAYMENT_GROUP_REF',
@@ -109,10 +106,6 @@ it('returns correct bulkscan url', () => {
 
 it('returns correct refunds url', () => {
     expect(component.getRefundsUrl()).toEqual(REFUNDS_URL);
-});
-
-it('returns correct notification url', () => {
-  expect(component.getNotificationUrl()).toEqual(NOTIFICATION_URL);
 });
 
 it('returns empty roles when not initialized', () => {

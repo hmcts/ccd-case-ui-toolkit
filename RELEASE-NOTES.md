@@ -13,8 +13,8 @@
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
-### Version 5.0.50-fee-pay-props
-**EUI-7489** Added additional props to nested ccpay instance
+### Version 5.0.50-sscs-sit-release
+**EUI-7564** SSCS SIT release
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
