@@ -2,6 +2,9 @@
 ### Version 6.10.7-case-flags-write-component-fixes-for-legal-rep-journey
 **EUI-7362** Ensure correct titles and captions are shown for "Request support" and "Manage support" journeys for legal reps
 
+### Version 6.10.7-case-flags-confirm-flag-status-step
+**EUI-7350** Add "confirm flag status" step of Create Case Flag journey
+
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 

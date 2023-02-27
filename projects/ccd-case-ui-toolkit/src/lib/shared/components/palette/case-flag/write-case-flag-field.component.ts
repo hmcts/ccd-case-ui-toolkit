@@ -29,14 +29,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public isDisplayContextParameterUpdate: boolean;
+  public isDisplayContextParameterExternal: boolean;
   public caseTitle: string;
   public caseTitleSubscription: Subscription;
   public displayContextParameter: string;
   private allCaseFlagStagesCompleted = false;
   private readonly updateMode = '#ARGUMENT(UPDATE)';
-  private readonly updateModeExternal = '#ARGUMENT(UPDATE,EXTERNAL)';
+  private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   private readonly createMode = '#ARGUMENT(CREATE)';
-  private readonly createModeExternal = '#ARGUMENT(CREATE,EXTERNAL)';
+  private readonly createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   public readonly caseNameMissing = 'Case name missing';
@@ -103,6 +104,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // Set boolean indicating the display_context_parameter is "update"
       this.isDisplayContextParameterUpdate = this.setDisplayContextParameterUpdate(this.displayContextParameter);
 
+      // Set boolean indicating the display_context_parameter is "external"
+      this.isDisplayContextParameterExternal = this.setDisplayContextParameterExternal(this.displayContextParameter);
+
       // Set starting field state if fieldState not the right value
       if (!(this.location.getState()?.['fieldState'] >= 0)) {
         this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
@@ -123,7 +127,11 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public setDisplayContextParameterUpdate(displayContextParameter: string): boolean {
-    return displayContextParameter === this.updateMode || displayContextParameter === this.updateModeExternal;
+    return displayContextParameter === this.updateMode || displayContextParameter === this.updateExternalMode;
+  }
+
+  public setDisplayContextParameterExternal(displayContextParameter: string): boolean {
+    return displayContextParameter === this.createExternalMode || displayContextParameter === this.updateExternalMode;
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
@@ -133,9 +141,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.selectedFlag = caseFlagState.selectedFlag;
     // Validation succeeded; proceed to next state or final review stage ("Check your answers")
     if (this.errorMessages.length === 0) {
-      // If the current state is CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE, move to final
+      // If the current state is CaseFlagFieldState.FLAG_STATUS or CaseFlagFieldState.FLAG_UPDATE, move to final
       // review stage
-      if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
+      if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_STATUS ||
           caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
         this.moveToFinalReviewStage();
         // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
@@ -163,7 +171,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public setFlagsCaseFieldValue(): void {
     // tslint:disable-next-line: switch-default
     switch (this.fieldState) {
-      case CaseFlagFieldState.FLAG_COMMENTS:
+      case CaseFlagFieldState.FLAG_STATUS:
         this.addFlagToCollection();
         break;
       case CaseFlagFieldState.FLAG_UPDATE:
@@ -277,7 +285,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public isAtFinalState(): boolean {
     return this.isDisplayContextParameterUpdate
       ? this.fieldState === CaseFlagFieldState.FLAG_UPDATE
-      : this.fieldState === CaseFlagFieldState.FLAG_COMMENTS;
+      : this.fieldState === CaseFlagFieldState.FLAG_STATUS;
   }
 
   public navigateToErrorElement(elementId: string): void {
@@ -298,6 +306,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     const formValues = this.caseFlagParentFormGroup?.value;
     return {
       name: formValues?.flagType?.name,
+      name_cy: formValues?.flagType?.name_cy,
       // Currently, subTypeValue and subTypeKey are applicable only to language flag types
       subTypeValue: formValues?.languageSearchTerm
         ? formValues?.languageSearchTerm.value
@@ -313,12 +322,14 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         ? formValues?.otherFlagTypeDescription
         : null,
       flagComment: formValues?.flagComments,
+      flagUpdateComment: formValues?.statusReason,
       dateTimeCreated: new Date().toISOString(),
       path: formValues?.flagType?.Path &&
         formValues?.flagType?.Path.map(pathValue => Object.assign({ id: null, value: pathValue })),
       hearingRelevant: formValues?.flagType?.hearingRelevantFlag ? 'Yes' : 'No',
       flagCode: formValues?.flagType?.flagCode,
-      status: CaseFlagStatus.ACTIVE
+      status: CaseFlagStatus[formValues?.selectedStatus],
+      availableExternally: formValues?.flagType?.externallyAvailable ? 'Yes' : 'No'
     } as FlagDetail;
   }
 

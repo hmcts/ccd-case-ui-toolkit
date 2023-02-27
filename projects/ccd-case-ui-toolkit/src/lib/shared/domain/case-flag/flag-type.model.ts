@@ -1,13 +1,16 @@
 /**
  * DTO to provide typing of the response from the Reference Data Common API for Case Flags data.
  *
- * @see {@link https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1525476616#CaseFlagsHLDVersion1.0-Output}
+ * @see {@link https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1597741121#CaseFlagsHLDVersion2.0-Output}
  * for full details
  */
 export class FlagType {
   public name: string;
+  public name_cy: string;
   public hearingRelevant: boolean;
   public flagComment: boolean;
+  public defaultStatus: string;
+  public externallyAvailable: boolean;
   public flagCode: string;
   public isParent: boolean;
   // Note: property is deliberately spelt "Path" and not "path" because the Reference Data Common API returns the former
