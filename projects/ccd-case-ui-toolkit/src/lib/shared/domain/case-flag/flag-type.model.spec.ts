@@ -4,8 +4,11 @@ describe('FlagType', () => {
   it('searchPathByFlagTypeObject should return the matching FlagType object and the path to it', () => {
     const flagA1 = {
       name: 'Flag A1',
+      name_cy: 'Fflag A1',
       hearingRelevant: false,
       flagComment: false,
+      defaultStatus: 'Active',
+      externallyAvailable: false,
       flagCode: 'A1',
       isParent: true,
       Path: ['Party, A'],
@@ -15,8 +18,11 @@ describe('FlagType', () => {
     };
     const flagB1 = {
       name: 'Flag B1',
+      name_cy: 'Fflag B1',
       hearingRelevant: false,
       flagComment: false,
+      defaultStatus: 'Active',
+      externallyAvailable: false,
       flagCode: 'B1',
       isParent: true,
       Path: ['Party, B'],
@@ -27,8 +33,11 @@ describe('FlagType', () => {
 
     const flagA: FlagType = {
       name: 'Flag A',
+      name_cy: 'Fflag A',
       hearingRelevant: false,
       flagComment: false,
+      defaultStatus: 'Active',
+      externallyAvailable: false,
       flagCode: 'A',
       isParent: true,
       Path: ['Party'],
@@ -39,8 +48,11 @@ describe('FlagType', () => {
 
     const flagB: FlagType = {
       name: 'Flag B',
+      name_cy: 'Fflag B',
       hearingRelevant: false,
       flagComment: false,
+      defaultStatus: 'Active',
+      externallyAvailable: false,
       flagCode: 'B',
       isParent: true,
       Path: ['Party'],
@@ -59,8 +71,11 @@ describe('FlagType', () => {
   it('searchPathByFlagTypeObject should return undefined and an empty path if no matching FlagType object is found', () => {
     const flagA1 = {
       name: 'Flag A1',
+      name_cy: 'Fflag A1',
       hearingRelevant: false,
       flagComment: false,
+      defaultStatus: 'Active',
+      externallyAvailable: false,
       flagCode: 'A1',
       isParent: true,
       Path: ['Party, A'],
@@ -70,8 +85,11 @@ describe('FlagType', () => {
     };
     const flagB1 = {
       name: 'Flag B1',
+      name_cy: 'Fflag B1',
       hearingRelevant: false,
       flagComment: false,
+      defaultStatus: 'Active',
+      externallyAvailable: false,
       flagCode: 'B1',
       isParent: true,
       Path: ['Party, B'],
@@ -82,8 +100,11 @@ describe('FlagType', () => {
 
     const flagA: FlagType = {
       name: 'Flag A',
+      name_cy: 'Fflag A',
       hearingRelevant: false,
       flagComment: false,
+      defaultStatus: 'Active',
+      externallyAvailable: false,
       flagCode: 'A',
       isParent: true,
       Path: ['Party'],
@@ -94,8 +115,11 @@ describe('FlagType', () => {
 
     const flagB: FlagType = {
       name: 'Flag B',
+      name_cy: 'Fflag B',
       hearingRelevant: false,
       flagComment: false,
+      defaultStatus: 'Active',
+      externallyAvailable: false,
       flagCode: 'B',
       isParent: true,
       Path: ['Party'],

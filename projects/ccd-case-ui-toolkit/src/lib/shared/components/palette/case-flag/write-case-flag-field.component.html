@@ -38,6 +38,10 @@
         [isDisplayContextParameterExternal]="isDisplayContextParameterExternal"
       ></ccd-add-comments>
     </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_STATUS">
+      <ccd-confirm-flag-status [formGroup]="caseFlagParentFormGroup" [defaultStatus]="flagType.defaultStatus"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-confirm-flag-status>
+    </ng-container>
   </div>
 </div>
 <div *ngIf="isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
