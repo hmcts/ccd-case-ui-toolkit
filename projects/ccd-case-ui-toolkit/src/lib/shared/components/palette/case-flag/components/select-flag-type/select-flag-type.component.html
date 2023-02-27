@@ -2,8 +2,13 @@
   <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
     <fieldset class="govuk-fieldset" aria-describedby="flag-type-heading">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <h1 id="flag-type-heading" class="govuk-fieldset__heading">
-          {{caseFlagWizardStepTitle.SELECT_CASE_FLAG}}
+        <h1 id="flag-type-heading" class="govuk-fieldset__heading govuk-!-margin-bottom-1">
+          <ng-container *ngIf="!selectionTitle; else selectionTitlePresent">
+            {{caseFlagWizardStepTitle.SELECT_CASE_FLAG}}
+          </ng-container>
+          <ng-template #selectionTitlePresent>
+            {{selectionTitle}}
+          </ng-template>
         </h1>
       </legend>
       <div id="flag-type-not-selected-error-message" class="govuk-error-message"
