@@ -8,5 +8,7 @@ export enum CaseFlagFieldState {
 }
 
 export enum CaseFlagText {
-  CAPTION = 'Create a case flag',
+  CAPTION_INTERNAL = 'Create a case flag',
+  CAPTION_EXTERNAL = 'Request support',
+  CAPTION_NONE = ''
 }

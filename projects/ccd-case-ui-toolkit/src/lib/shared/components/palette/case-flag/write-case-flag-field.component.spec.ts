@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagFieldState, CaseFlagStatus } from './enums';
+import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 import createSpy = jasmine.createSpy;
@@ -23,7 +23,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     field_type: {
       id: flaglauncherId,
       type: flaglauncherId
-    }
+    },
+    display_context_parameter: '#ARGUMENT(CREATE)'
   } as CaseField;
   const caseFlag1FieldId = 'CaseFlag1';
   const caseFlag1PartyName = 'John Smith';
@@ -309,6 +310,9 @@ describe('WriteCaseFlagFieldComponent', () => {
   } as FlagDetailDisplayWithFormGroupPath;
 
   const updateMode = '#ARGUMENT(UPDATE)';
+  const updateModeExternal = '#ARGUMENT(UPDATE,EXTERNAL)';
+  const createMode = '#ARGUMENT(CREATE)';
+  const createModeExternal = '#ARGUMENT(CREATE,EXTERNAL)';
 
   let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
   let locationSpy: jasmine.SpyObj<Location>;
@@ -338,6 +342,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteCaseFlagFieldComponent);
     component = fixture.componentInstance;
+    spyOn(component, 'setDisplayContextParameter').and.callThrough();
     spyOn(component, 'setDisplayContextParameterUpdate').and.callThrough();
     component.formGroup = parentFormGroup;
     component.caseField = flagLauncherCaseField;
@@ -359,15 +364,21 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.isAtFinalState()).toBe(false);
     expect(component.formGroup.valid).toBe(false);
     expect(component.formGroup.errors).not.toBeNull();
-    expect(component.setDisplayContextParameterUpdate).toHaveBeenCalledWith(mockRoute.snapshot.data.eventTrigger.case_fields);
+    expect(component.setDisplayContextParameter).toHaveBeenCalledWith(mockRoute.snapshot.data.eventTrigger.case_fields);
+    expect(component.setDisplayContextParameterUpdate).toHaveBeenCalledWith(createMode);
   });
 
-  it('should set isDisplayContextParameterUpdate boolean correctly', () => {
+  it('should set displayContextParameter string correctly', () => {
     const caseFields: CaseField[] = [
       flagLauncherCaseField
     ];
     caseFields[0].display_context_parameter = updateMode;
-    expect(component.setDisplayContextParameterUpdate(caseFields)).toBe(true);
+    expect(component.setDisplayContextParameter(caseFields)).toEqual(updateMode);
+  });
+
+  it('should set isDisplayContextParameterUpdate boolean correctly', () => {
+    expect(component.setDisplayContextParameterUpdate(updateMode)).toBe(true);
+    expect(component.setDisplayContextParameterUpdate(updateModeExternal)).toBe(true);
   });
 
   it('should set the correct Case Flag field starting state for the Manage Case Flags journey', () => {
@@ -823,5 +834,10 @@ describe('WriteCaseFlagFieldComponent', () => {
     locationSpy.getState.and.returnValue({fieldState: CaseFlagFieldState.FLAG_TYPE});
     component.ngOnInit();
     expect(component.fieldState).toEqual(CaseFlagFieldState.FLAG_TYPE);
+  });
+
+  it('should set Create Case Flag component title caption text correctly', () => {
+    expect(component.setCreateFlagCaption(createMode)).toEqual(CaseFlagText.CAPTION_INTERNAL);
+    expect(component.setCreateFlagCaption(createModeExternal)).toEqual(CaseFlagText.CAPTION_EXTERNAL);
   });
 });

@@ -1,9 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, SelectFlagErrorMessage } from '../../enums';
+import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 import { ManageCaseFlagsComponent } from './manage-case-flags.component';
 
 describe('ManageCaseFlagsComponent', () => {
@@ -117,7 +117,10 @@ describe('ManageCaseFlagsComponent', () => {
     }
   ] as FlagsWithFormGroupPath[];
 
-  beforeEach(async(() => {
+  const updateMode = '#ARGUMENT(UPDATE)';
+  const updateModeExternal = '#ARGUMENT(UPDATE,EXTERNAL)';
+
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -372,5 +375,10 @@ describe('ManageCaseFlagsComponent', () => {
 
   it('should get flag comment', () => {
     expect(component.getFlagComments(flagsData[3].flags.details[0])).toEqual(' (Fifth flag)');
+  });
+
+  it('should set Manage Case Flags component title correctly', () => {
+    expect(component.setManageCaseFlagTitle(updateMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
+    expect(component.setManageCaseFlagTitle(updateModeExternal)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
   });
 });

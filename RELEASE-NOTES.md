@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-case-flags-write-component-fixes-for-legal-rep-journey
+**EUI-7362** Ensure correct titles and captions are shown for "Request support" and "Manage support" journeys for legal reps
+
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
