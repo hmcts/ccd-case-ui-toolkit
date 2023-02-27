@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-case-flags-confirm-flag-status-step
+**EUI-7350** Add "confirm flag status" step of Create Case Flag journey
+
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
