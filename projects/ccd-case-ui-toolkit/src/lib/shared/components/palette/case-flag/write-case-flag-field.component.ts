@@ -29,10 +29,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public isDisplayContextParameterUpdate: boolean;
+  public isDisplayContextParameterExternal: boolean;
   public caseTitle: string;
   public caseTitleSubscription: Subscription;
   private allCaseFlagStagesCompleted = false;
   private readonly updateMode = '#ARGUMENT(UPDATE)';
+  private readonly createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
+  private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   public readonly caseNameMissing = 'Case name missing';
@@ -96,6 +99,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // Set boolean indicating the display_context_parameter is "update"
       this.isDisplayContextParameterUpdate =
         this.setDisplayContextParameterUpdate((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
+      this.isDisplayContextParameterExternal =
+        this.setDisplayContextParameterExternal((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
       // Set starting field state if fieldState not the right value
       if (!(this.location.getState()?.['fieldState'] >= 0)) {
         this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
@@ -115,6 +120,16 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public setDisplayContextParameterUpdate(caseFields: CaseField[]): boolean {
     return caseFields.some(
       caseField => FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.display_context_parameter === this.updateMode);
+  }
+
+  public setDisplayContextParameterExternal(caseFields: CaseField[]): boolean {
+    return caseFields.some(
+      caseField => FieldsUtils.isFlagLauncherCaseField(caseField) &&
+        (
+          caseField.display_context_parameter === this.createExternalMode ||
+          caseField.display_context_parameter === this.updateExternalMode
+        )
+    );
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
