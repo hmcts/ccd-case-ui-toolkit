@@ -57,7 +57,7 @@
                       [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
                       [caseField]="summaryCaseField(field)" [context]="paletteContext" [caseFields]="contextFields"></ccd-field-read>
                   </td>
-                  <ng-container *ngIf="eventTrigger.id !== 'createCaseFlag' && eventTrigger.id !== 'requestSupport'">
+                  <ng-container *ngIf="!caseFlagField">
                     <td class="valign-top check-your-answers__change case-field-change">
                       <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id)"
                          href="javascript:void(0)"><span class="text-16" attr.aria-label="Change {{ field.label }}">Change</span></a>
