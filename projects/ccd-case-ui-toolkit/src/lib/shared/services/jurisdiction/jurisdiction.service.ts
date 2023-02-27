@@ -23,7 +23,7 @@ export class JurisdictionService {
   }
 
   public searchJudicialUsers(searchTerm: string, serviceId: string): Observable<JudicialUserModel[]> {
-    return this.httpService.post('api/prd/judicial/getJudicialUsersSearch', { searchString: searchTerm, serviceCode: 'BBA3' });
+    return this.httpService.post('api/prd/judicial/getJudicialUsersSearch', { searchString: searchTerm, serviceCode: serviceId });
   }
 
   public searchJudicialUsersByPersonalCodes(personalCodes: string[]): Observable<JudicialUserModel[]> {
