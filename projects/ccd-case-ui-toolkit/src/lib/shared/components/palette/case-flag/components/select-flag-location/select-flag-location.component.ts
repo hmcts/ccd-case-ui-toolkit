@@ -43,9 +43,7 @@ export class SelectFlagLocationComponent implements OnInit {
       } else {
         // Needs to be setValue as they have different object references -- we use the pathToFlagsFormGroup key
         formControl.setValue(
-          this.filteredFlagsData.find(item => {
-            return item.pathToFlagsFormGroup === formControl.value?.pathToFlagsFormGroup;
-          })
+          this.filteredFlagsData.find(item => item.pathToFlagsFormGroup === formControl.value?.pathToFlagsFormGroup)
         );
       }
     } else {
