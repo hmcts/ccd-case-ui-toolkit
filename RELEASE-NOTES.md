@@ -2,17 +2,18 @@
 ### Version 6.10.10-linked-cases-other-description
 **EUI-7246** Linked cases other description
 
-### Version 6.10.10-configure-linked-cases
+### Version 6.10.10-linked-cases-and-case-file-view
 **EUI-7676** Configure linked cases
+**EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
 
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
+### Version 5.0.50-case-file-view-restrict-document-move
+**EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
+
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
-
-### Version 5.0.46-fix-case-link
-**EUI-7521** Fix case link hyperlink on applications tab
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
@@ -23,7 +24,7 @@
 ### Version 5.0.46-case-file-view-styling-fixes
 **EUI-7481** Case file view styling issues
 
-### Version 5.0.45-fix-case-acccess-table
+### Version 5.0.45-fix-case-access-table
 **EUI-7454** Fixed table alignment on case view
 
 ### Version 5.0.44-case-flags-integration-fixes
