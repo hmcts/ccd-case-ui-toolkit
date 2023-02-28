@@ -387,6 +387,10 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.setDisplayContextParameterUpdate(updateExternalMode)).toBe(true);
   });
 
+  it('should call setDisplayContextParameterUpdate on ngOnInit', () => {
+    expect(component.setDisplayContextParameterUpdate).toHaveBeenCalledWith(component.displayContextParameter);
+  });
+
   it('should call setDisplayContextParameterExternal on ngOnInit', () => {
     expect(component.setDisplayContextParameterExternal).toHaveBeenCalledWith(component.displayContextParameter);
   });
