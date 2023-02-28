@@ -17,6 +17,7 @@ export class ManageCaseFlagsComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
   @Input() public caseTitle: string;
+  @Input() public displayContextParameter: string;
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public manageCaseFlagTitle: CaseFlagWizardStepTitle;
@@ -26,9 +27,11 @@ export class ManageCaseFlagsComponent implements OnInit {
   public flags: Flags;
   public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
+  private readonly updateMode = '#ARGUMENT(UPDATE)';
+  private readonly updateModeExternal = '#ARGUMENT(UPDATE,EXTERNAL)';
 
   public ngOnInit(): void {
-    this.manageCaseFlagTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
+    this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
 
     // Map flags instances to objects for display
     if (this.flagsData) {
@@ -143,6 +146,17 @@ export class ManageCaseFlagsComponent implements OnInit {
         ? this.formGroup.get(this.selectedControlName).value as FlagDetailDisplayWithFormGroupPath
         : null
     });
+  }
+
+  public setManageCaseFlagTitle(displayContextParameter: string): CaseFlagWizardStepTitle {
+    switch (displayContextParameter) {
+      case this.updateMode:
+        return CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
+      case this.updateModeExternal:
+        return CaseFlagWizardStepTitle.MANAGE_SUPPORT;
+      default:
+        return CaseFlagWizardStepTitle.NONE;
+    }
   }
 
   private validateSelection(): void {
