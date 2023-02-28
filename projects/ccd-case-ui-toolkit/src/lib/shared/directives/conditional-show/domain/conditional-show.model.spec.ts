@@ -314,7 +314,7 @@ describe('conditional-show', () => {
       expect(matched).toBe(false);
     });
 
-    xit('field starts with a string and does not exist', () => {
+    it('field starts with a string and does not exist', () => {
       const sc = new ShowCondition('field="te*"');
       const fields = {
       };
@@ -323,7 +323,7 @@ describe('conditional-show', () => {
       expect(matched).toBe(false);
     });
 
-    xit('field starts with a string and does not exist', () => {
+    it('field starts with a string and does not exist', () => {
       const sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
       const fields = {
         claimantDetails: {
@@ -347,7 +347,7 @@ describe('conditional-show', () => {
       expect(matched).toBe(false);
     });
 
-    xit('field mentioned in condition has no value asked in EQUALS condition', () => {
+    it('field mentioned in condition has no value asked in EQUALS condition', () => {
       const sc = new ShowCondition('field="test"');
       const fields = {
         field : undefined
@@ -397,7 +397,7 @@ describe('conditional-show', () => {
       expect(matched).toBe(false);
     });
 
-    xit('invalid field mentioned in complex field condition', () => {
+    it('invalid field mentioned in complex field condition', () => {
       const sc = new ShowCondition('claimantDetails.InvalidField="Mr."');
       const fields = {
         claimantDetails: {
@@ -410,7 +410,7 @@ describe('conditional-show', () => {
       expect(matched).toBe(false);
     });
 
-    xit('field mentioned in complex field condition has no value', () => {
+    it('field mentioned in complex field condition has no value', () => {
       const sc = new ShowCondition('claimantDetails.NamePrefix="Mr."');
       const fields = {
         claimantDetails: {
@@ -443,7 +443,7 @@ describe('conditional-show', () => {
       expect(matched).toBe(false);
     });
 
-    xit('should return false when the provided path is broken', () => {
+    it('should return false when the provided path is broken', () => {
       const sc = new ShowCondition('interimReturns.addressAttended.County="Cornwall"');
 
       const fields = COLLECTION_OF_INTERIM_RETURNS;
