@@ -37,7 +37,7 @@ export class CaseFlagRefdataService {
       }
 
       if (externalFlagsOnly) {
-        // Check if flag-type has been added to the query string; if so, append welsh-required with '&'
+        // Check if flag-type has been added to the query string and adds external-flags-only after
         url.indexOf('?') > -1 ? url += '&' : url += '?';
         url += 'external-flags-only=true';
       }
