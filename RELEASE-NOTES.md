@@ -1,6 +1,16 @@
 ## RELEASE NOTES
 ### Version 6.10.10-configure-linked-cases
 **EUI-7676** Configure linked cases
+### Version 6.13.0-rc11
+**EUI-7796** Re-tag for Release 6.13.0
+
+### Version 6.13.0-rc7
+**EUI-7796** Fix flag types retrieval to use HMCTSServiceId from supplementary data in the first instance (if available); this caters for case types that are associated with multiple HMCTS service codes
+
+### Version 5.0.50-case-flags-multiple-service-codes-for-jurisdiction
+**EUI-7529** Fix flag types retrieval to use HMCTS service code associated with case type ID, falling back on jurisdiction only if the case type ID is not recognised, since there could be multiple service codes per jurisdiction
+
+**EUI-3729** Support combinations of AND and OR boolean logic
 
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
