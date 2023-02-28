@@ -12,6 +12,10 @@
 **EUI-7246** Linked cases other description
 
 ### Version 6.10.10-linked-cases-and-case-file-view
+### Version 6.10.11-judicial-user-typeahead-fix
+**EUI-7733** Judicial user typeahead fix
+
+### Version 6.10.10-configure-linked-cases
 **EUI-7676** Configure linked cases
 **EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
 

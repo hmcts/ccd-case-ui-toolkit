@@ -6,10 +6,13 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { HmctsServiceDetail } from '../../../domain/case-flag';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
+import { CaseFlagRefdataService } from '../../../services/case-flag/case-flag-refdata.service';
 import { HttpService } from '../../../services/http/http.service';
 import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
+import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { PaletteUtilsModule } from '../utils';
 import { WriteJudicialUserFieldComponent } from './write-judicial-user-field.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -74,18 +77,36 @@ const JUDICIAL_USERS: JudicialUserModel[] = [
   }
 ];
 
-describe('WriteJudicialUserFieldComponent', () => {
+const SERVICE_DETAILS = [
+  {
+    ccd_service_name: 'SSCS',
+    org_unit: 'HMCTS',
+    service_code: 'BBA3',
+    service_id: 31
+  }
+] as HmctsServiceDetail[];
+
+
+fdescribe('WriteJudicialUserFieldComponent', () => {
   let fixture: ComponentFixture<WriteJudicialUserFieldComponent>;
   let component: WriteJudicialUserFieldComponent;
   let httpService: HttpService;
   let jurisdictionService: any;
+  let sessionStorageService: any;
+  let caseFlagRefdataService: any;
   let activatedRoute: any;
   let nativeElement: any;
 
   beforeEach(waitForAsync(() => {
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
-    jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['searchJudicialUsers']);
+    jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['searchJudicialUsers', 'searchJudicialUsersByPersonalCodes']);
     jurisdictionService.searchJudicialUsers.and.returnValue(of(JUDICIAL_USERS));
+    jurisdictionService.searchJudicialUsersByPersonalCodes.and.returnValue(of([JUDICIAL_USERS[1]]));
+    sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'SSCS'}));
+    caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('caseFlagRefdataService', ['getHmctsServiceDetailsByCaseType', 'getHmctsServiceDetailsByServiceName']);
+    caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
+    caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of(SERVICE_DETAILS));
     activatedRoute = {
       snapshot: {
         params: {
@@ -104,7 +125,9 @@ describe('WriteJudicialUserFieldComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: JurisdictionService, useValue: jurisdictionService }
+        { provide: JurisdictionService, useValue: jurisdictionService },
+        { provide: SessionStorageService, useValue: sessionStorageService },
+        { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService }
       ]
     })
     .compileComponents();
@@ -130,12 +153,29 @@ describe('WriteJudicialUserFieldComponent', () => {
       By.css('.mat-autocomplete-panel')
     ).nativeElement;
     expect(autocompleteOptions.children[0].textContent).toContain('Jacky Collins');
-    expect(component.jurisdictionId).toEqual('BBA3');
+    expect(component.jurisdiction).toEqual('SSCS');
+    expect(component.caseType).toEqual('Benefit');
   });
 
-  it('should search for judicial users call searchJudicialUsers api', () => {
-    component.jurisdictionId = 'BBA3';
-    component.filter('Jac');
+  it('should load judicial user', () => {
+    component.loadJudicialUser('p1000001');
+    expect(component.idamIdFormControl.value).toEqual('Jasmine Chiswell (jasmine.chiswell@judicial.com)');
+    expect(component.personalCodeFormControl.value).toEqual('p1000001');
+  });
+
+  it('should set jurisdiction and case type', () => {
+    component.setJurisdictionAndCaseType();
+    expect(component.jurisdiction).toEqual('SSCS');
+    expect(component.caseType).toEqual('Benefit');
+  });
+
+  it('should search for judicial users', () => {
+    component.jurisdiction = 'BBA3';
+    component.caseType = 'Benefit';
+    component.idamIdFormControl.setValue('Jac');
+    fixture.detectChanges();
+    // component.filterJudicialUsers('Jac');
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('Benefit');
     expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalledWith('Jac', 'BBA3');
   });
 
