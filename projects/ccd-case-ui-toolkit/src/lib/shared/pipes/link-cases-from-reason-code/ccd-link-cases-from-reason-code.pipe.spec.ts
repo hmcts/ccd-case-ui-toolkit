@@ -74,6 +74,10 @@ describe('LinkCasesFromReasonValuePipe', () => {
     expect(linkCasesFromReasonValuePipe.transform({reasonCode: 'CLR002'})).toBe('Bail');
   });
 
+	it('should transform correct reason value when valid reason code and other description is being passsed', () => {
+    expect(linkCasesFromReasonValuePipe.transform({reasonCode: 'CLR003', otherDescription: 'To test the other option'})).toBe('Other - To test the other option');
+  });
+
   it('should transform as undefined when invalid reason code is being passsed', () => {
     expect(linkCasesFromReasonValuePipe.transform({reasonCode: 'CLR005'})).toBe(undefined);
   });
