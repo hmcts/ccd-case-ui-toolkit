@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
@@ -154,11 +154,11 @@ describe('SelectFlagTypeComponent', () => {
   ] as HmctsServiceDetail[];
   const sscsJurisdiction = 'SSCS';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>(
-      'caseFlagRefdataService', ['getCaseFlagsRefdata', 'getHmctsServiceDetails']);
+      'caseFlagRefdataService', ['getCaseFlagsRefdata', 'getHmctsServiceDetailsByServiceName']);
     caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(of(flagTypes));
-    caseFlagRefdataService.getHmctsServiceDetails.and.returnValue(of(serviceDetails));
+    caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of(serviceDetails));
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -355,7 +355,7 @@ describe('SelectFlagTypeComponent', () => {
 
   it('should retrieve the list of flag types for the specified jurisdiction', () => {
     component.ngOnInit();
-    expect(caseFlagRefdataService.getHmctsServiceDetails).toHaveBeenCalledWith(sscsJurisdiction);
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).toHaveBeenCalledWith(sscsJurisdiction);
     expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
   });

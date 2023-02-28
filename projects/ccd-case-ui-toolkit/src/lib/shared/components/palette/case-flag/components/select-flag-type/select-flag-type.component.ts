@@ -62,7 +62,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       : RefdataCaseFlagType.PARTY;
 
     // HMCTS service code for a given jurisdiction is required to retrieve the relevant list of flag types
-    this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetails(this.jurisdiction)
+    this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)
       .pipe(
         // Use switchMap to return an inner Observable of the flag types data, having received the service details
         // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!

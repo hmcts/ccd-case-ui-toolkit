@@ -142,7 +142,7 @@ describe('Case Flag Refdata Service', () => {
   });
 
   it('should retrieve the HMCTS service details for the given service name', () => {
-    service.getHmctsServiceDetails('SSCS').subscribe({
+    service.getHmctsServiceDetailsByServiceName('SSCS').subscribe({
       next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
     });
 
@@ -152,7 +152,7 @@ describe('Case Flag Refdata Service', () => {
   });
 
   it('should retrieve the HMCTS service details for all services', () => {
-    service.getHmctsServiceDetails().subscribe({
+    service.getHmctsServiceDetailsByServiceName().subscribe({
       next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
     });
 
@@ -163,7 +163,7 @@ describe('Case Flag Refdata Service', () => {
 
   it('should return null if locationRefApiUrl in appConfig is null', () => {
     appConfig.getLocationRefApiUrl.and.returnValue(null);
-    service.getHmctsServiceDetails('SSCS').subscribe({
+    service.getHmctsServiceDetailsByServiceName('SSCS').subscribe({
       next: serviceDetails => expect(serviceDetails).toBeNull()
     });
 
