@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../services/case-flag';
@@ -14,136 +15,8 @@ describe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;
   let fixture: ComponentFixture<SelectFlagTypeComponent>;
   let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
-  const flagTypes = [
-    {
-      name: 'Party',
-      hearingRelevant: false,
-      flagComment: false,
-      flagCode: 'CATGRY',
-      isParent: true,
-      Path: [''],
-      childFlags: [
-        {
-          name: 'Reasonable adjustment',
-          hearingRelevant: false,
-          flagComment: false,
-          flagCode: 'CATGRY',
-          isParent: true,
-          Path: ['Party'],
-          childFlags: [
-            {
-              name: 'I need help with forms',
-              hearingRelevant: false,
-              flagComment: false,
-              flagCode: 'CATGRY',
-              isParent: true,
-              Path: ['Party', 'Reasonable adjustment'],
-              childFlags: [
-                {
-                  name: 'Guidance on how to complete forms',
-                  hearingRelevant: false,
-                  flagComment: false,
-                  flagCode: 'RA0017',
-                  isParent: false,
-                  Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
-                  childFlags: []
-                },
-                {
-                  name: 'Support filling in forms',
-                  hearingRelevant: false,
-                  flagComment: false,
-                  flagCode: 'RA0018',
-                  isParent: false,
-                  Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
-                  childFlags: []
-                },
-                {
-                  name: 'Other',
-                  hearingRelevant: true,
-                  flagComment: true,
-                  flagCode: 'OT0001',
-                  isParent: false,
-                  Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
-                  childFlags: []
-                }
-              ]
-            },
-            {
-              name: 'I need help communicating and understanding',
-              hearingRelevant: false,
-              flagComment: false,
-              flagCode: 'CATGRY',
-              childFlags: [
-                {
-                  name: 'Sign Language Interpreter',
-                  hearingRelevant: true,
-                  flagComment: false,
-                  flagCode: 'RA0042',
-                  listOfValuesLength: 3,
-                  listOfValues: [
-                    {
-                      key: 'deafblindManualAlphabet',
-                      value: 'Deafblind manual alphabet'
-                    },
-                    {
-                      key: 'britishSignLanguage',
-                      value: 'British Sign Language (BSL)'
-                    },
-                    {
-                      key: 'americanSignLanguage',
-                      value: 'American Sign Language (ASL)'
-                    }
-                  ],
-                  isParent: false,
-                  Path: [
-                    'Party',
-                    'Reasonable adjustment',
-                    'I need help communicating and understanding'
-                  ]
-                },
-                {
-                  name: 'Other',
-                  hearingRelevant: true,
-                  flagComment: true,
-                  flagCode: 'OT0001',
-                  childFlags: [],
-                  isParent: false,
-                  Path: [
-                    'Party',
-                    'Reasonable adjustment',
-                    'I need help communicating and understanding'
-                  ]
-                }
-              ],
-              isParent: true,
-              Path: [
-                'Party',
-                'Reasonable adjustment'
-              ]
-            }
-          ]
-        },
-        {
-          name: 'Potentially suicidal',
-          hearingRelevant: true,
-          flagComment: false,
-          flagCode: 'PF0003',
-          isParent: false,
-          Path: ['Party'],
-          childFlags: []
-        },
-        {
-          name: 'Other',
-          hearingRelevant: true,
-          flagComment: true,
-          flagCode: 'OT0001',
-          isParent: false,
-          Path: ['Party'],
-          childFlags: []
-        }
-      ]
-    }
-  ] as FlagType[];
+  let flagTypes: FlagType[];
+
   const serviceDetails = [
     {
       ccd_service_name: 'SSCS',
@@ -154,7 +27,138 @@ describe('SelectFlagTypeComponent', () => {
   ] as HmctsServiceDetail[];
   const sscsJurisdiction = 'SSCS';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
+    flagTypes = [
+      {
+        name: 'Party',
+        hearingRelevant: false,
+        flagComment: false,
+        flagCode: 'CATGRY',
+        isParent: true,
+        Path: [''],
+        childFlags: [
+          {
+            name: 'Reasonable adjustment',
+            hearingRelevant: false,
+            flagComment: false,
+            flagCode: 'CATGRY',
+            isParent: true,
+            Path: ['Party'],
+            childFlags: [
+              {
+                name: 'I need help with forms',
+                hearingRelevant: false,
+                flagComment: false,
+                flagCode: 'CATGRY',
+                isParent: true,
+                Path: ['Party', 'Reasonable adjustment'],
+                childFlags: [
+                  {
+                    name: 'Guidance on how to complete forms',
+                    hearingRelevant: false,
+                    flagComment: false,
+                    flagCode: 'RA0017',
+                    isParent: false,
+                    Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                    childFlags: []
+                  },
+                  {
+                    name: 'Support filling in forms',
+                    hearingRelevant: false,
+                    flagComment: false,
+                    flagCode: 'RA0018',
+                    isParent: false,
+                    Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                    childFlags: []
+                  },
+                  {
+                    name: 'Other',
+                    hearingRelevant: true,
+                    flagComment: true,
+                    flagCode: 'OT0001',
+                    isParent: false,
+                    Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                    childFlags: []
+                  }
+                ]
+              },
+              {
+                name: 'I need help communicating and understanding',
+                hearingRelevant: false,
+                flagComment: false,
+                flagCode: 'CATGRY',
+                childFlags: [
+                  {
+                    name: 'Sign Language Interpreter',
+                    hearingRelevant: true,
+                    flagComment: false,
+                    flagCode: 'RA0042',
+                    listOfValuesLength: 3,
+                    listOfValues: [
+                      {
+                        key: 'deafblindManualAlphabet',
+                        value: 'Deafblind manual alphabet'
+                      },
+                      {
+                        key: 'britishSignLanguage',
+                        value: 'British Sign Language (BSL)'
+                      },
+                      {
+                        key: 'americanSignLanguage',
+                        value: 'American Sign Language (ASL)'
+                      }
+                    ],
+                    isParent: false,
+                    Path: [
+                      'Party',
+                      'Reasonable adjustment',
+                      'I need help communicating and understanding'
+                    ]
+                  },
+                  {
+                    name: 'Other',
+                    hearingRelevant: true,
+                    flagComment: true,
+                    flagCode: 'OT0001',
+                    childFlags: [],
+                    isParent: false,
+                    Path: [
+                      'Party',
+                      'Reasonable adjustment',
+                      'I need help communicating and understanding'
+                    ]
+                  }
+                ],
+                isParent: true,
+                Path: [
+                  'Party',
+                  'Reasonable adjustment'
+                ]
+              }
+            ]
+          },
+          {
+            name: 'Potentially suicidal',
+            hearingRelevant: true,
+            flagComment: false,
+            flagCode: 'PF0003',
+            isParent: false,
+            Path: ['Party'],
+            childFlags: []
+          },
+          {
+            name: 'Other',
+            hearingRelevant: true,
+            flagComment: true,
+            flagCode: 'OT0001',
+            isParent: false,
+            Path: ['Party'],
+            childFlags: []
+          }
+        ]
+      }
+    ] as FlagType[];
+
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>(
       'caseFlagRefdataService', ['getCaseFlagsRefdata', 'getHmctsServiceDetails']);
     caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(of(flagTypes));
@@ -378,5 +382,29 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.cachedPath.length).toEqual(0);
     expect(component.formGroup.get('languageSearchTerm').value).toEqual('');
     expect(component.formGroup.get('manualLanguageEntry').value).toEqual('');
+  });
+
+
+
+  it('should assign name of selected flag type from the formControl' +
+    'to selectionTitles property on every onNext() call' +
+    'and it should display it ', () => {
+    const formControl = component.formGroup.get(component.flagTypeControlName);
+    const flagTypeHeadingEl = fixture.debugElement.query(By.css('#flag-type-heading'));
+
+    expect(component.selectionTitle).toEqual('');
+    formControl.setValue(flagTypes[0].childFlags[0]);
+    component.onNext();
+    const title1 = 'Reasonable adjustment';
+    expect(component.selectionTitle).toEqual(title1);
+    fixture.detectChanges();
+    expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(title1);
+
+    formControl.setValue(flagTypes[0].childFlags[0].childFlags[0]);
+    component.onNext();
+    const title2 = 'I need help with forms';
+    expect(component.selectionTitle).toEqual(title2);
+    fixture.detectChanges();
+    expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(title2);
   });
 });

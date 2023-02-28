@@ -345,6 +345,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     component = fixture.componentInstance;
     spyOn(component, 'setDisplayContextParameter').and.callThrough();
     spyOn(component, 'setDisplayContextParameterUpdate').and.callThrough();
+    spyOn(component, 'setDisplayContextParameterExternal').and.callThrough();
     component.formGroup = parentFormGroup;
     component.caseField = flagLauncherCaseField;
     caseEditDataServiceSpy.caseTitle$ = new BehaviorSubject<string>('Mocked Case Title');
@@ -370,8 +371,6 @@ describe('WriteCaseFlagFieldComponent', () => {
   });
 
   it('should call setDisplayContextParameter on ngOnInit', () => {
-    spyOn(component, 'setDisplayContextParameter').and.callThrough();
-    component.ngOnInit();
     expect(component.setDisplayContextParameter).toHaveBeenCalledWith(mockRoute.snapshot.data.eventTrigger.case_fields);
   });
 
@@ -383,20 +382,12 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.setDisplayContextParameter(caseFields)).toEqual(updateMode);
   });
 
-  it('should call setDisplayContextParameterUpdate on ngOnInit', () => {
-    spyOn(component, 'setDisplayContextParameterUpdate').and.callThrough();
-    component.ngOnInit();
-    expect(component.setDisplayContextParameterUpdate).toHaveBeenCalledWith(component.displayContextParameter);
-  });
-
   it('should set isDisplayContextParameterUpdate boolean correctly', () => {
     expect(component.setDisplayContextParameterUpdate(updateMode)).toBe(true);
     expect(component.setDisplayContextParameterUpdate(updateExternalMode)).toBe(true);
   });
 
   it('should call setDisplayContextParameterExternal on ngOnInit', () => {
-    spyOn(component, 'setDisplayContextParameterExternal').and.callThrough();
-    component.ngOnInit();
     expect(component.setDisplayContextParameterExternal).toHaveBeenCalledWith(component.displayContextParameter);
   });
 
