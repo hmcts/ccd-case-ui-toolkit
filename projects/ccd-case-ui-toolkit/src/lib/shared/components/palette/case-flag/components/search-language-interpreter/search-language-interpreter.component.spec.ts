@@ -34,6 +34,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     });
     component.flagType = {
       name: 'Language Interpreter',
+      name_cy: 'Language Interpreter Welsh Name',
       hearingRelevant: false,
       flagComment: false,
       flagCode: languageFlagCode,
@@ -46,7 +47,9 @@ describe('SearchLanguageInterpreterComponent', () => {
         { key: 'AL2', value: 'Albanian2' },
         { key: 'AL3', value: 'Albanian3' },
         { key: 'GB', value: 'English' }
-      ]
+      ],
+      defaultStatus: 'Available',
+      externallyAvailable: false
     };
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 80-character text input
