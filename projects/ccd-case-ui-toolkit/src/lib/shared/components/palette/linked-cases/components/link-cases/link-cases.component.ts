@@ -7,10 +7,10 @@ import { LovRefDataModel } from '../../../../../services/common-data-service/com
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
 import {
-	CaseLink,
-	CCDCaseLinkType,
-	LinkCaseReason,
-	LinkReason
+  CaseLink,
+  CCDCaseLinkType,
+  LinkCaseReason,
+  LinkReason
 } from '../../domain/linked-cases.model';
 import { LinkedCasesErrorMessages, LinkedCasesPages, Patterns } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
@@ -30,11 +30,13 @@ export class LinkCasesComponent implements OnInit {
   public selectedCases: CaseLink[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
+  public caseReasonCommentsError: string;
   public caseSelectionError: string;
   public noSelectedCaseError: string;
   public caseId: string;
   public caseName: string;
-  public linkCaseReasons: LovRefDataModel[] = [];
+  public linkCaseReasons: LovRefDataModel[];
+  public showComments = false;
   private readonly ISO_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
   constructor(
@@ -60,6 +62,7 @@ export class LinkCasesComponent implements OnInit {
     this.linkCaseForm = this.fb.group({
       caseNumber: ['', [Validators.minLength(16), this.validatorsUtils.regexPattern(Patterns.CASE_REF)]],
       reasonType: this.getReasonTypeFormArray,
+      otherDescription: ['', [Validators.maxLength(100)]]
     });
   }
 
@@ -81,9 +84,15 @@ export class LinkCasesComponent implements OnInit {
     );
   }
 
+  public toggleLinkCaseReasonOtherComments(event: any): void {
+    this.linkCaseReasons.find(reason => reason.value_en === event.target.value).selected = event.target.checked;
+    this.showComments = this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected;
+  }
+
   public submitCaseInfo(): void {
     this.errorMessages = [];
     this.caseReasonError = null;
+    this.caseReasonCommentsError = null;
     this.caseNumberError = null;
     this.caseSelectionError = null;
     this.noSelectedCaseError = null;
@@ -91,7 +100,8 @@ export class LinkCasesComponent implements OnInit {
       this.linkCaseForm.valid &&
       !this.isCaseSelected(this.selectedCases) &&
       !this.isCaseSelected(this.linkedCasesService.linkedCases) &&
-      !this.isCaseSelectedSameAsCurrentCase()
+      !this.isCaseSelectedSameAsCurrentCase() &&
+      !this.isOtherOptionSelectedButOtherDescriptionNotEntered()
     ) {
       this.getCaseInfo();
     } else {
@@ -113,6 +123,10 @@ export class LinkCasesComponent implements OnInit {
     return this.linkCaseForm.value.caseNumber.split('-').join('') === this.linkedCasesService.caseId.split('-').join('');
   }
 
+  private isOtherOptionSelectedButOtherDescriptionNotEntered(): boolean {
+    return this.showComments && this.linkCaseForm.value.otherDescription.trim().length === 0;
+  }
+
   public showErrorInfo(): void {
     if (this.linkCaseForm.controls.caseNumber.invalid) {
       this.caseNumberError = LinkedCasesErrorMessages.CaseNumberError;
@@ -129,6 +143,25 @@ export class LinkCasesComponent implements OnInit {
         description: LinkedCasesErrorMessages.ReasonSelectionError,
         fieldId: 'caseReason',
       });
+    }
+    if (this.linkCaseForm.controls.reasonType.valid
+        && this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected) {
+      if (this.linkCaseForm.controls.otherDescription.value.trim().length === 0) {
+        this.caseReasonCommentsError = LinkedCasesErrorMessages.otherDescriptionError;
+        this.errorMessages.push({
+          title: 'dummy-case-reason-comments',
+          description: LinkedCasesErrorMessages.otherDescriptionError,
+          fieldId: 'otherDescription',
+        });
+      }
+      if (this.linkCaseForm.controls.otherDescription.value.trim().length > 100) {
+        this.caseReasonCommentsError = LinkedCasesErrorMessages.otherDescriptionMaxLengthError;
+        this.errorMessages.push({
+          title: 'dummy-case-reason-comments',
+          description: LinkedCasesErrorMessages.otherDescriptionMaxLengthError,
+          fieldId: 'otherDescription',
+        });
+      }
     }
     if (this.isCaseSelected(this.selectedCases)) {
       this.caseSelectionError = LinkedCasesErrorMessages.CaseProposedError;
@@ -186,6 +219,7 @@ export class LinkCasesComponent implements OnInit {
           }
           this.linkedCasesService.caseFieldValue.push({ id: caseView.case_id.toString(), value: ccdApiCaseLinkData });
           this.selectedCases.push(caseLink);
+          this.linkCaseReasons.forEach(reason => reason.selected = false);
           this.initForm();
           this.emitLinkedCasesState(false);
         },
@@ -218,7 +252,10 @@ export class LinkCasesComponent implements OnInit {
       (selectedReason: LinkCaseReason) => {
         if (selectedReason.selected) {
           selectedReasons.push({
-            reasonCode: selectedReason.key
+            Reason: selectedReason.key,
+            OtherDescription: selectedReason.value_en === 'Other'
+              ? this.linkCaseForm.controls.otherDescription.value
+              : ''
           } as LinkReason);
         }
       }
@@ -234,6 +271,9 @@ export class LinkCasesComponent implements OnInit {
           selectedReasons.push({
             value: {
               Reason: selectedReason.key,
+              OtherDescription: selectedReason.value_en === 'Other'
+                ? this.linkCaseForm.controls.otherDescription.value
+                : ''
             }
           });
         }

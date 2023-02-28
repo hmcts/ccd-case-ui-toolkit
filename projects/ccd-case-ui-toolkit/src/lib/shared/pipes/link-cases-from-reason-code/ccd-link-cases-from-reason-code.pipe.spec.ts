@@ -3,12 +3,12 @@ import { of } from 'rxjs';
 import { LinkedCasesService } from '../../components/palette/linked-cases/services';
 import { JurisdictionService, SearchService } from '../../services';
 import { LovRefDataByServiceModel } from '../../services/common-data-service/common-data-service';
-import { LinkCasesReasonValuePipe } from './ccd-link-cases-reason-code.pipe';
+import { LinkCasesFromReasonValuePipe } from './ccd-link-cases-from-reason-code.pipe';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('LinkCasesReasonValuePipe', () => {
+describe('LinkCasesFromReasonValuePipe', () => {
   const searchService: any = undefined;
-  let linkCasesReasonValuePipe: LinkCasesReasonValuePipe;
+  let linkCasesFromReasonValuePipe: LinkCasesFromReasonValuePipe;
   const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
   jurisdictionService.getJurisdictions.and.returnValue(of());
   const linkedCasesService = new LinkedCasesService(jurisdictionService, null);
@@ -62,23 +62,23 @@ describe('LinkCasesReasonValuePipe', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        {provide: LinkedCasesService, useValue: linkedCasesService},
+        { provide: LinkedCasesService, useValue: linkedCasesService },
         { provide: SearchService, useValue: searchService }
       ]
     });
-    linkCasesReasonValuePipe = new LinkCasesReasonValuePipe(linkedCasesService);
+    linkCasesFromReasonValuePipe = new LinkCasesFromReasonValuePipe(linkedCasesService);
     linkedCasesService.linkCaseReasons = linkCaseReasons.list_of_values;
   });
 
   it('should transform correct reason value when valid reason code is being passsed', () => {
-    expect(linkCasesReasonValuePipe.transform({Reason: 'CLR002'})).toBe('Bail');
+    expect(linkCasesFromReasonValuePipe.transform({reasonCode: 'CLR002'})).toBe('Bail');
   });
 
   it('should transform as undefined when invalid reason code is being passsed', () => {
-    expect(linkCasesReasonValuePipe.transform({Reason: 'CLR005'})).toBe(undefined);
+    expect(linkCasesFromReasonValuePipe.transform({reasonCode: 'CLR005'})).toBe(undefined);
   });
 
   it('should transform as undefined when no reason code is being passsed', () => {
-    expect(linkCasesReasonValuePipe.transform({Reason: ''})).toBe(undefined);
+    expect(linkCasesFromReasonValuePipe.transform({reasonCode: ''})).toBe(undefined);
   });
 });

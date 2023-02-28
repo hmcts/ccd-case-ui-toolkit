@@ -62,8 +62,7 @@ export class LinkedCasesService {
       caseType: this.mapLookupIDToValueFromJurisdictions('CASE_TYPE', esSearchCasesResponse.case_fields['[CASE_TYPE]']),
       service: this.mapLookupIDToValueFromJurisdictions('JURISDICTION', esSearchCasesResponse.case_fields['[JURISDICTION]']),
       state: this.mapLookupIDToValueFromJurisdictions('STATE', esSearchCasesResponse.case_fields['[STATE]']),
-      reasons: caseInfo.value && caseInfo.value.ReasonForLink &&
-        caseInfo.value.ReasonForLink.map(reason => reason.value && reason.value.Reason),
+      reasons: caseInfo?.value?.ReasonForLink
     };
   }
 
@@ -97,7 +96,7 @@ export class LinkedCasesService {
             unlink: false,
             reasons: item.reasons && item.reasons.map(reason => {
               return {
-                reasonCode: reason
+                Reason: reason
               } as LinkReason;
             }),
           } as CaseLink;

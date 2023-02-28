@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.10-linked-cases-other-description
+**EUI-7246** Linked cases other description
+
 ### Version 6.10.10-linked-cases-and-case-file-view
 **EUI-7676** Configure linked cases
 **EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
