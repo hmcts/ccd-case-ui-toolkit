@@ -385,18 +385,18 @@ describe('SelectFlagTypeComponent', () => {
   it('should assign name of selected flag type from the formControl' +
     'to selectionTitles property on every onNext() call' +
     'and it should display it ', () => {
-    const formControl = component.formGroup.get(component.flagTypeControlName);
+    const flagTypeformControl = component.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
     const flagTypeHeadingEl = fixture.debugElement.query(By.css('#flag-type-heading'));
 
     expect(component.selectionTitle).toEqual('');
-    formControl.setValue(flagTypes[0].childFlags[0]);
+    flagTypeformControl.setValue(flagTypes[0].childFlags[0]);
     component.onNext();
     const title1 = 'Reasonable adjustment';
     expect(component.selectionTitle).toEqual(title1);
     fixture.detectChanges();
     expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(title1);
 
-    formControl.setValue(flagTypes[0].childFlags[0].childFlags[0]);
+    flagTypeformControl.setValue(flagTypes[0].childFlags[0].childFlags[0]);
     component.onNext();
     const title2 = 'I need help with forms';
     expect(component.selectionTitle).toEqual(title2);
