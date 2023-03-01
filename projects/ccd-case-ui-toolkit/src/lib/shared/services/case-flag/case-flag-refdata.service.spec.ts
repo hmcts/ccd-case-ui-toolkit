@@ -132,6 +132,16 @@ describe('Case Flag Refdata Service', () => {
     req.flush(dummyFlagsData);
   });
 
+  it('should retrieve the external Case Flags reference data for the given service ID if externalFlagsOnly is true', () => {
+    service.getCaseFlagsRefdata('BBA3', null, false, true).subscribe({
+      next: flagTypes => expect(flagTypes).toEqual(dummyFlagsData.flags[0].FlagDetails)
+    });
+
+    const req = httpMock.expectOne(`${caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')}?welsh-required=N&external-flags-only=true`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(dummyFlagsData);
+  });
+
   it('should return null if caseFlagsRefdataApiUrl in appConfig is null', () => {
     appConfig.getCaseFlagsRefdataApiUrl.and.returnValue(null);
     service.getCaseFlagsRefdata('BBA3').subscribe({

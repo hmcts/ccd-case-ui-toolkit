@@ -326,7 +326,6 @@ describe('WriteCaseFlagFieldComponent', () => {
       }
     };
 
-
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -383,13 +382,13 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.setDisplayContextParameter(caseFields)).toEqual(updateMode);
   });
 
-  it('should call setDisplayContextParameterUpdate on ngOnInit', () => {
-    expect(component.setDisplayContextParameterUpdate).toHaveBeenCalledWith(component.displayContextParameter);
-  });
-
   it('should set isDisplayContextParameterUpdate boolean correctly', () => {
     expect(component.setDisplayContextParameterUpdate(updateMode)).toBe(true);
     expect(component.setDisplayContextParameterUpdate(updateExternalMode)).toBe(true);
+  });
+
+  it('should call setDisplayContextParameterUpdate on ngOnInit', () => {
+    expect(component.setDisplayContextParameterUpdate).toHaveBeenCalledWith(component.displayContextParameter);
   });
 
   it('should call setDisplayContextParameterExternal on ngOnInit', () => {
@@ -565,13 +564,13 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
     component.caseFlagParentFormGroup = new FormGroup({
-      flagComments: new FormControl('An updated comment')
+      flagComment: new FormControl('An updated comment')
     });
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
     // Check the comments have been applied and the modified date/time has been set
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
-      component.caseFlagParentFormGroup.value.flagComments);
+      component.caseFlagParentFormGroup.value.flagComment);
     expect(component.flagsData[0].caseField.value.details[0].value.dateTimeModified).toBeTruthy();
     // Check all other existing changes have been discarded (i.e. values restored from corresponding values in formatted_value)
     expect(component.flagsData[0].caseField.value.details[0].value.status).toEqual(CaseFlagStatus.ACTIVE);
@@ -771,7 +770,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       flagType: new FormControl(null),
       languageSearchTerm: new FormControl(),
       manualLanguageEntry: new FormControl(),
-      otherFlagTypeDescription: new FormControl(),
+      otherDescription: new FormControl(),
       flagComments: new FormControl(),
       statusReason: new FormControl(),
       selectedStatus: new FormControl()
@@ -799,7 +798,7 @@ describe('WriteCaseFlagFieldComponent', () => {
           value: 'British Sign Language'
         },
         manualLanguageEntry: null,
-        otherFlagTypeDescription: 'A flag type',
+        otherDescription: 'A flag type',
         flagComments: 'Some comments',
         statusReason: 'A reason for the status',
         selectedStatus: 'ACTIVE'
@@ -811,7 +810,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(newFlagDetailInstance.name_cy).toEqual(component.caseFlagParentFormGroup.value.flagType.name_cy);
     expect(newFlagDetailInstance.subTypeValue).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.value);
     expect(newFlagDetailInstance.subTypeKey).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.key);
-    expect(newFlagDetailInstance.otherDescription).toEqual(component.caseFlagParentFormGroup.value.otherFlagTypeDescription);
+    expect(newFlagDetailInstance.otherDescription).toEqual(component.caseFlagParentFormGroup.value.otherDescription);
     expect(newFlagDetailInstance.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
     expect(newFlagDetailInstance.flagUpdateComment).toEqual(component.caseFlagParentFormGroup.value.statusReason);
     expect(newFlagDetailInstance.dateTimeCreated).toBeTruthy();
@@ -825,7 +824,7 @@ describe('WriteCaseFlagFieldComponent', () => {
         flagType: {...flagType, hearingRelevantFlag: false, externallyAvailable: true},
         languageSearchTerm: null,
         manualLanguageEntry: 'TypeScript',
-        otherFlagTypeDescription: null,
+        otherDescription: null,
         flagComments: null,
         statusReason: null,
         selectedStatus: 'REQUESTED'
@@ -845,7 +844,7 @@ describe('WriteCaseFlagFieldComponent', () => {
         flagType,
         languageSearchTerm: null,
         manualLanguageEntry: null,
-        otherFlagTypeDescription: null,
+        otherDescription: null,
         flagComments: null,
         statusReason: null,
         selectedStatus: 'ACTIVE'

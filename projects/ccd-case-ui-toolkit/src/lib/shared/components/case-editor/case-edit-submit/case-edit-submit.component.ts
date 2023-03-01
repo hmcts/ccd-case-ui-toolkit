@@ -20,6 +20,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier } from '../services';
+import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 
 // @dynamic
 @Component({
@@ -44,7 +45,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public task: Task;
   public eventCompletionParams: EventCompletionParams;
   public eventCompletionChecksRequired = false;
-  public isCaseFlagSubmission = false;
+  public caseFlagField: CaseField;
   public pageTitle: string;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
@@ -95,9 +96,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.contextFields = this.getCaseFields();
     // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
     // a FlagLauncher field in the event trigger
-    this.isCaseFlagSubmission = this.eventTrigger.case_fields.some(
+    this.caseFlagField = this.eventTrigger.case_fields.find(
       caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
-    this.pageTitle = this.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
+    const isCaseFlagExternalMode = this.caseFlagField?.display_context_parameter === '#ARGUMENT(UPDATE,EXTERNAL)' ||
+      this.caseFlagField?.display_context_parameter === '#ARGUMENT(CREATE,EXTERNAL)';
+    this.pageTitle = this.caseFlagField ? (isCaseFlagExternalMode ? CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST : CaseEditSubmitTitles.REVIEW_FLAG_DETAILS)
+      : CaseEditSubmitTitles.CHECK_YOUR_ANSWERS;
   }
 
   public ngOnDestroy(): void {
@@ -159,7 +163,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
     // If this is a Case Flag submission (and thus a FlagLauncher field is present in the event trigger), the flag
     // details data needs populating for each Flags field, then the FlagLauncher field needs removing
-    if (this.isCaseFlagSubmission) {
+    if (this.caseFlagField) {
       this.formValueService.populateFlagDetailsFromCaseFields(caseEventData.data, this.eventTrigger.case_fields);
       this.formValueService.removeFlagLauncherField(caseEventData.data, this.eventTrigger.case_fields);
     }

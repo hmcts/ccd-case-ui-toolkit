@@ -20,9 +20,9 @@
           <!-- All parent flag types have the same flagCode of "CATGRY", so each radio button value needs to be made
             unique by appending the index - radio buttons shouldn't share the same value.
             It is OK to amend flagCode this way because parent flag types cannot be selected as a final value -->
-          <input class="govuk-radios__input" id="flag-type-{{i}}" [name]="flagTypeControlName"
+          <input class="govuk-radios__input" id="flag-type-{{i}}" [name]="caseFlagFormField.FLAG_TYPE"
             type="radio" [value]="flagType"
-            [formControlName]="flagTypeControlName"/>
+            [formControlName]="caseFlagFormField.FLAG_TYPE"/>
           <label class="govuk-label govuk-radios__label" for="flag-type-{{i}}">{{flagType.name}}</label>
         </div>
         <div class="govuk-radios__conditional" *ngIf="otherFlagTypeSelected" id="conditional-flagType">
@@ -33,8 +33,8 @@
             </div>
             <input class="govuk-input govuk-!-width-one-half"
               [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
-              id="other-flag-type-description" [name]="descriptionControlName" type="text"
-              [formControlName]="descriptionControlName"/>
+              id="other-flag-type-description" [name]="caseFlagFormField.OTHER_FLAG_DESCRIPTION" type="text"
+              [formControlName]="caseFlagFormField.OTHER_FLAG_DESCRIPTION"/>
           </div>
         </div>
       </div>
