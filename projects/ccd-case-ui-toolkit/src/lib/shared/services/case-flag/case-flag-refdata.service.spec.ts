@@ -151,8 +151,28 @@ describe('Case Flag Refdata Service', () => {
     req.flush(dummyServiceDetails);
   });
 
-  it('should retrieve the HMCTS service details for all services', () => {
+  it('should retrieve the HMCTS service details for all services when no service name specified', () => {
     service.getHmctsServiceDetailsByServiceName().subscribe({
+      next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
+    });
+
+    const req = httpMock.expectOne(`${locationRefApiUrl}/orgServices`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(dummyServiceDetails);
+  });
+
+  it('should retrieve the HMCTS service details for the given case type', () => {
+    service.getHmctsServiceDetailsByCaseType('testCaseType').subscribe({
+      next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
+    });
+
+    const req = httpMock.expectOne(`${locationRefApiUrl}/orgServices?ccdCaseType=testCaseType`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(dummyServiceDetails);
+  });
+
+  it('should retrieve the HMCTS service details for all services when no case type specified', () => {
+    service.getHmctsServiceDetailsByCaseType().subscribe({
       next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
     });
 
