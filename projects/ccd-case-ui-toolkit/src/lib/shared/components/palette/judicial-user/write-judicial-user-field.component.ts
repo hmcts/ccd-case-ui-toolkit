@@ -54,15 +54,12 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
       this.filteredJudicialUsers = judicialUsers;
     });
 
-    console.log('CASE FIELD', this.caseField.value);
-
     if (this.caseField.value?.personalCode) {
       this.loadJudicialUser(this.caseField.value.personalCode);
     }
   }
 
   public filterJudicialUsers(searchTerm: string): Observable<JudicialUserModel[]> {
-    console.log('SEARCH TERM', searchTerm);
     return this.caseFlagRefDataService.getHmctsServiceDetailsByCaseType(this.caseType).pipe(
       // If an error occurs retrieving HMCTS service details by case type ID, try by service name instead
       catchError(_ => this.caseFlagRefDataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
@@ -84,7 +81,6 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
 
   public setJurisdictionAndCaseType(): void {
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
-    console.log('CASE INFO STR', caseInfoStr);
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       this.jurisdiction = caseInfo?.jurisdiction;

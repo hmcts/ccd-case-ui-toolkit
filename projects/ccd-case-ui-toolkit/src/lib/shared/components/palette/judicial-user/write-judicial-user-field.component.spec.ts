@@ -86,8 +86,7 @@ const SERVICE_DETAILS = [
   }
 ] as HmctsServiceDetail[];
 
-
-fdescribe('WriteJudicialUserFieldComponent', () => {
+describe('WriteJudicialUserFieldComponent', () => {
   let fixture: ComponentFixture<WriteJudicialUserFieldComponent>;
   let component: WriteJudicialUserFieldComponent;
   let httpService: HttpService;
@@ -172,11 +171,10 @@ fdescribe('WriteJudicialUserFieldComponent', () => {
   it('should search for judicial users', () => {
     component.jurisdiction = 'BBA3';
     component.caseType = 'Benefit';
-    component.idamIdFormControl.setValue('Jac');
     fixture.detectChanges();
-    // component.filterJudicialUsers('Jac');
     expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('Benefit');
-    expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalledWith('Jac', 'BBA3');
+    expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalled();
+    expect(component.idamIdFormControl.value).toEqual('Jasmine Chiswell (jasmine.chiswell@judicial.com)');
   });
 
   it('should set the form control values when a judicial user is selected', () => {
