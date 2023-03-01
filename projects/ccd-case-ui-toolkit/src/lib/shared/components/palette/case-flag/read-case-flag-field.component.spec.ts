@@ -369,6 +369,7 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
+    caseFlagStateServiceSpy.formGroup = new FormGroup({});
     caseFlagStateServiceSpy.pageLocation = '../createCaseFlag/createCaseFlagCaseFlagFormPage';
 
     TestBed.configureTestingModule({

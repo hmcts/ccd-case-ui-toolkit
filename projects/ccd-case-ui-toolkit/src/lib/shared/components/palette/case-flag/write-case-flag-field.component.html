@@ -55,5 +55,11 @@
       <ccd-update-flag [formGroup]="caseFlagParentFormGroup" [selectedFlag]="selectedFlag"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-update-flag>
     </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION">
+      <ccd-update-flag-welsh-translation-form
+        [formGroup]="caseFlagParentFormGroup" [selectedFlag]="selectedFlag"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
+      ></ccd-update-flag-welsh-translation-form>
+    </ng-container>
   </div>
 </div>

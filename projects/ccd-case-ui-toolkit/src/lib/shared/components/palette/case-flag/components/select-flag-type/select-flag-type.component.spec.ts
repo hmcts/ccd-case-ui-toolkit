@@ -9,6 +9,7 @@ import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { CaseFlagFormFields } from '../../enums/case-flag-form-fields.enum';
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
 describe('SelectFlagTypeComponent', () => {
@@ -177,11 +178,8 @@ describe('SelectFlagTypeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectFlagTypeComponent);
     component = fixture.componentInstance;
-    component.formGroup = new FormGroup({
-      flagType: new FormControl(''),
-      otherFlagTypeDescription: new FormControl('')
-    });
     component.jurisdiction = sscsJurisdiction;
+    component.formGroup = new FormGroup({});
     fixture.detectChanges();
   });
 
@@ -291,8 +289,8 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
     fixture.detectChanges();
-    const otherFlagTypeDescriptionElement: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
-    expect(otherFlagTypeDescriptionElement).toBeTruthy();
+    const otherDescription: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
+    expect(otherDescription).toBeTruthy();
     nativeElement.querySelector('.button').click();
     fixture.detectChanges();
     const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
@@ -303,11 +301,11 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
     fixture.detectChanges();
-    const otherFlagTypeDescriptionElement: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
-    expect(otherFlagTypeDescriptionElement).toBeTruthy();
+    const otherDescription: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
+    expect(otherDescription).toBeTruthy();
     fixture.detectChanges();
-    otherFlagTypeDescriptionElement.value = 'OtherFlagTypeDescriptionTestWithMoreThanEightyCharactersShouldFailTheValidationAsExpected';
-    otherFlagTypeDescriptionElement.dispatchEvent(new Event('input'));
+    otherDescription.value = 'OtherFlagTypeDescriptionTestWithMoreThanEightyCharactersShouldFailTheValidationAsExpected';
+    otherDescription.dispatchEvent(new Event('input'));
     nativeElement.querySelector('.button').click();
     fixture.detectChanges();
     const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
@@ -321,7 +319,7 @@ describe('SelectFlagTypeComponent', () => {
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags[0].childFlags);
-    expect(component.formGroup.get(component.flagTypeControlName).value).toEqual(null);
+    expect(component.formGroup.get(CaseFlagFormFields.FLAG_TYPE).value).toEqual(null);
     expect(component.selectedFlagType).toBeNull();
   });
 
@@ -366,17 +364,17 @@ describe('SelectFlagTypeComponent', () => {
     'and on new value it should clear descriptionControl value,' +
     'clear languageSearchTerm, clear manualLanguageEntry and empty cachedPath', () => {
     component.formGroup = new FormGroup({
-      [component.flagTypeControlName]: new FormControl(''),
-      [component.descriptionControlName]: new FormControl(''),
+      [CaseFlagFormFields.FLAG_TYPE]: new FormControl(''),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl(''),
       [SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM] : new FormControl('test1'),
       [SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY] : new FormControl('test2')
     });
 
     component.cachedPath = [flagTypes[0], flagTypes[0][1]];
     component.ngOnInit();
-    component.formGroup.get(component.flagTypeControlName).setValue('testValue');
+    component.formGroup.get(CaseFlagFormFields.FLAG_TYPE).setValue('testValue');
 
-    expect(component.formGroup.get(component.descriptionControlName).value).toEqual('');
+    expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value).toEqual('');
     expect(component.cachedPath.length).toEqual(0);
     expect(component.formGroup.get('languageSearchTerm').value).toEqual('');
     expect(component.formGroup.get('manualLanguageEntry').value).toEqual('');
