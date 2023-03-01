@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../services/case-flag';
@@ -8,142 +9,15 @@ import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { CaseFlagFormFields } from '../../enums/case-flag-form-fields.enum';
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
 describe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;
   let fixture: ComponentFixture<SelectFlagTypeComponent>;
   let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
-  const flagTypes = [
-    {
-      name: 'Party',
-      hearingRelevant: false,
-      flagComment: false,
-      flagCode: 'CATGRY',
-      isParent: true,
-      Path: [''],
-      childFlags: [
-        {
-          name: 'Reasonable adjustment',
-          hearingRelevant: false,
-          flagComment: false,
-          flagCode: 'CATGRY',
-          isParent: true,
-          Path: ['Party'],
-          childFlags: [
-            {
-              name: 'I need help with forms',
-              hearingRelevant: false,
-              flagComment: false,
-              flagCode: 'CATGRY',
-              isParent: true,
-              Path: ['Party', 'Reasonable adjustment'],
-              childFlags: [
-                {
-                  name: 'Guidance on how to complete forms',
-                  hearingRelevant: false,
-                  flagComment: false,
-                  flagCode: 'RA0017',
-                  isParent: false,
-                  Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
-                  childFlags: []
-                },
-                {
-                  name: 'Support filling in forms',
-                  hearingRelevant: false,
-                  flagComment: false,
-                  flagCode: 'RA0018',
-                  isParent: false,
-                  Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
-                  childFlags: []
-                },
-                {
-                  name: 'Other',
-                  hearingRelevant: true,
-                  flagComment: true,
-                  flagCode: 'OT0001',
-                  isParent: false,
-                  Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
-                  childFlags: []
-                }
-              ]
-            },
-            {
-              name: 'I need help communicating and understanding',
-              hearingRelevant: false,
-              flagComment: false,
-              flagCode: 'CATGRY',
-              childFlags: [
-                {
-                  name: 'Sign Language Interpreter',
-                  hearingRelevant: true,
-                  flagComment: false,
-                  flagCode: 'RA0042',
-                  listOfValuesLength: 3,
-                  listOfValues: [
-                    {
-                      key: 'deafblindManualAlphabet',
-                      value: 'Deafblind manual alphabet'
-                    },
-                    {
-                      key: 'britishSignLanguage',
-                      value: 'British Sign Language (BSL)'
-                    },
-                    {
-                      key: 'americanSignLanguage',
-                      value: 'American Sign Language (ASL)'
-                    }
-                  ],
-                  isParent: false,
-                  Path: [
-                    'Party',
-                    'Reasonable adjustment',
-                    'I need help communicating and understanding'
-                  ]
-                },
-                {
-                  name: 'Other',
-                  hearingRelevant: true,
-                  flagComment: true,
-                  flagCode: 'OT0001',
-                  childFlags: [],
-                  isParent: false,
-                  Path: [
-                    'Party',
-                    'Reasonable adjustment',
-                    'I need help communicating and understanding'
-                  ]
-                }
-              ],
-              isParent: true,
-              Path: [
-                'Party',
-                'Reasonable adjustment'
-              ]
-            }
-          ]
-        },
-        {
-          name: 'Potentially suicidal',
-          hearingRelevant: true,
-          flagComment: false,
-          flagCode: 'PF0003',
-          isParent: false,
-          Path: ['Party'],
-          childFlags: []
-        },
-        {
-          name: 'Other',
-          hearingRelevant: true,
-          flagComment: true,
-          flagCode: 'OT0001',
-          isParent: false,
-          Path: ['Party'],
-          childFlags: []
-        }
-      ]
-    }
-  ] as FlagType[];
+  let flagTypes: FlagType[];
+
   const serviceDetails = [
     {
       ccd_service_name: 'SSCS',
@@ -154,7 +28,138 @@ describe('SelectFlagTypeComponent', () => {
   ] as HmctsServiceDetail[];
   const sscsJurisdiction = 'SSCS';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
+    flagTypes = [
+      {
+        name: 'Party',
+        hearingRelevant: false,
+        flagComment: false,
+        flagCode: 'CATGRY',
+        isParent: true,
+        Path: [''],
+        childFlags: [
+          {
+            name: 'Reasonable adjustment',
+            hearingRelevant: false,
+            flagComment: false,
+            flagCode: 'CATGRY',
+            isParent: true,
+            Path: ['Party'],
+            childFlags: [
+              {
+                name: 'I need help with forms',
+                hearingRelevant: false,
+                flagComment: false,
+                flagCode: 'CATGRY',
+                isParent: true,
+                Path: ['Party', 'Reasonable adjustment'],
+                childFlags: [
+                  {
+                    name: 'Guidance on how to complete forms',
+                    hearingRelevant: false,
+                    flagComment: false,
+                    flagCode: 'RA0017',
+                    isParent: false,
+                    Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                    childFlags: []
+                  },
+                  {
+                    name: 'Support filling in forms',
+                    hearingRelevant: false,
+                    flagComment: false,
+                    flagCode: 'RA0018',
+                    isParent: false,
+                    Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                    childFlags: []
+                  },
+                  {
+                    name: 'Other',
+                    hearingRelevant: true,
+                    flagComment: true,
+                    flagCode: 'OT0001',
+                    isParent: false,
+                    Path: ['Party', 'Reasonable adjustment', 'I need help with forms'],
+                    childFlags: []
+                  }
+                ]
+              },
+              {
+                name: 'I need help communicating and understanding',
+                hearingRelevant: false,
+                flagComment: false,
+                flagCode: 'CATGRY',
+                childFlags: [
+                  {
+                    name: 'Sign Language Interpreter',
+                    hearingRelevant: true,
+                    flagComment: false,
+                    flagCode: 'RA0042',
+                    listOfValuesLength: 3,
+                    listOfValues: [
+                      {
+                        key: 'deafblindManualAlphabet',
+                        value: 'Deafblind manual alphabet'
+                      },
+                      {
+                        key: 'britishSignLanguage',
+                        value: 'British Sign Language (BSL)'
+                      },
+                      {
+                        key: 'americanSignLanguage',
+                        value: 'American Sign Language (ASL)'
+                      }
+                    ],
+                    isParent: false,
+                    Path: [
+                      'Party',
+                      'Reasonable adjustment',
+                      'I need help communicating and understanding'
+                    ]
+                  },
+                  {
+                    name: 'Other',
+                    hearingRelevant: true,
+                    flagComment: true,
+                    flagCode: 'OT0001',
+                    childFlags: [],
+                    isParent: false,
+                    Path: [
+                      'Party',
+                      'Reasonable adjustment',
+                      'I need help communicating and understanding'
+                    ]
+                  }
+                ],
+                isParent: true,
+                Path: [
+                  'Party',
+                  'Reasonable adjustment'
+                ]
+              }
+            ]
+          },
+          {
+            name: 'Potentially suicidal',
+            hearingRelevant: true,
+            flagComment: false,
+            flagCode: 'PF0003',
+            isParent: false,
+            Path: ['Party'],
+            childFlags: []
+          },
+          {
+            name: 'Other',
+            hearingRelevant: true,
+            flagComment: true,
+            flagCode: 'OT0001',
+            isParent: false,
+            Path: ['Party'],
+            childFlags: []
+          }
+        ]
+      }
+    ] as FlagType[];
+
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>(
       'caseFlagRefdataService', ['getCaseFlagsRefdata', 'getHmctsServiceDetails']);
     caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(of(flagTypes));
@@ -173,11 +178,9 @@ describe('SelectFlagTypeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectFlagTypeComponent);
     component = fixture.componentInstance;
-    component.formGroup = new FormGroup({
-      flagType: new FormControl(''),
-      otherFlagTypeDescription: new FormControl('')
-    });
     component.jurisdiction = sscsJurisdiction;
+    component.formGroup = new FormGroup({});
+    component.isDisplayContextParameterExternal = false;
     fixture.detectChanges();
   });
 
@@ -283,12 +286,31 @@ describe('SelectFlagTypeComponent', () => {
     expect(errorMessageElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED);
   });
 
+  it('should fail if a flag type with children is selected and then no option is selected on next screen', () => {
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    const nativeElement = fixture.debugElement.nativeElement;
+    component.formGroup.get(component.flagTypeControlName).setValue(flagTypes[0].childFlags[0]);
+    // Need twice - one for first selection which should pass validation and the second will fail
+    nativeElement.querySelector('.button').click();
+    expect(component.errorMessages).toEqual([]);
+    nativeElement.querySelector('.button').click();
+    fixture.detectChanges();
+
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED,
+      fieldId: 'conditional-radios-list'
+    });
+    const errorMessageElement = nativeElement.querySelector('#flag-type-not-selected-error-message');
+    expect(errorMessageElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED);
+  });
+
   it('should fail validation if "Other" flag type selected and description not entered', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
     fixture.detectChanges();
-    const otherFlagTypeDescriptionElement: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
-    expect(otherFlagTypeDescriptionElement).toBeTruthy();
+    const otherDescription: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
+    expect(otherDescription).toBeTruthy();
     nativeElement.querySelector('.button').click();
     fixture.detectChanges();
     const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
@@ -299,11 +321,11 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
     fixture.detectChanges();
-    const otherFlagTypeDescriptionElement: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
-    expect(otherFlagTypeDescriptionElement).toBeTruthy();
+    const otherDescription: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
+    expect(otherDescription).toBeTruthy();
     fixture.detectChanges();
-    otherFlagTypeDescriptionElement.value = 'OtherFlagTypeDescriptionTestWithMoreThanEightyCharactersShouldFailTheValidationAsExpected';
-    otherFlagTypeDescriptionElement.dispatchEvent(new Event('input'));
+    otherDescription.value = 'OtherFlagTypeDescriptionTestWithMoreThanEightyCharactersShouldFailTheValidationAsExpected';
+    otherDescription.dispatchEvent(new Event('input'));
     nativeElement.querySelector('.button').click();
     fixture.detectChanges();
     const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
@@ -317,14 +339,14 @@ describe('SelectFlagTypeComponent', () => {
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags[0].childFlags);
-    expect(component.formGroup.get(component.flagTypeControlName).value).toEqual(null);
+    expect(component.formGroup.get(CaseFlagFormFields.FLAG_TYPE).value).toEqual(null);
     expect(component.selectedFlagType).toBeNull();
   });
 
   it('should retrieve the list of flag types for the specified jurisdiction', () => {
     component.ngOnInit();
     expect(caseFlagRefdataService.getHmctsServiceDetails).toHaveBeenCalledWith(sscsJurisdiction);
-    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY, false, component.isDisplayContextParameterExternal);
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
   });
 
@@ -362,19 +384,41 @@ describe('SelectFlagTypeComponent', () => {
     'and on new value it should clear descriptionControl value,' +
     'clear languageSearchTerm, clear manualLanguageEntry and empty cachedPath', () => {
     component.formGroup = new FormGroup({
-      [component.flagTypeControlName]: new FormControl(''),
-      [component.descriptionControlName]: new FormControl(''),
+      [CaseFlagFormFields.FLAG_TYPE]: new FormControl(''),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl(''),
       [SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM] : new FormControl('test1'),
       [SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY] : new FormControl('test2')
     });
 
     component.cachedPath = [flagTypes[0], flagTypes[0][1]];
     component.ngOnInit();
-    component.formGroup.get(component.flagTypeControlName).setValue('testValue');
+    component.formGroup.get(CaseFlagFormFields.FLAG_TYPE).setValue('testValue');
 
-    expect(component.formGroup.get(component.descriptionControlName).value).toEqual('');
+    expect(component.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value).toEqual('');
     expect(component.cachedPath.length).toEqual(0);
     expect(component.formGroup.get('languageSearchTerm').value).toEqual('');
     expect(component.formGroup.get('manualLanguageEntry').value).toEqual('');
+  });
+
+  it('should assign name of selected flag type from the formControl' +
+    'to selectionTitles property on every onNext() call' +
+    'and it should display it ', () => {
+    const flagTypeformControl = component.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
+    const flagTypeHeadingEl = fixture.debugElement.query(By.css('#flag-type-heading'));
+
+    expect(component.selectionTitle).toEqual('');
+    flagTypeformControl.setValue(flagTypes[0].childFlags[0]);
+    component.onNext();
+    const title1 = 'Reasonable adjustment';
+    expect(component.selectionTitle).toEqual(title1);
+    fixture.detectChanges();
+    expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(title1);
+
+    flagTypeformControl.setValue(flagTypes[0].childFlags[0].childFlags[0]);
+    component.onNext();
+    const title2 = 'I need help with forms';
+    expect(component.selectionTitle).toEqual(title2);
+    fixture.detectChanges();
+    expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(title2);
   });
 });
