@@ -285,6 +285,25 @@ describe('SelectFlagTypeComponent', () => {
     expect(errorMessageElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED);
   });
 
+  it('should fail if a flag type with children is selected and then no option is selected on next screen', () => {
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    const nativeElement = fixture.debugElement.nativeElement;
+    component.formGroup.get(component.flagTypeControlName).setValue(flagTypes[0].childFlags[0]);
+    // Need twice - one for first selection which should pass validation and the second will fail
+    nativeElement.querySelector('.button').click();
+    expect(component.errorMessages).toEqual([]);
+    nativeElement.querySelector('.button').click();
+    fixture.detectChanges();
+
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED,
+      fieldId: 'conditional-radios-list'
+    });
+    const errorMessageElement = nativeElement.querySelector('#flag-type-not-selected-error-message');
+    expect(errorMessageElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED);
+  });
+
   it('should fail validation if "Other" flag type selected and description not entered', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
