@@ -73,7 +73,7 @@ describe('AddCommentsComponent', () => {
 
   it('should show an error message on clicking "Next" if comments exceed a 200-character limit, regardless of optionality', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
-    textarea.value = textareaInput + '0';
+    textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();
@@ -87,7 +87,7 @@ describe('AddCommentsComponent', () => {
     // Change flag comments to optional
     component.optional = true;
     component.ngOnInit();
-    textarea.value = textareaInput + '0';
+    textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();

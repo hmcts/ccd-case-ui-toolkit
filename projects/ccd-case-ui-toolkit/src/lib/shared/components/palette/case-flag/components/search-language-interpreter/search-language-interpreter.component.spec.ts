@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
@@ -14,7 +14,7 @@ describe('SearchLanguageInterpreterComponent', () => {
   const languageFlagCode = 'PF0015';
   const signLanguageFlagCode = 'RA0042';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
@@ -34,6 +34,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     });
     component.flagType = {
       name: 'Language Interpreter',
+      name_cy: 'Language Interpreter Welsh Name',
       hearingRelevant: false,
       flagComment: false,
       flagCode: languageFlagCode,
@@ -46,7 +47,9 @@ describe('SearchLanguageInterpreterComponent', () => {
         { key: 'AL2', value: 'Albanian2' },
         { key: 'AL3', value: 'Albanian3' },
         { key: 'GB', value: 'English' }
-      ]
+      ],
+      defaultStatus: 'Active',
+      externallyAvailable: false,
     };
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 80-character text input
@@ -186,7 +189,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     checkboxElement.click();
     fixture.detectChanges();
     const manualLanguageEntryField = nativeElement.querySelector('#manual-language-entry');
-    manualLanguageEntryField.value = fieldInput + '0';
+    manualLanguageEntryField.value = `${fieldInput}0`;
     manualLanguageEntryField.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();

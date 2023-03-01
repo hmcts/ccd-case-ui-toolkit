@@ -258,7 +258,7 @@ describe('ManageCaseFlagsComponent', () => {
         partyName: 'Wayne Sleep'
       },
       pathToFlagsFormGroup: 'CaseFlag2'
-    }
+    };
 
     const displayResult = component.mapFlagDetailForDisplay(flagDetail, flagsInstance);
     expect(displayResult.flagDetailDisplay.partyName).toEqual(flagsInstance.flags.partyName);
@@ -344,7 +344,7 @@ describe('ManageCaseFlagsComponent', () => {
       },
       pathToFlagsFormGroup: 'caseFlags',
       caseField: flagsData[2].caseField
-    } as FlagDetailDisplayWithFormGroupPath
+    } as FlagDetailDisplayWithFormGroupPath;
     expect(component.getPartyName(flagDisplay)).toEqual('Case level');
     flagDisplay.pathToFlagsFormGroup = null;
     expect(component.getPartyName(flagDisplay)).toEqual('');
@@ -369,7 +369,7 @@ describe('ManageCaseFlagsComponent', () => {
       pathToFlagsFormGroup: '',
       caseField: flagsData[2].caseField,
       roleOnCase: 'Applicant'
-    } as FlagDetailDisplayWithFormGroupPath
+    } as FlagDetailDisplayWithFormGroupPath;
     expect(component.getRoleOnCase(flagDisplay)).toEqual(' (Applicant)');
   });
 

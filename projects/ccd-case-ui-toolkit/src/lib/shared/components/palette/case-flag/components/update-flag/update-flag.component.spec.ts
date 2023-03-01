@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EnumDisplayDescriptionPipe } from '../../../../../pipes/generic/enum-display-description/enum-display-description.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
@@ -45,7 +45,7 @@ describe('UpdateFlagComponent', () => {
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -101,7 +101,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if comments exceed a 200-character limit', () => {
-    textarea.value = textareaInput + '0';
+    textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();

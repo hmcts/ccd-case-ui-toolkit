@@ -6,6 +6,7 @@ import {
   CaseFlagFieldState,
   CaseFlagStatus,
   CaseFlagWizardStepTitle,
+  ConfirmStatusErrorMessage,
   ConfirmStatusStep
 } from '../../enums';
 
@@ -24,10 +25,13 @@ export class ConfirmFlagStatusComponent implements OnInit {
   public caseFlagStatusEnum = CaseFlagStatus;
   public flagCreationStatuses: string[];
   public errorMessages: ErrorMessage[] = [];
+  public statusReasonNotEnteredErrorMessage: ConfirmStatusErrorMessage = null;
+  public statusReasonCharLimitErrorMessage: ConfirmStatusErrorMessage = null;
   public statusReasonHint: ConfirmStatusStep;
   public statusReasonCharLimitInfo: ConfirmStatusStep;
   public readonly selectedStatusControlName = 'selectedStatus';
   public readonly statusReasonControlName = 'statusReason';
+  private readonly reasonMaxCharLimit = 200;
 
   public ngOnInit(): void {
     this.confirmFlagStatusTitle = CaseFlagWizardStepTitle.CONFIRM_FLAG_STATUS;
@@ -40,7 +44,33 @@ export class ConfirmFlagStatusComponent implements OnInit {
   }
 
   public onNext(): void {
+    // Validate status reason entry
+    this.validateTextEntry();
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_STATUS, errorMessages: this.errorMessages });
+  }
+
+  private validateTextEntry(): void {
+    this.statusReasonNotEnteredErrorMessage = null;
+    this.statusReasonCharLimitErrorMessage = null;
+    this.errorMessages = [];
+    if (this.formGroup.get(this.selectedStatusControlName).value === 'NOT_APPROVED' &&
+      !this.formGroup.get(this.statusReasonControlName).value) {
+      this.statusReasonNotEnteredErrorMessage = ConfirmStatusErrorMessage.STATUS_REASON_NOT_ENTERED;
+      this.errorMessages.push({
+        title: '',
+        description: ConfirmStatusErrorMessage.STATUS_REASON_NOT_ENTERED,
+        fieldId: this.statusReasonControlName
+      });
+    }
+    if (this.formGroup.get(this.statusReasonControlName).value &&
+      this.formGroup.get(this.statusReasonControlName).value.length > this.reasonMaxCharLimit) {
+      this.statusReasonCharLimitErrorMessage = ConfirmStatusErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED;
+      this.errorMessages.push({
+        title: '',
+        description: ConfirmStatusErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED,
+        fieldId: this.statusReasonControlName
+      });
+    }
   }
 }
