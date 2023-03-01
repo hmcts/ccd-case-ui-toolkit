@@ -9,7 +9,7 @@ import { SearchLanguageInterpreterComponent } from './search-language-interprete
 describe('SearchLanguageInterpreterComponent', () => {
   let component: SearchLanguageInterpreterComponent;
   let fixture: ComponentFixture<SearchLanguageInterpreterComponent>;
-  let nextButton: any;
+  let nextButton: HTMLElement;
   let fieldInput: string;
   const languageFlagCode = 'PF0015';
   const signLanguageFlagCode = 'RA0042';

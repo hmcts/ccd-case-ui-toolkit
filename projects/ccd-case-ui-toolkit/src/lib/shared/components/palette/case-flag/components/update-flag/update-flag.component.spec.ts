@@ -9,8 +9,8 @@ import { UpdateFlagComponent } from './update-flag.component';
 describe('UpdateFlagComponent', () => {
   let component: UpdateFlagComponent;
   let fixture: ComponentFixture<UpdateFlagComponent>;
-  let nextButton: any;
-  let textarea: any;
+  let nextButton: HTMLElement;
+  let textarea: HTMLInputElement;
   let textareaInput: string;
   const activeFlag = {
     name: 'Flag 1',

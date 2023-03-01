@@ -7,7 +7,7 @@ import { ConfirmFlagStatusComponent } from './confirm-flag-status.component';
 describe('ConfirmFlagStatusComponent', () => {
   let component: ConfirmFlagStatusComponent;
   let fixture: ComponentFixture<ConfirmFlagStatusComponent>;
-  let nextButton: any;
+  let nextButton: HTMLElement;
   let textareaInput: string;
 
   beforeEach(waitForAsync(() => {
