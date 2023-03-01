@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { CaseFlagFieldState, CaseFlagWizardStepTitle, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
+import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
 import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';
 import { SearchLanguageInterpreterComponent } from './search-language-interpreter.component';
 
@@ -11,12 +11,6 @@ describe('SearchLanguageInterpreterComponent', () => {
   let fixture: ComponentFixture<SearchLanguageInterpreterComponent>;
   let nextButton: any;
   let fieldInput: string;
-  const languages = [
-    {key: 'AL1', value: 'Albanian1'},
-    {key: 'AL2', value: 'Albanian2'},
-    {key: 'AL3', value: 'Albanian3'},
-    {key: 'GB', value: 'English'}
-  ];
   const languageFlagCode = 'PF0015';
   const signLanguageFlagCode = 'RA0042';
 
@@ -38,8 +32,25 @@ describe('SearchLanguageInterpreterComponent', () => {
     component.formGroup = new FormGroup({
       [SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM] : new FormControl('')
     });
-    component.languages = languages;
-    component.flagCode = languageFlagCode;
+    component.flagType = {
+      name: 'Language Interpreter',
+      name_cy: 'Language Interpreter Welsh Name',
+      hearingRelevant: false,
+      flagComment: false,
+      flagCode: languageFlagCode,
+      isParent: false,
+      Path: [],
+      childFlags: [],
+      listOfValuesLength: 0,
+      listOfValues: [
+        { key: 'AL1', value: 'Albanian1' },
+        { key: 'AL2', value: 'Albanian2' },
+        { key: 'AL3', value: 'Albanian3' },
+        { key: 'GB', value: 'English' }
+      ],
+      defaultStatus: 'Active',
+      externallyAvailable: false,
+    };
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 80-character text input
     fieldInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
@@ -178,7 +189,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     checkboxElement.click();
     fixture.detectChanges();
     const manualLanguageEntryField = nativeElement.querySelector('#manual-language-entry');
-    manualLanguageEntryField.value = fieldInput + '0';
+    manualLanguageEntryField.value = `${fieldInput}0`;
     manualLanguageEntryField.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();
@@ -230,7 +241,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     // It's not possible to programmatically test option selection from the Angular Material autocomplete component
     // without recreating the entire unit test from the library, so just set the language search FormControl value
     // manually, as if the user had selected an option
-    component.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).setValue(languages[3]);
+    component.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).setValue(component.flagType.listOfValues[3]);
     const nativeElement = fixture.debugElement.nativeElement;
     const checkboxElement = nativeElement.querySelector('.govuk-checkboxes__input');
     checkboxElement.click();
@@ -270,15 +281,15 @@ describe('SearchLanguageInterpreterComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     let titleElement = nativeElement.querySelector('.govuk-label--l');
     let hintTextElement = nativeElement.querySelector('#language-search-box-hint');
-    expect(titleElement.textContent).toContain(CaseFlagWizardStepTitle.SEARCH_LANGUAGE_INTERPRETER);
+    expect(titleElement.textContent).toContain(component.flagType.name);
     expect(hintTextElement.textContent).toContain(SearchLanguageInterpreterStep.HINT_TEXT);
     // Change flag type to sign language
-    component.flagCode = signLanguageFlagCode;
+    component.flagType.flagCode = signLanguageFlagCode;
     component.ngOnInit();
     fixture.detectChanges();
     titleElement = nativeElement.querySelector('.govuk-label--l');
     hintTextElement = nativeElement.querySelector('#language-search-box-hint');
-    expect(titleElement.textContent).toContain(CaseFlagWizardStepTitle.SEARCH_SIGN_LANGUAGE_INTERPRETER);
+    expect(titleElement.textContent).toContain(component.flagType.name);
     expect(hintTextElement.textContent).toContain(SearchLanguageInterpreterStep.SIGN_HINT_TEXT);
   });
 });

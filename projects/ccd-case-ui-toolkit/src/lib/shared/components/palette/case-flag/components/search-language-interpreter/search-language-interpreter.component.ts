@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
+import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagState, Language } from '../../domain';
 import {
   CaseFlagFieldState,
@@ -27,10 +28,7 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public formGroup: FormGroup;
 
   @Input()
-  public languages: Language[];
-
-  @Input()
-  public flagCode: string;
+  public flagType: FlagType;
 
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
@@ -39,7 +37,6 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public filteredLanguages$: Observable<Language[]>;
   public searchTerm = '';
   public isCheckboxEnabled = false;
-  public searchLanguageInterpreterTitle: CaseFlagWizardStepTitle;
   public searchLanguageInterpreterHint: SearchLanguageInterpreterStep;
   public errorMessages: ErrorMessage[] = [];
   public languageNotSelectedErrorMessage = '';
@@ -51,10 +48,7 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   private readonly signLanguageFlagCode = 'RA0042';
 
   public ngOnInit(): void {
-    this.searchLanguageInterpreterTitle = this.flagCode === this.signLanguageFlagCode
-      ? CaseFlagWizardStepTitle.SEARCH_SIGN_LANGUAGE_INTERPRETER
-      : CaseFlagWizardStepTitle.SEARCH_LANGUAGE_INTERPRETER;
-    this.searchLanguageInterpreterHint = this.flagCode === this.signLanguageFlagCode
+    this.searchLanguageInterpreterHint = this.flagType.flagCode === this.signLanguageFlagCode
       ? SearchLanguageInterpreterStep.SIGN_HINT_TEXT
       : SearchLanguageInterpreterStep.HINT_TEXT;
     this.formGroup.addControl(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM, new FormControl());
@@ -144,8 +138,8 @@ export class SearchLanguageInterpreterComponent implements OnInit {
       return [];
     }
 
-    return this.languages
-      ? this.languages.filter(language => language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0))
+    return this.flagType.listOfValues
+      ? this.flagType.listOfValues.filter(language => language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0))
       : [];
   }
 }
