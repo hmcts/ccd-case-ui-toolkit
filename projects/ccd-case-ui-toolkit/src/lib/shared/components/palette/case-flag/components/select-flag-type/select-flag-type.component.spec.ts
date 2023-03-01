@@ -180,6 +180,7 @@ describe('SelectFlagTypeComponent', () => {
     component = fixture.componentInstance;
     component.jurisdiction = sscsJurisdiction;
     component.formGroup = new FormGroup({});
+    component.isDisplayContextParameterExternal = false;
     fixture.detectChanges();
   });
 
@@ -345,7 +346,7 @@ describe('SelectFlagTypeComponent', () => {
   it('should retrieve the list of flag types for the specified jurisdiction', () => {
     component.ngOnInit();
     expect(caseFlagRefdataService.getHmctsServiceDetails).toHaveBeenCalledWith(sscsJurisdiction);
-    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY, false, component.isDisplayContextParameterExternal);
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
   });
 
@@ -398,8 +399,6 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.formGroup.get('languageSearchTerm').value).toEqual('');
     expect(component.formGroup.get('manualLanguageEntry').value).toEqual('');
   });
-
-
 
   it('should assign name of selected flag type from the formControl' +
     'to selectionTitles property on every onNext() call' +

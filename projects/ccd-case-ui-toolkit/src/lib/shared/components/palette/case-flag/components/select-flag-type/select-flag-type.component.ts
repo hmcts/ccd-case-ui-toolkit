@@ -23,6 +23,8 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   @Input()
   public jurisdiction: string;
 
+  @Input() public isDisplayContextParameterExternal = false;
+
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -89,7 +91,8 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
         // Use switchMap to return an inner Observable of the flag types data, having received the service details
         // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
         switchMap(serviceDetails => {
-          return this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType);
+          return this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType,
+            false, this.isDisplayContextParameterExternal);
         }),
       )
       .subscribe({
