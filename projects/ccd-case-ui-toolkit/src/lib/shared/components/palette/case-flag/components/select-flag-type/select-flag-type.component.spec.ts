@@ -289,7 +289,7 @@ describe('SelectFlagTypeComponent', () => {
   it('should fail if a flag type with children is selected and then no option is selected on next screen', () => {
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
-    component.formGroup.get(component.flagTypeControlName).setValue(flagTypes[0].childFlags[0]);
+    component.formGroup.get(CaseFlagFormFields.FLAG_TYPE).setValue(flagTypes[0].childFlags[0]);
     // Need twice - one for first selection which should pass validation and the second will fail
     nativeElement.querySelector('.button').click();
     expect(component.errorMessages).toEqual([]);

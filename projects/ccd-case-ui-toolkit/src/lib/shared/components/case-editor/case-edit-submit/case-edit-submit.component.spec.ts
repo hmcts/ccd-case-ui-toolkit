@@ -38,6 +38,7 @@ import { CaseEditSubmitComponent } from './case-edit-submit.component';
 
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
+import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -279,6 +280,9 @@ describe('CaseEditSubmitComponent', () => {
   const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
   const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
+  const caseFieldCaseFlagCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE)', 2);
+  const caseFieldCaseFlagExternalCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE,EXTERNAL)', 2);
+  const caseFieldCaseFlagExternalUpdate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE,EXTERNAL)', 2);
   const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'OPTIONAL', 1, null, true, true);
   const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'OPTIONAL', 2, null, false, true);
   const complexCaseField: CaseField = aCaseField('complexField1', 'complexField1', 'Complex', 'OPTIONAL', 1,
@@ -4345,7 +4349,7 @@ describe('CaseEditSubmitComponent', () => {
     beforeEach(waitForAsync(() => {
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj(cancelled, ['emit'])
+      cancelled = createSpyObj(cancelled, ['emit']);
       caseEditComponent = {
         form: new FormGroup({
           data: new FormGroup({
@@ -4428,6 +4432,32 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(populateFlagDetailsSpy).toHaveBeenCalled();
       expect(removeFlagLauncherFieldSpy).toHaveBeenCalled();
+    });
+
+    it('should set right page title', () => {
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalUpdate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseField1
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.CHECK_YOUR_ANSWERS);
     });
   });
 });

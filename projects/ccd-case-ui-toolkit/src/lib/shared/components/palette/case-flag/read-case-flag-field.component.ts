@@ -27,6 +27,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public readonly caseNameMissing = 'Case name missing';
   public readonly readSupportMode = '#ARGUMENT(READ,EXTERNAL)';
   private readonly createMode = '#ARGUMENT(CREATE)';
+  private readonly createModeExternal = '#ARGUMENT(CREATE,EXTERNAL)';
   private readonly updateMode = '#ARGUMENT(UPDATE)';
 
   constructor(
@@ -73,7 +74,9 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       if (flagLauncherComponent) {
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
-        if (flagLauncherComponent.caseField.display_context_parameter === this.createMode &&
+        if ((flagLauncherComponent.caseField.display_context_parameter === this.createMode ||
+            flagLauncherComponent.caseField.display_context_parameter === this.createModeExternal
+          ) &&
           flagLauncherComponent.selectedFlagsLocation) {
           this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
           this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
