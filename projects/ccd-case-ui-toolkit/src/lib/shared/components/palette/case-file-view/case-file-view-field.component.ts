@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angula
 import { ActivatedRoute } from '@angular/router';
 import { fromEvent, Observable, of, Subscription } from 'rxjs';
 import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
-import { CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
+import { CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
 import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
 
 @Component({
@@ -16,8 +16,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
   public categoriesAndDocumentsSubscription: Subscription;
   public getCategoriesAndDocumentsError = false;
-  public currentDocument: { document_binary_url: string, document_filename: string, content_type: string } | undefined;
-  public errorMessages = [];
+  public currentDocument: CaseFileViewDocument | undefined;
+  public errorMessages = [] as string[];
   private caseVersion: number;
 
   constructor(private readonly elementRef: ElementRef,
@@ -77,7 +77,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     this.currentDocument = JSON.parse(mediaViewerInfo);
   }
 
-  public moveDocument(data:any) {
+  public moveDocument(data: { document: DocumentTreeNode, newCategory: string }) {
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
     const loadingToken = this.loadingService.register();
     this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory)
@@ -93,9 +93,13 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
       .subscribe(res => {
         if (res) {
           this.resetErrorMessages();
-          location.reload();
+          this.reloadPage();
         }
     });
+  }
+
+  public reloadPage() {
+    location.reload();
   }
 
   public resetErrorMessages() {
