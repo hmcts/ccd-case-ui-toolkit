@@ -13,6 +13,6 @@ export class CaseFlagTableComponent {
   @Input() public firstColumnHeader: string;
 
   public get caseFlagStatus(): typeof CaseFlagStatus {
-    return CaseFlagStatus
+    return CaseFlagStatus;
   }
 }

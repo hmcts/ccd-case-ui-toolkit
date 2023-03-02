@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
@@ -9,12 +9,12 @@ import { SearchLanguageInterpreterComponent } from './search-language-interprete
 describe('SearchLanguageInterpreterComponent', () => {
   let component: SearchLanguageInterpreterComponent;
   let fixture: ComponentFixture<SearchLanguageInterpreterComponent>;
-  let nextButton: any;
+  let nextButton: HTMLElement;
   let fieldInput: string;
   const languageFlagCode = 'PF0015';
   const signLanguageFlagCode = 'RA0042';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,

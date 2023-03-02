@@ -17,9 +17,16 @@
           </div>
         </div>
       </fieldset>
-
       <div id="status-reason-hint" class="govuk-hint">
         {{statusReasonHint}}
+      </div>
+      <div id="status-reason-not-entered-error-message" class="govuk-error-message"
+        *ngIf="statusReasonNotEnteredErrorMessage">
+        <span class="govuk-visually-hidden">Error:</span> {{statusReasonNotEnteredErrorMessage}}
+      </div>
+      <div id="status-reason-char-limit-error" class="govuk-error-message"
+        *ngIf="statusReasonCharLimitErrorMessage">
+        <span class="govuk-visually-hidden">Error:</span> {{statusReasonCharLimitErrorMessage}}
       </div>
       <textarea class="govuk-textarea" [id]="statusReasonControlName"
         [name]="statusReasonControlName" [formControlName]="statusReasonControlName" rows="5"

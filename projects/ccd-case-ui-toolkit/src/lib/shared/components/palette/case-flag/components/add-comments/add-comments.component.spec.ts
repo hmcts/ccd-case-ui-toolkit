@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AddCommentsErrorMessage, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
 import { AddCommentsComponent } from './add-comments.component';
@@ -7,10 +7,10 @@ import { AddCommentsComponent } from './add-comments.component';
 describe('AddCommentsComponent', () => {
   let component: AddCommentsComponent;
   let fixture: ComponentFixture<AddCommentsComponent>;
-  let nextButton: any;
+  let nextButton: HTMLElement;
   let textareaInput: string;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -73,7 +73,7 @@ describe('AddCommentsComponent', () => {
 
   it('should show an error message on clicking "Next" if comments exceed a 200-character limit, regardless of optionality', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
-    textarea.value = textareaInput + '0';
+    textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();
@@ -87,7 +87,7 @@ describe('AddCommentsComponent', () => {
     // Change flag comments to optional
     component.optional = true;
     component.ngOnInit();
-    textarea.value = textareaInput + '0';
+    textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();
