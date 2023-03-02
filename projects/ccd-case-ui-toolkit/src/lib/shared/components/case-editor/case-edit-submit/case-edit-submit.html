@@ -38,7 +38,7 @@
     <ng-container *ngIf="checkYourAnswerFieldsToDisplayExists()">
 
       <h2 class="heading-h2">{{pageTitle}}</h2>
-      <span class="text-16" *ngIf="!isCaseFlagSubmission">Check the information below carefully.</span>
+      <span class="text-16" *ngIf="!caseFlagField">Check the information below carefully.</span>
 
       <table class="form-table" aria-describedby="check your answers table">
         <tbody>
@@ -51,13 +51,13 @@
               <ng-container *ngIf="canShowFieldInCYA(field)">
                 <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
                     [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                  <th *ngIf="!isLabel(field) && !isCaseFlagSubmission" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
+                  <th *ngIf="!isLabel(field) && !caseFlagField" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
                   <td class="form-cell case-field-content" [attr.colspan]="isLabel(field) ? '2' : '1'">
                     <ccd-field-read
                       [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
                       [caseField]="summaryCaseField(field)" [context]="paletteContext" [caseFields]="contextFields"></ccd-field-read>
                   </td>
-                  <ng-container *ngIf="eventTrigger.id !== 'createCaseFlag'">
+                  <ng-container *ngIf="!caseFlagField">
                     <td class="valign-top check-your-answers__change case-field-change">
                       <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id)"
                          href="javascript:void(0)"><span class="text-16" attr.aria-label="Change {{ field.label }}">Change</span></a>

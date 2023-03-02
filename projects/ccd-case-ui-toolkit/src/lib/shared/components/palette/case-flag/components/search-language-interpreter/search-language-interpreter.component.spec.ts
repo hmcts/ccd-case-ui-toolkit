@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { CaseFlagFieldState, CaseFlagWizardStepTitle, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
+import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
 import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';
 import { SearchLanguageInterpreterComponent } from './search-language-interpreter.component';
 

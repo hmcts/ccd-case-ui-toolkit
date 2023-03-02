@@ -1,9 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { EnumDisplayDescriptionPipe } from '../../../../../pipes/generic/enum-display-description/enum-display-description.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
+import { CaseFlagFormFields } from '../../enums/case-flag-form-fields.enum';
 import { UpdateFlagComponent } from './update-flag.component';
 
 describe('UpdateFlagComponent', () => {
@@ -16,7 +18,7 @@ describe('UpdateFlagComponent', () => {
     name: 'Flag 1',
     flagComment: 'First flag',
     dateTimeCreated: new Date(),
-    path: [{ id: null, value: 'Reasonable adjustment' }],
+    path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active'
@@ -25,7 +27,7 @@ describe('UpdateFlagComponent', () => {
     name: 'Flag 2',
     flagComment: 'Rose\'s second flag',
     dateTimeCreated: new Date(),
-    path: [{ id: null, value: 'Reasonable adjustment' }],
+    path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
     flagCode: 'FL2',
     status: 'Inactive'
@@ -47,11 +49,11 @@ describe('UpdateFlagComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ UpdateFlagComponent, EnumDisplayDescriptionPipe ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [UpdateFlagComponent, EnumDisplayDescriptionPipe]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -59,13 +61,14 @@ describe('UpdateFlagComponent', () => {
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({});
     component.selectedFlag = selectedFlag1;
-    nextButton = fixture.debugElement.nativeElement.querySelector('.button-primary');
-    textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
       '5555555555' + '6666666666' + '7777777777' + '8888888888' + '9999999999';
     fixture.detectChanges();
+
+    nextButton = fixture.debugElement.query(By.css('#updateFlagNextButton')).nativeElement;
+    textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
   });
 
   it('should create component', () => {
@@ -94,7 +97,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
-      fieldId: component.FLAG_COMMENTS_CONTROL_NAME
+      fieldId: CaseFlagFormFields.COMMENTS
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
@@ -108,7 +111,7 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
-      fieldId: component.FLAG_COMMENTS_CONTROL_NAME
+      fieldId: CaseFlagFormFields.COMMENTS
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED);
@@ -125,7 +128,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should render flag status checkboxes correctly', () => {
-    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${component.FLAG_STATUS_CONTROL_NAME} label`);
+    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
 
     const displayedStatuses = [] as string[];
     for (const element of statusCheckboxLabelsElements.values()) {

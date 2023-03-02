@@ -49,6 +49,7 @@ import {
   SelectFlagLocationComponent,
   SelectFlagTypeComponent,
   UpdateFlagComponent,
+  UpdateFlagWelshTranslationFormComponent,
   WriteCaseFlagFieldComponent
 } from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -173,7 +174,18 @@ const PALETTE_COMPONENTS = [
   CaseFileViewFolderSortComponent,
   CaseFileViewOverlayMenuComponent,
   CaseFileViewFolderDocumentActionsComponent,
-  CaseFileViewFolderSelectorComponent
+  CaseFileViewFolderSelectorComponent,
+
+  CaseFlagTableComponent,
+  SelectFlagTypeComponent,
+  SearchLanguageInterpreterComponent,
+  SelectFlagLocationComponent,
+  ManageCaseFlagsComponent,
+  AddCommentsComponent,
+  UpdateFlagComponent,
+  CaseFlagSummaryListComponent,
+  ConfirmFlagStatusComponent,
+  UpdateFlagWelshTranslationFormComponent
 ];
 
 @NgModule({
@@ -214,17 +226,7 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
-
-    CaseFlagTableComponent,
-    SelectFlagTypeComponent,
-    SearchLanguageInterpreterComponent,
-    SelectFlagLocationComponent,
-    ManageCaseFlagsComponent,
-    AddCommentsComponent,
-    UpdateFlagComponent,
-    CaseFlagSummaryListComponent,
     ...PALETTE_COMPONENTS,
-    ConfirmFlagStatusComponent
   ],
   exports: [
     NgxMatDatetimePickerModule,

@@ -19,10 +19,13 @@
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
       <ccd-select-flag-location
         [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-location>
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
+        [isDisplayContextParameterExternal]="isDisplayContextParameterExternal"
+      ></ccd-select-flag-location>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
       <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup" [jurisdiction]="jurisdiction"
+        [isDisplayContextParameterExternal]="isDisplayContextParameterExternal"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
         (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"></ccd-select-flag-type>
     </ng-container>
@@ -54,6 +57,12 @@
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_UPDATE">
       <ccd-update-flag [formGroup]="caseFlagParentFormGroup" [selectedFlag]="selectedFlag"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-update-flag>
+    </ng-container>
+    <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION">
+      <ccd-update-flag-welsh-translation-form
+        [formGroup]="caseFlagParentFormGroup" [selectedFlag]="selectedFlag"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
+      ></ccd-update-flag-welsh-translation-form>
     </ng-container>
   </div>
 </div>

@@ -1,5 +1,6 @@
 export enum CaseFlagWizardStepTitle {
   SELECT_FLAG_LOCATION = 'Where should this flag be added?',
+  SELECT_FLAG_LOCATION_EXTERNAL = 'Who is the support for?',
   SELECT_CASE_FLAG = 'Select flag type',
   ADD_FLAG_COMMENTS = 'Add comments for this flag',
   ADD_FLAG_COMMENTS_EXTERNAL_MODE = 'Tell us more about the request',
