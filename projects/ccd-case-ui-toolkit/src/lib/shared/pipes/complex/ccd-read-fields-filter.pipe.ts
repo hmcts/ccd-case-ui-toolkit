@@ -115,7 +115,9 @@ export class ReadFieldsFilterPipe implements PipeTransform {
         const search = fieldId + '.';
         const searchRegExp = new RegExp(search, 'g');
         const replaceWith = '';
-        cond = ShowCondition.getInstance(field.show_condition.replace(searchRegExp, replaceWith));
+        const condition = field.show_condition.replace(searchRegExp, replaceWith);
+        const isValidCondition = condition.split('"').length % 2 === 0;
+        cond = ShowCondition.getInstance(isValidCondition ? field.show_condition : condition);
       } else {
         cond = ShowCondition.getInstance(field.show_condition);
       }
