@@ -96,23 +96,27 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   }
 
   private static getValue(field: CaseField, values: any, index?: number): any {
-    let value: any;
-    if (index >= 0 ) {
-      value = values[index].value[field.id];
-    } else {
-      value = values[field.id];
+    if (ReadFieldsFilterPipe.isEmpty(field.value)) {
+      let value: any;
+      if (index >= 0 ) {
+        value = values[index].value[field.id];
+      } else {
+        value = values[field.id];
+      }
+
+      return value;
     }
-    return ReadFieldsFilterPipe.isEmpty(field.value) ? value : field.value;
+    return field.value;
   }
 
   private static evaluateConditionalShow(field: CaseField, formValue: any, path?: string,
-    formGroupAvaliable?: boolean, fieldId?: string): CaseField {
+    formGroupAvailable?: boolean, fieldId?: string): CaseField {
     if (field.display_context === 'HIDDEN') {
       field.hidden = true;
     } else if (field.show_condition) {
       let cond: ShowCondition;
-      if (fieldId && field.show_condition.indexOf(`${fieldId}.`) > -1 && !formGroupAvaliable && !!Object.keys(formValue).length) {
-        const search = fieldId + '.';
+      if (fieldId && field.show_condition.indexOf(`${fieldId}.`) > -1 && !formGroupAvailable && !!Object.keys(formValue).length) {
+        const search = `${fieldId}.`;
         const searchRegExp = new RegExp(search, 'g');
         const replaceWith = '';
         cond = ShowCondition.getInstance(field.show_condition.replace(searchRegExp, replaceWith));
