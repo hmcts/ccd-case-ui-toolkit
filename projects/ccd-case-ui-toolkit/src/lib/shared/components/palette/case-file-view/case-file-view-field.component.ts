@@ -77,7 +77,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     this.currentDocument = JSON.parse(mediaViewerInfo);
   }
 
-  public moveDocument(data: { document: DocumentTreeNode, newCategory: string }) {
+  public moveDocument(data: { document: DocumentTreeNode, newCategory: string }): void {
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
     const loadingToken = this.loadingService.register();
     this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory)
@@ -98,11 +98,11 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     });
   }
 
-  public reloadPage() {
+  public reloadPage(): void {
     location.reload();
   }
 
-  public resetErrorMessages() {
+  public resetErrorMessages(): void {
     this.errorMessages = [];
   }
 
