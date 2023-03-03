@@ -111,13 +111,11 @@ export class ReadFieldsFilterPipe implements PipeTransform {
       field.hidden = true;
     } else if (field.show_condition) {
       let cond: ShowCondition;
-      if (fieldId && field.show_condition.indexOf(fieldId) > -1 && !formGroupAvaliable && !!Object.keys(formValue).length) {
+      if (fieldId && field.show_condition.indexOf(`${fieldId}.`) > -1 && !formGroupAvaliable && !!Object.keys(formValue).length) {
         const search = fieldId + '.';
         const searchRegExp = new RegExp(search, 'g');
         const replaceWith = '';
-        const condition = field.show_condition.replace(searchRegExp, replaceWith);
-        const isValidCondition = condition.split('"').length % 2 === 0;
-        cond = ShowCondition.getInstance(isValidCondition ? field.show_condition : condition);
+        cond = ShowCondition.getInstance(field.show_condition.replace(searchRegExp, replaceWith));
       } else {
         cond = ShowCondition.getInstance(field.show_condition);
       }
