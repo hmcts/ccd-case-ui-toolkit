@@ -10,8 +10,8 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
+import { filter } from 'rxjs/operators';
 import {
   NotificationBannerConfig,
   NotificationBannerHeaderClass,
@@ -317,9 +317,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     const access_granted = this.caseDetails.metadataFields.find(metadataField =>
       metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_GRANTED_ID);
     if (access_granted.value.includes('SPECIFIC')) {
-      accessType = 'SPECIFIC'
+      accessType = 'SPECIFIC';
     } else if (access_granted.value.includes('CHALLENGED')) {
-      accessType = 'CHALLENGED'
+      accessType = 'CHALLENGED';
     }
     return accessType;
   }
