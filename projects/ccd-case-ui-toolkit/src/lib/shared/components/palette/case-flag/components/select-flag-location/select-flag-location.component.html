@@ -1,4 +1,4 @@
-<div class="form-group" [formGroup]="formGroup">
+<ng-container [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
     <fieldset class="govuk-fieldset" aria-describedby="flag-location-heading">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -29,8 +29,8 @@
       </div>
     </fieldset>
   </div>
+</ng-container>
 
-  <div class="govuk-button-group" *ngIf="!caseFlagsConfigError">
-    <button class="button button-primary" type="button" (click)="onNext()">Next</button>
-  </div>
+<div class="govuk-button-group" *ngIf="!caseFlagsConfigError">
+  <button class="button button-primary" type="button" (click)="onNext()">Next</button>
 </div>

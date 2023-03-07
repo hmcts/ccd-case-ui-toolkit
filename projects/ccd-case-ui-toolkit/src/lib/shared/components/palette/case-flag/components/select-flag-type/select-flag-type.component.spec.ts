@@ -267,6 +267,26 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.flagCommentsOptionalEmitter.emit).toHaveBeenCalledWith(null);
   });
 
+  it('should not emit "flag comments optional" event to parent if an intermediate (non-child) flag type is selected', () => {
+    spyOn(component.flagCommentsOptionalEmitter, 'emit');
+    const nativeElement = fixture.debugElement.nativeElement;
+    // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
+    nativeElement.querySelector('#flag-type-0').click();
+    const nextButtonElement = nativeElement.querySelector('.button');
+    nextButtonElement.click();
+    expect(component.flagCommentsOptionalEmitter.emit).not.toHaveBeenCalled();
+  });
+
+  it('should not emit "flag comments optional" event to parent if comments for the selected flag type are mandatory', () => {
+    spyOn(component.flagCommentsOptionalEmitter, 'emit');
+    const nativeElement = fixture.debugElement.nativeElement;
+    // Third radio button (with index 2) expected to be "Other" from test data; comments mandatory for this flag type
+    nativeElement.querySelector('#flag-type-2').click();
+    const nextButtonElement = nativeElement.querySelector('.button');
+    nextButtonElement.click();
+    expect(component.flagCommentsOptionalEmitter.emit).not.toHaveBeenCalled();
+  });
+
   it('should fail validation if no flag type is selected', () => {
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;

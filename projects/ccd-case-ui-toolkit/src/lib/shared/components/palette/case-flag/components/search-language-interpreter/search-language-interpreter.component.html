@@ -1,4 +1,4 @@
-<div class="form-group" [formGroup]="formGroup">
+<ng-container [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': languageNotSelectedErrorMessage || languageEnteredInBothFieldsErrorMessage}">
     <h1 class="govuk-label-wrapper">
       <label class="govuk-label govuk-label--l" [for]="SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM">
@@ -52,7 +52,8 @@
       </div>
     </div>
   </div>
-  <div class="govuk-button-group">
-    <button class="button button-primary" type="button" (click)="onNext()">Next</button>
-  </div>
+</ng-container>
+
+<div class="govuk-button-group">
+  <button class="button button-primary" type="button" (click)="onNext()">Next</button>
 </div>
