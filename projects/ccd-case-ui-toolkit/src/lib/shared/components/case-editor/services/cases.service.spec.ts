@@ -90,7 +90,7 @@ describe('CasesService', () => {
       "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com","token": null}`);
     loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
     casesService = new CasesService(
-      httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, workAllocationService, loadingService,
+      httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, loadingService,
       sessionStorageService
     );
   });

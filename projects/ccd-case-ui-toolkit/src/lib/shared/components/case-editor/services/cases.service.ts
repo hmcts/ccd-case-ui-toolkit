@@ -71,7 +71,6 @@ export class CasesService {
     private orderService: OrderService,
     private errorService: HttpErrorService,
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
-    private readonly workAllocationService: WorkAllocationService,
     private loadingService: LoadingService,
     private readonly sessionStorageService: SessionStorageService
   ) {
