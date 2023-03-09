@@ -351,6 +351,14 @@ export class FieldsUtils {
     return caseField.field_type.type === 'FlagLauncher';
   }
 
+	public static isComponentLauncherCaseField(caseField: CaseField): boolean {
+    if (!caseField) {
+      return false;
+    }
+
+    return caseField.field_type.type === 'ComponentLauncher';
+  }
+
   public static isFlagsFieldType(fieldType: FieldType): boolean {
     if (!fieldType) {
       return false;
