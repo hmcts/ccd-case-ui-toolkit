@@ -4,6 +4,11 @@ th {
   vertical-align: top;
 }
 
+th[id^='case-viewer-field-read--'], th[id*='case-viewer-field-read--'] {
+  border-bottom: none !important;
+  border-style: none !important;
+}
+
 .compound-field {
   th {
     padding: 0;
