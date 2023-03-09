@@ -1,13 +1,26 @@
 import { Component, DebugElement, Input } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
+import { CaseEditDataService } from '../../../commons/case-edit-data';
+import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseField } from '../../../domain/definition';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
+import { Draft } from '../../../domain/draft.model';
+import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
+import { FormErrorService } from '../../../services/form/form-error.service';
+import { FormValueService } from '../../../services/form/form-value.service';
+import { WizardPage } from '../../case-editor/domain/wizard-page.model';
+import { Wizard } from '../../case-editor/domain/wizard.model';
+import { PageValidationService } from '../../case-editor/services/page-validation.service';
 import { PaletteService } from '../palette.service';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteContext } from './palette-context.enum';
+
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -65,8 +78,27 @@ describe('FieldReadComponent', () => {
 
   const formGroup: FormGroup = new FormGroup({});
   const caseFields: CaseField[] = [CASE_FIELD];
+  let caseEditComponentStub: any;
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
+  });
+  const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
+  const WIZARD = new Wizard([wizardPage]);
+  const caseField1 = new CaseField();
+  const firstPage = new WizardPage();
   let cancelled: any;
+  const someObservable = {
+    subscribe: () => new Draft()
+  };
+  const caseField2 = new CaseField();
   let route: any;
+  const fieldTypeSanitiser = new FieldTypeSanitiser();
+  const formValueService = new FormValueService(fieldTypeSanitiser);
+  const formErrorService = new FormErrorService();
+  const caseFieldService = new CaseFieldService();
+  const caseEditDataService = new CaseEditDataService();
+  const pageValidationService = new PageValidationService(caseFieldService);
+  const dialog: any = '';
 
   beforeEach(waitForAsync(() => {
     paletteService = createSpyObj<PaletteService>('paletteService', [
@@ -75,6 +107,22 @@ describe('FieldReadComponent', () => {
     paletteService.getFieldComponentClass.and.returnValue(FieldTestComponent);
 
     cancelled = createSpyObj('cancelled', ['emit']);
+    caseEditComponentStub = {
+      form: FORM_GROUP,
+      wizard: WIZARD,
+      data: '',
+      eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+      hasPrevious: () => true,
+      getPage: () => firstPage,
+      first: () => true,
+      next: () => true,
+      previous: () => true,
+      cancel: () => undefined,
+      cancelled,
+      validate: (caseEventData: CaseEventData) => of(caseEventData),
+      saveDraft: (_: CaseEventData) => of(someObservable),
+      caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
+    };
     route = {
       params: of({id: 123}),
       snapshot: {
@@ -94,9 +142,10 @@ describe('FieldReadComponent', () => {
           // Mock
           FieldTestComponent,
           FieldReadLabelComponent,
+          MockRpxTranslatePipe,
         ],
         providers: [
-          { provide: PaletteService, useValue: paletteService }
+          { provide: PaletteService, useValue: paletteService },
         ]
       })
       .compileComponents();
@@ -158,4 +207,23 @@ describe('FieldReadComponent', () => {
     const fieldReadLabel = fieldReadLabelComponent.componentInstance;
     expect(fieldReadLabel.withLabel).toBe(true);
   });
+
+  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+    const cf = new CaseField();
+    cf.id = id;
+    cf.value = value;
+    cf.display_context = display_context;
+    return cf;
+  }
+
+  function createWizardPage(fields: CaseField[], isMultiColumn = false, order = 0): WizardPage {
+    const wp: WizardPage = new WizardPage();
+    wp.case_fields = fields;
+    wp.label = 'Test Label';
+    wp.getCol1Fields = () => fields;
+    wp.getCol2Fields = () => fields;
+    wp.isMultiColumn = () => isMultiColumn;
+    wp.order = order;
+    return wp;
+  }
 });

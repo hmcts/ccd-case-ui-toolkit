@@ -237,7 +237,7 @@ describe('CaseTimelineComponent', () => {
       const eventLogDe = de.query(By.directive(EventLogComponent));
 
       expect(eventLogDe).toBeNull();
-      expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);
+      expect(alertService.error).toHaveBeenCalledWith({ phrase: ERROR_MSG });
       expect(component.events).toBeUndefined();
     });
   });

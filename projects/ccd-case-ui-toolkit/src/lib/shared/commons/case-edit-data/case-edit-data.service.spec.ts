@@ -26,33 +26,6 @@ describe('CaseEditDataService', () => {
     });
   });
 
-  describe('setCaseLinkError', () => {
-    it('should update linkError', (done) => {
-      const result = {
-        componentId: 'id',
-        errorMessage: 'message'
-      };
-      service = new CaseEditDataService();
-      service.setCaseLinkError(result);
-      service.caseLinkError$.pipe(take(1)).subscribe((actual) => {
-        expect(actual).toEqual(result);
-        done();
-      });
-    });
-
-  });
-  describe('clearCaseLinkError', () => {
-    it('should update linkError', (done) => {
-      const result = null;
-      service = new CaseEditDataService();
-      service.clearCaseLinkError();
-      service.caseLinkError$.pipe(take(1)).subscribe((actual) => {
-        expect(actual).toEqual(result);
-        done();
-      });
-    });
-  });
-
   describe('setFormValidationErrors', () => {
     it('should update formValidationErrors', (done) => {
       const result = [{

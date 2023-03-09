@@ -1,3 +1,5 @@
+import { RoleCategory } from '../case-view';
+
 export interface UserInfo {
   uid?: string ;
   id: string;
@@ -6,5 +8,6 @@ export interface UserInfo {
   email: string;
   active: boolean;
   roles: string[];
-  roleCategories: string[];
+  roleCategories: string[],
+  roleCategory?: RoleCategory
 }
