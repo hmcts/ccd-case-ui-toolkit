@@ -6,7 +6,7 @@
     <dd class="govuk-summary-list__value">
       {{flagForSummaryDisplay.partyName || caseLevelLocation}}
     </dd>
-    <dd class="govuk-summary-list__actions" *ngIf="summaryListDisplayMode === displayMode.CREATE">
+    <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_LOCATION)">
         Change<span class="govuk-visually-hidden"> party name</span>
       </a>
@@ -19,7 +19,7 @@
     <dd class="govuk-summary-list__value">
       {{flagDescription}}
     </dd>
-    <dd class="govuk-summary-list__actions" *ngIf="summaryListDisplayMode === displayMode.CREATE">
+    <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_TYPE)">
         Change<span class="govuk-visually-hidden"> description</span>
       </a>
@@ -32,7 +32,33 @@
     <dd class="govuk-summary-list__value">
       {{flagComments}}
     </dd>
-    <dd class="govuk-summary-list__actions" *ngIf="summaryListDisplayMode === displayMode.CREATE">
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_COMMENTS)">
+        Change<span class="govuk-visually-hidden"> comments</span>
+      </a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Other description (Welsh)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{flagDescription}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_TYPE)">
+        Change<span class="govuk-visually-hidden"> description</span>
+      </a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Comments (Welsh)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{flagComments}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_COMMENTS)">
         Change<span class="govuk-visually-hidden"> comments</span>
       </a>
