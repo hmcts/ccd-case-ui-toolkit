@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
-import { CaseFlagState, FlagDetailDisplayWithFormGroupPath } from '../../domain';
+import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
 import { CaseFlagFormFields } from '../../enums/case-flag-form-fields.enum';
 
@@ -19,24 +19,27 @@ export class UpdateFlagComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public updateFlagNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
   public updateFlagCharLimitErrorMessage: UpdateFlagErrorMessage = null;
+  public statusReasonNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
+  public statusReasonCharLimitErrorMessage: UpdateFlagErrorMessage = null;
   public updateFlagStepEnum = UpdateFlagStep;
   public readonly caseFlagStatuses = CaseFlagStatus;
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly commentsMaxCharLimit = 200;
+  private flagDetail: FlagDetail;
 
   public ngOnInit(): void {
     if (this.selectedFlag && this.selectedFlag.flagDetailDisplay && this.selectedFlag.flagDetailDisplay.flagDetail) {
-      const flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
+      this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
 
       // Populate flag comments text area with existing comments
-      this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(flagDetail.flagComment));
-      this.formGroup.addControl(CaseFlagFormFields.STATUS, new FormControl(flagDetail.status));
+      this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(this.flagDetail.flagComment));
+      this.formGroup.addControl(CaseFlagFormFields.STATUS, new FormControl(this.flagDetail.status));
       this.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(''));
       this.formGroup.addControl(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED, new FormControl(false));
 
-      if (flagDetail.name) {
+      if (this.flagDetail.name) {
         this.updateFlagTitle =
-          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}"` : '"'}`;
+          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${this.flagDetail.name}${this.flagDetail.subTypeValue ? `, ${this.flagDetail.subTypeValue}"` : '"'}`;
       }
     }
   }
@@ -59,9 +62,13 @@ export class UpdateFlagComponent implements OnInit {
   private validateTextEntry(): void {
     this.updateFlagNotEnteredErrorMessage = null;
     this.updateFlagCharLimitErrorMessage = null;
+    this.statusReasonNotEnteredErrorMessage = null;
+    this.statusReasonCharLimitErrorMessage = null;
     this.errorMessages = [];
+    // Validation should fail if the flag has an existing comment and it has been deleted on screen; conversely, if there
+    // is no existing comment then one is not required for validation to pass
     const comment = this.formGroup.get(CaseFlagFormFields.COMMENTS).value;
-    if (!comment) {
+    if (!comment && this.flagDetail.flagComment) {
       this.updateFlagNotEnteredErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
@@ -76,6 +83,25 @@ export class UpdateFlagComponent implements OnInit {
         title: '',
         description: UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
         fieldId: CaseFlagFormFields.COMMENTS
+      });
+    }
+
+    const statusReason = this.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON).value;
+    if (this.formGroup.get(CaseFlagFormFields.STATUS).value === CaseFlagStatus.NOT_APPROVED && !statusReason) {
+      this.statusReasonNotEnteredErrorMessage = UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED;
+      this.errorMessages.push({
+        title: '',
+        description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED,
+        fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+      });
+    }
+
+    if (statusReason && statusReason.length > this.commentsMaxCharLimit) {
+      this.statusReasonCharLimitErrorMessage = UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED;
+      this.errorMessages.push({
+        title: '',
+        description: UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED,
+        fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
       });
     }
   }

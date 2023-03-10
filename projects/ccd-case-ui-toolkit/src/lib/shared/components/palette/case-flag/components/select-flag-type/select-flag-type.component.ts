@@ -135,8 +135,8 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       errorMessages: this.errorMessages,
       // Include the "list of values" (if any); currently applicable to language flag types
     });
-    // Emit "flag comments optional" event if the user selects a flag type where comments are not mandatory
-    if (this.selectedFlagType && !this.selectedFlagType.flagComment) {
+    // Emit "flag comments optional" event if the user selects a child flag type where comments are not mandatory
+    if (this.selectedFlagType && !this.selectedFlagType.isParent && !this.selectedFlagType.flagComment) {
       this.flagCommentsOptionalEmitter.emit(null);
     }
 
@@ -156,7 +156,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     this.errorMessages = [];
 
     if (!this.selectedFlagType) {
-      // If there is any selection then the message will differ. we use the selectionTitle property
+      // If there is any selection then the message will differ. We use the selectionTitle property
       const errorMessage = !this.selectionTitle ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED : SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
       this.flagTypeNotSelectedErrorMessage = errorMessage;
       this.errorMessages.push({title: '', description: errorMessage, fieldId: 'conditional-radios-list'});
