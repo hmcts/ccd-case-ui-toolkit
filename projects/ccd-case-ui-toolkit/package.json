@@ -1,17 +1,17 @@
 {
-    "name": "@hmcts/ccd-case-ui-toolkit",
-    "version": "5.0.44-angular11-welsh-release-part1-7",
-    "engines": {
-      "yarn": "^1.22.15",
-      "npm": "^8.10.0"
-    },
-    "description": "Case UI Toolkit",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/hmcts/ccd-case-ui-toolkit.git"
-    },
-    "publishConfig": {
-      "access": "public"
-    }
+  "name": "@hmcts/ccd-case-ui-toolkit",
+  "version": "6.13.10-angular11-welsh-release-part1-8",
+  "engines": {
+    "yarn": "^1.22.15",
+    "npm": "^8.10.0"
+  },
+  "description": "Case UI Toolkit",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hmcts/ccd-case-ui-toolkit.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
