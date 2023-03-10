@@ -1,11 +1,6 @@
-export * from './palette.module';
-export * from './palette.service';
-export * from './unsupported-field.component';
-
 export * from './address';
 export * from './base-field';
 export * from './case-file-view';
-export * from './case-link';
 export * from './case-flag';
 export * from './case-link';
 export * from './collection';
@@ -19,7 +14,9 @@ export * from './email';
 export * from './fixed-list';
 export * from './fixed-radio-list';
 export * from './history';
+export * from './judicial-user';
 export * from './label';
+export * from './linked-cases';
 export * from './markdown';
 export * from './money-gbp';
 export * from './multi-select-list';
@@ -36,4 +33,3 @@ export * from './unsupported-field.component';
 export * from './utils';
 export * from './waystopay';
 export * from './yes-no';
-export * from './judicial-user';

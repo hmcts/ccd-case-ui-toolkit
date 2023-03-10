@@ -192,7 +192,10 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
               formatted_value: null,
               value: null
             }
-          ] as CaseField[]
+          ] as CaseField[],
+          supplementary_data: {
+            HMCTSServiceId: 'BBA3'
+          }
         }
       }
     }
@@ -340,6 +343,12 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     expect(component.setDisplayContextParameterUpdate).toHaveBeenCalledWith(mockRoute.snapshot.data.eventTrigger.case_fields);
   });
 
+  it('should set jurisdiction, caseTypeId, and hmctsServiceId properties from the snapshot data', () => {
+    expect(component.jurisdiction).toEqual('SSCS');
+    expect(component.caseTypeId).toEqual('TEST');
+    expect(component.hmctsServiceId).toEqual('BBA3');
+  });
+
   it('should set isDisplayContextParameterUpdate boolean correctly', () => {
     const caseFields: CaseField[] = [
       flagLauncherCaseField
@@ -451,11 +460,11 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     component.selectedFlagsLocation = newFlag;
     component.addFlagToCollection();
     expect(populateNewFlagDetailInstanceSpy).toHaveBeenCalled();
-    // // Check there are now three case flag values in the caseField object for caseFlag1, and two in caseFlag2
+    // Check there are now three case flag values in the caseField object for caseFlag1, and two in caseFlag2
     expect(component.flagsData[0].caseField.value.details.length).toBe(3);
     expect(component.flagsData[0].caseField.value.details[2].id).toBeUndefined();
-    // // FlagDetail value expected to be undefined because no caseFlagParentFormGroup value was set (which is used for
-    // // populating the FlagDetail instance)
+    // FlagDetail value expected to be undefined because no caseFlagParentFormGroup value was set (which is used for
+    // populating the FlagDetail instance)
     expect(component.flagsData[0].caseField.value.details[2].value.name).toBeUndefined();
     expect(component.flagsData[1].caseField.value.details.length).toBe(2);
     newFlag = {

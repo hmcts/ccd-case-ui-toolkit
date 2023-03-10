@@ -1,4 +1,4 @@
-import { FlagDetail, FlagsWithFormGroupPath } from '../../components';
+import { CaseLink, FlagDetail, FlagsWithFormGroupPath } from '../../components';
 import { CaseField, FieldType } from '../../domain/definition';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
@@ -213,6 +213,37 @@ describe('FormValueService', () => {
     ] as CaseField[];
     spyOn(FieldsUtils, 'isFlagLauncherCaseField').and.returnValue(true);
     expect(formValueService.populateFlagDetailsFromCaseFields(flagsData, caseField)).not.toBeDefined();
+  });
+
+  describe('component launcher linked cases', () => {
+    const data = [
+      {
+        id: 'caseLinks'
+      },
+      {
+        id: 'ComponentLauncher'
+      }
+    ];
+    const caseFields = [
+      {
+        id: 'caseLinks',
+        value: []
+      },
+      {
+        id: 'ComponentLauncher',
+        value: []
+      }
+    ] as CaseField[];
+
+    it('should remove component launcher field', () => {
+      spyOn(FieldsUtils, 'isComponentLauncherCaseField').and.returnValue(true);
+      expect(formValueService.removeComponentLauncherField(data, caseFields)).not.toBeDefined();
+    });
+
+    it('should populate linked cases details from case fields', () => {
+      spyOn(FieldsUtils, 'isComponentLauncherCaseField').and.returnValue(true);
+      expect(formValueService.populateLinkedCasesDetailsFromCaseFields(data, caseFields)).not.toBeDefined();
+    });
   });
 
   describe('sanitise for Document fields', () => {
