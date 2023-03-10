@@ -118,7 +118,7 @@ describe('ManageCaseFlagsComponent', () => {
   ] as FlagsWithFormGroupPath[];
 
   const updateMode = '#ARGUMENT(UPDATE)';
-  const updateModeExternal = '#ARGUMENT(UPDATE,EXTERNAL)';
+  const updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -379,6 +379,6 @@ describe('ManageCaseFlagsComponent', () => {
 
   it('should set Manage Case Flags component title correctly', () => {
     expect(component.setManageCaseFlagTitle(updateMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
-    expect(component.setManageCaseFlagTitle(updateModeExternal)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
+    expect(component.setManageCaseFlagTitle(updateExternalMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
   });
 });

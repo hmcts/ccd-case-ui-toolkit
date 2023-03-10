@@ -28,7 +28,7 @@ export class ManageCaseFlagsComponent implements OnInit {
   public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
   private readonly updateMode = '#ARGUMENT(UPDATE)';
-  private readonly updateModeExternal = '#ARGUMENT(UPDATE,EXTERNAL)';
+  private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
@@ -146,13 +146,15 @@ export class ManageCaseFlagsComponent implements OnInit {
         ? this.formGroup.get(this.selectedControlName).value as FlagDetailDisplayWithFormGroupPath
         : null
     });
+
+    window.scrollTo(0, 0);
   }
 
   public setManageCaseFlagTitle(displayContextParameter: string): CaseFlagWizardStepTitle {
     switch (displayContextParameter) {
       case this.updateMode:
         return CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
-      case this.updateModeExternal:
+      case this.updateExternalMode:
         return CaseFlagWizardStepTitle.MANAGE_SUPPORT;
       default:
         return CaseFlagWizardStepTitle.NONE;

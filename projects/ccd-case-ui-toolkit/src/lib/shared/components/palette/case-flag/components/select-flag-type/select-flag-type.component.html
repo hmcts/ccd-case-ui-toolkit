@@ -1,4 +1,4 @@
-<div *ngIf="flagTypes?.length" class="form-group" [formGroup]="formGroup">
+<ng-container *ngIf="flagTypes?.length" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
     <fieldset class="govuk-fieldset" aria-describedby="flag-type-heading">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -40,7 +40,8 @@
       </div>
     </fieldset>
   </div>
-  <div class="govuk-button-group" *ngIf="!refdataError">
-    <button class="button button-primary" type="button" (click)="onNext()">Next</button>
-  </div>
+</ng-container>
+
+<div class="govuk-button-group" *ngIf="!refdataError">
+  <button class="button button-primary" type="button" (click)="onNext()">Next</button>
 </div>
