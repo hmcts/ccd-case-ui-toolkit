@@ -1,4 +1,4 @@
-import { CaseView } from '../../../../../domain';
+import { CaseField, CaseView } from '../../../../../domain';
 import { LovRefDataByServiceModel } from '../../../../../services/common-data-service/common-data-service';
 import { CaseLink } from '../../domain';
 
@@ -147,7 +147,19 @@ export const CASE_VIEW_DATA: CaseView = {
   },
   state: null,
   channels: [],
-  tabs: [],
+  tabs: [
+    {
+      id: 'caseLinksTab',
+      label: 'Linked cases',
+      fields: [
+        {
+          id: 'caseNameHmctsInternal',
+          label: 'case Name Hmcts Internal',
+          value: 'Test Case C100'
+        } as CaseField
+      ]
+    }
+  ],
   triggers: [],
   events: []
 };

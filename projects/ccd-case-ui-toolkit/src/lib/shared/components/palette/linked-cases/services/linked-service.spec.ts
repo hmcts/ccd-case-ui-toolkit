@@ -67,7 +67,13 @@ describe('LinkedCasesService', () => {
     expect(linkedCasesService.linkedCases).not.toBeNull();
   });
 
+  it('should return case name', () => {
+    expect(linkedCasesService.getCaseName(CASE_VIEW_DATA)).toEqual('Test Case C100');
+  });
+
   it('should return case name as case name missing', () => {
+    const caseViewData = CASE_VIEW_DATA;
+    caseViewData.tabs = [];
     expect(linkedCasesService.getCaseName(CASE_VIEW_DATA)).toEqual('Case name missing');
   });
 });
