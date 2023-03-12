@@ -30,12 +30,12 @@
   </div>
 </div>
 
-<ccd-case-edit-generic-errors [error]="caseEditState.error"></ccd-case-edit-generic-errors>
+<ccd-case-edit-generic-errors [error]="caseEdit.error"></ccd-case-edit-generic-errors>
 
 <ccd-callback-errors
   [triggerTextContinue]="triggerTextStart"
   [triggerTextIgnore]="triggerTextIgnoreWarnings"
-  [callbackErrorsSubject]="caseEditState.callbackErrors"
+  [callbackErrorsSubject]="caseEdit.callbackErrors"
   (callbackErrorsContext)="callbackErrorsNotify($event)">
 </ccd-callback-errors>
 <div class="width-50">
@@ -72,7 +72,7 @@
   </form>
 </div>
 
-<ccd-case-event-completion *ngIf="caseEditState.isEventCompletionChecksRequired"
-  [eventCompletionParams]="caseEditState.eventCompletionParams"
+<ccd-case-event-completion *ngIf="caseEdit.isEventCompletionChecksRequired"
+  [eventCompletionParams]="caseEdit.eventCompletionParams"
   (eventCanBeCompleted)="onEventCanBeCompleted($event)">
 </ccd-case-event-completion>

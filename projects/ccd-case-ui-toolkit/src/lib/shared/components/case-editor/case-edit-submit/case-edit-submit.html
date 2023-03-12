@@ -1,4 +1,4 @@
-<div *ngIf="!caseEditState.isEventCompletionChecksRequired">
+<div *ngIf="!caseEdit.isEventCompletionChecksRequired">
   <!-- Event trigger name -->
   <h1 class="govuk-heading-l">{{ eventTrigger.name}}</h1>
 
@@ -11,16 +11,16 @@
     <h2 *ngIf="getCaseId()" class="heading-h2">#{{ getCaseId() | ccdCaseReference }}</h2>
   </ng-template>
 
-  <ccd-case-edit-generic-errors [error]="caseEditState.error"></ccd-case-edit-generic-errors>
+  <ccd-case-edit-generic-errors [error]="caseEdit.error"></ccd-case-edit-generic-errors>
 
-  <ccd-callback-errors [callbackErrorsSubject]="caseEditState.callbackErrors"
+  <ccd-callback-errors [callbackErrorsSubject]="caseEdit.callbackErrors"
                       (callbackErrorsContext)="callbackErrorsNotify($event)"></ccd-callback-errors>
 
   <form class="check-your-answers" [formGroup]="editForm" (submit)="submit()">
     <ng-container *ngIf="checkYourAnswerFieldsToDisplayExists()">
 
       <h2 class="heading-h2">{{pageTitle}}</h2>
-      <span class="text-16" *ngIf="!caseEditState.isCaseFlagSubmission">Check the information below carefully.</span>
+      <span class="text-16" *ngIf="!caseEdit.isCaseFlagSubmission">Check the information below carefully.</span>
 
       <table class="form-table" aria-describedby="check your answers table">
         <tbody>
@@ -33,7 +33,7 @@
               <ng-container *ngIf="canShowFieldInCYA(field)">
                 <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
                     [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                  <th *ngIf="!isLabel(field) && !caseEditState.isCaseFlagSubmission" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
+                  <th *ngIf="!isLabel(field) && !caseEdit.isCaseFlagSubmission" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
                   <td class="form-cell case-field-content" [attr.colspan]="isLabel(field) ? '2' : '1'">
                     <ccd-field-read
                       [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
@@ -91,13 +91,13 @@
       </fieldset>
     </ng-container>
     <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || caseEditState.isSubmitting" (click)="previous()">Previous</button>
+      <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || caseEdit.isSubmitting" (click)="previous()">Previous</button>
       <button type="submit" [disabled]="isDisabled" class="button">{{triggerText}}</button>
     </div>
-    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)" [class.disabled]="caseEditState.isSubmitting">{{getCancelText()}}</a></p>
+    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)" [class.disabled]="caseEdit.isSubmitting">{{getCancelText()}}</a></p>
   </form>
 </div>
-<ccd-case-event-completion *ngIf="caseEditState.isEventCompletionChecksRequired"
-  [eventCompletionParams]="caseEditState.eventCompletionParams"
+<ccd-case-event-completion *ngIf="caseEdit.isEventCompletionChecksRequired"
+  [eventCompletionParams]="caseEdit.eventCompletionParams"
   (eventCanBeCompleted)="onEventCanBeCompleted($event)">
 </ccd-case-event-completion>

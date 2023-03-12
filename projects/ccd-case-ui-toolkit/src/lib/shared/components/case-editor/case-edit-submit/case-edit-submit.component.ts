@@ -36,7 +36,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public contextFields: CaseField[];
   public task: Task;
   public pageTitle: string;
-  public caseEditState: Partial<CaseEditState>;
+  // public caseEditState: Partial<CaseEditState>;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -57,12 +57,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     // We don't need to check the validity of the editForm as it is readonly.
     // This was causing issues with hidden fields that aren't wanted but have
     // not been disabled.
-    return this.caseEditState.isSubmitting || this.hasErrors;
+    return this.caseEdit.isSubmitting || this.hasErrors;
   }
 
   constructor(
-    private readonly caseEdit: CaseEditComponent,
-    private readonly caseEditDataService: CaseEditDataService,
+    public readonly caseEdit: CaseEditComponent,
+    // private readonly caseEditDataService: CaseEditDataService,
     private readonly fieldsUtils: FieldsUtils,
     private readonly caseFieldService: CaseFieldService,
     private readonly route: ActivatedRoute,
@@ -78,23 +78,14 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
-    this.caseEditDataService.updateIsSubmitting(false);
+    this.caseEdit.isSubmitting = false;
     this.contextFields = this.getCaseFields();
-    this.caseEditDataService.caseEditState$
-      .subscribe((state) => {
-        this.caseEditState = state;
-
-        if (!!state.submitResponse) {
-          this.emitSubmitted(state.submitResponse);
-        }
-      });
     // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
     // a FlagLauncher field in the event trigger
-    this.caseEditDataService.updateIsCaseFlagSubmission(this.eventTrigger.case_fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)));
-    this.caseEditDataService.updateIsLinkedCasesSubmission(
-      this.eventTrigger.case_fields.some(caseField => FieldsUtils.isComponentLauncherCaseField(caseField))
-    );
-    this.pageTitle = this.caseEditState.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
+    this.caseEdit.isCaseFlagSubmission = this.eventTrigger.case_fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
+    this.caseEdit.isLinkedCasesSubmission =
+      this.eventTrigger.case_fields.some(caseField => FieldsUtils.isComponentLauncherCaseField(caseField));
+    this.pageTitle = this.caseEdit.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
   }
 
   public ngOnDestroy(): void {
@@ -104,30 +95,26 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
-    this.caseEditDataService.submitForm({
+    this.caseEdit.submitForm({
       eventTrigger: this.eventTrigger,
       form: this.editForm,
-      caseEditState: this.caseEditState,
       submit: this.caseEdit.submit,
       caseDetails: this.caseEdit.caseDetails,
     });
   }
 
   public onEventCanBeCompleted(eventCanBeCompleted: boolean): void {
-    this.caseEditDataService.onEventCanBeCompleted({
+    this.caseEdit.onEventCanBeCompleted({
       eventTrigger: this.eventTrigger,
       eventCanBeCompleted,
       caseDetails: this.caseEdit.caseDetails,
       form: this.editForm,
-      caseEditState: this.caseEditState,
       submit: this.caseEdit.submit,
     });
   }
 
   private get hasErrors(): boolean {
-    return this.caseEditState.error
-      && this.caseEditState.error.callbackErrors
-      && this.caseEditState.error.callbackErrors.length;
+    return this.caseEdit?.error?.callbackErrors?.length;
   }
 
   public navigateToPage(pageId: string): void {
@@ -135,7 +122,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {
-    this.caseEditDataService.updateIgnoreWarning(errorContext.ignore_warning);
+    this.caseEdit.ignoreWarning = errorContext.ignore_warning;
     this.triggerText = errorContext.trigger_text;
   }
 
@@ -249,7 +236,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public getCaseId(): string {
-    return this.caseEditDataService.getCaseId(this.caseEdit.caseDetails);
+    return this.caseEdit.getCaseId(this.caseEdit.caseDetails);
   }
 
   public getCaseTitle(): string {
@@ -263,10 +250,5 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     } else {
       return 'Cancel';
     }
-  }
-
-  public emitSubmitted(response: Record<string, any>): void {
-    this.caseEdit.submitted.emit({caseId: response['id'], status: this.caseEditDataService.getStatus(response)});
-    this.caseEditDataService.updateSubmitResponse(null);
   }
 }
