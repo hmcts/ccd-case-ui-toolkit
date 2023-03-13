@@ -20,7 +20,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
-  public displayContextParameter = '';
+  public displayContextParameter: string;
 
   public pathToFlagsFormGroup: string;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
@@ -93,11 +93,14 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           // TODO: not the best solution, the caseFlagStateService should have all the fields, then we can delete a lot of the transformations here
           // in Create Case Flag it already has all fields
           this.flagForSummaryDisplay.flagDetail = {
-              ...this.flagForSummaryDisplay.flagDetail,
-              ...this.caseFlagStateService.formGroup?.value
-            };
-            // Set the display mode for the "Review flag details" summary page
-            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+            ...this.flagForSummaryDisplay.flagDetail,
+            ...this.caseFlagStateService.formGroup?.value
+          };
+
+          console.log('FLAG DETAIL', this.flagForSummaryDisplay.flagDetail);
+
+          // Set the display mode for the "Review flag details" summary page
+          this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
         }
       }
     }

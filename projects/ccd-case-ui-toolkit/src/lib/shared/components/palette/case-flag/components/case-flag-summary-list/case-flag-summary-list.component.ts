@@ -29,12 +29,12 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public ngOnInit(): void {
     if (this.flagForSummaryDisplay) {
       const flagDetail = this.flagForSummaryDisplay.flagDetail;
+      this.isWelshTranslationRequired = (flagDetail as any).flagIsWelshTranslationNeeded;
       this.flagDescription = this.getFlagDescription(flagDetail);
-      this.flagComments = flagDetail.flagComment;
-      this.flagStatus = flagDetail.status;
-      this.isWelshTranslationRequired = true;
       this.flagDescriptionWelsh = this.getFlagDescriptionWelsh(flagDetail);
-      this.flagCommentsWelsh = flagDetail.flagComment_cy;
+      this.flagComments = flagDetail.flagComment;
+      this.flagCommentsWelsh = (flagDetail as any).flagCommentWelsh;
+      this.flagStatus = flagDetail.status;
       this.addUpdateFlagHeaderText =
         this.summaryListDisplayMode === CaseFlagSummaryListDisplayMode.MANAGE ? this.updateFlagHeaderText : this.addFlagHeaderText;
     }
