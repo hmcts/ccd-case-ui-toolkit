@@ -1,14 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
-import { CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage, CaseEditonEventCanBeCompleted, CaseEditState, CaseEditSubmitForm, CaseEventData, CaseEventTrigger, CaseField, CaseView, Draft, Profile } from '../../../domain';
+import { CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage, CaseEditonEventCanBeCompleted, CaseEditSubmitForm, CaseEventData, CaseEventTrigger, CaseField, CaseView, Draft, HttpError, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import { FieldsPurger, FieldsUtils, FormErrorService, FormValueService, SessionStorageService, WindowService } from '../../../services';
 import { Confirmation, Wizard, WizardPage } from '../domain';
+import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService } from '../services';
 
 @Component({
@@ -17,7 +18,7 @@ import { CaseNotifier, WizardFactoryService } from '../services';
   styleUrls: ['../case-edit.scss'],
   providers: [GreyBarService]
 })
-export class CaseEditComponent implements OnInit {
+export class CaseEditComponent implements OnInit, OnDestroy {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
   public static readonly ALERT_MESSAGE = 'Page is being refreshed so you will be redirected to the first page of this event.';
 
@@ -54,11 +55,11 @@ export class CaseEditComponent implements OnInit {
 
   public isPageRefreshed: boolean;
 
-  public isSubmitting: CaseEditState['isSubmitting'];
+  public isSubmitting: boolean;
 
-  public eventCompletionParams: CaseEditState['eventCompletionParams'];
+  public eventCompletionParams: EventCompletionParams;
 
-  public submitResponse: CaseEditState['submitResponse'];
+  public submitResponse: Record<string, any>;
 
   public isEventCompletionChecksRequired = false;
 
@@ -68,13 +69,12 @@ export class CaseEditComponent implements OnInit {
 
   public isLinkedCasesSubmission = false;
 
-  public error: CaseEditState['error'];
+  public error: HttpError;
 
-  public callbackErrors: CaseEditState['callbackErrors'];
+  public callbackErrorsSubject: Subject<any> = new Subject();
 
   constructor(
     private readonly fb: FormBuilder,
-    // private readonly caseEditDataService: CaseEditDataService,
     private readonly caseNotifier: CaseNotifier,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
@@ -86,16 +86,7 @@ export class CaseEditComponent implements OnInit {
     private readonly windowsService: WindowService,
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
-  ) {
-    // this.caseEditDataService.caseEditState$
-    //   .subscribe((state) => {
-    //     this.caseEditState = state;
-
-    //     if (!!state.submitResponse) {
-    //       this.emitSubmitted(state.submitResponse);
-    //     }
-    //   });
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
@@ -119,6 +110,12 @@ export class CaseEditComponent implements OnInit {
     this.route.queryParams.subscribe((params: Params) => {
       this.navigationOrigin = params[CaseEditComponent.ORIGIN_QUERY_PARAM];
     });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.callbackErrorsSubject) {
+      this.callbackErrorsSubject.unsubscribe();
+    }
   }
 
   public checkPageRefresh(): boolean {
@@ -289,12 +286,12 @@ export class CaseEditComponent implements OnInit {
 }
 
 /**
-    * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
-    * all its sub-fields and descendants are `null` or `undefined`.
-    *
-    * @param data The object tree representing all the form field data
-    * @returns The form field data modified accordingly
-    */
+  * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
+  * all its sub-fields and descendants are `null` or `undefined`.
+  *
+  * @param data The object tree representing all the form field data
+  * @returns The form field data modified accordingly
+  */
 private replaceEmptyComplexFieldValues(data: object): object {
   Object.keys(data).forEach((key) => {
     if (!Array.isArray(data[key]) && typeof data[key] === 'object' && !FieldsUtils.containsNonEmptyValues(data[key])) {
@@ -407,7 +404,7 @@ private caseSubmit({ form, caseEventData, submit }: CaseEditCaseSubmit ): void {
       },
       error => {
         this.error = error;
-        this.callbackErrors = error;
+        this.callbackErrorsSubject.next(error);
 
         if (this.error.details) {
           this.formErrorService

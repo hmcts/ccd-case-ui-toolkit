@@ -4,7 +4,6 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
-import { CaseEditState } from '../../../domain';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
@@ -52,8 +51,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public callbackErrorsSubject: Subject<any> = new Subject();
 
-  // public caseEditState: Partial<CaseEditState>;
-
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
   }
@@ -75,12 +72,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     private readonly dialog: MatDialog,
     private readonly caseFieldService: CaseFieldService,
     private readonly caseEditDataService: CaseEditDataService
-  ) {
-    // this.caseEditDataService.caseEditState$
-    //   .subscribe((state) => {
-    //     this.caseEditState = state;
-    //   });
-  }
+  ) {}
 
   public ngOnInit(): void {
     initDialog();
@@ -397,7 +389,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   private handleError(error) {
     this.caseEdit.isSubmitting = false;
     this.caseEdit.error = error;
-    this.caseEdit.callbackErrors = this.caseEdit.error;
+    this.caseEdit.callbackErrorsSubject.next(this.caseEdit.error);
     this.callbackErrorsSubject.next(this.caseEdit.error);
     if (this.caseEdit.error.details) {
       this.formErrorService
@@ -409,7 +401,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.caseEdit.error = null;
     this.caseEdit.ignoreWarning = false;
     this.triggerText = this.getTriggerText();
-    this.caseEdit.callbackErrors = null;
+    this.caseEdit.callbackErrorsSubject.next(null);
   }
 
   private saveDraft() {

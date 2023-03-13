@@ -13,7 +13,7 @@
 
   <ccd-case-edit-generic-errors [error]="caseEdit.error"></ccd-case-edit-generic-errors>
 
-  <ccd-callback-errors [callbackErrorsSubject]="caseEdit.callbackErrors"
+  <ccd-callback-errors [callbackErrorsSubject]="caseEdit.callbackErrorsSubject"
                       (callbackErrorsContext)="callbackErrorsNotify($event)"></ccd-callback-errors>
 
   <form class="check-your-answers" [formGroup]="editForm" (submit)="submit()">

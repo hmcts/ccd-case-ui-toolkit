@@ -2,22 +2,7 @@
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs-compat';
 import { Confirmation, Wizard } from '../../components';
-import { EventCompletionParams } from '../../components/case-editor/domain/event-completion-params.model';
 import { CaseEventData, CaseEventTrigger, CaseView, HttpError, Profile } from '../../domain';
-
-export interface CaseEditState {
-  eventCompletionParams: EventCompletionParams;
-  isSubmitting: boolean;
-  isLinkedCasesSubmission: boolean;
-  isEventCompletionChecksRequired: boolean;
-  isCaseFlagSubmission: boolean;
-  ignoreWarning: boolean;
-  error: HttpError;
-  callbackErrors: any;
-  confirmation: Confirmation;
-  submitResponse: Record<string, any>;
-}
-
 interface CaseEditModel {
   wizard: Wizard;
   currentPageId: string;
@@ -26,7 +11,6 @@ interface CaseEditModel {
   eventCanBeCompleted: boolean;
   caseDetails: CaseView;
   caseEventData: CaseEventData;
-  caseEditState: Partial<CaseEditState>;
   submit(caseEventData: CaseEventData, profile?: Profile): Observable<object>;
 }
 

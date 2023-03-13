@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { CaseEditDataService } from '../../../commons/case-edit-data';
-import { CaseEditState, CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
+import { CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
@@ -26,7 +25,6 @@ import { Wizard, WizardPage } from '../domain';
 export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public eventTrigger: CaseEventTrigger;
   public editForm: FormGroup;
-  public error: HttpError;
   public triggerText: string;
   public wizard: Wizard;
   public profile: Profile;
@@ -36,7 +34,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public contextFields: CaseField[];
   public task: Task;
   public pageTitle: string;
-  // public caseEditState: Partial<CaseEditState>;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -62,7 +59,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly caseEdit: CaseEditComponent,
-    // private readonly caseEditDataService: CaseEditDataService,
     private readonly fieldsUtils: FieldsUtils,
     private readonly caseFieldService: CaseFieldService,
     private readonly route: ActivatedRoute,
