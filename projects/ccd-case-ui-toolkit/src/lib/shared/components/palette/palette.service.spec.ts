@@ -21,6 +21,7 @@ import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-fiel
 import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
 import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
+import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
@@ -255,6 +256,14 @@ describe('PaletteService', () => {
       caseField.display_context_parameter = '#ARGUMENT(CaseFileView)';
       expect(paletteService.getFieldComponentClass(caseField, true)).toBe(CaseFileViewFieldComponent);
       expect(paletteService.getFieldComponentClass(caseField, false)).toBe(CaseFileViewFieldReadComponent);
+    });
+
+    it('should get LinkedCasesFieldComponent component class for ComponentLauncher field with argument of "LinkedCases"', () => {
+      const caseField = new CaseField();
+      caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
+      caseField.display_context_parameter = '#ARGUMENT(CREATE,LinkedCases)';
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(WriteLinkedCasesFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(ReadLinkedCasesFieldComponent);
     });
 
     it('should get UnsupportedFieldComponent component class for ComponentLauncher field with unknown argument', () => {

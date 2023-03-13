@@ -1,0 +1,37 @@
+<!-- Error message summary -->
+<div *ngIf="errorMessages.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+  <h2 class="govuk-error-summary__title" id="error-summary-title">
+    There is a problem
+  </h2>
+  <div *ngFor="let errorMessage of errorMessages" class="govuk-error-summary__body">
+    <ul class="govuk-list govuk-error-summary__list">
+      <li>
+        <a (click)="navigateToErrorElement(errorMessage.fieldId)" class="validation-error">{{errorMessage.description}}</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="form-group govuk-!-margin-bottom-2" [formGroup]="formGroup">
+  <div class="govuk-form-group" [ngSwitch]="linkedCasesPage">
+    <ng-container *ngSwitchCase="linkedCasesPages.BEFORE_YOU_START">
+      <ccd-linked-cases-before-you-start
+        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-before-you-start>
+    </ng-container>
+    <ng-container *ngSwitchCase="linkedCasesPages.NO_LINKED_CASES">
+      <ccd-no-linked-cases
+        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-no-linked-cases>
+    </ng-container>
+    <ng-container *ngSwitchCase="linkedCasesPages.LINK_CASE">
+      <ccd-link-cases
+        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-link-cases>
+    </ng-container>
+    <ng-container *ngSwitchCase="linkedCasesPages.UNLINK_CASE">
+      <ccd-unlink-cases
+        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-unlink-cases>
+    </ng-container>
+    <ng-container *ngSwitchCase="linkedCasesPages.CHECK_YOUR_ANSWERS">
+      <ccd-linked-cases-check-your-answers
+        (linkedCasesStateEmitter)="onLinkedCasesStateEmitted($event)"></ccd-linked-cases-check-your-answers>
+    </ng-container>
+  </div>
+</div>
