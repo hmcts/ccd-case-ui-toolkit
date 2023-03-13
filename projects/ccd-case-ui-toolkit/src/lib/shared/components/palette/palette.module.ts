@@ -175,7 +175,7 @@ const PALETTE_COMPONENTS = [
   WriteDynamicListFieldComponent,
   ReadDynamicMultiSelectListFieldComponent,
   ReadDynamicListFieldComponent,
-  ReadDynamicRadioListFieldComponent
+  ReadDynamicRadioListFieldComponent,
   LinkedCasesToTableComponent,
   LinkedCasesFromTableComponent,
   BeforeYouStartComponent,
