@@ -286,12 +286,12 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 }
 
 /**
-  * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
-  * all its sub-fields and descendants are `null` or `undefined`.
-  *
-  * @param data The object tree representing all the form field data
-  * @returns The form field data modified accordingly
-  */
+ * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
+ * all its sub-fields and descendants are `null` or `undefined`.
+ *
+ * @param data The object tree representing all the form field data
+ * @returns The form field data modified accordingly
+ */
 private replaceEmptyComplexFieldValues(data: object): object {
   Object.keys(data).forEach((key) => {
     if (!Array.isArray(data[key]) && typeof data[key] === 'object' && !FieldsUtils.containsNonEmptyValues(data[key])) {
