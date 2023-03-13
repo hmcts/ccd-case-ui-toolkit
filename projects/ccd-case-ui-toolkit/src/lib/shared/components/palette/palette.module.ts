@@ -49,7 +49,7 @@ import {
   SelectFlagLocationComponent,
   SelectFlagTypeComponent,
   UpdateFlagComponent,
-  UpdateFlagWelshTranslationFormComponent,
+  UpdateFlagAddTranslationFormComponent,
   WriteCaseFlagFieldComponent
 } from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -185,7 +185,7 @@ const PALETTE_COMPONENTS = [
   UpdateFlagComponent,
   CaseFlagSummaryListComponent,
   ConfirmFlagStatusComponent,
-  UpdateFlagWelshTranslationFormComponent
+  UpdateFlagAddTranslationFormComponent
 ];
 
 @NgModule({

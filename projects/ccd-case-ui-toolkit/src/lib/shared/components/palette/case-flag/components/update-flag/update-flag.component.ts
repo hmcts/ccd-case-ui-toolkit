@@ -2,8 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
-import { CaseFlagFormFields } from '../../enums/case-flag-form-fields.enum';
+import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
 
 @Component({
   selector: 'ccd-update-flag',
@@ -24,7 +23,7 @@ export class UpdateFlagComponent implements OnInit {
   public updateFlagStepEnum = UpdateFlagStep;
   public readonly caseFlagStatuses = CaseFlagStatus;
   public readonly caseFlagFormFields = CaseFlagFormFields;
-  private readonly commentsMaxCharLimit = 200;
+  private readonly textMaxCharLimit = 200;
   private flagDetail: FlagDetail;
 
   public ngOnInit(): void {
@@ -45,7 +44,7 @@ export class UpdateFlagComponent implements OnInit {
   }
 
   public onNext(): void {
-    // Validate flag comments entry
+    // Validate flag comments and status reason entry
     this.validateTextEntry();
 
     // Return case flag field state, error messages, and selected flag detail to the parent. The selected flag must be
@@ -77,7 +76,7 @@ export class UpdateFlagComponent implements OnInit {
       });
     }
 
-    if (comment && comment.length > this.commentsMaxCharLimit) {
+    if (comment && comment.length > this.textMaxCharLimit) {
       this.updateFlagCharLimitErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED;
       this.errorMessages.push({
         title: '',
@@ -96,7 +95,7 @@ export class UpdateFlagComponent implements OnInit {
       });
     }
 
-    if (statusReason && statusReason.length > this.commentsMaxCharLimit) {
+    if (statusReason && statusReason.length > this.textMaxCharLimit) {
       this.statusReasonCharLimitErrorMessage = UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED;
       this.errorMessages.push({
         title: '',

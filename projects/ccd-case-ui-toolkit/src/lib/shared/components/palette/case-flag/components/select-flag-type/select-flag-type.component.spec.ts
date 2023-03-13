@@ -5,11 +5,10 @@ import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../services/case-flag';
-import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
+import { CaseFlagFieldState, CaseFlagFormFields, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
 import createSpyObj = jasmine.createSpyObj;
-import { CaseFlagFormFields } from '../../enums/case-flag-form-fields.enum';
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
 describe('SelectFlagTypeComponent', () => {
