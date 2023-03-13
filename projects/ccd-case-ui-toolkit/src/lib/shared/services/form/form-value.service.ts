@@ -400,7 +400,7 @@ export class FormValueService {
           // Retain anything that is readonly and not a label.
           continue;
         }
-        if (field.hidden === true && field.display_context !== 'HIDDEN') {
+        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.id !== 'caseLinks') {
           // Delete anything that is hidden (that is NOT readonly), and that
           // hasn't had its display_context overridden to make it hidden.
           delete data[field.id];
@@ -528,6 +528,39 @@ export class FormValueService {
             }
         };
       });
+    }
+  }
+
+  /**
+   * Remove the ComponentLauncher case field, which is not intended to be persisted.
+   *
+   * @param data The object tree of form values on which to perform the removal
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public removeComponentLauncherField(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      const componentLauncherCaseField = caseFields.filter(caseField => FieldsUtils.isComponentLauncherCaseField(caseField));
+      if (componentLauncherCaseField.length > 0) {
+        // There should be only one ComponentLauncher case field
+        delete data[componentLauncherCaseField[0].id];
+      }
+    }
+  }
+
+  /**
+   * Populate the linked cases from the data held in its corresponding CaseField.
+   *
+   * @param data The object tree of form values on which to perform the data population
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public populateLinkedCasesDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0) {
+      caseFields.filter(caseField => !FieldsUtils.isComponentLauncherCaseField(caseField))
+        .forEach(caseField => {
+          if (data.hasOwnProperty('caseLinks') && caseField.value) {
+            data[caseField.id] = caseField.value;
+          }
+        });
     }
   }
 }
