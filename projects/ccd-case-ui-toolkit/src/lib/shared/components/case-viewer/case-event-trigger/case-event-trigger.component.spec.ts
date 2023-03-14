@@ -1,13 +1,21 @@
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { CaseEventData, CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService } from '../../../services';
+import {
+  ActivityPollingService,
+  ActivityService,
+  ActivitySocketService,
+  AlertService,
+  SessionStorageService,
+} from '../../../services';
+import { MODES } from '../../../services/activity/utils';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 
@@ -61,12 +69,14 @@ describe('CaseEventTriggerComponent', () => {
     event_token: 'cbcdcbdh',
     ignore_warning: false
   };
+  const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
 
   let fixture: ComponentFixture<CaseEventTriggerComponent>;
   let component: CaseEventTriggerComponent;
+  let de: DebugElement;
 
   const CaseEditComponent: any = MockComponent({
     selector: 'ccd-case-edit',
@@ -75,8 +85,8 @@ describe('CaseEventTriggerComponent', () => {
   });
 
   const CaseActivityComponent: any = MockComponent({
-    selector: 'ccd-activity',
-    inputs: ['caseId', 'displayMode']
+    selector: 'ccd-case-activity',
+    inputs: ['caseId', 'iconOnly']
   });
 
   const CaseHeaderComponent: any = MockComponent({
@@ -127,7 +137,10 @@ describe('CaseEventTriggerComponent', () => {
   let caseNotifier: any;
   let casesService: any;
   let casesReferencePipe: any;
+  let activityService: any;
   let activityPollingService: any;
+  let activitySocketService: any;
+  let sessionStorageService: any;
 
   beforeEach(waitForAsync(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
@@ -138,12 +151,23 @@ describe('CaseEventTriggerComponent', () => {
     casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
 
     alertService = createSpyObj<AlertService>('alertService', ['success', 'warning']);
+
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify(MOCK_USER));
+    activityService = {
+      modeSubject: new BehaviorSubject<MODES>(MODES.off)
+    };
+
     activityPollingService = createSpyObj<ActivityPollingService>('activityPollingService', ['postEditActivity']);
     activityPollingService.postEditActivity.and.returnValue(of());
-    router = {
-      navigate: jasmine.createSpy('navigate'),
-      url: ''
+    activitySocketService = {
+      editCalls: [],
+      connected: new BehaviorSubject<boolean>(false),
+      editCase: (caseId: string) => {
+        activitySocketService.editCalls.push(caseId);
+      }
     };
+    router = createSpyObj('router', ['navigate']);
     router.navigate.and.returnValue({then: f => f()});
 
     TestBed
@@ -171,7 +195,10 @@ describe('CaseEventTriggerComponent', () => {
           { provide: Router, useValue: router },
           { provide: AlertService, useValue: alertService },
           { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivityPollingService, useValue: activityPollingService }
+          { provide: ActivityService, useValue: activityService },
+          { provide: ActivityPollingService, useValue: activityPollingService },
+          { provide: ActivitySocketService, useValue: activitySocketService },
+          { provide: SessionStorageService, useValue: sessionStorageService }
         ]
       })
       .compileComponents();
@@ -179,6 +206,7 @@ describe('CaseEventTriggerComponent', () => {
     fixture = TestBed.createComponent(CaseEventTriggerComponent);
     component = fixture.componentInstance;
 
+    de = fixture.debugElement;
     fixture.detectChanges();
   }));
 

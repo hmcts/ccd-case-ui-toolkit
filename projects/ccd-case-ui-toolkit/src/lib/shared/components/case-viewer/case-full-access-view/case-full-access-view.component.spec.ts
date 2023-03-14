@@ -68,7 +68,6 @@ class TabsComponent {
   template: '<ng-content></ng-content>'
 })
 class TabComponent {
-
   @Input()
   public selected: boolean;
 }
@@ -130,8 +129,8 @@ const MarkdownComponent: any = MockComponent({
 });
 
 const CaseActivityComponent: any = MockComponent({
-  selector: 'ccd-activity',
-  inputs: ['caseId', 'displayMode']
+  selector: 'ccd-case-activity',
+  inputs: ['caseId', 'iconOnly']
 });
 
 const FieldReadComponent: any = MockComponent({
@@ -592,7 +591,6 @@ let navigationNotifierService: NavigationNotifierService;
 let errorNotifierService: ErrorNotifierService;
 
 xdescribe('CaseFullAccessViewComponent', () => {
-
   const FIELDS = CASE_VIEW.tabs[0].fields;
   const SIMPLE_FIELDS = CASE_VIEW.tabs[0].fields.slice(0, 2);
   const COMPLEX_FIELDS = CASE_VIEW.tabs[0].fields.slice(2);
@@ -1043,7 +1041,6 @@ xdescribe('CaseFullAccessViewComponent', () => {
 });
 
 xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
-
   beforeEach((() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
@@ -1129,7 +1126,6 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
 });
 
 xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () => {
-
   beforeEach((() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
@@ -1220,7 +1216,6 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
 });
 
 describe('CaseFullAccessViewComponent - prependedTabs', () => {
-
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
@@ -1282,7 +1277,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path = (_: string) => 'cases/case-details/1234567890123456/tasks'
+              public path = (_: string) => 'cases/case-details/1234567890123456/tasks';
             }
           },
           ErrorNotifierService,
@@ -1347,7 +1342,6 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
 });
 
 describe('CaseFullAccessViewComponent - appendedTabs', () => {
-
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
@@ -1471,8 +1465,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     expect(matTabHTMLElement.children.length).toBe(7);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[6] as HTMLElement;
-    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Hearings');
+    const hearingsTab: HTMLElement = matTabHTMLElement.children[5] as HTMLElement;
+    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Case flags');
   });
 
   it('should display active Case Flags banner message if at least one of the Case Flags is active', () => {
@@ -1544,7 +1538,6 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
 });
 
 xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
-
   let comp: CaseFullAccessViewComponent;
   let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
@@ -1655,7 +1648,7 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
   it('should render 1st order of tabs', () => {
     const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(4);
+    expect(matTabHTMLElement.children.length).toBe(3);
     const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
     expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('History');
   });
@@ -1840,7 +1833,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     componentFixture.detectChanges();
     expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
   });
-
 });
 
 describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {
