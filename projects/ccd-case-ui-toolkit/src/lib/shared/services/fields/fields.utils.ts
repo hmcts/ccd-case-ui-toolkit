@@ -79,13 +79,6 @@ export class FieldsUtils {
     return pageFormFields[0]['value'] !== undefined;
   }
 
-  public static isLinkedCasesCaseField(caseField: CaseField): boolean {
-    if (!caseField) {
-      return false;
-    }
-    return caseField.field_type.collection_field_type.id === 'CaseLink';
-  }
-
   public static cloneObject(obj: any): any {
     return Object.assign({}, obj);
   }
@@ -358,6 +351,14 @@ export class FieldsUtils {
     return caseField.field_type.type === 'FlagLauncher';
   }
 
+	public static isComponentLauncherCaseField(caseField: CaseField): boolean {
+    if (!caseField) {
+      return false;
+    }
+
+    return caseField.field_type.type === 'ComponentLauncher';
+  }
+
   public static isFlagsFieldType(fieldType: FieldType): boolean {
     if (!fieldType) {
       return false;
@@ -396,7 +397,7 @@ export class FieldsUtils {
             // If the Flags CaseField has a value, it is a root-level Complex field; if it does not, it is a Flags
             // CaseField that is a sub-field within another Complex field, so use the currentValue value (if any)
             // instead. The exception to this is the "caseFlags" Flags CaseField, which will have an empty object value
-            // initially or could be null or undefined, because no party name is required
+            // initially, because no party name is required
             if (caseField.value && FieldsUtils.isNonEmptyObject(caseField.value) ||
               caseField.id === this.caseLevelCaseFlagsFieldId) {
               flags.push(this.mapCaseFieldToFlagsWithFormGroupPathObject(caseField, pathToFlagsFormGroup));

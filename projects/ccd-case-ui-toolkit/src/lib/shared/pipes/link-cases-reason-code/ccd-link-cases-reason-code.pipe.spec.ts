@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { LinkedCasesService } from '../../components/palette/case-link/services';
+import { LinkedCasesService } from '../../components/palette/linked-cases/services';
 import { JurisdictionService, SearchService } from '../../services';
 import { LovRefDataByServiceModel } from '../../services/common-data-service/common-data-service';
 import { LinkCasesReasonValuePipe } from './ccd-link-cases-reason-code.pipe';
@@ -71,14 +71,18 @@ describe('LinkCasesReasonValuePipe', () => {
   });
 
   it('should transform correct reason value when valid reason code is being passsed', () => {
-    expect(linkCasesReasonValuePipe.transform('CLR002')).toBe('Bail');
+    expect(linkCasesReasonValuePipe.transform({Reason: 'CLR002'})).toBe('Bail');
+  });
+
+  it('should transform correct reason value when valid reason code and other description is being passsed', () => {
+    expect(linkCasesReasonValuePipe.transform({Reason: 'CLR003', OtherDescription: 'To test the other option'})).toBe('Other - To test the other option');
   });
 
   it('should transform as undefined when invalid reason code is being passsed', () => {
-    expect(linkCasesReasonValuePipe.transform('CLR005')).toBe(undefined);
+    expect(linkCasesReasonValuePipe.transform({Reason: 'CLR005'})).toBe(undefined);
   });
 
   it('should transform as undefined when no reason code is being passsed', () => {
-    expect(linkCasesReasonValuePipe.transform('')).toBe(undefined);
+    expect(linkCasesReasonValuePipe.transform({Reason: ''})).toBe(undefined);
   });
 });

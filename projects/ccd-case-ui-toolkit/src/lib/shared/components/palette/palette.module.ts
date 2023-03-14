@@ -20,13 +20,14 @@ import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
 import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
+import { CaseEditDataModule } from '../../commons/case-edit-data';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
-import { LoadingModule } from '../../services/loading/loading.module';
 import { CaseFlagRefdataService } from '../../services/case-flag/case-flag-refdata.service';
 import { CommonDataService } from '../../services/common-data-service/common-data-service';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
+import { LoadingModule } from '../../services/loading/loading.module';
 import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
@@ -38,10 +39,7 @@ import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/com
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
-import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, UnLinkCasesComponent, WriteLinkedCasesComponent } from './case-link';
-import { ReadLinkedCasesComponent } from './case-link/components/read-linked-cases.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
-import { LinkedCasesService } from './case-link/services';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
@@ -63,6 +61,8 @@ import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioLi
 import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComponent, EventLogTableComponent } from './history';
 import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from './judicial-user';
 import { LabelFieldComponent } from './label';
+import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, ReadLinkedCasesFieldComponent, UnLinkCasesComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
+import { LinkedCasesService } from './linked-cases/services';
 import { MarkdownComponent } from './markdown';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent, WriteMoneyGbpFieldComponent } from './money-gbp';
 import { ReadMultiSelectListFieldComponent, WriteMultiSelectListFieldComponent } from './multi-select-list';
@@ -78,135 +78,134 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { CaseEditDataModule } from '../../commons/case-edit-data';
 
 const PALETTE_COMPONENTS = [
-    UnsupportedFieldComponent,
-    DatetimePickerComponent,
-    WaysToPayFieldComponent,
-    MarkdownComponent,
-    FieldReadComponent,
-    FieldWriteComponent,
-    FieldReadLabelComponent,
-    LabelFieldComponent,
-    CasePaymentHistoryViewerFieldComponent,
-    MoneyGbpInputComponent,
-    CaseHistoryViewerFieldComponent,
-    EventLogComponent,
-    EventLogDetailsComponent,
-    EventLogTableComponent,
+  UnsupportedFieldComponent,
+  DatetimePickerComponent,
+  WaysToPayFieldComponent,
+  MarkdownComponent,
+  FieldReadComponent,
+  FieldWriteComponent,
+  FieldReadLabelComponent,
+  LabelFieldComponent,
+  CasePaymentHistoryViewerFieldComponent,
+  MoneyGbpInputComponent,
+  CaseHistoryViewerFieldComponent,
+  EventLogComponent,
+  EventLogDetailsComponent,
+  EventLogTableComponent,
 
-    // // Read
-    ReadTextFieldComponent,
-    ReadTextAreaFieldComponent,
-    ReadNumberFieldComponent,
-    ReadEmailFieldComponent,
-    ReadPhoneUKFieldComponent,
-    ReadDateFieldComponent,
-    ReadCollectionFieldComponent,
-    ReadDocumentFieldComponent,
+  // Read
+  ReadTextFieldComponent,
+  ReadTextAreaFieldComponent,
+  ReadNumberFieldComponent,
+  ReadEmailFieldComponent,
+  ReadPhoneUKFieldComponent,
+  ReadDateFieldComponent,
+  ReadCollectionFieldComponent,
+  ReadDocumentFieldComponent,
 
-    // new
-    ReadJudicialUserFieldComponent,
-    ReadYesNoFieldComponent,
-    ReadOrganisationFieldComponent,
-    ReadOrganisationFieldTableComponent,
-    ReadOrganisationFieldRawComponent,
-    ReadOrderSummaryFieldComponent,
-    ReadOrderSummaryRowComponent,
-    ReadMoneyGbpFieldComponent,
-    ReadMultiSelectListFieldComponent,
-    ReadDynamicListFieldComponent,
-    ReadFixedListFieldComponent,
-    ReadFixedRadioListFieldComponent,
-    ReadDynamicRadioListFieldComponent,
-    ReadCaseLinkFieldComponent,
-    ReadComplexFieldComponent,
-    ReadComplexFieldRawComponent,
-    ReadComplexFieldTableComponent,
-    ReadComplexFieldCollectionTableComponent,
-    ReadCaseFlagFieldComponent,
-    ReadLinkedCasesComponent,
+  // new
+  ReadJudicialUserFieldComponent,
+  ReadYesNoFieldComponent,
+  ReadOrganisationFieldComponent,
+  ReadOrganisationFieldTableComponent,
+  ReadOrganisationFieldRawComponent,
+  ReadOrderSummaryFieldComponent,
+  ReadOrderSummaryRowComponent,
+  ReadMoneyGbpFieldComponent,
+  ReadMultiSelectListFieldComponent,
+  ReadDynamicListFieldComponent,
+  ReadFixedListFieldComponent,
+  ReadFixedRadioListFieldComponent,
+  ReadDynamicRadioListFieldComponent,
+  ReadCaseLinkFieldComponent,
+  ReadComplexFieldComponent,
+  ReadComplexFieldRawComponent,
+  ReadComplexFieldTableComponent,
+  ReadComplexFieldCollectionTableComponent,
+  ReadCaseFlagFieldComponent,
+  ReadLinkedCasesFieldComponent,
 
-    // Write
-    WriteJudicialUserFieldComponent,
-    WriteAddressFieldComponent,
-    WriteComplexFieldComponent,
-    WriteOrganisationComplexFieldComponent,
-    WriteDocumentFieldComponent,
-    WriteDynamicListFieldComponent,
-    WriteDynamicRadioListFieldComponent,
-    WriteTextFieldComponent,
-    WriteDateContainerFieldComponent,
-    WriteTextAreaFieldComponent,
-    WritePhoneUKFieldComponent,
-    WriteNumberFieldComponent,
-    WriteEmailFieldComponent,
-    WriteDateFieldComponent,
-    WriteCaseFlagFieldComponent,
+  // Write
+  WriteJudicialUserFieldComponent,
+  WriteAddressFieldComponent,
+  WriteComplexFieldComponent,
+  WriteOrganisationComplexFieldComponent,
+  WriteDocumentFieldComponent,
+  WriteDynamicListFieldComponent,
+  WriteDynamicRadioListFieldComponent,
+  WriteTextFieldComponent,
+  WriteDateContainerFieldComponent,
+  WriteTextAreaFieldComponent,
+  WritePhoneUKFieldComponent,
+  WriteNumberFieldComponent,
+  WriteEmailFieldComponent,
+  WriteDateFieldComponent,
+  WriteCaseFlagFieldComponent,
+  WriteLinkedCasesFieldComponent,
 
-    // new
-    WriteYesNoFieldComponent,
-    WriteOrganisationFieldComponent,
-    WriteOrganisationComplexFieldComponent,
-    WriteOrderSummaryFieldComponent,
-    WriteMoneyGbpFieldComponent,
-    WriteDateContainerFieldComponent,
-    WriteMultiSelectListFieldComponent,
-    WriteFixedListFieldComponent,
-    WriteFixedRadioListFieldComponent,
-    WriteCaseLinkFieldComponent,
-    WriteCollectionFieldComponent,
+  // new
+  WriteYesNoFieldComponent,
+  WriteOrganisationFieldComponent,
+  WriteOrganisationComplexFieldComponent,
+  WriteOrderSummaryFieldComponent,
+  WriteMoneyGbpFieldComponent,
+  WriteDateContainerFieldComponent,
+  WriteMultiSelectListFieldComponent,
+  WriteFixedListFieldComponent,
+  WriteFixedRadioListFieldComponent,
+  WriteCaseLinkFieldComponent,
+  WriteCollectionFieldComponent,
 
-    // ComponentLauncher web components
-    CaseFileViewFieldComponent,
-    CaseFileViewFieldReadComponent,
-    CaseFileViewFolderComponent,
-    CaseFileViewFolderSortComponent,
-    CaseFileViewOverlayMenuComponent,
-    CaseFileViewFolderDocumentActionsComponent,
-    CaseFileViewFolderSelectorComponent,
-    LinkedCasesToTableComponent,
-    LinkedCasesFromTableComponent,
-    BeforeYouStartComponent,
-    LinkCasesComponent,
-    CheckYourAnswersComponent,
-    WriteLinkedCasesComponent,
-    UnLinkCasesComponent,
-    NoLinkedCasesComponent
+  // ComponentLauncher web components
+  CaseFileViewFieldComponent,
+  CaseFileViewFieldReadComponent,
+  CaseFileViewFolderComponent,
+  CaseFileViewFolderSortComponent,
+  CaseFileViewOverlayMenuComponent,
+  CaseFileViewFolderDocumentActionsComponent,
+  CaseFileViewFolderSelectorComponent,
+  LinkedCasesToTableComponent,
+  LinkedCasesFromTableComponent,
+  BeforeYouStartComponent,
+  LinkCasesComponent,
+  CheckYourAnswersComponent,
+  UnLinkCasesComponent,
+  NoLinkedCasesComponent
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        ReactiveFormsModule,
-        CaseEditDataModule,
-        PaletteUtilsModule,
-        PipesModule,
-        BannersModule,
-        HeadersModule,
-        FootersModule,
-        BodyModule,
-        FormModule,
-        TabsModule,
-        LabelSubstitutorModule,
-        NgxMdModule,
-        NgxMatDatetimePickerModule,
-        NgxMatTimepickerModule,
-        NgxMatNativeDateModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatAutocompleteModule,
-        CdkTreeModule,
-        OverlayModule,
-        PaymentLibModule,
-        ScrollToModule.forRoot(),
-        MatDialogModule,
-        MediaViewerModule,
-        LoadingModule
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CaseEditDataModule,
+    PaletteUtilsModule,
+    PipesModule,
+    BannersModule,
+    HeadersModule,
+    FootersModule,
+    BodyModule,
+    FormModule,
+    TabsModule,
+    LabelSubstitutorModule,
+    NgxMdModule,
+    NgxMatDatetimePickerModule,
+    NgxMatTimepickerModule,
+    NgxMatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatAutocompleteModule,
+    CdkTreeModule,
+    OverlayModule,
+    PaymentLibModule,
+    ScrollToModule.forRoot(),
+    MatDialogModule,
+    MediaViewerModule,
+    LoadingModule
   ],
   declarations: [
     FixedListPipe,
