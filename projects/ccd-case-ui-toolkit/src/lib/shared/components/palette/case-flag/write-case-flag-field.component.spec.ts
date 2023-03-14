@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
+import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 import createSpy = jasmine.createSpy;
@@ -34,7 +34,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       { id: null, value: 'Mobility support' }
     ],
     hearingRelevant: 'No',
-    flagCode: 'WCA',
+    flagCode: 'OT0001',
     status: CaseFlagStatus.ACTIVE
   };
   const caseFlag1DetailsValue2 = {
@@ -133,10 +133,16 @@ describe('WriteCaseFlagFieldComponent', () => {
       ]
     },
   };
-  // Set different comments, date/time modified, and status values in formatted_value to check they are restored
+  // Set different description, comments, date/time modified, and status values in formatted_value to check they are restored
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.otherDescription = null;
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.otherDescription_cy = null;
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.flagComment = null;
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.flagComment_cy = null;
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[0].value.dateTimeModified = null;
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.otherDescription = 'Original description';
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.otherDescription_cy = 'Welsh description';
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.flagComment = 'Original new comment 1';
+  parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.flagComment_cy = 'Welsh new comment 1';
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.dateTimeModified =
     '2022-02-14T00:00:00.000';
   parentFormGroup.controls[caseFlag1FieldId]['caseField'].formatted_value.details[1].value.status = CaseFlagStatus.ACTIVE;
@@ -179,10 +185,16 @@ describe('WriteCaseFlagFieldComponent', () => {
       ]
     },
   };
-  // Set different comments, date/time modified, and status values in formatted_value to check they are restored
+  // Set different description, comments, date/time modified, and status values in formatted_value to check they are restored
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.otherDescription = null;
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.otherDescription_cy = null;
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.flagComment = null;
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.flagComment_cy = null;
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[0].value.dateTimeModified = null;
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.otherDescription = 'Another description';
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.otherDescription_cy = 'Cymraeg';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.flagComment = 'Original new comment 2';
+  parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.flagComment_cy = 'Welsh new comment 2';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.dateTimeModified =
     '2022-02-15T00:00:00.000';
   parentFormGroup.controls[caseFlag2FieldId]['caseField'].formatted_value.details[1].value.status = CaseFlagStatus.ACTIVE;
@@ -564,25 +576,65 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
     component.caseFlagParentFormGroup = new FormGroup({
-      flagComment: new FormControl('An updated comment')
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('A description'),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),
+      [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
+      [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl('An updated comment (Welsh)')
     });
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
-    // Check the comments have been applied and the modified date/time has been set
+    // Check the description and comments have been applied and the modified date/time has been set
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toEqual(
+      component.caseFlagParentFormGroup.value.otherDescription);
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toEqual(
+      component.caseFlagParentFormGroup.value.otherDescriptionWelsh);
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
       component.caseFlagParentFormGroup.value.flagComment);
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual(
+      component.caseFlagParentFormGroup.value.flagCommentWelsh);
     expect(component.flagsData[0].caseField.value.details[0].value.dateTimeModified).toBeTruthy();
     // Check all other existing changes have been discarded (i.e. values restored from corresponding values in formatted_value)
     expect(component.flagsData[0].caseField.value.details[0].value.status).toEqual(CaseFlagStatus.ACTIVE);
+    expect(component.flagsData[0].caseField.value.details[1].value.otherDescription).toEqual('Original description');
+    expect(component.flagsData[0].caseField.value.details[1].value.otherDescription_cy).toEqual('Welsh description');
     expect(component.flagsData[0].caseField.value.details[1].value.flagComment).toEqual('Original new comment 1');
+    expect(component.flagsData[0].caseField.value.details[1].value.flagComment_cy).toEqual('Welsh new comment 1');
     expect(component.flagsData[0].caseField.value.details[1].value.dateTimeModified).toEqual('2022-02-14T00:00:00.000');
     expect(component.flagsData[0].caseField.value.details[1].value.status).toEqual(CaseFlagStatus.ACTIVE);
+    expect(component.flagsData[1].caseField.value.details[0].value.otherDescription).toBeNull();
+    expect(component.flagsData[1].caseField.value.details[0].value.otherDescription_cy).toBeNull();
     expect(component.flagsData[1].caseField.value.details[0].value.flagComment).toBeNull();
+    expect(component.flagsData[1].caseField.value.details[0].value.flagComment_cy).toBeNull();
     expect(component.flagsData[1].caseField.value.details[0].value.dateTimeModified).toBeNull();
     expect(component.flagsData[1].caseField.value.details[0].value.status).toEqual(CaseFlagStatus.ACTIVE);
+    expect(component.flagsData[1].caseField.value.details[1].value.otherDescription).toEqual('Another description');
+    expect(component.flagsData[1].caseField.value.details[1].value.otherDescription_cy).toEqual('Cymraeg');
     expect(component.flagsData[1].caseField.value.details[1].value.flagComment).toEqual('Original new comment 2');
+    expect(component.flagsData[1].caseField.value.details[1].value.flagComment_cy).toEqual('Welsh new comment 2');
     expect(component.flagsData[1].caseField.value.details[1].value.dateTimeModified).toEqual('2022-02-15T00:00:00.000');
     expect(component.flagsData[1].caseField.value.details[1].value.status).toEqual(CaseFlagStatus.ACTIVE);
+  });
+
+  it('should not update description fields when updating a case flag not of type "Other"', () => {
+    component.selectedFlag = selectedFlag;
+    component.selectedFlag.caseField = component.flagsData[0].caseField;
+    // Deliberately change the flag code to non-"Other" code
+    component.selectedFlag.flagDetailDisplay.flagDetail.flagCode = 'ABC';
+    component.caseFlagParentFormGroup = new FormGroup({
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('A description'),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),
+      [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
+      [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl('An updated comment (Welsh)')
+    });
+    component.caseFlagParentFormGroup.setParent(parentFormGroup);
+    component.updateFlagInCollection();
+    // Check the description fields have not been updated but the comments have
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toBeNull();
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toBeNull();
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
+      component.caseFlagParentFormGroup.value.flagComment);
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual(
+      component.caseFlagParentFormGroup.value.flagCommentWelsh);
   });
 
   it('should handle the caseFlagStateEmitter and increment fieldState by 1 if not FLAG_COMMENTS or FLAG_UPDATE,' +

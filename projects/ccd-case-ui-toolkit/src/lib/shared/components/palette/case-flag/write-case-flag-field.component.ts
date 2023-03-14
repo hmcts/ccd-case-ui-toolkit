@@ -10,8 +10,7 @@ import { FieldsUtils } from '../../../services/fields';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
-import { CaseFlagFormFields } from './enums/case-flag-form-fields.enum';
+import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
@@ -235,9 +234,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public updateFlagInCollection(): void {
     // Ensure no more than one flag is being updated at a time, by iterating through each Flags case field and resetting
-    // the comments, status, and date/time modified (if present) for each entry in the details array, with original values
-    // from the corresponding formatted_value property. (This scenario occurs if the user repeats the Manage Case Flag
-    // journey by using the "Change" link and selects a different flag to update.)
+    // the description, comments, status, and date/time modified (if present) for each entry in the details array, with
+    // original values from the corresponding formatted_value property. (This scenario occurs if the user repeats the
+    // Manage Case Flag journey by using the "Change" link and selects a different flag to update.)
     this.flagsData.forEach(instance => {
       // Use the pathToFlagsFormGroup property for each Flags case field to drill down to the correct part of the
       // CaseField value for which to restore the original values
@@ -257,8 +256,17 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         value.details.forEach(flagDetail => {
           const originalFlagDetail = formattedValue.details.find(detail => detail.id === flagDetail.id);
           if (originalFlagDetail) {
+            flagDetail.value.otherDescription = originalFlagDetail.value.otherDescription
+              ? originalFlagDetail.value.otherDescription
+              : null;
+            flagDetail.value.otherDescription_cy = originalFlagDetail.value.otherDescription_cy
+              ? originalFlagDetail.value.otherDescription_cy
+              : null;
             flagDetail.value.flagComment = originalFlagDetail.value.flagComment
               ? originalFlagDetail.value.flagComment
+              : null;
+            flagDetail.value.flagComment_cy = originalFlagDetail.value.flagComment_cy
+              ? originalFlagDetail.value.flagComment_cy
               : null;
             flagDetail.value.status = originalFlagDetail.value.status;
             flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified
@@ -280,7 +288,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       const flagDetailToUpdate = flagsCaseFieldValue.details.find(
         detail => detail.id === this.selectedFlag.flagDetailDisplay.flagDetail.id);
       if (flagDetailToUpdate) {
+        // Update description fields only if flag type is "Other" (flag code OT0001); these fields apply only to that flag type
+        flagDetailToUpdate.value.otherDescription = flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode
+          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.value
+          : null,
+        flagDetailToUpdate.value.otherDescription_cy = flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode
+          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)?.value
+          : null,
         flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value;
+        flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value;
         flagDetailToUpdate.value.status = this.selectedFlag.flagDetailDisplay.flagDetail.status;
         flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
       }

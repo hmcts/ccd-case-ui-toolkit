@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-case-flags-add-translations-page-validation
+**EUI-7932** Add validation to "Add translations to flag" page and map additional fields for "Other" description (English/Welsh) and flag comments (Welsh) for persistence as part of flag update
+
 ### Version 6.10.7-case-flags-manage-case-flags-ui-amendments
 **EUI-7777** Change wording for "translation needed" checkbox on "Update flag" page
 **EUI-7842** Remove read-only setting from English description and comments boxes on "Add Welsh translation to flag" page
