@@ -7,7 +7,7 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import {
   NotificationBannerConfig,
@@ -15,9 +15,8 @@ import {
   NotificationBannerType
 } from '../../../../components/banners/notification-banner';
 import { ShowCondition } from '../../../directives';
-import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
 import {
-  ActivityPollingService,
   AlertService,
   DraftService,
   ErrorNotifierService,
@@ -27,6 +26,8 @@ import {
   OrderService,
   SessionStorageService
 } from '../../../services';
+import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../../services/activity';
+import { MODES } from '../../../services/activity/utils/index';
 import { ConvertHrefToRouterService } from '../../case-editor/services/convert-href-to-router.service';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CallbackErrorsContext } from '../../error';
@@ -50,7 +51,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   @Input() public prependedTabs: CaseTab[] = [];
   @Input() public appendedTabs: CaseTab[] = [];
 
-  public BANNER = DisplayMode.BANNER;
   public sortedTabs: CaseTab[];
   public caseFields: CaseField[];
   public formGroup: FormGroup;
@@ -60,6 +60,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public triggerText: string = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
   public ignoreWarning = false;
   public activitySubscription: Subscription;
+  public socketConnectSub: Subscription;
   public caseSubscription: Subscription;
   public errorSubscription: Subscription;
   public dialogConfig: MatDialogConfig;
@@ -79,7 +80,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly router: Router,
     private readonly navigationNotifierService: NavigationNotifierService,
     private readonly orderService: OrderService,
+    private readonly activityService: ActivityService,
     private readonly activityPollingService: ActivityPollingService,
+    private readonly activitySocketService: ActivitySocketService,
     private readonly dialog: MatDialog,
     private readonly alertService: AlertService,
     private readonly draftService: DraftService,
@@ -114,10 +117,26 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
     });
 
-    if (this.activityPollingService.isEnabled && !this.activitySubscription) {
-      this.ngZone.runOutsideAngular(() => {
-        this.activitySubscription = this.postViewActivity().subscribe();
+    this.activityService.modeSubject
+      .pipe(filter(mode => !!mode))
+      .pipe(distinctUntilChanged())
+      .subscribe(mode => {
+        if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+          this.socketConnectSub = this.activitySocketService.connected
+            .subscribe(connected => {
+              if (connected) {
+                this.activitySocketService.viewCase(this.caseDetails.case_id);
+              }
+            });
+        } else if (mode === MODES.polling) {
+          this.ngZone.runOutsideAngular(() => {
+            this.activitySubscription = this.postViewActivity().subscribe((_resolved) => { });
+          });
+        }
       });
+
+    if (this.socketConnectSub) {
+      this.socketConnectSub.unsubscribe();
     }
 
     this.checkRouteAndSetCaseViewTab ();

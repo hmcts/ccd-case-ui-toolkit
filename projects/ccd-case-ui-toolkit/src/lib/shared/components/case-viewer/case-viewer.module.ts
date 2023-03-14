@@ -11,6 +11,7 @@ import { CaseReferencePipe } from '../../pipes';
 import {
   ActivityPollingService,
   ActivityService,
+  ActivitySocketService,
   DraftService,
   ErrorNotifierService,
   HttpService,
@@ -59,7 +60,8 @@ import { CaseResolver, EventTriggerResolver } from './services';
     BannersModule,
     LabelSubstitutorModule,
     LoadingSpinnerModule,
-    EventMessageModule
+    EventMessageModule,
+    NotificationBannerModule
   ],
   declarations: [
     CaseEventTriggerComponent,
@@ -88,6 +90,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     EventTriggerResolver,
     ActivityService,
     ActivityPollingService,
+    ActivitySocketService,
     OrderService,
     DraftService,
     HttpService,

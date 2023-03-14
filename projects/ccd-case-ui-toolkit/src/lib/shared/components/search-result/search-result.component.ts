@@ -2,11 +2,17 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
-import { CaseField, CaseState, CaseType, DisplayMode,
-  DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
-  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+import { CaseField, CaseState, CaseType, DRAFT_PREFIX, Jurisdiction, PaginationMetadata } from '../../domain';
+import { SearchResultView, SearchResultViewColumn, SearchResultViewItem } from '../../domain/search';
+import { SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain/search/sorting';
 import { CaseReferencePipe } from '../../pipes';
-import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
+import {
+  ActivityService,
+  ActivitySocketService,
+  BrowserService,
+  SearchResultViewItemComparatorFactory,
+  SessionStorageService
+} from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
@@ -20,8 +26,6 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public static readonly PARAM_CASE_STATE = 'case-state';
 
   private readonly PAGINATION_MAX_ITEM_RESULT = 10000;
-
-  public ICON = DisplayMode.ICON;
 
   @Input()
   public caseLinkUrlTemplate: string;
@@ -104,7 +108,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     private readonly activityService: ActivityService,
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly placeholderService: PlaceholderService,
-    private readonly browserService: BrowserService,
+    private browserService: BrowserService,
+    private readonly activitySocketService: ActivitySocketService,
     private readonly sessionStorageService: SessionStorageService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
@@ -143,6 +148,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
+      this.watchResults();
     }
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
@@ -360,7 +366,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     return condition ? '&#9660;' : '&#9650;';
   }
 
-  public activityEnabled(): boolean {
+  public get activityEnabled(): boolean {
     return this.activityService.isEnabled;
   }
 
@@ -452,6 +458,17 @@ export class SearchResultComponent implements OnChanges, OnInit {
     if ($event.key === 'Space') {
       if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
         this.changeSelection(c);
+      }
+    }
+  }
+
+  private watchResults(): void {
+    if (this.activitySocketService.isEnabled) {
+      if (this.resultView && this.resultView.results) {
+        const caseIds: string[] = this.resultView.results.map(value => value.case_id);
+        this.activitySocketService.watchCases(caseIds);
+      } else {
+        this.activitySocketService.watchCases([]);
       }
     }
   }

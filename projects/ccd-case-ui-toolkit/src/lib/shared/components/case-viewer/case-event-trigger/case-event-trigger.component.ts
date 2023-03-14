@@ -1,10 +1,19 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-import { Activity, CaseEventData, CaseEventTrigger, CaseField, CaseView, DisplayMode } from '../../../domain';
+import { Activity, CaseEventData, CaseEventTrigger, CaseField, CaseView } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils } from '../../../services';
+import {
+  ActivityPollingService,
+  ActivityService,
+  ActivitySocketService,
+  AlertService,
+  EventStatusService,
+  FieldsUtils,
+} from '../../../services';
+import { MODES } from '../../../services/activity/utils/index';
 import { CaseNotifier, CasesService } from '../../case-editor';
 
 @Component({
@@ -12,7 +21,6 @@ import { CaseNotifier, CasesService } from '../../case-editor';
   templateUrl: './case-event-trigger.html'
 })
 export class CaseEventTriggerComponent implements OnInit, OnDestroy {
-  public BANNER = DisplayMode.BANNER;
   public eventTrigger: CaseEventTrigger;
   public caseDetails: CaseView;
   public activitySubscription: Subscription;
@@ -27,7 +35,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly alertService: AlertService,
     private readonly route: ActivatedRoute,
     private readonly caseReferencePipe: CaseReferencePipe,
-    private readonly activityPollingService: ActivityPollingService
+    private readonly activityService: ActivityService,
+    private readonly activityPollingService: ActivityPollingService,
+    private readonly activitySocketService: ActivitySocketService
   ) {
   }
 
@@ -40,13 +50,23 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
         });
     }
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
-    if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular( () => {
-        this.activitySubscription = this.postEditActivity().subscribe((_resolved) => {
-          // console.log('Posted EDIT activity and result is: ' + JSON.stringify(_resolved));
-        });
+    this.activityService.modeSubject
+      .pipe(filter(mode => !!mode))
+      .pipe(distinctUntilChanged())
+      .subscribe(mode => {
+        if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+          this.activitySocketService.connected
+            .subscribe(connected => {
+              if (connected) {
+                this.activitySocketService.editCase(this.caseDetails.case_id);
+              }
+            });
+        } else if (mode === MODES.polling) {
+          this.ngZone.runOutsideAngular(() => {
+            this.activitySubscription = this.postEditActivity().subscribe((_resolved) => { });
+          });
+        }
       });
-    }
     this.route.parent.url.subscribe(path => {
       this.parentUrl = `/${path.join('/')}`;
     });

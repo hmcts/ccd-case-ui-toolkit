@@ -1,9 +1,11 @@
 import { Injectable, NgZone } from '@angular/core';
 import polling, { IOptions } from 'rx-polling';
 import { EMPTY, Observable, Subject, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { ActivityService } from './activity.service';
+import { MODES } from './utils/index';
 
 // @dynamic
 @Injectable()
@@ -12,22 +14,28 @@ export class ActivityPollingService {
   private readonly pendingRequests = new Map<string, Subject<Activity>>();
   private currentTimeoutHandle: any;
   private pollActivitiesSubscription: Subscription;
-  private readonly pollConfig: IOptions;
-  private readonly batchCollectionDelayMs: number;
-  private readonly maxRequestsPerBatch: number;
-
-  constructor(private readonly activityService: ActivityService, private readonly ngZone: NgZone, private readonly config: AbstractAppConfig) {
-    this.pollConfig = {
-      interval: config.getActivityNexPollRequestMs(),
-      attempts: config.getActivityRetry(),
-      backgroundPolling: true
-    };
-    this.batchCollectionDelayMs = config.getActivityBatchCollectionDelayMs();
-    this.maxRequestsPerBatch = config.getActivityMaxRequestPerBatch();
-  }
+  private pollConfig: IOptions;
+  private batchCollectionDelayMs: number;
+  private maxRequestsPerBatch: number;
 
   public get isEnabled(): boolean {
-    return this.activityService.isEnabled;
+    return this.activityService.isEnabled && this.activityService.mode === MODES.polling;
+  }
+
+  constructor(
+    private readonly activityService: ActivityService,
+    private readonly ngZone: NgZone,
+    private readonly config: AbstractAppConfig
+  ) {
+    this.activityService.modeSubject
+      .pipe(filter(mode => !!mode))
+      .pipe(distinctUntilChanged())
+      .subscribe(mode => {
+        this.stopPolling();
+        if (mode === MODES.polling) {
+          this.init();
+        }
+      });
   }
 
   public subscribeToActivity(caseId: string, done: (activity: Activity) => void): Subject<Activity> {
@@ -61,7 +69,7 @@ export class ActivityPollingService {
     return subject;
   }
 
-  public stopPolling() {
+  public stopPolling(): void {
     if (this.pollActivitiesSubscription) {
       this.pollActivitiesSubscription.unsubscribe();
     }
@@ -75,7 +83,9 @@ export class ActivityPollingService {
 
     const requests = new Map(this.pendingRequests);
     this.pendingRequests.clear();
-    this.performBatchRequest(requests);
+    if (this.isEnabled) {
+      this.performBatchRequest(requests);
+    }
   }
 
   public pollActivities(...caseIds: string[]): Observable<Activity[]> {
@@ -94,7 +104,7 @@ export class ActivityPollingService {
     return this.postActivity(caseId, ActivityService.ACTIVITY_EDIT);
   }
 
-  protected performBatchRequest(requests: Map<string, Subject<Activity>>): void {
+  private performBatchRequest(requests: Map<string, Subject<Activity>>): void {
     const caseIds = Array.from(requests.keys()).join();
     // console.log('issuing batch request for cases: ' + caseIds);
     this.ngZone.runOutsideAngular( () => {
@@ -127,5 +137,15 @@ export class ActivityPollingService {
     };
 
     return polling(this.activityService.postActivity(caseId, activityType), pollingConfig);
+  }
+
+  private init(): void {
+    this.pollConfig = {
+      interval: this.config.getActivityNexPollRequestMs(),
+      attempts: this.config.getActivityRetry(),
+      backgroundPolling: true
+    };
+    this.batchCollectionDelayMs = this.config.getActivityBatchCollectionDelayMs();
+    this.maxRequestsPerBatch = this.config.getActivityMaxRequestPerBatch();
   }
 }

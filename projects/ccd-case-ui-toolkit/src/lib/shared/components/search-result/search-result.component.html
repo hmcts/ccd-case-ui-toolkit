@@ -12,7 +12,7 @@
 
     <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
       attr.aria-label="{{ getTotalResults() }} results have been found" role="status">
-      <span class="text-16" id="search-result-summary__text">Showing 
+      <span class="text-16" id="search-result-summary__text">Showing
         <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
         to
         <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
@@ -42,7 +42,7 @@
             </div>
           </div>
       </th>
-      <th *ngIf="activityEnabled()" style="width: 110px;"></th>
+      <th *ngIf="activityEnabled" class="activity-column"></th>
     </tr>
   </thead>
   <tbody>
@@ -76,9 +76,9 @@
                             [elementsToSubstitute]="['value']"></ccd-field-read>
           </div>
         </td>
-        <td *ngIf="activityEnabled()">
+        <td *ngIf="activityEnabled">
           <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
+            <ccd-case-activity [caseId]="result.case_id" [iconOnly]="true"></ccd-case-activity>
           </div>
         </td>
       </tr>
@@ -113,9 +113,9 @@
                             [elementsToSubstitute]="['value']"></ccd-field-read>
           </div>
         </td>
-        <td *ngIf="activityEnabled()">
+        <td *ngIf="activityEnabled">
           <div [style.visibility]="hideRows ? 'hidden' : 'visible'">
-            <ccd-activity [caseId]="result.case_id" [displayMode]="ICON"></ccd-activity>
+            <ccd-case-activity [caseId]="result.case_id" [iconOnly]="true"></ccd-case-activity>
           </div>
         </td>
       </tr>

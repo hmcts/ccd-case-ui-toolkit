@@ -21,6 +21,16 @@ export interface AccessManagementRequestReviewMockModel {
     accessProcess?: string;
 }
 
+/**
+ * WARNING!
+ * This is an abstract class and any abstract methods you add, edit,
+ * or remove from it constitute a breaking change.
+ *
+ * If you want to add something that is fully backwards-compatible,
+ * look at the getUserInfoApiUrl() method. That isn't marked as being
+ * abstract, which means it doesn't HAVE to be overridden by whatever
+ * extends this.
+ */
 export abstract class AbstractAppConfig {
     abstract load(): Promise<void>;
     abstract getLoginUrl(): string;
