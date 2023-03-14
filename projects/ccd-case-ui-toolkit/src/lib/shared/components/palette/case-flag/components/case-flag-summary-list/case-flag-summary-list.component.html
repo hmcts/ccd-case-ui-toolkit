@@ -36,7 +36,7 @@
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
-        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : caseFlagFieldState.FLAG_TYPE)">
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION : caseFlagFieldState.FLAG_TYPE)">
         Change<span class="govuk-visually-hidden"> description</span>
       </a>
     </dd>
@@ -64,7 +64,7 @@
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
-        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE: caseFlagFieldState.FLAG_COMMENTS)">
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION: caseFlagFieldState.FLAG_COMMENTS)">
         Change<span class="govuk-visually-hidden"> comments</span>
       </a>
     </dd>
@@ -77,6 +77,11 @@
       {{flagStatus}}
     </dd>
     <dd class="govuk-summary-list__actions">
+      <a ngIf="this.summaryListDisplayMode === displayMode.MANAGE"
+        class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION)">
+        Change<span class="govuk-visually-hidden"> status</span>
+      </a>
     </dd>
   </div>
 </dl>

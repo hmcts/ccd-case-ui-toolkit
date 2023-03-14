@@ -31,7 +31,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
       const flagDetail = this.flagForSummaryDisplay.flagDetail;
       this.isWelshTranslationRequired = (flagDetail as any).flagIsWelshTranslationNeeded;
       this.flagDescription = this.getFlagDescription(flagDetail);
-      this.flagDescriptionWelsh = this.getFlagDescriptionWelsh(flagDetail);
+      this.flagDescriptionWelsh = (flagDetail as any).otherDescriptionWelsh;
       this.flagComments = flagDetail.flagComment;
       this.flagCommentsWelsh = (flagDetail as any).flagCommentWelsh;
       this.flagStatus = flagDetail.status;
