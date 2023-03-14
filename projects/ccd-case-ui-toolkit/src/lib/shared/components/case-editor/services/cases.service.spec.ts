@@ -67,10 +67,12 @@ describe('CasesService', () => {
   let alertService: any;
 
   beforeEach(() => {
-    appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl']);
+    appConfig = createSpyObj<AbstractAppConfig>('appConfig',
+      ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl', 'getCaseDataStoreApiUrl']);
     appConfig.getApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
+    appConfig.getCaseDataStoreApiUrl.and.returnValue(API_URL);
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
@@ -422,7 +424,7 @@ describe('CasesService', () => {
       httpService.post.and.returnValue(throwError(ERROR));
 
       casesService
-        .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
+        .validateCase(CTID, CASE_EVENT_DATA, PAGE_ID)
         .subscribe(data => {
           expect(data).toEqual(EVENT_RESPONSE);
         }, err => {

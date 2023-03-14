@@ -6,17 +6,18 @@ import { catchError, finalize, map, tap } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { ShowCondition } from '../../../directives';
 import {
-	CaseEventData,
-	CaseEventTrigger,
-	CasePrintDocument,
-	CaseView,
-	ChallengedAccessRequest, Draft,
-	RoleAssignmentResponse,
-	RoleCategory,
-	RoleRequestPayload, SpecificAccessRequest
+  CaseEventData,
+  CaseEventTrigger,
+  CasePrintDocument,
+  CaseView,
+  ChallengedAccessRequest, Draft,
+  RoleAssignmentResponse,
+  RoleCategory,
+  RoleRequestPayload, SpecificAccessRequest
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { LinkCaseReason, LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -369,5 +370,12 @@ export class CasesService {
       `/api/specific-access-request`,
       payload
     );
+  }
+
+  public getLinkedCases(caseId: string): Observable<LinkedCasesResponse> {
+    const url = `${this.appConfig.getCaseDataStoreApiUrl()}/${caseId}`
+    return this.http
+    .get(url)
+    .pipe(catchError(error => throwError(error)));
   }
 }
