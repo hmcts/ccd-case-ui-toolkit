@@ -20,7 +20,7 @@ export enum MODES {
   polling = 'polling',
   socket = 'socket',
   socketLongPoll = 'socket-long-poll'
-};
+}
 
 const DESCRIPTIONS = {
   VIEWERS_SUFFIX: 'viewing this case',
@@ -89,7 +89,7 @@ const UTILS = {
         if (names.length + unknownCount > 1) {
           preSuffix = ' are ';
         } else {
-          preSuffix = ' is '
+          preSuffix = ' is ';
         }
       }
       return `${resultText}${preSuffix}${suffix}`;
@@ -100,7 +100,7 @@ const UTILS = {
       }
       return undefined;
     },
-    activityNames: (users: Array<ActivityInfo | User>): string => {
+    activityNames: (users: (ActivityInfo | User)[]): string => {
       if (users && users.length > 0) {
         return users.map(info => UTILS.activity.activityName(info)).filter(name => !!name).join(', ');
       }
