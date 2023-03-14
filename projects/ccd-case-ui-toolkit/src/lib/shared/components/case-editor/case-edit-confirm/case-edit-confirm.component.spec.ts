@@ -16,7 +16,7 @@ import { WizardPage } from '../domain/wizard-page.model';
 import { ConvertHrefToRouterService } from '../services';
 import { CaseEditConfirmComponent } from './case-edit-confirm.component';
 
-xdescribe('CaseEditConfirmComponent', () => {
+describe('CaseEditConfirmComponent', () => {
   let fixture: ComponentFixture<CaseEditConfirmComponent>;
   let component: CaseEditConfirmComponent;
   let de: DebugElement;
@@ -53,6 +53,9 @@ xdescribe('CaseEditConfirmComponent', () => {
         getStatus: () => 'status1',
         getHeader: () => 'Header',
         getBody: () => 'A body with mark down'
+      },
+      submitted: {
+        emit: () => {}
       },
       caseDetails: {case_id: '1234567812345678', tabs: [{id: 'tab1', label: 'tabLabel1',
         fields: [caseField1, caseField2, caseField3]}], metadataFields: [],
@@ -110,6 +113,21 @@ xdescribe('CaseEditConfirmComponent', () => {
     const caseFields: CaseField[] = component.caseFields;
     expect(caseFields.length).toBe(3);
   });
+
+  it('should call NOT route when confirmation provided', () => {
+    expect(routerStub.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should get case id', () => {
+    const actual = component.getCaseId();
+    expect(actual).toEqual(caseEditComponentStub.caseDetails.case_id);
+  });
+
+  it('should emit submit', () => {
+    spyOn(caseEditComponentStub.submitted, 'emit');
+    component.submit();
+    expect(caseEditComponentStub.submitted.emit).toHaveBeenCalled();
+  });
 });
 
 describe('CaseEditConfirmComponent', () => {
@@ -157,5 +175,10 @@ describe('CaseEditConfirmComponent', () => {
 
   it('should call route when no confirmation provided', () => {
     expect(routerStub.navigate).toHaveBeenCalled();
+  });
+
+  it('should NOT get case id', () => {
+    const actual = component.getCaseId();
+    expect(actual).toEqual('');
   });
 });
