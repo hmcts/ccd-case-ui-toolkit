@@ -3,9 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { AlertModule } from '../../../components/banners/alert/alert.module';
 import { BannersModule } from '../../../components/banners/banners.module';
-import { NotificationBannerModule } from '../../../components/banners/notification-banner/notification-banner.module';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CaseReferencePipe } from '../../pipes';
 import {
@@ -60,8 +58,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     BannersModule,
     LabelSubstitutorModule,
     LoadingSpinnerModule,
-    EventMessageModule,
-    NotificationBannerModule
+    EventMessageModule
   ],
   declarations: [
     CaseEventTriggerComponent,
