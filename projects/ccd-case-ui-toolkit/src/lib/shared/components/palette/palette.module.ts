@@ -22,7 +22,6 @@ import { FootersModule } from '../../../components/footer/footers.module';
 import { FormModule } from '../../../components/form/form.module';
 import { CaseEditDataModule } from '../../commons/case-edit-data';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
-import { LinkCasesReasonValuePipe } from '../../pipes/link-cases-reason-code/ccd-link-cases-reason-code.pipe';
 import { PipesModule } from '../../pipes/pipes.module';
 import { CaseFlagRefdataService } from '../../services/case-flag/case-flag-refdata.service';
 import { CommonDataService } from '../../services/common-data-service/common-data-service';

@@ -29,7 +29,7 @@ interface LinkedCasesResponse {
   service: string;
   state: string;
   stateDescription: string;
-  reasons: string[];
+  reasons: any;
 }
 
 describe('LinkCasesToTableComponent', () => {
@@ -184,7 +184,13 @@ describe('LinkCasesToTableComponent', () => {
       service: 'some jurisdiction description',
       state: 'state name',
       stateDescription: '',
-      reasons: ['CLRC001']
+      reasons: [{
+        id: 'ffea83f4-3ec1-4be6-b530-e0b0b2a239aa',
+        value: {
+          Reason: 'CLRC001',
+          OtherDescription: 'testing',
+        }
+      }]
     };
     expect(component.mapResponse(caseViewData)).toEqual(linkCasesResponse);
   });
@@ -221,7 +227,6 @@ describe('LinkCasesToTableComponent', () => {
   it('should render the none as table row when no linked cases to be displayed', () => {
     fixture = TestBed.createComponent(LinkedCasesToTableComponent);
     component = fixture.componentInstance;
-    component.ngOnInit();
     fixture.detectChanges();
     expect(
       document.getElementsByClassName('govuk-table__cell')[0].textContent.trim()

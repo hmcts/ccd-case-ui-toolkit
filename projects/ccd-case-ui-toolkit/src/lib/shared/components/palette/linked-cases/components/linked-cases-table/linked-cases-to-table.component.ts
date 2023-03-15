@@ -119,7 +119,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
             unlink: false,
             reasons: item.reasons && item.reasons.map(reason => {
               return {
-                reasonCode: reason
+                Reason: reason
               } as LinkReason;
             }),
           } as CaseLink;
@@ -155,8 +155,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       service: esSearchCasesResponse.case_type && esSearchCasesResponse.case_type.jurisdiction.description || '',
       state: esSearchCasesResponse.state.name || '',
       stateDescription: esSearchCasesResponse.state.description || '',
-      reasons: caseInfo.value && caseInfo.value.ReasonForLink &&
-        caseInfo.value.ReasonForLink.map(reason => reason.value && reason.value.Reason),
+      reasons: caseInfo?.value?.ReasonForLink
     } as LinkedCasesResponse;
   }
 }

@@ -23,14 +23,14 @@
           </td>
           <td *ngIf="case && case.reasons">
             <span *ngFor="let reason of case.reasons; let i = index; let isLast = last">
-              {{reason | ccdLinkCasesReasonValue}}<span><a class="govuk-!-padding-left-1"
+              {{reason.value | ccdLinkCasesReasonValue}}<span><a class="govuk-!-padding-left-1"
                   href="cases/case-details/{{ case.caseReference }}"
-                  *ngIf="hasLeadCaseOrConsolidated(reason)">{{getCaseRefereneLink(case.caseReference)}}</a></span>
+                  *ngIf="hasLeadCaseOrConsolidated(reason.value.Reason)">{{getCaseRefereneLink(case.caseReference)}}</a></span>
               <br *ngIf="!isLast" />
             </span>
           </td>
         </tr>
-        <tr class="govuk-table__row" *ngIf="linkedCasesFromResponse && linkedCasesFromResponse.length === 0 && (!isServerError && !isServerReasonCodeError)">
+        <tr class="govuk-table__row" *ngIf="linkedCasesFromResponse.length === 0 && (!isServerError && !isServerReasonCodeError)">
           <td class="govuk-table__cell" colspan="5">
             None
           </td>
