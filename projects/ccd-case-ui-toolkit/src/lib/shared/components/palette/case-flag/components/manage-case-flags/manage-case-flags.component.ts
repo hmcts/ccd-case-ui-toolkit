@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } fro
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
+import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 
 @Component({
   selector: 'ccd-manage-case-flags',
@@ -29,6 +29,7 @@ export class ManageCaseFlagsComponent implements OnInit {
   public readonly selectedControlName = 'selectedManageCaseLocation';
   private readonly updateMode = '#ARGUMENT(UPDATE)';
   private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
+  private readonly excludedFlagStatuses: CaseFlagStatus[] = [CaseFlagStatus.INACTIVE, CaseFlagStatus.NOT_APPROVED];
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
@@ -39,13 +40,17 @@ export class ManageCaseFlagsComponent implements OnInit {
         if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
           displayData = [
             ...displayData,
-            ...flagsInstance.flags.details.map(detail =>
-              this.mapFlagDetailForDisplay(detail, flagsInstance)
-            )
+            ...flagsInstance.flags.details.map(detail => {
+              // Only map flags instances where the status is neither "Inactive" nor "Not approved"
+              // This will result in some undefined mappings, which need to be filtered out after the reduce operation
+              if (!this.excludedFlagStatuses.includes(detail.status as CaseFlagStatus)) {
+                return this.mapFlagDetailForDisplay(detail, flagsInstance);
+              }
+            })
           ];
         }
         return displayData;
-      }, []);
+      }, []).filter(flagDetailDisplay => !!flagDetailDisplay);
 
       this.flagsDisplayData.forEach(flagDisplayData => {
         flagDisplayData.label = this.processLabel(flagDisplayData);
@@ -165,10 +170,12 @@ export class ManageCaseFlagsComponent implements OnInit {
     this.manageCaseFlagSelectedErrorMessage = null;
     this.errorMessages = [];
     if (!this.formGroup.get(this.selectedControlName).value) {
-      this.manageCaseFlagSelectedErrorMessage = SelectFlagErrorMessage.FLAG_NOT_SELECTED;
+      const errorMessage = this.displayContextParameter === this.updateExternalMode ?
+        SelectFlagErrorMessage.MANAGE_SUPPORT_FLAG_NOT_SELECTED : SelectFlagErrorMessage.MANAGE_CASE_FLAGS_FLAG_NOT_SELECTED;
+      this.manageCaseFlagSelectedErrorMessage = errorMessage;
       this.errorMessages.push({
         title: '',
-        description: SelectFlagErrorMessage.FLAG_NOT_SELECTED,
+        description: errorMessage,
         fieldId: 'conditional-radios-list'
       });
     }
