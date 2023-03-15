@@ -82,7 +82,7 @@ const UTILS = {
           resultText = `${resultText}s`;
         }
       } else {
-        resultText = resultText.replace(/(.*)\,(.*?)$/, '$1 and$2');
+        resultText = resultText.replace(/(.*[^,]),(.*?)$/, '$1 and$2');
       }
       let preSuffix = '';
       if (suffix.length > 0) {
