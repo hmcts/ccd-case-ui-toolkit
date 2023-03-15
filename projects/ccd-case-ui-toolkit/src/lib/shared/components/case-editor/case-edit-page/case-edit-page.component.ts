@@ -106,6 +106,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       });
     CaseEditPageComponent.setFocusToTop();
+    this.caseEditDataService.caseEditForm$.subscribe({
+      next: editForm => this.editForm = editForm
+    });
     this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
       next: state => {
         if (state) {
@@ -495,8 +498,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   private syncCaseEditDataService(): void {
+    this.caseEditDataService.setCaseDetails(this.caseEdit.caseDetails);
     this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
     this.caseEditDataService.setCaseTitle(this.getCaseTitle());
+    this.caseEditDataService.setCaseEditForm(this.editForm);
     this.caseEditDataService.caseFormValidationErrors$.subscribe({
       next: (validationErrors) => this.validationErrors = validationErrors
     });
