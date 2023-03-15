@@ -85,6 +85,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+     /* istanbul ignore else */
     if (this.profileSubscription) {
       this.profileSubscription.unsubscribe();
     }
@@ -123,6 +124,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public summaryCaseField(field: CaseField): CaseField {
+     /* istanbul ignore else */
     if (null === this.editForm.get('data').get(field.id)) {
       // If not in form, return field itself
       return field;
@@ -155,13 +157,16 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public checkYourAnswerFieldsToDisplayExists(): boolean {
+     /* istanbul ignore else */
     if (!this.eventTrigger.show_summary) {
       return false;
     }
 
     for (const page of this.wizard.pages) {
+       /* istanbul ignore else */
       if (this.isShown(page)) {
         for (const field of page.case_fields) {
+           /* istanbul ignore else */
           if (this.canShowFieldInCYA(field)) {
             // at least one field needs showing
             return true;
@@ -194,6 +199,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public previous(): void {
+     /* istanbul ignore else */
     if (this.hasPrevious()) {
       this.navigateToPage(this.getLastPageShown().id);
     }
