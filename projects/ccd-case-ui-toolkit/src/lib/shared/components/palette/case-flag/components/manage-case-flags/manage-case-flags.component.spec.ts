@@ -47,6 +47,16 @@ describe('ManageCaseFlagsComponent', () => {
         partyName: 'Tom Atin',
         details: [
           {
+            id: '7890',
+            name: 'Flag X',
+            flagComment: 'Flag not approved',
+            dateTimeCreated: new Date(),
+            path: [{ id: null, value: 'Reasonable adjustment' }],
+            hearingRelevant: false,
+            flagCode: 'FL1',
+            status: 'Not approved'
+          },
+          {
             id: '3456',
             name: 'Flag 3',
             flagComment: 'First flag',
@@ -268,30 +278,36 @@ describe('ManageCaseFlagsComponent', () => {
     expect(displayResult.pathToFlagsFormGroup).toEqual(flagsInstance.flags.flagsCaseFieldId);
   });
 
-  it('should map all parties and their flags to a single array for display purposes', () => {
+  it('should map all parties and their flags to a single array for display purposes, excluding "Inactive" and "Not approved"', () => {
     expect(component.flagsDisplayData).toBeTruthy();
-    expect(component.flagsDisplayData.length).toBe(5);
+    expect(component.flagsDisplayData.length).toBe(4);
     // Check correct mapping of the first party's flags
     expect(component.flagsDisplayData[0].flagDetailDisplay.partyName).toEqual(flagsData[0].flags.partyName);
     expect(component.flagsDisplayData[0].flagDetailDisplay.flagDetail.name).toEqual(flagsData[0].flags.details[0].name);
     expect(component.flagsDisplayData[0].flagDetailDisplay.flagDetail.flagComment).toEqual(flagsData[0].flags.details[0].flagComment);
     expect(component.flagsDisplayData[0].flagDetailDisplay.flagDetail.flagCode).toEqual(flagsData[0].flags.details[0].flagCode);
-    expect(component.flagsDisplayData[1].flagDetailDisplay.partyName).toEqual(flagsData[0].flags.partyName);
-    expect(component.flagsDisplayData[1].flagDetailDisplay.flagDetail.name).toEqual(flagsData[0].flags.details[1].name);
-    expect(component.flagsDisplayData[1].flagDetailDisplay.flagDetail.flagComment).toEqual(flagsData[0].flags.details[1].flagComment);
-    expect(component.flagsDisplayData[1].flagDetailDisplay.flagDetail.flagCode).toEqual(flagsData[0].flags.details[1].flagCode);
     // Check correct mapping of the second party's flags
-    expect(component.flagsDisplayData[2].flagDetailDisplay.partyName).toEqual(flagsData[1].flags.partyName);
-    expect(component.flagsDisplayData[2].flagDetailDisplay.flagDetail.name).toEqual(flagsData[1].flags.details[0].name);
-    expect(component.flagsDisplayData[2].flagDetailDisplay.flagDetail.flagComment).toEqual(flagsData[1].flags.details[0].flagComment);
-    expect(component.flagsDisplayData[2].flagDetailDisplay.flagDetail.flagCode).toEqual(flagsData[1].flags.details[0].flagCode);
+    expect(component.flagsDisplayData[1].flagDetailDisplay.partyName).toEqual(flagsData[1].flags.partyName);
+    expect(component.flagsDisplayData[1].flagDetailDisplay.flagDetail.name).toEqual(flagsData[1].flags.details[1].name);
+    expect(component.flagsDisplayData[1].flagDetailDisplay.flagDetail.flagComment).toEqual(flagsData[1].flags.details[1].flagComment);
+    expect(component.flagsDisplayData[1].flagDetailDisplay.flagDetail.flagCode).toEqual(flagsData[1].flags.details[1].flagCode);
+    // Check correct mapping of the third party's flags
+    expect(component.flagsDisplayData[2].flagDetailDisplay.partyName).toEqual(flagsData[2].flags.partyName);
+    expect(component.flagsDisplayData[2].flagDetailDisplay.flagDetail.name).toEqual(flagsData[2].flags.details[0].name);
+    expect(component.flagsDisplayData[2].flagDetailDisplay.flagDetail.flagComment).toEqual(flagsData[2].flags.details[0].flagComment);
+    expect(component.flagsDisplayData[2].flagDetailDisplay.flagDetail.flagCode).toEqual(flagsData[2].flags.details[0].flagCode);
+    // Check correct mapping of the fourth party's flags
+    expect(component.flagsDisplayData[3].flagDetailDisplay.partyName).toEqual(flagsData[3].flags.partyName);
+    expect(component.flagsDisplayData[3].flagDetailDisplay.flagDetail.name).toEqual(flagsData[3].flags.details[0].name);
+    expect(component.flagsDisplayData[3].flagDetailDisplay.flagDetail.flagComment).toEqual(flagsData[3].flags.details[0].flagComment);
+    expect(component.flagsDisplayData[3].flagDetailDisplay.flagDetail.flagCode).toEqual(flagsData[3].flags.details[0].flagCode);
   });
 
   it('should emit to parent with the selected party and flag details if the validation succeeds', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
-    nativeElement.querySelector('#flag-selection-2').click();
+    nativeElement.querySelector('#flag-selection-1').click();
     nativeElement.querySelector('.button').click();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -300,7 +316,7 @@ describe('ManageCaseFlagsComponent', () => {
       selectedFlag: {
         flagDetailDisplay: {
           partyName: flagsData[1].flags.partyName,
-          flagDetail: flagsData[1].flags.details[0],
+          flagDetail: flagsData[1].flags.details[1],
           flagsCaseFieldId: flagsData[1].flags.flagsCaseFieldId
         },
         pathToFlagsFormGroup: '',
@@ -315,7 +331,7 @@ describe('ManageCaseFlagsComponent', () => {
   it('should fail validation and emit to parent if no flag is selected', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
-    expect(component.flagsDisplayData.length).toBe(5);
+    expect(component.flagsDisplayData.length).toBe(4);
     expect(component.noFlagsError).toBe(false);
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('.button').click();

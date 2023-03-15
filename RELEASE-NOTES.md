@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-manage-case-flags-filter-out-inactive-and-not-approved
+**EUI-7354** Ensure flags with a status of either "Inactive" or "Not approved" are filtered out from display on "Manage case flags" page, so they cannot be selected for update
+
 ### Version 6.10.7-case-flags-add-translations-page-validation
 **EUI-7932** Add validation to "Add translations to flag" page and map additional fields for "Other" description (English/Welsh) and flag comments (Welsh) for persistence as part of flag update
 
