@@ -34,15 +34,17 @@ export class ActivitySocketService {
     private readonly sessionStorageService: SessionStorageService,
     private readonly activityService: ActivityService
   ) {
-    this.activityService.modeSubject
-      .pipe(filter(mode => !!mode))
-      .pipe(distinctUntilChanged())
-      .subscribe(mode => {
-        this.destroy();
-        if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
-          this.init();
-        }
-      });
+    if (this.activityService.modeSubject) {
+      this.activityService.modeSubject
+        .pipe(filter(mode => !!mode))
+        .pipe(distinctUntilChanged())
+        .subscribe(mode => {
+          this.destroy();
+          if (ActivitySocketService.SOCKET_MODES.indexOf(mode) > -1) {
+            this.init();
+          }
+        });
+    }
   }
 
   public watchCases(caseIds: string[]): void {

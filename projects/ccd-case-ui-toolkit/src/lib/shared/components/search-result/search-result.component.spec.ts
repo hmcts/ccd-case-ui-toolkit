@@ -420,7 +420,7 @@ describe('SearchResultComponent', () => {
     it('should replace the caseLink url placeholders with a valid data', () => {
       const id = 'ID001';
       const url = component.prepareCaseLinkUrl(id);
-      expect(url).toBe('/case/' + JURISDICTION.id + '/' + CASE_TYPE.id + '/' + id);
+      expect(url).toBe(`/case/${JURISDICTION.id}/${CASE_TYPE.id}/${id}`);
     });
 
     it('should select correct page if new page triggered from outside', () => {
@@ -449,23 +449,23 @@ describe('SearchResultComponent', () => {
     });
 
     it('should render widget matching ordering (defaulting to sort descending if unordered) and sort rows when widget pressed', () => {
-      const sortFirstNameLink = de.query(By.css('div>table>thead>tr th:nth-child(3) table tbody a'));
-      const sortLastNameLink = de.query(By.css('div>table>thead>tr th:nth-child(1) table tbody a'));
+      const sortFirstNameLink = de.query(By.css('div>table>thead>tr th:nth-child(3) a'));
+      const sortLastNameLink = de.query(By.css('div>table>thead>tr th:nth-child(1) a'));
 
       expect(sortFirstNameLink.nativeElement.textContent).toBe('▼');
       expect(sortLastNameLink.nativeElement.textContent).toBe('▲');
 
       // Check unordered
-      assertOrder(new Array(0, 1, 2, 3));
+      assertOrder([0, 1, 2, 3]);
 
       fixture.whenStable().then(() => {
         sortFirstNameLink.triggerEventHandler('click', null);
         fixture.detectChanges();
-        assertOrder(new Array(2, 0, 1, 3));
+        assertOrder([2, 0, 1, 3]);
 
         sortFirstNameLink.triggerEventHandler('click', null);
         fixture.detectChanges();
-        assertOrder(new Array(3, 1, 0, 2));
+        assertOrder([3, 1, 0, 2]);
       });
     });
 
@@ -482,7 +482,7 @@ describe('SearchResultComponent', () => {
     }
 
     it('should not break while sorting with unknown sort comparators like Complex type Address', () => {
-      const complexType = de.query(By.css('div>table>thead>tr th:nth-child(2) table tbody div'));
+      const complexType = de.query(By.css('div>table>thead>tr th:nth-child(2) div'));
       complexType.triggerEventHandler('click', null);
       fixture.detectChanges();
       expect(complexType.nativeElement.textContent).toBe('Address');
