@@ -101,7 +101,7 @@ const UTILS = {
       return undefined;
     },
     activityNames: (users: (ActivityInfo | User)[]): string => {
-      if (users && users.length > 0) {
+      if (users?.length > 0) {
         return users.map(user => UTILS.activity.activityName(user)).filter(name => !!name).join(', ');
       }
       return '';
