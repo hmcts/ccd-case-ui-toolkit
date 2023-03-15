@@ -344,12 +344,36 @@ describe('ManageCaseFlagsComponent', () => {
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
-      description: SelectFlagErrorMessage.FLAG_NOT_SELECTED,
+      description: SelectFlagErrorMessage.MANAGE_CASE_FLAGS_FLAG_NOT_SELECTED,
       fieldId: 'conditional-radios-list'
     });
     const flagNotSelectedErrorMessageElement = nativeElement.querySelector('#manage-case-flag-not-selected-error-message');
-    expect(flagNotSelectedErrorMessageElement.textContent).toContain(SelectFlagErrorMessage.FLAG_NOT_SELECTED);
+    expect(flagNotSelectedErrorMessageElement.textContent).toContain(SelectFlagErrorMessage.MANAGE_CASE_FLAGS_FLAG_NOT_SELECTED);
   });
+
+  it('should show the right validation message based on displayContextParameter', () => {
+    // @ts-expect-error - property is private
+    component.displayContextParameter = component.updateMode;
+    // @ts-expect-error - property is private
+    component.validateSelection();
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SelectFlagErrorMessage.MANAGE_CASE_FLAGS_FLAG_NOT_SELECTED,
+      fieldId: 'conditional-radios-list'
+    });
+
+    // @ts-expect-error - property is private
+    component.displayContextParameter = component.updateExternalMode;
+    // @ts-expect-error - property is private
+    component.validateSelection();
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SelectFlagErrorMessage.MANAGE_SUPPORT_FLAG_NOT_SELECTED,
+      fieldId: 'conditional-radios-list'
+    });
+  });
+
+
 
   it('should get correct party name', () => {
     const flagDisplay = {

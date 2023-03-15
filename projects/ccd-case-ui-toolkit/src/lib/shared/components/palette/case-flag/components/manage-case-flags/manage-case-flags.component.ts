@@ -170,10 +170,12 @@ export class ManageCaseFlagsComponent implements OnInit {
     this.manageCaseFlagSelectedErrorMessage = null;
     this.errorMessages = [];
     if (!this.formGroup.get(this.selectedControlName).value) {
-      this.manageCaseFlagSelectedErrorMessage = SelectFlagErrorMessage.FLAG_NOT_SELECTED;
+      const errorMessage = this.displayContextParameter === this.updateExternalMode ?
+        SelectFlagErrorMessage.MANAGE_SUPPORT_FLAG_NOT_SELECTED : SelectFlagErrorMessage.MANAGE_CASE_FLAGS_FLAG_NOT_SELECTED;
+      this.manageCaseFlagSelectedErrorMessage = errorMessage;
       this.errorMessages.push({
         title: '',
-        description: SelectFlagErrorMessage.FLAG_NOT_SELECTED,
+        description: errorMessage,
         fieldId: 'conditional-radios-list'
       });
     }
