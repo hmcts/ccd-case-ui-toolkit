@@ -81,8 +81,11 @@ const UTILS = {
         if (unknownCount > 1) {
           resultText = `${resultText}s`;
         }
-      // } else {
-      //   resultText = resultText.replace(/(.*)\,(.*?)$/, '$1 and$2');
+      } else {
+        const lastCommaIndex = resultText.lastIndexOf(',');
+        if (lastCommaIndex >= 0) {
+          resultText = `${resultText.slice(0, lastCommaIndex)} and${resultText.slice(lastCommaIndex + 1)}`;
+        }
       }
       let preSuffix = '';
       if (suffix.length > 0) {
