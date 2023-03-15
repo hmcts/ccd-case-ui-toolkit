@@ -81,8 +81,8 @@ const UTILS = {
         if (unknownCount > 1) {
           resultText = `${resultText}s`;
         }
-      } else {
-        resultText = resultText.replace(/(.*[^,]),(.*?)$/, '$1 and$2');
+      // } else {
+      //   resultText = resultText.replace(/(.*)\,(.*?)$/, '$1 and$2');
       }
       let preSuffix = '';
       if (suffix.length > 0) {
@@ -102,7 +102,7 @@ const UTILS = {
     },
     activityNames: (users: (ActivityInfo | User)[]): string => {
       if (users && users.length > 0) {
-        return users.map(info => UTILS.activity.activityName(info)).filter(name => !!name).join(', ');
+        return users.map(user => UTILS.activity.activityName(user)).filter(name => !!name).join(', ');
       }
       return '';
     },
