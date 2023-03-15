@@ -120,7 +120,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public ngOnInit(): void {
     if (this.preSelectedCases) {
       for (const preSelectedCase of this.preSelectedCases) {
-        if (this.selectedCases && !this.selectedCases.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
+        if (!this.selectedCases?.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
           this.selectedCases.push(preSelectedCase);
         }
       }
@@ -169,7 +169,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public canBeShared(caseView: SearchResultViewItem): boolean {
-    return caseView.supplementary_data && caseView.supplementary_data.hasOwnProperty('orgs_assigned_users');
+    return caseView.supplementary_data?.hasOwnProperty('orgs_assigned_users');
   }
 
   public canAnyBeShared(): boolean {
@@ -464,7 +464,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   private watchResults(): void {
     if (this.activitySocketService.isEnabled) {
-      if (this.resultView && this.resultView.results) {
+      if (this.resultView?.results) {
         const caseIds: string[] = this.resultView.results.map(value => value.case_id);
         this.activitySocketService.watchCases(caseIds);
       } else {
