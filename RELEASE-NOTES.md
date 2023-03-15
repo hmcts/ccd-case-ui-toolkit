@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.10.11-judicial-user-typeahead-fix
+### Version 6.10.12-judicial-user-typeahead-fix
 **EUI-7733** Judicial user typeahead fix
 
 ### Version 6.13.10-rc1
