@@ -93,7 +93,6 @@ describe('WriteJudicialUserFieldComponent', () => {
   let jurisdictionService: any;
   let sessionStorageService: any;
   let caseFlagRefdataService: any;
-  let activatedRoute: any;
   let nativeElement: any;
 
   beforeEach(waitForAsync(() => {
@@ -106,13 +105,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('caseFlagRefdataService', ['getHmctsServiceDetailsByCaseType', 'getHmctsServiceDetailsByServiceName']);
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
     caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of(SERVICE_DETAILS));
-    activatedRoute = {
-      snapshot: {
-        params: {
-          jid: 'BBA3'
-        }
-      }
-    };
+
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
@@ -123,7 +116,6 @@ describe('WriteJudicialUserFieldComponent', () => {
       declarations: [WriteJudicialUserFieldComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: JurisdictionService, useValue: jurisdictionService },
         { provide: SessionStorageService, useValue: sessionStorageService },
         { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService }
