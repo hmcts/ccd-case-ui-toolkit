@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.13.10-EUI-4129-v1",
+  "version": "6.13.11-activity-tracker",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
