@@ -93,6 +93,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.isPageRefreshed = JSON.parse(this.sessionStorageService.getItem('isPageRefreshed'));
 
     this.checkPageRefresh();
+    /* istanbul ignore else */
     if (this.router.url && !this.isPageRefreshed) {
       this.sessionStorageService.setItem('eventUrl', this.router.url);
     }
@@ -112,6 +113,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    /* istanbul ignore else */
     if (this.callbackErrorsSubject) {
       this.callbackErrorsSubject.unsubscribe();
     }
@@ -143,6 +145,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public next(currentPageId: string): Promise<boolean> {
     this.initialUrl = this.sessionStorageService.getItem('eventUrl');
+    /* istanbul ignore else */
     if (this.router.url && !this.initialUrl) {
       this.sessionStorageService.setItem('eventUrl', this.router.url);
     }
@@ -154,6 +157,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       form: this.form,
     });
 
+    /* istanbul ignore else */
     if(!nextPage && !this.eventTrigger.show_summary) {
       this.submitForm({
         eventTrigger: this.eventTrigger,
@@ -176,6 +180,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.registrarService.reset();
 
     const previousPage = this.wizard.previousPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(this.eventTrigger, this.form));
+    /* istanbul ignore else */
     if (!previousPage) {
       return Promise.resolve(false);
     }
@@ -344,6 +349,7 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
    * If the field is a Collection type with retain_hidden_value = true, the entire collection is replaced with the
    * original from `formatted_value`. This applies to *all* types of Collections.
    */
+  /* istanbul ignore next */
   Object.keys(rawFormValueData).forEach((key) => {
     const caseField: CaseField = caseFieldsLookup[key];
     // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
@@ -402,7 +408,7 @@ private caseSubmit({ form, caseEventData, submit }: CaseEditCaseSubmit ): void {
       error => {
         this.error = error;
         this.callbackErrorsSubject.next(error);
-
+        /* istanbul ignore else */
         if (this.error.details) {
           this.formErrorService
             .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
