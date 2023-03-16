@@ -45,10 +45,4 @@ export class CaseFlagSummaryListComponent implements OnInit {
     const subTypeValue = flagDetail.subTypeValue ? ` - ${flagDetail.subTypeValue}` : '';
     return `${flagDetail.name}${otherDescription}${subTypeValue}`;
   }
-
-  private getFlagDescriptionWelsh(flagDetail: FlagDetail): string {
-    const otherDescriptionWelsh = flagDetail.otherDescription_cy ? ` - ${flagDetail.otherDescription_cy}` : '';
-    const subTypeValueWelsh = flagDetail.subTypeValue_cy ? ` - ${flagDetail.subTypeValue_cy}` : '';
-    return `${flagDetail.name}${otherDescriptionWelsh}${subTypeValueWelsh}`;
-  }
 }

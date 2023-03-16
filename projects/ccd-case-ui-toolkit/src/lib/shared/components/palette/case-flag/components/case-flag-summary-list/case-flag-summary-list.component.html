@@ -27,7 +27,7 @@
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="isWelshTranslationRequired">
+  <div class="govuk-summary-list__row" *ngIf="isWelshTranslationRequired && flagDescriptionWelsh?.length > 0">
     <dt class="govuk-summary-list__key">
       Other description (Welsh)
     </dt>
@@ -41,7 +41,7 @@
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="flagComments?.length > 0">
     <dt class="govuk-summary-list__key">
       Comments
     </dt>
@@ -55,7 +55,7 @@
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="isWelshTranslationRequired">
+  <div class="govuk-summary-list__row" *ngIf="isWelshTranslationRequired && flagCommentsWelsh?.length > 0">
     <dt class="govuk-summary-list__key">
       Comments (Welsh)
     </dt>
@@ -69,7 +69,7 @@
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="summaryListDisplayMode === displayMode.MANAGE">
+  <div class="govuk-summary-list__row" *ngIf="this.summaryListDisplayMode === displayMode.MANAGE">
     <dt class="govuk-summary-list__key">
       Status
     </dt>
@@ -77,9 +77,8 @@
       {{flagStatus}}
     </dd>
     <dd class="govuk-summary-list__actions">
-      <a ngIf="this.summaryListDisplayMode === displayMode.MANAGE"
-        class="govuk-link" href="javascript:void(0)"
-        (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION)">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_UPDATE)">
         Change<span class="govuk-visually-hidden"> status</span>
       </a>
     </dd>

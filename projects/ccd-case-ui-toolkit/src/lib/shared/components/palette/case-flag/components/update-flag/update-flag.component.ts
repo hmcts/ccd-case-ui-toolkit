@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
+import { CaseFlagStateService } from '../../../../case-editor/services/case-flag-state.service';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
 
@@ -10,10 +11,10 @@ import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardS
 })
 export class UpdateFlagComponent implements OnInit {
   @Input() public formGroup: FormGroup;
-  @Input() public selectedFlag: FlagDetailDisplayWithFormGroupPath;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
+  public selectedFlag: FlagDetailDisplayWithFormGroupPath;
   public updateFlagTitle = '';
   public errorMessages: ErrorMessage[] = [];
   public updateFlagNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
@@ -26,8 +27,12 @@ export class UpdateFlagComponent implements OnInit {
   private readonly textMaxCharLimit = 200;
   private flagDetail: FlagDetail;
 
+  constructor(private readonly caseFlagStateService: CaseFlagStateService) {
+  }
+
   public ngOnInit(): void {
-    if (this.selectedFlag && this.selectedFlag.flagDetailDisplay && this.selectedFlag.flagDetailDisplay.flagDetail) {
+    this.selectedFlag = this.caseFlagStateService.selectedFlag;
+    if (this.selectedFlag?.flagDetailDisplay?.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
 
       // Populate flag comments text area with existing comments

@@ -139,6 +139,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
     this.errorMessages = caseFlagState.errorMessages;
     this.selectedFlag = caseFlagState.selectedFlag;
+    // Set the selected flag in the case flag state service
+    if (this.selectedFlag) {
+      this.caseFlagStateService.selectedFlag = caseFlagState.selectedFlag;
+    }
 
     // Validation succeeded; proceed to next state or final review stage ("Check your answers")
     if (this.errorMessages.length === 0) {
@@ -276,6 +280,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         });
       }
     });
+    if (!this.selectedFlag) {
+      this.selectedFlag = this.caseFlagStateService.selectedFlag;
+    }
     let flagsCaseFieldValue = this.selectedFlag.caseField.value;
     // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
     // CaseField value to apply changes to
