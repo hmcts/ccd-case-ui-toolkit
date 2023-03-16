@@ -96,9 +96,6 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
             ...this.flagForSummaryDisplay.flagDetail,
             ...this.caseFlagStateService.formGroup?.value
           };
-
-          console.log('FLAG DETAIL', this.flagForSummaryDisplay.flagDetail);
-
           // Set the display mode for the "Review flag details" summary page
           this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
         }
@@ -127,11 +124,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public navigateBackToForm(fieldState: number): void {
-    this.router.navigate([`../${this.caseFlagStateService.pageLocation}`], {
-      relativeTo: this.route,
-      state: {
-        fieldState,
-      }
-    });
+    this.caseFlagStateService.fieldStateToNavigate = fieldState;
+    this.router.navigate([`../${this.caseFlagStateService.pageLocation}`], { relativeTo: this.route });
   }
 }

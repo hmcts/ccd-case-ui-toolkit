@@ -14,7 +14,6 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public flagDescription: string;
   public flagComments: string;
   public flagStatus: string;
-  public isWelshTranslationRequired: boolean;
   public flagDescriptionWelsh: string;
   public flagCommentsWelsh: string;
   public otherDescription: string;
@@ -29,11 +28,10 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public ngOnInit(): void {
     if (this.flagForSummaryDisplay) {
       const flagDetail = this.flagForSummaryDisplay.flagDetail;
-      this.isWelshTranslationRequired = (flagDetail as any).flagIsWelshTranslationNeeded;
       this.flagDescription = this.getFlagDescription(flagDetail);
-      this.flagDescriptionWelsh = (flagDetail as any).otherDescriptionWelsh;
+      this.flagDescriptionWelsh = flagDetail.otherDescription_cy;
       this.flagComments = flagDetail.flagComment;
-      this.flagCommentsWelsh = (flagDetail as any).flagCommentWelsh;
+      this.flagCommentsWelsh = flagDetail.flagComment_cy;
       this.flagStatus = flagDetail.status;
       this.addUpdateFlagHeaderText =
         this.summaryListDisplayMode === CaseFlagSummaryListDisplayMode.MANAGE ? this.updateFlagHeaderText : this.addFlagHeaderText;
