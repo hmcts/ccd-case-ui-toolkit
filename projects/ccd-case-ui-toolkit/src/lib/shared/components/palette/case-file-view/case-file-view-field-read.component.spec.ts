@@ -38,7 +38,6 @@ describe('CaseFileViewFieldReadComponent', () => {
         delete: false,
         role: 'caseworker-privatelaw-la'
       },
-
     ]
   };
   const mockCaseFieldFalse = {
