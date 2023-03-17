@@ -1,9 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { EnumDisplayDescriptionPipe } from '../../../../../pipes/generic/enum-display-description/enum-display-description.pipe';
-import { CaseFlagStateService } from '../../../../case-editor/services/case-flag-state.service';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
@@ -45,21 +44,13 @@ describe('UpdateFlagComponent', () => {
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
 
-  let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
-
   beforeEach(waitForAsync(() => {
-    caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
-    caseFlagStateServiceSpy.selectedFlag = selectedFlag2;
-
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [
         UpdateFlagComponent,
         EnumDisplayDescriptionPipe
-      ],
-      providers: [
-        { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy }
       ]
     })
     .compileComponents();
@@ -68,7 +59,10 @@ describe('UpdateFlagComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagComponent);
     component = fixture.componentInstance;
-    component.formGroup = new FormGroup({});
+		component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1)
+    });
+
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
@@ -83,8 +77,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should populate the flag comments textarea with existing comments', () => {
-    // component.selectedFlag = selectedFlag1;
-    caseFlagStateServiceSpy.selectedFlag = selectedFlag1;
+    component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     // Check the textarea value property, rather than textContent, because this input element has no child nodes
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
@@ -92,8 +85,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if existing comments have been deleted', () => {
-    // component.selectedFlag = selectedFlag1;
-    caseFlagStateServiceSpy.selectedFlag = selectedFlag1;
+    component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
@@ -119,7 +111,9 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not show an error message on clicking "Next" if no comments exist and none have been entered', () => {
-    component.selectedFlag = selectedFlag2;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag2)
+    });
     fixture.detectChanges();
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     expect(textarea.value).toEqual('');

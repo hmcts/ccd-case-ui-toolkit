@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../../domain';
-import { CaseFlagStateService } from '../../../../../case-editor/services/case-flag-state.service';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath } from '../../../domain';
 import {
   CaseFlagFieldState,
@@ -30,13 +29,11 @@ export class UpdateFlagAddTranslationFormComponent implements OnInit {
   public updateFlagAddTranslationStepEnum = UpdateFlagAddTranslationStep;
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
-
-  constructor(private readonly caseFlagStateService: CaseFlagStateService) {
-  }
+  private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
     this.updateFlagAddTranslationTitle = CaseFlagWizardStepTitle.UPDATE_FLAG_ADD_TRANSLATION;
-    this.selectedFlag = this.caseFlagStateService.selectedFlag;
+    this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
     const flagDetail = this.selectedFlag?.flagDetailDisplay?.flagDetail;
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(flagDetail?.otherDescription));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH, new FormControl(flagDetail?.otherDescription_cy));

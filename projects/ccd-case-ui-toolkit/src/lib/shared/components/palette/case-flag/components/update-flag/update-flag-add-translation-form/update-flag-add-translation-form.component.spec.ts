@@ -2,7 +2,6 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { CaseFlagStateService } from '../../../../../case-editor/services/case-flag-state.service';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, UpdateFlagAddTranslationErrorMessage } from '../../../enums';
 import { UpdateFlagAddTranslationFormComponent } from './update-flag-add-translation-form.component';
@@ -40,18 +39,10 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
 
-  let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
-
   beforeEach(async () => {
-    caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
-    caseFlagStateServiceSpy.selectedFlag = selectedFlag1;
-
     await TestBed.configureTestingModule({
       declarations: [ UpdateFlagAddTranslationFormComponent ],
-      imports: [ ReactiveFormsModule ],
-      providers: [
-        { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy }
-      ]
+      imports: [ ReactiveFormsModule ]
     })
     .compileComponents();
   });
@@ -59,7 +50,9 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagAddTranslationFormComponent);
     component = fixture.componentInstance;
-    component.formGroup = new FormGroup({});
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1)
+    });
     component.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(''));
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +

@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
-import { CaseFlagStateService } from '../../../../case-editor/services/case-flag-state.service';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
 
@@ -25,13 +24,11 @@ export class UpdateFlagComponent implements OnInit {
   public readonly caseFlagStatuses = CaseFlagStatus;
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
-  private flagDetail: FlagDetail;
-
-  constructor(private readonly caseFlagStateService: CaseFlagStateService) {
-  }
+	private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
+	private flagDetail: FlagDetail;
 
   public ngOnInit(): void {
-    this.selectedFlag = this.caseFlagStateService.selectedFlag;
+    this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
     if (this.selectedFlag?.flagDetailDisplay?.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
 

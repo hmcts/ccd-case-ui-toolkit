@@ -569,9 +569,8 @@ describe('WriteCaseFlagFieldComponent', () => {
   });
 
   it('should update flag in collection when updating a case flag', () => {
-    // component.selectedFlag = selectedFlag;
-    selectedFlag.caseField = component.flagsData[0].caseField;
-    caseFlagStateServiceSpy.selectedFlag = selectedFlag;
+    component.selectedFlag = selectedFlag;
+    component.selectedFlag.caseField = component.flagsData[0].caseField;
     component.caseFlagParentFormGroup = new FormGroup({
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('A description'),
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),

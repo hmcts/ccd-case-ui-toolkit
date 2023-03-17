@@ -166,7 +166,7 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
   });
 
-  it('should display summary details or Welsh', () => {
+  it('should display summary details for Welsh', () => {
     const flag = {
       partyName: 'Rose Bank',
       flagDetail: {

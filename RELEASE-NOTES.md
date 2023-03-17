@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.10.7-case-flags-review-details-page
+### Version 6.10.7-case-flags-review-details-page-v2
 **EUI-7351** Reasonable adjustments display review flag details page
 
 ### Version 6.10.7-manage-case-flags-filter-out-inactive-and-not-approved
