@@ -21,7 +21,8 @@ export class UpdateFlagComponent implements OnInit {
   public statusReasonNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
   public statusReasonCharLimitErrorMessage: UpdateFlagErrorMessage = null;
   public updateFlagStepEnum = UpdateFlagStep;
-  public readonly caseFlagStatuses = CaseFlagStatus;
+  public validStatusProgressions: string[];
+  public readonly caseFlagStatusEnum = CaseFlagStatus;
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
   private flagDetail: FlagDetail;
@@ -29,16 +30,33 @@ export class UpdateFlagComponent implements OnInit {
   public ngOnInit(): void {
     if (this.selectedFlag && this.selectedFlag.flagDetailDisplay && this.selectedFlag.flagDetailDisplay.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
+      const currentFlagStatusKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === this.flagDetail.status);
 
       // Populate flag comments text area with existing comments
       this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(this.flagDetail.flagComment));
-      this.formGroup.addControl(CaseFlagFormFields.STATUS, new FormControl(this.flagDetail.status));
+      this.formGroup.addControl(CaseFlagFormFields.STATUS, new FormControl(currentFlagStatusKey));
       this.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(''));
       this.formGroup.addControl(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED, new FormControl(false));
 
       if (this.flagDetail.name) {
         this.updateFlagTitle =
           `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${this.flagDetail.name}${this.flagDetail.subTypeValue ? `, ${this.flagDetail.subTypeValue}"` : '"'}`;
+      }
+
+      // Set the valid status options for display, based on current status of the selected flag. "Active" flags can
+      // remain "Active" or move to "Inactive" only; "Requested" flags can remain "Requested" or move to "Active",
+      // "Inactive", or "Not approved". No other status progressions are valid
+      if (currentFlagStatusKey) {
+        switch (currentFlagStatusKey) {
+          case 'ACTIVE':
+            this.validStatusProgressions = Object.keys(CaseFlagStatus).filter(key => !['REQUESTED', 'NOT_APPROVED'].includes(key));
+            break;
+          case 'REQUESTED':
+            this.validStatusProgressions = Object.keys(CaseFlagStatus);
+            break;
+          default:
+            this.validStatusProgressions = [];
+        }
       }
     }
   }
@@ -86,7 +104,8 @@ export class UpdateFlagComponent implements OnInit {
     }
 
     const statusReason = this.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON).value;
-    if (this.formGroup.get(CaseFlagFormFields.STATUS).value === CaseFlagStatus.NOT_APPROVED && !statusReason) {
+    const flagStatusNotApprovedKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === CaseFlagStatus.NOT_APPROVED);
+    if (this.formGroup.get(CaseFlagFormFields.STATUS).value === flagStatusNotApprovedKey && !statusReason) {
       this.statusReasonNotEnteredErrorMessage = UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED;
       this.errorMessages.push({
         title: '',

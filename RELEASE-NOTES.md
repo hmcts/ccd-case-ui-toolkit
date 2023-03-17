@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-manage-case-flags-valid-status-progression
+**EUI-7929** Set the valid flag status options available on the "Update flag" page, based on the current status of the selected flag
+
 ### Version 6.10.7-manage-case-flags-filter-out-inactive-and-not-approved
 **EUI-7354** Ensure flags with a status of either "Inactive" or "Not approved" are filtered out from display on "Manage case flags" page, so they cannot be selected for update
 
