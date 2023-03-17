@@ -18,12 +18,10 @@ describe('CaseFileViewFieldReadComponent', () => {
   const mockSnapshot = {
     paramMap: createSpyObj('paramMap', ['get']),
   };
-  
   const mockRoute = {
     params: of({ cid: '1234123412341234' }),
     snapshot: mockSnapshot
   };
-
   const mockCaseFieldTrue = {
     acls: [
       {
@@ -43,7 +41,6 @@ describe('CaseFileViewFieldReadComponent', () => {
 
     ]
   };
-
   const mockCaseFieldFalse = {
     acls: [
       {
@@ -88,9 +85,7 @@ describe('CaseFileViewFieldReadComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService }
       ]
     })
-  });
-
-  beforeEach(() => {
+  
     fixture = TestBed.createComponent(CaseFileViewFieldReadComponent);
     component = fixture.componentInstance;
     component.caseField = new CaseField();
@@ -101,7 +96,7 @@ describe('CaseFileViewFieldReadComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.allowMoving).toBeTruthy()
+    expect(component.allowMoving).toBeTruthy();
   });
 
   it('should set allowMoving to false based on acl update being false', () => {
@@ -109,6 +104,6 @@ describe('CaseFileViewFieldReadComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.allowMoving).toBeFalsy()
+    expect(component.allowMoving).toBeFalsy();
   });
 });
