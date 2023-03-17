@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.8-prevent-clear-page-from-cya",
+  "version": "6.13.11-judicial-user-typeahead-fix",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"
