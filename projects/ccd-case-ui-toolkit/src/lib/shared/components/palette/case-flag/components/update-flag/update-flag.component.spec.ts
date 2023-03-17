@@ -2,7 +2,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { EnumDisplayDescriptionPipe } from '../../../../../pipes/generic/enum-display-description/enum-display-description.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
@@ -29,6 +28,22 @@ describe('UpdateFlagComponent', () => {
     flagCode: 'FL2',
     status: 'Inactive'
   } as FlagDetail;
+  const requestedFlag = {
+    name: 'Flag 3',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'FL3',
+    status: 'Requested'
+  } as FlagDetail;
+  const notApprovedFlag = {
+    name: 'Flag 4',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'FL4',
+    status: 'Not approved'
+  } as FlagDetail;
   const selectedFlag1 = {
     flagDetailDisplay: {
       partyName: 'Rose Bank',
@@ -43,15 +58,26 @@ describe('UpdateFlagComponent', () => {
     },
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
+  const selectedFlag3 = {
+    flagDetailDisplay: {
+      partyName: 'Rose Bank',
+      flagDetail: requestedFlag
+    },
+    pathToFlagsFormGroup: ''
+  } as FlagDetailDisplayWithFormGroupPath;
+  const selectedFlag4 = {
+    flagDetailDisplay: {
+      partyName: 'Rose Bank',
+      flagDetail: notApprovedFlag
+    },
+    pathToFlagsFormGroup: ''
+  } as FlagDetailDisplayWithFormGroupPath;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [
-        UpdateFlagComponent,
-        EnumDisplayDescriptionPipe
-      ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [UpdateFlagComponent]
     })
     .compileComponents();
   }));
@@ -59,7 +85,7 @@ describe('UpdateFlagComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagComponent);
     component = fixture.componentInstance;
-		component.formGroup = new FormGroup({
+    component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag1)
     });
 
@@ -154,8 +180,8 @@ describe('UpdateFlagComponent', () => {
     expect(errorMessageElement).toBeNull();
   });
 
-  it('should render flag status radio buttons correctly', () => {
-    component.selectedFlag = selectedFlag1;
+  it('should render flag status radio buttons correctly when current flag status is "Requested"', () => {
+    component.selectedFlag = selectedFlag3;
     fixture.detectChanges();
     const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
 
@@ -167,8 +193,38 @@ describe('UpdateFlagComponent', () => {
     expect(displayedStatuses).toEqual(Object.values(CaseFlagStatus));
   });
 
-  it('should show an error message on clicking "Next" if status reason is mandatory but none has been entered', () => {
+  it('should render flag status radio buttons correctly when current flag status is "Active"', () => {
     component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
+
+    const displayedStatuses = [] as string[];
+    for (const element of statusCheckboxLabelsElements.values()) {
+      displayedStatuses.push(element.textContent.trim());
+    }
+
+    expect(displayedStatuses).toEqual([CaseFlagStatus.ACTIVE, CaseFlagStatus.INACTIVE]);
+  });
+
+  it('should not render any flag status radio buttons when current flag status is "Inactive"', () => {
+    component.selectedFlag = selectedFlag2;
+    fixture.detectChanges();
+    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
+
+    expect(statusCheckboxLabelsElements.length).toBe(0);
+  });
+
+  it('should not render any flag status radio buttons when current flag status is "Not approved"', () => {
+    component.selectedFlag = selectedFlag4;
+    fixture.detectChanges();
+    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
+
+    expect(statusCheckboxLabelsElements.length).toBe(0);
+  });
+
+  it('should show an error message on clicking "Next" if status reason is mandatory but none has been entered', () => {
+    // Select flag with current status of "Requested", so that all status radio buttons are displayed
+    component.selectedFlag = selectedFlag3;
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
@@ -193,7 +249,8 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not show an error message on clicking "Next" if status reason is not mandatory and none has been entered', () => {
-    component.selectedFlag = selectedFlag1;
+    // Select flag with current status of "Requested", so that all status radio buttons are displayed
+    component.selectedFlag = selectedFlag3;
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
@@ -240,7 +297,8 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if status reason exceeds 200-character limit, regardless of optionality', () => {
-    component.selectedFlag = selectedFlag1;
+    // Select flag with current status of "Requested", so that all status radio buttons are displayed
+    component.selectedFlag = selectedFlag3;
     fixture.detectChanges();
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering status reason optional
@@ -273,7 +331,8 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not show an error message if status reason equals a 200-character limit, regardless of optionality', () => {
-    component.selectedFlag = selectedFlag1;
+    // Select flag with current status of "Requested", so that all status radio buttons are displayed
+    component.selectedFlag = selectedFlag3;
     fixture.detectChanges();
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering status reason optional

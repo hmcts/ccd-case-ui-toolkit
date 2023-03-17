@@ -306,7 +306,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
           : null,
         flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value;
         flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value;
-        flagDetailToUpdate.value.status = this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS)?.value;
+        flagDetailToUpdate.value.status = CaseFlagStatus[this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS)?.value];
         flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
       }
     }

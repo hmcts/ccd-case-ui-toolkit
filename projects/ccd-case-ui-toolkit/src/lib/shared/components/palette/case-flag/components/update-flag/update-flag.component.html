@@ -39,14 +39,14 @@
             </h1>
           </legend>
           <div class="govuk-radios govuk-radios--conditional govuk-!-margin-bottom-4" data-module="govuk-radios" [id]="caseFlagFormFields.STATUS">
-            <div class="govuk-radios__item" *ngFor="let status of caseFlagStatuses | enumDisplayDescription">
+            <div class="govuk-radios__item" *ngFor="let status of validStatusProgressions">
               <input class="govuk-radios__input" type="radio"
                       [id]="caseFlagFormFields.STATUS + '_' + status"
                       [name]="caseFlagFormFields.STATUS"
                       [formControlName]="caseFlagFormFields.STATUS"
                       [value]="status">
               <label class="govuk-label govuk-radios__label" [for]="caseFlagFormFields.STATUS + '_' + status">
-                {{ status }}
+                {{ caseFlagStatusEnum[status] }}
               </label>
             </div>
           </div>

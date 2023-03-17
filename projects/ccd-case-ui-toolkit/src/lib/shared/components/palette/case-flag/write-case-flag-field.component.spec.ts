@@ -571,27 +571,29 @@ describe('WriteCaseFlagFieldComponent', () => {
   it('should update flag in collection when updating a case flag', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
+    const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === 'Inactive');
     component.caseFlagParentFormGroup = new FormGroup({
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('A description'),
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),
       [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
       [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl('An updated comment (Welsh)'),
-      [CaseFlagFormFields.STATUS]: new FormControl('Active')
+      [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
     });
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
-    // Check the description and comments have been applied and the modified date/time has been set
+    // Check the description, comments, and status have been applied and the modified date/time has been set
     expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toEqual(
-      component.caseFlagParentFormGroup.value.otherDescription);
+      component.caseFlagParentFormGroup.value[CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]);
     expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toEqual(
-      component.caseFlagParentFormGroup.value.otherDescriptionWelsh);
+      component.caseFlagParentFormGroup.value[CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]);
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
-      component.caseFlagParentFormGroup.value.flagComment);
+      component.caseFlagParentFormGroup.value[CaseFlagFormFields.COMMENTS]);
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual(
-      component.caseFlagParentFormGroup.value.flagCommentWelsh);
+      component.caseFlagParentFormGroup.value[CaseFlagFormFields.COMMENTS_WELSH]);
+    expect(component.flagsData[0].caseField.value.details[0].value.status).toEqual(
+      CaseFlagStatus[component.caseFlagParentFormGroup.value[CaseFlagFormFields.STATUS]]);
     expect(component.flagsData[0].caseField.value.details[0].value.dateTimeModified).toBeTruthy();
     // Check all other existing changes have been discarded (i.e. values restored from corresponding values in formatted_value)
-    expect(component.flagsData[0].caseField.value.details[0].value.status).toEqual(CaseFlagStatus.ACTIVE);
     expect(component.flagsData[0].caseField.value.details[1].value.otherDescription).toEqual('Original description');
     expect(component.flagsData[0].caseField.value.details[1].value.otherDescription_cy).toEqual('Welsh description');
     expect(component.flagsData[0].caseField.value.details[1].value.flagComment).toEqual('Original new comment 1');
@@ -629,9 +631,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toBeNull();
     expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toBeNull();
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
-      component.caseFlagParentFormGroup.value.flagComment);
+      component.caseFlagParentFormGroup.value[CaseFlagFormFields.COMMENTS]);
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual(
-      component.caseFlagParentFormGroup.value.flagCommentWelsh);
+      component.caseFlagParentFormGroup.value[CaseFlagFormFields.COMMENTS_WELSH]);
   });
 
   it('should handle the caseFlagStateEmitter and increment fieldState by 1 if not FLAG_COMMENTS or FLAG_UPDATE,' +
