@@ -181,7 +181,9 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should render flag status radio buttons correctly when current flag status is "Requested"', () => {
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
 
@@ -207,7 +209,9 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not render any flag status radio buttons when current flag status is "Inactive"', () => {
-    component.selectedFlag = selectedFlag2;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag2)
+    });
     fixture.detectChanges();
     const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
 
@@ -215,7 +219,9 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not render any flag status radio buttons when current flag status is "Not approved"', () => {
-    component.selectedFlag = selectedFlag4;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag4)
+    });
     fixture.detectChanges();
     const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
 
@@ -224,7 +230,9 @@ describe('UpdateFlagComponent', () => {
 
   it('should show an error message on clicking "Next" if status reason is mandatory but none has been entered', () => {
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
@@ -250,7 +258,9 @@ describe('UpdateFlagComponent', () => {
 
   it('should not show an error message on clicking "Next" if status reason is not mandatory and none has been entered', () => {
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
@@ -298,7 +308,9 @@ describe('UpdateFlagComponent', () => {
 
   it('should show an error message on clicking "Next" if status reason exceeds 200-character limit, regardless of optionality', () => {
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering status reason optional
@@ -332,7 +344,9 @@ describe('UpdateFlagComponent', () => {
 
   it('should not show an error message if status reason equals a 200-character limit, regardless of optionality', () => {
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering status reason optional
