@@ -25,40 +25,40 @@ describe('CaseFileViewFieldReadComponent', () => {
   const mockCaseFieldTrue = {
     acls: [
       {
-        "create": true,
-        "read": true,
-        "update": true,
-        "delete": false,
-        "role": "caseworker-privatelaw-judge"
+        create: true,
+        read: true,
+        update: true,
+        delete: false,
+        role: 'caseworker-privatelaw-judge'
       },
       {
-        "create": true,
-        "read": true,
-        "update": true,
-        "delete": false,
-        "role": "caseworker-privatelaw-la"
+        create: true,
+        read: true,
+        update: true,
+        delete: false,
+        role: 'caseworker-privatelaw-la'
       },
-      
+
     ]
   };
 
   const mockCaseFieldFalse = {
     acls: [
       {
-        "create": true,
-        "read": true,
-        "update": false,
-        "delete": false,
-        "role": "caseworker-privatelaw-judge"
+        create: true,
+        read: true,
+        update: false,
+        delete: false,
+        role: 'caseworker-privatelaw-judge'
       },
       {
-        "create": true,
-        "read": true,
-        "update": false,
-        "delete": false,
-        "role": "caseworker-privatelaw-la"
+        create: true,
+        read: true,
+        update: false,
+        delete: false,
+        role: 'caseworker-privatelaw-la'
       },
-      
+
     ]
   };
 

@@ -12,7 +12,6 @@ export class CaseFileViewFieldReadComponent extends CaseFileViewFieldComponent i
 
   public ngOnInit(): void {
     super.ngOnInit();
-    
     this.allowMoving = this.caseField.acls.some(acl => acl.update);
   }
 }
