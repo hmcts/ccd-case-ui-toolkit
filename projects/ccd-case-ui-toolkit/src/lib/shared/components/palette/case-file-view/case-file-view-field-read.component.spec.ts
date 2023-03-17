@@ -84,7 +84,7 @@ describe('CaseFileViewFieldReadComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService }
       ]
     })
-  
+    
     fixture = TestBed.createComponent(CaseFileViewFieldReadComponent);
     component = fixture.componentInstance;
     component.caseField = new CaseField();
