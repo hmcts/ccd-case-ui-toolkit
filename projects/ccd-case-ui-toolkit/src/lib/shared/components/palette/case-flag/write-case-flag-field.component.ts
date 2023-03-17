@@ -261,7 +261,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
           }
         });
       }
-      if (value && value.details && value.details.length > 0 && formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
+      if (value?.details?.length > 0 && formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
         value.details.forEach(flagDetail => {
           const originalFlagDetail = formattedValue.details.find(detail => detail.id === flagDetail.id);
           if (originalFlagDetail) {

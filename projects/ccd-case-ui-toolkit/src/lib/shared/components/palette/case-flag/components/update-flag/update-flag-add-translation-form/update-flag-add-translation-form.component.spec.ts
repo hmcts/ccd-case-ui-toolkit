@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { CaseFlagStateService } from '../../../../../case-editor/services/case-flag-state.service';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, UpdateFlagAddTranslationErrorMessage } from '../../../enums';
 import { UpdateFlagAddTranslationFormComponent } from './update-flag-add-translation-form.component';
@@ -39,10 +40,18 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
 
+  let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
+
   beforeEach(async () => {
+    caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
+    caseFlagStateServiceSpy.selectedFlag = selectedFlag1;
+
     await TestBed.configureTestingModule({
       declarations: [ UpdateFlagAddTranslationFormComponent ],
-      imports: [ ReactiveFormsModule ]
+      imports: [ ReactiveFormsModule ],
+      providers: [
+        { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy }
+      ]
     })
     .compileComponents();
   });

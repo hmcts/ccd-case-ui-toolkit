@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { EnumDisplayDescriptionPipe } from '../../../../../pipes/generic/enum-display-description/enum-display-description.pipe';
+import { CaseFlagStateService } from '../../../../case-editor/services/case-flag-state.service';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
@@ -44,11 +45,22 @@ describe('UpdateFlagComponent', () => {
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
 
+  let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
+
   beforeEach(waitForAsync(() => {
+    caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
+    caseFlagStateServiceSpy.selectedFlag = selectedFlag2;
+
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [UpdateFlagComponent, EnumDisplayDescriptionPipe]
+      imports: [ ReactiveFormsModule ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [
+        UpdateFlagComponent,
+        EnumDisplayDescriptionPipe
+      ],
+      providers: [
+        { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy }
+      ]
     })
     .compileComponents();
   }));
@@ -71,7 +83,8 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should populate the flag comments textarea with existing comments', () => {
-    component.selectedFlag = selectedFlag1;
+    // component.selectedFlag = selectedFlag1;
+    caseFlagStateServiceSpy.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     // Check the textarea value property, rather than textContent, because this input element has no child nodes
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
@@ -79,7 +92,8 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if existing comments have been deleted', () => {
-    component.selectedFlag = selectedFlag1;
+    // component.selectedFlag = selectedFlag1;
+    caseFlagStateServiceSpy.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');

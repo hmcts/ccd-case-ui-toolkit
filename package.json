@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.7-manage-support-first-step-text-changes",
+  "version": "6.10.7-case-flags-review-details-page",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"

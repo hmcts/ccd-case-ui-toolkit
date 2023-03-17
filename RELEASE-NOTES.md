@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-case-flags-review-details-page
+**EUI-7351** Reasonable adjustments display review flag details page
+
 ### Version 6.10.7-manage-case-flags-filter-out-inactive-and-not-approved
 **EUI-7354** Ensure flags with a status of either "Inactive" or "Not approved" are filtered out from display on "Manage case flags" page, so they cannot be selected for update
 

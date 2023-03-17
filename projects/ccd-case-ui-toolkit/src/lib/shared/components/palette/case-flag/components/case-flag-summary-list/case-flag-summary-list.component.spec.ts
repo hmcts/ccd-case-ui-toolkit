@@ -80,7 +80,8 @@ describe('CaseFlagSummaryListComponent', () => {
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
-    expect(summaryListValues[2].textContent.trim()).toEqual('');
+    // Flag comments is not displayed if there is no comments
+    expect(summaryListValues[2]).toBeUndefined();
     // Flag status is not expected to be displayed if the summary page is shown during the Create Case Flag journey
     expect(summaryListValues[3]).toBeUndefined();
   });
@@ -163,5 +164,34 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
     // Flag status is expected to be displayed if the summary page is shown during the Manage Case Flags journey
     expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
+  });
+
+  it('should display summary details or Welsh', () => {
+    const flag = {
+      partyName: 'Rose Bank',
+      flagDetail: {
+        name: 'Flag 1',
+        flagComment: 'First flag',
+        flagComment_cy: 'Flag comment for Welsh',
+        dateTimeCreated: new Date(),
+        path: [{ id: '', value: 'Reasonable adjustment' }],
+        hearingRelevant: false,
+        flagCode: 'FL1',
+        otherDescription_cy: 'Other description for Welsh',
+        status: 'Active'
+      } as FlagDetail
+    } as FlagDetailDisplay;
+    component.flagForSummaryDisplay = flag;
+    component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+    fixture.detectChanges();
+    const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
+    expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateFlagHeaderText);
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    expect(summaryListValues[0].textContent).toContain(flag.partyName);
+    expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
+    expect(summaryListValues[2].textContent).toContain(flag.flagDetail.otherDescription_cy);
+    expect(summaryListValues[3].textContent).toContain(flag.flagDetail.flagComment);
+    expect(summaryListValues[4].textContent).toContain(flag.flagDetail.flagComment_cy);
+    expect(summaryListValues[5].textContent).toContain(flag.flagDetail.status);
   });
 });
