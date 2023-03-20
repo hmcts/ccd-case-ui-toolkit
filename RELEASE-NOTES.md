@@ -1,9 +1,15 @@
 ## RELEASE NOTES
+### Version 6.10.10-configure-linked-cases
+**EUI-7676** Configure linked cases
+
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
+
+### Version 5.0.46-fix-case-link
+**EUI-7521** Fix case link hyperlink on applications tab
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
@@ -209,7 +215,6 @@ caching previous data when the user elects to change the case flag being created
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
-<<<<<<< HEAD
 
 ### Version 4.20.24-linked-cases-private-law-integration
 Linked cases private law integration
@@ -219,8 +224,6 @@ Linked cases merge from Release
 
 ### Version 4.22.0-judicial-user-typeahead
 **EUI-6746** CR-52 JOH typeahead
-=======
->>>>>>> 3f4684bcecfbda59db6172ace3ea5e915184bc99
 
 ### Version 4.18.16-EUI-6309-mandatory-field-issue
 **EUI-6309** mandatory-field-issue
