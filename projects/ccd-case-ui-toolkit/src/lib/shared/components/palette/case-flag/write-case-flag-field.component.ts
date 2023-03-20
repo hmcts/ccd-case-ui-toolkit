@@ -62,7 +62,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // If it is start of the journey or navigation from check your answers page then fieldStateToNavigate property
     // in case flag state service will contain the field state to navigate based on create or manage journey
     this.fieldState = this.caseFlagStateService.fieldStateToNavigate;
-    console.log('FIELD STATE', this.fieldState);
     if (this.fieldState === undefined ||
         this.fieldState === CaseFlagFieldState.FLAG_LOCATION ||
         this.fieldState === CaseFlagFieldState.FLAG_TYPE ||
