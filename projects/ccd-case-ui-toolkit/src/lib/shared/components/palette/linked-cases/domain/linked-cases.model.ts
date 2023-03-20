@@ -35,8 +35,12 @@ export class CaseLink {
 }
 
 export class LinkReason {
+  Reason: string;
+  OtherDescription?: string;
+}
+
+export class LinkFromReason {
   reasonCode: string;
-  reasonDescription?: string;
   otherDescription?: string;
 }
 
@@ -52,12 +56,12 @@ export class CaseLinkResponse {
   ccdJurisdiction: string;
   state: string;
   stateDescription: string;
-  linkDetails: [LinkDetails];
+  linkDetails: LinkDetails[];
 }
 
 export class LinkDetails {
   createdDateTime: Date;
-  reasons: [LinkReason];
+  reasons: LinkFromReason[];
 }
 
 export class Terms {

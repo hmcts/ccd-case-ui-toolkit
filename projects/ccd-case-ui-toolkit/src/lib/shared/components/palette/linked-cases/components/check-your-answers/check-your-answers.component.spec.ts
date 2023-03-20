@@ -26,10 +26,10 @@ describe('CheckYourAnswersComponent', () => {
       createdDateTime: '11/05/2022',
       reasons: [
         {
-          reasonCode: 'Progressed as part of this lead case'
+          Reason: 'Progressed as part of this lead case'
         },
         {
-          reasonCode: 'Linked for a hearing'
+          Reason: 'Linked for a hearing'
         }
       ]
     },
@@ -44,7 +44,7 @@ describe('CheckYourAnswersComponent', () => {
       createdDateTime: '11/05/2022',
       reasons: [
         {
-          reasonCode: 'Case consolidated Familial Guardian Linked for a hearing'
+          Reason: 'Case consolidated Familial Guardian Linked for a hearing'
         }
       ]
     },
@@ -59,7 +59,7 @@ describe('CheckYourAnswersComponent', () => {
       createdDateTime: '11/05/2022',
       reasons: [
         {
-          reasonCode: 'Familial'
+          Reason: 'Familial'
         }
       ]
     }
@@ -76,10 +76,10 @@ describe('CheckYourAnswersComponent', () => {
       createdDateTime: '10/03/2022',
       reasons: [
         {
-          reasonCode: 'This case is to be unlinked'
+          Reason: 'This case is to be unlinked'
         },
         {
-          reasonCode: 'Case has been marked for unlinking'
+          Reason: 'Case has been marked for unlinking'
         }
       ],
       unlink: true
@@ -95,7 +95,7 @@ describe('CheckYourAnswersComponent', () => {
       createdDateTime: '10/03/2022',
       reasons: [
         {
-          reasonCode: 'Case has been marked for unlinking'
+          Reason: 'Case has been marked for unlinking'
         }
       ],
       unlink: true

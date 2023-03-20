@@ -93,7 +93,11 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
       this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
         next: reasons => {
-          this.linkedCasesService.linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
+          // Sort in ascending order
+          const linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
+          // Move Other option to the end of the list
+          this.linkedCasesService.linkCaseReasons = linkCaseReasons?.filter(reason => reason.value_en !== 'Other');
+          this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find(reason => reason.value_en === 'Other'));
         }
     });
   }
