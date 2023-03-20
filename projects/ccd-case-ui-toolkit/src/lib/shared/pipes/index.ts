@@ -1,3 +1,4 @@
+export * from '../pipes/link-cases-reason-code/ccd-link-cases-reason-code.pipe';
 export * from './case-reference';
 export * from './case-title';
 export * from './complex';
