@@ -52,7 +52,9 @@
                 <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
                     [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
                   <th *ngIf="!isLabel(field) && !caseFlagField" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
-                  <td class="form-cell case-field-content" [attr.colspan]="isLabel(field) ? '2' : '1'">
+                  <td class="form-cell case-field-content"
+                    [ngClass]="{'no-bottom-border': caseFlagField}"
+                    [attr.colspan]="isLabel(field) ? '2' : '1'">
                     <ccd-field-read
                       [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
                       [caseField]="summaryCaseField(field)" [context]="paletteContext" [caseFields]="contextFields"></ccd-field-read>
