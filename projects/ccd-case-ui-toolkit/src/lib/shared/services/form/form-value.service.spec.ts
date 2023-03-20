@@ -215,6 +215,37 @@ describe('FormValueService', () => {
     expect(formValueService.populateFlagDetailsFromCaseFields(flagsData, caseField)).not.toBeDefined();
   });
 
+  describe('component launcher linked cases', () => {
+    const data = [
+      {
+        id: 'caseLinks'
+      },
+      {
+        id: 'ComponentLauncher'
+      }
+    ];
+    const caseFields = [
+      {
+        id: 'caseLinks',
+        value: []
+      },
+      {
+        id: 'ComponentLauncher',
+        value: []
+      }
+    ] as CaseField[];
+
+    it('should remove component launcher field', () => {
+      spyOn(FieldsUtils, 'isComponentLauncherCaseField').and.returnValue(true);
+      expect(formValueService.removeComponentLauncherField(data, caseFields)).not.toBeDefined();
+    });
+
+    it('should populate linked cases details from case fields', () => {
+      spyOn(FieldsUtils, 'isComponentLauncherCaseField').and.returnValue(true);
+      expect(formValueService.populateLinkedCasesDetailsFromCaseFields(data, caseFields)).not.toBeDefined();
+    });
+  });
+
   describe('sanitise for Document fields', () => {
     it('should return null for the Document field if the data to be sanitised has document_url = null', () => {
       const data = {

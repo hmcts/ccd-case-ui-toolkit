@@ -1,3 +1,4 @@
+export * from '../link-cases-reason-code/ccd-link-cases-reason-code.pipe';
 export * from './ccd-collection-table-value-case-fields.pipe';
 export * from './ccd-cyapage-label-filter.pipe';
 export * from './ccd-read-fields-filter.pipe';
