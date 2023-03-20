@@ -219,7 +219,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
     caseFlagStateServiceSpy.formGroup = new FormGroup({});
-
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_COMMENTS;
     caseEditDataServiceSpy = jasmine.createSpyObj('CaseEditDataService', ['clearFormValidationErrors', 'setTriggerSubmitEvent']);
     flagLauncherCaseField = {
       id: 'FlagLauncher1',
@@ -905,7 +905,11 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(newFlagDetailInstance3.subTypeValue).toBeNull();
   });
 
-  it('should call resetCache on caseFlagStateService only for specific field states', () => {
+  it('should call resetCache on caseFlagStateService only for specific field states and for undefined', () => {
+    caseFlagStateServiceSpy.fieldStateToNavigate = undefined;
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
+
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_LOCATION;
     component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
@@ -921,19 +925,19 @@ describe('WriteCaseFlagFieldComponent', () => {
 
   it('should not call resetCache on caseFlagStateService for other states', () => {
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_COMMENTS;
-    fixture.detectChanges();
+    component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
 
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_STATUS;
-    fixture.detectChanges();
+    component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
 
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_UPDATE;
-    fixture.detectChanges();
+    component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
 
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION;
-    fixture.detectChanges();
+    component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
   });
 

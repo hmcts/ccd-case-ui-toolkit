@@ -25,8 +25,8 @@ export class UpdateFlagComponent implements OnInit {
   public readonly caseFlagStatusEnum = CaseFlagStatus;
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
-	private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
-	private flagDetail: FlagDetail;
+  private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
+  private flagDetail: FlagDetail;
 
   public ngOnInit(): void {
     this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;

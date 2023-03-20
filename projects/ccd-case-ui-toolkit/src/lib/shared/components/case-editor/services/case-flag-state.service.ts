@@ -9,6 +9,7 @@ export class CaseFlagStateService {
 
   public resetCache(pageLocation: string): void {
     this.formGroup = new FormGroup({});
+    this.fieldStateToNavigate = undefined;
     this.pageLocation = pageLocation;
   }
 }

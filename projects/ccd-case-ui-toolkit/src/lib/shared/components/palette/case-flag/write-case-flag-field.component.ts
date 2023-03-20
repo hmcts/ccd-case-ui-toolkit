@@ -59,17 +59,17 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public ngOnInit(): void {
-    // If it is a navigation from check your answers page then fieldStateToNavigate property
+    // If it is start of the journey or navigation from check your answers page then fieldStateToNavigate property
     // in case flag state service will contain the field state to navigate based on create or manage journey
     this.fieldState = this.caseFlagStateService.fieldStateToNavigate;
-    if (this.fieldState === CaseFlagFieldState.FLAG_LOCATION ||
+    console.log('FIELD STATE', this.fieldState);
+    if (this.fieldState === undefined ||
+        this.fieldState === CaseFlagFieldState.FLAG_LOCATION ||
         this.fieldState === CaseFlagFieldState.FLAG_TYPE ||
         this.fieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS) {
       const params = this.route.snapshot.params;
-      // Clear the form group and set the page location
+      // Clear the form group, field state to navigate and set the page location
       this.caseFlagStateService.resetCache(`../${params['eid']}/${params['page']}`);
-      // Reset fieldStateToNavigate in the case flag state service
-      this.caseFlagStateService.fieldStateToNavigate = undefined;
     }
     // Reassign the form group from the case flag state service
     this.caseFlagParentFormGroup = this.caseFlagStateService.formGroup;

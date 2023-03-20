@@ -37,6 +37,7 @@ export class UpdateFlagAddTranslationFormComponent implements OnInit {
     const flagDetail = this.selectedFlag?.flagDetailDisplay?.flagDetail;
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(flagDetail?.otherDescription));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH, new FormControl(flagDetail?.otherDescription_cy));
+    this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(flagDetail?.flagComment));
     this.formGroup.addControl(CaseFlagFormFields.COMMENTS_WELSH, new FormControl(flagDetail?.flagComment_cy));
   }
 
