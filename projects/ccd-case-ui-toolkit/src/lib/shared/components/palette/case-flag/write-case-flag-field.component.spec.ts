@@ -418,7 +418,7 @@ describe('WriteCaseFlagFieldComponent', () => {
 
   it('should set the correct Case Flag field starting state for the Manage Case Flags journey', () => {
     // Spy on setDisplayContextParameterUpdate() function and return true (cannot alter display_context_parameter for the
-    // flagLauncherCaseField in case_fields of the mock route because this is locked down by compileComponents())    
+    // flagLauncherCaseField in case_fields of the mock route because this is locked down by compileComponents())
     component.setDisplayContextParameterUpdate = createSpy().and.returnValue(true);
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
     component.ngOnInit();
