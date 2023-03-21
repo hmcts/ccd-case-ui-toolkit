@@ -1,7 +1,7 @@
 import * as _score from 'underscore';
-import peg from './condition.peg';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { ShowCondition } from '../../conditional-show/domain/conditional-show.model';
+import peg from './condition.peg';
 
 export class ConditionParser {
 
