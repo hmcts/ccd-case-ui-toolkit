@@ -26,6 +26,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public caseFlagParentFormGroup = new FormGroup({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
+  public caseTypeId: string;
+  public hmctsServiceId: string;
   public flagName: string;
   public flagPath: FlagPath[];
   public hearingRelevantFlag: boolean;
@@ -66,31 +68,43 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }), true) as FormGroup;
 
     this.createFlagCaption = CaseFlagText.CAPTION;
-    // Get the jurisdiction from the CaseView object in the snapshot data (required for retrieving the available flag
+    // Get the case type ID from the CaseView object in the snapshot data (required for retrieving the available flag
     // types for a case)
-    if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type &&
-      this.route.snapshot.data.case.case_type.jurisdiction) {
-      this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
+    if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type) {
+      this.caseTypeId = this.route.snapshot.data.case.case_type.id;
+      // Get the jurisdiction (required for retrieving the available flag types if unable to determine using case type ID)
+      if (this.route.snapshot.data.case.case_type.jurisdiction) {
+        this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
+      }
     }
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
-    if (this.route.snapshot.data.eventTrigger && this.route.snapshot.data.eventTrigger.case_fields) {
-      this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
+    if (this.route.snapshot.data.eventTrigger) {
+      // Get the HMCTSServiceId from supplementary data, if it exists (required for retrieving the available flag types in
+      // the first instance, only falling back on case type ID or jurisidiction if it's not present)
+      if (this.route.snapshot.data.eventTrigger.supplementary_data
+        && this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId) {
+        this.hmctsServiceId = this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId;
+      }
+
+      if (this.route.snapshot.data.eventTrigger.case_fields) {
+        this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
         .reduce((flags, caseField) => {
           return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
         }, []);
 
-      // Set boolean indicating the display_context_parameter is "update"
-      this.isDisplayContextParameterUpdate =
-        this.setDisplayContextParameterUpdate((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
+        // Set boolean indicating the display_context_parameter is "update"
+        this.isDisplayContextParameterUpdate =
+          this.setDisplayContextParameterUpdate((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[]);
 
-      // Set starting field state
-      this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
-      // Get case title, to be used by child components
-      this.caseEditDataService.caseTitle$.subscribe({
-        next: title => {
-          this.caseTitle = title.length > 0 ? title : this.caseNameMissing;
-        }
-      });
+        // Set starting field state
+        this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
+        // Get case title, to be used by child components
+        this.caseEditDataService.caseTitle$.subscribe({
+          next: title => {
+            this.caseTitle = title.length > 0 ? title : this.caseNameMissing;
+          }
+        });
+      }
     }
   }
 
