@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent } from '../money-gbp';
 import { OrderSummary } from './order-summary.model';
 import { ReadOrderSummaryFieldComponent } from './read-order-summary-field.component';
@@ -83,6 +84,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
             MoneyGbpInputComponent,
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
+            MockRpxTranslatePipe
           ]
         })
         .compileComponents();
@@ -143,6 +145,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
             MoneyGbpInputComponent,
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
+            MockRpxTranslatePipe
           ]
         })
         .compileComponents();
@@ -189,6 +192,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
             MoneyGbpInputComponent,
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
+            MockRpxTranslatePipe
           ]
         })
         .compileComponents();

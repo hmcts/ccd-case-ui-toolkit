@@ -152,7 +152,7 @@ describe('Case Flag Refdata Service', () => {
   });
 
   it('should retrieve the HMCTS service details for the given service name', () => {
-    service.getHmctsServiceDetails('SSCS').subscribe({
+    service.getHmctsServiceDetailsByServiceName('SSCS').subscribe({
       next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
     });
 
@@ -161,8 +161,28 @@ describe('Case Flag Refdata Service', () => {
     req.flush(dummyServiceDetails);
   });
 
-  it('should retrieve the HMCTS service details for all services', () => {
-    service.getHmctsServiceDetails().subscribe({
+  it('should retrieve the HMCTS service details for all services when no service name specified', () => {
+    service.getHmctsServiceDetailsByServiceName().subscribe({
+      next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
+    });
+
+    const req = httpMock.expectOne(`${locationRefApiUrl}/orgServices`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(dummyServiceDetails);
+  });
+
+  it('should retrieve the HMCTS service details for the given case type', () => {
+    service.getHmctsServiceDetailsByCaseType('testCaseType').subscribe({
+      next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
+    });
+
+    const req = httpMock.expectOne(`${locationRefApiUrl}/orgServices?ccdCaseType=testCaseType`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(dummyServiceDetails);
+  });
+
+  it('should retrieve the HMCTS service details for all services when no case type specified', () => {
+    service.getHmctsServiceDetailsByCaseType().subscribe({
       next: serviceDetails => expect(serviceDetails).toEqual(dummyServiceDetails)
     });
 
@@ -173,7 +193,7 @@ describe('Case Flag Refdata Service', () => {
 
   it('should return null if locationRefApiUrl in appConfig is null', () => {
     appConfig.getLocationRefApiUrl.and.returnValue(null);
-    service.getHmctsServiceDetails('SSCS').subscribe({
+    service.getHmctsServiceDetailsByServiceName('SSCS').subscribe({
       next: serviceDetails => expect(serviceDetails).toBeNull()
     });
 

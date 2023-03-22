@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CaseHeaderModule } from '../case-header/case-header.module';
 import { PaletteModule } from '../palette';
@@ -14,7 +15,9 @@ import { CaseHistoryService } from './services/case-history.service';
         CaseHeaderModule,
         ConditionalShowModule,
         PaletteModule,
-        LabelSubstitutorModule
+        LabelSubstitutorModule,
+        RpxTranslationModule.forChild()
+
     ],
     declarations: [
         CaseHistoryComponent

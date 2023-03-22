@@ -27,6 +27,7 @@ import {
   SessionStorageService
 } from '../../../services';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CallbackErrorsContext } from '../../error';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
@@ -415,7 +416,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -714,7 +716,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdPageFieldsPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -854,7 +857,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1092,7 +1096,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1231,7 +1236,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1373,7 +1379,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1514,7 +1521,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1664,7 +1672,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1853,7 +1862,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1987,7 +1997,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2120,7 +2131,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2264,7 +2276,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2417,7 +2430,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2576,7 +2590,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2716,7 +2731,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2859,7 +2875,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3002,7 +3019,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3144,7 +3162,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3291,7 +3310,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3440,7 +3460,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3589,7 +3610,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3749,7 +3771,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3908,7 +3931,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -4061,7 +4085,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -4217,7 +4242,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -4395,7 +4421,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [

@@ -332,7 +332,10 @@ describe('WriteCaseFlagFieldComponent', () => {
                 formatted_value: null,
                 value: null
               }
-            ] as CaseField[]
+            ] as CaseField[],
+            supplementary_data: {
+              HMCTSServiceId: 'BBA3'
+            }
           }
         }
       }
@@ -380,6 +383,12 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.formGroup.errors).not.toBeNull();
     expect(component.setDisplayContextParameter).toHaveBeenCalledWith(mockRoute.snapshot.data.eventTrigger.case_fields);
     expect(component.setDisplayContextParameterUpdate).toHaveBeenCalledWith(createMode);
+  });
+
+  it('should set jurisdiction, caseTypeId, and hmctsServiceId properties from the snapshot data', () => {
+    expect(component.jurisdiction).toEqual('SSCS');
+    expect(component.caseTypeId).toEqual('TEST');
+    expect(component.hmctsServiceId).toEqual('BBA3');
   });
 
   it('should call setDisplayContextParameter on ngOnInit', () => {
