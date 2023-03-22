@@ -19,7 +19,6 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public getCategoriesAndDocumentsError = false;
   public currentDocument: { document_binary_url: string, document_filename: string, content_type: string } | undefined;
   private caseVersion: number;
-  protected userDetails
 
   constructor(private readonly elementRef: ElementRef,
     protected readonly route: ActivatedRoute,
