@@ -1,4 +1,3 @@
-import { UserDetails } from './../../../domain/user/user-details.model';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { fromEvent, Observable, Subscription } from 'rxjs';

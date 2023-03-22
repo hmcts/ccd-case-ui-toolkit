@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CaseField, CaseTab } from '../../../domain';
+import { CaseField } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
 
