@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CaseField } from '../../../domain';
+import { CaseField, CaseTab } from '../../../domain';
+import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
 
 @Component({
@@ -12,6 +13,13 @@ export class CaseFileViewFieldReadComponent extends CaseFileViewFieldComponent i
 
   public ngOnInit(): void {
     super.ngOnInit();
-    this.allowMoving = this.caseField.acls.some(acl => acl.update);
+
+    const userInfo: UserInfo = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+
+    // Get acls that intersects from acl roles and user roles
+    const acls = this.caseField.acls.filter(acl => userInfo.roles.includes(acl.role));
+
+    // As there can be more than one intersecting role, if any acls are update: true
+    this.allowMoving = acls.some(acl => acl.update);
   }
 }

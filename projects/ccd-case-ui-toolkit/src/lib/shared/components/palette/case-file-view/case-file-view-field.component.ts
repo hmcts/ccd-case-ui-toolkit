@@ -1,9 +1,10 @@
+import { UserDetails } from './../../../domain/user/user-details.model';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
-import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
+import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -18,14 +19,15 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public getCategoriesAndDocumentsError = false;
   public currentDocument: { document_binary_url: string, document_filename: string, content_type: string } | undefined;
   private caseVersion: number;
+  protected userDetails
 
   constructor(private readonly elementRef: ElementRef,
-              private readonly route: ActivatedRoute,
-              private caseFileViewService: CaseFileViewService,
-              private documentManagementService: DocumentManagementService,
-              private readonly loadingService: LoadingService
-  ) {
-  }
+    protected readonly route: ActivatedRoute,
+    private caseFileViewService: CaseFileViewService,
+    private documentManagementService: DocumentManagementService,
+    private readonly loadingService: LoadingService,
+    protected readonly sessionStorageService: SessionStorageService
+  ) { }
 
   public ngOnInit(): void {
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);

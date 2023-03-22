@@ -1,3 +1,4 @@
+import { SessionStorageService } from './../../../services/session/session-storage.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -14,6 +15,7 @@ describe('CaseFileViewFieldComponent', () => {
   let fixture: ComponentFixture<CaseFileViewFieldComponent>;
   let mockCaseFileViewService: jasmine.SpyObj<CaseFileViewService>;
   let mockLoadingService: jasmine.SpyObj<LoadingService>;
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
 
   const mockSnapshot = {
     paramMap: createSpyObj('paramMap', ['get']),
@@ -31,6 +33,8 @@ describe('CaseFileViewFieldComponent', () => {
     mockLoadingService.register.and.returnValue('loadingToken');
     mockLoadingService.unregister.and.returnValue(null);
 
+    mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule
@@ -45,7 +49,8 @@ describe('CaseFileViewFieldComponent', () => {
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseFileViewService, useValue: mockCaseFileViewService },
         { provide: DocumentManagementService, useValue: mockDocumentManagementService },
-        { provide: LoadingService, useValue: mockLoadingService }
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
       ]
     })
     .compileComponents();

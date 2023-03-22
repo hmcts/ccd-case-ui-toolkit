@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { CaseField } from '../../../domain';
-import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
+import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
 import { CaseFileViewFieldReadComponent } from './case-file-view-field-read.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -14,6 +14,7 @@ describe('CaseFileViewFieldReadComponent', () => {
   let fixture: ComponentFixture<CaseFileViewFieldReadComponent>;
   let mockCaseFileViewService: jasmine.SpyObj<CaseFileViewService>;
   let mockLoadingService: jasmine.SpyObj<LoadingService>;
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
 
   const mockSnapshot = {
     paramMap: createSpyObj('paramMap', ['get']),
@@ -30,14 +31,7 @@ describe('CaseFileViewFieldReadComponent', () => {
         update: true,
         delete: false,
         role: 'caseworker-privatelaw-judge'
-      },
-      {
-        create: true,
-        read: true,
-        update: true,
-        delete: false,
-        role: 'caseworker-privatelaw-la'
-      },
+      }
     ]
   };
   const mockCaseFieldFalse = {
@@ -49,15 +43,9 @@ describe('CaseFileViewFieldReadComponent', () => {
         delete: false,
         role: 'caseworker-privatelaw-judge'
       },
-      {
-        create: true,
-        read: true,
-        update: false,
-        delete: false,
-        role: 'caseworker-privatelaw-la'
-      },
     ]
   };
+  const mockUser: string = JSON.stringify({ roles: ['caseworker-privatelaw-judge'] });
 
   beforeEach(() => {
     mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService', ['getCategoriesAndDocuments']);
@@ -66,6 +54,9 @@ describe('CaseFileViewFieldReadComponent', () => {
     mockLoadingService = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
     mockLoadingService.register.and.returnValue('loadingToken');
     mockLoadingService.unregister.and.returnValue(null);
+
+    mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+    mockSessionStorageService.getItem.and.returnValue(mockUser);
 
     TestBed.configureTestingModule({
       imports: [
@@ -81,7 +72,9 @@ describe('CaseFileViewFieldReadComponent', () => {
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseFileViewService, useValue: mockCaseFileViewService },
         { provide: DocumentManagementService, useValue: mockDocumentManagementService },
-        { provide: LoadingService, useValue: mockLoadingService }
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+
       ]
     });
     fixture = TestBed.createComponent(CaseFileViewFieldReadComponent);
