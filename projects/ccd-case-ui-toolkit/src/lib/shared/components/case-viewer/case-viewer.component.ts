@@ -10,10 +10,10 @@ import { CaseNotifier } from '../case-editor';
   templateUrl: './case-viewer.component.html'
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
-  static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
-  static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
-  static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
-  static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
+  public static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
+  public static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
+  public static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
+  public static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
