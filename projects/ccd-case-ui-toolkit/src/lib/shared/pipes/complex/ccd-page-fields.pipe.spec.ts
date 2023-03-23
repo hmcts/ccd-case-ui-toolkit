@@ -1,4 +1,4 @@
-import { CcdPageFieldsPipe } from './cdd-page-fields.pipe';
+import { CcdPageFieldsPipe } from './ccd-page-fields.pipe';
 
 describe('CddPageFieldsPipe', () => {
   it('create an instance', () => {

@@ -14,7 +14,7 @@ import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.
 import { CcdCaseTitlePipe } from '../../../pipes/case-title/ccd-case-title.pipe';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
-import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
+import { CcdPageFieldsPipe } from '../../../pipes/complex/ccd-page-fields.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import {
   CaseFieldService,
