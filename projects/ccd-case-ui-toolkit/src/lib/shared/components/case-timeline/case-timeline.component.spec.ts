@@ -112,7 +112,7 @@ describe('CaseTimelineComponent', () => {
 
             // Mocks
             EventLogComponent,
-            CaseHistoryComponent,
+            CaseHistoryComponent
           ],
           providers: [
             { provide: CaseNotifier, useValue: caseNotifier },
@@ -211,7 +211,7 @@ describe('CaseTimelineComponent', () => {
 
             // Mocks
             EventLogComponent,
-            CaseHistoryComponent,
+            CaseHistoryComponent
           ],
           providers: [
             { provide: CaseNotifier, useValue: caseNotifier },

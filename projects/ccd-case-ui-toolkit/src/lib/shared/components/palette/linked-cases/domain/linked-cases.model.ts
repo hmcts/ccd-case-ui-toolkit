@@ -17,7 +17,7 @@ export class LinkCaseReason {
 export class CCDCaseLinkType {
   CaseReference: string;
   CaseType: string;
-  CreatedDateTime: string
+  CreatedDateTime: string;
   ReasonForLink: LinkReason[];
 }
 
@@ -67,7 +67,7 @@ export class LinkDetails {
 export class Terms {
   terms: {
     reference: any[];
-  }
+  };
 }
 
 export class ESQueryType {

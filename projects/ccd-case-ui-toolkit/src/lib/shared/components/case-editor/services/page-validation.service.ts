@@ -23,7 +23,7 @@ export class PageValidationService {
   public isHidden(caseField: CaseField, editForm: FormGroup, path?: string): boolean {
     const formFields = editForm.getRawValue();
     const condition = ShowCondition.getInstance(caseField.show_condition);
-    if (path && path.indexOf('_' + caseField.id + '_') === -1) {
+    if (path && path.indexOf(`_${caseField.id}_`) === -1) {
       path = `${path}${caseField.id}`;
     }
     return !condition.match(formFields.data, path);

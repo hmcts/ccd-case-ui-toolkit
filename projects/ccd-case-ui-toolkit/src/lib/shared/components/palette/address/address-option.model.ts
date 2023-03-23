@@ -16,19 +16,15 @@ export class AddressOption {
 
   private getDescription() {
     return this.removeInitialCommaIfPresent(
-      (this.value.AddressLine1 === undefined ? '' : this.value.AddressLine1)
-      +  this.prefixWithCommaIfPresent(this.value.AddressLine2)
-      +  this.prefixWithCommaIfPresent(this.value.AddressLine3)
-      + ', ' + this.value.PostTown
+      `${this.value.AddressLine1 === undefined ? '' : this.value.AddressLine1}${this.prefixWithCommaIfPresent(this.value.AddressLine2)}${this.prefixWithCommaIfPresent(this.value.AddressLine3)}, ${this.value.PostTown}`
     );
   }
 
   private prefixWithCommaIfPresent(value: string) {
-    return value ? ', ' + value : value;
+    return value ? `, ${value}` : value;
   }
 
   private removeInitialCommaIfPresent(value: string) {
     return value.replace(new RegExp('^,', 'gi'), '');
   }
-
 }

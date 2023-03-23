@@ -639,7 +639,8 @@ xdescribe('CaseFullAccessViewComponent', () => {
           CaseFullAccessViewComponent,
           LabelSubstitutorDirective,
           DeleteOrCancelDialogComponent,
-          // Mock
+
+          // Mocks
           CaseActivityComponent,
           FieldReadComponent,
           EventTriggerComponent,
@@ -1083,7 +1084,8 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           CaseFullAccessViewComponent,
           LabelSubstitutorDirective,
           DeleteOrCancelDialogComponent,
-          // Mock
+
+          // Mocks
           CaseActivityComponent,
           FieldReadComponent,
           EventTriggerComponent,
@@ -1169,7 +1171,8 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           CaseFullAccessViewComponent,
           LabelSubstitutorDirective,
           DeleteOrCancelDialogComponent,
-          // Mock
+
+          // Mocks
           CaseActivityComponent,
           FieldReadComponent,
           EventTriggerComponent,
@@ -1267,7 +1270,8 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-          // Mock
+
+          // Mocks
           CaseActivityComponent,
           EventTriggerComponent,
           CaseHeaderComponent,
@@ -1282,7 +1286,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path = (_: string) => 'cases/case-details/1234567890123456/tasks'
+              public path = (_: string) => 'cases/case-details/1234567890123456/tasks';
             }
           },
           ErrorNotifierService,
@@ -1394,7 +1398,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-          // Mock
+
+          // Mocks
           CaseActivityComponent,
           EventTriggerComponent,
           CaseHeaderComponent,
@@ -1409,7 +1414,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path = (_: string) => 'cases/case-details/1234567890123456/tasks'
+              public path = (_: string) => 'cases/case-details/1234567890123456/tasks';
             }
           },
           ErrorNotifierService,
@@ -1589,12 +1594,13 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-          // Mock
+
+          // Mocks
           CaseActivityComponent,
           EventTriggerComponent,
           CaseHeaderComponent,
           LinkComponent,
-          CallbackErrorsComponent,
+          CallbackErrorsComponent
         ],
         providers: [
           FieldsUtils,
@@ -1607,7 +1613,7 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           {
             provide: Location,
             useClass: class MockLocation {
-              public path = (_: string) => 'cases/case-details/1234567890123456'
+              public path = (_: string) => 'cases/case-details/1234567890123456';
             }
           },
           ErrorNotifierService,
@@ -1729,7 +1735,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-          // Mock
+
+          // Mocks
           CaseActivityComponent,
           EventTriggerComponent,
           CaseHeaderComponent,
@@ -1902,7 +1909,8 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-          // Mock
+
+          // Mocks
           CaseActivityComponent,
           EventTriggerComponent,
           CaseHeaderComponent,

@@ -33,7 +33,8 @@ describe('CaseHeaderComponent', () => {
           CaseReferencePipe,
           LabelSubstitutorDirective,
           LabelFieldComponent,
-          // Mock
+
+          // Mocks
           MarkdownComponent
         ],
         providers: [

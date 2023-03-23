@@ -39,32 +39,31 @@ export class ActivityService {
   public getOptions(): OptionsType {
     const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
     const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', userDetails.token);
-    const options: OptionsType = {
+    return {
       headers,
       withCredentials: true,
       observe: 'body',
     };
-    return options;
   }
 
   public getActivities(...caseId: string[]): Observable<Activity[]> {
     try {
       const options = this.getOptions();
-      const url = this.activityUrl() + `/cases/${caseId.join(',')}/activity`;
+      const url = `${this.activityUrl()}/cases/${caseId.join(',')}/activity`;
       return this.http
         .get(url, options, false, ActivityService.handleHttpError)
         .pipe(
           map(response => response)
         );
     } catch (error) {
-      console.log('user may not be authenticated.' + error);
+      console.log(`user may not be authenticated.${error}`);
     }
   }
 
   public postActivity(caseId: string, activity: string): Observable<Activity[]> {
     try {
       const options = this.getOptions();
-      const url = this.activityUrl() + `/cases/${caseId}/activity`;
+      const url = `${this.activityUrl()}/cases/${caseId}/activity`;
       const body = { activity };
       return this.http
         .post(url, body, options, false)
@@ -72,7 +71,7 @@ export class ActivityService {
           map(response => response)
         );
     } catch (error) {
-      console.log('user may not be authenticated.' + error);
+      console.log(`user may not be authenticated.${error}`);
     }
   }
 
@@ -84,11 +83,7 @@ export class ActivityService {
       this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
         () => this.userAuthorised = true,
         error => {
-          if ([401, 403].indexOf(error.status) > -1) {
-            this.userAuthorised = false;
-          } else {
-            this.userAuthorised = true;
-          }
+          this.userAuthorised = [401, 403].indexOf(error.status) <= -1;
         }
       );
     }
@@ -97,5 +92,4 @@ export class ActivityService {
   private activityUrl(): string {
     return this.appConfig.getActivityUrl();
   }
-
 }

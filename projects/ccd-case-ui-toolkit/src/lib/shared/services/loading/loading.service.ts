@@ -30,6 +30,6 @@ export class LoadingService implements HasLoadingState {
 
   private generateToken(): string {
     const timestamp = window.performance.now();
-    return 'toolkit-loading-' + timestamp; // format: [source-library]-[unique incrementing number]
+    return `toolkit-loading-${timestamp}`; // format: [source-library]-[unique incrementing number]
   }
 }

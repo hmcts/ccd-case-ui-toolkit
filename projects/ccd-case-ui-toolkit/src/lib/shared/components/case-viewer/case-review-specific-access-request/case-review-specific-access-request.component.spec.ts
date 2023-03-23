@@ -1,5 +1,6 @@
-import { waitForAsync, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Location } from '@angular/common';
 import { Component, DebugElement, Type } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Data, ParamMap, Params, Route, Router, UrlSegment } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,7 +11,6 @@ import { ErrorMessageComponent } from '../../error-message';
 import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request.component';
 import { ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRequestPageText } from './models';
 import createSpyObj = jasmine.createSpyObj;
-import { Location } from '@angular/common';
 
 const ACCESS_MANAGEMENT_REQUEST_REVIEW: AccessManagementRequestReviewMockModel = {
   active: true,

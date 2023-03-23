@@ -166,7 +166,7 @@ export class FieldsUtils {
 
   private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result) {
-      result = {}
+      result = {};
     }
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;

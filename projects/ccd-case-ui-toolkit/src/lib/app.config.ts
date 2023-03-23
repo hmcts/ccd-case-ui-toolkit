@@ -41,8 +41,8 @@ export abstract class AbstractAppConfig {
     abstract getOAuth2ClientId(): string;
     abstract getPaymentsUrl(): string;
     abstract getPayBulkScanBaseUrl(): string;
-    abstract getCreateOrUpdateDraftsUrl(ctid: string): string
-    abstract getViewOrDeleteDraftsUrl(did: string): string
+    abstract getCreateOrUpdateDraftsUrl(ctid: string): string;
+    abstract getViewOrDeleteDraftsUrl(did: string): string;
     abstract getActivityUrl(): string;
     abstract getActivityNexPollRequestMs(): number;
     abstract getActivityRetry(): number;

@@ -35,7 +35,7 @@ describe('Date input component', () => {
         declarations: [
           DateInputComponent,
 
-          // Mock
+          // Mocks
           Input
         ],
         providers: []

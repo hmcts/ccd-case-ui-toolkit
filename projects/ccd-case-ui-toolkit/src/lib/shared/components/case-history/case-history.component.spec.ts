@@ -113,7 +113,8 @@ describe('CaseHistoryComponent', () => {
         declarations: [
           CaseHistoryComponent,
           LabelSubstitutorDirective,
-          // Mock
+
+          // Mocks
           FieldReadComponent,
           caseHeaderComponent,
           LinkComponent,

@@ -1,5 +1,5 @@
-import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
 import { plainToClassFromExist } from 'class-transformer';
 import { of, throwError } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';

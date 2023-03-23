@@ -286,7 +286,7 @@ describe('CaseEditComponent', () => {
           declarations: [
             CaseEditComponent,
 
-            // Mock
+            // Mocks
             EventTriggerHeaderComponent,
             RouterLinkComponent,
             FieldsFilterPipe,
@@ -1110,7 +1110,7 @@ describe('CaseEditComponent', () => {
           declarations: [
             CaseEditComponent,
 
-            // Mock
+            // Mocks
             EventTriggerHeaderComponent,
             RouterLinkComponent,
             FieldRead,

@@ -1,7 +1,7 @@
 import * as _score from 'underscore';
-import peg from './condition.peg';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { ShowCondition } from '../../conditional-show/domain/conditional-show.model';
+import peg from './condition.peg';
 
 export class ConditionParser {
 
@@ -11,7 +11,7 @@ export class ConditionParser {
    * @param condition raw formula e.g. TextField = "Hello"
    */
   public static parse(condition: string): any {
-    if (!condition) { return null };
+    if (!condition) { return null; }
     condition = condition.replace(/CONTAINS/g, ' CONTAINS');
     return peg.parse(condition.trim(), {});
   }
@@ -22,14 +22,14 @@ export class ConditionParser {
    * @param conditions The PegJS formula output
    */
   public static evaluate(fields: any, conditions: any[], path?: string): boolean {
-    if (!conditions || conditions.length === 0) { return true };
+    if (!conditions || conditions.length === 0) { return true; }
     const validJoinComparators = ['AND', 'OR'];
 
-    const result: boolean = conditions.reduce((accumulator: boolean, condition, index: number) => {
+    return conditions.reduce((accumulator: boolean, condition, index: number) => {
       const isJoinComparator = (comparator: string): boolean =>
         (typeof comparator === 'string' && validJoinComparators.indexOf(comparator) !== -1);
 
-      if (isJoinComparator(condition)) { return accumulator };
+      if (isJoinComparator(condition)) { return accumulator; }
 
       let currentConditionResult = true;
 
@@ -52,8 +52,6 @@ export class ConditionParser {
 
       return currentConditionResult;
     }, true);
-
-    return result;
   }
 
   private static evaluateJoin(leftResult: boolean, comparator, rightResult: boolean): boolean {
@@ -148,8 +146,7 @@ export class ConditionParser {
   }
 
   private static unquoted(str: string): string {
-    const res = str.replace(/^"|"$/g, '');
-    return res;
+    return str.replace(/^"|"$/g, '');
   }
 
   private static findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {
@@ -177,7 +174,7 @@ export class ConditionParser {
   }
 
   private static findValueForComplexConditionInArray(fields: object, head: string, tail: string[], path?: string): any {
-  // use the path to resolve which array element we refer to
+    // use the path to resolve which array element we refer to
     if (path.startsWith(head)) {
       const [_, ...pathTail] = path.split(/[_]+/g);
       if (pathTail.length > 0) {

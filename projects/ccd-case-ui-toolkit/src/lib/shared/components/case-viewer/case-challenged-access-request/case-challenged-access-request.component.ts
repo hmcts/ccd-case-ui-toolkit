@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ChallengedAccessRequest, ErrorMessage } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { AccessReason, ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-challenged-access-request',

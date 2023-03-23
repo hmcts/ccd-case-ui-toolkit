@@ -137,9 +137,9 @@ describe('FieldReadComponent', () => {
         declarations: [
           FieldReadComponent,
 
-          // Mock
+          // Mocks
           FieldTestComponent,
-          FieldReadLabelComponent,
+          FieldReadLabelComponent
         ],
         providers: [
           { provide: PaletteService, useValue: paletteService },

@@ -13,7 +13,6 @@ import { WorkAllocationService } from './work-allocation.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CasesService', () => {
-
   const API_URL = 'http://aggregated.ccd.reform';
   const JID = 'TEST';
   const CTID = 'TestAddressBookCase';
@@ -25,13 +24,13 @@ describe('CasesService', () => {
   const CASE_URL = `${API_URL}/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases/${CASE_ID}`;
   const V2_CASE_VIEW_URL = `${API_URL}/internal/cases/${CASE_ID}`;
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
-  const EVENT_TRIGGER_FOR_CASE_TYPE_URL = API_URL + `/internal/case-types/${CTID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
-  const EVENT_TRIGGER_FOR_CASE_URL = API_URL + `/internal/cases/${CASE_ID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
-  const EVENT_TRIGGER_DRAFT_URL = API_URL + `/internal/drafts/${DRAFT_ID}/event-trigger?ignore-warning=true`;
-  const CREATE_EVENT_URL = API_URL + `/cases/${CASE_ID}/events`;
-  const VALIDATE_CASE_URL = API_URL + `/case-types/${CTID}/validate?pageId=${PAGE_ID}`;
-  const PRINT_DOCUMENTS_URL = API_URL + `/cases/${CASE_ID}/documents`;
-  const CREATE_CASE_URL = API_URL + `/case-types/${CTID}/cases?ignore-warning=false`;
+  const EVENT_TRIGGER_FOR_CASE_TYPE_URL = `${API_URL}/internal/case-types/${CTID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
+  const EVENT_TRIGGER_FOR_CASE_URL = `${API_URL}/internal/cases/${CASE_ID}/event-triggers/${EVENT_TRIGGER_ID}?ignore-warning=true`;
+  const EVENT_TRIGGER_DRAFT_URL = `${API_URL}/internal/drafts/${DRAFT_ID}/event-trigger?ignore-warning=true`;
+  const CREATE_EVENT_URL = `${API_URL}/cases/${CASE_ID}/events`;
+  const VALIDATE_CASE_URL = `${API_URL}/case-types/${CTID}/validate?pageId=${PAGE_ID}`;
+  const PRINT_DOCUMENTS_URL = `${API_URL}/cases/${CASE_ID}/documents`;
+  const CREATE_CASE_URL = `${API_URL}/case-types/${CTID}/cases?ignore-warning=false`;
   const CASE_VIEW: CaseView = {
     case_id: '1',
     case_type: {
@@ -317,7 +316,6 @@ describe('CasesService', () => {
     };
 
     const EVENT_RESPONSE = { id: 5 };
-    const EMPTY_RESPONSE = { id: '' };
     const HEADERS = new HttpHeaders()
       .set('content-type', CasesService.V2_MEDIATYPE_CREATE_EVENT);
 
@@ -363,26 +361,6 @@ describe('CasesService', () => {
   });
 
   describe('validateCase()', () => {
-    const CASE_DETAILS: CaseView = {
-      case_id: CASE_ID,
-      case_type: {
-        id: CTID,
-        name: 'Test Address Book Case',
-        jurisdiction: {
-          id: JID,
-          name: 'Test',
-        }
-      },
-      channels: [],
-      state: {
-        id: 'CaseCreated',
-        name: 'Case created'
-      },
-      tabs: [],
-      triggers: [],
-      events: []
-    };
-
     const CASE_EVENT_DATA: CaseEventData = {
       event: {
         id: EVENT_TRIGGER_ID,
@@ -446,7 +424,6 @@ describe('CasesService', () => {
     };
 
     const CASE_RESPONSE = { id: 5 };
-    const EMPTY_RESPONSE = { id: '' };
     const HEADERS = new HttpHeaders()
       .set('content-type', 'application/json;charset=UTF-8');
 
@@ -493,7 +470,6 @@ describe('CasesService', () => {
   });
 
   describe('getPrintDocuments()', () => {
-
     const DOCUMENTS = {
       documentResources: [
         {
@@ -503,9 +479,6 @@ describe('CasesService', () => {
         }
       ]
     };
-
-    const HEADERS = new HttpHeaders()
-      .set('content-type', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS);
 
     beforeEach(() => {
       httpService.get.and.returnValue(of(DOCUMENTS));
@@ -550,6 +523,7 @@ describe('CasesService', () => {
     beforeEach(() => {
       httpService.post.and.callThrough();
     });
+
     it('should make an api call', () => {
       const car: ChallengedAccessRequest = {
         reason: 0,
@@ -565,6 +539,7 @@ describe('CasesService', () => {
     beforeEach(() => {
       httpService.post.and.callThrough();
     });
+
     it('should make an api call', () => {
       const sar: SpecificAccessRequest = {
         specificReason: 'dummy'
@@ -578,6 +553,7 @@ describe('CasesService', () => {
     beforeEach(() => {
       httpService.post.and.callThrough();
     });
+
     it('should make an api call', () => {
       const car: ChallengedAccessRequest = {
         reason: 0,
@@ -593,6 +569,7 @@ describe('CasesService', () => {
     beforeEach(() => {
       httpService.post.and.callThrough();
     });
+
     it('should make an api call', () => {
       const sar: SpecificAccessRequest = {
         specificReason: 'dummy'
@@ -606,6 +583,7 @@ describe('CasesService', () => {
     beforeEach(() => {
       httpService.post.and.callThrough();
     });
+
     it('should get court name', () => {
       casesService.getCourtOrHearingCentreName(1);
       expect(httpService.post).toHaveBeenCalled();
@@ -615,7 +593,7 @@ describe('CasesService', () => {
   describe('updateChallengedAccessRequestAttributes()', () => {
     it('should update challenged access request', () => {
       const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
-      CasesService.updateChallengedAccessRequestAttributes(httpClient, 'exampleId', {attribute: true})
+      CasesService.updateChallengedAccessRequestAttributes(httpClient, 'exampleId', {attribute: true});
       expect(httpClient.post).toHaveBeenCalledWith('/api/challenged-access-request/update-attributes',
        {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
     });
@@ -624,11 +602,9 @@ describe('CasesService', () => {
   describe('updateSpecificAccessRequestAttributes()', () => {
     it('should update specific access request', () => {
       const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
-      CasesService.updateSpecificAccessRequestAttributes(httpClient, 'exampleId', {attribute: true})
+      CasesService.updateSpecificAccessRequestAttributes(httpClient, 'exampleId', {attribute: true});
       expect(httpClient.post).toHaveBeenCalledWith('/api/specific-access-request/update-attributes',
        {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
-
     });
   });
-
 });
