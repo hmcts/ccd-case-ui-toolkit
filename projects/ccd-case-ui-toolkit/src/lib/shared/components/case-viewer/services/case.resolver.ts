@@ -11,7 +11,6 @@ import { CaseNotifier } from '../../case-editor';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
-
   public static readonly EVENT_REGEX = new RegExp('\/trigger\/.*?\/submit$');
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
@@ -21,7 +20,7 @@ export class CaseResolver implements Resolve<CaseView> {
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
   // we cache the case view to avoid retrieving it for each child route
-  previousUrl: string;
+  public previousUrl: string;
   constructor(private caseNotifier: CaseNotifier,
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
@@ -33,7 +32,7 @@ export class CaseResolver implements Resolve<CaseView> {
       });
   }
 
-  resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
+  public resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
     const cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
 
     if (!cid) {

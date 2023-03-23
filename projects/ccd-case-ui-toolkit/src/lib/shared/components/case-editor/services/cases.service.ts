@@ -48,7 +48,7 @@ export class CasesService {
 
   public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
 
-  get = this.getCaseView;
+  public get = this.getCaseView;
 
   public static updateChallengedAccessRequestAttributes(httpClient: HttpClient, caseId: string, attributesToUpdate: { [x: string]: any })
     : Observable<RoleAssignmentResponse> {
@@ -78,7 +78,7 @@ export class CasesService {
   ) {
   }
 
-  getCaseView(jurisdictionId: string,
+  public getCaseView(jurisdictionId: string,
     caseTypeId: string,
     caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getApiUrl()}/caseworkers/:uid/jurisdictions/${jurisdictionId}/case-types/${caseTypeId}/cases/${caseId}`;
@@ -95,7 +95,7 @@ export class CasesService {
       );
   }
 
-  getCaseViewV2(caseId: string): Observable<CaseView> {
+  public getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -115,7 +115,7 @@ export class CasesService {
       );
   }
 
-  getEventTrigger(caseTypeId: string,
+  public getEventTrigger(caseTypeId: string,
     eventTriggerId: string,
     caseId?: string,
     ignoreWarning?: string): Observable<CaseEventTrigger> {
@@ -169,7 +169,7 @@ export class CasesService {
       );
   }
 
-  validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
+  public validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
     const pageIdString = pageId ? `?pageId=${pageId}` : '';
     const url = `${this.appConfig.getCaseDataUrl()}/case-types/${ctid}/validate${pageIdString}`;
 
@@ -188,7 +188,7 @@ export class CasesService {
       );
   }
 
-  createCase(ctid: string, eventData: CaseEventData): Observable<object> {
+  public createCase(ctid: string, eventData: CaseEventData): Observable<object> {
     let ignoreWarning = 'false';
 
     if (eventData.ignore_warning) {
@@ -211,7 +211,7 @@ export class CasesService {
       );
   }
 
-  getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
+  public getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
     const url = `${this.appConfig.getCaseDataUrl()}/cases/${caseId}/documents`;
 
     const headers = new HttpHeaders()
