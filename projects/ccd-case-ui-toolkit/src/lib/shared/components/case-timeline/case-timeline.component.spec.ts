@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
@@ -10,6 +10,7 @@ import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseTimelineComponent', () => {
+
   const CASE_EVENTS: CaseViewEvent[] = [
     {
       id: 5,
@@ -70,8 +71,8 @@ describe('CaseTimelineComponent', () => {
   };
   const CASE_VIEW_OBS: Observable<CaseView> = of(CASE_VIEW);
 
-  let eventLogComponentMock;
-  let caseHistoryComponentMock;
+  let EventLogComponent;
+  let CaseHistoryComponent;
   let caseNotifier;
   let casesService;
   let alertService: any;
@@ -80,18 +81,20 @@ describe('CaseTimelineComponent', () => {
   let component: CaseTimelineComponent;
   let de: DebugElement;
   casesService = createSpyObj('casesService', ['getCaseViewV2']);
-  eventLogComponentMock = MockComponent({ selector: 'ccd-event-log', inputs: [
+  EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
     'events'
   ]});
 
-  caseHistoryComponentMock = MockComponent({ selector: 'ccd-case-history', inputs: [
+  CaseHistoryComponent = MockComponent({ selector: 'ccd-case-history', inputs: [
     'event'
   ]});
 
   describe('CaseTimelineComponent successfully resolves case view', () => {
+
     const $BACK_TO_TIMELINE_LINK = By.css('div>div>ol>li>a');
 
     beforeEach(async() => {
+
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       casesService.getCaseViewV2.and.returnValue(CASE_VIEW_OBS);
 
@@ -108,13 +111,13 @@ describe('CaseTimelineComponent', () => {
             CaseTimelineComponent,
 
             // Mocks
-            eventLogComponentMock,
-            caseHistoryComponentMock
+            EventLogComponent,
+            CaseHistoryComponent
           ],
           providers: [
             { provide: CaseNotifier, useValue: caseNotifier },
             { provide: CasesService, useValue: casesService },
-            { provide: AlertService, useValue: alertService }
+            { provide: AlertService, useValue: alertService },
           ]
         })
         .compileComponents();
@@ -132,13 +135,13 @@ describe('CaseTimelineComponent', () => {
       expect(component.events).toEqual(CASE_EVENTS);
       expect(component.displayMode).toEqual(CaseTimelineDisplayMode.TIMELINE);
 
-      const eventLogDe = de.query(By.directive(eventLogComponentMock));
+      const eventLogDe = de.query(By.directive(EventLogComponent));
 
       expect(eventLogDe).toBeDefined();
       const eventLogComponent = eventLogDe.componentInstance;
       expect(eventLogComponent.events).toEqual(CASE_EVENTS);
 
-      const caseHistoryDetailsDe = de.query(By.directive(caseHistoryComponentMock));
+      const caseHistoryDetailsDe = de.query(By.directive(CaseHistoryComponent));
 
       expect(caseHistoryDetailsDe).toBeNull();
     });
@@ -154,12 +157,12 @@ describe('CaseTimelineComponent', () => {
       const link = de.query($BACK_TO_TIMELINE_LINK);
       expect(link.nativeElement.textContent).toBe('Back to case timeline');
 
-      const caseHistoryDe = de.query(By.directive(caseHistoryComponentMock));
+      const caseHistoryDe = de.query(By.directive(CaseHistoryComponent));
       expect(caseHistoryDe).toBeDefined();
       const caseHistoryComponent = caseHistoryDe.componentInstance;
       expect(caseHistoryComponent.event).toEqual('5');
 
-      const eventLogDe = de.query(By.directive(eventLogComponentMock));
+      const eventLogDe = de.query(By.directive(EventLogComponent));
       expect(eventLogDe).toBeNull();
     });
 
@@ -172,10 +175,10 @@ describe('CaseTimelineComponent', () => {
       component.goToCaseTimeline();
       fixture.detectChanges();
 
-      const caseHistoryDetailsDe = de.query(By.directive(caseHistoryComponentMock));
+      const caseHistoryDetailsDe = de.query(By.directive(CaseHistoryComponent));
       expect(caseHistoryDetailsDe).toBeNull();
 
-      const eventLogDe = de.query(By.directive(eventLogComponentMock));
+      const eventLogDe = de.query(By.directive(EventLogComponent));
       expect(eventLogDe).toBeDefined();
       const eventLogComponent = eventLogDe.componentInstance;
       expect(eventLogComponent.events).toEqual(CASE_EVENTS);
@@ -186,7 +189,7 @@ describe('CaseTimelineComponent', () => {
     const ERROR_MSG = 'Critical error!';
 
     beforeEach(async() => {
-      eventLogComponentMock = MockComponent({ selector: 'ccd-event-log', inputs: [
+      EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
         'events'
       ]});
 
@@ -207,13 +210,13 @@ describe('CaseTimelineComponent', () => {
             CaseTimelineComponent,
 
             // Mocks
-            eventLogComponentMock,
-            caseHistoryComponentMock
+            EventLogComponent,
+            CaseHistoryComponent
           ],
           providers: [
             { provide: CaseNotifier, useValue: caseNotifier },
             { provide: CasesService, useValue: casesService },
-            { provide: AlertService, useValue: alertService }
+            { provide: AlertService, useValue: alertService },
           ]
         })
         .compileComponents();
@@ -228,7 +231,7 @@ describe('CaseTimelineComponent', () => {
 
     it('should call alert service and not render event log component', () => {
       expect(casesService.getCaseViewV2).toHaveBeenCalledWith(CASE_REFERENCE);
-      const eventLogDe = de.query(By.directive(eventLogComponentMock));
+      const eventLogDe = de.query(By.directive(EventLogComponent));
 
       expect(eventLogDe).toBeNull();
       expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);

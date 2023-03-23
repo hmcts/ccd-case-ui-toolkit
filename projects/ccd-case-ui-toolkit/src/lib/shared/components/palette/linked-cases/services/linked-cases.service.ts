@@ -133,7 +133,7 @@ export class LinkedCasesService {
 
   public getCaseName(searchCasesResponse: CaseView): string {
     let caseName = LinkedCasesService.CASE_NAME_MISSING_TEXT;
-    const tabs = searchCasesResponse.tabs.filter(tab => {
+    searchCasesResponse.tabs.filter(tab => {
       const caseNameHmctsInternalField = tab.fields.find(field => field.id === 'caseNameHmctsInternal');
       if (caseNameHmctsInternalField) {
         caseName = caseNameHmctsInternalField.value;

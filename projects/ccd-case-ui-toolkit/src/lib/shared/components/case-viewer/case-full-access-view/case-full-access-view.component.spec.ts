@@ -68,6 +68,7 @@ class TabsComponent {
   template: '<ng-content></ng-content>'
 })
 class TabComponent {
+
   @Input()
   public selected: boolean;
 }
@@ -106,6 +107,7 @@ class EventTriggerComponent {
   template: ``
 })
 class CallbackErrorsComponent {
+
   @Input()
   public triggerTextIgnore: string;
   @Input()
@@ -117,29 +119,29 @@ class CallbackErrorsComponent {
 
 }
 
-const caseHeaderComponentMock: any = MockComponent({
+const CaseHeaderComponent: any = MockComponent({
   selector: 'ccd-case-header',
   inputs: ['caseDetails']
 });
 
-const markdownComponentMock: any = MockComponent({
+const MarkdownComponent: any = MockComponent({
   selector: 'ccd-markdown',
   inputs: ['content', 'markdownUseHrefAsRouterLink']
 });
 
-const caseActivityComponentMock: any = MockComponent({
+const CaseActivityComponent: any = MockComponent({
   selector: 'ccd-activity',
   inputs: ['caseId', 'displayMode']
 });
 
-const fieldReadComponentMock: any = MockComponent({
+const FieldReadComponent: any = MockComponent({
   selector: 'ccd-field-read', inputs: [
     'caseField',
     'caseReference'
   ]
 });
 
-const linkComponentMock: any = MockComponent({
+const LinkComponent: any = MockComponent({
   selector: 'a', inputs: [
     'routerLink'
   ]
@@ -590,6 +592,7 @@ let navigationNotifierService: NavigationNotifierService;
 let errorNotifierService: ErrorNotifierService;
 
 xdescribe('CaseFullAccessViewComponent', () => {
+
   const FIELDS = CASE_VIEW.tabs[0].fields;
   const SIMPLE_FIELDS = CASE_VIEW.tabs[0].fields.slice(0, 2);
   const COMPLEX_FIELDS = CASE_VIEW.tabs[0].fields.slice(2);
@@ -638,15 +641,15 @@ xdescribe('CaseFullAccessViewComponent', () => {
           DeleteOrCancelDialogComponent,
 
           // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
+          CaseActivityComponent,
+          FieldReadComponent,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
+          CaseHeaderComponent,
+          LinkComponent,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          markdownComponentMock
+          MarkdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -676,7 +679,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
   }));
 
   it('should render a case header', () => {
-    const header = de.query(By.directive(caseHeaderComponentMock));
+    const header = de.query(By.directive(CaseHeaderComponent));
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
   });
@@ -759,15 +762,15 @@ xdescribe('CaseFullAccessViewComponent', () => {
   });
 
   it('should render each field value using FieldReadComponent', () => {
-    const readFieldsFields = de
+    const readFields_fields = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr td>span>ccd-field-read'));
 
-    const readFieldsCompound = de
+    const readFields_compound = de
       .query($NAME_TAB_CONTENT)
       .queryAll(By.css('tbody>tr th>span>ccd-field-read'));
 
-    const readFields = readFieldsFields.concat(readFieldsCompound);
+    const readFields = readFields_fields.concat(readFields_compound);
 
     FIELDS.forEach(field => {
       expect(readFields.find(f => {
@@ -790,9 +793,11 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
   it('should render an event trigger', () => {
     const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+
     expect(eventTriggerElement).toBeTruthy();
 
     const eventTrigger = eventTriggerElement.componentInstance;
+
     expect(eventTrigger.triggers).toEqual(TRIGGERS);
   });
 
@@ -861,7 +866,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
   it('should change button label when notified about callback errors', () => {
     const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     component.callbackErrorsNotify(callbackErrorsContext);
     fixture.detectChanges();
 
@@ -870,7 +875,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
     expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
 
-    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
     component.callbackErrorsNotify(callbackErrorsContext);
     fixture.detectChanges();
 
@@ -885,7 +890,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
   it('should clear errors and warnings', () => {
     const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     component.callbackErrorsNotify(callbackErrorsContext);
     fixture.detectChanges();
     component.clearErrorsAndWarnings();
@@ -939,10 +944,8 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
     const fieldErrorList = de.query($CALLBACK_DATA_FIELD_ERROR_LIST);
     expect(fieldErrorList).toBeTruthy();
-
     const firstFieldError = fieldErrorList.query($FIRST_FIELD_ERROR);
     expect(text(firstFieldError)).toBe('First field error');
-
     const secondFieldError = fieldErrorList.query($SECOND_FIELD_ERROR);
     expect(text(secondFieldError)).toBe('Second field error');
   });
@@ -1016,7 +1019,8 @@ xdescribe('CaseFullAccessViewComponent', () => {
         field_errors: FIELD_ERRORS
       }
     };
-    component.error = HttpError.from(new HttpErrorResponse({error: VALID_ERROR}));
+    const httpError = HttpError.from(new HttpErrorResponse({error: VALID_ERROR}));
+    component.error = httpError;
 
     const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
     const eventTrigger = eventTriggerElement.componentInstance;
@@ -1040,6 +1044,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 });
 
 xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
+
   beforeEach((() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
@@ -1081,15 +1086,15 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           DeleteOrCancelDialogComponent,
 
           // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
+          CaseActivityComponent,
+          FieldReadComponent,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
+          CaseHeaderComponent,
+          LinkComponent,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          markdownComponentMock
+          MarkdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -1126,6 +1131,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
 });
 
 xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () => {
+
   beforeEach((() => {
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
@@ -1167,15 +1173,15 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           DeleteOrCancelDialogComponent,
 
           // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
+          CaseActivityComponent,
+          FieldReadComponent,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
+          CaseHeaderComponent,
+          LinkComponent,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          markdownComponentMock
+          MarkdownComponent
         ],
         providers: [
           FieldsUtils,
@@ -1217,6 +1223,7 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
 });
 
 describe('CaseFullAccessViewComponent - prependedTabs', () => {
+
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
@@ -1265,10 +1272,10 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           DeleteOrCancelDialogComponent,
 
           // Mocks
-          caseActivityComponentMock,
+          CaseActivityComponent,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
+          CaseHeaderComponent,
+          LinkComponent,
           CallbackErrorsComponent
         ],
         providers: [
@@ -1344,6 +1351,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
 });
 
 describe('CaseFullAccessViewComponent - appendedTabs', () => {
+
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
@@ -1392,10 +1400,10 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           DeleteOrCancelDialogComponent,
 
           // Mocks
-          caseActivityComponentMock,
+          CaseActivityComponent,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
+          CaseHeaderComponent,
+          LinkComponent,
           CallbackErrorsComponent
         ],
         providers: [
@@ -1541,6 +1549,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
 });
 
 xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
+
   let comp: CaseFullAccessViewComponent;
   let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
@@ -1587,10 +1596,10 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           DeleteOrCancelDialogComponent,
 
           // Mocks
-          caseActivityComponentMock,
+          CaseActivityComponent,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
+          CaseHeaderComponent,
+          LinkComponent,
           CallbackErrorsComponent
         ],
         providers: [
@@ -1728,10 +1737,10 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           DeleteOrCancelDialogComponent,
 
           // Mocks
-          caseActivityComponentMock,
+          CaseActivityComponent,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
+          CaseHeaderComponent,
+          LinkComponent,
           CallbackErrorsComponent
         ],
         providers: [
@@ -1838,6 +1847,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     componentFixture.detectChanges();
     expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
   });
+
 });
 
 describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {
@@ -1901,10 +1911,10 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           DeleteOrCancelDialogComponent,
 
           // Mocks
-          caseActivityComponentMock,
+          CaseActivityComponent,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
+          CaseHeaderComponent,
+          LinkComponent,
           CallbackErrorsComponent
         ],
         providers: [
@@ -1972,7 +1982,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
 
   it('should clear errors and warnings', () => {
     const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
     componentFixture.detectChanges();
     const eventTriggerElement = debugElement.query(By.directive(EventTriggerComponent));
@@ -1980,7 +1990,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
 
     expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
 
-    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
+    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
     caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
     componentFixture.detectChanges();
 

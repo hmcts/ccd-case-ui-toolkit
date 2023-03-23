@@ -56,7 +56,6 @@ const APP_CONFIG: AbstractAppConfig = {
   getPrdUrl: () => 'prdUrl',
   getCacheTimeOut: () => 30000,
   getRefundsUrl: () => 'refundsUrl',
-  getNotificationUrl: () => 'notificationUrl',
   getWorkAllocationApiUrl: () => 'workAllocationApiUrl',
   getUserInfoApiUrl: () => 'userInfoApiUrl',
   getAccessManagementBasicViewMock: () => ({}),

@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -35,7 +35,7 @@ describe('ReadCaseLinkFieldComponent', () => {
     let component: ReadCaseLinkFieldComponent;
     let de: DebugElement;
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(async(() => {
       TestBed
         .configureTestingModule({
           imports: [],
@@ -97,7 +97,7 @@ describe('ReadCaseLinkFieldComponent', () => {
     let component: ReadCaseLinkFieldComponent;
     let de: DebugElement;
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(async(() => {
       TestBed
         .configureTestingModule({
           imports: [],

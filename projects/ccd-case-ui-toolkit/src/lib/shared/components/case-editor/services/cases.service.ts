@@ -17,7 +17,7 @@ import {
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
-import { LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
+import { LinkCaseReason, LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -48,7 +48,7 @@ export class CasesService {
 
   public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
 
-  public get = this.getCaseView;
+  get = this.getCaseView;
 
   public static updateChallengedAccessRequestAttributes(httpClient: HttpClient, caseId: string, attributesToUpdate: { [x: string]: any })
     : Observable<RoleAssignmentResponse> {
@@ -72,12 +72,13 @@ export class CasesService {
     private orderService: OrderService,
     private errorService: HttpErrorService,
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
+    private readonly workAllocationService: WorkAllocationService,
     private loadingService: LoadingService,
     private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
-  public getCaseView(jurisdictionId: string,
+  getCaseView(jurisdictionId: string,
     caseTypeId: string,
     caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getApiUrl()}/caseworkers/:uid/jurisdictions/${jurisdictionId}/case-types/${caseTypeId}/cases/${caseId}`;
@@ -94,7 +95,7 @@ export class CasesService {
       );
   }
 
-  public getCaseViewV2(caseId: string): Observable<CaseView> {
+  getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -114,7 +115,7 @@ export class CasesService {
       );
   }
 
-  public getEventTrigger(caseTypeId: string,
+  getEventTrigger(caseTypeId: string,
     eventTriggerId: string,
     caseId?: string,
     ignoreWarning?: string): Observable<CaseEventTrigger> {
@@ -168,7 +169,7 @@ export class CasesService {
       );
   }
 
-  public validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
+  validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
     const pageIdString = pageId ? `?pageId=${pageId}` : '';
     const url = `${this.appConfig.getCaseDataUrl()}/case-types/${ctid}/validate${pageIdString}`;
 
@@ -187,7 +188,7 @@ export class CasesService {
       );
   }
 
-  public createCase(ctid: string, eventData: CaseEventData): Observable<object> {
+  createCase(ctid: string, eventData: CaseEventData): Observable<object> {
     let ignoreWarning = 'false';
 
     if (eventData.ignore_warning) {
@@ -210,7 +211,7 @@ export class CasesService {
       );
   }
 
-  public getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
+  getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
     const url = `${this.appConfig.getCaseDataUrl()}/cases/${caseId}/documents`;
 
     const headers = new HttpHeaders()

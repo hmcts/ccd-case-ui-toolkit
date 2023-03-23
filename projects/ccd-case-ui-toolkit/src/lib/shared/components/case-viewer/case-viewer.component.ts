@@ -4,24 +4,23 @@ import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseTab, CaseView } from '../../domain';
 import { CaseNotifier } from '../case-editor';
-import { OrderService } from '../../services';
 
 @Component({
   selector: 'ccd-case-viewer',
   templateUrl: './case-viewer.component.html'
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
-  public static readonly METADATA_FIELD_ACCESS_PROCESS_ID = '[ACCESS_PROCESS]';
-  public static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
-  public static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
-  public static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
+  static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
+  static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
+  static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
+  static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
+
   @Input() public prependedTabs: CaseTab[] = [];
   @Input() public appendedTabs: CaseTab[] = [];
-
-  public caseDetails: CaseView;
+  @Input() public caseDetails: CaseView;
   public caseSubscription: Subscription;
   public userAccessType: string;
   public accessGranted: boolean;
@@ -30,8 +29,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly caseNotifier: CaseNotifier,
     private readonly appConfig: AbstractAppConfig,
-    private readonly orderService: OrderService
-  ) {}
+  ) {
+  }
 
   public ngOnInit(): void {
     this.loadCaseDetails();
@@ -44,23 +43,21 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   public loadCaseDetails(): void {
-    if (this.route.snapshot.data.case) {
-      this.caseDetails = this.route.snapshot.data.case;
-      this.caseDetails.tabs = this.orderService.sort(this.caseDetails.tabs);
-      this.caseDetails.tabs = this.suffixDuplicateTabs(this.caseDetails.tabs);
-      this.setUserAccessType(this.caseDetails);
-    } else {
+    if (!this.route.snapshot.data.case) {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
         this.setUserAccessType(this.caseDetails);
       });
+    } else {
+      this.caseDetails = this.route.snapshot.data.case;
+      this.setUserAccessType(this.caseDetails);
     }
   }
 
   public setUserAccessType(caseDetails: CaseView): void {
     if (caseDetails && Array.isArray(caseDetails.metadataFields)) {
       const accessProcess = caseDetails.metadataFields.find(metadataField =>
-        metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCESS_ID);
+        metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
       const accessGranted = caseDetails.metadataFields.find(metadataField =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_GRANTED_ID);
         this.accessGranted = accessGranted ? accessGranted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
@@ -77,26 +74,5 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     return featureToggleOn ?
             !this.accessGranted ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true
             : true;
-  }
-
-  private suffixDuplicateTabs(tabs: CaseTab[]): CaseTab[] {
-
-    const count = {};
-    const firstOccurences = {};
-
-    let item: string;
-    let itemCount: number;
-    for (let i = 0, c = tabs.length; i < c; i++) {
-      item = tabs[i].label;
-      itemCount = count[item];
-      itemCount = count[item] = (itemCount == null ? 1 : itemCount + 1);
-
-      if (count[item] > 1)
-        tabs[i].label = tabs[i].label + Array(count[item] - 1).fill('_').join('');
-      else
-        firstOccurences[item] = i;
-    }
-
-    return tabs;
   }
 }

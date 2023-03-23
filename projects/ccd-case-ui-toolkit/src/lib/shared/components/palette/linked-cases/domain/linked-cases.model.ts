@@ -1,77 +1,76 @@
-// tslint:disable:variable-name
 export class LinkCaseReason {
-  public key: string;
-  public value_en: string;
-  public value_cy: string;
-  public hint_text_en: string;
-  public hint_text_cy: string;
-  public lov_order: number;
-  public parent_key: string;
-  public category_key: string;
-  public parent_category: string;
-  public active_flag: string;
-  public child_nodes: string;
-  public from: string;
-  public selected?: boolean;
+  key: string;
+  value_en: string;
+  value_cy: string;
+  hint_text_en: string;
+  hint_text_cy: string;
+  lov_order: number;
+  parent_key: string;
+  category_key: string;
+  parent_category: string;
+  active_flag: string;
+  child_nodes: string;
+  from: string;
+  selected?: boolean;
 }
 
 export class CCDCaseLinkType {
-  public CaseReference: string;
-  public CaseType: string;
-  public CreatedDateTime: string;
-  public ReasonForLink: LinkReason[];
+  CaseReference: string;
+  CaseType: string;
+  CreatedDateTime: string;
+  ReasonForLink: LinkReason[];
 }
 
 export class CaseLink {
-  public caseReference: string;
-  public reasons: LinkReason[];
-  public createdDateTime: string;
-  public caseType: string;
-  public caseTypeDescription: string;
-  public caseState: string;
-  public caseStateDescription: string;
-  public caseService: string;
-  public caseName: string;
-  public unlink?: boolean;
+  caseReference: string;
+  reasons: LinkReason[];
+  createdDateTime: string;
+  caseType: string;
+  caseTypeDescription: string;
+  caseState: string;
+  caseStateDescription: string;
+  caseService: string;
+  caseName: string;
+  unlink?: boolean;
 }
 
 export class LinkReason {
-  public Reason: string;
-  public OtherDescription?: string;
+  Reason: string;
+  OtherDescription?: string;
 }
 
 export class LinkFromReason {
-  public reasonCode: string;
-  public otherDescription?: string;
+  reasonCode: string;
+  otherDescription?: string;
 }
 
 export class LinkedCasesResponse {
-  public linkedCases: CaseLinkResponse[];
+  linkedCases: CaseLinkResponse[];
 }
 
 export class CaseLinkResponse {
-  public caseNameHmctsInternal: string;
-  public caseReference: string;
-  public ccdCaseType: string;
-  public ccdCaseTypeDescription: string;
-  public ccdJurisdiction: string;
-  public state: string;
-  public stateDescription: string;
-  public linkDetails: LinkDetails[];
+  caseNameHmctsInternal: string;
+  caseReference: string;
+  ccdCaseType: string;
+  ccdCaseTypeDescription: string;
+  ccdJurisdiction: string;
+  state: string;
+  stateDescription: string;
+  linkDetails: LinkDetails[];
 }
 
 export class LinkDetails {
-  public createdDateTime: Date;
-  public reasons: LinkFromReason[];
+  createdDateTime: Date;
+  reasons: LinkFromReason[];
 }
 
 export class Terms {
-  public terms: {
+  terms: {
     reference: any[];
   };
 }
 
 export class ESQueryType {
-  public query: Terms;
-  public size: number;
+  query: Terms;
+  size: number;
 }

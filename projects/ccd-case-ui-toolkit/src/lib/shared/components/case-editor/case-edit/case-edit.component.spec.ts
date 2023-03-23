@@ -1,27 +1,26 @@
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ConditionalShowRegistrarService } from '../../../directives';
-import { CaseView, FieldType, HttpError, Profile } from '../../../domain';
+import { FieldType, Profile } from '../../../domain';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
-import { FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, WindowService } from '../../../services';
+import { FieldsPurger, FieldsUtils, SessionStorageService, WindowService } from '../../../services';
 import { FormErrorService, FormValueService } from '../../../services/form';
 import { PaletteUtilsModule } from '../../palette';
-import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
-import { CaseNotifier } from '../services';
+import { Wizard, WizardPage, WizardPageField } from '../domain';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { CaseEditComponent } from './case-edit.component';
 import createSpyObj = jasmine.createSpyObj;
 
-// this suite is breaking the test runner, needs addressing
-xdescribe('CaseEditComponent', () => {
+describe('CaseEditComponent', () => {
+
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     'TEST_TRIGGER',
     'Test Trigger',
@@ -180,22 +179,22 @@ xdescribe('CaseEditComponent', () => {
   let component: CaseEditComponent;
   let de: DebugElement;
 
-  const eventTriggerHeaderComponentMock: any = MockComponent({
+  const EventTriggerHeaderComponent: any = MockComponent({
     selector: 'ccd-event-trigger-header',
     inputs: ['eventTrigger']
   });
 
-  const fieldReadComponentMock: any = MockComponent({
+  const FieldRead: any = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField']
   });
 
-  const fieldWriteComponentMock: any = MockComponent({
+  const FieldWrite: any = MockComponent({
     selector: 'ccd-field-write',
     inputs: ['caseField', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
-  const routerLinkComponentMock: any = MockComponent({
+  const RouterLinkComponent: any = MockComponent({
     selector: 'a',
     inputs: ['routerLink']
   });
@@ -244,7 +243,6 @@ xdescribe('CaseEditComponent', () => {
       isSolicitor: FUNC,
       isCourtAdmin: FUNC
     };
-    let loadingServiceMock: jasmine.SpyObj<LoadingService>;
 
     beforeEach(waitForAsync(() => {
       cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
@@ -258,17 +256,7 @@ xdescribe('CaseEditComponent', () => {
       wizard.pages = [];
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
 
-      formValueService = createSpyObj<FormValueService>('formValueService', [
-        'sanitise',
-        'clearNonCaseFields',
-        'removeNullLabels',
-        'removeEmptyDocuments',
-        'populateFlagDetailsFromCaseFields',
-        'removeFlagLauncherField',
-        'removeComponentLauncherField',
-        'removeEmptyCollectionsWithMinValidation',
-        'populateLinkedCasesDetailsFromCaseFields'
-      ]);
+      formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
 
       route = {
@@ -288,8 +276,6 @@ xdescribe('CaseEditComponent', () => {
         params: of({})
       };
 
-      loadingServiceMock = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
-
       TestBed
         .configureTestingModule({
           imports: [
@@ -301,15 +287,14 @@ xdescribe('CaseEditComponent', () => {
             CaseEditComponent,
 
             // Mocks
-            eventTriggerHeaderComponentMock,
-            routerLinkComponentMock,
+            EventTriggerHeaderComponent,
+            RouterLinkComponent,
             FieldsFilterPipe,
-            fieldReadComponentMock,
-            fieldWriteComponentMock
+            FieldRead,
+            FieldWrite
           ],
           providers: [
             WizardFactoryService,
-            {provide: CaseNotifier, useValue: { cachedCaseView: null}},
             {provide: FormErrorService, useValue: formErrorService},
             {provide: FormValueService, useValue: formValueService},
             {provide: FieldsUtils, useValue: fieldsUtils},
@@ -318,8 +303,7 @@ xdescribe('CaseEditComponent', () => {
             {provide: Router, useValue: routerStub},
             {provide: ActivatedRoute, useValue: route},
             SessionStorageService,
-            WindowService,
-            { provide: LoadingService, loadingServiceMock }
+            WindowService
           ]
         })
         .compileComponents();
@@ -334,6 +318,10 @@ xdescribe('CaseEditComponent', () => {
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
+
+    beforeEach(() => {
+    });
+
     // Moved this test case to case-edit-page.component
 
     it('should return true for hasPrevious', () => {
@@ -354,7 +342,9 @@ xdescribe('CaseEditComponent', () => {
     });
 
     describe('fieldShowCondition', () => {
+
       describe('next page', () => {
+
         it('should navigate to next page when next is called and do not clear READONLY hidden field value', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
@@ -590,7 +580,9 @@ xdescribe('CaseEditComponent', () => {
     });
 
     describe('pageShowCondition', () => {
+
       describe('next page', () => {
+
         it('should navigate to next page when next is called and do not clear visible field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
@@ -814,6 +806,7 @@ xdescribe('CaseEditComponent', () => {
       });
 
       describe('previous page', () => {
+
         it('should navigate to previous page when previous is called and do not clear visible field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
@@ -844,7 +837,8 @@ xdescribe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_3.id)).not.toBeNull();
         });
 
-        it('should navigate to previous page when previous is called and retain hidden simple form fields with retain_hidden_value = true', () => {
+        it('should navigate to previous page when previous is called and retain hidden simple form fields with ' +
+        'retain_hidden_value = true', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
@@ -1034,219 +1028,10 @@ xdescribe('CaseEditComponent', () => {
       component.cancel();
       expect(cancelHandler.applyFilters).toHaveBeenCalled();
     });
-
-    describe('getStatus', () => {
-      it('should get callback_response_status as vallback has failed', () => {
-        const response = {
-          /* tslint:disable:object-literal-key-quotes */
-          'delete_draft_response_status': 'delete_draft_response_status',
-          /* tslint:disable:object-literal-key-quotes */
-          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
-        }
-        const actual = component.getStatus(response);
-        expect(actual).toEqual(response['callback_response_status']);
-      });
-
-      it('should get callback_response_status', () => {
-        const response = {
-          /* tslint:disable:object-literal-key-quotes */
-          'delete_draft_response_status': 'delete_draft_response_status',
-          /* tslint:disable:object-literal-key-quotes */
-          'callback_response_status': 'CALLBACK_COMPLETED'
-        }
-        const actual = component.getStatus(response);
-        expect(actual).toEqual(response['delete_draft_response_status']);
-      });
-    })
-
-    describe('emitSubmitted', () => {
-      it('should emit submitted', () => {
-        const response = {
-          /* tslint:disable:object-literal-key-quotes */
-          'delete_draft_response_status': 'delete_draft_response_status',
-          /* tslint:disable:object-literal-key-quotes */
-          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
-        }
-        spyOn(component.submitted, 'emit');
-        component.emitSubmitted(response);
-
-        expect(component.submitted.emit).toHaveBeenCalled();
-      });
-    })
-
-    describe('confirm', () => {
-      it('should call routers navigate', () => {
-        component.confirm({} as unknown as Confirmation);
-
-        expect(routerStub.navigate).toHaveBeenCalled();
-        expect(component.confirmation).toEqual({} as unknown as Confirmation);
-      });
-    })
-
-    describe('getCaseId', () => {
-      it('should return case id', () => {
-        const actual = component.getCaseId({
-          /* tslint:disable:object-literal-key-quotes */
-          'case_id': 'case_id'
-        } as unknown as CaseView);
-
-        expect(actual).toEqual('case_id');
-      });
-    })
-
-    describe('submitForm', () => {
-      it('should submit case', () => {
-        const mockClass = {
-          submit: () => of({})
-        }
-        spyOn(mockClass, 'submit').and.returnValue(of({
-          id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
-          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
-          'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
-            'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
-            'confirmation_body': 'confirmation_body'
-          }
-        }))
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
-
-        fixture.detectChanges();
-
-        component.submitForm({
-          eventTrigger: component.eventTrigger,
-          caseDetails: component.caseDetails,
-          form: component.form,
-          submit: mockClass.submit,
-        });
-
-        expect(component.isSubmitting).toEqual(true);
-        expect(formValueService.sanitise).toHaveBeenCalled();
-      });
-    })
-
-    describe('onEventCanBeCompleted', () => {
-      it('should submit the case', () => {
-        const mockClass = {
-          submit: () => of({})
-        }
-        spyOn(mockClass, 'submit').and.returnValue(of({
-          id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
-          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
-          /* tslint:disable:object-literal-key-quotes */
-          'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
-            'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
-            'confirmation_body': 'confirmation_body'
-          }
-        }))
-
-        spyOn(component, 'confirm')
-
-        component.isCaseFlagSubmission = true;
-        component.isLinkedCasesSubmission = true;
-        component.confirmation = {} as unknown as Confirmation;
-
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
-        component.onEventCanBeCompleted({
-          eventTrigger: component.eventTrigger,
-          eventCanBeCompleted: true,
-          caseDetails: component.caseDetails,
-          form: component.form,
-          submit: mockClass.submit,
-        });
-
-        expect(component.confirm).toHaveBeenCalled();
-        expect(formValueService.populateLinkedCasesDetailsFromCaseFields).toHaveBeenCalled();
-        expect(formValueService.removeComponentLauncherField).toHaveBeenCalled();
-        expect(formValueService.removeFlagLauncherField).toHaveBeenCalled();
-        expect(formValueService.populateFlagDetailsFromCaseFields).toHaveBeenCalled();
-      });
-
-      it('should NOT submit the case due to error', () => {
-        const mockClass = {
-          submit: () => of({})
-        }
-        spyOn(mockClass, 'submit').and.returnValue(throwError(({ details: 'details' } as unknown as HttpError)))
-        spyOn(component, 'confirm')
-
-        component.isCaseFlagSubmission = true;
-        component.isLinkedCasesSubmission = true;
-        component.confirmation = {} as unknown as Confirmation;
-
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
-        component.onEventCanBeCompleted({
-          eventTrigger: component.eventTrigger,
-          eventCanBeCompleted: true,
-          caseDetails: component.caseDetails,
-          form: component.form,
-          submit: mockClass.submit,
-        });
-
-        expect(formErrorService.mapFieldErrors).toHaveBeenCalled();
-        expect(component.error).toEqual({ details: 'details' } as unknown as HttpError);
-        expect(component.isSubmitting).toEqual(false);
-      });
-
-      it('should NOT submit the case and should navigate to tasks tab', () => {
-        const mockClass = {
-          submit: () => of({})
-        }
-        spyOn(mockClass, 'submit');
-
-        spyOn(component, 'confirm')
-
-        component.isCaseFlagSubmission = true;
-        component.isLinkedCasesSubmission = true;
-        component.confirmation = {} as unknown as Confirmation;
-
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
-        component.onEventCanBeCompleted({
-          eventTrigger: component.eventTrigger,
-          eventCanBeCompleted: false,
-          caseDetails: component.caseDetails,
-          form: component.form,
-          submit: mockClass.submit,
-        });
-
-        expect(component.confirm).not.toHaveBeenCalled();
-        expect(mockClass.submit).not.toHaveBeenCalled();
-        expect(routerStub.navigate).toHaveBeenCalled();
-      });
-
-      it('should emit submit as after_submit_callback_response is NOT present in response', () => {
-        const mockClass = {
-          submit: () => of({})
-        }
-        spyOn(mockClass, 'submit').and.returnValue(of({
-          id: 'id',
-          /* tslint:disable:object-literal-key-quotes */
-          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
-        }))
-
-        spyOn(component, 'confirm');
-        spyOn(component, 'emitSubmitted');
-
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
-        component.onEventCanBeCompleted({
-          eventTrigger: component.eventTrigger,
-          eventCanBeCompleted: true,
-          caseDetails: component.caseDetails,
-          form: component.form,
-          submit: mockClass.submit,
-        });
-
-        expect(component.confirm).not.toHaveBeenCalled();
-        expect(component.emitSubmitted).toHaveBeenCalled();
-      });
-    })
   });
 
   xdescribe('profile not available in route', () => {
+
     const USER = {
       idam: {
         id: 'userId',
@@ -1326,10 +1111,10 @@ xdescribe('CaseEditComponent', () => {
             CaseEditComponent,
 
             // Mocks
-            eventTriggerHeaderComponentMock,
-            routerLinkComponentMock,
-            fieldReadComponentMock,
-            fieldWriteComponentMock
+            EventTriggerHeaderComponent,
+            RouterLinkComponent,
+            FieldRead,
+            FieldWrite
           ],
           providers: [
             WizardFactoryService,

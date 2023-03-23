@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+
 import { LabelSubstitutorDirective, PlaceholderService } from '../../directives';
 import { CaseView, HttpError } from '../../domain';
 import { createCaseHistory } from '../../fixture';
@@ -15,10 +16,12 @@ import { PaletteUtilsModule } from '../palette';
 import { CaseHistoryComponent } from './case-history.component';
 import { CaseHistory } from './domain';
 import { CaseHistoryService } from './services';
+
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 
 describe('CaseHistoryComponent', () => {
+
   const caseHeaderComponent: any = MockComponent({
     selector: 'ccd-case-header',
     inputs: ['caseDetails']
@@ -56,6 +59,7 @@ describe('CaseHistoryComponent', () => {
   };
   const FIELDS = CASE_HISTORY.tabs[1].fields;
   const SIMPLE_FIELDS = CASE_HISTORY.tabs[1].fields.slice(0, 2);
+  const COMPLEX_FIELDS = CASE_HISTORY.tabs[1].fields.slice(2);
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
@@ -78,13 +82,13 @@ describe('CaseHistoryComponent', () => {
   // tslint:disable-next-line: prefer-const
   let alertService: any;
 
-  const fieldReadComponentMock: any = MockComponent({
+  const FieldReadComponent: any = MockComponent({
     selector: 'ccd-field-read', inputs: [
       'caseField', 'caseReference', 'formGroup', 'topLevelFormGroup', 'idPrefix'
     ]
   });
 
-  const linkComponentMock: any = MockComponent({
+  const LinkComponent: any = MockComponent({
     selector: 'a', inputs: [
       'routerLink'
     ]
@@ -111,9 +115,9 @@ describe('CaseHistoryComponent', () => {
           LabelSubstitutorDirective,
 
           // Mocks
-          fieldReadComponentMock,
+          FieldReadComponent,
           caseHeaderComponent,
-          linkComponentMock,
+          LinkComponent,
           CcdTabFieldsPipe,
           FieldsFilterPipe,
           ReadFieldsFilterPipe,
@@ -237,4 +241,5 @@ describe('CaseHistoryComponent', () => {
     expect(headers[1].textContent).toBe(CASE_HISTORY.tabs[2].label);
     expect(orderService.sort).toHaveBeenCalledWith(CASE_HISTORY.tabs);
   });
+
 });
