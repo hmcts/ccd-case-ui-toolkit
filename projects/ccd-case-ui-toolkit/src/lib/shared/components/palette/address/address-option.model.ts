@@ -6,7 +6,7 @@ export class AddressOption {
   public value: AddressModel;
 
   constructor (addressModel: AddressModel, description: string) {
-    if (description == null) {
+    if (description === null) {
       this.value = addressModel;
       this.description = this.getDescription();
     } else {

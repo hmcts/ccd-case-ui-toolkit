@@ -21,11 +21,11 @@ describe('CaseSpecificAccessRequestComponent', () => {
   let fixture: ComponentFixture<CaseSpecificAccessRequestComponent>;
   let casesService: jasmine.SpyObj<CasesService>;
   const casesNotifier = createSpyObj<CaseNotifier>('CaseNotifier', ['fetchAndRefresh']);
-  const case_id = '1234123412341234';
+  const caseId = '1234123412341234';
   const mockRoute = {
     snapshot: {
       params: {
-        cid: case_id
+        cid: caseId
       }
     }
   };

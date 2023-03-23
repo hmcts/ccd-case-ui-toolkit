@@ -108,7 +108,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     let hasAddress = false;
     if (address) {
       Object.keys(address).forEach((key) => {
-        if (address[key] != null) {
+        if (address[key] !== null) {
           hasAddress = true;
         }
       });
