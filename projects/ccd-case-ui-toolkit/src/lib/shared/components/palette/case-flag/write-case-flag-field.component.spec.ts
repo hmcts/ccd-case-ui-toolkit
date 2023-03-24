@@ -918,16 +918,16 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
 
-    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_TYPE;
-    component.ngOnInit();
-    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
-
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
     component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
   });
 
   it('should not call resetCache on caseFlagStateService for other states', () => {
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_TYPE;
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
+
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_COMMENTS;
     component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
