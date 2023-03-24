@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -9,7 +8,7 @@ import { CaseField } from '../../../domain/definition';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { PaletteContext } from '../base-field';
 import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
+import { CaseFlagFieldState, CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
@@ -346,7 +345,7 @@ describe('ReadCaseFlagFieldComponent', () => {
       [flagLauncher1CaseField.id]: {
         controls: {},
         caseField: flagLauncher1CaseField,
-        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), { getState: () => {} } as Location, new CaseFlagStateService() )
+        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), new CaseFlagStateService())
       }
     },
     get: (controlName: string) => {
@@ -369,8 +368,9 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
-    caseFlagStateServiceSpy.formGroup = new FormGroup({});
+    caseFlagStateServiceSpy.formGroup = formGroup;
     caseFlagStateServiceSpy.pageLocation = '../createCaseFlag/createCaseFlagCaseFlagFormPage';
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
 
     TestBed.configureTestingModule({
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -571,9 +571,6 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.navigateBackToForm(fieldState);
     tick();
 
-    expect(router.navigate).toHaveBeenCalledWith([`../${caseFlagStateServiceSpy.pageLocation}`], {
-      relativeTo: route,
-      state: {fieldState}
-    });
+    expect(router.navigate).toHaveBeenCalledWith([`../${caseFlagStateServiceSpy.pageLocation}`], { relativeTo: route });
   }));
 });

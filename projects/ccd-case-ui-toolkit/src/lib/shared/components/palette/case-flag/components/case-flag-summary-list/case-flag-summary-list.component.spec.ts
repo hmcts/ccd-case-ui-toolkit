@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
 import { CaseFlagSummaryListDisplayMode } from '../../enums';
@@ -8,10 +8,11 @@ import { CaseFlagSummaryListComponent } from './case-flag-summary-list.component
 describe('CaseFlagSummaryListComponent', () => {
   let component: CaseFlagSummaryListComponent;
   let fixture: ComponentFixture<CaseFlagSummaryListComponent>;
+  let nativeElement: any;
   const updateFlagHeaderText = 'Update flag for';
   const addFlagHeaderText = 'Add flag to';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -23,6 +24,7 @@ describe('CaseFlagSummaryListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseFlagSummaryListComponent);
     component = fixture.componentInstance;
+    nativeElement = fixture.debugElement.nativeElement;
     // Deliberately omitted fixture.detectChanges() here because this will trigger the component's ngOnInit() before
     // the flagForSummaryDisplay input value has been set in each test, causing false failures
   });
@@ -47,9 +49,9 @@ describe('CaseFlagSummaryListComponent', () => {
     component.flagForSummaryDisplay = flag;
     component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
     fixture.detectChanges();
-    const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
+    const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
@@ -73,12 +75,13 @@ describe('CaseFlagSummaryListComponent', () => {
     component.flagForSummaryDisplay = flag;
     component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
     fixture.detectChanges();
-    const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
+    const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
-    expect(summaryListValues[2].textContent.trim()).toEqual('');
+    // Flag comments is not displayed if there is no comments
+    expect(summaryListValues[2]).toBeUndefined();
     // Flag status is not expected to be displayed if the summary page is shown during the Create Case Flag journey
     expect(summaryListValues[3]).toBeUndefined();
   });
@@ -100,9 +103,9 @@ describe('CaseFlagSummaryListComponent', () => {
     component.flagForSummaryDisplay = flag;
     component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
     fixture.detectChanges();
-    const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
+    const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(`${flag.flagDetail.name} - ${flag.flagDetail.otherDescription}`);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
@@ -127,9 +130,9 @@ describe('CaseFlagSummaryListComponent', () => {
     component.flagForSummaryDisplay = flag;
     component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
     fixture.detectChanges();
-    const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
+    const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(`${flag.flagDetail.name} - ${flag.flagDetail.subTypeValue}`);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
@@ -153,13 +156,42 @@ describe('CaseFlagSummaryListComponent', () => {
     component.flagForSummaryDisplay = flag;
     component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
     fixture.detectChanges();
-    const addUpdateFlagHeaderTextElement = fixture.debugElement.nativeElement.querySelector('dt');
+    const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateFlagHeaderText);
-    const summaryListValues = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
     // Flag status is expected to be displayed if the summary page is shown during the Manage Case Flags journey
     expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
+  });
+
+  it('should display summary details for Welsh', () => {
+    const flag = {
+      partyName: 'Rose Bank',
+      flagDetail: {
+        name: 'Flag 1',
+        flagComment: 'First flag',
+        flagComment_cy: 'Flag comment for Welsh',
+        dateTimeCreated: new Date(),
+        path: [{ id: '', value: 'Reasonable adjustment' }],
+        hearingRelevant: false,
+        flagCode: 'FL1',
+        otherDescription_cy: 'Other description for Welsh',
+        status: 'Active'
+      } as FlagDetail
+    } as FlagDetailDisplay;
+    component.flagForSummaryDisplay = flag;
+    component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+    fixture.detectChanges();
+    const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
+    expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateFlagHeaderText);
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    expect(summaryListValues[0].textContent).toContain(flag.partyName);
+    expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
+    expect(summaryListValues[2].textContent).toContain(flag.flagDetail.otherDescription_cy);
+    expect(summaryListValues[3].textContent).toContain(flag.flagDetail.flagComment);
+    expect(summaryListValues[4].textContent).toContain(flag.flagDetail.flagComment_cy);
+    expect(summaryListValues[5].textContent).toContain(flag.flagDetail.status);
   });
 });

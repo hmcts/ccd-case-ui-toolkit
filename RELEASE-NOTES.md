@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-case-flags-review-details-page-v4
+**EUI-7351** Reasonable adjustments display review flag details page
+
 ### Version 6.10.7-manage-case-flags-valid-status-progression
 **EUI-7929** Set the valid flag status options available on the "Update flag" page, based on the current status of the selected flag
 

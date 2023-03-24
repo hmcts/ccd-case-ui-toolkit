@@ -16,10 +16,10 @@ import {
 })
 export class UpdateFlagAddTranslationFormComponent implements OnInit {
   @Input() public formGroup: FormGroup;
-  @Input() public selectedFlag: FlagDetailDisplayWithFormGroupPath;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
+  public selectedFlag: FlagDetailDisplayWithFormGroupPath;
   public updateFlagAddTranslationTitle: CaseFlagWizardStepTitle;
   public errorMessages: ErrorMessage[] = [];
   public otherFlagDescriptionCharLimitErrorMessage: UpdateFlagAddTranslationErrorMessage = null;
@@ -29,12 +29,15 @@ export class UpdateFlagAddTranslationFormComponent implements OnInit {
   public updateFlagAddTranslationStepEnum = UpdateFlagAddTranslationStep;
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
+  private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
 
   public ngOnInit(): void {
     this.updateFlagAddTranslationTitle = CaseFlagWizardStepTitle.UPDATE_FLAG_ADD_TRANSLATION;
+    this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
     const flagDetail = this.selectedFlag?.flagDetailDisplay?.flagDetail;
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(flagDetail?.otherDescription));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH, new FormControl(flagDetail?.otherDescription_cy));
+    this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(flagDetail?.flagComment));
     this.formGroup.addControl(CaseFlagFormFields.COMMENTS_WELSH, new FormControl(flagDetail?.flagComment_cy));
   }
 

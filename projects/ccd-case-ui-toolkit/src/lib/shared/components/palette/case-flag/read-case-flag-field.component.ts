@@ -6,7 +6,7 @@ import { CaseFlagStateService } from '../../case-editor/services/case-flag-state
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagSummaryListDisplayMode } from './enums';
+import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
@@ -20,7 +20,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
-  public displayContextParameter = '';
+  public displayContextParameter: string;
 
   public pathToFlagsFormGroup: string;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
@@ -92,12 +92,16 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
               this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
           // TODO: not the best solution, the caseFlagStateService should have all the fields, then we can delete a lot of the transformations here
           // in Create Case Flag it already has all fields
-          this.flagForSummaryDisplay.flagDetail = {
+          const caseFlagFormGroupValue = this.caseFlagStateService.formGroup?.value;
+          if (caseFlagFormGroupValue) {
+            caseFlagFormGroupValue.status = CaseFlagStatus[caseFlagFormGroupValue.status];
+            this.flagForSummaryDisplay.flagDetail = {
               ...this.flagForSummaryDisplay.flagDetail,
-              ...this.caseFlagStateService.formGroup?.value
+              ...caseFlagFormGroupValue
             };
-            // Set the display mode for the "Review flag details" summary page
-            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+          }
+          // Set the display mode for the "Review flag details" summary page
+          this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
         }
       }
     }
@@ -124,11 +128,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public navigateBackToForm(fieldState: number): void {
-    this.router.navigate([`../${this.caseFlagStateService.pageLocation}`], {
-      relativeTo: this.route,
-      state: {
-        fieldState,
-      }
-    });
+    this.caseFlagStateService.fieldStateToNavigate = fieldState;
+    this.router.navigate([`../${this.caseFlagStateService.pageLocation}`], { relativeTo: this.route });
   }
 }

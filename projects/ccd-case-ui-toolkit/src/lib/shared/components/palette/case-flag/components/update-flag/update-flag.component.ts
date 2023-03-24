@@ -10,10 +10,10 @@ import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardS
 })
 export class UpdateFlagComponent implements OnInit {
   @Input() public formGroup: FormGroup;
-  @Input() public selectedFlag: FlagDetailDisplayWithFormGroupPath;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
+  public selectedFlag: FlagDetailDisplayWithFormGroupPath;
   public updateFlagTitle = '';
   public errorMessages: ErrorMessage[] = [];
   public updateFlagNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
@@ -25,10 +25,12 @@ export class UpdateFlagComponent implements OnInit {
   public readonly caseFlagStatusEnum = CaseFlagStatus;
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
+  private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
   private flagDetail: FlagDetail;
 
   public ngOnInit(): void {
-    if (this.selectedFlag && this.selectedFlag.flagDetailDisplay && this.selectedFlag.flagDetailDisplay.flagDetail) {
+    this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
+    if (this.selectedFlag?.flagDetailDisplay?.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
       const currentFlagStatusKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === this.flagDetail.status);
 

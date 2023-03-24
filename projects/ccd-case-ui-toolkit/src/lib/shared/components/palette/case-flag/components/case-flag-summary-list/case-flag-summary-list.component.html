@@ -6,8 +6,9 @@
     <dd class="govuk-summary-list__value">
       {{flagForSummaryDisplay.partyName || caseLevelLocation}}
     </dd>
-    <dd class="govuk-summary-list__actions" *ngIf="summaryListDisplayMode === displayMode.CREATE">
-      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_LOCATION)">
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : caseFlagFieldState.FLAG_LOCATION)">
         Change<span class="govuk-visually-hidden"> party name</span>
       </a>
     </dd>
@@ -19,26 +20,56 @@
     <dd class="govuk-summary-list__value">
       {{flagDescription}}
     </dd>
-    <dd class="govuk-summary-list__actions" *ngIf="summaryListDisplayMode === displayMode.CREATE">
-      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_TYPE)">
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : caseFlagFieldState.FLAG_TYPE)">
         Change<span class="govuk-visually-hidden"> description</span>
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="flagDescriptionWelsh?.length > 0">
+    <dt class="govuk-summary-list__key">
+      Other description (Welsh)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{flagDescriptionWelsh}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION : caseFlagFieldState.FLAG_TYPE)">
+        Change<span class="govuk-visually-hidden"> description (Welsh)</span>
+      </a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row" *ngIf="flagComments?.length > 0">
     <dt class="govuk-summary-list__key">
       Comments
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagComments}}
     </dd>
-    <dd class="govuk-summary-list__actions" *ngIf="summaryListDisplayMode === displayMode.CREATE">
-      <a class="govuk-link" href="javascript:void(0)" (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_COMMENTS)">
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE: caseFlagFieldState.FLAG_COMMENTS)">
         Change<span class="govuk-visually-hidden"> comments</span>
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="summaryListDisplayMode === displayMode.MANAGE">
+  <div class="govuk-summary-list__row" *ngIf="flagCommentsWelsh?.length > 0">
+    <dt class="govuk-summary-list__key">
+      Comments (Welsh)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{flagCommentsWelsh}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION: caseFlagFieldState.FLAG_COMMENTS)">
+        Change<span class="govuk-visually-hidden"> comments (Welsh)</span>
+      </a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row" *ngIf="this.summaryListDisplayMode === displayMode.MANAGE">
     <dt class="govuk-summary-list__key">
       Status
     </dt>
@@ -46,6 +77,10 @@
       {{flagStatus}}
     </dd>
     <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_UPDATE)">
+        Change<span class="govuk-visually-hidden"> status</span>
+      </a>
     </dd>
   </div>
 </dl>

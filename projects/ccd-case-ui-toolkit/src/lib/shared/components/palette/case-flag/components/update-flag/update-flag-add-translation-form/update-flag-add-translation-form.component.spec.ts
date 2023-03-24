@@ -50,7 +50,9 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagAddTranslationFormComponent);
     component = fixture.componentInstance;
-    component.formGroup = new FormGroup({});
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1)
+    });
     component.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(''));
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
