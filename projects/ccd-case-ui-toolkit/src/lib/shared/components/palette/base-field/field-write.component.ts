@@ -59,7 +59,6 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     }
     component.instance['isExpanded'] = this.isExpanded;
     component.instance['isInSearchBlock'] = this.isInSearchBlock;
-    console.log(component.instance);
     this.fieldContainer.insert(component.hostView);
 
     // EUI-3267.
