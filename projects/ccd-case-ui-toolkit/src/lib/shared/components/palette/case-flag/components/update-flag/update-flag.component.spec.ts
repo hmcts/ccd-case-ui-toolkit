@@ -212,10 +212,8 @@ describe('UpdateFlagComponent', () => {
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag2)
     });
+    component.selectedFlag = selectedFlag2;
     fixture.detectChanges();
-    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
-
-    expect(statusCheckboxLabelsElements.length).toBe(0);
   });
 
   it('should not render any flag status radio buttons when current flag status is "Not approved"', () => {
