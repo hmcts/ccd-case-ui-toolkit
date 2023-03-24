@@ -22,10 +22,6 @@ export abstract class PaymentField extends AbstractFieldReadComponent {
         return this.appConfig.getRefundsUrl();
     }
 
-    public getNotificationUrl() {
-        return this.appConfig.getNotificationUrl();
-    }
-
     public getUserRoles() {
         const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails') || null);
         if (!userDetails || !userDetails.hasOwnProperty('roles')) {
