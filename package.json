@@ -110,9 +110,9 @@
     "@storybook/testing-library": "^0.0.13",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
+    "@types/node": "^14.14.45",
     "@types/pegjs": "^0.10.0",
     "@types/underscore": "^1.11.4",
-    "@types/node": "^14.14.45",
     "@types/socket.io-client": "^3.0.0",
     "@types/webpack": "^4.41.25",
     "@types/webpack-env": "^1.16.0",
@@ -205,7 +205,6 @@
     "y18n": "^4.0.1",
     "prismjs": "1.24.1",
     "websocket-extensions": "0.1.4",
-    "**/**/socket.io": "^4.5.0",
     "ini": "^2.0.0",
     "browserslist": "^4.16.6",
     "mem": "^8.1.1",
@@ -221,5 +220,6 @@
     ],
     "sourceMap": false,
     "instrument": false
-  }
+  },
+  "packageManager": "yarn@3.4.1"
 }
