@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-case-flags-legal-rep-comments-page
+**EUI-7373** Reasonable Adjustments legal rep display and edit ‘Tell us why the support is no longer needed' screen
+
 ### Version 6.10.7-case-flags-legal-rep-review-details-page
 **EUI-7375** Reasonable adjustments legal rep display review flag details page
 

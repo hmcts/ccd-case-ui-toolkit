@@ -56,6 +56,7 @@
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_UPDATE">
       <ccd-update-flag [formGroup]="caseFlagParentFormGroup"
+        [displayContextParameter]="displayContextParameter"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-update-flag>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION">

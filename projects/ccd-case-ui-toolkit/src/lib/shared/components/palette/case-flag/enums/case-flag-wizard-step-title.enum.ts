@@ -9,6 +9,7 @@ export enum CaseFlagWizardStepTitle {
   MANAGE_CASE_FLAGS = 'Manage case flags',
   MANAGE_SUPPORT = 'Which support is no longer needed?',
   UPDATE_FLAG_TITLE = 'Update flag',
+  UPDATE_FLAG_TITLE_SUPPORT = 'Tell us why the support is no longer needed',
   UPDATE_FLAG_ADD_TRANSLATION = 'Add translations to flag',
   NONE = ''
 }

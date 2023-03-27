@@ -10,6 +10,7 @@ import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardS
 })
 export class UpdateFlagComponent implements OnInit {
   @Input() public formGroup: FormGroup;
+  @Input() public displayContextParameter: string;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -26,6 +27,8 @@ export class UpdateFlagComponent implements OnInit {
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
   private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
+  public readonly updateMode = '#ARGUMENT(UPDATE)';
+  private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   private flagDetail: FlagDetail;
 
   public ngOnInit(): void {
@@ -40,10 +43,7 @@ export class UpdateFlagComponent implements OnInit {
       this.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(''));
       this.formGroup.addControl(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED, new FormControl(false));
 
-      if (this.flagDetail.name) {
-        this.updateFlagTitle =
-          `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${this.flagDetail.name}${this.flagDetail.subTypeValue ? `, ${this.flagDetail.subTypeValue}"` : '"'}`;
-      }
+      this.updateFlagTitle = this.setUpdateCaseFlagTitle(this.flagDetail);
 
       // Set the valid status options for display, based on current status of the selected flag. "Active" flags can
       // remain "Active" or move to "Inactive" only; "Requested" flags can remain "Requested" or move to "Active",
@@ -60,6 +60,20 @@ export class UpdateFlagComponent implements OnInit {
             this.validStatusProgressions = [];
         }
       }
+    }
+  }
+
+  public setUpdateCaseFlagTitle(flagDetail: FlagDetail): string {
+    switch (this.displayContextParameter) {
+      case this.updateMode:
+        if (flagDetail?.name) {
+          return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}"` : '"'}`;
+        }
+        return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE}`;
+      case this.updateExternalMode:
+        return CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_SUPPORT;
+      default:
+        return CaseFlagWizardStepTitle.NONE;
     }
   }
 
