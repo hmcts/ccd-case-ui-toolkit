@@ -2,7 +2,9 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angula
 import { ActivatedRoute } from '@angular/router';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { CaseField } from '../../../domain';
 import { CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
+import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
 
 @Component({
@@ -18,13 +20,14 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public getCategoriesAndDocumentsError = false;
   public currentDocument: { document_binary_url: string, document_filename: string, content_type: string } | undefined;
   private caseVersion: number;
+  public caseField: CaseField;
 
   constructor(private readonly elementRef: ElementRef,
-    protected readonly route: ActivatedRoute,
+    private readonly route: ActivatedRoute,
     private caseFileViewService: CaseFileViewService,
     private documentManagementService: DocumentManagementService,
     private readonly loadingService: LoadingService,
-    protected readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService
   ) { }
 
   public ngOnInit(): void {
@@ -36,6 +39,13 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
       },
       error: _ => this.getCategoriesAndDocumentsError = true
     });
+
+    // EXUI-8000
+    const userInfo: UserInfo = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    // Get acls that intersects from acl roles and user roles
+    const acls = this.caseField.acls.filter(acl => userInfo.roles.includes(acl.role));
+    // As there can be more than one intersecting role, if any acls are update: true
+    this.allowMoving = acls.some(acl => acl.update);
   }
 
   public ngAfterViewInit(): void {

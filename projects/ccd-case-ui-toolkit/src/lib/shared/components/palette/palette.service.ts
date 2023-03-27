@@ -2,7 +2,6 @@ import { Injectable, Type } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { DisplayContextCustomParameter, DisplayContextParameter } from '../../domain/definition/display-context-enum.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
-import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
@@ -56,7 +55,7 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 @Injectable()
 export class PaletteService {
   private readonly componentLauncherRegistry = {
-    [DisplayContextCustomParameter.CaseFileView]: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent],
+    [DisplayContextCustomParameter.CaseFileView]: [CaseFileViewFieldComponent, CaseFileViewFieldComponent],
     [DisplayContextCustomParameter.LinkedCases]: [WriteLinkedCasesFieldComponent, ReadLinkedCasesFieldComponent]
   };
 

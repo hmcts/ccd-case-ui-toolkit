@@ -1,6 +1,6 @@
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
-import { CaseFileViewFieldComponent, CaseFileViewFieldReadComponent } from './case-file-view';
+import { CaseFileViewFieldComponent } from './case-file-view';
 import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -246,7 +246,7 @@ describe('PaletteService', () => {
       caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
       caseField.display_context_parameter = '#ARGUMENT(CaseFileView)';
       expect(paletteService.getFieldComponentClass(caseField, true)).toBe(CaseFileViewFieldComponent);
-      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(CaseFileViewFieldReadComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(CaseFileViewFieldComponent);
     });
 
     it('should get LinkedCasesFieldComponent component class for ComponentLauncher field with argument of "LinkedCases"', () => {
