@@ -364,6 +364,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   } as FlagsWithFormGroupPath;
   const createMode = '#ARGUMENT(CREATE)';
   const updateMode = '#ARGUMENT(UPDATE)';
+  const updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
 
   beforeEach(waitForAsync(() => {
@@ -544,6 +545,29 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: updateMode
+    };
+    component.formGroup = formGroup;
+    // Simulate presence of selected flag
+    formGroup.controls[flagLauncher1CaseField.id]['component'].selectedFlag = {
+      flagDetailDisplay: {
+        partyName: caseFlag2PartyName,
+        flagDetail: caseFlag2DetailsValue1,
+        flagsCaseFieldId: caseFlag2FieldId
+      } as FlagDetailDisplay
+    };
+    component.ngOnInit();
+    expect(component.flagForSummaryDisplay).toBeTruthy();
+    expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual(caseFlag2DetailsValue1 as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagsCaseFieldId).toEqual(caseFlag2FieldId);
+    // Check the correct display mode for the "Review flag details" summary page has been set
+    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.MANAGE);
+  });
+
+  it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage support journey for Legal Ops', () => {
+    component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
+      display_context_parameter: updateExternalMode
     };
     component.formGroup = formGroup;
     // Simulate presence of selected flag

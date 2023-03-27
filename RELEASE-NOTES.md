@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-case-flags-legal-rep-review-details-page
+**EUI-7375** Reasonable adjustments legal rep display review flag details page
+
 ### Version 6.10.7-case-flags-review-details-page-v4
 **EUI-7351** Reasonable adjustments display review flag details page
 

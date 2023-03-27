@@ -64,7 +64,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.fieldState = this.caseFlagStateService.fieldStateToNavigate;
     if (this.fieldState === undefined ||
         this.fieldState === CaseFlagFieldState.FLAG_LOCATION ||
-        this.fieldState === CaseFlagFieldState.FLAG_TYPE ||
         this.fieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS) {
       const params = this.route.snapshot.params;
       // Clear the form group, field state to navigate and set the page location
