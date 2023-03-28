@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -10,7 +9,7 @@ import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { PaletteContext } from '../base-field';
 import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
+import { CaseFlagFieldState, CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
@@ -347,8 +346,7 @@ describe('ReadCaseFlagFieldComponent', () => {
       [flagLauncher1CaseField.id]: {
         controls: {},
         caseField: flagLauncher1CaseField,
-        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), { getState: () => {} } as Location,
-        new CaseFlagStateService(), null)
+        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), new CaseFlagStateService(), null)
       }
     },
     get: (controlName: string) => {
@@ -367,12 +365,14 @@ describe('ReadCaseFlagFieldComponent', () => {
   } as FlagsWithFormGroupPath;
   const createMode = '#ARGUMENT(CREATE)';
   const updateMode = '#ARGUMENT(UPDATE)';
+  const updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
 
   beforeEach(waitForAsync(() => {
     caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
-    caseFlagStateServiceSpy.formGroup = new FormGroup({});
+    caseFlagStateServiceSpy.formGroup = formGroup;
     caseFlagStateServiceSpy.pageLocation = '../createCaseFlag/createCaseFlagCaseFlagFormPage';
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
 
     TestBed.configureTestingModule({
       imports: [ RouterTestingModule ],
@@ -565,6 +565,29 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.MANAGE);
   });
 
+  it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage support journey for Legal Ops', () => {
+    component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
+      display_context_parameter: updateExternalMode
+    };
+    component.formGroup = formGroup;
+    // Simulate presence of selected flag
+    formGroup.controls[flagLauncher1CaseField.id]['component'].selectedFlag = {
+      flagDetailDisplay: {
+        partyName: caseFlag2PartyName,
+        flagDetail: caseFlag2DetailsValue1,
+        flagsCaseFieldId: caseFlag2FieldId
+      } as FlagDetailDisplay
+    };
+    component.ngOnInit();
+    expect(component.flagForSummaryDisplay).toBeTruthy();
+    expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual(caseFlag2DetailsValue1 as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagsCaseFieldId).toEqual(caseFlag2FieldId);
+    // Check the correct display mode for the "Review flag details" summary page has been set
+    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.MANAGE);
+  });
+
   it('should navigate back to form with field state', fakeAsync(() => {
     spyOn(router, 'navigate').and.callThrough();
 
@@ -573,9 +596,6 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.navigateBackToForm(fieldState);
     tick();
 
-    expect(router.navigate).toHaveBeenCalledWith([`../${caseFlagStateServiceSpy.pageLocation}`], {
-      relativeTo: route,
-      state: {fieldState}
-    });
+    expect(router.navigate).toHaveBeenCalledWith([`../${caseFlagStateServiceSpy.pageLocation}`], { relativeTo: route });
   }));
 });

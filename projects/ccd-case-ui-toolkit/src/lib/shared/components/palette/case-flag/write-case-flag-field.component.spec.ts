@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -220,15 +219,13 @@ describe('WriteCaseFlagFieldComponent', () => {
   const createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
 
   let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
-  let locationSpy: jasmine.SpyObj<Location>;
   let caseEditDataServiceSpy: jasmine.SpyObj<CaseEditDataService>;
   let rpxTranslationServiceSpy: jasmine.SpyObj<RpxTranslationService>;
 
   beforeEach(waitForAsync(() => {
     caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
     caseFlagStateServiceSpy.formGroup = new FormGroup({});
-
-    locationSpy = jasmine.createSpyObj('Location', ['getState']);
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_COMMENTS;
     caseEditDataServiceSpy = jasmine.createSpyObj('CaseEditDataService', ['clearFormValidationErrors', 'setTriggerSubmitEvent']);
     rpxTranslationServiceSpy = jasmine.createSpyObj('RpxTranslationService', ['']);
     rpxTranslationServiceSpy.language = 'en';
@@ -356,7 +353,6 @@ describe('WriteCaseFlagFieldComponent', () => {
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseEditDataService, useValue: caseEditDataServiceSpy },
-        { provide: Location, useValue: locationSpy },
         { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy },
         { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
       ]
@@ -381,6 +377,9 @@ describe('WriteCaseFlagFieldComponent', () => {
   });
 
   it('should have created a FormGroup with a validator, and set the correct Case Flag field starting state', () => {
+    component.displayContextParameter = updateMode;
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_LOCATION;
+    component.ngOnInit();
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
     if (!component.isDisplayContextParameterUpdate) {
@@ -439,6 +438,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     // Spy on setDisplayContextParameterUpdate() function and return true (cannot alter display_context_parameter for the
     // flagLauncherCaseField in case_fields of the mock route because this is locked down by compileComponents())
     component.setDisplayContextParameterUpdate = createSpy().and.returnValue(true);
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
     component.ngOnInit();
     expect(component.setDisplayContextParameterUpdate).toHaveBeenCalled();
     expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS);
@@ -1030,14 +1030,40 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(newFlagDetailInstance3.subTypeValue).toBeNull();
   });
 
-  it('should call resetCache on caseFlagStateService when location.getState() returns undefined or below 0', () => {
-    locationSpy.getState.and.returnValue(undefined);
+  it('should call resetCache on caseFlagStateService only for specific field states and for undefined', () => {
+    caseFlagStateServiceSpy.fieldStateToNavigate = undefined;
     component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
 
-    locationSpy.getState.and.returnValue(-1);
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_LOCATION;
     component.ngOnInit();
     expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
+
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalled();
+  });
+
+  it('should not call resetCache on caseFlagStateService for other states', () => {
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_TYPE;
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
+
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_COMMENTS;
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
+
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_STATUS;
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
+
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_UPDATE;
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
+
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION;
+    component.ngOnInit();
+    expect(caseFlagStateServiceSpy.resetCache).toHaveBeenCalledTimes(0);
   });
 
   it('should assign the form group from the case flag state service', () => {
@@ -1045,11 +1071,11 @@ describe('WriteCaseFlagFieldComponent', () => {
   });
 
   it('should set the proper location based off the location state\'s fieldState property', () => {
-    locationSpy.getState.and.returnValue({fieldState: CaseFlagFieldState.FLAG_LOCATION});
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_LOCATION;
     component.ngOnInit();
     expect(component.fieldState).toEqual(CaseFlagFieldState.FLAG_LOCATION);
 
-    locationSpy.getState.and.returnValue({fieldState: CaseFlagFieldState.FLAG_TYPE});
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_TYPE;
     component.ngOnInit();
     expect(component.fieldState).toEqual(CaseFlagFieldState.FLAG_TYPE);
   });

@@ -2,6 +2,12 @@
 ### Version 6.10.7-case-flags-welsh-language-support
 **EUI-7858** Ensure support for Welsh language toggle by storing flag description and comments entries in correct `_cy` fields, and displaying flag comments according to language selection
 
+### Version 6.10.7-case-flags-legal-rep-review-details-page
+**EUI-7375** Reasonable adjustments legal rep display review flag details page
+
+### Version 6.10.7-case-flags-review-details-page-v4
+**EUI-7351** Reasonable adjustments display review flag details page
+
 ### Version 6.10.7-manage-case-flags-valid-status-progression
 **EUI-7929** Set the valid flag status options available on the "Update flag" page, based on the current status of the selected flag
 

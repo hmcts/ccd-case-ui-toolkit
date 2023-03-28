@@ -1,48 +1,46 @@
-<ng-container [ngSwitch]="context">
-  <ng-container *ngSwitchCase="paletteContext.CHECK_YOUR_ANSWER">
-    <ccd-case-flag-summary-list
-      [flagForSummaryDisplay]="flagForSummaryDisplay"
-      [summaryListDisplayMode]="summaryListDisplayMode"
-      (changeButtonEmitter)="navigateBackToForm($event)">
-    </ccd-case-flag-summary-list>
-  </ng-container>
+<ng-container *ngIf="context === paletteContext.CHECK_YOUR_ANSWER">
+  <ccd-case-flag-summary-list
+    [flagForSummaryDisplay]="flagForSummaryDisplay"
+    [summaryListDisplayMode]="summaryListDisplayMode"
+    (changeButtonEmitter)="navigateBackToForm($event)">
+  </ccd-case-flag-summary-list>
+</ng-container>
 
-  <ng-container>
-    <ng-container [ngSwitch]="displayContextParameter">
-      <ng-container *ngSwitchCase="readSupportMode">
-        <h2 id="read-case-flag-title" class="govuk-heading-l">
-          {{ 'Support requested' | rpxTranslate }}
-        </h2>
+<ng-container *ngIf="context !== paletteContext.CHECK_YOUR_ANSWER">
+  <ng-container [ngSwitch]="displayContextParameter">
+    <ng-container *ngSwitchCase="readSupportMode">
+      <h2 id="read-case-flag-title" class="govuk-heading-l">
+        {{ 'Support requested' | rpxTranslate }}
+      </h2>
 
-        <div *ngFor="let flagData of partyLevelCaseFlagData">
-          <ccd-case-flag-table *ngIf="flagData.flags.partyName"
-                               [tableCaption]="''"
-                               [flagData]="flagData"
-                               [firstColumnHeader]="flagData.flags.partyName"
-          ></ccd-case-flag-table>
-        </div>
-      </ng-container>
+      <div *ngFor="let flagData of partyLevelCaseFlagData">
+        <ccd-case-flag-table *ngIf="flagData.flags.partyName"
+                              [tableCaption]="''"
+                              [flagData]="flagData"
+                              [firstColumnHeader]="flagData.flags.partyName"
+        ></ccd-case-flag-table>
+      </div>
+    </ng-container>
 
-      <ng-container *ngSwitchDefault>
-        <h2 id="read-case-flag-title" class="govuk-heading-l">
-          {{ 'Case flags' | rpxTranslate }}
-        </h2>
+    <ng-container *ngSwitchDefault>
+      <h2 id="read-case-flag-title" class="govuk-heading-l">
+        {{ 'Case flags' | rpxTranslate }}
+      </h2>
 
-        <div *ngFor="let flagData of partyLevelCaseFlagData">
-          <ccd-case-flag-table *ngIf="flagData.flags.partyName"
-                               [tableCaption]="flagData.flags.partyName"
-                               [flagData]="flagData"
-                               [firstColumnHeader]="'Party level flags' | rpxTranslate"
-          ></ccd-case-flag-table>
-        </div>
-        <div *ngIf="caseLevelCaseFlagData">
-          <ccd-case-flag-table
-            [tableCaption]="'Case level flags' | rpxTranslate"
-            [flagData]="caseLevelCaseFlagData"
-            [firstColumnHeader]="'Case flags' | rpxTranslate"
-          ></ccd-case-flag-table>
-        </div>
-      </ng-container>
+      <div *ngFor="let flagData of partyLevelCaseFlagData">
+        <ccd-case-flag-table *ngIf="flagData.flags.partyName"
+                              [tableCaption]="flagData.flags.partyName"
+                              [flagData]="flagData"
+                              [firstColumnHeader]="'Party level flags' | rpxTranslate"
+        ></ccd-case-flag-table>
+      </div>
+      <div *ngIf="caseLevelCaseFlagData">
+        <ccd-case-flag-table
+          [tableCaption]="'Case level flags' | rpxTranslate"
+          [flagData]="caseLevelCaseFlagData"
+          [firstColumnHeader]="'Case flags' | rpxTranslate"
+        ></ccd-case-flag-table>
+      </div>
     </ng-container>
   </ng-container>
 </ng-container>

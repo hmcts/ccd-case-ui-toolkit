@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -43,6 +42,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   private readonly createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
+  private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
   public readonly caseNameMissing = 'Case name missing';
 
   public get flagType(): FlagType | null {
@@ -56,7 +56,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   constructor(
     private readonly route: ActivatedRoute,
     private readonly caseEditDataService: CaseEditDataService,
-    private readonly location: Location,
     private readonly caseFlagStateService: CaseFlagStateService,
     private readonly rpxTranslationService: RpxTranslationService
   ) {
@@ -64,12 +63,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public ngOnInit(): void {
-    if (!(this.location.getState()?.['fieldState'] >= 0)) {
+    // If it is start of the journey or navigation from check your answers page then fieldStateToNavigate property
+    // in case flag state service will contain the field state to navigate based on create or manage journey
+    this.fieldState = this.caseFlagStateService.fieldStateToNavigate;
+    if (this.fieldState === undefined ||
+        this.fieldState === CaseFlagFieldState.FLAG_LOCATION ||
+        this.fieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS) {
       const params = this.route.snapshot.params;
+      // Clear the form group, field state to navigate and set the page location
       this.caseFlagStateService.resetCache(`../${params['eid']}/${params['page']}`);
     }
+    // Reassign the form group from the case flag state service
     this.caseFlagParentFormGroup = this.caseFlagStateService.formGroup;
-
+    // Clear form validation errors as a new page will be rendered based on field state
     this.caseEditDataService.clearFormValidationErrors();
     // Check for existing FlagLauncher control in parent and remove it - this is the only way to ensure its invalidity
     // is set correctly at the start, when the component is reloaded and the control is re-registered. Otherwise, the
@@ -123,10 +129,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         this.isDisplayContextParameterExternal = this.setDisplayContextParameterExternal(this.displayContextParameter);
 
         // Set starting field state if fieldState not the right value
-        if (!(this.location.getState()?.['fieldState'] >= 0)) {
+        if (!this.fieldState) {
           this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
-        } else {
-          this.fieldState = this.location.getState()['fieldState'];
         }
 
         // Set Create Case Flag component title caption text (appearing above child component <h1> title)
@@ -268,7 +272,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
           }
         });
       }
-      if (value && value.details && value.details.length > 0 && formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
+      if (value?.details?.length > 0 && formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
         value.details.forEach(flagDetail => {
           const originalFlagDetail = formattedValue.details.find(detail => detail.id === flagDetail.id);
           if (originalFlagDetail) {
@@ -295,6 +299,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         });
       }
     });
+    if (!this.selectedFlag) {
+      this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
+    }
     let flagsCaseFieldValue = this.selectedFlag.caseField.value;
     // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
     // CaseField value to apply changes to

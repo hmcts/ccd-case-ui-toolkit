@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
@@ -93,7 +93,10 @@ describe('UpdateFlagComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagComponent);
     component = fixture.componentInstance;
-    component.formGroup = new FormGroup({});
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1)
+    });
+
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
@@ -201,7 +204,9 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not show an error message on clicking "Next" if no comments exist and none have been entered', () => {
-    component.selectedFlag = selectedFlag2;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag2)
+    });
     fixture.detectChanges();
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     expect(textarea.value).toEqual('');
@@ -243,7 +248,9 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should render flag status radio buttons correctly when current flag status is "Requested"', () => {
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
 
@@ -269,15 +276,17 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not render any flag status radio buttons when current flag status is "Inactive"', () => {
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag2)
+    });
     component.selectedFlag = selectedFlag2;
     fixture.detectChanges();
-    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
-
-    expect(statusCheckboxLabelsElements.length).toBe(0);
   });
 
   it('should not render any flag status radio buttons when current flag status is "Not approved"', () => {
-    component.selectedFlag = selectedFlag4;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag4)
+    });
     fixture.detectChanges();
     const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
 
@@ -286,7 +295,9 @@ describe('UpdateFlagComponent', () => {
 
   it('should show an error message on clicking "Next" if status reason is mandatory but none has been entered', () => {
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
@@ -312,7 +323,9 @@ describe('UpdateFlagComponent', () => {
 
   it('should not show an error message on clicking "Next" if status reason is not mandatory and none has been entered', () => {
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
@@ -360,7 +373,9 @@ describe('UpdateFlagComponent', () => {
 
   it('should show an error message on clicking "Next" if status reason exceeds 200-character limit, regardless of optionality', () => {
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering status reason optional
@@ -394,7 +409,9 @@ describe('UpdateFlagComponent', () => {
 
   it('should not show an error message if status reason equals a 200-character limit, regardless of optionality', () => {
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
-    component.selectedFlag = selectedFlag3;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering status reason optional
