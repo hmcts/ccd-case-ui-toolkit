@@ -77,6 +77,7 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -134,6 +135,8 @@ const PALETTE_COMPONENTS = [
   WriteDocumentFieldComponent,
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
+  WriteDynamicMultiSelectListFieldComponent,
+  ReadDynamicMultiSelectListFieldComponent,
   WriteTextFieldComponent,
   WriteDateContainerFieldComponent,
   WriteTextAreaFieldComponent,
@@ -164,6 +167,13 @@ const PALETTE_COMPONENTS = [
   CaseFileViewOverlayMenuComponent,
   CaseFileViewFolderDocumentActionsComponent,
   CaseFileViewFolderSelectorComponent,
+  // component for dynamic list
+  WriteDynamicMultiSelectListFieldComponent,
+  WriteDynamicRadioListFieldComponent,
+  WriteDynamicListFieldComponent,
+  ReadDynamicMultiSelectListFieldComponent,
+  ReadDynamicListFieldComponent,
+  ReadDynamicRadioListFieldComponent,
   LinkedCasesToTableComponent,
   LinkedCasesFromTableComponent,
   BeforeYouStartComponent,
