@@ -365,32 +365,39 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.selectedFlagType).toBeNull();
   });
 
-  it('should retrieve the list of flag types for the specified case type ID', () => {
+  it('should retrieve the list of flag types for the specified HMCTS Service ID', () => {
     // Need to reset caseFlagRefdataService spy object method call because component.hmctsServiceId is undefined on the
     // first call of ngOnInit() triggered by fixture.detectChanges() - this means getHmctsServiceDetailsByCaseType() gets
     // called even though it's not expected to be
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.calls.reset();
+    caseFlagRefdataService.getCaseFlagsRefdata.calls.reset();
     component.hmctsServiceId = 'ABC1';
     component.ngOnInit();
-    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith('ABC1', RefdataCaseFlagType.PARTY);
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith('ABC1', RefdataCaseFlagType.PARTY, false,
+      component.isDisplayContextParameterExternal);
     expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).not.toHaveBeenCalled();
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
   });
 
   it('should retrieve the list of flag types for the specified case type ID', () => {
+    caseFlagRefdataService.getCaseFlagsRefdata.calls.reset();
     component.ngOnInit();
     expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith(caseTypeId);
     expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).not.toHaveBeenCalled();
-    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code,
+      RefdataCaseFlagType.PARTY, false, component.isDisplayContextParameterExternal);
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
   });
 
   it('should retrieve the list of flag types for the specified jurisdiction if lookup by case type ID failed', () => {
+    caseFlagRefdataService.getHmctsServiceDetailsByCaseType.calls.reset();
+    caseFlagRefdataService.getCaseFlagsRefdata.calls.reset();
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(throwError(new Error('Unknown case type ID')));
     component.ngOnInit();
     expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith(caseTypeId);
     expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).toHaveBeenCalledWith(sscsJurisdiction);
-    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY, false, component.isDisplayContextParameterExternal);
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code,
+      RefdataCaseFlagType.PARTY, false, component.isDisplayContextParameterExternal);
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
   });
 

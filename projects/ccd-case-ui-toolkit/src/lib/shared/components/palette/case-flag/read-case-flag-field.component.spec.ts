@@ -6,13 +6,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField } from '../../../domain/definition';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { PaletteContext } from '../base-field';
 import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
-import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 
 describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;
@@ -347,7 +347,8 @@ describe('ReadCaseFlagFieldComponent', () => {
       [flagLauncher1CaseField.id]: {
         controls: {},
         caseField: flagLauncher1CaseField,
-        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), { getState: () => {} } as Location, new CaseFlagStateService() )
+        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), { getState: () => {} } as Location,
+        new CaseFlagStateService(), null)
       }
     },
     get: (controlName: string) => {

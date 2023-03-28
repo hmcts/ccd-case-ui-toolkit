@@ -93,7 +93,8 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     // If hmctsServiceId is present, use this to retrieve the relevant list of flag types
     if (this.hmctsServiceId) {
-      this.flagRefdata$ = this.caseFlagRefdataService.getCaseFlagsRefdata(this.hmctsServiceId, flagType)
+      this.flagRefdata$ = this.caseFlagRefdataService
+        .getCaseFlagsRefdata(this.hmctsServiceId, flagType, false, this.isDisplayContextParameterExternal)
         .subscribe({
           next: flagTypes => {
             // First (and only) object in the returned array should be the top-level "Party" flag type
@@ -120,7 +121,8 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
           catchError(_ => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
           // Use switchMap to return an inner Observable of the flag types data, having received the service details
           // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
-          switchMap(serviceDetails => this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType))
+          switchMap(serviceDetails => this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType,
+            false, this.isDisplayContextParameterExternal))
         )
         .subscribe({
           next: flagTypes => {

@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField, ErrorMessage } from '../../../domain';
@@ -56,7 +57,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     private readonly route: ActivatedRoute,
     private readonly caseEditDataService: CaseEditDataService,
     private readonly location: Location,
-    private readonly caseFlagStateService: CaseFlagStateService
+    private readonly caseFlagStateService: CaseFlagStateService,
+    private readonly rpxTranslationService: RpxTranslationService
   ) {
     super();
   }
@@ -282,6 +284,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
             flagDetail.value.flagComment_cy = originalFlagDetail.value.flagComment_cy
               ? originalFlagDetail.value.flagComment_cy
               : null;
+            flagDetail.value.flagUpdateComment = originalFlagDetail.value.flagUpdateComment
+              ? originalFlagDetail.value.flagUpdateComment
+              : null;
             flagDetail.value.status = originalFlagDetail.value.status;
             flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified
               ? originalFlagDetail.value.dateTimeModified
@@ -309,8 +314,20 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         flagDetailToUpdate.value.otherDescription_cy = flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode
           ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)?.value
           : null,
-        flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value;
-        flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value;
+        // Ensure that any comments entered with language set to Welsh do not end up in the English comments field
+        flagDetailToUpdate.value.flagComment = this.rpxTranslationService.language !== 'cy'
+          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
+          : null,
+        // Populate from the *English* comments field if:
+        // * The Welsh comments field has no value (Welsh comments field acquires a value only when an HMCTS internal user has
+        // gone through the "add translation" step for Manage Case Flags), AND
+        // * The language is set to Welsh
+        flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
+          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
+          : this.rpxTranslationService.language === 'cy'
+            ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
+            : null,
+        flagDetailToUpdate.value.flagUpdateComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value;
         flagDetailToUpdate.value.status = CaseFlagStatus[this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS)?.value];
         flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
       }
@@ -353,10 +370,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         ? formValues?.languageSearchTerm.key
         : null,
       otherDescription: formValues?.flagType?.flagCode === this.otherFlagTypeCode &&
-        formValues?.otherDescription
+        formValues?.otherDescription && this.rpxTranslationService.language === 'en'
         ? formValues?.otherDescription
         : null,
-      flagComment: formValues?.flagComments,
+      otherDescription_cy: formValues?.flagType?.flagCode === this.otherFlagTypeCode &&
+        formValues?.otherDescription && this.rpxTranslationService.language === 'cy'
+        ? formValues?.otherDescription
+        : null,
+      flagComment: this.rpxTranslationService.language === 'en'
+        ? formValues?.flagComments
+        : null,
+      flagComment_cy: this.rpxTranslationService.language === 'cy'
+        ? formValues?.flagComments
+        : null,
       flagUpdateComment: formValues?.statusReason,
       dateTimeCreated: new Date().toISOString(),
       path: formValues?.flagType?.Path &&

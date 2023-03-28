@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
@@ -27,13 +28,25 @@ export class UpdateFlagComponent implements OnInit {
   private readonly textMaxCharLimit = 200;
   private flagDetail: FlagDetail;
 
+  constructor(private readonly rpxTranslationService: RpxTranslationService) { }
+
   public ngOnInit(): void {
     if (this.selectedFlag && this.selectedFlag.flagDetailDisplay && this.selectedFlag.flagDetailDisplay.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
       const currentFlagStatusKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === this.flagDetail.status);
 
       // Populate flag comments text area with existing comments
-      this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(this.flagDetail.flagComment));
+      let existingComments: string;
+      if (this.rpxTranslationService.language === 'cy') {
+        existingComments = this.flagDetail.flagComment_cy
+          ? this.flagDetail.flagComment_cy
+          : this.flagDetail.flagComment;
+      } else {
+        existingComments = this.flagDetail.flagComment
+          ? this.flagDetail.flagComment
+          : this.flagDetail.flagComment_cy;
+      }
+      this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(existingComments));
       this.formGroup.addControl(CaseFlagFormFields.STATUS, new FormControl(currentFlagStatusKey));
       this.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(''));
       this.formGroup.addControl(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED, new FormControl(false));
@@ -85,7 +98,7 @@ export class UpdateFlagComponent implements OnInit {
     // Validation should fail if the flag has an existing comment and it has been deleted on screen; conversely, if there
     // is no existing comment then one is not required for validation to pass
     const comment = this.formGroup.get(CaseFlagFormFields.COMMENTS).value;
-    if (!comment && this.flagDetail.flagComment) {
+    if (!comment && (this.flagDetail.flagComment || this.flagDetail.flagComment_cy)) {
       this.updateFlagNotEnteredErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
