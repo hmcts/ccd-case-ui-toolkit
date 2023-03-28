@@ -4,7 +4,6 @@ import { ShowCondition } from '../../conditional-show/domain/conditional-show.mo
 import peg from './condition.peg';
 
 export class ConditionParser {
-
   /**
    * Parse the raw formula and output structured condition data
    * that can be used in evaluating show/hide logic
@@ -146,7 +145,8 @@ export class ConditionParser {
   }
 
   private static unquoted(str: string): string {
-    return str.replace(/^"|"$/g, '');
+    const res = str.replace(/^"|"$/g, '');
+    return res;
   }
 
   private static findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {
