@@ -42,6 +42,7 @@ import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-sum
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
+import { WriteDynamicMultiSelectListFieldComponent, ReadDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
 import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
@@ -86,6 +87,8 @@ export class PaletteService {
         return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
       case 'DynamicRadioList':
         return write ? WriteDynamicRadioListFieldComponent : ReadDynamicRadioListFieldComponent;
+      case 'DynamicMultiSelectList':
+          return write ? WriteDynamicMultiSelectListFieldComponent : ReadDynamicMultiSelectListFieldComponent;
       case 'FixedRadioList':
         return write ? WriteFixedRadioListFieldComponent : ReadFixedRadioListFieldComponent;
       case 'Complex':
