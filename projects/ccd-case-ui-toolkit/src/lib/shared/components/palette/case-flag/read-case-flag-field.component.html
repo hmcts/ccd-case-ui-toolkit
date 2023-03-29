@@ -1,7 +1,7 @@
 <ng-container *ngIf="context === paletteContext.CHECK_YOUR_ANSWER">
   <ccd-case-flag-summary-list
     [flagForSummaryDisplay]="flagForSummaryDisplay"
-    [summaryListDisplayMode]="summaryListDisplayMode"
+    [displayContextParameter]="displayContextParameter"
     (changeButtonEmitter)="navigateBackToForm($event)">
   </ccd-case-flag-summary-list>
 </ng-container>
