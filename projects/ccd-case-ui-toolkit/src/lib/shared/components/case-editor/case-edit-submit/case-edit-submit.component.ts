@@ -47,6 +47,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public eventCompletionChecksRequired = false;
   public caseFlagField: CaseField;
   public pageTitle: string;
+  public isLinkedCasesSubmission = false;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -102,6 +103,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       this.caseFlagField?.display_context_parameter === '#ARGUMENT(CREATE,EXTERNAL)';
     this.pageTitle = this.caseFlagField ? (isCaseFlagExternalMode ? CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST : CaseEditSubmitTitles.REVIEW_FLAG_DETAILS)
       : CaseEditSubmitTitles.CHECK_YOUR_ANSWERS;
+    this.isLinkedCasesSubmission = this.eventTrigger.case_fields.some(
+      caseField => FieldsUtils.isComponentLauncherCaseField(caseField));
   }
 
   public ngOnDestroy(): void {
@@ -166,6 +169,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     if (this.caseFlagField) {
       this.formValueService.populateFlagDetailsFromCaseFields(caseEventData.data, this.eventTrigger.case_fields);
       this.formValueService.removeFlagLauncherField(caseEventData.data, this.eventTrigger.case_fields);
+    }
+    if (this.isLinkedCasesSubmission) {
+      this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, this.eventTrigger.case_fields);
+      this.formValueService.removeComponentLauncherField(caseEventData.data, this.eventTrigger.case_fields);
     }
     caseEventData.event_token = this.eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;

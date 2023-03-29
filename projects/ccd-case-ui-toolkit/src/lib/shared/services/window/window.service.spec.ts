@@ -29,12 +29,32 @@ describe('WindowService', () => {
     expect(windowService.removeLocalStorage('user')).toBeUndefined();
   });
   it('should get from session storage', () => {
-    windowService.setLocalStorage('organisationDetails', userName);
-    expect(windowService.getLocalStorage('organisationDetails')).toBe(userName);
-  })
+    spyOn(window.sessionStorage, 'getItem');
+    windowService.getSessionStorage('organisationDetails');
+    expect(window.sessionStorage.getItem).toHaveBeenCalled();
+  });
+
+  it('should set from session storage', () => {
+    spyOn(window.sessionStorage, 'setItem');
+    windowService.setSessionStorage('organisationDetails', userName);
+    expect(window.sessionStorage.setItem).toHaveBeenCalled();
+  });
+
+  it('should open on new tab', () => {
+    spyOn(window, 'open');
+    windowService.openOnNewTab('organisationDetails');
+    expect(window.open).toHaveBeenCalled();
+  });
+
+  it('should open on confirm message', () => {
+    spyOn(window, 'confirm');
+    windowService.confirm('organisationDetails');
+    expect(window.confirm).toHaveBeenCalled();
+  });
+
   it('should trigger alert', () => {
-    spyOn(windowService, 'alert');
+    spyOn(window, 'alert');
     windowService.alert('test');
-    expect(windowService.alert).toHaveBeenCalled();
-  })
+    expect(window.alert).toHaveBeenCalled();
+  });
 });

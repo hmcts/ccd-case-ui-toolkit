@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
@@ -11,9 +12,11 @@ describe('UpdateFlagComponent', () => {
   let fixture: ComponentFixture<UpdateFlagComponent>;
   let nextButton: HTMLElement;
   let textareaInput: string;
+  let rpxTranslationServiceSpy: jasmine.SpyObj<RpxTranslationService>;
   const activeFlag = {
     name: 'Flag 1',
     flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
     path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
@@ -74,10 +77,15 @@ describe('UpdateFlagComponent', () => {
   } as FlagDetailDisplayWithFormGroupPath;
 
   beforeEach(waitForAsync(() => {
+    rpxTranslationServiceSpy = jasmine.createSpyObj('RpxTranslationService', ['']);
+    rpxTranslationServiceSpy.language = 'en';
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [UpdateFlagComponent]
+      declarations: [UpdateFlagComponent],
+      providers: [
+        { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
+      ]
     })
     .compileComponents();
   }));
@@ -102,7 +110,36 @@ describe('UpdateFlagComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should populate the flag comments textarea with existing comments', () => {
+  it('should populate the flag comments textarea from English comments field when selected language is English (default)', () => {
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    // Check the textarea value property, rather than textContent, because this input element has no child nodes
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    expect(textarea.value).toEqual(activeFlag.flagComment);
+  });
+
+  it('should populate the flag comments textarea from Welsh comments field when only Welsh comments are available', () => {
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = null;
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    // Check the textarea value property, rather than textContent, because this input element has no child nodes
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    expect(textarea.value).toEqual(activeFlag.flagComment_cy);
+  });
+
+  it('should populate the flag comments textarea from Welsh comments field when selected language is Welsh', () => {
+    rpxTranslationServiceSpy.language = 'cy';
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = 'First flag';
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    // Check the textarea value property, rather than textContent, because this input element has no child nodes
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    expect(textarea.value).toEqual(activeFlag.flagComment_cy);
+  });
+
+  it('should populate from English comments field when the selected language is Welsh but there are no Welsh comments', () => {
+    rpxTranslationServiceSpy.language = 'cy';
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = null;
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     // Check the textarea value property, rather than textContent, because this input element has no child nodes
@@ -111,6 +148,36 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if existing comments have been deleted', () => {
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = 'First flag';
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = null;
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    // Delete existing flag comments
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    textarea.value = '';
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
+      fieldId: CaseFlagFormFields.COMMENTS
+    });
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
+  });
+
+  it('should show an error message on clicking "Next" if existing comments in Welsh have been deleted', () => {
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = null;
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = 'Cymraeg';
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();

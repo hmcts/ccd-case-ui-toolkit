@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { CaseField } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { OrganisationService } from '../../../services/organisation';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field';
 import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteService } from '../palette.service';
@@ -67,7 +68,8 @@ describe('ReadOrganisationFieldComponent', () => {
         MarkdownComponent,
         ReadOrganisationFieldComponent,
         ReadOrganisationFieldRawComponent,
-        ReadOrganisationFieldTableComponent
+        ReadOrganisationFieldTableComponent,
+        MockRpxTranslatePipe
       ],
       providers: [
         PaletteService,

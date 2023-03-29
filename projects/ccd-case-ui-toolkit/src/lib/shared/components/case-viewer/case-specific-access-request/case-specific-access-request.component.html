@@ -1,16 +1,17 @@
 <exui-error-message
   *ngIf="formGroup.invalid && submitted"
   [error]="errorMessage"></exui-error-message>
-<cut-alert type="information"
-  >Authorisation is needed to access this case.<br />This could be because it's outside your jurisdiction, or you may be excluded from the case.
-    If you request access to this case, it will be logged for auditing purposes.</cut-alert>
+<cut-alert type="information">
+  {{'Authorisation is needed to access this case.' | rpxTranslate}}<br />
+  {{"This could be because it's outside your jurisdiction, or you may be excluded from the case.  If you request access to this case, it will be logged for auditing purposes." | rpxTranslate}}
+</cut-alert>
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group"
     [ngClass]="{ 'form-group-error': formGroup.invalid && submitted }">
     <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 class="govuk-fieldset__heading">
-          {{ title }}
+          {{ title | rpxTranslate }}
         </h1>
       </legend>
 
@@ -20,23 +21,23 @@
           role="button"
           aria-expanded="false">
           <span class="govuk-details__summary-text">
-            Help with requesting case access
+            {{'Help with requesting case access' | rpxTranslate}}
           </span>
         </summary>
         <div
           class="govuk-details__text"
           aria-hidden="true">
-          <p class="govuk-body">You could include:</p>
+          <p class="govuk-body">{{'You could include:' | rpxTranslate}}</p>
           <ul class="govuk-list govuk-list--bullet">
-            <li>the case reference of the linked case</li>
-            <li>how long you require access to this case</li>
-            <li>any other reasons why you require access</li>
+            <li>{{'the case reference of the linked case' | rpxTranslate}}</li>
+            <li>{{'how long you require access to this case' | rpxTranslate}}</li>
+            <li>{{'any other reasons why you require access' | rpxTranslate}}</li>
           </ul>
         </div>
       </details>
 
       <div id="reason-hint" class="govuk-hint">
-        {{ hint }}
+        {{ hint | rpxTranslate }}
       </div>
       <div id="conditional-reason-3">
         <div class="govuk-form-group">
@@ -44,7 +45,7 @@
             id="specific-reason-error-message"
             class="govuk-error-message"
             *ngIf="formGroup.get('specificReason').invalid && submitted">
-            {{ errorMessage.description }}
+            {{ errorMessage.description | rpxTranslate }}
           </div>
           <textarea
             class="govuk-textarea"
@@ -64,12 +65,12 @@
 
   <div class="govuk-button-group">
     <button class="govuk-button govuk-!-margin-right-3" type="submit">
-      Submit
+      {{'Submit' | rpxTranslate}}
     </button>
     <div class="govuk-grid-column-full govuk-!-padding-left-0">
       <p>
         <a class="govuk-body" (click)="onCancel()" href="javascript:void(0)">
-          Cancel
+          {{'Cancel' | rpxTranslate}}
         </a>
       </p>
     </div>

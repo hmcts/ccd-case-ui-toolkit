@@ -1,17 +1,20 @@
-import { waitForAsync, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Location } from '@angular/common';
+import { Component } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
-import { CaseNotifier, CasesService } from '../..';
 import { AlertModule } from '../../../../components/banners/alert';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
+import { CaseNotifier } from '../../case-editor';
+import { CasesService } from '../../case-editor/services/cases.service';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseSpecificAccessRequestComponent } from './case-specific-access-request.component';
 import { SpecificAccessRequestErrors, SpecificAccessRequestPageText } from './models';
 
 import createSpyObj = jasmine.createSpyObj;
-import { Component } from '@angular/core';
 
 @Component({template: ``})
 class StubComponent {}
@@ -36,6 +39,8 @@ describe('CaseSpecificAccessRequestComponent', () => {
     casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
     casesService.createSpecificAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({
+      declarations: [ CaseSpecificAccessRequestComponent, ErrorMessageComponent, MockRpxTranslatePipe,
+        StubComponent],
       imports: [
         AlertModule,
         ReactiveFormsModule,
@@ -44,13 +49,10 @@ describe('CaseSpecificAccessRequestComponent', () => {
           { path: 'work/my-work/list', component: StubComponent }
         ])
       ],
-      declarations: [
-        CaseSpecificAccessRequestComponent,
-        ErrorMessageComponent,
-        StubComponent
-      ],
       providers: [
         FormBuilder,
+        { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
+        ['getTranslation', 'translate']) },
         { provide: CasesService, useValue: casesService },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseNotifier, useValue: casesNotifier },

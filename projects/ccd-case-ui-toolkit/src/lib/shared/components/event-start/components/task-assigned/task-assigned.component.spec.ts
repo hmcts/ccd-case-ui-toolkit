@@ -9,6 +9,7 @@ import { Caseworker } from '../../../../domain/work-allocation/case-worker.model
 import { Judicialworker } from '../../../../domain/work-allocation/judicial-worker.model';
 import { Task } from '../../../../domain/work-allocation/Task';
 import { HttpErrorService, HttpService } from '../../../../services';
+import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
 import { CaseworkerService, JudicialworkerService } from '../../../case-editor/services';
 import { TaskAssignedComponent } from './task-assigned.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -87,7 +88,7 @@ describe('TaskRequirementComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [TaskAssignedComponent],
+      declarations: [TaskAssignedComponent, MockRpxTranslatePipe],
       providers: [
         {provide: ActivatedRoute, useValue: mockRoute},
         {provide: CaseworkerService, useValue: mockCaseworkerService},

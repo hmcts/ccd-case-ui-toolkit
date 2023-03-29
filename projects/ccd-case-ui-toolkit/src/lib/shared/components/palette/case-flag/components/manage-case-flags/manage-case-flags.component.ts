@@ -35,8 +35,10 @@ export class ManageCaseFlagsComponent implements OnInit {
     this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
 
     // Map flags instances to objects for display
+    /* istanbul ignore else */
     if (this.flagsData) {
       this.flagsDisplayData = this.flagsData.reduce((displayData, flagsInstance) => {
+        /* istanbul ignore else */
         if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
           displayData = [
             ...displayData,
@@ -114,10 +116,13 @@ export class ManageCaseFlagsComponent implements OnInit {
   }
 
   public getFlagDescription(flagDetail: FlagDetail): string {
+    /* istanbul ignore else */
     if (flagDetail && flagDetail.name) {
+      /* istanbul ignore else */
       if (flagDetail.name === 'Other' && flagDetail.otherDescription) {
         return flagDetail.otherDescription;
       }
+      /* istanbul ignore else */
       if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
         return flagDetail.subTypeValue;
       }

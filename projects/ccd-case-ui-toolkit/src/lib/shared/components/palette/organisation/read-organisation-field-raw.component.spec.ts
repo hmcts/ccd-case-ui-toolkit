@@ -8,14 +8,15 @@ import { of } from 'rxjs';
 import { ConditionalShowModule } from '../../../directives/conditional-show';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { OrganisationService } from '../../../services/organisation';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
+import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils';
 import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw.component';
-import { MarkdownComponent } from '../markdown/markdown.component';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 
 describe('ReadOrganisationFieldRawComponent', () => {
   let component: ReadOrganisationFieldRawComponent;
@@ -115,7 +116,8 @@ describe('ReadOrganisationFieldRawComponent', () => {
         MarkdownComponent,
         ReadOrganisationFieldRawComponent,
         FieldsFilterPipe,
-        FieldReadComponent
+        FieldReadComponent,
+        MockRpxTranslatePipe
       ],
       providers: [
         PaletteService,

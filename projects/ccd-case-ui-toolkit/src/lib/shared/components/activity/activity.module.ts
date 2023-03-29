@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
 import { ActivityService } from '../../services/activity/activity.service';
 import { SessionStorageService } from '../../services/session/session-storage.service';
@@ -12,6 +13,7 @@ import { ActivityComponent } from './activity.component';
     imports: [
         CommonModule,
         RouterModule,
+        RpxTranslationModule.forChild()
     ],
     declarations: [
         ActivityComponent,

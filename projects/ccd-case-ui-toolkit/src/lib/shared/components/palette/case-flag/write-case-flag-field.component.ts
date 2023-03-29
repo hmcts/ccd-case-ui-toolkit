@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField, ErrorMessage } from '../../../domain';
@@ -27,6 +28,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public caseFlagParentFormGroup: FormGroup;
   public flagCommentsOptional = false;
   public jurisdiction: string;
+  public caseTypeId: string;
+  public hmctsServiceId: string;
   public isDisplayContextParameterUpdate: boolean;
   public isDisplayContextParameterExternal: boolean;
   public caseTitle: string;
@@ -53,7 +56,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   constructor(
     private readonly route: ActivatedRoute,
     private readonly caseEditDataService: CaseEditDataService,
-    private readonly caseFlagStateService: CaseFlagStateService
+    private readonly caseFlagStateService: CaseFlagStateService,
+    private readonly rpxTranslationService: RpxTranslationService
   ) {
     super();
   }
@@ -90,43 +94,55 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
     }), true) as FormGroup;
 
-    // Get the jurisdiction from the CaseView object in the snapshot data (required for retrieving the available flag
+    // Get the case type ID from the CaseView object in the snapshot data (required for retrieving the available flag
     // types for a case)
-    if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type &&
-      this.route.snapshot.data.case.case_type.jurisdiction) {
-      this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
+    if (this.route.snapshot.data.case && this.route.snapshot.data.case.case_type) {
+      this.caseTypeId = this.route.snapshot.data.case.case_type.id;
+      // Get the jurisdiction (required for retrieving the available flag types if unable to determine using case type ID)
+      if (this.route.snapshot.data.case.case_type.jurisdiction) {
+        this.jurisdiction = this.route.snapshot.data.case.case_type.jurisdiction.id;
+      }
     }
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
-    if (this.route.snapshot.data.eventTrigger && this.route.snapshot.data.eventTrigger.case_fields) {
-      this.flagsData = (this.route.snapshot.data.eventTrigger.case_fields as CaseField[])
-        .reduce((flags, caseField) => {
-          return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
-        }, []);
-
-      // Set displayContextParameter (to be passed as an input to ManageCaseFlagsComponent for setting correct title)
-      this.displayContextParameter =
-        this.setDisplayContextParameter(this.route.snapshot.data.eventTrigger.case_fields as CaseField[]);
-
-      // Set boolean indicating the display_context_parameter is "update"
-      this.isDisplayContextParameterUpdate = this.setDisplayContextParameterUpdate(this.displayContextParameter);
-
-      // Set boolean indicating the display_context_parameter is "external"
-      this.isDisplayContextParameterExternal = this.setDisplayContextParameterExternal(this.displayContextParameter);
-
-      // Set starting field state if fieldState not the right value
-      if (!this.fieldState) {
-        this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
+    if (this.route.snapshot.data.eventTrigger) {
+      // Get the HMCTSServiceId from supplementary data, if it exists (required for retrieving the available flag types in
+      // the first instance, only falling back on case type ID or jurisidiction if it's not present)
+      if (this.route.snapshot.data.eventTrigger.supplementary_data
+        && this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId) {
+        this.hmctsServiceId = this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId;
       }
 
-      // Set Create Case Flag component title caption text (appearing above child component <h1> title)
-      this.createFlagCaption = this.setCreateFlagCaption(this.displayContextParameter);
+      if (this.route.snapshot.data.eventTrigger.case_fields) {
+        this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
+          .reduce((flags, caseField) => {
+            return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
+          }, []);
 
-      // Get case title, to be used by child components
-      this.caseTitleSubscription = this.caseEditDataService.caseTitle$.subscribe({
-        next: title => {
-          this.caseTitle = title?.length > 0 ? title : this.caseNameMissing;
+        // Set displayContextParameter (to be passed as an input to ManageCaseFlagsComponent for setting correct title)
+        this.displayContextParameter =
+          this.setDisplayContextParameter(this.route.snapshot.data.eventTrigger.case_fields as CaseField[]);
+
+        // Set boolean indicating the display_context_parameter is "update"
+        this.isDisplayContextParameterUpdate = this.setDisplayContextParameterUpdate(this.displayContextParameter);
+
+        // Set boolean indicating the display_context_parameter is "external"
+        this.isDisplayContextParameterExternal = this.setDisplayContextParameterExternal(this.displayContextParameter);
+
+        // Set starting field state if fieldState not the right value
+        if (!this.fieldState) {
+          this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
         }
-      });
+
+        // Set Create Case Flag component title caption text (appearing above child component <h1> title)
+        this.createFlagCaption = this.setCreateFlagCaption(this.displayContextParameter);
+
+        // Get case title, to be used by child components
+        this.caseTitleSubscription = this.caseEditDataService.caseTitle$.subscribe({
+          next: title => {
+            this.caseTitle = title?.length > 0 ? title : this.caseNameMissing;
+          }
+        });
+      }
     }
   }
 
@@ -272,6 +288,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
             flagDetail.value.flagComment_cy = originalFlagDetail.value.flagComment_cy
               ? originalFlagDetail.value.flagComment_cy
               : null;
+            flagDetail.value.flagUpdateComment = originalFlagDetail.value.flagUpdateComment
+              ? originalFlagDetail.value.flagUpdateComment
+              : null;
             flagDetail.value.status = originalFlagDetail.value.status;
             flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified
               ? originalFlagDetail.value.dateTimeModified
@@ -302,8 +321,20 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         flagDetailToUpdate.value.otherDescription_cy = flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode
           ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)?.value
           : null,
-        flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value;
-        flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value;
+        // Ensure that any comments entered with language set to Welsh do not end up in the English comments field
+        flagDetailToUpdate.value.flagComment = this.rpxTranslationService.language !== 'cy'
+          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
+          : null,
+        // Populate from the *English* comments field if:
+        // * The Welsh comments field has no value (Welsh comments field acquires a value only when an HMCTS internal user has
+        // gone through the "add translation" step for Manage Case Flags), AND
+        // * The language is set to Welsh
+        flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
+          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
+          : this.rpxTranslationService.language === 'cy'
+            ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
+            : null,
+        flagDetailToUpdate.value.flagUpdateComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value;
         flagDetailToUpdate.value.status = CaseFlagStatus[this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS)?.value];
         flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
       }
@@ -346,10 +377,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         ? formValues?.languageSearchTerm.key
         : null,
       otherDescription: formValues?.flagType?.flagCode === this.otherFlagTypeCode &&
-        formValues?.otherDescription
+        formValues?.otherDescription && this.rpxTranslationService.language === 'en'
         ? formValues?.otherDescription
         : null,
-      flagComment: formValues?.flagComments,
+      otherDescription_cy: formValues?.flagType?.flagCode === this.otherFlagTypeCode &&
+        formValues?.otherDescription && this.rpxTranslationService.language === 'cy'
+        ? formValues?.otherDescription
+        : null,
+      flagComment: this.rpxTranslationService.language === 'en'
+        ? formValues?.flagComments
+        : null,
+      flagComment_cy: this.rpxTranslationService.language === 'cy'
+        ? formValues?.flagComments
+        : null,
       flagUpdateComment: formValues?.statusReason,
       dateTimeCreated: new Date().toISOString(),
       path: formValues?.flagType?.Path &&

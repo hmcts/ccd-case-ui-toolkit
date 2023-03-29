@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService } from '../../../../../services';
@@ -22,7 +22,14 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   @Input()
   public jurisdiction: string;
 
-  @Input() public isDisplayContextParameterExternal = false;
+  @Input()
+  public caseTypeId: string;
+
+  @Input()
+  public hmctsServiceId: string;
+
+  @Input()
+  public isDisplayContextParameterExternal = false;
 
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
@@ -72,7 +79,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     // Should clear descriptionControlName if flagTypeControlName is changed
     this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).valueChanges
-      .subscribe(value => {
+      .subscribe(_ => {
         this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).setValue('');
         this.cachedPath = [];
 
@@ -84,36 +91,58 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       }
     );
 
-    // HMCTS service code for a given jurisdiction is required to retrieve the relevant list of flag types
-    this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetails(this.jurisdiction)
-      .pipe(
-        // Use switchMap to return an inner Observable of the flag types data, having received the service details
-        // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
-        switchMap(serviceDetails => {
-          return this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType,
-            false, this.isDisplayContextParameterExternal);
-        }),
-      )
-      .subscribe({
-        next: flagTypes => {
-          // First (and only) object in the returned array should be the top-level "Party" flag type
-          this.flagTypes = flagTypes[0].childFlags;
+    // If hmctsServiceId is present, use this to retrieve the relevant list of flag types
+    if (this.hmctsServiceId) {
+      this.flagRefdata$ = this.caseFlagRefdataService
+        .getCaseFlagsRefdata(this.hmctsServiceId, flagType, false, this.isDisplayContextParameterExternal)
+        .subscribe({
+          next: flagTypes => {
+            // First (and only) object in the returned array should be the top-level "Party" flag type
+            this.flagTypes = flagTypes[0].childFlags;
 
-          const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
-          if (formControl?.value) {
-            // Cache Path based on existing flagCode -- needed for nested choices
-            const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
-            this.cachedPath = [
-              ...path,
-              foundFlagType
-            ];
-            formControl.setValue(this.cachedPath[0], { emitEvent: false });
-          }
-        },
-        error: error => {
-          this.onRefdataError(error);
-        }
-      });
+            const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
+            if (formControl?.value) {
+              // Cache Path based on existing flagCode -- needed for nested choices
+              const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
+              this.cachedPath = [
+                ...path,
+                foundFlagType
+              ];
+              formControl.setValue(this.cachedPath[0], { emitEvent: false });
+            }
+          },
+          error: error => this.onRefdataError(error)
+        });
+    } else {
+      // Else, HMCTS service code is required to retrieve the relevant list of flag types; attempt to obtain it by case type ID first
+      this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(this.caseTypeId)
+        .pipe(
+          // If an error occurs retrieving HMCTS service details by case type ID, try by service name instead
+          catchError(_ => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
+          // Use switchMap to return an inner Observable of the flag types data, having received the service details
+          // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
+          switchMap(serviceDetails => this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType,
+            false, this.isDisplayContextParameterExternal))
+        )
+        .subscribe({
+          next: flagTypes => {
+            // First (and only) object in the returned array should be the top-level "Party" flag type
+            this.flagTypes = flagTypes[0].childFlags;
+
+            const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
+            if (formControl?.value) {
+              // Cache Path based on existing flagCode -- needed for nested choices
+              const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
+              this.cachedPath = [
+                ...path,
+                foundFlagType
+              ];
+              formControl.setValue(this.cachedPath[0], { emitEvent: false });
+            }
+          },
+          error: error => this.onRefdataError(error)
+        });
+    }
   }
 
   public ngOnDestroy(): void {
