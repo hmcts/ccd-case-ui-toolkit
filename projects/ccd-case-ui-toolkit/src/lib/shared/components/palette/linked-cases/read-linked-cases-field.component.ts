@@ -73,9 +73,7 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   }
 
   public reloadCurrentRoute(): void {
-    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseDetails.case_id]).then(() => {
-      window.location.hash = 'Linked cases';
-    });
+    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseDetails.case_id], { fragment: 'Linked cases' });
   }
 
   public getFailureLinkedToNotification(evt): void {

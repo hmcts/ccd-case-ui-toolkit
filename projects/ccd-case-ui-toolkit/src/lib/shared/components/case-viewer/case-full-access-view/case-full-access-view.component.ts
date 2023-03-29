@@ -277,7 +277,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // preselect the 1st order of CCD predefined tabs
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], {fragment: preSelectTab.label}).then(() => {
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           this.tabGroup.selectedIndex = matTab.position;
         });
@@ -314,9 +314,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       this.router.navigate([id], {relativeTo: this.route});
     } else {
       const label = tabChangeEvent.tab.textLabel;
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-        window.location.hash = label;
-      });
+      console.log('NAVIGATE 3');
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: label });
     }
   }
 
@@ -381,6 +380,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private init(): void {
+    console.log(this.caseDetails.tabs.filter((tab) => tab.label === 'Payment'));
+
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
     this.caseFields = this.getTabFields();
