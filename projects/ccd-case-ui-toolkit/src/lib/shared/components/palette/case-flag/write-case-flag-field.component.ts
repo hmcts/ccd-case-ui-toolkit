@@ -146,15 +146,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
     // Validation succeeded; proceed to next state or final review stage ("Check your answers")
     if (this.errorMessages.length === 0) {
-      // If the current state is CaseFlagFieldState.FLAG_STATUS or CaseFlagFieldState.FLAG_UPDATE, move to final
-      // review stage
-      // First condition is for create case flag; Second condition is for the manage flag case journey
-      if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_STATUS ||
-          ( caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE
-              && !this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value ||
-            caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION
-          )
-      ) {
+      if (this.canMoveToFinalReviewStage(caseFlagState)) {
         this.moveToFinalReviewStage();
         // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
         // means the user needs to select from the next set of flag types before they can move on
@@ -163,6 +155,40 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         this.proceedToNextState();
       }
     }
+  }
+
+  public canMoveToFinalReviewStage(caseFlagState: CaseFlagState): boolean {
+    // If the journey is request support or manage support
+    // and the current state is either CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE
+    // then move to final review stage
+    if (this.isSupportJourney()) {
+      if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
+          caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
+        return true;
+      }
+    }
+    // If the current state is CaseFlagFieldState.FLAG_STATUS then move to final review stage
+    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_STATUS) {
+      return true;
+    }
+    // If the current state is CaseFlagFieldState.FLAG_UPDATE and Welsh translation checkbox is not selected then move to final review stage
+    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE &&
+        !this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value) {
+      return true;
+    }
+    // If the current state is CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION then move to final review stage
+    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION) {
+      return true;
+    }
+    return false;
+  }
+
+  public isSupportJourney(): boolean {
+    if (this.displayContextParameter === this.createExternalMode ||
+        this.displayContextParameter === this.updateExternalMode) {
+      return true;
+    }
+    return false;
   }
 
   public proceedToNextState(): void {
