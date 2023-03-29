@@ -314,7 +314,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       this.router.navigate([id], {relativeTo: this.route});
     } else {
       const label = tabChangeEvent.tab.textLabel;
-      console.log('NAVIGATE 3');
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: label });
     }
   }
