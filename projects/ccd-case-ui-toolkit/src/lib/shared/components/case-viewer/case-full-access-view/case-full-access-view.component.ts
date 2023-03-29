@@ -1,9 +1,10 @@
 import { Location } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
-  SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+  SimpleChanges, ViewChild
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
+import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject } from 'rxjs';
@@ -69,6 +70,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public notificationBannerConfig: NotificationBannerConfig;
   public selectedTabIndex = 0;
   public activeCaseFlags = false;
+  private subs: Subscription[] = [];
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
@@ -148,6 +150,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.unsubscribe(this.callbackErrorsSubject);
     this.unsubscribe(this.errorSubscription);
     this.unsubscribe(this.subscription);
+    this.subs.forEach(s => s.unsubscribe())
   }
 
   public unsubscribe(subscription: any) {
@@ -157,7 +160,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private checkRouteAndSetCaseViewTab(): void {
-    this.router.events
+    this.subs.push(this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         const url = event && (event as any).url;
@@ -168,7 +171,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           const tabIndex = this.tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tab.toLowerCase());
           this.selectedTabIndex = tabIndex || 0;
         }
-      });
+      }));
   }
 
   public postViewActivity(): Observable<Activity[]> {
