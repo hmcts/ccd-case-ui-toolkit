@@ -164,10 +164,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         if (url) {
           const tabUrl = url ? url.split('#') : null ;
           const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
-          const matTab = this.tabGroup._tabs.find( (x) => x.textLabel.toLowerCase() === tab.toLowerCase());
-          if (matTab && matTab.position) {
-            this.tabGroup.selectedIndex = matTab.position;
-          }
+          const tabIndex = this.tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tab.toLowerCase());
+          this.selectedTabIndex = tabIndex || 0;
         }
       });
   }
@@ -301,23 +299,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
-  public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    // Update selected tab index
-    this.selectedTabIndex = tabChangeEvent.index;
+  public tabChanged(tabIndexChanged: number): void {
+    const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
+    const tabLabel = matTab.textLabel;
+    this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel })
 
-    const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
-    const id = (tab.element.nativeElement as HTMLElement).id;
-    // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
-    // so have to hard code the hearings id here
-    if ((tabChangeEvent.index <= 1 && this.prependedTabs && this.prependedTabs.length) ||
-      (this.appendedTabs && this.appendedTabs.length && id === 'hearings')) {
-      this.router.navigate([id], {relativeTo: this.route});
-    } else {
-      const label = tabChangeEvent.tab.textLabel;
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-        window.location.hash = label;
-      });
-    }
+
   }
 
   public onLinkClicked(triggerOutputEventText: string): void {
