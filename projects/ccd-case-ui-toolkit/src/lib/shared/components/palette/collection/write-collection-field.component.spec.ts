@@ -693,7 +693,8 @@ describe('WriteCollectionFieldComponent', () => {
         declarations: [
           WriteCollectionFieldComponent,
           fieldWriteComponent,
-          fieldReadComponent
+          fieldReadComponent,
+          MockRpxTranslatePipe,
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -794,7 +795,8 @@ describe('WriteCollectionFieldComponent', () => {
         declarations: [
           WriteCollectionFieldComponent,
           fieldWriteComponent,
-          fieldReadComponent
+          fieldReadComponent,
+          MockRpxTranslatePipe,
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
