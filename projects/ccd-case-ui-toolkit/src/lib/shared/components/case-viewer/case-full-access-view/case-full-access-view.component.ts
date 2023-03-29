@@ -379,8 +379,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private init(): void {
-    console.log(this.caseDetails.tabs.filter((tab) => tab.label === 'Payment'));
-
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
     this.caseFields = this.getTabFields();
