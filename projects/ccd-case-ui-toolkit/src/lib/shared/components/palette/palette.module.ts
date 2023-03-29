@@ -15,6 +15,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
@@ -63,7 +64,7 @@ import { DocumentUrlPipe } from './document';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
-import { WriteDocumentFieldComponent } from './document/write-document-field.component';
+import { WriteDocumentFieldComponent } from './document/write-document-field.component'
 import { DynamicListPipe, ReadDynamicListFieldComponent } from './dynamic-list';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
 import { DynamicRadioListPipe, ReadDynamicRadioListFieldComponent } from './dynamic-radio-list';
@@ -74,6 +75,8 @@ import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioLi
 import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComponent, EventLogTableComponent } from './history';
 import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from './judicial-user';
 import { LabelFieldComponent } from './label';
+import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, ReadLinkedCasesFieldComponent, UnLinkCasesComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
+import { LinkedCasesService } from './linked-cases/services';
 import { MarkdownComponent } from './markdown';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent, WriteMoneyGbpFieldComponent } from './money-gbp';
 import { ReadMultiSelectListFieldComponent, WriteMultiSelectListFieldComponent } from './multi-select-list';
@@ -136,6 +139,7 @@ const PALETTE_COMPONENTS = [
   ReadComplexFieldTableComponent,
   ReadComplexFieldCollectionTableComponent,
   ReadCaseFlagFieldComponent,
+  ReadLinkedCasesFieldComponent,
 
   // Write
   WriteJudicialUserFieldComponent,
@@ -153,6 +157,7 @@ const PALETTE_COMPONENTS = [
   WriteEmailFieldComponent,
   WriteDateFieldComponent,
   WriteCaseFlagFieldComponent,
+  WriteLinkedCasesFieldComponent,
 
   // new
   WriteYesNoFieldComponent,
@@ -185,7 +190,14 @@ const PALETTE_COMPONENTS = [
   UpdateFlagComponent,
   CaseFlagSummaryListComponent,
   ConfirmFlagStatusComponent,
-  UpdateFlagAddTranslationFormComponent
+  UpdateFlagAddTranslationFormComponent,
+  LinkedCasesToTableComponent,
+  LinkedCasesFromTableComponent,
+  BeforeYouStartComponent,
+  LinkCasesComponent,
+  CheckYourAnswersComponent,
+  UnLinkCasesComponent,
+  NoLinkedCasesComponent
 ];
 
 @NgModule({
@@ -216,6 +228,7 @@ const PALETTE_COMPONENTS = [
     OverlayModule,
     PaymentLibModule,
     ScrollToModule.forRoot(),
+    RpxTranslationModule.forChild(),
     MatDialogModule,
     MediaViewerModule,
     LoadingModule
@@ -247,6 +260,7 @@ const PALETTE_COMPONENTS = [
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
+    LinkedCasesService,
     CommonDataService,
     JurisdictionService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}

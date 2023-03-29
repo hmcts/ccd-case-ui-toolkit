@@ -3,18 +3,18 @@
   <fieldset>
     <legend style="display: none;"></legend>
     <label [for]="id()">
-        <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
-        <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-        <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">Select an option below</span>
+        <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel) | rpxTranslate}}</span>
+        <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
+        <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option below' | rpxTranslate}}</span>
         <span class="error-message"
-            *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.dirty">{{dynamicRadioListControl.errors |
-            ccdFirstError}}</span>
+            *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.dirty">{{(dynamicRadioListControl.errors |
+            ccdFirstError) | rpxTranslate}}</span>
     </label>
 
     <ng-container>
       <div class="multiple-choice" *ngFor="let radioButton of caseField.list_items" [ngClass]="{selected: dynamicRadioListControl.value === radioButton.code}">
           <input class="form-control" [id]="buildElementId(radioButton.code)" name="{{id()}}" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
-          <label class="form-label" [for]="buildElementId(radioButton.code)">{{radioButton.label}}</label>
+          <label class="form-label" [for]="buildElementId(radioButton.code)">{{radioButton.label | rpxTranslate}}</label>
       </div>
     </ng-container>
   </fieldset>

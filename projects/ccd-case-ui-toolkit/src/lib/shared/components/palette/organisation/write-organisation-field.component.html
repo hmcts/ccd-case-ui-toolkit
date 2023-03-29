@@ -6,33 +6,33 @@
         <path d="M13.7,18.5h-2.4v-2.4h2.4V18.5z M12.5,13.7c-0.7,0-1.2-0.5-1.2-1.2V7.7c0-0.7,0.5-1.2,1.2-1.2s1.2,0.5,1.2,1.2v4.8
   C13.7,13.2,13.2,13.7,12.5,13.7z M12.5,0.5c-6.6,0-12,5.4-12,12s5.4,12,12,12s12-5.4,12-12S19.1,0.5,12.5,0.5z" /></svg>
       <div class="hmcts-banner__message">
-        <span class="hmcts-banner__assistive">information</span>
-          <p class="warning-message">Organisation search is currently unavailable.</p>
+        <span class="hmcts-banner__assistive">{{'information' | rpxTranslate}}</span>
+          <p class="warning-message">{{'Organisation search is currently unavailable.' | rpxTranslate}}</p>
       </div>
     </div>
     <div class="warning-panel">
       <div class="warning-message">
-        We are working to fix the issue. You can try again later.
+        {{'We are working to fix the issue.You can try again later.' | rpxTranslate}}
       </div>
     </div>
   </fieldset>
   <fieldset *ngIf="(organisations$ | async)?.length > 0" class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
       <h2 class="heading-h2">
-        Search for an organisation
+        {{'Search for an organisation' | rpxTranslate}}
       </h2>
     </legend>
     <div class="govuk-form-group">
       <label class="govuk-label" for="search-org-text">
         <span id="search-org-hint" class="govuk-hint">
-          You can only search for organisations already registered with MyHMCTS. For example, you can search by organisation name or address.
+          {{'You can only search for organisations already registered with MyHMCTS. For example, you can search by organisation name or address.' | rpxTranslate}}
         </span>
       </label>
-      <input id="search-org-text" class="form-control" type="text" [formControl]="searchOrgTextFormControl" />
+      <input id="search-org-text" class="form-control" type="text" [formControl]="searchOrgTextFormControl"/>
     </div>
     <div class="govuk-form-group">
       <label class="govuk-label" for="organisation-table">
-        <h2 class="heading-h2">Organisation name and address</h2>
+        <h2 class="heading-h2">{{'Organisation name and address' | rpxTranslate}}</h2>
       </label>
       <hr class="govuk-section-break govuk-section-break--visible">
       <div *ngIf="!(selectedOrg$ | async)?.organisationIdentifier; else selectedOrganisation" [ngClass]="{'scroll-container ': (simpleOrganisations$ | async)?.length > 10}">
@@ -45,14 +45,16 @@
                 <ccd-markdown [content]="organisation.address"></ccd-markdown>
               </td>
               <td class="td-select">
-                <a href="javascript:void(0);" (click)="selectOrg(organisation)" title="Select the organisation {{organisation.name}}">Select</a>
+                <a href="javascript:void(0);" (click)="selectOrg(organisation)" title="{{'Select the organisation' | rpxTranslate}} {{organisation.name}}">
+                  {{'Select' | rpxTranslate}}
+                </a>
               </td>
             </tr>
           </tbody>
         </table>
         <div *ngIf="(simpleOrganisations$ | async)?.length === 0 && (searchOrgValue$ | async)?.length > 2">
           <div class="no-result-message">
-            No results found.
+            {{'No results found.' | rpxTranslate}}
           </div>
         </div>
       </div>
@@ -66,7 +68,10 @@
                 <ccd-markdown [content]="selectedOrg.address"></ccd-markdown>
               </td>
               <td class="td-select">
-                <a href="javascript:void(0);" (click)="deSelectOrg()" title="Clear organisation selection for {{selectedOrg.name}}">Clear</a>
+                <a href="javascript:void(0);" (click)="deSelectOrg()"
+                   title="{{'Clear organisation selection for' | rpxTranslate}} {{selectedOrg.name}}">
+                  {{'Clear' | rpxTranslate}}
+                </a>
               </td>
             </tr>
           </tbody>
@@ -80,12 +85,12 @@
     <details id="find-organisation-help" class="govuk-details" data-module="govuk-details">
       <summary class="govuk-details__summary">
       <span id="content-why-can-not-find-organisation" class="govuk-details__summary-text">
-        Can’t find the organisation you are looking for?
+        {{'Can’t find the organisation you are looking for ?' | rpxTranslate}}
       </span>
       </summary>
       <div id="content-reason-can-not-find-organisation" class="govuk-details__text">
-        If you know that the solicitor is already registered with MyHMCTS, check that you have entered their details correctly.
-        Remember that organisations can only register one office address. This means that the details could be slightly different from what you're expecting. Contact the solicitor directly if you have any concerns.
+        {{'If you know that the solicitor is already registered with MyHMCTS, check that you have entered their details correctly.' | rpxTranslate}}
+        {{"Remember that organisations can only register one office address. This means that the details could be slightly different from what you're expecting. Contact the solicitor directly if you have any concerns." | rpxTranslate}}
       </div>
     </details>
   </fieldset>

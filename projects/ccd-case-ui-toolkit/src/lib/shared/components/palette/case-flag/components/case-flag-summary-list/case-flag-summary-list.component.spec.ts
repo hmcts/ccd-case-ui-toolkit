@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
 import { CaseFlagSummaryListDisplayMode } from '../../enums';
 import { CaseFlagSummaryListComponent } from './case-flag-summary-list.component';
@@ -16,7 +17,7 @@ describe('CaseFlagSummaryListComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ CaseFlagSummaryListComponent ]
+      declarations: [ CaseFlagSummaryListComponent, MockRpxTranslatePipe ]
     })
     .compileComponents();
   }));

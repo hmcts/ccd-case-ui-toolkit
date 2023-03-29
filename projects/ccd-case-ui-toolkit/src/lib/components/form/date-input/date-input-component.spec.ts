@@ -4,6 +4,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { PaletteUtilsModule } from '../../../shared/components/palette/utils/utils.module';
+import { MockRpxTranslatePipe } from '../../../shared/test/mock-rpx-translate.pipe';
 import { DateInputComponent } from './date-input.component';
 import createSpy = jasmine.createSpy;
 
@@ -34,6 +35,7 @@ describe('Date input component', () => {
         ],
         declarations: [
           DateInputComponent,
+          MockRpxTranslatePipe,
 
           // Mock
           Input

@@ -1,9 +1,9 @@
 <div class="form-group" [ngClass]="{'form-group-error bottom-30': !valid}">
   <label [for]="id()">
-    <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{caseField | ccdFieldLabel}}</span>
+    <span class="form-label" attr.aria-label="{{caseField | ccdFieldLabel}}">{{(caseField | ccdFieldLabel) | rpxTranslate}}</span>
   </label>
-  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text}}</span>
-  <span class="error-message" *ngIf="fileUploadMessages && !valid">{{fileUploadMessages}}</span>
+  <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
+  <span class="error-message" *ngIf="fileUploadMessages && !valid">{{fileUploadMessages | rpxTranslate}}</span>
 
   <div>
     <!--<span *ngIf="getUploadedFileName()" class="text-16">File name: {{getUploadedFileName()}}</span>-->
@@ -18,5 +18,5 @@
   </div>
 </div>
 <div class="form-group bottom-30">
-  <button class="button button-secondary" type="button" aria-label="Cancel upload" (click)="cancelUpload()" [disabled]="!isUploadInProgress()">Cancel upload</button>
+  <button class="button button-secondary" type="button" aria-label="Cancel upload" (click)="cancelUpload()" [disabled]="!isUploadInProgress()">{{'Cancel upload' | rpxTranslate}}</button>
 </div>
