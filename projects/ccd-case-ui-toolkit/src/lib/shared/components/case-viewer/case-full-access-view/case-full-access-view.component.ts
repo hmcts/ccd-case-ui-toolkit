@@ -164,6 +164,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         if (url) {
           const tabUrl = url ? url.split('#') : null ;
           const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
+          // Refactored under EXUI-110 to address infinite tab loop
           const tabIndex = this.tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tab.toLowerCase());
           this.selectedTabIndex = tabIndex || 0;
         }
@@ -300,11 +301,10 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public tabChanged(tabIndexChanged: number): void {
+    // Refactored under EXUI-110 to address infinite tab loop
     const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
     const tabLabel = matTab.textLabel;
     this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel })
-
-
   }
 
   public onLinkClicked(triggerOutputEventText: string): void {
