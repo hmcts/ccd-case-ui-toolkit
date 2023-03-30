@@ -10,6 +10,7 @@ import { CaseFlagStateService } from '../../case-editor/services/case-flag-state
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
+import { MockRpxTranslatePipe } from '../../../../shared/test/mock-rpx-translate.pipe';
 
 import createSpy = jasmine.createSpy;
 
@@ -349,7 +350,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ WriteCaseFlagFieldComponent ],
+      declarations: [ WriteCaseFlagFieldComponent, MockRpxTranslatePipe ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseEditDataService, useValue: caseEditDataServiceSpy },

@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, UpdateFlagAddTranslationErrorMessage } from '../../../enums';
 import { UpdateFlagAddTranslationFormComponent } from './update-flag-add-translation-form.component';
+import { MockRpxTranslatePipe } from '../../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('UpdateFlagAddTranslationFormComponent', () => {
   let component: UpdateFlagAddTranslationFormComponent;
@@ -41,7 +42,7 @@ describe('UpdateFlagAddTranslationFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UpdateFlagAddTranslationFormComponent ],
+      declarations: [ UpdateFlagAddTranslationFormComponent, MockRpxTranslatePipe],
       imports: [ ReactiveFormsModule ]
     })
     .compileComponents();

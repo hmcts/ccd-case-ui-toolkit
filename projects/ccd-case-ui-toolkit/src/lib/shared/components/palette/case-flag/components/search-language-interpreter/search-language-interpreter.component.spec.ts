@@ -5,6 +5,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
 import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';
 import { SearchLanguageInterpreterComponent } from './search-language-interpreter.component';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('SearchLanguageInterpreterComponent', () => {
   let component: SearchLanguageInterpreterComponent;
@@ -21,7 +22,7 @@ describe('SearchLanguageInterpreterComponent', () => {
         MatAutocompleteModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [SearchLanguageInterpreterComponent]
+      declarations: [SearchLanguageInterpreterComponent, MockRpxTranslatePipe]
     })
     .compileComponents();
   }));
