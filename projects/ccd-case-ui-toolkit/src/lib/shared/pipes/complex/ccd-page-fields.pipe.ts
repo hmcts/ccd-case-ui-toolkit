@@ -8,7 +8,6 @@ import { CaseField } from '../../domain/definition';
   name: 'ccdPageFields'
 })
 export class CcdPageFieldsPipe implements PipeTransform {
-
   public transform(page: WizardPage, dataFormGroup: FormGroup): CaseField {
     const complexFields: CaseField[] = Object.keys((dataFormGroup.controls['data'] as FormGroup).controls).map(key => {
       const control: AbstractControl = (dataFormGroup.controls['data'] as FormGroup).get(key);

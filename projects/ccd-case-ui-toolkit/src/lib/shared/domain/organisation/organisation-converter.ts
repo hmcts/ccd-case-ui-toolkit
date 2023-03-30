@@ -4,7 +4,6 @@ import { SimpleOrganisationModel } from './simple-organisation.model';
 
 @Injectable()
 export class OrganisationConverter {
-
   private static toSimpleAddress(organisationModel: OrganisationVm): string {
     let simpleAddress = '';
     if (organisationModel.addressLine1) { simpleAddress += `${organisationModel.addressLine1}<br>`; }

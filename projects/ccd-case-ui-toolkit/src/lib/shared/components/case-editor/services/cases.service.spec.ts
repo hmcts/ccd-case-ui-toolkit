@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { fakeAsync, waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, ChallengedAccessRequest, HttpError, SpecificAccessRequest } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';

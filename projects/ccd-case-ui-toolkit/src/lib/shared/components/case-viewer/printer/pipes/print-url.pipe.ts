@@ -22,7 +22,7 @@ export class PrintUrlPipe implements PipeTransform {
    * or the empty string
    */
   public transform(remoteUrl: string): string {
-    if (remoteUrl && remoteUrl.length > 0) {
+    if (remoteUrl?.length > 0) {
       let printServiceUrlPathname: string;
 
       /**

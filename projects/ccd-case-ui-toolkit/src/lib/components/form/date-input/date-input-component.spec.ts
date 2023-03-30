@@ -62,6 +62,18 @@ describe('Date input component', () => {
     expect(yearInput.value).toBe('2021');
   });
 
+  it('should verify day, month, year value from date', async () => {
+    component.id = 'dateField';
+    component.writeValue('someRandomValue');
+    fixture.detectChanges();
+    const monthInput = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
+    expect(monthInput.value).toBe('');
+    const dayInput = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
+    expect(dayInput.value).toBe('');
+    const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
+    expect(yearInput.value).toBe('someRandomValue');
+  });
+
   it('should be valid when the date is in correct format', () => {
     const results = component.validate({ value: DATE } as FormControl);
     expect(results).toBeUndefined();
