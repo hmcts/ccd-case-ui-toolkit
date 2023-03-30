@@ -3,12 +3,12 @@
     <fieldset class="govuk-fieldset" aria-describedby="flag-location-heading">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 id="flag-location-heading" class="govuk-fieldset__heading">
-          {{flagLocationTitle}}
+          {{flagLocationTitle | rpxTranslate}}
         </h1>
       </legend>
       <div id="flag-location-not-selected-error-message" class="govuk-error-message"
         *ngIf="flagLocationNotSelectedErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{flagLocationNotSelectedErrorMessage}}
+        <span class="govuk-visually-hidden">Error:</span> {{flagLocationNotSelectedErrorMessage | rpxTranslate}}
       </div>
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
         <div class="govuk-radios__item" *ngFor="let flagsInstance of filteredFlagsData; index as i">
@@ -16,13 +16,13 @@
             type="radio" [value]="flagsInstance" [formControlName]="selectedLocationControlName"/>
           <label class="govuk-label govuk-radios__label" for="flag-location-{{i}}">
             <ng-container *ngIf="flagsInstance.flags.partyName">
-              {{flagsInstance.flags.partyName}}
+              {{flagsInstance.flags.partyName | rpxTranslate}}
               <ng-container *ngIf="flagsInstance.flags.roleOnCase">
-                ({{flagsInstance.flags.roleOnCase}})
+                ({{flagsInstance.flags.roleOnCase | rpxTranslate}})
               </ng-container>
             </ng-container>
             <ng-container *ngIf="!flagsInstance.flags.partyName">
-              {{caseLevelFlagLabel}}
+              {{caseLevelFlagLabel | rpxTranslate}}
             </ng-container>
           </label>
         </div>
@@ -32,5 +32,5 @@
 </ng-container>
 
 <div class="govuk-button-group" *ngIf="!caseFlagsConfigError">
-  <button class="button button-primary" type="button" (click)="onNext()">Next</button>
+  <button class="button button-primary" type="button" (click)="onNext()">{{'Next' | rpxTranslate}}</button>
 </div>

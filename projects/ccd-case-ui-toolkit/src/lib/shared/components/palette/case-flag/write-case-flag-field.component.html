@@ -14,7 +14,7 @@
 <div *ngIf="!isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="fieldState">
     <div id="create-flag-caption" class="govuk-caption-l" [ngClass]="{'form-group-error': errorMessages.length > 0}">
-      {{createFlagCaption}}
+      {{createFlagCaption | rpxTranslate}}
     </div>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
       <ccd-select-flag-location
