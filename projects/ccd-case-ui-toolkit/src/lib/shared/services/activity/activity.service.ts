@@ -30,7 +30,7 @@ export class ActivityService {
 
   private static handleHttpError(response: HttpErrorResponse): HttpError {
     const error: HttpError = HttpErrorService.convertToHttpError(response);
-    if (response.status && response.status !== error.status) {
+    if (response?.status !== error.status) {
       error.status = response.status;
     }
     return error;
@@ -76,10 +76,7 @@ export class ActivityService {
   }
 
   public verifyUserIsAuthorized(): void {
-    if (this.sessionStorageService.getItem('userDetails') === undefined) {
-      return;
-    }
-    if (this.activityUrl() && this.userAuthorised === undefined) {
+    if (this.sessionStorageService.getItem('userDetails') && this.activityUrl() && this.userAuthorised === undefined) {
       this.getActivities(ActivityService.DUMMY_CASE_REFERENCE).subscribe(
         () => this.userAuthorised = true,
         error => {
