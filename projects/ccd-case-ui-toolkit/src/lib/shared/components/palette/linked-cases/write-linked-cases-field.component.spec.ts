@@ -346,7 +346,6 @@ describe('WriteLinkedCasesFieldComponent', () => {
     spyOn(caseEditDataService, 'setCaseEditForm');
     linkedCasesService.isLinkedCasesEventTrigger = true;
     component.caseEditForm = FORM_GROUP;
-    console.log('FORM GROUP', component.formGroup);
     component.submitLinkedCases();
     expect(component.formGroup.value.caseLinks).toEqual(linkedCases);
     expect(caseEditDataService.setCaseEditForm).toHaveBeenCalled();
