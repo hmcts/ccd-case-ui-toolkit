@@ -439,7 +439,6 @@ describe('UpdateFlagComponent', () => {
   it('should display correct title based on the display mode', () => {
     component.displayContextParameter = '#ARGUMENT(UPDATE)';
     component.setUpdateCaseFlagTitle(activeFlag);
-    console.log('UPDATE FLAG TITLE', component.updateFlagTitle);
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual('Update flag "Flag 1"');
     component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
     component.setUpdateCaseFlagTitle(activeFlag);

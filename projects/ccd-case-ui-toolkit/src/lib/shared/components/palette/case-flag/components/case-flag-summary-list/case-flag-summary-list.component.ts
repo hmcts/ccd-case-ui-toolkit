@@ -68,11 +68,8 @@ export class CaseFlagSummaryListComponent implements OnInit {
   }
 
   private getCanDisplayStatus(): boolean {
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
-        this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ||
-        this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE) {
-      return false;
-    }
-    return true;
+    return !(this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
+      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ||
+      this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE);
   }
 }

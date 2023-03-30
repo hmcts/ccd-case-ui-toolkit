@@ -176,25 +176,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // and the current state is either CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE
     // then move to final review stage
     if (this.isDisplayContextParameterExternal) {
-      if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
-          caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
-        return true;
-      }
+      return caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
+          caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE;
     }
-    // If the current state is CaseFlagFieldState.FLAG_STATUS then move to final review stage
-    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_STATUS) {
-      return true;
-    }
-    // If the current state is CaseFlagFieldState.FLAG_UPDATE and Welsh translation checkbox is not selected then move to final review stage
-    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE &&
-        !this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value) {
-      return true;
-    }
-    // If the current state is CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION then move to final review stage
-    if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION) {
-      return true;
-    }
-    return false;
+    // If the current state is one of:
+    // * CaseFlagFieldState.FLAG_STATUS
+    // * CaseFlagFieldState.FLAG_UPDATE and Welsh translation checkbox is not selected
+    // * CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION
+    // then move to final review stage
+    return caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_STATUS ||
+      (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE &&
+        !this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value) ||
+      caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION;
   }
 
   public proceedToNextState(): void {
