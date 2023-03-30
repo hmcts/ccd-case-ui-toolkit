@@ -44,6 +44,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
   public static readonly UNICODE_SPACE = '%20';
   public static readonly EMPTY_SPACE = ' ';
+  private readonly HEARINGS_TAB_LABEL = 'Hearings';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -122,7 +123,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       });
     }
 
-    this.checkRouteAndSetCaseViewTab ();
+    this.checkRouteAndSetCaseViewTab();
 
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
@@ -163,13 +164,16 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.subs.push(this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        const url = event && (event as any).url;
+        const url: string = event && (event as any).url;
         if (url) {
-          const tabUrl = url ? url.split('#') : null ;
-          const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
-          // Refactored under EXUI-110 to address infinite tab loop
-          const tabIndex = this.tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tab.toLowerCase());
-          this.selectedTabIndex = tabIndex || 0;
+          if (url.includes('hearings')) {
+            this.selectedTabIndex = this.getTabIndexByTabLabel(this.tabGroup, 'hearings')
+          } else {
+            const urlFragment = this.getUrlFragment(url);
+            const tabLabel = decodeURIComponent(urlFragment);
+            const tabIndex = this.getTabIndexByTabLabel(this.tabGroup, tabLabel);
+            this.selectedTabIndex = tabIndex;
+          }
         }
       }));
   }
@@ -307,7 +311,15 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     // Refactored under EXUI-110 to address infinite tab loop
     const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
     const tabLabel = matTab.textLabel;
-    this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel })
+    // if hearings tab don't use fragment for navigation
+    if ((tabIndexChanged <= 1 && this.prependedTabs && this.prependedTabs.length) ||
+      (this.appendedTabs && this.appendedTabs.length && tabLabel === this.HEARINGS_TAB_LABEL)) {
+      // cases/case-details/:caseId/hearings
+      this.router.navigate([tabLabel.toLowerCase()], { relativeTo: this.route });
+    } else {
+      // cases/case-details/:caseId#tabLabel
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel })
+    }
   }
 
   public onLinkClicked(triggerOutputEventText: string): void {
@@ -419,6 +431,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.error = null;
     this.callbackErrorsSubject.next(null);
     this.alertService.clear();
+  }
+
+  private getUrlFragment(url: string) {
+    return url.split('#')[url.split('#').length - 1];
+  }
+
+  private getTabIndexByTabLabel(tabGroup: MatTabGroup, tabLabel) {
+    return tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tabLabel.toLowerCase());
   }
 
 }
