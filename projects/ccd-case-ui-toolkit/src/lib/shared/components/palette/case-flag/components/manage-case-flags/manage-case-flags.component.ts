@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } fro
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 
 @Component({
   selector: 'ccd-manage-case-flags',
@@ -27,8 +27,6 @@ export class ManageCaseFlagsComponent implements OnInit {
   public flags: Flags;
   public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
-  private readonly updateMode = '#ARGUMENT(UPDATE)';
-  private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   private readonly excludedFlagStatuses: CaseFlagStatus[] = [CaseFlagStatus.INACTIVE, CaseFlagStatus.NOT_APPROVED];
 
   public ngOnInit(): void {
@@ -162,9 +160,9 @@ export class ManageCaseFlagsComponent implements OnInit {
 
   public setManageCaseFlagTitle(displayContextParameter: string): CaseFlagWizardStepTitle {
     switch (displayContextParameter) {
-      case this.updateMode:
+      case CaseFlagDisplayContextParameter.UPDATE:
         return CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
-      case this.updateExternalMode:
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
         return CaseFlagWizardStepTitle.MANAGE_SUPPORT;
       default:
         return CaseFlagWizardStepTitle.NONE;
@@ -175,7 +173,7 @@ export class ManageCaseFlagsComponent implements OnInit {
     this.manageCaseFlagSelectedErrorMessage = null;
     this.errorMessages = [];
     if (!this.formGroup.get(this.selectedControlName).value) {
-      const errorMessage = this.displayContextParameter === this.updateExternalMode ?
+      const errorMessage = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ?
         SelectFlagErrorMessage.MANAGE_SUPPORT_FLAG_NOT_SELECTED : SelectFlagErrorMessage.MANAGE_CASE_FLAGS_FLAG_NOT_SELECTED;
       this.manageCaseFlagSelectedErrorMessage = errorMessage;
       this.errorMessages.push({

@@ -6,7 +6,7 @@ import { CaseFlagStateService } from '../../case-editor/services/case-flag-state
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagStatus } from './enums';
+import { CaseFlagDisplayContextParameter, CaseFlagStatus } from './enums';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
@@ -25,10 +25,6 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
   public readonly readSupportMode = '#ARGUMENT(READ,EXTERNAL)';
-  private readonly createMode = '#ARGUMENT(CREATE)';
-  private readonly createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
-  private readonly updateMode = '#ARGUMENT(UPDATE)';
-  private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -74,8 +70,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       if (flagLauncherComponent) {
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
-        if ((flagLauncherComponent.caseField.display_context_parameter === this.createMode ||
-            flagLauncherComponent.caseField.display_context_parameter === this.createExternalMode
+        if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE ||
+            flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL
           ) &&
           flagLauncherComponent.selectedFlagsLocation) {
           this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
@@ -84,8 +80,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
           );
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
-        } else if ((flagLauncherComponent.caseField.display_context_parameter === this.updateMode ||
-          flagLauncherComponent.caseField.display_context_parameter === this.updateExternalMode) &&
+        } else if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE ||
+          flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) &&
           flagLauncherComponent.selectedFlag) {
             this.flagForSummaryDisplay =
               this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
-import { CaseFlagSummaryListDisplayMode } from '../../enums';
+import { CaseFlagDisplayContextParameter } from '../../enums';
 import { CaseFlagSummaryListComponent } from './case-flag-summary-list.component';
 
 describe('CaseFlagSummaryListComponent', () => {
@@ -48,7 +48,7 @@ describe('CaseFlagSummaryListComponent', () => {
       } as FlagDetail
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;
-    component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE;
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
@@ -74,7 +74,7 @@ describe('CaseFlagSummaryListComponent', () => {
       } as FlagDetail
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;
-    component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE;
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
@@ -102,7 +102,7 @@ describe('CaseFlagSummaryListComponent', () => {
       } as FlagDetail
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;
-    component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE;
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
@@ -129,7 +129,7 @@ describe('CaseFlagSummaryListComponent', () => {
       } as FlagDetail
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;
-    component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE;
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
@@ -155,7 +155,7 @@ describe('CaseFlagSummaryListComponent', () => {
       } as FlagDetail
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;
-    component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateFlagHeaderText);
@@ -183,7 +183,7 @@ describe('CaseFlagSummaryListComponent', () => {
       } as FlagDetail
     } as FlagDetailDisplay;
     component.flagForSummaryDisplay = flag;
-    component.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateFlagHeaderText);

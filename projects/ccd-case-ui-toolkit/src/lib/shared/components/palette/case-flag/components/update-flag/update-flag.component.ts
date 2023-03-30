@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
 
 @Component({
   selector: 'ccd-update-flag',
@@ -28,9 +28,8 @@ export class UpdateFlagComponent implements OnInit {
   public readonly caseFlagFormFields = CaseFlagFormFields;
   private readonly textMaxCharLimit = 200;
   private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
-  public readonly updateMode = '#ARGUMENT(UPDATE)';
-  private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   private flagDetail: FlagDetail;
+  public caseFlagDisplayContextParameter = CaseFlagDisplayContextParameter;
 
   constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
@@ -78,12 +77,12 @@ export class UpdateFlagComponent implements OnInit {
 
   public setUpdateCaseFlagTitle(flagDetail: FlagDetail): string {
     switch (this.displayContextParameter) {
-      case this.updateMode:
+      case CaseFlagDisplayContextParameter.UPDATE:
         if (flagDetail?.name) {
           return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}"` : '"'}`;
         }
         return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE}`;
-      case this.updateExternalMode:
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
         return CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_SUPPORT;
       default:
         return CaseFlagWizardStepTitle.NONE;

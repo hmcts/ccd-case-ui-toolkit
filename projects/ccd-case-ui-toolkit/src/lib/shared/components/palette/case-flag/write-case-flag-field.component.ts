@@ -10,7 +10,7 @@ import { FieldsUtils } from '../../../services/fields';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
@@ -36,10 +36,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public caseTitleSubscription: Subscription;
   public displayContextParameter: string;
   private allCaseFlagStagesCompleted = false;
-  private readonly updateMode = '#ARGUMENT(UPDATE)';
-  private readonly updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
-  private readonly createMode = '#ARGUMENT(CREATE)';
-  private readonly createExternalMode = '#ARGUMENT(CREATE,EXTERNAL)';
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
@@ -147,11 +143,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public setDisplayContextParameterUpdate(displayContextParameter: string): boolean {
-    return displayContextParameter === this.updateMode || displayContextParameter === this.updateExternalMode;
+    return displayContextParameter === CaseFlagDisplayContextParameter.UPDATE ||
+      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
   }
 
   public setDisplayContextParameterExternal(displayContextParameter: string): boolean {
-    return displayContextParameter === this.createExternalMode || displayContextParameter === this.updateExternalMode;
+    return displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
+      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
@@ -177,7 +175,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // If the journey is request support or manage support
     // and the current state is either CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE
     // then move to final review stage
-    if (this.isSupportJourney()) {
+    if (this.isDisplayContextParameterExternal) {
       if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
           caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
         return true;
@@ -194,14 +192,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
     // If the current state is CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION then move to final review stage
     if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION) {
-      return true;
-    }
-    return false;
-  }
-
-  public isSupportJourney(): boolean {
-    if (this.displayContextParameter === this.createExternalMode ||
-        this.displayContextParameter === this.updateExternalMode) {
       return true;
     }
     return false;
@@ -225,6 +215,11 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     switch (this.fieldState) {
       case CaseFlagFieldState.FLAG_STATUS:
         this.addFlagToCollection();
+        break;
+      case CaseFlagFieldState.FLAG_COMMENTS:
+        if (this.isDisplayContextParameterExternal) {
+          this.addFlagToCollection();
+        }
         break;
       case this.manageFlagFinalState:
         this.updateFlagInCollection();
@@ -436,6 +431,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public ngOnDestroy(): void {
+    // Reset the fieldstateToNavigate as the write journey completes at this point
+    this.caseFlagStateService.fieldStateToNavigate = undefined;
     this.caseTitleSubscription?.unsubscribe();
   }
 
@@ -450,9 +447,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public setCreateFlagCaption(displayContextParameter: string): CaseFlagText {
     switch (displayContextParameter) {
-      case this.createMode:
+      case CaseFlagDisplayContextParameter.CREATE:
         return CaseFlagText.CAPTION_INTERNAL;
-      case this.createExternalMode:
+      case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
         return CaseFlagText.CAPTION_EXTERNAL;
       default:
         return CaseFlagText.CAPTION_NONE;

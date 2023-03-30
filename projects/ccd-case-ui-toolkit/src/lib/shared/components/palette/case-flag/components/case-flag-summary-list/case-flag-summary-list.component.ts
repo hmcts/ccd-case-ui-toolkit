@@ -68,9 +68,9 @@ export class CaseFlagSummaryListComponent implements OnInit {
   }
 
   private getCanDisplayStatus(): boolean {
+    // Do not display status for request support and manage support summary pages
     if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
-        this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ||
-        this.summaryListDisplayMode === CaseFlagSummaryListDisplayMode.CREATE) {
+        this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
       return false;
     }
     return true;

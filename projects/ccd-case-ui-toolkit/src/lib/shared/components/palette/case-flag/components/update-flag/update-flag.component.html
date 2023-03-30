@@ -31,7 +31,8 @@
         </div>
       </div>
 
-      <div id="flag-status-container" class="govuk-!-margin-bottom-4" *ngIf="displayContextParameter === updateMode">
+      <div id="flag-status-container" class="govuk-!-margin-bottom-4"
+        *ngIf="displayContextParameter === caseFlagDisplayContextParameter.UPDATE">
         <fieldset class="govuk-fieldset" aria-describedby="update-flag-status-heading">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h1 id="update-flag-status-heading" class="govuk-fieldset__heading">
@@ -74,7 +75,8 @@
         </div>
       </div>
 
-      <div class="govuk-!-margin-bottom-6" *ngIf="displayContextParameter === updateMode">
+      <div class="govuk-!-margin-bottom-6"
+        *ngIf="displayContextParameter === caseFlagDisplayContextParameter.UPDATE">
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" type="checkbox"
