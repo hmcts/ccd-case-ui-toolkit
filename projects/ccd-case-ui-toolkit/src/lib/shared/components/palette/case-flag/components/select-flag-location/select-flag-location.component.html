@@ -16,7 +16,7 @@
             type="radio" [value]="flagsInstance" [formControlName]="selectedLocationControlName"/>
           <label class="govuk-label govuk-radios__label" for="flag-location-{{i}}">
             <ng-container *ngIf="flagsInstance.flags.partyName">
-              {{flagsInstance.flags.partyName | rpxTranslate}}
+              {{flagsInstance.flags.partyName}}
               <ng-container *ngIf="flagsInstance.flags.roleOnCase">
                 ({{flagsInstance.flags.roleOnCase | rpxTranslate}})
               </ng-container>

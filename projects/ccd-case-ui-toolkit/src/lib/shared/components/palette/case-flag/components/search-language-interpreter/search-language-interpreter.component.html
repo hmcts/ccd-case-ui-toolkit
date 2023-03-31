@@ -24,7 +24,7 @@
         <mat-option *ngFor="let language of filteredLanguages$ | async" [value]="language">
           {{language.value | rpxTranslate}}
         </mat-option>
-        <mat-option *ngIf="noResults && searchTerm && searchTerm.length >= minSearchCharacters" disabled>{{'No results found'  | rpxTranslate}}</mat-option>
+        <mat-option *ngIf="noResults && searchTerm && searchTerm.length >= minSearchCharacters" disabled>{{'No results found' | rpxTranslate}}</mat-option>
       </mat-autocomplete>
     </div>
     <div class="govuk-checkboxes govuk-checkboxes--small govuk-checkboxes--conditional" data-module="govuk-checkboxes">
