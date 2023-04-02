@@ -2,8 +2,10 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angula
 import { ActivatedRoute } from '@angular/router';
 import { fromEvent, Observable, of, Subscription } from 'rxjs';
 import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { CaseField } from '../../../domain';
 import { CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
-import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
+import { UserInfo } from '../../../domain/user/user-info.model';
+import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -19,14 +21,15 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public currentDocument: CaseFileViewDocument | undefined;
   public errorMessages = [] as string[];
   private caseVersion: number;
+  public caseField: CaseField;
 
   constructor(private readonly elementRef: ElementRef,
-              private readonly route: ActivatedRoute,
-              private caseFileViewService: CaseFileViewService,
-              private documentManagementService: DocumentManagementService,
-              private readonly loadingService: LoadingService
-  ) {
-  }
+    private readonly route: ActivatedRoute,
+    private caseFileViewService: CaseFileViewService,
+    private documentManagementService: DocumentManagementService,
+    private readonly loadingService: LoadingService,
+    private readonly sessionStorageService: SessionStorageService
+  ) { }
 
   public ngOnInit(): void {
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
@@ -37,6 +40,13 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
       },
       error: _ => this.getCategoriesAndDocumentsError = true
     });
+
+    // EXUI-8000
+    const userInfo: UserInfo = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    // Get acls that intersects from acl roles and user roles
+    const acls = this.caseField.acls.filter(acl => userInfo.roles.includes(acl.role));
+    // As there can be more than one intersecting role, if any acls are update: true
+    this.allowMoving = acls.some(acl => acl.update);
   }
 
   public ngAfterViewInit(): void {

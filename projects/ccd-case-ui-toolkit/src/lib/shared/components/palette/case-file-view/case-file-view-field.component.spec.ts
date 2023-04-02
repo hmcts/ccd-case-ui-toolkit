@@ -1,23 +1,50 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import SpyObj = jasmine.SpyObj;
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of, throwError } from 'rxjs';
+import { CaseField } from '../../../domain';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
 import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
-import createSpyObj = jasmine.createSpyObj;
+import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
+import SpyObj = jasmine.SpyObj;
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
   let fixture: ComponentFixture<CaseFileViewFieldComponent>;
   let mockCaseFileViewService: jasmine.SpyObj<CaseFileViewService>;
   let mockLoadingService: jasmine.SpyObj<LoadingService>;
+  let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
   const cidParam = '1234123412341234';
   let mockRoute: { params: Observable<{ cid: string }>, snapshot: { paramMap: SpyObj<any> } };
+
+  const mockCaseFieldTrue = {
+    acls: [
+      {
+        create: true,
+        read: true,
+        update: true,
+        delete: false,
+        role: 'caseworker-privatelaw-judge'
+      }
+    ]
+  };
+  const mockCaseFieldFalse = {
+    acls: [
+      {
+        create: true,
+        read: true,
+        update: false,
+        delete: false,
+        role: 'caseworker-privatelaw-judge'
+      },
+    ]
+  };
+  const mockUser: string = JSON.stringify({ roles: ['caseworker-privatelaw-judge'] });
 
   beforeEach(waitForAsync(() => {
     mockRoute = {
@@ -37,6 +64,9 @@ describe('CaseFileViewFieldComponent', () => {
     mockLoadingService.register.and.returnValue('loadingToken');
     mockLoadingService.unregister.and.returnValue(null);
 
+    mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
+    mockSessionStorageService.getItem.and.returnValue(mockUser);
+
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule
@@ -52,6 +82,7 @@ describe('CaseFileViewFieldComponent', () => {
         { provide: CaseFileViewService, useValue: mockCaseFileViewService },
         { provide: DocumentManagementService, useValue: mockDocumentManagementService },
         { provide: LoadingService, useValue: mockLoadingService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
       ]
     })
     .compileComponents();
@@ -60,10 +91,12 @@ describe('CaseFileViewFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseFileViewFieldComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    component.caseField = new CaseField();
+    component.caseField.acls = mockCaseFieldTrue.acls;
   });
 
   it('should create component', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(mockCaseFileViewService.getCategoriesAndDocuments).toHaveBeenCalled();
     expect(component.getCategoriesAndDocumentsError).toBe(false);
@@ -106,6 +139,18 @@ describe('CaseFileViewFieldComponent', () => {
 
     expect(component.currentDocument.document_filename).toEqual(dummyNodeTreeDocument.document_filename);
     expect(component.currentDocument.document_binary_url).toEqual(dummyNodeTreeDocument.document_binary_url);
+  });
+
+  it('should set allowMoving to true based on acl update being true', () => {
+    component.caseField.acls = mockCaseFieldTrue.acls;
+    fixture.detectChanges();
+    expect(component.allowMoving).toBeTruthy();
+  });
+
+  it('should set allowMoving to false based on acl update being false', () => {
+    component.caseField.acls = mockCaseFieldFalse.acls;
+    fixture.detectChanges();
+    expect(component.allowMoving).toBeFalsy();
   });
 
   it('should reset error messages when calling resetErrorMessages', () => {
