@@ -32,9 +32,6 @@
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
 
-### Version 5.0.46-fix-case-link
-**EUI-7521** Fix case link hyperlink on applications tab
-
 ### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
 **EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary
 
