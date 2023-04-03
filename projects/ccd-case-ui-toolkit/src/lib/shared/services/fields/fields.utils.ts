@@ -351,12 +351,21 @@ export class FieldsUtils {
     return caseField.field_type.type === 'FlagLauncher';
   }
 
-	public static isComponentLauncherCaseField(caseField: CaseField): boolean {
+  public static isComponentLauncherCaseField(caseField: CaseField): boolean {
     if (!caseField) {
       return false;
     }
 
     return caseField.field_type.type === 'ComponentLauncher';
+  }
+
+  public static isLinkedCasesCaseField(caseField: CaseField): boolean {
+    return FieldsUtils.isComponentLauncherCaseField(caseField) &&
+      caseField.id === 'LinkedCasesComponentLauncher';
+  }
+
+  public static containsLinkedCasesCaseField(caseFields: CaseField[]): boolean {
+    return caseFields.some(caseField => FieldsUtils.isLinkedCasesCaseField(caseField));
   }
 
   public static isFlagsFieldType(fieldType: FieldType): boolean {

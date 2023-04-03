@@ -54,6 +54,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public validationErrors: { id: string, message: string }[] = [];
   public showSpinner: boolean;
   public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public isLinkedCasesJourneyAtFinalStep: boolean;
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
@@ -109,6 +110,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.editForm = editForm
     });
+    this.caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$.subscribe({
+      next: isLinkedCasesJourneyAtFinalStep => {
+        this.isLinkedCasesJourneyAtFinalStep = isLinkedCasesJourneyAtFinalStep;
+      }
+    });
     this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
       next: state => {
         if (state) {
@@ -132,7 +138,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   public currentPageIsNotValid(): boolean {
-    return !this.pageValidationService.isPageValid(this.currentPage, this.editForm);
+    return !this.pageValidationService.isPageValid(this.currentPage, this.editForm) ||
+      (this.isLinkedCasesJourney() && !this.isLinkedCasesJourneyAtFinalStep);
+  }
+
+  public isLinkedCasesJourney(): boolean {
+    return FieldsUtils.containsLinkedCasesCaseField(this.currentPage.case_fields);
   }
 
   /**
@@ -227,7 +238,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.caseEditDataService.clearFormValidationErrors();
 
     if (this.currentPageIsNotValid()) {
-      this.generateErrorMessage(this.currentPage.case_fields);
+      // The generateErrorMessage method filters out the hidden fields.
+      // The error message for LinkedCases journey will never get displayed because the
+      // LinkedCases is configured with ComponentLauncher field as visible and caseLinks field as hidden.
+      if (this.isLinkedCasesJourney()) {
+        this.validationErrors.push({ id: '', message: 'Please select Next to continue' });
+      } else {
+        this.generateErrorMessage(this.currentPage.case_fields);
+      }
     }
     if (!this.isSubmitting && !this.currentPageIsNotValid()) {
       this.isSubmitting = true;
@@ -470,6 +488,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   private syncCaseEditDataService(): void {
     this.caseEditDataService.setCaseDetails(this.caseEdit.caseDetails);
     this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
+    // this.caseEditDataService.setCaseLinkError(this.caseLinkError);
     this.caseEditDataService.setCaseTitle(this.getCaseTitle());
     this.caseEditDataService.setCaseEditForm(this.editForm);
     this.caseEditDataService.caseFormValidationErrors$.subscribe({
