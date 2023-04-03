@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CaseFlagStatus } from '../../enums';
 import { CaseFlagTableComponent } from './case-flag-table.component';
 
@@ -41,7 +41,7 @@ describe('CaseFlagTableComponent', () => {
     caseField: null
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CaseFlagTableComponent]
@@ -78,5 +78,14 @@ describe('CaseFlagTableComponent', () => {
     fixture.detectChanges();
     const caseViewerFieldLabelElement = fixture.debugElement.nativeElement.querySelector('#case-viewer-field-label');
     expect(caseViewerFieldLabelElement).toBeNull();
+  });
+
+  it('should display the sub-type value (i.e. language name) when displaying a "language interpreter" case flag type', () => {
+    component.flagData = flagData;
+    fixture.detectChanges();
+    const tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the first element of the second row of five (i.e. sixth element) contains the language name
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[5].textContent).toContain(flagData.flags.details[1].subTypeValue);
   });
 });
