@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
+**EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
+
 ### Version 6.13.10-rc1
 **EUI-5298** Release 6.13.10 including 6.13.0, linked cases (EUI-7676) and case file view fix (EUI-7417)
 
