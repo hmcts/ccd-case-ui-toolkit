@@ -1,0 +1,37 @@
+.no-visited-state {
+  color: #1d70b8;
+  cursor: pointer;
+  &:hover {
+    color: #003078;
+  }
+}
+
+.govuk-checkboxes {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  max-height: 500px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-top: 5px;
+  .govuk-checkboxes__item {
+    display: flex;
+  }
+}
+
+::ng-deep .govuk-width-container {
+  .screen-990 {
+    .width-50 {
+      width: 100%;
+    }
+  }
+}
+.govuk-table__row{
+  position: relative;
+  .table-group-error{
+    position: absolute;
+    height: calc(100% - 20px);
+    margin-left: -15px;
+  }
+}

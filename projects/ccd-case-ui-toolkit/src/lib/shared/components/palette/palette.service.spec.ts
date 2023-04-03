@@ -1,6 +1,6 @@
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
-import { CaseFileViewFieldComponent, CaseFileViewFieldReadComponent } from './case-file-view';
+import { CaseFileViewFieldComponent } from './case-file-view';
 import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -13,6 +13,7 @@ import { ReadDateFieldComponent } from './date/read-date-field.component';
 import { WriteDateContainerFieldComponent } from './date/write-date-container-field.component';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { ReadEmailFieldComponent } from './email/read-email-field.component';
 import { WriteEmailFieldComponent } from './email/write-email-field.component';
 import { ReadFixedListFieldComponent } from './fixed-list/read-fixed-list-field.component';
@@ -20,6 +21,7 @@ import { WriteFixedListFieldComponent } from './fixed-list/write-fixed-list-fiel
 import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
 import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
+import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
@@ -230,6 +232,14 @@ describe('PaletteService', () => {
       assertComponent('CasePaymentHistoryViewer', false, CasePaymentHistoryViewerFieldComponent, 'AnID');
     });
 
+    it('should get WriteDynamicMultiSelectList component class for input', () => {
+      assertComponent('DynamicMultiSelectList', true, WriteDynamicMultiSelectListFieldComponent, 'AnID');
+    });
+
+    it('should get ReadDynamicMultiSelectList component class for input', () => {
+      assertComponent('DynamicMultiSelectList', false, ReadDynamicMultiSelectListFieldComponent, 'AnID');
+    });
+
     it('should get LabelFieldComponent component class for Label regardless of read/write', () => {
       assertComponent('Label', true, LabelFieldComponent, 'AnID');
       assertComponent('Label', false, LabelFieldComponent, 'AnID');
@@ -245,7 +255,15 @@ describe('PaletteService', () => {
       caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
       caseField.display_context_parameter = '#ARGUMENT(CaseFileView)';
       expect(paletteService.getFieldComponentClass(caseField, true)).toBe(CaseFileViewFieldComponent);
-      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(CaseFileViewFieldReadComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(CaseFileViewFieldComponent);
+    });
+
+    it('should get LinkedCasesFieldComponent component class for ComponentLauncher field with argument of "LinkedCases"', () => {
+      const caseField = new CaseField();
+      caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
+      caseField.display_context_parameter = '#ARGUMENT(CREATE,LinkedCases)';
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(WriteLinkedCasesFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(ReadLinkedCasesFieldComponent);
     });
 
     it('should get UnsupportedFieldComponent component class for ComponentLauncher field with unknown argument', () => {

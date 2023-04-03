@@ -1,7 +1,7 @@
 import { Injectable, Type } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
+import { DisplayContextCustomParameter, DisplayContextParameter } from '../../domain/definition/display-context-enum.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
-import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
@@ -29,6 +29,7 @@ import { CaseHistoryViewerFieldComponent } from './history/case-history-viewer-f
 import { ReadJudicialUserFieldComponent } from './judicial-user/read-judicial-user-field.component';
 import { WriteJudicialUserFieldComponent } from './judicial-user/write-judicial-user-field.component';
 import { LabelFieldComponent } from './label/label-field.component';
+import { ReadLinkedCasesFieldComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
 import { ReadMoneyGbpFieldComponent } from './money-gbp/read-money-gbp-field.component';
 import { WriteMoneyGbpFieldComponent } from './money-gbp/write-money-gbp-field.component';
 import { ReadMultiSelectListFieldComponent } from './multi-select-list/read-multi-select-list-field.component';
@@ -40,6 +41,7 @@ import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-sum
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
+import { WriteDynamicMultiSelectListFieldComponent, ReadDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
 import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';
@@ -54,7 +56,8 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 @Injectable()
 export class PaletteService {
   private readonly componentLauncherRegistry = {
-    CaseFileView: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent]
+    [DisplayContextCustomParameter.CaseFileView]: [CaseFileViewFieldComponent, CaseFileViewFieldComponent],
+    [DisplayContextCustomParameter.LinkedCases]: [WriteLinkedCasesFieldComponent, ReadLinkedCasesFieldComponent]
   };
 
   public getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
@@ -83,6 +86,8 @@ export class PaletteService {
         return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
       case 'DynamicRadioList':
         return write ? WriteDynamicRadioListFieldComponent : ReadDynamicRadioListFieldComponent;
+      case 'DynamicMultiSelectList':
+          return write ? WriteDynamicMultiSelectListFieldComponent : ReadDynamicMultiSelectListFieldComponent;
       case 'FixedRadioList':
         return write ? WriteFixedRadioListFieldComponent : ReadFixedRadioListFieldComponent;
       case 'Complex':
@@ -125,11 +130,19 @@ export class PaletteService {
   }
 
   private getComponentLauncherComponent(caseField: CaseField, write: boolean): any {
-    // Extract the value passed for #ARGUMENT(...) in the CaseField display_context_parameter and return the matching
-    // component from the componentLauncherRegistry
-    const argumentValue = caseField.display_context_parameter.match(/#ARGUMENT\((.*?)\)/)[1];
-    if (argumentValue && this.componentLauncherRegistry.hasOwnProperty(argumentValue)) {
-      return this.componentLauncherRegistry[argumentValue][write ? 0 : 1];
+    // Extract the value passed for #ARGUMENT(...) in the CaseField display_context_parameter and
+    // delete the default entries and return the matching component from the componentLauncherRegistry
+    const argumentValue = caseField?.display_context_parameter?.match(/#ARGUMENT\((.*?)\)/)[1];
+    if (argumentValue) {
+      const displayContextParameterArray = argumentValue.includes(',') ? argumentValue.split(',') : [argumentValue];
+      const componentToRender = displayContextParameterArray.filter(displayContextParameter => {
+        return !Object.values(DisplayContextParameter).find(displayContextParameterFromLookup => {
+           return displayContextParameter === displayContextParameterFromLookup;
+        });
+      });
+      if (componentToRender?.length > 0 && this.componentLauncherRegistry.hasOwnProperty(componentToRender[0])) {
+        return this.componentLauncherRegistry[componentToRender[0]][write ? 0 : 1];
+      }
     }
     return UnsupportedFieldComponent;
   }

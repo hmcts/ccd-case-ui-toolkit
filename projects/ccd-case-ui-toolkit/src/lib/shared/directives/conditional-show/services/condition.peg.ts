@@ -72,7 +72,7 @@ const conditionSource =
     { return s1 + fr + s2 }
 
   FieldReference
-    = characters:[A-Za-z0-9._]+ { return characters.join(""); }
+    = characters:[A-Za-z0-9._-]+ { return characters.join(""); }
 
   openSquare
    = "["
@@ -84,7 +84,7 @@ const conditionSource =
    = [0-9]+
 
   quotedValue
-   = '"'val:[A-Za-z0-9.,* _/-]*'"'
+   = '"'val:[A-Za-z0-9.,* _&()/-]*'"'
    { return val.join(""); }
 
   bracket
