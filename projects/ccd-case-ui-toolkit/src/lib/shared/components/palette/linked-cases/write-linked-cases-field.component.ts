@@ -111,6 +111,9 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
       this.formGroup.updateValueAndValidity();
       // update form value
       this.submitLinkedCases();
+    } else {
+      // Continue button event must not be allowed if not in final page
+      this.caseEditDataService.setLinkedCasesJourneyAtFinalStep(false);
     }
   }
 

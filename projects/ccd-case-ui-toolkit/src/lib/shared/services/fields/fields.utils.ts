@@ -365,7 +365,7 @@ export class FieldsUtils {
   }
 
   public static containsLinkedCasesCaseField(caseFields: CaseField[]): boolean {
-    return caseFields.some(caseField => FieldsUtils.isLinkedCasesCaseField(caseField));
+    return caseFields?.some(caseField => FieldsUtils.isLinkedCasesCaseField(caseField));
   }
 
   public static isFlagsFieldType(fieldType: FieldType): boolean {

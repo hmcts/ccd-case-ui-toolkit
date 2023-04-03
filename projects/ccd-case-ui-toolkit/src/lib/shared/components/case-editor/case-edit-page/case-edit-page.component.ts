@@ -242,7 +242,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       // The error message for LinkedCases journey will never get displayed because the
       // LinkedCases is configured with ComponentLauncher field as visible and caseLinks field as hidden.
       if (this.isLinkedCasesJourney()) {
-        this.validationErrors.push({ id: '', message: 'Please select Next to continue' });
+        this.validationErrors.push({ id: 'next-button', message: 'Please select Next to go to the next page' });
+        CaseEditPageComponent.scrollToTop();
       } else {
         this.generateErrorMessage(this.currentPage.case_fields);
       }
@@ -488,7 +489,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   private syncCaseEditDataService(): void {
     this.caseEditDataService.setCaseDetails(this.caseEdit.caseDetails);
     this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
-    // this.caseEditDataService.setCaseLinkError(this.caseLinkError);
     this.caseEditDataService.setCaseTitle(this.getCaseTitle());
     this.caseEditDataService.setCaseEditForm(this.editForm);
     this.caseEditDataService.caseFormValidationErrors$.subscribe({
