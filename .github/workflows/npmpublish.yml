@@ -83,6 +83,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_API_TOKEN }}
+          NPM_PUBLISH_REGISTRY: https://registry.npmjs.org/
 
   publish-gpr:
     needs: sonarcloud
@@ -103,3 +104,4 @@ jobs:
         if: startsWith(github.ref, 'refs/tags')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com/
