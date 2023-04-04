@@ -21,6 +21,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+      - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn lint
       - run: yarn build
