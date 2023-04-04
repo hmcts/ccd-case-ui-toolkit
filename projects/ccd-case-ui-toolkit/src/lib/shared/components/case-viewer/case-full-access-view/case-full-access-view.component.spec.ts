@@ -573,6 +573,7 @@ const WORK_ALLOCATION_CASE_VIEW = {
 const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
 const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
 const DIALOG_CONFIG = new MatDialogConfig();
+const CASE_FLAGS_READ_EXTERNAL_MODE = '#ARGUMENT(READ,EXTERNAL)';
 
 let fixture: ComponentFixture<CaseFullAccessViewComponent>;
 let fixtureDialog: ComponentFixture<DeleteOrCancelDialogComponent>;
@@ -1546,6 +1547,26 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     viewCaseFlagsLink.click();
     f.detectChanges();
     expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('true');
+  });
+
+  it('should not display active Case Flags banner message for an external user, even if there are active Case Flags', () => {
+    // Set the display_context_parameter attribute of the FlagLauncher CaseField to external mode
+    CASE_VIEW.tabs[3].fields[0].display_context_parameter = CASE_FLAGS_READ_EXTERNAL_MODE;
+    // Set both Case Flags' status to "Active"
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.status = CaseFlagStatus.ACTIVE;
+    CASE_VIEW.tabs[3].fields[1].value.details[1].value.status = CaseFlagStatus.ACTIVE;
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() as above
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement).toBeNull();
+    expect(comp.activeCaseFlags).toBe(true);
   });
 });
 
