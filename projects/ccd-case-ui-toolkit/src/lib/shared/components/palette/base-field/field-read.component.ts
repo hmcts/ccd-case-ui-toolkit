@@ -5,7 +5,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
 
-const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList' ];
+const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList', 'DynamicMultiSelectList' ];
 
 @Component({
   selector: 'ccd-field-read',
