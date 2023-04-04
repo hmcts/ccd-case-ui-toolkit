@@ -66,13 +66,12 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish-npm:
+    if: startsWith(github.ref, 'refs/tags')
     needs: sonarcloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        if: startsWith(github.ref, 'refs/tags')
       - uses: actions/setup-node@v3
-        if: startsWith(github.ref, 'refs/tags')
         with:
           node-version: 14
           registry-url: https://registry.npmjs.org/
@@ -80,19 +79,17 @@ jobs:
       - run: yarn install
       - run: yarn build && cd dist/ccd-case-ui-toolkit
       - run: yarn npm publish
-        if: startsWith(github.ref, 'refs/tags')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_API_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://registry.npmjs.org/
 
   publish-gpr:
+    if: startsWith(github.ref, 'refs/tags')
     needs: sonarcloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        if: startsWith(github.ref, 'refs/tags')
       - uses: actions/setup-node@v3
-        if: startsWith(github.ref, 'refs/tags')
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
@@ -101,7 +98,6 @@ jobs:
       - run: yarn install
       - run: yarn build
       - run: yarn npm publish
-        if: startsWith(github.ref, 'refs/tags')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com/
