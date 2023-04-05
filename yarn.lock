@@ -2412,9 +2412,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@workspace:.":
+"@hmcts/ccd-case-ui-toolkit-lib@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@hmcts/ccd-case-ui-toolkit@workspace:."
+  resolution: "@hmcts/ccd-case-ui-toolkit-lib@workspace:."
   dependencies:
     "@angular-devkit/build-angular": ~0.1102.19
     "@angular-material-components/datetime-picker": 5.1.1
@@ -2545,6 +2545,14 @@ __metadata:
     yargs-parser: 18.1.2
     yarn: ^1.22.15
     zone.js: ~0.11.7
+  languageName: unknown
+  linkType: soft
+
+"@hmcts/ccd-case-ui-toolkit@workspace:dist/ccd-case-ui-toolkit":
+  version: 0.0.0-use.local
+  resolution: "@hmcts/ccd-case-ui-toolkit@workspace:dist/ccd-case-ui-toolkit"
+  dependencies:
+    tslib: ^2.0.0
   languageName: unknown
   linkType: soft
 

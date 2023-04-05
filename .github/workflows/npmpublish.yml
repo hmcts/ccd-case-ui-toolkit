@@ -77,8 +77,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: corepack enable && yarn --version
       - run: yarn install
-      - run: yarn build && cd dist/ccd-case-ui-toolkit
-      - run: yarn npm publish
+      - run: yarn build
+      - run: cd dist/ccd-case-ui-toolkit && yarn npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_API_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://registry.npmjs.org/
