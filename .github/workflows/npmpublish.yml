@@ -78,7 +78,7 @@ jobs:
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn build
-      - run: cd dist/ccd-case-ui-toolkit && yarn npm publish
+      - run: npm publish dist/ccd-case-ui-toolkit --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_API_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://registry.npmjs.org/
@@ -97,7 +97,7 @@ jobs:
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn build
-      - run: yarn npm publish
+      - run: npm publish dist/ccd-case-ui-toolkit --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com/
