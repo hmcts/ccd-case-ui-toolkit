@@ -1,6 +1,6 @@
 {
-  "name": "@hmcts/ccd-case-ui-toolkit-lib",
-  "version": "6.13.10-lib-workspace",
+  "name": "@hmcts/ccd-case-ui-toolkit",
+  "version": "6.13.10-g-exui-197",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -14,9 +14,6 @@
     "type": "git",
     "url": "https://github.com/hmcts/ccd-case-ui-toolkit.git"
   },
-  "workspaces": [
-    "dist/ccd-case-ui-toolkit"
-  ],
   "publishConfig": {
     "access": "public"
   },
