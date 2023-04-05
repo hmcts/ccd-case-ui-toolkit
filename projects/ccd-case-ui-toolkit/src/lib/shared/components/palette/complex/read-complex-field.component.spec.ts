@@ -230,12 +230,14 @@ describe('ReadComplexFieldComponent', () => {
       AddressLine1: '1 West',
       AddressLine2: 'South'
     };
-    const CASE_FIELD: CaseField = ({
+    /* tslint:disable-next-line */
+    const CASE_FIELD = ({
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES,
-      value: VALUE
+      value: VALUE,
+      isDynamic: (()=>{})
     }) as CaseField;
 
     let fixture: ComponentFixture<ReadComplexFieldComponent>;

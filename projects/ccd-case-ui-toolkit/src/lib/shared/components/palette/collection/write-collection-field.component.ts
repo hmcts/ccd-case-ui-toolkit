@@ -169,7 +169,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   public addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    const item = { value: null };
+    let item = { value: null }
+
+    if ( this.isCollectionDynamic() ) {
+      item  = {...this.caseField.value[this.caseField.value.length - 1]};
+      const key: number = Number(item['id'][item['id'].length - 1]) + 1;
+      (item as any).id = item['id'].replace(/.$/, key.toString() );
+    }
     this.caseField.value.push(item);
     const index = this.caseField.value.length - 1;
     const caseField: CaseField = this.buildCaseField(item, index, true);
@@ -191,6 +197,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     } else {
       setTimeout(() => this.focusLastItem());
     }
+  }
+
+  private isCollectionDynamic(): boolean {
+    if (!this.caseField.field_type || !this.caseField.field_type.collection_field_type) {
+      return false;
+    }
+    return this.caseField.field_type.collection_field_type.id === 'DynamicRadioList';
   }
 
   private newCaseField(id: string, item, index, isNew = false) {
