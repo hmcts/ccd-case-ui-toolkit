@@ -111,9 +111,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       next: editForm => this.editForm = editForm
     });
     this.caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$.subscribe({
-      next: isLinkedCasesJourneyAtFinalStep => {
-        this.isLinkedCasesJourneyAtFinalStep = isLinkedCasesJourneyAtFinalStep;
-      }
+      next: isLinkedCasesJourneyAtFinalStep => this.isLinkedCasesJourneyAtFinalStep = isLinkedCasesJourneyAtFinalStep
     });
     this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
       next: state => {

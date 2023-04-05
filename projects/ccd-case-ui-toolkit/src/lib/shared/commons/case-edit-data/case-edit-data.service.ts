@@ -46,7 +46,7 @@ export class CaseEditDataService {
     this.formValidationErrors$.next([]);
   }
 
-  public setLinkedCasesJourneyAtFinalStep(isAtFinalStep): void {
+  public setLinkedCasesJourneyAtFinalStep(isAtFinalStep: boolean): void {
     this.isLinkedCasesJourneyAtFinalStep$.next(isAtFinalStep);
   }
 

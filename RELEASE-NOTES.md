@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.13.10-linked-cases-continue-button-validation-v3
+### Version 6.13.10-linked-cases-continue-button-validation-v5
 **EUI-8025** Linked cases continue button validation
 
 ### Version 6.13.10-rc1
