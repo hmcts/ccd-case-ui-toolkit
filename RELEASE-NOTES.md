@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.13.10-linked-cases-continue-button-validation-v5
+**EUI-8025** Linked cases continue button validation
+
 ### Version 6.13.10-rc1
 **EUI-5298** Release 6.13.10 including 6.13.0, linked cases (EUI-7676) and case file view fix (EUI-7417)
 
