@@ -10,18 +10,17 @@ import { CaseNotifier } from '../case-editor';
   templateUrl: './case-viewer.component.html'
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
-
-  static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
-  static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
-  static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
-  static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
+  public static readonly METADATA_FIELD_ACCESS_PROCESS_ID = '[ACCESS_PROCESS]';
+  public static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
+  public static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
+  public static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
-
   @Input() public prependedTabs: CaseTab[] = [];
   @Input() public appendedTabs: CaseTab[] = [];
-  @Input() public caseDetails: CaseView;
+
+  public caseDetails: CaseView;
   public caseSubscription: Subscription;
   public userAccessType: string;
   public accessGranted: boolean;
@@ -30,8 +29,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly caseNotifier: CaseNotifier,
     private readonly appConfig: AbstractAppConfig,
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.loadCaseDetails();
@@ -44,25 +42,26 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   }
 
   public loadCaseDetails(): void {
-    if (!this.route.snapshot.data.case) {
+    if (this.route.snapshot.data.case) {
+      this.caseDetails = this.route.snapshot.data.case;
+      this.caseDetails.tabs = [...new Map(this.caseDetails.tabs.map(item => [item['label'], item])).values()];
+      this.setUserAccessType(this.caseDetails);
+    } else {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
         this.caseDetails = caseDetails;
         this.setUserAccessType(this.caseDetails);
       });
-    } else {
-      this.caseDetails = this.route.snapshot.data.case;
-      this.setUserAccessType(this.caseDetails);
     }
   }
 
   public setUserAccessType(caseDetails: CaseView): void {
     if (caseDetails && Array.isArray(caseDetails.metadataFields)) {
-      const access_process = caseDetails.metadataFields.find(metadataField =>
-        metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
-      const access_granted = caseDetails.metadataFields.find(metadataField =>
+      const accessProcess = caseDetails.metadataFields.find(metadataField =>
+        metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCESS_ID);
+      const accessGranted = caseDetails.metadataFields.find(metadataField =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_GRANTED_ID);
-        this.accessGranted = access_granted ? access_granted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
-      this.userAccessType = access_process ? access_process.value : null;
+        this.accessGranted = accessGranted ? accessGranted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
+      this.userAccessType = accessProcess ? accessProcess.value : null;
     }
   }
 
