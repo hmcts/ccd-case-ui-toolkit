@@ -3,31 +3,31 @@
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
       <h1 class="govuk-label-wrapper govuk-!-margin-bottom-6">
         <label class="govuk-label govuk-label--l">
-          {{ updateFlagTitle }}
+          {{ updateFlagTitle | rpxTranslate}}
         </label>
       </h1>
 
       <div class="govuk-!-margin-bottom-4">
         <label class="govuk-label govuk-label--s" [for]="caseFlagFormFields.COMMENTS">
-          {{ updateFlagTitle }} comments
+          {{ updateFlagTitle | rpxTranslate}} {{'comments' | rpxTranslate}}
         </label>
         <div id="update-flag-hint" class="govuk-hint">
-          {{updateFlagStepEnum.COMMENT_HINT_TEXT}}
+          {{updateFlagStepEnum.COMMENT_HINT_TEXT | rpxTranslate}}
         </div>
         <div id="update-flag-not-entered-error-message" class="govuk-error-message"
               *ngIf="updateFlagNotEnteredErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{updateFlagNotEnteredErrorMessage}}
+          <span class="govuk-visually-hidden">Error:</span> {{updateFlagNotEnteredErrorMessage | rpxTranslate}}
         </div>
         <div id="update-flag-char-limit-error" class="govuk-error-message"
               *ngIf="updateFlagCharLimitErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{updateFlagCharLimitErrorMessage}}
+          <span class="govuk-visually-hidden">Error:</span> {{updateFlagCharLimitErrorMessage | rpxTranslate}}
         </div>
         <textarea class="govuk-textarea" [id]="caseFlagFormFields.COMMENTS"
                   [name]="caseFlagFormFields.COMMENTS" [formControlName]="caseFlagFormFields.COMMENTS" rows="5"
                   aria-describedby="update-flag-hint update-flag-char-limit-info update-flag-char-limit-error">
         </textarea>
         <div id="update-flag-comments-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-          {{updateFlagStepEnum.CHARACTER_LIMIT_INFO}}
+          {{updateFlagStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
         </div>
       </div>
 
@@ -35,7 +35,7 @@
         <fieldset class="govuk-fieldset" aria-describedby="update-flag-status-heading">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h1 id="update-flag-status-heading" class="govuk-fieldset__heading">
-              {{updateFlagTitle}} status
+              {{updateFlagTitle | rpxTranslate}} {{'status' | rpxTranslate}}
             </h1>
           </legend>
           <div class="govuk-radios govuk-radios--conditional govuk-!-margin-bottom-4" data-module="govuk-radios" [id]="caseFlagFormFields.STATUS">
@@ -46,22 +46,22 @@
                       [formControlName]="caseFlagFormFields.STATUS"
                       [value]="status">
               <label class="govuk-label govuk-radios__label" [for]="caseFlagFormFields.STATUS + '_' + status">
-                {{ caseFlagStatusEnum[status] }}
+                {{ caseFlagStatusEnum[status] | rpxTranslate}}
               </label>
             </div>
           </div>
         </fieldset>
 
         <div id="update-flag-status-hint" class="govuk-hint">
-          {{updateFlagStepEnum.STATUS_HINT_TEXT}}
+          {{updateFlagStepEnum.STATUS_HINT_TEXT | rpxTranslate}}
         </div>
         <div id="update-flag-status-reason-not-entered-error-message" class="govuk-error-message"
               *ngIf="statusReasonNotEnteredErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{statusReasonNotEnteredErrorMessage}}
+          <span class="govuk-visually-hidden">Error:</span> {{statusReasonNotEnteredErrorMessage | rpxTranslate}}
         </div>
         <div id="update-flag-status-reason-char-limit-error" class="govuk-error-message"
               *ngIf="statusReasonCharLimitErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{statusReasonCharLimitErrorMessage}}
+          <span class="govuk-visually-hidden">Error:</span> {{statusReasonCharLimitErrorMessage | rpxTranslate}}
         </div>
         <textarea class="govuk-textarea"
                   [id]="caseFlagFormFields.STATUS_CHANGE_REASON"
@@ -70,7 +70,7 @@
                   rows="5">
         </textarea>
         <div id="update-flag-status-reason-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-          {{updateFlagStepEnum.CHARACTER_LIMIT_INFO}}
+          {{updateFlagStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
         </div>
       </div>
 
@@ -83,7 +83,7 @@
                    [name]="caseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED">
             <label class="govuk-label govuk-checkboxes__label"
                    [for]="caseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED">
-              I need to add a translation
+              {{'I need to add a translation' | rpxTranslate}}
             </label>
           </div>
         </div>
@@ -94,6 +94,6 @@
 
 <div class="govuk-button-group">
   <button id="updateFlagNextButton" class="govuk-button" type="button" (click)="onNext()">
-    Next
+    {{'Next' | rpxTranslate}}
   </button>
 </div>

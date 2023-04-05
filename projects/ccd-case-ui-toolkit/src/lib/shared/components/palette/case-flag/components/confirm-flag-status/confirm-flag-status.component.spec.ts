@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CaseFlagFieldState, ConfirmStatusErrorMessage } from '../../enums';
 import { ConfirmFlagStatusComponent } from './confirm-flag-status.component';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('ConfirmFlagStatusComponent', () => {
   let component: ConfirmFlagStatusComponent;
@@ -14,7 +15,7 @@ describe('ConfirmFlagStatusComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ConfirmFlagStatusComponent ]
+      declarations: [ ConfirmFlagStatusComponent, MockRpxTranslatePipe ]
     })
     .compileComponents();
   }));

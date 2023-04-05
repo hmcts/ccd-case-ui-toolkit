@@ -3,18 +3,18 @@
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
       <h1 class="govuk-label-wrapper govuk-!-margin-bottom-6">
         <label class="govuk-label govuk-label--l">
-          {{ updateFlagAddTranslationTitle }}
+          {{ updateFlagAddTranslationTitle | rpxTranslate}}
         </label>
       </h1>
       <div id="add-translation-form-hint" class="govuk-hint">
-        {{ updateFlagAddTranslationStepEnum.HINT_TEXT }}
+        {{ updateFlagAddTranslationStepEnum.HINT_TEXT | rpxTranslate}}
       </div>
 
       <div class="govuk-!-margin-bottom-4">
-        <label [for]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION" class="govuk-label govuk-label--s">Other description</label>
+        <label [for]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION" class="govuk-label govuk-label--s">{{'Other description' | rpxTranslate}}</label>
         <div id="add-translation-other-flag-description-char-limit-error" class="govuk-error-message"
               *ngIf="otherFlagDescriptionCharLimitErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{otherFlagDescriptionCharLimitErrorMessage}}
+          <span class="govuk-visually-hidden">Error:</span> {{otherFlagDescriptionCharLimitErrorMessage | rpxTranslate}}
         </div>
         <textarea
           class="govuk-textarea" rows="5"
@@ -23,15 +23,15 @@
           [formControlName]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION">
         </textarea>
         <div id="add-translation-other-flag-description-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO}}
+          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
         </div>
       </div>
 
       <div class="govuk-!-margin-bottom-4">
-        <label [for]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH" class="govuk-label govuk-label--s">Other description (Welsh)</label>
+        <label [for]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH" class="govuk-label govuk-label--s">{{'Other description (Welsh)' | rpxTranslate}}</label>
         <div id="add-translation-other-flag-description-welsh-char-limit-error" class="govuk-error-message"
               *ngIf="otherFlagDescriptionWelshCharLimitErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{otherFlagDescriptionWelshCharLimitErrorMessage}}
+          <span class="govuk-visually-hidden">Error:</span> {{otherFlagDescriptionWelshCharLimitErrorMessage | rpxTranslate}}
         </div>
         <textarea
           class="govuk-textarea" rows="5"
@@ -40,15 +40,15 @@
           [formControlName]="caseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH">
         </textarea>
         <div id="add-translation-other-flag-description-welsh-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO}}
+          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
         </div>
       </div>
 
       <div class="govuk-!-margin-bottom-4">
-        <label [for]="caseFlagFormFields.COMMENTS" class="govuk-label govuk-label--s">Flag comments</label>
+        <label [for]="caseFlagFormFields.COMMENTS" class="govuk-label govuk-label--s">{{'Flag comments' | rpxTranslate}}</label>
         <div id="add-translation-flag-comments-char-limit-error" class="govuk-error-message"
               *ngIf="flagCommentsCharLimitErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{flagCommentsCharLimitErrorMessage}}
+          <span class="govuk-visually-hidden">Error:</span> {{flagCommentsCharLimitErrorMessage | rpxTranslate}}
         </div>
         <textarea
           class="govuk-textarea" rows="5"
@@ -57,15 +57,15 @@
           [formControlName]="caseFlagFormFields.COMMENTS">
         </textarea>
         <div id="add-translation-flag-comments-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO}}
+          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
         </div>
       </div>
 
       <div class="govuk-!-margin-bottom-4">
-        <label [for]="caseFlagFormFields.COMMENTS_WELSH" class="govuk-label govuk-label--s">Flag comments (Welsh)</label>
+        <label [for]="caseFlagFormFields.COMMENTS_WELSH" class="govuk-label govuk-label--s">{{'Flag comments (Welsh)' | rpxTranslate}}</label>
         <div id="add-translation-flag-comments-welsh-char-limit-error" class="govuk-error-message"
               *ngIf="flagCommentsWelshCharLimitErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{flagCommentsWelshCharLimitErrorMessage}}
+          <span class="govuk-visually-hidden">Error:</span> {{flagCommentsWelshCharLimitErrorMessage | rpxTranslate}}
         </div>
         <textarea
           class="govuk-textarea" rows="5"
@@ -74,7 +74,7 @@
           [formControlName]="caseFlagFormFields.COMMENTS_WELSH">
         </textarea>
         <div id="add-translation-flag-comments-welsh-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO}}
+          {{updateFlagAddTranslationStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
         </div>
       </div>
     </div>
@@ -83,6 +83,6 @@
 
 <div class="govuk-button-group">
   <button id="updateFlagNextButton" class="govuk-button" type="button" (click)="onNext()">
-    Next
+    {{'Next' | rpxTranslate}}
   </button>
 </div>
