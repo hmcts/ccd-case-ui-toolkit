@@ -861,7 +861,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
   it('should change button label when notified about callback errors', () => {
     const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     component.callbackErrorsNotify(callbackErrorsContext);
     fixture.detectChanges();
 
@@ -870,7 +870,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
     expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
 
-    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
+    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
     component.callbackErrorsNotify(callbackErrorsContext);
     fixture.detectChanges();
 
@@ -885,7 +885,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
   it('should clear errors and warnings', () => {
     const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     component.callbackErrorsNotify(callbackErrorsContext);
     fixture.detectChanges();
     component.clearErrorsAndWarnings();
@@ -1972,7 +1972,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
 
   it('should clear errors and warnings', () => {
     const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
+    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
     caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
     componentFixture.detectChanges();
     const eventTriggerElement = debugElement.query(By.directive(EventTriggerComponent));
@@ -1980,7 +1980,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
 
     expect(eventTrigger.triggerText).toEqual(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
 
-    callbackErrorsContext.trigger_text = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
+    callbackErrorsContext.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
     caseViewerComponent.callbackErrorsNotify(callbackErrorsContext);
     componentFixture.detectChanges();
 

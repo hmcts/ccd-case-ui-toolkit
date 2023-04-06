@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 export class LinkCaseReason {
   public key: string;
   public value_en: string;

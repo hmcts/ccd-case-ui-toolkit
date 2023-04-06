@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NotificationBannerType } from './enums';
 import { NotificationBannerComponent } from './notification-banner.component';
 
@@ -7,7 +7,7 @@ describe('NotificationBannerComponent', () => {
   let component: NotificationBannerComponent;
   let fixture: ComponentFixture<NotificationBannerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [NotificationBannerComponent]

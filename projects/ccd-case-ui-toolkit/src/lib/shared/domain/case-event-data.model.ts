@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 export class CaseEventData {
   public event: {
     id: string;

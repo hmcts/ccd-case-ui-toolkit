@@ -1,8 +1,7 @@
 import { Component, DebugElement, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
@@ -67,7 +66,6 @@ class FieldReadLabelComponent {
 }
 
 describe('FieldReadComponent', () => {
-
   let fixture: ComponentFixture<FieldReadComponent>;
   let component: FieldReadComponent;
   let de: DebugElement;

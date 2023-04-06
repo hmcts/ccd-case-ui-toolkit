@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../../domain/definition';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
@@ -90,6 +89,7 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     const shouldSortInAscendingOrder = this.columnsHorizontalLabel[column].sortOrder === SortOrder.UNSORTED
       || this.columnsHorizontalLabel[column].sortOrder === SortOrder.DESCENDING;
 
+    // tslint:disable-next-line:switch-default
     switch (this.columnsHorizontalLabel[column].type.type) {
       case 'Number':
       case 'MoneyGBP': {

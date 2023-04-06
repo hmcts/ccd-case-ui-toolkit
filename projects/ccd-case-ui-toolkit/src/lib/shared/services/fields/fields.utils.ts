@@ -213,6 +213,7 @@ export class FieldsUtils {
         const elements = (result[field.id] || field.value);
         if (elements) {
           elements.forEach((elem: any) => {
+            // tslint:disable-next-line:switch-default
             switch (field.field_type.collection_field_type.type) {
               case 'MoneyGBP': {
                 elem.value = FieldsUtils.getMoneyGBP(elem.value);

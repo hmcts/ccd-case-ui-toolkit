@@ -793,7 +793,7 @@
 
 //     it('should change button label when callback warnings notified ', () => {
 //       const callbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-//       callbackErrorsContext.trigger_text = CaseEditPageText.TRIGGER_TEXT_START;
+//       callbackErrorsContext.triggerText = CaseEditPageText.TRIGGER_TEXT_START;
 //       comp.callbackErrorsNotify(callbackErrorsContext);
 
 //       fixture.detectChanges();
@@ -801,8 +801,8 @@
 //       expect(button.nativeElement.textContent).toEqual(CaseEditPageText.TRIGGER_TEXT_START);
 //       expect(comp.ignoreWarning).toBeFalsy();
 
-//       callbackErrorsContext.ignore_warning = true;
-//       callbackErrorsContext.trigger_text = CaseEditPageText.TRIGGER_TEXT_CONTINUE;
+//       callbackErrorsContext.ignoreWarning = true;
+//       callbackErrorsContext.triggerText = CaseEditPageText.TRIGGER_TEXT_CONTINUE;
 //       comp.callbackErrorsNotify(callbackErrorsContext);
 
 //       fixture.detectChanges();

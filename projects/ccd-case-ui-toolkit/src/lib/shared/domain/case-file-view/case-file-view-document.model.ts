@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 export class CaseFileViewDocument {
   public document_url: string;
   public document_filename: string;

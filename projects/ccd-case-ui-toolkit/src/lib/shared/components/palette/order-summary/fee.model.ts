@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 export class Fee {
   public FeeCode: string;
   public FeeAmount: string;
