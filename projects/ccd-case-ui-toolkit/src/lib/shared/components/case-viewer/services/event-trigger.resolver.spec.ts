@@ -97,6 +97,7 @@ describe('EventTriggerResolver', () => {
     };
 
     route.paramMap.get.and.callFake(key => {
+      // tslint:disable-next-line:switch-default
       switch (key) {
         case PARAM_EVENT_ID:
           return EVENT_TRIGGER_ID;
@@ -104,6 +105,7 @@ describe('EventTriggerResolver', () => {
     });
 
     route.parent.paramMap.get.and.callFake(key => {
+      // tslint:disable-next-line:switch-default
       switch (key) {
         case PARAM_CASE_ID:
           return CASE_ID;
@@ -111,6 +113,7 @@ describe('EventTriggerResolver', () => {
     });
 
     route.queryParamMap.get.and.callFake(key => {
+      // tslint:disable-next-line:switch-default
       switch (key) {
         case IGNORE_WARNING:
           return false;
@@ -234,5 +237,4 @@ describe('EventTriggerResolver', () => {
     expect(casesService.getEventTrigger).toHaveBeenCalled();
     expect(eventTriggerResolver['cachedProfile']).toBe(PROFILE);
   });
-
 });

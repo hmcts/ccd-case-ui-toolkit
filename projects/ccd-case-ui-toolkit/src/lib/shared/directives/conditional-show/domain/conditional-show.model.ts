@@ -137,6 +137,7 @@ export class ShowCondition {
 
               // Consider what type of field this is.
               const ft = caseField.field_type;
+              // tslint:disable-next-line:switch-default
               switch (ft.type) {
                 case 'Collection':
                   if (ft.collection_field_type.type === 'Complex' && ft.collection_field_type.complex_fields) {

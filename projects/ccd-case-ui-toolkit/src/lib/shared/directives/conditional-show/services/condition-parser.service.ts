@@ -54,6 +54,7 @@ export class ConditionParser {
   }
 
   private static evaluateJoin(leftResult: boolean, comparator, rightResult: boolean): boolean {
+    // tslint:disable-next-line:switch-default
     switch (comparator) {
       case 'OR': return leftResult || rightResult;
       case 'AND': return leftResult && rightResult;
@@ -145,8 +146,7 @@ export class ConditionParser {
   }
 
   private static unquoted(str: string): string {
-    const res = str.replace(/^"|"$/g, '');
-    return res;
+    return str.replace(/^"|"$/g, '');
   }
 
   private static findValueForComplexCondition(fields: object, head: string, tail: string[], path?: string): any {

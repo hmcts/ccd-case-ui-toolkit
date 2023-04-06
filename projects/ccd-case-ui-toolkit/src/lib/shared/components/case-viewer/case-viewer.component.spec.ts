@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, Type } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -145,7 +145,7 @@ describe('CaseViewerComponent', () => {
   mockAppConfig.getAccessManagementMode.and.returnValue(false);
   mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({active: false});
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CaseViewerComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { Type } from 'class-transformer';
 import { Flags } from '../../components/palette/case-flag';
 import { CaseField } from '../definition';

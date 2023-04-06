@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { FeeValue } from './fee-value.model';
 
 export class OrderSummary {

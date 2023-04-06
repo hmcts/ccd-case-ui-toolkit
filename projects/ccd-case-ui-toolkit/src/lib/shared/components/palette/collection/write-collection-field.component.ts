@@ -169,7 +169,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   public addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    let item = { value: null }
+    let item = { value: null };
 
     if ( this.isCollectionDynamic() ) {
       item  = {...this.caseField.value[this.caseField.value.length - 1]};
@@ -270,8 +270,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         this.collItems[i].prefix = idPrefix1;
       }
 
-      const idPrefixAvailable = this.collItems[i].container && this.collItems[i].container['component']
-        && this.collItems[i].container['component'].idPrefix ? true : false;
+      const idPrefixAvailable = !!this.collItems[i].container?.['component']?.idPrefix;
 
       const idPrefix2 = idPrefixAvailable ?
         this.collItems[i].container['component'].idPrefix.replace(`_${counter.toString()}`, `_${i.toString()}`) : '';
