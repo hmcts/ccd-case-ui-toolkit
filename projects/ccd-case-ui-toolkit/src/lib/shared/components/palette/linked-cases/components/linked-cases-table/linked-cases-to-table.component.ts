@@ -139,7 +139,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
 
   public sortReasonCodes(searchCasesResponse): LinkedCasesResponse[] {
     searchCasesResponse.forEach((item: any) => {
-      if(item && item.reasons && item.reasons.length){
+      if (item?.reasons?.length) {
         item.reasons.forEach((reason) => {
           reason.sortOrder = this.getReasonSortOrder(reason.value.Reason)
         });
@@ -147,7 +147,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
         item.sortOrder = item.reasons[0].sortOrder;
       }
     });
-    searchCasesResponse = searchCasesResponse && searchCasesResponse.sort((a, b) => a.sortOrder - b.sortOrder)
+    searchCasesResponse = searchCasesResponse?.sort((a, b) => a.sortOrder - b.sortOrder)
     return searchCasesResponse;
   }
 
@@ -156,9 +156,8 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       return 1;
     } else if (reasonCode === LinkedCasesToTableComponent.CASE_CONSOLIDATED_REASON_CODE) {
       return 2;
-    } else {
-      return 3;
     }
+    return 3;
   }
 
   public searchCasesByCaseIds(searchCasesResponse: any[]): Observable<unknown[]> {
