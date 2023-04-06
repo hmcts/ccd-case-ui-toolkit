@@ -100,7 +100,7 @@ describe('CaseEditPageComponent', () => {
   ]);
 
   const initializeComponent = ({
-    caseEdit = {},   
+    caseEdit = {},
     formValueService = {},
     formErrorService = {},
     route = {},
@@ -109,7 +109,7 @@ describe('CaseEditPageComponent', () => {
     dialog = {},
     caseFieldService = {},
     caseEditDataService = {},
-  }) => 
+  }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
     route as ActivatedRoute,
@@ -295,7 +295,7 @@ describe('CaseEditPageComponent', () => {
       expect(eventTriggerMock['case_fields'][0].value).toEqual(jasmine.objectContaining(result));
     });
   });
-  
+
   describe('ngOnInit', () => {
     it(`should update 'eventTrigger', 'currentpage' and 'triggerText' as a page is present`, () => {
       component = initializeComponent({
