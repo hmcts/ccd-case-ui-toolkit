@@ -10,7 +10,6 @@ import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { LabelFieldComponent } from './label-field.component';
 
 describe('LabelFieldComponent', () => {
-
   const $CONTENT = By.css('dl>dt ccd-markdown');
 
   const FIELD_TYPE: FieldType = {
@@ -43,7 +42,7 @@ describe('LabelFieldComponent', () => {
     CASE_FIELD
   ];
 
-  const MarkdownComponent: any = MockComponent({
+  const markdownComponentMock: any = MockComponent({
     selector: 'ccd-markdown',
     inputs: ['content', 'markdownUseHrefAsRouterLink']
   });
@@ -58,7 +57,7 @@ describe('LabelFieldComponent', () => {
         declarations: [
           LabelFieldComponent,
           LabelSubstitutorDirective,
-          MarkdownComponent
+          markdownComponentMock
         ],
         providers: [
           FieldsUtils,

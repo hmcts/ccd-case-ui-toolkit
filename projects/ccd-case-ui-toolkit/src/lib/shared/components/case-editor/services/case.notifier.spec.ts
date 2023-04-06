@@ -73,7 +73,7 @@ describe('setBasicFields', () => {
     caseTab1.fields.push(caseField2);
     caseNotifier.cachedCaseView.tabs.push(caseTab1);
     caseNotifier.setBasicFields(caseNotifier.cachedCaseView.tabs);
-    const basicFields = { caseNameHmctsInternal: 'Case Name', caseManagementLocation: { baseLocation : 22}}
+    const basicFields = { caseNameHmctsInternal: 'Case Name', caseManagementLocation: { baseLocation : 22}};
     expect(caseNotifier.cachedCaseView.basicFields).toEqual(basicFields);
   });
 
@@ -81,7 +81,7 @@ describe('setBasicFields', () => {
     caseTab1.fields.push(caseField1);
     caseNotifier.cachedCaseView.tabs.push(caseTab1);
     caseNotifier.setBasicFields(caseNotifier.cachedCaseView.tabs);
-    const basicFields = { caseNameHmctsInternal: 'Case Name', caseManagementLocation: null}
+    const basicFields = { caseNameHmctsInternal: 'Case Name', caseManagementLocation: null};
     expect(caseNotifier.cachedCaseView.basicFields).toEqual(basicFields);
   });
 
@@ -89,8 +89,7 @@ describe('setBasicFields', () => {
     caseTab1.fields.push(caseField2);
     caseNotifier.cachedCaseView.tabs.push(caseTab1);
     caseNotifier.setBasicFields(caseNotifier.cachedCaseView.tabs);
-    const basicFields = { caseNameHmctsInternal: null, caseManagementLocation: { baseLocation : 22}}
+    const basicFields = { caseNameHmctsInternal: null, caseManagementLocation: { baseLocation : 22}};
     expect(caseNotifier.cachedCaseView.basicFields).toEqual(basicFields);
   });
-
 });

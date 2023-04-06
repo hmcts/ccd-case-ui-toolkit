@@ -177,7 +177,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     checkboxElement.click();
     fixture.detectChanges();
     const manualLanguageEntryField = nativeElement.querySelector('#manual-language-entry');
-    manualLanguageEntryField.value = fieldInput + '0';
+    manualLanguageEntryField.value = `${fieldInput}0`;
     manualLanguageEntryField.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();

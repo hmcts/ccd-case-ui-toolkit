@@ -9,7 +9,6 @@ import { CaseResolver } from './case.resolver';
 import { EventTriggerResolver } from './event-trigger.resolver';
 
 describe('EventTriggerResolver', () => {
-
   const IGNORE_WARNING = 'ignoreWarning';
   const IGNORE_WARNING_VALUE = 'false';
   const PARAM_CASE_ID = CaseResolver.PARAM_CASE_ID;
