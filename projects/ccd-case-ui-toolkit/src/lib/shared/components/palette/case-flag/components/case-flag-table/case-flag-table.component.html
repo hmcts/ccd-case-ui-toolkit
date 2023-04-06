@@ -18,9 +18,15 @@
     <tr scope="row" class="govuk-table__row" *ngFor="let flagDetail of flagData.flags.details">
       <td class="govuk-table__cell">
         <div>{{flagDetail.name | rpxTranslate}}</div>
-        <div>{{flagDetail.otherDescription | rpxTranslate}}</div>
+        <div>{{flagDetail.otherDescription}}</div>
+        <div>{{flagDetail.subTypeValue | rpxTranslate}}</div>
       </td>
-      <td class="govuk-table__cell">{{flagDetail.flagComment}}</td>
+      <td class="govuk-table__cell">
+        <div>{{flagDetail.flagComment}}</div>
+        <div *ngIf="!caseFlagsExternalUser && flagDetail.status === caseFlagStatus.NOT_APPROVED && flagDetail.flagUpdateComment">
+          <span class="govuk-!-font-weight-bold">Decision Reason: {{flagDetail.flagUpdateComment}}</span>
+        </div>
+      </td>
       <td class="govuk-table__cell">{{flagDetail.dateTimeCreated | date: 'dd LLL yyyy'}}</td>
       <td class="govuk-table__cell">{{flagDetail.dateTimeModified | date: 'dd LLL yyyy'}}</td>
       <td class="govuk-table__cell">

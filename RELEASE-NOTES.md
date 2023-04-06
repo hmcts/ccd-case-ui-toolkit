@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+### Version 6.10.7-case-flags-v2-view-case-flags-ui-amendments
+**EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types (ported from Case Flags v1)
+**EUI-8070** Display "decision reason" (flag update comment) for "Not approved" flags to internal HMCTS users only
+**EUI-8071** Hide "Active flags" banner from external users
+
 ### Version 6.10.7-case-flags-legal-rep-comments-page-v3
 **EUI-7373** Reasonable Adjustments legal rep display and edit ‘Tell us why the support is no longer needed' screen
 
@@ -33,6 +38,9 @@
 
 ### Version 6.10.7-case-flags-confirm-flag-status-step
 **EUI-7350** Add "confirm flag status" step of Create Case Flag journey
+
+### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
+**EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
 
 ### Version 6.13.10-rc1
 **EUI-5298** Release 6.13.10 including 6.13.0, linked cases (EUI-7676) and case file view fix (EUI-7417)

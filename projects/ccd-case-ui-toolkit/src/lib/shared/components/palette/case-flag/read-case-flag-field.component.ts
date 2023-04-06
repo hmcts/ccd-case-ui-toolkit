@@ -20,7 +20,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
   public displayContextParameter: string;
-
+  public caseFlagsExternalUser = false;
   public pathToFlagsFormGroup: string;
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   public readonly caseNameMissing = 'Case name missing';
@@ -39,6 +39,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.get(controlName)['caseField']));
     const flagLauncherComponent = this.formGroup.get(flagLauncherControlName)?.['component'];
     this.displayContextParameter = flagLauncherComponent?.caseField?.display_context_parameter;
+    this.caseFlagsExternalUser = this.displayContextParameter === this.readSupportMode;
 
     // If the context is PaletteContext.DEFAULT, the Flags fields need to be located by CaseTab (they won't be present
     // in the FormGroup - only the FlagLauncher field is present)
@@ -71,13 +72,11 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
         if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE ||
-            flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL
-          ) &&
-          flagLauncherComponent.selectedFlagsLocation) {
+            flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL)
+            && flagLauncherComponent.selectedFlagsLocation) {
           this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
           this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
-            flagLauncherComponent.selectedFlagsLocation
-          );
+            flagLauncherComponent.selectedFlagsLocation);
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
         } else if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE ||

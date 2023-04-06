@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 import { CaseFlagStatus } from '../../enums';
 import { CaseFlagTableComponent } from './case-flag-table.component';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
@@ -17,6 +18,7 @@ describe('CaseFlagTableComponent', () => {
         subTypeKey: '',
         otherDescription: '',
         flagComment: '',
+        flagUpdateComment: 'Flag update comment for first flag',
         dateTimeModified: new Date('2021-09-09 00:00:00'),
         dateTimeCreated: new Date('2021-09-09 00:00:00'),
         path: [],
@@ -30,6 +32,7 @@ describe('CaseFlagTableComponent', () => {
         subTypeKey: '',
         otherDescription: '',
         flagComment: '',
+        flagUpdateComment: 'Flag update comment for second flag',
         dateTimeModified: new Date('2021-09-09 00:00:00'),
         dateTimeCreated: new Date('2021-09-09 00:00:00'),
         path: [],
@@ -42,7 +45,7 @@ describe('CaseFlagTableComponent', () => {
     caseField: null
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CaseFlagTableComponent, MockRpxTranslatePipe]
@@ -53,6 +56,7 @@ describe('CaseFlagTableComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseFlagTableComponent);
     component = fixture.componentInstance;
+    component.caseFlagsExternalUser = false;
     fixture.detectChanges();
   });
 
@@ -79,5 +83,54 @@ describe('CaseFlagTableComponent', () => {
     fixture.detectChanges();
     const caseViewerFieldLabelElement = fixture.debugElement.nativeElement.querySelector('#case-viewer-field-label');
     expect(caseViewerFieldLabelElement).toBeNull();
+  });
+
+  it('should display the sub-type value (i.e. language name) when displaying a "language interpreter" case flag type', () => {
+    component.flagData = flagData;
+    fixture.detectChanges();
+    const tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the first element of the second row of five (i.e. sixth element) contains the language name
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[5].textContent).toContain(flagData.flags.details[1].subTypeValue);
+  });
+
+  it('should display the flag update comment for internal users if and only if the case flag status is "Not approved"', () => {
+    flagData.flags.details[1].status = CaseFlagStatus.NOT_APPROVED;
+    component.flagData = flagData;
+    fixture.detectChanges();
+    let tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) contains the flag update comment
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[6].textContent).toContain(`Decision Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+    // Change flag status to other than "Not approved", which should hide the flag update comment
+    flagData.flags.details[1].status = CaseFlagStatus.ACTIVE;
+    component.flagData = flagData;
+    fixture.detectChanges();
+    tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) does not contain the flag update comment
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[6].textContent).not.toContain(`Decision Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+  });
+
+  it('should not display the flag update comment for external users even if the case flag status is "Not approved"', () => {
+    flagData.flags.details[1].status = CaseFlagStatus.NOT_APPROVED;
+    component.flagData = flagData;
+    component.caseFlagsExternalUser = true;
+    fixture.detectChanges();
+    const tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) does not contain the flag update comment
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[6].textContent).not.toContain(`Decision Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+  });
+
+  it('should not display "Decision Reason: " for internal users if there is no flag update comment for a "Not approved" flag', () => {
+    flagData.flags.details[1].status = CaseFlagStatus.NOT_APPROVED;
+    flagData.flags.details[1].flagUpdateComment = null;
+    component.flagData = flagData;
+    fixture.detectChanges();
+    const tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) does not contain "Decision Reason: "
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[6].textContent).not.toContain('Decision Reason: ');
   });
 });
