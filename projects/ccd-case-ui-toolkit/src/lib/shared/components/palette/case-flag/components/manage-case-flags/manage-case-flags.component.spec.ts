@@ -5,6 +5,7 @@ import { CaseField } from '../../../../../domain';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 import { ManageCaseFlagsComponent } from './manage-case-flags.component';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('ManageCaseFlagsComponent', () => {
   let component: ManageCaseFlagsComponent;
@@ -134,7 +135,7 @@ describe('ManageCaseFlagsComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ManageCaseFlagsComponent ]
+      declarations: [ ManageCaseFlagsComponent, MockRpxTranslatePipe ]
     })
     .compileComponents();
   }));

@@ -6,6 +6,7 @@ import { RpxTranslationService } from 'rpx-xui-translation';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('UpdateFlagComponent', () => {
   let component: UpdateFlagComponent;
@@ -82,7 +83,7 @@ describe('UpdateFlagComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [UpdateFlagComponent],
+      declarations: [UpdateFlagComponent, MockRpxTranslatePipe],
       providers: [
         { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
       ]

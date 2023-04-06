@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.7-case-flags-legal-rep-comments-page-v3",
+  "version": "6.10.8-case-flags-welsh-language-reasonable-adjustment",
   "engines": {
     "yarn": "^1.22.15",
     "npm": "^8.10.0"

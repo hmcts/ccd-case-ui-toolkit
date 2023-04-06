@@ -4,16 +4,16 @@
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 id="flag-type-heading" class="govuk-fieldset__heading govuk-!-margin-bottom-1">
           <ng-container *ngIf="!selectionTitle; else selectionTitlePresent">
-            {{caseFlagWizardStepTitle.SELECT_CASE_FLAG}}
+            {{caseFlagWizardStepTitle.SELECT_CASE_FLAG | rpxTranslate}}
           </ng-container>
           <ng-template #selectionTitlePresent>
-            {{selectionTitle}}
+            {{selectionTitle | rpxTranslate}}
           </ng-template>
         </h1>
       </legend>
       <div id="flag-type-not-selected-error-message" class="govuk-error-message"
         *ngIf="flagTypeNotSelectedErrorMessage.length > 0">
-        <span class="govuk-visually-hidden">Error:</span> {{flagTypeNotSelectedErrorMessage}}
+        <span class="govuk-visually-hidden">Error:</span> {{flagTypeNotSelectedErrorMessage | rpxTranslate}}
       </div>
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
         <div class="govuk-radios__item" *ngFor="let flagType of flagTypes; index as i">
@@ -23,13 +23,13 @@
           <input class="govuk-radios__input" id="flag-type-{{i}}" [name]="caseFlagFormField.FLAG_TYPE"
             type="radio" [value]="flagType"
             [formControlName]="caseFlagFormField.FLAG_TYPE"/>
-          <label class="govuk-label govuk-radios__label" for="flag-type-{{i}}">{{flagType.name}}</label>
+          <label class="govuk-label govuk-radios__label" for="flag-type-{{i}}">{{flagType.name | rpxTranslate}}</label>
         </div>
         <div class="govuk-radios__conditional" *ngIf="otherFlagTypeSelected" id="conditional-flagType">
           <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeErrorMessage.length > 0}">
-            <label class="govuk-label" for="other-flag-type-description">Enter a flag type</label>
+            <label class="govuk-label" for="other-flag-type-description">{{'Enter a flag type' | rpxTranslate}}</label>
             <div id="flag-type-error-message" class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
-              <span class="govuk-visually-hidden">Error:</span> {{flagTypeErrorMessage}}
+              <span class="govuk-visually-hidden">Error:</span> {{flagTypeErrorMessage | rpxTranslate}}
             </div>
             <input class="govuk-input govuk-!-width-one-half"
               [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
@@ -43,5 +43,5 @@
 </ng-container>
 
 <div class="govuk-button-group" *ngIf="!refdataError">
-  <button class="button button-primary" type="button" (click)="onNext()">Next</button>
+  <button class="button button-primary" type="button" (click)="onNext()">{{'Next' | rpxTranslate}}</button>
 </div>

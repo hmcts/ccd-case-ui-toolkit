@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CaseFlagStatus } from '../../enums';
 import { CaseFlagTableComponent } from './case-flag-table.component';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 
 describe('CaseFlagTableComponent', () => {
   let component: CaseFlagTableComponent;
@@ -44,7 +45,7 @@ describe('CaseFlagTableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [CaseFlagTableComponent]
+      declarations: [CaseFlagTableComponent, MockRpxTranslatePipe]
     })
     .compileComponents();
   }));

@@ -7,6 +7,7 @@ import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../services/case-flag';
 import { CaseFlagFieldState, CaseFlagFormFields, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 import createSpyObj = jasmine.createSpyObj;
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
@@ -168,7 +169,7 @@ describe('SelectFlagTypeComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [SelectFlagTypeComponent],
+      declarations: [SelectFlagTypeComponent, MockRpxTranslatePipe],
       providers: [
         { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService },
       ]

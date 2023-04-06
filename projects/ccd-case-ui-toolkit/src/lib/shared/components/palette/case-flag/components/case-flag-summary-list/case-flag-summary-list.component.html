@@ -15,7 +15,7 @@
   </div>
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">
-      Flag type
+      {{'Flag type' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagDescription | rpxTranslate}}
@@ -29,7 +29,7 @@
   </div>
   <div class="govuk-summary-list__row" *ngIf="flagDescriptionWelsh?.length > 0">
     <dt class="govuk-summary-list__key">
-      Other description (Welsh)
+      {{'Other description (Welsh)' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagDescriptionWelsh}}
@@ -43,7 +43,7 @@
   </div>
   <div class="govuk-summary-list__row" *ngIf="flagComments?.length > 0">
     <dt class="govuk-summary-list__key">
-      Comments
+      {{'Comments' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagComments | rpxTranslate}}
@@ -71,7 +71,7 @@
   </div>
   <div class="govuk-summary-list__row" *ngIf="canDisplayStatus">
     <dt class="govuk-summary-list__key">
-      Status
+      {{'Status' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagStatus | rpxTranslate}}
