@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.10.7-case-flags-legal-rep-comments-page-v3
+**EUI-7373** Reasonable Adjustments legal rep display and edit ‘Tell us why the support is no longer needed' screen
+
 ### Version 6.10.7-case-flags-welsh-language-support
 **EUI-7858** Ensure support for Welsh language toggle by storing flag description and comments entries in correct `_cy` fields, and displaying flag comments according to language selection
 

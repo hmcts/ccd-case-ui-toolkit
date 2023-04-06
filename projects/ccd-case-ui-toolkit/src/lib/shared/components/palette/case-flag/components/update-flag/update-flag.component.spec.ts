@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
+import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
 import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
@@ -94,6 +94,7 @@ describe('UpdateFlagComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagComponent);
     component = fixture.componentInstance;
+    component.displayContextParameter = '#ARGUMENT(UPDATE)';
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag1)
     });
@@ -434,5 +435,30 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages.length).toBe(0);
     errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement).toBeNull();
+  });
+
+  it('should display correct title based on the display mode', () => {
+    component.displayContextParameter = '#ARGUMENT(UPDATE)';
+    component.setUpdateCaseFlagTitle(activeFlag);
+    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual('Update flag "Flag 1"');
+    component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
+    component.setUpdateCaseFlagTitle(activeFlag);
+    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_SUPPORT);
+    component.displayContextParameter = '';
+    component.setUpdateCaseFlagTitle(activeFlag);
+    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.NONE);
+  });
+
+  it('should display only comments text area for manage support', () => {
+    component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
+    fixture.detectChanges();
+    const commentsTextarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    expect(commentsTextarea).toBeDefined();
+    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    expect(statusChangeReasontextarea).toBeNull();
+    const radioButtons = fixture.debugElement.nativeElement.querySelector('#flag-status-container');
+    expect(radioButtons).toBeNull();
+    const checkboxWelshTranslation = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED}`));
+    expect(checkboxWelshTranslation).toBeNull();
   });
 });
