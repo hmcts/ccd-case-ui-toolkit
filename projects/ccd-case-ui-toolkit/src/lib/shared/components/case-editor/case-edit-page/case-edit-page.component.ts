@@ -419,9 +419,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
       : CaseEditPageComponent.TRIGGER_TEXT_START;
 
-      return this.canNavigateToSummaryPage()
-      ? textBasedOnCanSaveDraft
-      : 'Submit';
+      return textBasedOnCanSaveDraft ? textBasedOnCanSaveDraft : (this.canNavigateToSummaryPage() ? 'Submit' : 'Next');
   }
 
   private discard(): void {
