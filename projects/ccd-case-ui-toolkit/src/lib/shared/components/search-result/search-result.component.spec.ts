@@ -846,7 +846,7 @@ describe('SearchResultComponent', () => {
 
     it('should not display table when no results', () => {
       component.paginationMetadata = {
-        totalResults_count: 1,
+        totalResultsCount: 1,
         totalPagesCount: 1
       };
 
