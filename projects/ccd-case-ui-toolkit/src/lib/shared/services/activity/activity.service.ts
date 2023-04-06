@@ -48,7 +48,7 @@ export class ActivityService {
 
   private static handleHttpError(response: HttpErrorResponse): HttpError {
     const error: HttpError = HttpErrorService.convertToHttpError(response);
-    if (response.status && response.status !== error.status) {
+    if (response?.status !== error.status) {
       error.status = response.status;
     }
     return error;
