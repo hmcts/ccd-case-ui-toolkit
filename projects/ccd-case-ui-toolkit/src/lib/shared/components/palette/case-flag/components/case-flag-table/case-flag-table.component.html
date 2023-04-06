@@ -23,8 +23,8 @@
       </td>
       <td class="govuk-table__cell">
         <div>{{flagDetail.flagComment | rpxTranslate}}</div>
-        <div *ngIf="!caseFlagsExternalUser">
-          <strong>{{'Decision Reason:' | rpxTranslate}} {{flagDetail.flagUpdateComment | rpxTranslate}}</strong>
+        <div *ngIf="!caseFlagsExternalUser && flagDetail.status === caseFlagStatus.NOT_APPROVED && flagDetail.flagUpdateComment">
+          <span class="govuk-!-font-weight-bold">{{'Decision Reason:' | rpxTranslate}} {{flagDetail.flagUpdateComment | rpxTranslate}}</span>
         </div>
       </td>
       <td class="govuk-table__cell">{{flagDetail.dateTimeCreated | date: 'dd LLL yyyy'}}</td>

@@ -55,6 +55,7 @@ describe('CaseFlagTableComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseFlagTableComponent);
     component = fixture.componentInstance;
+    component.caseFlagsExternalUser = false;
     fixture.detectChanges();
   });
 
@@ -96,10 +97,18 @@ describe('CaseFlagTableComponent', () => {
     flagData.flags.details[1].status = CaseFlagStatus.NOT_APPROVED;
     component.flagData = flagData;
     fixture.detectChanges();
-    const tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    let tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
     // Check that the second element of the second row of five (i.e. seventh element) contains the flag update comment
     expect(tableCellElements.length).toBe(10);
     expect(tableCellElements[6].textContent).toContain(`Decision Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+    // Change flag status to other than "Not approved", which should hide the flag update comment
+    flagData.flags.details[1].status = CaseFlagStatus.ACTIVE;
+    component.flagData = flagData;
+    fixture.detectChanges();
+    tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) does not contain the flag update comment
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[6].textContent).not.toContain(`Decision Reason: ${flagData.flags.details[1].flagUpdateComment}`);
   });
 
   it('should not display the flag update comment for external users even if the case flag status is "Not approved"', () => {
@@ -111,5 +120,16 @@ describe('CaseFlagTableComponent', () => {
     // Check that the second element of the second row of five (i.e. seventh element) does not contain the flag update comment
     expect(tableCellElements.length).toBe(10);
     expect(tableCellElements[6].textContent).not.toContain(`Decision Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+  });
+
+  it('should not display "Decision Reason: " for internal users if there is no flag update comment for a "Not approved" flag', () => {
+    flagData.flags.details[1].status = CaseFlagStatus.NOT_APPROVED;
+    flagData.flags.details[1].flagUpdateComment = null;
+    component.flagData = flagData;
+    fixture.detectChanges();
+    const tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) does not contain "Decision Reason: "
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[6].textContent).not.toContain('Decision Reason: ');
   });
 });
