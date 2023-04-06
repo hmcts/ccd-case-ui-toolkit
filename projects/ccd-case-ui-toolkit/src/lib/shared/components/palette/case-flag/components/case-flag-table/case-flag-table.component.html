@@ -3,37 +3,37 @@
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
       <th scope="col" class="govuk-table__header col-party-name">{{firstColumnHeader}}</th>
-      <th scope="col" class="govuk-table__header col-comments">Comments</th>
-      <th scope="col" class="govuk-table__header col-creation-date">Creation date</th>
-      <th scope="col" class="govuk-table__header col-last-modified">Last modified</th>
-      <th scope="col" class="govuk-table__header col-flag-status">Flag status</th>
+      <th scope="col" class="govuk-table__header col-comments">{{'Comments' | rpxTranslate}}</th>
+      <th scope="col" class="govuk-table__header col-creation-date">{{'Creation date' | rpxTranslate}}</th>
+      <th scope="col" class="govuk-table__header col-last-modified">{{'Last modified' | rpxTranslate}}</th>
+      <th scope="col" class="govuk-table__header col-flag-status">{{'Flag status' | rpxTranslate}}</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
     <tr *ngIf="!flagData.flags.details || (flagData.flags.details && flagData.flags.details.length === 0)">
-      <td colspan="5">None</td>
+      <td colspan="5">{{'None' | rpxTranslate}}</td>
     </tr>
   </tbody>
   <tbody class="govuk-table__body" *ngIf="flagData.flags.details && flagData.flags.details.length > 0">
     <tr scope="row" class="govuk-table__row" *ngFor="let flagDetail of flagData.flags.details">
       <td class="govuk-table__cell">
-        <div>{{flagDetail.name}}</div>
+        <div>{{flagDetail.name | rpxTranslate}}</div>
         <div>{{flagDetail.otherDescription}}</div>
         <div>{{flagDetail.subTypeValue | rpxTranslate}}</div>
       </td>
       <td class="govuk-table__cell">
-        <div>{{flagDetail.flagComment | rpxTranslate}}</div>
+        <div>{{flagDetail.flagComment}}</div>
         <div *ngIf="!caseFlagsExternalUser && flagDetail.status === caseFlagStatus.NOT_APPROVED && flagDetail.flagUpdateComment">
-          <span class="govuk-!-font-weight-bold">{{'Decision Reason:' | rpxTranslate}} {{flagDetail.flagUpdateComment | rpxTranslate}}</span>
+          <span class="govuk-!-font-weight-bold">Decision Reason: {{flagDetail.flagUpdateComment}}</span>
         </div>
       </td>
       <td class="govuk-table__cell">{{flagDetail.dateTimeCreated | date: 'dd LLL yyyy'}}</td>
       <td class="govuk-table__cell">{{flagDetail.dateTimeModified | date: 'dd LLL yyyy'}}</td>
       <td class="govuk-table__cell">
-        <strong *ngIf="flagDetail.status === caseFlagStatus.ACTIVE" class="govuk-tag">Active</strong>
-        <strong *ngIf="flagDetail.status === caseFlagStatus.INACTIVE" class="govuk-tag govuk-tag--grey">Inactive</strong>
-        <strong *ngIf="flagDetail.status === caseFlagStatus.REQUESTED" class="govuk-tag govuk-tag--grey">Requested</strong>
-        <strong *ngIf="flagDetail.status === caseFlagStatus.NOT_APPROVED" class="govuk-tag govuk-tag--red">Not approved</strong>
+        <strong *ngIf="flagDetail.status === caseFlagStatus.ACTIVE" class="govuk-tag">{{'Active' | rpxTranslate}}</strong>
+        <strong *ngIf="flagDetail.status === caseFlagStatus.INACTIVE" class="govuk-tag govuk-tag--grey">{{'Inactive' | rpxTranslate}}</strong>
+        <strong *ngIf="flagDetail.status === caseFlagStatus.REQUESTED" class="govuk-tag govuk-tag--grey">{{'Requested' | rpxTranslate}}</strong>
+        <strong *ngIf="flagDetail.status === caseFlagStatus.NOT_APPROVED" class="govuk-tag govuk-tag--red">{{'Not approved' | rpxTranslate}}</strong>
       </td>
     </tr>
   </tbody>

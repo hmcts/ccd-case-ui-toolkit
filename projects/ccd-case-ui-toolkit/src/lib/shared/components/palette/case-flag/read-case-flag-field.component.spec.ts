@@ -9,7 +9,7 @@ import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { PaletteContext } from '../base-field';
 import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagFieldState, CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
@@ -505,8 +505,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
     expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
-    // Check the correct display mode for the "Review flag details" summary page has been set
-    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
   });
 
   it('should select the correct (i.e. new) flag to display on the summary page, when the flag is contained in a Complex field', () => {
@@ -522,8 +522,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(witnessCaseFlagPartyName);
     expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag in Witness field'} as FlagDetail);
-    // Check the correct display mode for the "Review flag details" summary page has been set
-    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
   });
 
   it('should show nothing on the summary page if the flag\'s CaseField object has no value', () => {
@@ -538,8 +538,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeNull();
-    // Check the correct display mode for the "Review flag details" summary page has been set
-    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
   });
 
   it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Case Flags journey', () => {
@@ -561,8 +561,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
     expect(component.flagForSummaryDisplay.flagDetail).toEqual(caseFlag2DetailsValue1 as FlagDetail);
     expect(component.flagForSummaryDisplay.flagsCaseFieldId).toEqual(caseFlag2FieldId);
-    // Check the correct display mode for the "Review flag details" summary page has been set
-    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.MANAGE);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.UPDATE);
   });
 
   it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage support journey for Legal Ops', () => {
@@ -584,8 +584,8 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
     expect(component.flagForSummaryDisplay.flagDetail).toEqual(caseFlag2DetailsValue1 as FlagDetail);
     expect(component.flagForSummaryDisplay.flagsCaseFieldId).toEqual(caseFlag2FieldId);
-    // Check the correct display mode for the "Review flag details" summary page has been set
-    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.MANAGE);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.UPDATE_EXTERNAL);
   });
 
   it('should navigate back to form with field state', fakeAsync(() => {

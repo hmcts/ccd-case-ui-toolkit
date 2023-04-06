@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 import { CaseFlagStatus } from '../../enums';
 import { CaseFlagTableComponent } from './case-flag-table.component';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 
 describe('CaseFlagTableComponent', () => {
   let component: CaseFlagTableComponent;

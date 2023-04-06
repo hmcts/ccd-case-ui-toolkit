@@ -3,8 +3,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 import { ManageCaseFlagsComponent } from './manage-case-flags.component';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('ManageCaseFlagsComponent', () => {
   let component: ManageCaseFlagsComponent;
@@ -134,7 +135,7 @@ describe('ManageCaseFlagsComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ManageCaseFlagsComponent ]
+      declarations: [ ManageCaseFlagsComponent, MockRpxTranslatePipe ]
     })
     .compileComponents();
   }));
@@ -352,8 +353,7 @@ describe('ManageCaseFlagsComponent', () => {
   });
 
   it('should show the right validation message based on displayContextParameter', () => {
-    // @ts-expect-error - property is private
-    component.displayContextParameter = component.updateMode;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     // @ts-expect-error - property is private
     component.validateSelection();
     expect(component.errorMessages[0]).toEqual({
@@ -362,8 +362,7 @@ describe('ManageCaseFlagsComponent', () => {
       fieldId: 'conditional-radios-list'
     });
 
-    // @ts-expect-error - property is private
-    component.displayContextParameter = component.updateExternalMode;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     // @ts-expect-error - property is private
     component.validateSelection();
     expect(component.errorMessages[0]).toEqual({
