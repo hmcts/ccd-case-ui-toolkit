@@ -8,6 +8,5 @@ export class SearchInput implements Orderable {
     public order: number,
     public field: Field,
     public metadata?: boolean,
-    public display_context_parameter?: string) {
-  }
+    public display_context_parameter?: string) {}
 }

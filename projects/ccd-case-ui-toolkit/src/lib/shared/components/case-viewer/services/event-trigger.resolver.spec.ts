@@ -237,5 +237,4 @@ describe('EventTriggerResolver', () => {
     expect(casesService.getEventTrigger).toHaveBeenCalled();
     expect(eventTriggerResolver['cachedProfile']).toBe(PROFILE);
   });
-
 });

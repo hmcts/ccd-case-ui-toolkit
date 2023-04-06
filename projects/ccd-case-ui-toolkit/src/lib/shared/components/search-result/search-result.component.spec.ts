@@ -86,8 +86,8 @@ describe('SearchResultComponent', () => {
       description: 'A test Case State'
     };
     const PAGINATION_METADATA: PaginationMetadata = {
-      total_results_count: 3,
-      total_pages_count: 1
+      totalResultsCount: 3,
+      totalPagesCount: 1
     };
     const METADATA_FIELDS: string[] = ['state'];
     const RESULT_VIEW: SearchResultView = {
@@ -287,8 +287,8 @@ describe('SearchResultComponent', () => {
 
     it('should render the pagination limit warning ', () => {
       component.paginationMetadata = {
-        total_results_count: 10100,
-        total_pages_count: 500
+        totalResultsCount: 10100,
+        totalPagesCount: 500
       };
 
       expect(component.resultTotal).toBe(10000);
@@ -426,8 +426,8 @@ describe('SearchResultComponent', () => {
     it('should calculate correct values for first, last and total number of results', () => {
       component.draftsCount = 4;
       component.paginationMetadata = {
-        total_results_count: 105,
-        total_pages_count: 5
+        totalResultsCount: 105,
+        totalPagesCount: 5
       };
       component.ngOnChanges({ page: new SimpleChange(null, 5, true) });
       fixture.detectChanges();
@@ -801,8 +801,8 @@ describe('SearchResultComponent', () => {
 
   describe('without results', () => {
     const PAGINATION_METADATA: PaginationMetadata = {
-      total_results_count: 0,
-      total_pages_count: 0
+      totalResultsCount: 0,
+      totalPagesCount: 0
     };
     const RESULT_VIEW: SearchResultView = {
       columns: [
@@ -901,8 +901,8 @@ describe('SearchResultComponent', () => {
 
     it('should not display table when no results', () => {
       component.paginationMetadata = {
-        total_results_count: 1,
-        total_pages_count: 1
+        totalResultsCount: 1,
+        totalPagesCount: 1
       };
 
       fixture.detectChanges();
@@ -924,8 +924,8 @@ describe('SearchResultComponent', () => {
 
     it('should not display pagination controls when no results', () => {
       component.paginationMetadata = {
-        total_results_count: 1,
-        total_pages_count: 1
+        totalResultsCount: 1,
+        totalPagesCount: 1
       };
 
       fixture.detectChanges();

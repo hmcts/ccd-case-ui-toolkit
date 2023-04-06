@@ -26,7 +26,7 @@ describe('CaseField', () => {
     expect(component.value).toBe(null);
   });
 
-  it('should be able to retrive right values from the accessors methods when FieldType is MultiSelectList', () => {
+  it('should be able to retrieve right values from the accessors methods when FieldType is MultiSelectList', () => {
     const fieldType: FieldType = new FieldType();
     fieldType.type = 'DynamicMultiSelectList';
     component.field_type = fieldType;
@@ -36,7 +36,7 @@ describe('CaseField', () => {
     expect(component.value).toBe(null);
   });
 
-  it('should be able to retrive right values from the accessors methods when FieldType is Text', () => {
+  it('should be able to retrieve right values from the accessors methods when FieldType is Text', () => {
     const fieldType: FieldType = new FieldType();
     fieldType.type = 'Text';
     component.field_type = fieldType;

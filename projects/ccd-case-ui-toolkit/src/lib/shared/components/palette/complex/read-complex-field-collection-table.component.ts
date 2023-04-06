@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../../domain/definition';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';

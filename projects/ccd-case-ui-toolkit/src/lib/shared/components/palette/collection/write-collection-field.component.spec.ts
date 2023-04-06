@@ -44,12 +44,6 @@ const DYNAMIC_FIELD_TYPE: FieldType = {
   }
 };
 
-const DYNAMIC_FIELD_TYPE_NULL: FieldType = {
-  id: 'Address',
-  type: 'Collection',
-  collection_field_type: null
-};
-
 const VALUES = [
   {
     id: '123',

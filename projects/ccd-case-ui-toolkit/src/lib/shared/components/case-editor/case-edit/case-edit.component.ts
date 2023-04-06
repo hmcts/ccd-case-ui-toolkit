@@ -152,5 +152,4 @@ export class CaseEditComponent implements OnInit {
     this.confirmation = confirmation;
     return this.router.navigate(['confirm'], {relativeTo: this.route});
   }
-
 }

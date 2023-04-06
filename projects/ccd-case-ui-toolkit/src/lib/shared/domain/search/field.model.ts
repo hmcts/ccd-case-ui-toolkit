@@ -9,5 +9,5 @@ export class Field {
     public value?: string,
     public label?: string,
     public metadata?: boolean
-  ) { }
+  ) {}
 }

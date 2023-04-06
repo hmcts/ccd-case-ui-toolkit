@@ -93,5 +93,4 @@ export class FieldTypeSanitiser {
     }
     return [];
   }
-
 }
