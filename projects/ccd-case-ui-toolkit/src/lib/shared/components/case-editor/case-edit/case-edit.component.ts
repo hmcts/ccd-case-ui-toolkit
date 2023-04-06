@@ -4,11 +4,11 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
-import { CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage, CaseEditonEventCanBeCompleted, 
-  CaseEditSubmitForm, CaseEventData, CaseEventTrigger, CaseField, 
+import { CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage, CaseEditonEventCanBeCompleted,
+  CaseEditSubmitForm, CaseEventData, CaseEventTrigger, CaseField,
   CaseView, Draft, HttpError, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
-import { FieldsPurger, FieldsUtils, FormErrorService, FormValueService, 
+import { FieldsPurger, FieldsUtils, FormErrorService, FormValueService,
   SessionStorageService, WindowService } from '../../../services';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';

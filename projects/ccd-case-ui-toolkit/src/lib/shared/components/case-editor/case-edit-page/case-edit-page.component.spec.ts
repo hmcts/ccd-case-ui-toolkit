@@ -71,17 +71,17 @@ describe('CaseEditPageComponent', () => {
     caseFieldService = {},
     caseEditDataService = {},
   }) =>
-    new CaseEditPageComponent(
-      caseEdit as CaseEditComponent,
-      route as ActivatedRoute,
-      formValueService as FormValueService,
-      formErrorService as FormErrorService,
-      cdRef as ChangeDetectorRef,
-      pageValidationService as PageValidationService,
-      dialog as MatDialog,
-      caseFieldService as CaseFieldService,
-      caseEditDataService as CaseEditDataService
-    );
+  new CaseEditPageComponent(
+    caseEdit as CaseEditComponent,
+    route as ActivatedRoute,
+    formValueService as FormValueService,
+    formErrorService as FormErrorService,
+    cdRef as ChangeDetectorRef,
+    pageValidationService as PageValidationService,
+    dialog as MatDialog,
+    caseFieldService as CaseFieldService,
+    caseEditDataService as CaseEditDataService
+  );
 
   it('should create', () => {
     component = initializeComponent({});
