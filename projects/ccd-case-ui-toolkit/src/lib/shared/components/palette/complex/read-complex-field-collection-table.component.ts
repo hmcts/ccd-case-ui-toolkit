@@ -11,7 +11,6 @@ import { SortOrder } from './sort-order';
   styleUrls: ['./read-complex-field-collection-table.scss']
 })
 export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadComponent implements OnInit {
-
   public columns: string[];
   public columnsVerticalLabel: any;
   public columnsHorizontalLabel: any;
@@ -75,13 +74,13 @@ export class ReadComplexFieldCollectionTableComponent extends AbstractFieldReadC
     return field;
   }
 
-  public toCaseField(id: string, label: string, field_type: any, value: any): CaseField {
+  public toCaseField(id: string, label: string, fieldType: any, value: any): CaseField {
     return plainToClassFromExist(new CaseField(), {
       id,
       label,
       display_context: 'READONLY',
       value,
-      field_type
+      field_type: fieldType
     });
   }
 

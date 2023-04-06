@@ -213,7 +213,7 @@ export class LinkCasesComponent implements OnInit {
             CaseType: caseView.case_type.id,
             CreatedDateTime: moment(new Date()).format(this.ISO_FORMAT),
             ReasonForLink: this.getSelectedCCDTypeCaseReason()
-          }
+          };
           if (!this.linkedCasesService.caseFieldValue) {
             this.linkedCasesService.caseFieldValue = [];
           }

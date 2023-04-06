@@ -38,5 +38,5 @@ export class CaseView {
       baseLocation?: number
     }
   };
-  case_flag?: Flags;
+  public case_flag?: Flags;
 }

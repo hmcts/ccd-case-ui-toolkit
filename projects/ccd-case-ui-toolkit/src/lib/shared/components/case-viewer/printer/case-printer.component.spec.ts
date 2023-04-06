@@ -14,12 +14,11 @@ import { PrintUrlPipe } from './pipes/print-url.pipe';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CasePrinterComponent', () => {
-
   const $DOCUMENTS = By.css('table tbody tr');
   const $DOCUMENT_NAME = By.css('td.document-name a');
   const $DOCUMENT_TYPE = By.css('td.document-type');
 
-  const CaseHeaderComponent: any = MockComponent({
+  const caseHeaderComponentMock: any = MockComponent({
     selector: 'ccd-case-header',
     inputs: ['caseDetails']
   });
@@ -88,8 +87,8 @@ describe('CasePrinterComponent', () => {
           CasePrinterComponent,
           PrintUrlPipe,
 
-          // Mock
-          CaseHeaderComponent
+          // Mocks
+          caseHeaderComponentMock
         ],
         providers: [
           { provide: CaseNotifier, useValue: caseService },
@@ -108,7 +107,7 @@ describe('CasePrinterComponent', () => {
 
   it('should render a case header', () => {
     caseService.announceCase(CASE_VIEW);
-    const header = de.query(By.directive(CaseHeaderComponent));
+    const header = de.query(By.directive(caseHeaderComponentMock));
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
   });

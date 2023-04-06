@@ -100,7 +100,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if comments exceed a 200-character limit', () => {
-    textarea.value = textareaInput + '0';
+    textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();

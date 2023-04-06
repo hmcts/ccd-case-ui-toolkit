@@ -48,4 +48,4 @@ describe('NoLinkedCasesComponent', () => {
     component.onBack();
     expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseId]);
   });
-})
+});
