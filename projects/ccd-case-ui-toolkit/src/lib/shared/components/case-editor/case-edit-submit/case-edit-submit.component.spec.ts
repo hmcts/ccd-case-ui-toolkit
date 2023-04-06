@@ -1730,8 +1730,8 @@ describe('CaseEditSubmitComponent', () => {
 
     it('should check for callback error context', () => {
       const callbackErrorsContext = new CallbackErrorsContext();
-      callbackErrorsContext.ignore_warning = true;
-      callbackErrorsContext.trigger_text = 'test';
+      callbackErrorsContext.ignoreWarning = true;
+      callbackErrorsContext.triggerText = 'test';
       comp.callbackErrorsNotify(callbackErrorsContext);
       expect(comp.ignoreWarning).toBe(true);
       expect(comp.triggerText).toBe('test');

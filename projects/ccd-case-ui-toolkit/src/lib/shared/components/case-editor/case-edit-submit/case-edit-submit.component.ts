@@ -327,8 +327,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {
-    this.ignoreWarning = errorContext.ignore_warning;
-    this.triggerText = errorContext.trigger_text;
+    this.ignoreWarning = errorContext.ignoreWarning;
+    this.triggerText = errorContext.triggerText;
   }
 
   public summaryCaseField(field: CaseField): CaseField {
