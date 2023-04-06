@@ -263,8 +263,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         this.collItems[i].caseField.id = i.toString();
       }
 
-      const idPrefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
-      const idPrefix1Current = idPrefix1.replace('_' + i.toString(), '_' + counter.toString());
+      const idPrefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace(`_${counter.toString()}`, `_${i.toString()}`) : '';
+      const idPrefix1Current = idPrefix1.replace(`_${i.toString()}`, `_${counter.toString()}`);
 
       if (this.collItems[i].prefix && this.collItems[i].prefix === idPrefix1Current) {
         this.collItems[i].prefix = idPrefix1;
@@ -274,8 +274,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         && this.collItems[i].container['component'].idPrefix ? true : false;
 
       const idPrefix2 = idPrefixAvailable ?
-        this.collItems[i].container['component'].idPrefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
-      const idPrefix2current = idPrefix2.replace('_' + i.toString(), '_' + counter.toString());
+        this.collItems[i].container['component'].idPrefix.replace(`_${counter.toString()}`, `_${i.toString()}`) : '';
+      const idPrefix2current = idPrefix2.replace(`_${i.toString()}`, `_${counter.toString()}`);
 
       if (idPrefixAvailable && this.collItems[i].container['component'].idPrefix === idPrefix2current) {
         this.collItems[i].container['component'].idPrefix = idPrefix2;

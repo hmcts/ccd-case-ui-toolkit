@@ -1,11 +1,9 @@
 import  * as _score from 'underscore';
-
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { ConditionParser } from '../services/condition-parser.service';
 
 export class ShowCondition {
-
   public static readonly CONDITION_NOT_EQUALS = '!=';
   public static readonly CONDITION_EQUALS = '=';
   public static readonly CONTAINS = 'CONTAINS';
@@ -40,14 +38,14 @@ export class ShowCondition {
           // do nothing
         } else {
           if (Array.isArray(condition)) {
-            finalCondition = this.processAddPathPrefixToCondition(condition, pathPrefix, finalCondition)
+            finalCondition = this.processAddPathPrefixToCondition(condition, pathPrefix, finalCondition);
           } else {
-            finalCondition = this.extractConditions(condition, pathPrefix, finalCondition)
+            finalCondition = this.extractConditions(condition, pathPrefix, finalCondition);
           }
         }
       });
     } else {
-      finalCondition = this.extractConditions(formula, pathPrefix, finalCondition)
+      finalCondition = this.extractConditions(formula, pathPrefix, finalCondition);
     }
     return finalCondition;
   }
@@ -59,8 +57,8 @@ export class ShowCondition {
       if (originalCondition.indexOf(condition.fieldReference) > -1) {
         if (this.processedList && this.processedList.indexOf(condition.fieldReference) === -1) {
           this.processedList.push(condition.fieldReference);
-          const regularExp = new RegExp('(\\b)' + condition.fieldReference + '(?=[^"]*(?:"[^"]*"[^"]*)*$)(\\b)', 'g');
-          return originalCondition.replace(regularExp, pathPrefix + '.' + condition.fieldReference);
+          const regularExp = new RegExp(`(\\b)${condition.fieldReference}(?=[^"]*(?:"[^"]*"[^"]*)*$)(\\b)`, 'g');
+          return originalCondition.replace(regularExp, `${pathPrefix}.${condition.fieldReference}`);
         } else {
           return originalCondition;
         }

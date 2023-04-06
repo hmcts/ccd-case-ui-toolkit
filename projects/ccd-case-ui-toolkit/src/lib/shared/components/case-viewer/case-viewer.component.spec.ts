@@ -81,44 +81,44 @@ const CASE_VIEW_FROM_CASE_NOTIFIER: CaseView = {
 };
 
 class MockActivatedRouteSnapshot implements ActivatedRouteSnapshot {
-  url: UrlSegment[];
-  params: Params;
-  queryParams: Params;
-  fragment: string;
-  data: Data;
-  outlet: string;
-  component: Type<any> | string | null;
-  readonly routeConfig: Route | null;
-  readonly root: ActivatedRouteSnapshot;
-  readonly parent: ActivatedRouteSnapshot | null;
-  readonly firstChild: ActivatedRouteSnapshot | null;
-  readonly children: ActivatedRouteSnapshot[];
-  readonly pathFromRoot: ActivatedRouteSnapshot[];
-  readonly paramMap: ParamMap;
-  readonly queryParamMap: ParamMap;
-  toString(): string {
+  public url: UrlSegment[];
+  public params: Params;
+  public queryParams: Params;
+  public fragment: string;
+  public data: Data;
+  public outlet: string;
+  public component: Type<any> | string | null;
+  public readonly routeConfig: Route | null;
+  public readonly root: ActivatedRouteSnapshot;
+  public readonly parent: ActivatedRouteSnapshot | null;
+  public readonly firstChild: ActivatedRouteSnapshot | null;
+  public readonly children: ActivatedRouteSnapshot[];
+  public readonly pathFromRoot: ActivatedRouteSnapshot[];
+  public readonly paramMap: ParamMap;
+  public readonly queryParamMap: ParamMap;
+  public toString(): string {
     return '';
   }
 }
 
 class MockActivatedRoute implements ActivatedRoute {
-  snapshot: ActivatedRouteSnapshot;
-  url: Observable<UrlSegment[]>;
-  params: Observable<Params>;
-  queryParams: Observable<Params>;
-  fragment: Observable<string>;
-  data: Observable<Data>;
-  outlet: string;
-  component: Type<any> | string;
-  routeConfig: Route;
-  root: ActivatedRoute;
-  parent: ActivatedRoute;
-  firstChild: ActivatedRoute;
-  children: ActivatedRoute[];
-  pathFromRoot: ActivatedRoute[];
-  paramMap: Observable<ParamMap>;
-  queryParamMap: Observable<ParamMap>;
-  toString(): string {
+  public snapshot: ActivatedRouteSnapshot;
+  public url: Observable<UrlSegment[]>;
+  public params: Observable<Params>;
+  public queryParams: Observable<Params>;
+  public fragment: Observable<string>;
+  public data: Observable<Data>;
+  public outlet: string;
+  public component: Type<any> | string;
+  public routeConfig: Route;
+  public root: ActivatedRoute;
+  public parent: ActivatedRoute;
+  public firstChild: ActivatedRoute;
+  public children: ActivatedRoute[];
+  public pathFromRoot: ActivatedRoute[];
+  public paramMap: Observable<ParamMap>;
+  public queryParamMap: Observable<ParamMap>;
+  public toString(): string {
     return '';
   }
 }

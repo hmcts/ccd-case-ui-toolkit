@@ -8,7 +8,6 @@ import { WizardPageField } from '../domain/wizard-page-field.model';
   providedIn: 'root',
 })
 export class WizardPageFieldToCaseFieldMapper {
-
   public mapAll(wizardPageFields: WizardPageField[], caseFields: CaseField[]): CaseField[] {
     return wizardPageFields.map(wizardField => {
       return this.map(wizardField, caseFields);
@@ -16,7 +15,6 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private map(wizardPageField: WizardPageField, caseFields: CaseField[]): CaseField {
-
     const caseField: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
     caseField.wizardProps = wizardPageField;
     caseField.order = wizardPageField.order;
@@ -79,7 +77,7 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private preparePathPrefix(pathPrefix: string, caseField: string) {
-    return pathPrefix.length === 0 ? caseField : pathPrefix + '.' + caseField;
+    return pathPrefix.length === 0 ? caseField : `${pathPrefix}.${caseField}`;
   }
 
   private getCaseFieldLeaf(caseFieldId: string[], caseFields: CaseField[]): CaseField {
@@ -104,7 +102,6 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private hideParentIfAllChildrenHidden(caseField: CaseField) {
-
     const childrenCaseFields = this.getCaseFieldChildren(caseField);
 
     childrenCaseFields.forEach(e => this.hideParentIfAllChildrenHidden(e));
