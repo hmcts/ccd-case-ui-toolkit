@@ -20,7 +20,6 @@ import {
   styleUrls: ['./search-result.component.scss']
 })
 export class SearchResultComponent implements OnChanges, OnInit {
-
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
@@ -236,10 +235,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
         return false;
       }
     }
-    if (canBeSharedCount === 0) {
-      return false;
-    }
-    return true;
+    return canBeSharedCount !== 0;
   }
 
   /**
@@ -354,7 +350,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public sortWidget(column: SearchResultViewColumn) {
-    let condition = false;
+    let condition;
+
     if (this.consumerSortingEnabled) {
       const isColumn = column.case_field_id === this.consumerSortParameters.column;
       const isAscending = this.consumerSortParameters.order === SortOrder.ASCENDING;

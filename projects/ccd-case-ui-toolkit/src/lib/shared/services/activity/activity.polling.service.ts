@@ -10,7 +10,6 @@ import { MODES } from './utils/index';
 // @dynamic
 @Injectable()
 export class ActivityPollingService {
-
   private readonly pendingRequests = new Map<string, Subject<Activity>>();
   private currentTimeoutHandle: any;
   private pollActivitiesSubscription: Subscription;
@@ -118,7 +117,7 @@ export class ActivityPollingService {
             });
           },
           (err) => {
-            console.log('error: ' + err);
+            console.log(`error: ${err}`);
             Array.from(requests.values()).forEach((subject) => subject.error(err));
           }
         )

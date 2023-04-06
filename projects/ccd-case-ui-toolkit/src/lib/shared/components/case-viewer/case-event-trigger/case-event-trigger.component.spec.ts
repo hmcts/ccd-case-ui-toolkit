@@ -78,38 +78,38 @@ describe('CaseEventTriggerComponent', () => {
   let component: CaseEventTriggerComponent;
   let de: DebugElement;
 
-  const CaseEditComponent: any = MockComponent({
+  const caseEditComponentMock: any = MockComponent({
     selector: 'ccd-case-edit',
     inputs: ['eventTrigger', 'submit', 'validate', 'caseDetails', 'saveDraft'],
     outputs: ['cancelled', 'submitted']
   });
 
-  const CaseActivityComponent: any = MockComponent({
+  const caseActivityComponentMock: any = MockComponent({
     selector: 'ccd-case-activity',
     inputs: ['caseId', 'iconOnly']
   });
 
-  const CaseHeaderComponent: any = MockComponent({
+  const caseHeaderComponentMock: any = MockComponent({
     selector: 'ccd-case-header',
     inputs: ['caseDetails']
   });
 
-  const EventTriggerHeaderComponent: any = MockComponent({
+  const eventTriggerHeaderComponentMock: any = MockComponent({
     selector: 'ccd-event-trigger-header',
     inputs: ['eventTrigger']
   });
 
-  const FieldRead: any = MockComponent({
+  const fieldReadComponentMock: any = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField']
   });
 
-  const FieldWrite: any = MockComponent({
+  const fieldWriteComponentMock: any = MockComponent({
     selector: 'ccd-field-write',
     inputs: ['caseField', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
-  const RouterLinkComponent: any = MockComponent({
+  const routerLinkComponentMock: any = MockComponent({
     selector: 'a'
   });
 
@@ -176,16 +176,16 @@ describe('CaseEventTriggerComponent', () => {
           ReactiveFormsModule
         ],
         declarations: [
-          CaseEditComponent,
+          caseEditComponentMock,
           CaseEventTriggerComponent,
 
-          // Mock
-          CaseActivityComponent,
-          CaseHeaderComponent,
-          EventTriggerHeaderComponent,
-          RouterLinkComponent,
-          FieldRead,
-          FieldWrite,
+          // Mocks
+          caseActivityComponentMock,
+          caseHeaderComponentMock,
+          eventTriggerHeaderComponentMock,
+          routerLinkComponentMock,
+          fieldReadComponentMock,
+          fieldWriteComponentMock,
           CaseReferencePipe
         ],
         providers: [
@@ -227,7 +227,7 @@ describe('CaseEventTriggerComponent', () => {
 
     component.submitted({caseId: 123});
 
-    expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path]);
+    expect(router.navigate).toHaveBeenCalledWith([`/${URL_SEGMENTS[0].path}/${URL_SEGMENTS[1].path}`]);
   });
 
   it('should alert success message after navigation upon successful event creation', () => {
@@ -257,7 +257,7 @@ describe('CaseEventTriggerComponent', () => {
   it('should have a cancel button going back to the create case', () => {
     component.cancel();
 
-    expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path]);
+    expect(router.navigate).toHaveBeenCalledWith([`/${URL_SEGMENTS[0].path}/${URL_SEGMENTS[1].path}`]);
   });
 
   it('should cancel navigate to linked cases tab', () => {

@@ -6,7 +6,7 @@ import { CaseActivityInfo } from '../../domain/activity';
 import { UserInfo } from '../../domain/user';
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivityService } from './activity.service';
-import { Utils, MODES } from './utils/index';
+import { MODES, Utils } from './utils/index';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class ActivitySocketService {
 
   public activity: Observable<CaseActivityInfo[]>;
   public connect: Observable<any>;
-  public connect_error: Observable<any>;
+  public connectError: Observable<any>;
   public disconnect: Observable<any>;
   public connected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -62,14 +62,14 @@ export class ActivitySocketService {
   private init(): void {
     this.socket = Utils.getSocket(this.user, this.activityService.mode === MODES.socket);
     this.connect = this.getObservableOnSocketEvent<any>('connect');
-    this.connect_error = this.getObservableOnSocketEvent<any>('connect_error');
+    this.connectError = this.getObservableOnSocketEvent<any>('connect_error');
     this.disconnect = this.getObservableOnSocketEvent<any>('disconnect');
     this.activity = this.getObservableOnSocketEvent<CaseActivityInfo[]>('activity');
 
     this.disconnect.subscribe(() => {
       this.connected.next(false);
     });
-    this.connect_error.subscribe(() => {
+    this.connectError.subscribe(() => {
       this.connected.next(false);
     });
     this.connect.subscribe(() => {

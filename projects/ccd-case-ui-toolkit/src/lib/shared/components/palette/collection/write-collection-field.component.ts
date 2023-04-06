@@ -4,10 +4,9 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
-import { finalize, take } from 'rxjs/operators';
-import { FieldType } from '../../../domain/definition/field-type.model';
-
+import { finalize } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { Profile } from '../../../domain/profile/profile.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
@@ -169,7 +168,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   public addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    let item = { value: null }
+    let item = { value: null };
 
     if ( this.isCollectionDynamic() ) {
       item  = {...this.caseField.value[this.caseField.value.length - 1]};
@@ -263,19 +262,18 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         this.collItems[i].caseField.id = i.toString();
       }
 
-      const idPrefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
-      const idPrefix1Current = idPrefix1.replace('_' + i.toString(), '_' + counter.toString());
+      const idPrefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace(`_${counter.toString()}`, `_${i.toString()}`) : '';
+      const idPrefix1Current = idPrefix1.replace(`_${i.toString()}`, `_${counter.toString()}`);
 
       if (this.collItems[i].prefix && this.collItems[i].prefix === idPrefix1Current) {
         this.collItems[i].prefix = idPrefix1;
       }
 
-      const idPrefixAvailable = this.collItems[i].container && this.collItems[i].container['component']
-        && this.collItems[i].container['component'].idPrefix ? true : false;
+      const idPrefixAvailable = !!this.collItems[i].container?.['component']?.idPrefix;
 
       const idPrefix2 = idPrefixAvailable ?
-        this.collItems[i].container['component'].idPrefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
-      const idPrefix2current = idPrefix2.replace('_' + i.toString(), '_' + counter.toString());
+        this.collItems[i].container['component'].idPrefix.replace(`_${counter.toString()}`, `_${i.toString()}`) : '';
+      const idPrefix2current = idPrefix2.replace(`_${i.toString()}`, `_${counter.toString()}`);
 
       if (idPrefixAvailable && this.collItems[i].container['component'].idPrefix === idPrefix2current) {
         this.collItems[i].container['component'].idPrefix = idPrefix2;
@@ -308,7 +306,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    // Was reassesed as part of EUI-3505. There is still a caveat around CRD, but that was deemed an unlikely scenario
+    // Was reassessed as part of EUI-3505. There is still a caveat around CRD, but that was deemed an unlikely scenario
     const id = this.getControlIdAt(index);
     if (id) {
       if (!!this.profile.user && !!this.profile.user.idam) {
@@ -359,7 +357,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
    * Applied full solution as part of EUI-3505
    */
   private getControlIdAt(index: number): string {
-
     // this.formArray contains [ FormGroup( id: FormControl, value: FormGroup ), ... ].
     // Here, we need to get the value of the id FormControl.
     const group: FormGroup = this.formArray.at(index) as FormGroup;

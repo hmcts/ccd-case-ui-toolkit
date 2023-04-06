@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { Type } from 'class-transformer';
 import { CaseField } from './case-field.model';
 import { FieldTypeEnum } from './field-type-enum.model';

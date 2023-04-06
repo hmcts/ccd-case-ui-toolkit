@@ -1,10 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-
 import { Activity, CaseActivityInfo } from '../../domain/activity';
 import { ActivityPollingService, ActivityService, ActivitySocketService } from '../../services';
-import { Utils, MODES } from '../../services/activity/utils';
+import { MODES, Utils } from '../../services/activity/utils';
 
 interface ActivityDetails {
   viewers: string;

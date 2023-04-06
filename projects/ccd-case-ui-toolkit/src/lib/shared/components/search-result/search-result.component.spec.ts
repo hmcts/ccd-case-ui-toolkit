@@ -215,6 +215,7 @@ describe('SearchResultComponent', () => {
             SearchResultComponent,
             SortSearchResultPipe,
             CaseReferencePipe,
+
             // Mocks
             caseActivityComponent,
             PaginatePipe
@@ -276,7 +277,6 @@ describe('SearchResultComponent', () => {
 
     it('should render pagination controls if results and metadata not empty', () => {
       const pagination = de.queryAll(By.css('ccd-pagination'));
-
       expect(pagination.length).toBeTruthy();
     });
 
@@ -295,7 +295,6 @@ describe('SearchResultComponent', () => {
     });
 
     it('should render columns based on SearchResultView', () => {
-
       const headRow = de.query(By.css('div>table>thead>tr'));
       // added +1 for case activity column
       expect(headRow.children.length).toBe(RESULT_VIEW.columns.length + 1);
@@ -322,7 +321,6 @@ describe('SearchResultComponent', () => {
 
     it('should sort columns with higher order last', () => {
       const lastHeader = de.query(By.css('div>table>thead>tr th:nth-child(3)')).nativeElement.textContent.trim();
-
       expect(lastHeader.startsWith(RESULT_VIEW.columns[0].label)).toBe(true);
 
       const lastValue = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3)')).nativeElement.textContent.trim();
@@ -334,13 +332,11 @@ describe('SearchResultComponent', () => {
       expect(lastHeader.startsWith(RESULT_VIEW.columns[1].label)).toBe(true);
 
       const lastValue = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1)')).nativeElement.textContent.trim();
-
       expect(lastValue.startsWith(RESULT_VIEW.results[1].case_fields['PersonLastName'])).toBe(true);
     });
 
     it('should render one row for each SearchResultViewItem', () => {
       const tbody = de.query(By.css('div>table>tbody'));
-
       expect(tbody.children.length).toEqual(RESULT_VIEW.results.length);
     });
 
@@ -377,7 +373,6 @@ describe('SearchResultComponent', () => {
 
     it('should render an case activity column with header', () => {
       const headRow = de.query(By.css('div>table>thead>tr th:nth-child(4)'));
-
       expect(headRow.nativeElement.textContent).toBe('');
     });
 
@@ -387,13 +382,11 @@ describe('SearchResultComponent', () => {
       fixture.detectChanges();
 
       const headRow = de.query(By.css('div>table>thead>tr th:nth-child(5)'));
-
       expect(headRow).toBeNull();
     });
 
     it('should not display error message when results present', () => {
       const error = de.query(By.css('div.notification'));
-
       expect(error).toBeFalsy();
     });
 
@@ -469,7 +462,7 @@ describe('SearchResultComponent', () => {
       });
     });
 
-    function assertOrder(order: Array<number>) {
+    function assertOrder(order: number[]) {
       const firstField = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
       const secondField = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
       const thirdField = de.query(By.css('div>table>tbody tr:nth-child(3) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
@@ -490,7 +483,6 @@ describe('SearchResultComponent', () => {
 
     it('should render case reference value in first column with hyperlink if not draft and first column field value is null', () => {
       const fourthRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(1) a'));
-
       expect(fourthRowFirstCol.nativeElement.textContent.trim()).toBe(new CaseReferencePipe().transform(RESULT_VIEW.results[3].case_id));
     });
 
@@ -588,7 +580,6 @@ describe('SearchResultComponent', () => {
         supplementary_data: null
       };
       expect(component.isSelected(tempCaseItem)).toBeFalsy();
-
     });
 
     it('select all cases is enabled', () => {
@@ -905,16 +896,14 @@ describe('SearchResultComponent', () => {
 
     it('should display error message when no results', () => {
       const error = de.query(By.css('div.notification'));
-
       expect(error).toBeTruthy();
     });
 
     it('should not display table when no results', () => {
-      const NON_EMPTY_PAGINATION_METADATA: PaginationMetadata = {
+      component.paginationMetadata = {
         total_results_count: 1,
         total_pages_count: 1
       };
-      component.paginationMetadata = NON_EMPTY_PAGINATION_METADATA;
 
       fixture.detectChanges();
 
@@ -934,11 +923,10 @@ describe('SearchResultComponent', () => {
     });
 
     it('should not display pagination controls when no results', () => {
-      const NON_EMPTY_PAGINATION_METADATA: PaginationMetadata = {
+      component.paginationMetadata = {
         total_results_count: 1,
         total_pages_count: 1
       };
-      component.paginationMetadata = NON_EMPTY_PAGINATION_METADATA;
 
       fixture.detectChanges();
 

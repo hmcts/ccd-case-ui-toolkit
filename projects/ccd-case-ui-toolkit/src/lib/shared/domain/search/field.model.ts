@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { FieldType } from '../definition';
 
 export class Field {

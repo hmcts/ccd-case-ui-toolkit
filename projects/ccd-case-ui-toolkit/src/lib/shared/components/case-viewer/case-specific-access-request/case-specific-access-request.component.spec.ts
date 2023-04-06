@@ -1,5 +1,5 @@
-import { waitForAsync, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Location } from '@angular/common';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -21,11 +21,11 @@ describe('CaseSpecificAccessRequestComponent', () => {
   let fixture: ComponentFixture<CaseSpecificAccessRequestComponent>;
   let casesService: jasmine.SpyObj<CasesService>;
   const casesNotifier = createSpyObj<CaseNotifier>('CaseNotifier', ['fetchAndRefresh']);
-  const case_id = '1234123412341234';
+  const caseId = '1234123412341234';
   const mockRoute = {
     snapshot: {
       params: {
-        cid: case_id
+        cid: caseId
       }
     }
   };

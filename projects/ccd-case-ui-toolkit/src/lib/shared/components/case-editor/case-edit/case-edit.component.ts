@@ -23,13 +23,13 @@ export class CaseEditComponent implements OnInit {
   public eventTrigger: CaseEventTrigger;
 
   @Input()
-  public submit: (CaseEventData, profile?: Profile) => Observable<object>;
+  public submit: (caseEventData, profile?: Profile) => Observable<object>;
 
   @Input()
-  public validate: (CaseEventData, pageId: string) => Observable<object>;
+  public validate: (caseEventData, pageId: string) => Observable<object>;
 
   @Input()
-  public saveDraft: (CaseEventData) => Observable<Draft>;
+  public saveDraft: (caseEventData) => Observable<Draft>;
 
   @Input()
   public caseDetails: CaseView;

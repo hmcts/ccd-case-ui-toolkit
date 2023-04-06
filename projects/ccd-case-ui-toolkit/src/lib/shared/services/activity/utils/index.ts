@@ -74,7 +74,7 @@ const UTILS = {
       }
       return undefined;
     },
-    generateDescription: (prefix: string, suffix: string, names: Array<ActivityInfo | User>, unknownCount: number): string => {
+    generateDescription: (prefix: string, suffix: string, names: (ActivityInfo | User)[], unknownCount: number): string => {
       let resultText = `${prefix}${UTILS.activity.activityNames(names)}`;
       if (unknownCount > 0) {
         resultText += (names.length > 0 ? ` and ${unknownCount} other` : `${unknownCount} user`);
@@ -120,6 +120,7 @@ const UTILS = {
   }
 };
 
+// tslint:disable-next-line:variable-name
 export const Utils = {
   BASE_CONFIGURATION,
   DESCRIPTIONS,

@@ -58,7 +58,7 @@ describe('CaseActivityComponent', () => {
       expect(banner).toBeNull();
       expect(icon).not.toBeNull();
     }
-  }
+  };
 
   beforeEach(() => {
     activitySocketService = {

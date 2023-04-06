@@ -15,7 +15,6 @@ const response = {
 };
 
 describe('ActivityService', () => {
-
   beforeEach(() => {
     appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getActivityUrl']);
     appConfig.getActivityUrl.and.returnValue('someUrl');
@@ -23,7 +22,7 @@ describe('ActivityService', () => {
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
     httpService.get.and.returnValue(of(response));
     httpService.post.and.returnValue(of(response));
-    sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"')
+    sessionStorageService.getItem.and.returnValue('\"{token: \\\"any\\\"}\"');
 
     activityService = new ActivityService(httpService, appConfig, sessionStorageService);
   });
@@ -37,6 +36,7 @@ describe('ActivityService', () => {
     it('should indicate the service is disabled', () => {
       expect(activityService.isEnabled).toBeFalsy();
     });
+
     it('should not verify user authorization', () => {
       activityService.verifyUserIsAuthorized();
       expect(httpService.get).toHaveBeenCalledTimes(0);
@@ -44,7 +44,6 @@ describe('ActivityService', () => {
   });
 
   describe('when activity tracking is set to "polling"', () => {
-
     beforeEach(() => {
       activityService.mode = MODES.polling;
     });
@@ -54,11 +53,13 @@ describe('ActivityService', () => {
       expect(httpService.get).toHaveBeenCalled();
       expect(appConfig.getActivityUrl).toHaveBeenCalled();
     });
-    it('should accesss AppConfig and HttpService for postActivity', () => {
+
+    it('should access AppConfig and HttpService for postActivity', () => {
       activityService.postActivity('1111', 'edit');
       expect(httpService.post).toHaveBeenCalled();
       expect(appConfig.getActivityUrl).toHaveBeenCalled();
     });
+
     it('should verify user authorization once', () => {
       activityService.verifyUserIsAuthorized();
       activityService.verifyUserIsAuthorized();
@@ -69,7 +70,6 @@ describe('ActivityService', () => {
   });
 
   describe('when activity url is empty', () => {
-
     beforeEach(() => {
       appConfig.getActivityUrl.and.returnValue('');
       activityService['userAuthorised'] = true;
@@ -87,14 +87,17 @@ describe('ActivityService', () => {
       httpService.get.and.returnValue(throwError(error));
       activityService.mode = MODES.polling;
     };
+
     it('should not be enabled when the error is 401', () => {
       goError(401);
       expect(activityService.isEnabled).toBeFalsy();
     });
+
     it('should not be enabled when the error is 403', () => {
       goError(403);
       expect(activityService.isEnabled).toBeFalsy();
     });
+
     it('should be enabled when the error is something other than 401 or 403', () => {
       goError(400);
       expect(activityService.isEnabled).toBeTruthy();

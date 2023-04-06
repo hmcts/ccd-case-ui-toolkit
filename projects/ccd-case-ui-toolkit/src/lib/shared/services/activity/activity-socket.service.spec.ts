@@ -1,9 +1,8 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Socket } from 'socket.io-client';
-
 import { SessionStorageService } from '../session/session-storage.service';
 import { ActivitySocketService } from './activity-socket.service';
-import { Utils, MODES } from './utils';
+import { MODES, Utils } from './utils';
 
 describe('ActivitySocketService', () => {
   const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
@@ -38,23 +37,22 @@ describe('ActivitySocketService', () => {
   });
 
   describe('when socket-like modes are not enabled', () => {
-
     it('should not have created a socket by default', () => {
       expect(service.socket).toBeUndefined();
     });
+
     it('should not have created a socket when mode is "off"', () => {
       activityService.mode = MODES.off;
       expect(service.socket).toBeUndefined();
     });
+
     it('should not have created a socket when mode is "polling"', () => {
       activityService.mode = MODES.polling;
       expect(service.socket).toBeUndefined();
     });
-
   });
 
   describe('when "socket-long-polling" mode is enabled', () => {
-
     beforeEach(() => {
       activityService.mode = MODES.socketLongPoll;
     });
@@ -68,15 +66,18 @@ describe('ActivitySocketService', () => {
       expect(service.socket.io.opts.hostname).toEqual(window.location.hostname);
       expect(service.socket.io.opts.port).toEqual(window.location.port);
     });
+
     it('should have set up the correct transports', () => {
       // Should have set up the correct transports.
       expect(service.socket.io.opts.transports).toEqual(Utils.TRANSPORTS.disallowWebSockets);
     });
+
     it('should have set up socket connections', () => {
       expect(service.connect instanceof Observable).toBeTruthy();
       expect(service.activity instanceof Observable).toBeTruthy();
       expect(service.disconnect instanceof Observable).toBeTruthy();
     });
+
     it('should reinstantiate the socket and change transports when the socket mode changes', () => {
       const originalSocket = service.socket;
       activityService.mode = MODES.socket;
@@ -85,16 +86,15 @@ describe('ActivitySocketService', () => {
       expect(newSocket.io.opts.transports).toEqual(Utils.TRANSPORTS.allowWebSockets);
       expect(newSocket).not.toEqual(originalSocket);
     });
+
     it('should destroy connection when socket-like modes are disabled', () => {
       expect(service.socket instanceof Socket).toBeTruthy();
       activityService.mode = MODES.polling;
       expect(service.socket).toBeUndefined();
     });
-
   });
 
   describe('when "socket" mode is enabled', () => {
-
     beforeEach(() => {
       activityService.mode = MODES.socket;
     });
@@ -118,7 +118,5 @@ describe('ActivitySocketService', () => {
       activityService.mode = MODES.polling;
       expect(service.socket).toBeUndefined();
     });
-
   });
-
 });

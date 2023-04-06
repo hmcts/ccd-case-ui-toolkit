@@ -1,15 +1,15 @@
-import { SessionStorageService } from './../../../services/session/session-storage.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
+import { CaseField } from '../../../domain';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
 import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
-import createSpyObj = jasmine.createSpyObj;
+import { SessionStorageService } from '../../../services/session/session-storage.service';
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
-import { CaseField } from '../../../domain';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
@@ -50,7 +50,7 @@ describe('CaseFileViewFieldComponent', () => {
   };
   const mockUser: string = JSON.stringify({ roles: ['caseworker-privatelaw-judge'] });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService', ['getCategoriesAndDocuments']);
     mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(of(null));
 

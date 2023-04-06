@@ -16,7 +16,6 @@ import { LinkedCasesService } from './services';
   templateUrl: './write-linked-cases-field.component.html'
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
-
   public caseEditForm: FormGroup;
   public caseDetails: CaseView;
   public linkedCasesPage: number;
@@ -90,7 +89,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public getLinkedCaseReasons(): void {
-    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+    const reasonCodeAPIurl = `${this.appConfig.getRDCommonDataApiUrl()}/lov/categories/CaseLinkingReasonCode`;
       this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
         next: reasons => {
           // Sort in ascending order
@@ -156,10 +155,9 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public getLinkedCases(): void {
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
       const caseViewFiltered = caseView.tabs.filter(tab => {
-        const linkField = tab.fields.some(
+        return tab.fields.some(
           ({field_type}) => field_type && field_type.collection_field_type && field_type.collection_field_type.id === 'CaseLink'
         );
-        return linkField;
       });
       if (caseViewFiltered) {
         const caseLinkFieldValue = caseViewFiltered.map(filtered =>

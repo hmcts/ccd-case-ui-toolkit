@@ -1,9 +1,9 @@
 import { User } from './user.model';
 
 export class CaseActivityInfo {
-  caseId: string;
-  unknownViewers: number;
-  unknownEditors: number;
-  editors: User[];
-  viewers: User[];
+  public caseId: string;
+  public unknownViewers: number;
+  public unknownEditors: number;
+  public editors: User[];
+  public viewers: User[];
 }

@@ -1,13 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { By } from '@angular/platform-browser';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MockComponent } from 'ng2-mock-component';
-import { ReadDynamicMultiSelectListFieldComponent } from './read-dynamic-multi-select-list-field.component';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { FixedListPipe } from '../fixed-list/fixed-list.pipe';
+import { ReadDynamicMultiSelectListFieldComponent } from './read-dynamic-multi-select-list-field.component';
 
-const $VALUES = By.css('table>tbody>tr>td');
 const FIELD_ID = 'ReadOnlyFieldId';
 const FORMATTED_LIST_ITEMS = [
   {
@@ -20,7 +18,7 @@ const FORMATTED_LIST_ITEMS = [
     code: 'PA',
     order: 2
   }
-]
+];
 const FIELD_LIST_ITEMS = [
   {
     label: 'Pierre',
@@ -37,7 +35,7 @@ const FIELD_LIST_ITEMS = [
     code: 'J',
     order: 3
   }
-]
+];
 const FIELD_TYPE: FieldType = {
   id: 'MultiSelectList',
   type: 'MultiSelectList',
@@ -58,24 +56,23 @@ const VALUES = [{
   order: 3
 }];
 
-let CASE_FIELD: CaseField;
+let caseField: CaseField;
 
 describe('ReadDynamicMultiSelectListFieldComponent', () => {
-
   describe('Non-persistable readonly multi-select-list field', () => {
     let fixture: ComponentFixture<ReadDynamicMultiSelectListFieldComponent>;
     let component: ReadDynamicMultiSelectListFieldComponent;
     let de: DebugElement;
 
-    beforeEach(async(() => {
-      CASE_FIELD = new CaseField();
-      CASE_FIELD.id = FIELD_ID;
-      CASE_FIELD.label = 'X';
-      CASE_FIELD.field_type = FIELD_TYPE;
-      CASE_FIELD.value = VALUES;
-      CASE_FIELD.list_items = FIELD_LIST_ITEMS;
+    beforeEach(waitForAsync(() => {
+      caseField = new CaseField();
+      caseField.id = FIELD_ID;
+      caseField.label = 'X';
+      caseField.field_type = FIELD_TYPE;
+      caseField.value = VALUES;
+      caseField.list_items = FIELD_LIST_ITEMS;
 
-      const FieldReadComponent = MockComponent({
+      const fieldReadComponentMock = MockComponent({
         selector: 'ccd-field-read',
         inputs: ['caseField']
       });
@@ -86,9 +83,8 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
             FixedListPipe,
-
-            // Mock
-            FieldReadComponent
+            // Mocks
+            fieldReadComponentMock
           ],
           providers: []
         })
@@ -97,7 +93,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       fixture = TestBed.createComponent(ReadDynamicMultiSelectListFieldComponent);
       component = fixture.componentInstance;
 
-      component.caseField = CASE_FIELD;
+      component.caseField = caseField;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -130,19 +126,19 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
     let component: ReadDynamicMultiSelectListFieldComponent;
     let de: DebugElement;
 
-    beforeEach(async(() => {
-      CASE_FIELD = new CaseField();
-      CASE_FIELD.id = FIELD_ID;
-      CASE_FIELD.label = 'X';
-      CASE_FIELD.field_type = FIELD_TYPE;
-      CASE_FIELD.value = null;
-      CASE_FIELD.list_items = null;
-      CASE_FIELD.formatted_value = {
+    beforeEach(waitForAsync(() => {
+      caseField = new CaseField();
+      caseField.id = FIELD_ID;
+      caseField.label = 'X';
+      caseField.field_type = FIELD_TYPE;
+      caseField.value = null;
+      caseField.list_items = null;
+      caseField.formatted_value = {
         value: [FORMATTED_LIST_ITEMS[0]],
         list_items: FORMATTED_LIST_ITEMS
-      }
+      };
 
-      const FieldReadComponent = MockComponent({
+      const fieldReadComponentMock = MockComponent({
         selector: 'ccd-field-read',
         inputs: ['caseField']
       });
@@ -153,9 +149,8 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
           declarations: [
             ReadDynamicMultiSelectListFieldComponent,
             FixedListPipe,
-
-            // Mock
-            FieldReadComponent
+            // Mocks
+            fieldReadComponentMock
           ],
           providers: []
         })
@@ -164,7 +159,7 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       fixture = TestBed.createComponent(ReadDynamicMultiSelectListFieldComponent);
       component = fixture.componentInstance;
 
-      component.caseField = CASE_FIELD;
+      component.caseField = caseField;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -178,5 +173,4 @@ describe('ReadDynamicMultiSelectListFieldComponent', () => {
       expect(component.caseField.value).toEqual([FORMATTED_LIST_ITEMS[0]]);
     });
   });
-
 });

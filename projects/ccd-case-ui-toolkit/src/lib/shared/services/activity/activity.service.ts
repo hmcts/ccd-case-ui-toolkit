@@ -2,12 +2,11 @@ import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { HttpError } from '../../domain/http/http-error.model';
-import { HttpErrorService, HttpService, OptionsType } from '../http';
 import { MODES } from '../activity/utils';
+import { HttpErrorService, HttpService, OptionsType } from '../http';
 import { SessionStorageService } from '../session';
 
 // @dynamic
@@ -64,12 +63,11 @@ export class ActivityService {
   public getOptions(): OptionsType {
     const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
     const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Authorization', userDetails.token);
-    const options: OptionsType = {
+    return {
       headers,
       withCredentials: true,
       observe: 'body',
     };
-    return options;
   }
 
   public getActivities(...caseId: string[]): Observable<Activity[]> {
@@ -78,7 +76,7 @@ export class ActivityService {
       const url = `${this.activityUrl}/cases/${caseId.join(',')}/activity`;
       return this.http.get(url, options, false, ActivityService.handleHttpError);
     } catch (error) {
-      console.log('user may not be authenticated.' + error);
+      console.log(`user may not be authenticated.${error}`);
     }
   }
 
@@ -93,7 +91,7 @@ export class ActivityService {
           map(response => response)
         );
     } catch (error) {
-      console.log('user may not be authenticated.' + error);
+      console.log(`user may not be authenticated.${error}`);
     }
   }
 

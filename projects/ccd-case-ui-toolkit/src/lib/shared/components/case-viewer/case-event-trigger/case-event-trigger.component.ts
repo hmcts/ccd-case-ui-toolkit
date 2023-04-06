@@ -63,7 +63,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
             });
         } else if (mode === MODES.polling) {
           this.ngZone.runOutsideAngular(() => {
-            this.activitySubscription = this.postEditActivity().subscribe((_resolved) => { });
+            this.activitySubscription = this.postEditActivity().subscribe(() => { });
           });
         }
       });
@@ -111,7 +111,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       return flagLauncherCaseField && sanitizedEditForm.data.hasOwnProperty(flagLauncherCaseField.id)
         ? of(null)
         : this.casesService.validateCase(this.caseDetails.case_type.id, sanitizedEditForm, pageId);
-    }
+    };
   }
 
   public submitted(event: any): void {

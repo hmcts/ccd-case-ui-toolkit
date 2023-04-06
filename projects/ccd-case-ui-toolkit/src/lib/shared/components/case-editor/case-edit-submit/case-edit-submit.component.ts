@@ -258,7 +258,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
         if (caseField.field_type.type === 'Complex') {
           // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
           // handle both null and undefined values
-          if (caseField.value != null) {
+          if (caseField.value !== null) {
             // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
             // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
             // parent)
@@ -327,8 +327,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {
-    this.ignoreWarning = errorContext.ignore_warning;
-    this.triggerText = errorContext.trigger_text;
+    this.ignoreWarning = errorContext.ignoreWarning;
+    this.triggerText = errorContext.triggerText;
   }
 
   public summaryCaseField(field: CaseField): CaseField {

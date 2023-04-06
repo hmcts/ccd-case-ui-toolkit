@@ -10,7 +10,6 @@ export class SearchResultView {
 
   @Type(() => SearchResultViewItem)
   public results: SearchResultViewItem[];
-  public result_error?: string;
 
   public hasDrafts() {
     return this.results[0]
