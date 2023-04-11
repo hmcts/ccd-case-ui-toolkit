@@ -28,6 +28,18 @@ export const aleEncyclopedia = {
   upload_timestamp: '12 Mar 2023'
 };
 
+export const whiskyHighland = {
+  name: 'Highland',
+  type: DocumentTreeNodeType.FOLDER,
+  children: [
+    {
+      name: 'Highland 1',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    }
+  ]
+};
+
 export const whiskyLowland1 = {
   name: 'Details about Whisky Lowland 1',
   type: DocumentTreeNodeType.DOCUMENT,
@@ -35,6 +47,25 @@ export const whiskyLowland1 = {
   document_binary_url: '/test/binary',
   attribute_path: '',
   upload_timestamp: '21 Jun 2022'
+}
+
+export const whiskyLowland = {
+  name: 'Lowland',
+  type: DocumentTreeNodeType.FOLDER,
+  children: [
+    {
+      name: 'Lowland 1',
+      type: DocumentTreeNodeType.FOLDER,
+      children: [
+        whiskyLowland1
+      ]
+    },
+    {
+      name: 'Lowland 2',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    }
+  ]
 }
 
 export const whiskyIslayDetails = {
@@ -55,6 +86,18 @@ export const whiskyIslayMoreInformation = {
   upload_timestamp: '28 Dec 2022'
 }
 
+export const whiskySpeyside = {
+  name: 'Speyside',
+  type: DocumentTreeNodeType.FOLDER,
+  children: []
+};
+
+export const whiskyCampbelTown = {
+  name: 'Campbeltown',
+  type: DocumentTreeNodeType.FOLDER,
+  children: []
+};
+
 export const wines = {
   name: 'Wines',
   type: DocumentTreeNodeType.FOLDER,
@@ -68,6 +111,106 @@ export const wines = {
       name: 'Italian',
       type: DocumentTreeNodeType.FOLDER,
       children: []
+    }
+  ]
+};
+
+export const beersAlphabeticallyAsc = {
+  name: 'Beers',
+  type: DocumentTreeNodeType.FOLDER,
+  children: [
+    {
+      name: 'Bitters',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    },
+    {
+      name: 'American',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    },
+    {
+      name: 'Asian',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    },
+    aleEncyclopedia,
+    beersEncyclopedia,
+    lagerEncyclopedia,
+  ]
+};
+
+export const beersAlphabeticallyDesc = {
+  name: 'Beers',
+  type: DocumentTreeNodeType.FOLDER,
+  children: [
+    {
+      name: 'Bitters',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    },
+    {
+      name: 'American',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    },
+    {
+      name: 'Asian',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    },
+    lagerEncyclopedia,
+    beersEncyclopedia,
+    aleEncyclopedia,
+  ]
+};
+
+export const spiritsAlphabeticallyAsc = {
+  name: 'Spirits',
+  type: DocumentTreeNodeType.FOLDER,
+  children: [
+    {
+      name: 'Scotch whisky',
+      type: DocumentTreeNodeType.FOLDER,
+      children: [
+        whiskyHighland,
+        whiskyLowland,
+        {
+          name: 'Islay',
+          type: DocumentTreeNodeType.FOLDER,
+          children: [
+            whiskyIslayDetails,
+            whiskyIslayMoreInformation
+          ]
+        },
+        whiskySpeyside,
+        whiskyCampbelTown
+      ]
+    }
+  ]
+};
+
+export const spiritsAlphabeticallyDesc = {
+  name: 'Spirits',
+  type: DocumentTreeNodeType.FOLDER,
+  children: [
+    {
+      name: 'Scotch whisky',
+      type: DocumentTreeNodeType.FOLDER,
+      children: [
+        whiskyHighland,
+        whiskyLowland,
+        {
+          name: 'Islay',
+          type: DocumentTreeNodeType.FOLDER,
+          children: [
+            whiskyIslayMoreInformation,
+            whiskyIslayDetails,
+          ]
+        },
+        whiskySpeyside,
+        whiskyCampbelTown
+      ]
     }
   ]
 };
@@ -124,35 +267,8 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
         name: 'Scotch whisky',
         type: DocumentTreeNodeType.FOLDER,
         children: [
-          {
-            name: 'Highland',
-            type: DocumentTreeNodeType.FOLDER,
-            children: [
-              {
-                name: 'Highland 1',
-                type: DocumentTreeNodeType.FOLDER,
-                children: []
-              }
-            ]
-          },
-          {
-            name: 'Lowland',
-            type: DocumentTreeNodeType.FOLDER,
-            children: [
-              {
-                name: 'Lowland 1',
-                type: DocumentTreeNodeType.FOLDER,
-                children: [
-                  whiskyLowland1
-                ]
-              },
-              {
-                name: 'Lowland 2',
-                type: DocumentTreeNodeType.FOLDER,
-                children: []
-              }
-            ]
-          },
+          whiskyHighland,
+          whiskyLowland,
           {
             name: 'Islay',
             type: DocumentTreeNodeType.FOLDER,
@@ -161,16 +277,8 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
               whiskyIslayMoreInformation
             ]
           },
-          {
-            name: 'Speyside',
-            type: DocumentTreeNodeType.FOLDER,
-            children: []
-          },
-          {
-            name: 'Campbeltown',
-            type: DocumentTreeNodeType.FOLDER,
-            children: []
-          }
+          whiskySpeyside,
+          whiskyCampbelTown
         ]
       }
     ]
@@ -192,90 +300,9 @@ export const treeData = [
 ];
 
 export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
-  {
-    name: 'Beers',
-    type: DocumentTreeNodeType.FOLDER,
-    children: [
-      {
-        name: 'Bitters',
-        type: DocumentTreeNodeType.FOLDER,
-        children: []
-      },
-      {
-        name: 'American',
-        type: DocumentTreeNodeType.FOLDER,
-        children: []
-      },
-      {
-        name: 'Asian',
-        type: DocumentTreeNodeType.FOLDER,
-        children: []
-      },
-      aleEncyclopedia,
-      beersEncyclopedia,
-      lagerEncyclopedia,
-    ]
-  },
+  beersAlphabeticallyAsc,
   wines,
-  {
-    name: 'Spirits',
-    type: DocumentTreeNodeType.FOLDER,
-    children: [
-      {
-        name: 'Scotch whisky',
-        type: DocumentTreeNodeType.FOLDER,
-        children: [
-          {
-            name: 'Highland',
-            type: DocumentTreeNodeType.FOLDER,
-            children: [
-              {
-                name: 'Highland 1',
-                type: DocumentTreeNodeType.FOLDER,
-                children: []
-              }
-            ]
-          },
-          {
-            name: 'Lowland',
-            type: DocumentTreeNodeType.FOLDER,
-            children: [
-              {
-                name: 'Lowland 1',
-                type: DocumentTreeNodeType.FOLDER,
-                children: [
-                  whiskyLowland1
-                ]
-              },
-              {
-                name: 'Lowland 2',
-                type: DocumentTreeNodeType.FOLDER,
-                children: []
-              }
-            ]
-          },
-          {
-            name: 'Islay',
-            type: DocumentTreeNodeType.FOLDER,
-            children: [
-              whiskyIslayDetails,
-              whiskyIslayMoreInformation
-            ]
-          },
-          {
-            name: 'Speyside',
-            type: DocumentTreeNodeType.FOLDER,
-            children: []
-          },
-          {
-            name: 'Campbeltown',
-            type: DocumentTreeNodeType.FOLDER,
-            children: []
-          }
-        ]
-      }
-    ]
-  },
+  spiritsAlphabeticallyAsc,
   {
     name: 'Uncategorised documents',
     type: DocumentTreeNodeType.FOLDER,
@@ -287,90 +314,9 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
 ]);
 
 export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
-  {
-    name: 'Beers',
-    type: DocumentTreeNodeType.FOLDER,
-    children: [
-      {
-        name: 'Bitters',
-        type: DocumentTreeNodeType.FOLDER,
-        children: []
-      },
-      {
-        name: 'American',
-        type: DocumentTreeNodeType.FOLDER,
-        children: []
-      },
-      {
-        name: 'Asian',
-        type: DocumentTreeNodeType.FOLDER,
-        children: []
-      },
-      lagerEncyclopedia,
-      beersEncyclopedia,
-      aleEncyclopedia,
-    ]
-  },
+  beersAlphabeticallyDesc,
   wines,
-  {
-    name: 'Spirits',
-    type: DocumentTreeNodeType.FOLDER,
-    children: [
-      {
-        name: 'Scotch whisky',
-        type: DocumentTreeNodeType.FOLDER,
-        children: [
-          {
-            name: 'Highland',
-            type: DocumentTreeNodeType.FOLDER,
-            children: [
-              {
-                name: 'Highland 1',
-                type: DocumentTreeNodeType.FOLDER,
-                children: []
-              }
-            ]
-          },
-          {
-            name: 'Lowland',
-            type: DocumentTreeNodeType.FOLDER,
-            children: [
-              {
-                name: 'Lowland 1',
-                type: DocumentTreeNodeType.FOLDER,
-                children: [
-                  whiskyLowland1
-                ]
-              },
-              {
-                name: 'Lowland 2',
-                type: DocumentTreeNodeType.FOLDER,
-                children: []
-              }
-            ]
-          },
-          {
-            name: 'Islay',
-            type: DocumentTreeNodeType.FOLDER,
-            children: [
-              whiskyIslayMoreInformation,
-              whiskyIslayDetails,
-            ]
-          },
-          {
-            name: 'Speyside',
-            type: DocumentTreeNodeType.FOLDER,
-            children: []
-          },
-          {
-            name: 'Campbeltown',
-            type: DocumentTreeNodeType.FOLDER,
-            children: []
-          }
-        ]
-      }
-    ]
-  },
+  spiritsAlphabeticallyDesc,
   {
     name: 'Uncategorised documents',
     type: DocumentTreeNodeType.FOLDER,
