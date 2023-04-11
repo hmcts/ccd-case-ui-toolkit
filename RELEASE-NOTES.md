@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.13.10-case-file-view-display-document-upload-date
+### Version 6.13.10-case-file-view-display-document-upload-date-v2
 **EUI-7819** Case file view display document upload date
 
 ### Version 6.13.10-rc1
