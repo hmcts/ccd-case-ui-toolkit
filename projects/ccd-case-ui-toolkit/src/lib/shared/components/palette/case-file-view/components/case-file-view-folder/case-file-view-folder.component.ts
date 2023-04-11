@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import {
@@ -122,6 +123,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
+      documentTreeNode.upload_timestamp = document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY') : '';
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -138,6 +140,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
+      documentTreeNode.upload_timestamp = document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY') : '';
 
       documents.push(documentTreeNode);
     });
