@@ -1,5 +1,5 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
@@ -25,7 +25,7 @@ describe('CaseFileViewFolderComponent', () => {
   let fixture: ComponentFixture<CaseFileViewFolderComponent>;
   let nativeElement: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
 
     TestBed.configureTestingModule({
@@ -77,21 +77,24 @@ describe('CaseFileViewFolderComponent', () => {
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Lager encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '11 May 2023'
       },
       {
         name: 'Beers encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Beers encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '14 Apr 2023'
       },
       {
         name: 'Ale encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Ale encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '12 Mar 2023'
       }
     ]);
 

@@ -26,21 +26,24 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Lager encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '11 May 2023'
       },
       {
         name: 'Beers encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Beers encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '14 Apr 2023'
       },
       {
         name: 'Ale encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Ale encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '12 Mar 2023'
       },
     ]
   },
@@ -92,7 +95,8 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
                     type: DocumentTreeNodeType.DOCUMENT,
                     document_filename: 'Details about Whisky Lowland 1',
                     document_binary_url: '/test/binary',
-                    attribute_path: ''
+                    attribute_path: '',
+                    upload_timestamp: '21 Jun 2022'
                   }
                 ]
               },
@@ -112,14 +116,16 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'Details about Whisky Islay',
                 document_binary_url: '/test/binary',
-                attribute_path: ''
+                attribute_path: '',
+                upload_timestamp: '04 Nov 2022'
               },
               {
                 name: 'More information about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'More information about Whisky Islay',
                 document_binary_url: '/test/binary',
-                attribute_path: ''
+                attribute_path: '',
+                upload_timestamp: '28 Dec 2022'
               }
             ]
           },
@@ -148,14 +154,16 @@ export const uncategorisedTreeData: DocumentTreeNode = plainToClass(DocumentTree
       type: DocumentTreeNodeType.DOCUMENT,
       document_filename: 'Uncategorised document 1',
       document_binary_url: '/test/binary',
-      attribute_path: ''
+      attribute_path: '',
+      upload_timestamp: '17 Nov 2022'
     },
     {
       name: 'Uncategorised document 2',
       type: DocumentTreeNodeType.DOCUMENT,
       document_filename: 'Uncategorised document 2',
       document_binary_url: '/test/binary',
-      attribute_path: ''
+      attribute_path: '',
+      upload_timestamp: '23 Feb 2023'
     }
   ]
 });
@@ -190,21 +198,24 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Ale encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '12 Mar 2023'
       },
       {
         name: 'Beers encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Beers encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '14 Apr 2023'
       },
       {
         name: 'Lager encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Lager encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '11 May 2023'
       },
     ]
   },
@@ -256,7 +267,8 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
                     type: DocumentTreeNodeType.DOCUMENT,
                     document_filename: 'Details about Whisky Lowland 1',
                     document_binary_url: '/test/binary',
-                    attribute_path: ''
+                    attribute_path: '',
+                    upload_timestamp: '21 Jun 2022'
                   }
                 ]
               },
@@ -276,14 +288,16 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'Details about Whisky Islay',
                 document_binary_url: '/test/binary',
-                attribute_path: ''
+                attribute_path: '',
+                upload_timestamp: '04 Nov 2022'
               },
               {
                 name: 'More information about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'More information about Whisky Islay',
                 document_binary_url: '/test/binary',
-                attribute_path: ''
+                attribute_path: '',
+                upload_timestamp: '28 Dec 2022'
               }
             ]
           },
@@ -310,14 +324,16 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Uncategorised document 1',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '17 Nov 2022'
       },
       {
         name: 'Uncategorised document 2',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Uncategorised document 2',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '23 Feb 2023'
       }
     ]
   }
@@ -348,21 +364,24 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Lager encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '11 May 2023' //new Date(2023, 4, 11)
       },
       {
         name: 'Beers encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Beers encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '14 Apr 2023' // new Date(2023, 3, 14)
       },
       {
         name: 'Ale encyclopedia',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Ale encyclopedia',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '12 Mar 2023' // new Date(2023, 2, 12)
       },
     ]
   },
@@ -414,7 +433,8 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
                     type: DocumentTreeNodeType.DOCUMENT,
                     document_filename: 'Details about Whisky Lowland 1',
                     document_binary_url: '/test/binary',
-                    attribute_path: ''
+                    attribute_path: '',
+                    upload_timestamp: '21 Jun 2022' // new Date(2022, 5, 21)
                   }
                 ]
               },
@@ -434,14 +454,16 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'More information about Whisky Islay',
                 document_binary_url: '/test/binary',
-                attribute_path: ''
+                attribute_path: '',
+                upload_timestamp: '28 Dec 2022'
               },
               {
                 name: 'Details about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'Details about Whisky Islay',
                 document_binary_url: '/test/binary',
-                attribute_path: ''
+                attribute_path: '',
+                upload_timestamp: '04 Nov 2022'
               },
             ]
           },
@@ -468,14 +490,16 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Uncategorised document 2',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '23 Feb 2023'
       },
       {
         name: 'Uncategorised document 1',
         type: DocumentTreeNodeType.DOCUMENT,
         document_filename: 'Uncategorised document 1',
         document_binary_url: '/test/binary',
-        attribute_path: ''
+        attribute_path: '',
+        upload_timestamp: '17 Nov 2022'
       }
     ]
   }
