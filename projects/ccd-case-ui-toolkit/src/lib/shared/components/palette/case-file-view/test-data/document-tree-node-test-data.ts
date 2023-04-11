@@ -365,7 +365,7 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
         document_filename: 'Lager encyclopedia',
         document_binary_url: '/test/binary',
         attribute_path: '',
-        upload_timestamp: '11 May 2023' //new Date(2023, 4, 11)
+        upload_timestamp: '11 May 2023'
       },
       {
         name: 'Beers encyclopedia',
@@ -373,7 +373,7 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
         document_filename: 'Beers encyclopedia',
         document_binary_url: '/test/binary',
         attribute_path: '',
-        upload_timestamp: '14 Apr 2023' // new Date(2023, 3, 14)
+        upload_timestamp: '14 Apr 2023'
       },
       {
         name: 'Ale encyclopedia',
@@ -381,7 +381,7 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
         document_filename: 'Ale encyclopedia',
         document_binary_url: '/test/binary',
         attribute_path: '',
-        upload_timestamp: '12 Mar 2023' // new Date(2023, 2, 12)
+        upload_timestamp: '12 Mar 2023'
       },
     ]
   },
@@ -434,7 +434,7 @@ export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass
                     document_filename: 'Details about Whisky Lowland 1',
                     document_binary_url: '/test/binary',
                     attribute_path: '',
-                    upload_timestamp: '21 Jun 2022' // new Date(2022, 5, 21)
+                    upload_timestamp: '21 Jun 2022'
                   }
                 ]
               },
