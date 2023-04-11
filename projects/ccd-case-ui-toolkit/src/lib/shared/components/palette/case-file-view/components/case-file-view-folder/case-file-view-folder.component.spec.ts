@@ -13,10 +13,10 @@ import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-d
 import {
   categorisedTreeData,
   treeData,
-  treeDataSortedAlphabeticallyAsc,
-  treeDataSortedAlphabeticallyDesc,
   uncategorisedTreeData
 } from '../../test-data/document-tree-node-test-data';
+import { treeDataSortedAlphabeticallyAsc } from '../../test-data/tree-node-documents-name-sort-ascending-test-data';
+import { treeDataSortedAlphabeticallyDesc } from '../../test-data/tree-node-documents-name-sort-descending-test-data';
 import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 import createSpyObj = jasmine.createSpyObj;
 

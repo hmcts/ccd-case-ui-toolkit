@@ -1,7 +1,7 @@
 import { plainToClass } from 'class-transformer';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../domain/case-file-view';
 
-export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
+export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
   {
     name: 'Beers',
     type: DocumentTreeNodeType.FOLDER,
@@ -112,6 +112,14 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
             type: DocumentTreeNodeType.FOLDER,
             children: [
               {
+                name: 'More information about Whisky Islay',
+                type: DocumentTreeNodeType.DOCUMENT,
+                document_filename: 'More information about Whisky Islay',
+                document_binary_url: '/test/binary',
+                attribute_path: '',
+                upload_timestamp: '28 Dec 2022'
+              },
+              {
                 name: 'Details about Whisky Islay',
                 type: DocumentTreeNodeType.DOCUMENT,
                 document_filename: 'Details about Whisky Islay',
@@ -119,14 +127,6 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
                 attribute_path: '',
                 upload_timestamp: '04 Nov 2022'
               },
-              {
-                name: 'More information about Whisky Islay',
-                type: DocumentTreeNodeType.DOCUMENT,
-                document_filename: 'More information about Whisky Islay',
-                document_binary_url: '/test/binary',
-                attribute_path: '',
-                upload_timestamp: '28 Dec 2022'
-              }
             ]
           },
           {
@@ -142,33 +142,27 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
         ]
       }
     ]
+  },
+  {
+    name: 'Uncategorised documents',
+    type: DocumentTreeNodeType.FOLDER,
+    children: [
+      {
+        name: 'Uncategorised document 2',
+        type: DocumentTreeNodeType.DOCUMENT,
+        document_filename: 'Uncategorised document 2',
+        document_binary_url: '/test/binary',
+        attribute_path: '',
+        upload_timestamp: '23 Feb 2023'
+      },
+      {
+        name: 'Uncategorised document 1',
+        type: DocumentTreeNodeType.DOCUMENT,
+        document_filename: 'Uncategorised document 1',
+        document_binary_url: '/test/binary',
+        attribute_path: '',
+        upload_timestamp: '17 Nov 2022'
+      }
+    ]
   }
 ]);
-
-export const uncategorisedTreeData: DocumentTreeNode = plainToClass(DocumentTreeNode, {
-  name: 'Uncategorised documents',
-  type: DocumentTreeNodeType.FOLDER,
-  children: [
-    {
-      name: 'Uncategorised document 1',
-      type: DocumentTreeNodeType.DOCUMENT,
-      document_filename: 'Uncategorised document 1',
-      document_binary_url: '/test/binary',
-      attribute_path: '',
-      upload_timestamp: '17 Nov 2022'
-    },
-    {
-      name: 'Uncategorised document 2',
-      type: DocumentTreeNodeType.DOCUMENT,
-      document_filename: 'Uncategorised document 2',
-      document_binary_url: '/test/binary',
-      attribute_path: '',
-      upload_timestamp: '23 Feb 2023'
-    }
-  ]
-});
-
-export const treeData = [
-  ...categorisedTreeData,
-  uncategorisedTreeData
-];
