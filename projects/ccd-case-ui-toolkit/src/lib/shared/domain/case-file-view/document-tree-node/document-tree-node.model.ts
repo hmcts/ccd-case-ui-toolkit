@@ -34,8 +34,8 @@ export class DocumentTreeNode {
   public sortChildrenAscending(column: number) {
     const sortAscending = () => {
       return (a, b) => {
-        const nodeA = column === CaseFileViewSortColumns.DOCUMENT_NAME ? a.name.toUpperCase() : a.upload_timestamp;
-        const nodeB = column === CaseFileViewSortColumns.DOCUMENT_NAME ? b.name.toUpperCase() : b.upload_timestamp;
+        const nodeA = this.getNodeToSort(a, column);
+        const nodeB = this.getNodeToSort(b, column);
 
         if (a.type === DocumentTreeNodeType.FOLDER || b.type === DocumentTreeNodeType.FOLDER) {
           return 0;
@@ -60,8 +60,8 @@ export class DocumentTreeNode {
   public sortChildrenDescending(column: number) {
     const sortDescending = () => {
       return (a, b) => {
-        const nodeA = column === CaseFileViewSortColumns.DOCUMENT_NAME ? a.name.toUpperCase() : a.upload_timestamp;
-        const nodeB = column === CaseFileViewSortColumns.DOCUMENT_NAME ? b.name.toUpperCase() : b.upload_timestamp;
+        const nodeA = this.getNodeToSort(a, column);
+        const nodeB = this.getNodeToSort(b, column);
 
         if (a.type === DocumentTreeNodeType.FOLDER || b.type === DocumentTreeNodeType.FOLDER) {
           return 0;
@@ -103,5 +103,19 @@ export class DocumentTreeNode {
         return flattenChildren(item);
       }).flat()
     ];
+  }
+
+  private getNodeToSort(node: any, column: number): any {
+    if (column === CaseFileViewSortColumns.DOCUMENT_NAME) {
+      if (node?.name) {
+        return node.name.toUpperCase();
+      }
+    }
+    if (column === CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP) {
+      if (node?.upload_timestamp) {
+        return new Date(node.upload_timestamp);
+      }
+    }
+    return undefined;
   }
 }

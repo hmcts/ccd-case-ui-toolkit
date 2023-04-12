@@ -6,16 +6,16 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
-import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
+import { CaseFileViewSortColumns, DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { mockDocumentManagementService } from '../../../../../services/document-management/document-management.service.mock';
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
-  categorisedTreeData,
-  treeData,
-  treeDataSortedAlphabeticallyAsc,
-  treeDataSortedAlphabeticallyDesc,
-  uncategorisedTreeData
+	categorisedTreeData,
+	treeData,
+	treeDataSortedAlphabeticallyAsc,
+	treeDataSortedAlphabeticallyDesc,
+	uncategorisedTreeData
 } from '../../test-data/document-tree-node-test-data';
 import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -127,7 +127,7 @@ describe('CaseFileViewFolderComponent', () => {
       sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending').and.callThrough());
     });
 
-    component.sortDataSourceAscAlphabetically();
+    component.sortDataSourceAscending(CaseFileViewSortColumns.DOCUMENT_NAME);
     fixture.detectChanges();
 
     sortChildrenAscendingSpies.forEach((item) => {
@@ -142,7 +142,7 @@ describe('CaseFileViewFolderComponent', () => {
     component.nestedDataSource.forEach((item) => {
       sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending').and.callThrough());
     });
-    component.sortDataSourceDescAlphabetically();
+    component.sortDataSourceDescending(CaseFileViewSortColumns.DOCUMENT_NAME);
     fixture.detectChanges();
 
     sortChildrenDescendingSpies.forEach((item) => {
