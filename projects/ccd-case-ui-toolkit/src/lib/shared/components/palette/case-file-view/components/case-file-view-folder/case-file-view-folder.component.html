@@ -32,7 +32,11 @@
           <div class="node__icon" disabled>
             <img src="/assets/img/case-file-view/case-file-view-document.svg" class="node__iconImg" alt="Document icon">
           </div>
-          <span class="node__name node-name-document">{{node.name}}</span>
+          <span class="node__name node-name-document">
+            {{node.name}}
+            <br>
+            <span class="node__document-upload-timestamp">{{node.upload_timestamp}}</span>
+          </span>
           <div class="node__document-options">
             <ccd-case-file-view-folder-document-actions
               (changeFolderAction)="triggerDocumentAction('changeFolder', node)"
