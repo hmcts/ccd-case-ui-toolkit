@@ -1,5 +1,6 @@
 // tslint:disable:variable-name
 import { Expose, Type } from 'class-transformer';
+import { CaseFileViewSortColumns } from '../case-file-view-sort-columns.enum';
 import { DocumentTreeNodeType } from './document-tree-node-type.model';
 
 export class DocumentTreeNode {
@@ -30,21 +31,21 @@ export class DocumentTreeNode {
     return countChildren(this.children);
   }
 
-  public sortChildrenAscending() {
+  public sortChildrenAscending(column: number) {
     const sortAscending = () => {
       return (a, b) => {
-        const nameA = a.name.toUpperCase();
-        const nameB = b.name.toUpperCase();
+        const nodeA = column === CaseFileViewSortColumns.DOCUMENT_NAME ? a.name.toUpperCase() : a.upload_timestamp;
+        const nodeB = column === CaseFileViewSortColumns.DOCUMENT_NAME ? b.name.toUpperCase() : b.upload_timestamp;
 
         if (a.type === DocumentTreeNodeType.FOLDER || b.type === DocumentTreeNodeType.FOLDER) {
           return 0;
         }
 
-        if (nameA < nameB) {
+        if (nodeA < nodeB) {
           return -1;
         }
 
-        if (nameA > nameB) {
+        if (nodeA > nodeB) {
           return 1;
         }
       };
@@ -52,25 +53,25 @@ export class DocumentTreeNode {
 
     this.children?.sort(sortAscending());
     this.children?.forEach((childNodes) => {
-      childNodes.sortChildrenAscending();
+      childNodes.sortChildrenAscending(column);
     });
   }
 
-  public sortChildrenDescending() {
+  public sortChildrenDescending(column: number) {
     const sortDescending = () => {
       return (a, b) => {
-        const nameA = a.name.toUpperCase();
-        const nameB = b.name.toUpperCase();
+        const nodeA = column === CaseFileViewSortColumns.DOCUMENT_NAME ? a.name.toUpperCase() : a.upload_timestamp;
+        const nodeB = column === CaseFileViewSortColumns.DOCUMENT_NAME ? b.name.toUpperCase() : b.upload_timestamp;
 
         if (a.type === DocumentTreeNodeType.FOLDER || b.type === DocumentTreeNodeType.FOLDER) {
           return 0;
         }
 
-        if (nameA > nameB) {
+        if (nodeA > nodeB) {
           return -1;
         }
 
-        if (nameA < nameB) {
+        if (nodeA < nodeB) {
           return 1;
         }
       };
@@ -78,7 +79,7 @@ export class DocumentTreeNode {
 
     this.children?.sort(sortDescending());
     this.children?.forEach((childNodes) => {
-      childNodes.sortChildrenDescending();
+      childNodes.sortChildrenDescending(column);
     });
   }
 

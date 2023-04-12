@@ -47,7 +47,7 @@ export const whiskyLowland1 = {
   document_binary_url: '/test/binary',
   attribute_path: '',
   upload_timestamp: '21 Jun 2022'
-}
+};
 
 export const whiskyLowland = {
   name: 'Lowland',
@@ -66,7 +66,7 @@ export const whiskyLowland = {
       children: []
     }
   ]
-}
+};
 
 export const whiskyIslayDetails = {
   name: 'Details about Whisky Islay',
@@ -75,7 +75,7 @@ export const whiskyIslayDetails = {
   document_binary_url: '/test/binary',
   attribute_path: '',
   upload_timestamp: '04 Nov 2022'
-}
+};
 
 export const whiskyIslayMoreInformation = {
   name: 'More information about Whisky Islay',
@@ -84,7 +84,7 @@ export const whiskyIslayMoreInformation = {
   document_binary_url: '/test/binary',
   attribute_path: '',
   upload_timestamp: '28 Dec 2022'
-}
+};
 
 export const whiskySpeyside = {
   name: 'Speyside',

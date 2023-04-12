@@ -9,6 +9,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
+  CaseFileViewSortColumns,
   CategoriesAndDocuments,
   DocumentTreeNode,
   DocumentTreeNodeType
@@ -208,18 +209,18 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public sortDataSourceAscAlphabetically() {
+  public sortDataSourceAscending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenAscending();
+      item.sortChildrenAscending(column);
       return item;
     });
 
     this.updateNodeData(sortedData);
   }
 
-  public sortDataSourceDescAlphabetically() {
+  public sortDataSourceDescending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending();
+      item.sortChildrenDescending(column);
       return item;
     });
 

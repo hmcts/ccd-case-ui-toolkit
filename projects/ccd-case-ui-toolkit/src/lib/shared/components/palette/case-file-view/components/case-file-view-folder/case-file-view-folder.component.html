@@ -13,8 +13,8 @@
   <div class="document-folders-header__title">Documents ({{ documentCount }})</div>
   <div>
     <ccd-case-file-view-folder-sort
-      (sortAscending)="sortDataSourceAscAlphabetically()"
-      (sortDescending)="sortDataSourceDescAlphabetically()"
+      (sortAscending)="sortDataSourceAscending($event)"
+      (sortDescending)="sortDataSourceDescending($event)"
     ></ccd-case-file-view-folder-sort>
   </div>
 </div>
