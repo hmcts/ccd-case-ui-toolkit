@@ -9,11 +9,11 @@ import { switchMap, tap } from 'rxjs/operators';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
-  CaseFileViewSortColumns,
   CategoriesAndDocuments,
   DocumentTreeNode,
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
+import { SortOrder } from '../../../../../domain/sort-order.enum';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
@@ -211,7 +211,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   public sortDataSourceAscending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenAscending(column);
+      item.sortChildrenAscending(column, SortOrder.ASCENDING);
       return item;
     });
 
@@ -220,7 +220,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
   public sortDataSourceDescending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending(column);
+      item.sortChildrenDescending(column, SortOrder.DESCENDING);
       return item;
     });
 

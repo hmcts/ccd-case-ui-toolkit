@@ -71,7 +71,36 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
           category_id: 'WinesItalian',
           category_name: 'Italian',
           category_order: 2,
-          documents: [],
+          documents: [
+            {
+              document_url: '/red-wine',
+              document_filename: 'Details about red wine',
+              document_binary_url: '/test/binary',
+              attribute_path: '',
+              upload_timestamp: null
+            },
+            {
+              document_url: '/white-wine',
+              document_filename: 'Details about white wine',
+              document_binary_url: '/test/binary',
+              attribute_path: '',
+              upload_timestamp: new Date(2023, 1, 10)
+            },
+            {
+              document_url: '/prosecco',
+              document_filename: 'Details about Prosecco',
+              document_binary_url: '/test/binary',
+              attribute_path: '',
+              upload_timestamp: new Date(2023, 3, 12)
+            },
+            {
+              document_url: '/pinot-grigio',
+              document_filename: 'Details about Pinot Grigio',
+              document_binary_url: '/test/binary',
+              attribute_path: '',
+              upload_timestamp: new Date(2023, 2, 16)
+            }
+          ],
           sub_categories: []
         }
       ]

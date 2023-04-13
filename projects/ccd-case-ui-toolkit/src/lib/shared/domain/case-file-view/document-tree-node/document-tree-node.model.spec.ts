@@ -1,4 +1,5 @@
 import { plainToClass } from 'class-transformer';
+import { SortOrder } from '../../sort-order.enum';
 import { CaseFileViewSortColumns } from '../case-file-view-sort-columns.enum';
 import { DocumentTreeNodeType } from './document-tree-node-type.model';
 import { DocumentTreeNode } from './document-tree-node.model';
@@ -40,7 +41,7 @@ describe('DocumentTreeNodeModel', () => {
   });
 
   it('should sort all documents by name ASC and leave folders in the same position', () => {
-    documentTreeNode.sortChildrenAscending(CaseFileViewSortColumns.DOCUMENT_NAME);
+    documentTreeNode.sortChildrenAscending(CaseFileViewSortColumns.DOCUMENT_NAME, SortOrder.ASCENDING);
     const manuallySortedAscDocumentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Category A',
       type: DocumentTreeNodeType.FOLDER,
@@ -72,7 +73,7 @@ describe('DocumentTreeNodeModel', () => {
   });
 
   it('should sort all documents by name DESC and leave folders in the same position', () => {
-    documentTreeNode.sortChildrenDescending(CaseFileViewSortColumns.DOCUMENT_NAME);
+    documentTreeNode.sortChildrenDescending(CaseFileViewSortColumns.DOCUMENT_NAME, SortOrder.DESCENDING);
     const manuallySortedDescDocumentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Category A',
       type: DocumentTreeNodeType.FOLDER,
@@ -144,7 +145,7 @@ describe('DocumentTreeNodeModel - Sort by upload timestamp', () => {
   });
 
 	it('should sort all documents by upload timestamp ASC and leave folders in the same position', () => {
-    documentTreeNode.sortChildrenAscending(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP);
+    documentTreeNode.sortChildrenAscending(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP, SortOrder.ASCENDING);
     const manuallySortedAscDocumentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Category A',
       type: DocumentTreeNodeType.FOLDER,
@@ -176,7 +177,7 @@ describe('DocumentTreeNodeModel - Sort by upload timestamp', () => {
   });
 
   it('should sort all documents by upload timestamp DESC and leave folders in the same position', () => {
-    documentTreeNode.sortChildrenDescending(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP);
+    documentTreeNode.sortChildrenDescending(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP, SortOrder.DESCENDING);
     const manuallySortedDescDocumentTreeNode = plainToClass(DocumentTreeNode, {
       name: 'Category A',
       type: DocumentTreeNodeType.FOLDER,
