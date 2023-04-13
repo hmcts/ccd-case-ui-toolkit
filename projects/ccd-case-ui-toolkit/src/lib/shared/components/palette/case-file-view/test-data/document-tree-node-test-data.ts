@@ -98,21 +98,40 @@ export const whiskyCampbelTown = {
   children: []
 };
 
-export const wines = {
-  name: 'Wines',
-  type: DocumentTreeNodeType.FOLDER,
-  children: [
-    {
-      name: 'French',
-      type: DocumentTreeNodeType.FOLDER,
-      children: []
-    },
-    {
-      name: 'Italian',
-      type: DocumentTreeNodeType.FOLDER,
-      children: []
-    }
-  ]
+export const redWineItalian = {
+  name: 'Details about red wine',
+  type: DocumentTreeNodeType.DOCUMENT,
+  document_filename: 'Details about red wine',
+  document_binary_url: '/test/binary',
+  attribute_path: '',
+  upload_timestamp: ''
+};
+
+export const whiteWineItalian = {
+  name: 'Details about white wine',
+  type: DocumentTreeNodeType.DOCUMENT,
+  document_filename: 'Details about white wine',
+  document_binary_url: '/test/binary',
+  attribute_path: '',
+  upload_timestamp: '10 Feb 2023'
+};
+
+export const proseccoItalian = {
+  name: 'Details about Prosecco',
+  type: DocumentTreeNodeType.DOCUMENT,
+  document_filename: 'Details about Prosecco',
+  document_binary_url: '/test/binary',
+  attribute_path: '',
+  upload_timestamp: '12 Apr 2023'
+};
+
+export const pinotGrigioItalian = {
+  name: 'Details about Pinot Grigio',
+  type: DocumentTreeNodeType.DOCUMENT,
+  document_filename: 'Details about Pinot Grigio',
+  document_binary_url: '/test/binary',
+  attribute_path: '',
+  upload_timestamp: '16 Mar 2023'
 };
 
 export const beersAlphabeticallyAsc = {
@@ -162,6 +181,50 @@ export const beersAlphabeticallyDesc = {
     lagerEncyclopedia,
     beersEncyclopedia,
     aleEncyclopedia,
+  ]
+};
+
+export const winesAlphabeticallyAsc = {
+  name: 'Wines',
+  type: DocumentTreeNodeType.FOLDER,
+  children: [
+    {
+      name: 'French',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    },
+    {
+      name: 'Italian',
+      type: DocumentTreeNodeType.FOLDER,
+      children: [
+        pinotGrigioItalian,
+        proseccoItalian,
+        redWineItalian,
+        whiteWineItalian
+      ]
+    }
+  ]
+};
+
+export const winesAlphabeticallyDesc = {
+  name: 'Wines',
+  type: DocumentTreeNodeType.FOLDER,
+  children: [
+    {
+      name: 'French',
+      type: DocumentTreeNodeType.FOLDER,
+      children: []
+    },
+    {
+      name: 'Italian',
+      type: DocumentTreeNodeType.FOLDER,
+      children: [
+        whiteWineItalian,
+        redWineItalian,
+        proseccoItalian,
+        pinotGrigioItalian
+      ]
+    }
   ]
 };
 
@@ -258,7 +321,27 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
       aleEncyclopedia
     ]
   },
-  wines,
+  {
+    name: 'Wines',
+    type: DocumentTreeNodeType.FOLDER,
+    children: [
+      {
+        name: 'French',
+        type: DocumentTreeNodeType.FOLDER,
+        children: []
+      },
+      {
+        name: 'Italian',
+        type: DocumentTreeNodeType.FOLDER,
+        children: [
+          redWineItalian,
+          whiteWineItalian,
+          proseccoItalian,
+          pinotGrigioItalian
+        ]
+      }
+    ]
+  },
   {
     name: 'Spirits',
     type: DocumentTreeNodeType.FOLDER,
@@ -301,7 +384,7 @@ export const treeData = [
 
 export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
   beersAlphabeticallyAsc,
-  wines,
+  winesAlphabeticallyAsc,
   spiritsAlphabeticallyAsc,
   {
     name: 'Uncategorised documents',
@@ -315,7 +398,7 @@ export const treeDataSortedAlphabeticallyAsc: DocumentTreeNode[] = plainToClass(
 
 export const treeDataSortedAlphabeticallyDesc: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
   beersAlphabeticallyDesc,
-  wines,
+  winesAlphabeticallyDesc,
   spiritsAlphabeticallyDesc,
   {
     name: 'Uncategorised documents',

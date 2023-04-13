@@ -25,6 +25,7 @@ export class CaseFileViewService {
     // The property upload_timestamp is not available as it is not yet implemented by CCD
     // Using this case reference '1666863124102280' to return the mock data with upload_timestamp
     // The below 'if' statement should be removed once the upload_timestamp property is made available by CCD
+    // https://tools.hmcts.net/jira/browse/EUI-8129
     if (caseRef === '1666863124102280') {
       return of(categoriesAndDocumentsTestData);
     }
