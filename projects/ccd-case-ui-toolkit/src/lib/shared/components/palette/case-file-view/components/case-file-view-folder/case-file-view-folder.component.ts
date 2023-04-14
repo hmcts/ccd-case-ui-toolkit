@@ -13,6 +13,7 @@ import {
   DocumentTreeNode,
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
+import { SortOrder } from '../../../../../domain/sort-order.enum';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
@@ -208,18 +209,18 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public sortDataSourceAscAlphabetically() {
+  public sortDataSourceAscending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenAscending();
+      item.sortChildrenAscending(column, SortOrder.ASCENDING);
       return item;
     });
 
     this.updateNodeData(sortedData);
   }
 
-  public sortDataSourceDescAlphabetically() {
+  public sortDataSourceDescending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending();
+      item.sortChildrenDescending(column, SortOrder.DESCENDING);
       return item;
     });
 

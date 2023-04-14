@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { plainToClassFromExist } from 'class-transformer';
+import { SortOrder } from '../../../domain';
 import { CaseField } from '../../../domain/definition';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
-import { SortOrder } from './sort-order';
 
 @Component({
   selector: 'ccd-read-complex-field-collection-table',
