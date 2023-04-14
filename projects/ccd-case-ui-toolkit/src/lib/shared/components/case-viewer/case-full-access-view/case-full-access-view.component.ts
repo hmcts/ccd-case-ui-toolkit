@@ -151,7 +151,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.unsubscribe(this.callbackErrorsSubject);
     this.unsubscribe(this.errorSubscription);
     this.unsubscribe(this.subscription);
-    this.subs.forEach(s => s.unsubscribe())
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   public unsubscribe(subscription: any) {
@@ -174,7 +174,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           }
         }
       }));
-  }     
+  };
 
   public postViewActivity(): Observable<Activity[]> {
     return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
@@ -305,7 +305,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
-  // Refactored under EXUI-110 to address infinite tab loop to use tabIndexChanged instead 
+  // Refactored under EXUI-110 to address infinite tab loop to use tabIndexChanged instead
   public tabChanged(tabIndexChanged: number): void {
     const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
     const tabLabel = matTab.textLabel;
@@ -316,8 +316,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       // Hack to get ID from tab as it's not easily achieved through Angular Material Tabs
       const tab = matTab['_viewContainerRef'] as ViewContainerRef;
       const id = (tab.element.nativeElement as HTMLElement).id;
-      // cases/case-details/:caseId/hearings 
-      // cases/case-details/:caseId/roles-and-access 
+      // cases/case-details/:caseId/hearings
+      // cases/case-details/:caseId/roles-and-access
       this.router.navigate([id], { relativeTo: this.route });
     } else {
       // Routing here is based on tab label, not ideal
