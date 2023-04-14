@@ -4,6 +4,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
 import { SelectFlagLocationComponent } from './select-flag-location.component';
+import { CaseEditDataService } from '../../../../../commons/case-edit-data/case-edit-data.service';
 
 describe('SelectFlagLocationComponent', () => {
   let component: SelectFlagLocationComponent;
@@ -79,7 +80,8 @@ describe('SelectFlagLocationComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ SelectFlagLocationComponent ]
+      declarations: [ SelectFlagLocationComponent ],
+      providers: [CaseEditDataService]
     })
     .compileComponents();
   }));

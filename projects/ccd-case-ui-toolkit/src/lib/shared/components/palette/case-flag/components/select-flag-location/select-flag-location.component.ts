@@ -1,14 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
+import { CaseEditDataService } from '../../../../../commons/case-edit-data/case-edit-data.service';
 import { CaseFlagState, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagLocationErrorMessage } from '../../enums';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ccd-select-flag-location',
   templateUrl: './select-flag-location.component.html'
 })
-export class SelectFlagLocationComponent implements OnInit {
+export class SelectFlagLocationComponent implements OnInit, OnDestroy {
 
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
@@ -23,6 +25,9 @@ export class SelectFlagLocationComponent implements OnInit {
   public readonly selectedLocationControlName = 'selectedLocation';
   public readonly caseLevelFlagLabel = 'Case level';
   private readonly caseLevelCaseFlagsFieldId = 'caseFlags';
+  private caseValidationErrorsSubscription$: Subscription;
+
+  constructor(private readonly caseEditDataService: CaseEditDataService) {}
 
   public ngOnInit(): void {
     this.flagLocationTitle = CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION;
@@ -43,6 +48,14 @@ export class SelectFlagLocationComponent implements OnInit {
       // flags in future)
       this.onCaseFlagsConfigError();
     }
+    this.caseValidationErrorsSubscription$ = this.caseEditDataService.caseFormValidationErrors$.subscribe({
+      next: (validationErrors) => {
+        if (validationErrors.length) {
+          this.errorMessages = [];
+          this.flagLocationNotSelectedErrorMessage = null;
+        }
+      }
+    });
   }
 
   public onNext(): void {
@@ -77,8 +90,12 @@ export class SelectFlagLocationComponent implements OnInit {
     this.caseFlagsConfigError = true;
     this.errorMessages = [];
     this.errorMessages.push(
-      {title: '', description: SelectFlagLocationErrorMessage.FLAGS_NOT_CONFIGURED, fieldId: 'conditional-radios-list'});
+      { title: '', description: SelectFlagLocationErrorMessage.FLAGS_NOT_CONFIGURED, fieldId: 'conditional-radios-list' });
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
+  }
+
+  ngOnDestroy(): void {
+    this.caseValidationErrorsSubscription$.unsubscribe();
   }
 }

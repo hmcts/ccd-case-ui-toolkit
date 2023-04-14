@@ -6,6 +6,7 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
+import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 
 import createSpy = jasmine.createSpy;
 
@@ -310,7 +311,8 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ WriteCaseFlagFieldComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        CaseEditDataService
       ]
     })
     .compileComponents();

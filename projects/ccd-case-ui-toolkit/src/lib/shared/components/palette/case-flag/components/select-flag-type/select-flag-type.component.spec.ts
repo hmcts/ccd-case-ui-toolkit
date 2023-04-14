@@ -7,6 +7,7 @@ import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../serv
 import { FlagPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
+import { CaseEditDataService } from '../../../../../commons/case-edit-data/case-edit-data.service';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -166,7 +167,8 @@ describe('SelectFlagTypeComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [SelectFlagTypeComponent],
       providers: [
-        { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService }
+        { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService },
+        CaseEditDataService,
       ]
     })
     .compileComponents();

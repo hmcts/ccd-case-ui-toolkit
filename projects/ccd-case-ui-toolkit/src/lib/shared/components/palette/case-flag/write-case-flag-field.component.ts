@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
@@ -7,13 +7,14 @@ import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
   templateUrl: './write-case-flag-field.component.html',
   styleUrls: ['./write-case-flag-field.component.scss']
 })
-export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
 
   public formGroup: FormGroup;
   public fieldState: number;
@@ -40,6 +41,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   public readonly caseNameMissing = 'Case name missing';
+  private caseValidationErrorsSubscription$: Subscription;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -106,6 +108,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         });
       }
     }
+    this.caseValidationErrorsSubscription$ = this.caseEditDataService.caseFormValidationErrors$.subscribe({
+      next: (validationErrors) => {
+        if(validationErrors.length){
+          this.errorMessages = [];
+        }
+      }
+    });
   }
 
   public setDisplayContextParameterUpdate(caseFields: CaseField[]): boolean {
@@ -347,5 +356,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.allCaseFlagStagesCompleted = true;
     this.formGroup.updateValueAndValidity();
     this.caseEditDataService.setTriggerSubmitEvent(true);
+  }
+
+  ngOnDestroy(): void {
+    this.caseValidationErrorsSubscription$.unsubscribe();
   }
 }
