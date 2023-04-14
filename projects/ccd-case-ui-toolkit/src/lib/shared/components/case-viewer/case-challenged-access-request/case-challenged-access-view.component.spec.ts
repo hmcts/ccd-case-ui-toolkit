@@ -13,10 +13,8 @@ import { CasesService } from '../../case-editor/services/cases.service';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request.component';
 import { ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
-
-
-import createSpyObj = jasmine.createSpyObj;
 import { CaseNotifier } from '../../case-editor';
+import createSpyObj = jasmine.createSpyObj;
 
 @Component({template: ``})
 class StubComponent {}
@@ -26,11 +24,11 @@ describe('CaseChallengedAccessRequestComponent', () => {
   let fixture: ComponentFixture<CaseChallengedAccessRequestComponent>;
   let casesService: jasmine.SpyObj<CasesService>;
   let casesNotifier: jasmine.SpyObj<CaseNotifier>;
-  const case_id = '1234123412341234';
+  const caseId = '1234123412341234';
   const mockRoute = {
     snapshot: {
       params: {
-        cid: case_id
+        cid: caseId
       }
     }
   };
@@ -344,7 +342,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
     submitButton.click();
     expect(component.formGroup.valid).toBe(true);
     expect(casesService.createChallengedAccessRequest).toHaveBeenCalledWith(
-      case_id,
+      caseId,
       {
         reason: 0,
         caseReference: '1111222233334444',
@@ -361,7 +359,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
     submitButton.click();
     expect(component.formGroup.valid).toBe(true);
     expect(casesService.createChallengedAccessRequest).toHaveBeenCalledWith(
-      case_id,
+      caseId,
       {
         reason: 1,
         caseReference: null,
@@ -378,7 +376,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
     submitButton.click();
     expect(component.formGroup.valid).toBe(true);
     expect(casesService.createChallengedAccessRequest).toHaveBeenCalledWith(
-      case_id,
+      caseId,
       {
         reason: 2,
         caseReference: null,
@@ -398,7 +396,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
     submitButton.click();
     expect(component.formGroup.valid).toBe(true);
     expect(casesService.createChallengedAccessRequest).toHaveBeenCalledWith(
-      case_id,
+      caseId,
       {
         reason: 3,
         caseReference: null,

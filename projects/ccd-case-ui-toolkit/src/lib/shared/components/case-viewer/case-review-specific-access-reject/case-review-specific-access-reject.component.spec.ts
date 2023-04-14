@@ -8,12 +8,12 @@ import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-
 describe('CaseReviewSpecificAccessRejectComponent', () => {
   let component: CaseReviewSpecificAccessRejectComponent;
   let fixture: ComponentFixture<CaseReviewSpecificAccessRejectComponent>;
-  const case_id = '1234123412341234';
+  const caseId = '1234123412341234';
   const mockRoute = {
     snapshot: {
       data: {
         case: {
-          case_id
+          case_id: caseId
         }
       }
     }
@@ -55,6 +55,6 @@ describe('CaseReviewSpecificAccessRejectComponent', () => {
     const myTaskLinkElement = fixture.debugElement.nativeElement.querySelector('.govuk-button');
     expect(myTaskLinkElement.getAttribute('href')).toEqual(`tasks/list`);
     const viewCaseFileLinkElement = fixture.debugElement.nativeElement.querySelector('.cancel a');
-    expect(viewCaseFileLinkElement.getAttribute('href')).toEqual(`cases/case-details/${case_id}`);
+    expect(viewCaseFileLinkElement.getAttribute('href')).toEqual(`cases/case-details/${caseId}`);
   });
 });

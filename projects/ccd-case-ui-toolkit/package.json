@@ -1,8 +1,8 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.13.11-welsh-release-f",
+  "version": "6.14.4-eui-4157-b",
   "engines": {
-    "yarn": "^1.22.15",
+    "yarn": "^3.5.0",
     "npm": "^8.10.0"
   },
   "description": "Case UI Toolkit",

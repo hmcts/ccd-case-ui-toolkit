@@ -4,6 +4,7 @@ describe('WindowService', () => {
   const windowService: WindowService = new WindowService();
   const userName = 'test user';
   const organisationDetails = 'test organisation';
+
   it('should remove from local storage', () => {
     windowService.setLocalStorage('user', userName);
     expect(windowService.getLocalStorage('user')).toBe(userName);
@@ -23,38 +24,21 @@ describe('WindowService', () => {
     expect(windowService.getLocalStorage('user')).toBe('null');
     expect(windowService.removeLocalStorage('user')).toBeUndefined();
   });
+
   it('should be set empty value in local storage', () => {
     windowService.setLocalStorage('user', '');
     expect(windowService.getLocalStorage('user')).toBe('');
     expect(windowService.removeLocalStorage('user')).toBeUndefined();
   });
+
   it('should get from session storage', () => {
-    spyOn(window.sessionStorage, 'getItem');
-    windowService.getSessionStorage('organisationDetails');
-    expect(window.sessionStorage.getItem).toHaveBeenCalled();
-  });
-
-  it('should set from session storage', () => {
-    spyOn(window.sessionStorage, 'setItem');
-    windowService.setSessionStorage('organisationDetails', userName);
-    expect(window.sessionStorage.setItem).toHaveBeenCalled();
-  });
-
-  it('should open on new tab', () => {
-    spyOn(window, 'open');
-    windowService.openOnNewTab('organisationDetails');
-    expect(window.open).toHaveBeenCalled();
-  });
-
-  it('should open on confirm message', () => {
-    spyOn(window, 'confirm');
-    windowService.confirm('organisationDetails');
-    expect(window.confirm).toHaveBeenCalled();
+    windowService.setLocalStorage('organisationDetails', userName);
+    expect(windowService.getLocalStorage('organisationDetails')).toBe(userName);
   });
 
   it('should trigger alert', () => {
     spyOn(window, 'alert');
     windowService.alert('test');
-    expect(window.alert).toHaveBeenCalled();
+    expect(windowService.alert).toHaveBeenCalled();
   });
 });

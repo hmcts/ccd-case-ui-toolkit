@@ -8,7 +8,6 @@ import { WizardPageField } from '../domain/wizard-page-field.model';
   providedIn: 'root',
 })
 export class WizardPageFieldToCaseFieldMapper {
-
   public mapAll(wizardPageFields: WizardPageField[], caseFields: CaseField[]): CaseField[] {
     return wizardPageFields.map(wizardField => {
       return this.map(wizardField, caseFields);
@@ -16,7 +15,6 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private map(wizardPageField: WizardPageField, caseFields: CaseField[]): CaseField {
-
     const caseField: CaseField = caseFields.find(e => e.id === wizardPageField.case_field_id);
     caseField.wizardProps = wizardPageField;
     caseField.order = wizardPageField.order;
@@ -37,32 +35,32 @@ export class WizardPageFieldToCaseFieldMapper {
 
   private processComplexFieldOverride(override: ComplexFieldOverride, caseField: CaseField, caseFields: CaseField[]) {
     const caseFieldIds = override.complex_field_element_id.split('.');
-    let case_field_leaf: CaseField;
+    let caseFieldLeaf: CaseField;
 
     const children = this.getCaseFieldChildren(caseField);
 
     if (children.length > 0) {
       const [_, ...tail] = caseFieldIds;
-      case_field_leaf = this.getCaseFieldLeaf(tail, children);
+      caseFieldLeaf = this.getCaseFieldLeaf(tail, children);
     } else {
-      case_field_leaf = this.getCaseFieldLeaf(caseFieldIds, caseFields);
+      caseFieldLeaf = this.getCaseFieldLeaf(caseFieldIds, caseFields);
     }
 
     if (override.display_context !== 'HIDDEN') {
-      case_field_leaf.hidden = false;
-      case_field_leaf.display_context = override.display_context;
+      caseFieldLeaf.hidden = false;
+      caseFieldLeaf.display_context = override.display_context;
       if (override.label && override.label.length > 0) {
-        case_field_leaf.label = override.label;
+        caseFieldLeaf.label = override.label;
       }
       if (override.hint_text && override.hint_text.length > 0) {
-        case_field_leaf.hint_text = override.hint_text;
+        caseFieldLeaf.hint_text = override.hint_text;
       }
       if (override.show_condition && override.show_condition.length > 0) {
-        case_field_leaf.show_condition = override.show_condition;
+        caseFieldLeaf.show_condition = override.show_condition;
       }
     } else {
-      case_field_leaf.hidden = true;
-      case_field_leaf.display_context = override.display_context;
+      caseFieldLeaf.hidden = true;
+      caseFieldLeaf.display_context = override.display_context;
     }
   }
 
@@ -79,7 +77,7 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private preparePathPrefix(pathPrefix: string, caseField: string) {
-    return pathPrefix.length === 0 ? caseField : pathPrefix + '.' + caseField;
+    return pathPrefix.length === 0 ? caseField : `${pathPrefix}.${caseField}`;
   }
 
   private getCaseFieldLeaf(caseFieldId: string[], caseFields: CaseField[]): CaseField {
@@ -104,7 +102,6 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private hideParentIfAllChildrenHidden(caseField: CaseField) {
-
     const childrenCaseFields = this.getCaseFieldChildren(caseField);
 
     childrenCaseFields.forEach(e => this.hideParentIfAllChildrenHidden(e));

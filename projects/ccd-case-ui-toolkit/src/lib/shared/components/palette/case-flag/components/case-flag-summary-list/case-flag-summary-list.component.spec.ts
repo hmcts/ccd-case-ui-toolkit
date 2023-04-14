@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
@@ -12,7 +12,7 @@ describe('CaseFlagSummaryListComponent', () => {
   const updateFlagHeaderText = 'Update flag for';
   const addFlagHeaderText = 'Add flag to';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],

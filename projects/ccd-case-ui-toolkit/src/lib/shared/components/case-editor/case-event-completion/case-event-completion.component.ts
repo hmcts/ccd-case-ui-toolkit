@@ -19,7 +19,6 @@ export const COMPONENT_PORTAL_INJECTION_TOKEN = new InjectionToken<CaseEventComp
   templateUrl: './case-event-completion.html'
 })
 export class CaseEventCompletionComponent implements OnChanges, EventCompletionComponentEmitter {
-
   @Input()
   public eventCompletionParams: EventCompletionParams;
 
@@ -71,6 +70,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
         {provide: COMPONENT_PORTAL_INJECTION_TOKEN, useValue: this}
       ]
     });
+    // tslint:disable-next-line:switch-default
     switch (portalType) {
       case EventCompletionPortalTypes.TaskCancelled:
         this.selectedComponentPortal = new ComponentPortal(CaseEventCompletionTaskCancelledComponent, null, injector);

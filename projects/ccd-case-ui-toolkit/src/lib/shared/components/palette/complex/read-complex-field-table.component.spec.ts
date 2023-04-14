@@ -16,7 +16,6 @@ import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
 
 describe('ReadComplexFieldTableComponent', () => {
-
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('table>tbody>tr.complex-panel-simple-field>th>span');
@@ -24,7 +23,7 @@ describe('ReadComplexFieldTableComponent', () => {
   const $COMPLEX_PANEL_COMPOUND_ROWS_VALUES = By.css('table>tbody>tr.complex-panel-compound-field>td>span>ccd-field-read');
   const $COMPLEX_PANEL_ALL_VALUES = By.css('table>tbody>tr>td>span>ccd-field-read');
 
-  const FieldReadComponent = MockComponent({
+  const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context', 'topLevelFormGroup']
   });
@@ -152,8 +151,9 @@ describe('ReadComplexFieldTableComponent', () => {
             ReadFieldsFilterPipe,
 
             // Mock
-            FieldReadComponent,
-            MockRpxTranslatePipe
+            MockRpxTranslatePipe,
+            // Mocks
+            fieldReadComponentMock
           ],
           providers: [
             FieldsUtils,
@@ -344,8 +344,9 @@ describe('ReadComplexFieldTableComponent', () => {
             ReadFieldsFilterPipe,
 
             // Mock
-            FieldReadComponent,
-            MockRpxTranslatePipe
+            MockRpxTranslatePipe,
+            // Mocks
+            fieldReadComponentMock
           ],
           providers: [
             FieldsUtils,

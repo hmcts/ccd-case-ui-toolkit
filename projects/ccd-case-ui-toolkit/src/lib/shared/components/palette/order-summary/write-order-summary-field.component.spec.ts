@@ -13,7 +13,6 @@ import { ReadOrderSummaryRowComponent } from './read-order-summary-row.component
 import { WriteOrderSummaryFieldComponent } from './write-order-summary-field.component';
 
 describe('WriteOrderSummaryFieldComponent', () => {
-
   const FIELD_TYPE: FieldType = {
     id: 'PersonOrderSummary',
     type: 'Complex'
@@ -87,10 +86,11 @@ describe('WriteOrderSummaryFieldComponent', () => {
             MoneyGbpInputComponent,
             WriteOrderSummaryFieldComponent,
             ReadMoneyGbpFieldComponent,
+
             // Mocks
             ReadOrderSummaryFieldComponent,
-            ReadOrderSummaryRowComponent,
-            MockRpxTranslatePipe
+            MockRpxTranslatePipe,
+            ReadOrderSummaryRowComponent
           ]
         })
         .compileComponents();
@@ -116,9 +116,9 @@ describe('WriteOrderSummaryFieldComponent', () => {
 
       for (let i = 1; i <= VALUE.Fees.length; i++) {
 
-        const feeCode = text(de.query(By.css('table>tbody tr:nth-child(' + i + ') td:nth-child(1)')));
-        const feeDescription = text(de.query(By.css('table>tbody tr:nth-child(' + i + ') td:nth-child(2)')));
-        const feeAmount = text(de.query(By.css('table>tbody tr:nth-child(' + i + ') td:nth-child(3)')));
+        const feeCode = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(1)`)));
+        const feeDescription = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(2)`)));
+        const feeAmount = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(3)`)));
 
         expect(feeCode).toBe(VALUE.Fees[i - 1].value.FeeCode);
         expect(feeDescription).toBe(VALUE.Fees[i - 1].value.FeeDescription);

@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 export class ComplexFieldOverride {
   public complex_field_element_id: string;
   public display_context: string;

@@ -191,27 +191,27 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
   }
 
   public dayId() {
-    return this.id + '-day';
+    return `${this.id}-day`;
   }
 
   public monthId() {
-    return this.id + '-month';
+    return `${this.id}-month`;
   }
 
   public yearId() {
-    return this.id + '-year';
+    return `${this.id}-year`;
   }
 
   public hourId() {
-    return this.id + '-hour';
+    return `${this.id}-hour`;
   }
 
   public minuteId() {
-    return this.id + '-minute';
+    return `${this.id}-minute`;
   }
 
   public secondId() {
-    return this.id + '-second';
+    return `${this.id}-second`;
   }
 
   private viewValue(): string {
@@ -227,7 +227,7 @@ export class DateInputComponent implements ControlValueAccessor, Validator, OnIn
           this.minute ? this.pad(this.minute) : '',
           this.second ? this.pad(this.second) : ''
         ].join(':');
-        return date + 'T' + time + '.000';
+        return `${date}T${time}.000`;
       } else {
         return date;
       }

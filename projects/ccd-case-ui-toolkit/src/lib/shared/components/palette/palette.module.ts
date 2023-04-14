@@ -53,6 +53,7 @@ import { ReadDocumentFieldComponent } from './document/read-document-field.compo
 import { WriteDocumentFieldComponent } from './document/write-document-field.component'
 import { DynamicListPipe, ReadDynamicListFieldComponent } from './dynamic-list';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { DynamicRadioListPipe, ReadDynamicRadioListFieldComponent } from './dynamic-radio-list';
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
@@ -78,7 +79,6 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
