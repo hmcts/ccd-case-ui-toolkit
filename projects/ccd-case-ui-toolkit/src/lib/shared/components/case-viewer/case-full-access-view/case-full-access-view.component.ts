@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
-  SimpleChanges, ViewChild
+  SimpleChanges, ViewChild, ViewContainerRef
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -164,19 +164,17 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.subs.push(this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        const url: string = event && (event as any).url;
+        const url = event && (event as any).url;
         if (url) {
-          if (url.includes('hearings')) {
-            this.selectedTabIndex = this.getTabIndexByTabLabel(this.tabGroup, 'hearings')
-          } else {
-            const urlFragment = this.getUrlFragment(url);
-            const tabLabel = decodeURIComponent(urlFragment);
-            const tabIndex = this.getTabIndexByTabLabel(this.tabGroup, tabLabel);
-            this.selectedTabIndex = tabIndex;
+          const tabUrl = url ? url.split('#') : null;
+          const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
+          const matTab = this.tabGroup._tabs.find((x) => x.textLabel.toLowerCase() === tab.toLowerCase());
+          if (matTab && matTab.position) {
+            this.tabGroup.selectedIndex = matTab.position;
           }
         }
       }));
-  }
+  }     
 
   public postViewActivity(): Observable<Activity[]> {
     return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
@@ -307,16 +305,22 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
+  // Refactored under EXUI-110 to address infinite tab loop to use tabIndexChanged instead 
   public tabChanged(tabIndexChanged: number): void {
-    // Refactored under EXUI-110 to address infinite tab loop
     const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
     const tabLabel = matTab.textLabel;
-    // if hearings tab don't use fragment for navigation
+    // sortedTabs are fragments
+    // appended/prepepended tabs use router navigation
     if ((tabIndexChanged <= 1 && this.prependedTabs && this.prependedTabs.length) ||
       (this.appendedTabs && this.appendedTabs.length && tabLabel === this.HEARINGS_TAB_LABEL)) {
-      // cases/case-details/:caseId/hearings
-      this.router.navigate([tabLabel.toLowerCase()], { relativeTo: this.route });
+      // Hack to get ID from tab as it's not easily achieved through Angular Material Tabs
+      const tab = matTab['_viewContainerRef'] as ViewContainerRef;
+      const id = (tab.element.nativeElement as HTMLElement).id;
+      // cases/case-details/:caseId/hearings 
+      // cases/case-details/:caseId/roles-and-access 
+      this.router.navigate([id], { relativeTo: this.route });
     } else {
+      // Routing here is based on tab label, not ideal
       // cases/case-details/:caseId#tabLabel
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel })
     }
