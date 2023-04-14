@@ -81,7 +81,7 @@ describe('SelectFlagLocationComponent', () => {
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ SelectFlagLocationComponent ],
-      providers: [CaseEditDataService]
+      providers: [ CaseEditDataService ]
     })
     .compileComponents();
   }));

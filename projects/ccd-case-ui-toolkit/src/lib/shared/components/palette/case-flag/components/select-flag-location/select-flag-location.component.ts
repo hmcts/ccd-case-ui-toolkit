@@ -95,7 +95,7 @@ export class SelectFlagLocationComponent implements OnInit, OnDestroy {
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
   }
 
-  ngOnDestroy(): void {
-    this.caseValidationErrorsSubscription$.unsubscribe();
+  public ngOnDestroy(): void {
+    this.caseValidationErrorsSubscription$?.unsubscribe();
   }
 }

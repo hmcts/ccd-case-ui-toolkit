@@ -33,7 +33,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagPath: FlagPath[];
   public hearingRelevantFlag: boolean;
   public flagCode: string;
-  public listOfValues: {key: string, value: string}[] = null;
+  public listOfValues: { key: string, value: string }[] = null;
   public isDisplayContextParameterUpdate: boolean;
   public caseTitle: string;
   private allCaseFlagStagesCompleted = false;
@@ -60,10 +60,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
     // From this point, this.formGroup refers to the FormGroup for the FlagLauncher field, not the parent FormGroup
     this.formGroup = this.registerControl(new FormGroup({}, {
-      validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+      validators: (_: AbstractControl): { [key: string]: boolean } | null => {
         if (!this.allCaseFlagStagesCompleted) {
           // Return an error to mark the FormGroup as invalid if not all Case Flag stages have been completed
-          return {notAllCaseFlagStagesCompleted: true};
+          return { notAllCaseFlagStagesCompleted: true };
         }
         return null;
       }
@@ -90,9 +90,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
       if (this.route.snapshot.data.eventTrigger.case_fields) {
         this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
-        .reduce((flags, caseField) => {
-          return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
-        }, []);
+          .reduce((flags, caseField) => {
+            return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
+          }, []);
 
         // Set boolean indicating the display_context_parameter is "update"
         this.isDisplayContextParameterUpdate =
@@ -110,7 +110,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
     this.caseValidationErrorsSubscription$ = this.caseEditDataService.caseFormValidationErrors$.subscribe({
       next: (validationErrors) => {
-        if(validationErrors.length){
+        if (validationErrors.length) {
           this.errorMessages = [];
         }
       }
@@ -157,7 +157,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // If the current state is CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE, move to final
       // review stage
       if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
-          caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
+        caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
         this.moveToFinalReviewStage();
         // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
         // means the user needs to select from the next set of flag types before they can move on
@@ -234,7 +234,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
     // Populate new FlagDetail instance and add to the Flags data within the CaseField instance of the selected flag
     // location
-    flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+    flagsCaseFieldValue.details.push({ value: this.populateNewFlagDetailInstance() });
   }
 
   public updateFlagInCollection(): void {
@@ -358,7 +358,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.caseEditDataService.setTriggerSubmitEvent(true);
   }
 
-  ngOnDestroy(): void {
-    this.caseValidationErrorsSubscription$.unsubscribe();
+  public ngOnDestroy(): void {
+    this.caseValidationErrorsSubscription$?.unsubscribe();
   }
 }
