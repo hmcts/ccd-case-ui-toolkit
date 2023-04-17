@@ -96,6 +96,6 @@ export class SelectFlagLocationComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.caseValidationErrorsSubscription$?.unsubscribe();
+    this.caseValidationErrorsSubscription$.unsubscribe();
   }
 }

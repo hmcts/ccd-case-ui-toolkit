@@ -1,10 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
 import { SelectFlagLocationComponent } from './select-flag-location.component';
 import { CaseEditDataService } from '../../../../../commons/case-edit-data/case-edit-data.service';
+import { of } from 'rxjs';
+import { CaseEditValidationError } from '../../../../../../../lib/shared';
 
 describe('SelectFlagLocationComponent', () => {
   let component: SelectFlagLocationComponent;
@@ -75,15 +77,18 @@ describe('SelectFlagLocationComponent', () => {
       pathToFlagsFormGroup: 'caseFlags'
     }
   ] as FlagsWithFormGroupPath[];
-
-  beforeEach(async(() => {
+  let caseEditDataServiceSpy: CaseEditDataService;
+  caseEditDataServiceSpy = {
+    caseFormValidationErrors$: of([] as any),
+  } as CaseEditDataService;
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ SelectFlagLocationComponent ],
-      providers: [ CaseEditDataService ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [SelectFlagLocationComponent],
+      providers: [{ provide: CaseEditDataService, useValue: caseEditDataServiceSpy }]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -177,4 +182,24 @@ describe('SelectFlagLocationComponent', () => {
     const flagNotSelectedErrorMessageElement = nativeElement.querySelector('#flag-location-not-selected-error-message');
     expect(flagNotSelectedErrorMessageElement.textContent).toContain(SelectFlagLocationErrorMessage.FLAG_LOCATION_NOT_SELECTED);
   });
+
+  it('should not remove case Form Validation Errors', () => {
+    component.flagsData = [];
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    component.ngOnInit();
+    caseEditDataServiceSpy = {
+      caseFormValidationErrors$: of([{}] as CaseEditValidationError[]),
+    } as CaseEditDataService;
+    expect(component).toBeTruthy();
+    expect(component.errorMessages.length).toBe(1);
+  });
+
+  it('should remove case Form Validation Errors', () => {
+    caseEditDataServiceSpy = {
+      caseFormValidationErrors$: of([{}] as CaseEditValidationError[]),
+    } as CaseEditDataService;
+    expect(component.errorMessages).toEqual([]);
+    expect(component.flagLocationNotSelectedErrorMessage).toEqual(null);
+  });
+
 });

@@ -108,7 +108,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     if (this.flagRefdata$) {
       this.flagRefdata$.unsubscribe();
     }
-    this.caseValidationErrorsSubscription$?.unsubscribe();
+    this.caseValidationErrorsSubscription$.unsubscribe();
   }
 
   public onFlagTypeChanged(flagType: FlagType): void {
