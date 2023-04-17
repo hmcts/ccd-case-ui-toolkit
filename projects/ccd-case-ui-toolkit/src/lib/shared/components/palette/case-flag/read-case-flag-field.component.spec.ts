@@ -4,12 +4,12 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField } from '../../../domain/definition';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field';
 import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
-import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 
 describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;

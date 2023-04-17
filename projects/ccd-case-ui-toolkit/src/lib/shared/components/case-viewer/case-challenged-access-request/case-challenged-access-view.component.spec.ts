@@ -9,11 +9,11 @@ import { of } from 'rxjs';
 import { AlertModule } from '../../../../components/banners/alert';
 import { CaseView, ChallengedAccessRequest } from '../../../domain';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
+import { CaseNotifier } from '../../case-editor';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request.component';
 import { ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
-import { CaseNotifier } from '../../case-editor';
 import createSpyObj = jasmine.createSpyObj;
 
 @Component({template: ``})
