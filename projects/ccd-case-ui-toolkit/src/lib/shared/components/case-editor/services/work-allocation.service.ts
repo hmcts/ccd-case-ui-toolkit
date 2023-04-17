@@ -149,7 +149,7 @@ export class WorkAllocationService {
     if (this.userIsCaseworker(userDetails.userInfo.roles)) {
       // when submitting the completion of task if not yet rendered cases/case confirm then preserve the alert for re-rendering
       this.alertService.setPreserveAlerts(true, ['cases/case', 'submit']);
-      this.alertService.warning({ phrase:'A task could not be completed successfully. Please complete the task associated with the case manually.'});
+      this.alertService.warning('A task could not be completed successfully. Please complete the task associated with the case manually.');
     }
   }
 

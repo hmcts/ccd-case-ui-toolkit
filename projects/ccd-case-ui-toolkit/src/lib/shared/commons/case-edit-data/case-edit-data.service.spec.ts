@@ -31,7 +31,7 @@ describe('CaseEditDataService', () => {
       const result = [{
         id: 'id',
         message: 'message'
-      }]
+      }];
       service = new CaseEditDataService();
       service.setFormValidationErrors(result);
       service.caseFormValidationErrors$.pipe(take(1)).subscribe((actual) => {
@@ -46,7 +46,7 @@ describe('CaseEditDataService', () => {
       const result = [{
         id: 'id',
         message: 'message'
-      }]
+      }];
       service = new CaseEditDataService();
       service.addFormValidationError(result[0]);
       service.caseFormValidationErrors$.pipe(take(1)).subscribe((actual) => {
@@ -58,7 +58,7 @@ describe('CaseEditDataService', () => {
 
   describe('setTriggerSubmitEvent', () => {
     it('should update triggerSubmitEvent', (done) => {
-      const result = true
+      const result = true;
       service = new CaseEditDataService();
       service.setTriggerSubmitEvent(result);
       service.caseTriggerSubmitEvent$.pipe(take(1)).subscribe((actual) => {

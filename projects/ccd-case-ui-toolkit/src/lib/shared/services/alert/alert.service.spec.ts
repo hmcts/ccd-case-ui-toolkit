@@ -64,7 +64,7 @@ describe('AlertService', () => {
         done();
       });
 
-    alertService.error({ phrase: ERROR_MESSAGE });
+    alertService.error(ERROR_MESSAGE);
   });
 
   it('should publish alert to observable when successes method used', done => {
@@ -77,7 +77,7 @@ describe('AlertService', () => {
         done();
       });
 
-    alertService.success({ phrase: SUCCESS_MESSAGE });
+    alertService.success(SUCCESS_MESSAGE);
   });
 
   it('should publish alert to observable when warnings method used', done => {
@@ -90,7 +90,7 @@ describe('AlertService', () => {
         done();
       });
 
-    alertService.warning({ phrase: WARNING_MESSAGE });
+    alertService.warning(WARNING_MESSAGE);
   });
 
   it('should publish null to errors observable when clear method used', done => {
@@ -168,7 +168,7 @@ describe('AlertService', () => {
     it('should be a hot alert errors observable', done => {
       rpxTranslationServiceSpy.getTranslation.and.returnValue(of(ERROR_MESSAGE));
       // set an original message
-      alertService.error({ phrase: WARNING_MESSAGE });
+      alertService.error(WARNING_MESSAGE);
 
       alertService
         .errors
@@ -178,13 +178,13 @@ describe('AlertService', () => {
         });
 
       // set the new message
-      alertService.error({ phrase: ERROR_MESSAGE });
+      alertService.error(ERROR_MESSAGE);
     });
 
     it('should be a hot alert errors observable with replacements params', done => {
       rpxTranslationServiceSpy.getTranslationWithReplacements.and.returnValue(of(WARNING_MESSAGE));
       // set an original message
-      alertService.error({ phrase: WARNING_MESSAGE, replacements: { CASEID: '1234' } });
+      alertService.error(WARNING_MESSAGE);
 
       alertService
         .errors
@@ -194,7 +194,7 @@ describe('AlertService', () => {
         });
 
       // set the new message
-      alertService.error({ phrase: ERROR_MESSAGE });
+      alertService.error(ERROR_MESSAGE);
     });
   });
 
@@ -202,7 +202,7 @@ describe('AlertService', () => {
     it('should be a hot alert warnings observable', done => {
       rpxTranslationServiceSpy.getTranslation.and.returnValue(of(WARNING_MESSAGE));
       // set an original message
-      alertService.warning({ phrase: A_MESSAGE });
+      alertService.warning(A_MESSAGE);
 
       alertService
         .warnings
@@ -212,13 +212,13 @@ describe('AlertService', () => {
         });
 
       // set the new message
-      alertService.warning({ phrase: WARNING_MESSAGE });
+      alertService.warning(WARNING_MESSAGE);
     });
 
     it('should be a hot alert warnings observable with replacements params', done => {
       rpxTranslationServiceSpy.getTranslationWithReplacements.and.returnValue(of(A_MESSAGE));
       // set an original message
-      alertService.warning({ phrase: WARNING_MESSAGE, replacements: { CASEID: '1234' } });
+      alertService.warning(WARNING_MESSAGE);
 
       alertService
         .warnings
@@ -228,7 +228,7 @@ describe('AlertService', () => {
         });
 
       // set the new message
-      alertService.warning({ phrase: WARNING_MESSAGE });
+      alertService.warning(WARNING_MESSAGE);
     });
   });
 
@@ -236,7 +236,7 @@ describe('AlertService', () => {
     it('should be a hot alert successs observable', done => {
       rpxTranslationServiceSpy.getTranslation.and.returnValue(of(SUCCESS_MESSAGE));
       // set an original message
-      alertService.success({ phrase: A_MESSAGE });
+      alertService.success(A_MESSAGE);
 
       alertService
         .successes
@@ -246,13 +246,13 @@ describe('AlertService', () => {
         });
 
       // set the new message
-      alertService.success({ phrase: SUCCESS_MESSAGE });
+      alertService.success(SUCCESS_MESSAGE);
     });
 
     it('should be a hot alert successs observable with replacements params', done => {
       rpxTranslationServiceSpy.getTranslationWithReplacements.and.returnValue(of(SUCCESS_MESSAGE));
       // set an original message
-      alertService.success({ phrase: WARNING_MESSAGE, replacements: { CASEID: '1234' } });
+      alertService.success(WARNING_MESSAGE);
 
       alertService
         .successes
@@ -262,7 +262,7 @@ describe('AlertService', () => {
         });
 
       // set the new message
-      alertService.success({ phrase: SUCCESS_MESSAGE });
+      alertService.success(SUCCESS_MESSAGE);
     });
   });
 

@@ -90,9 +90,7 @@ export class AlertService {
     this.message = '';
   }
 
-  public error({ phrase, replacements}: Omit<AlertStatusParams, 'preserve'>): void {
-    const message = this.getTranslationWithReplacements(phrase, replacements);
-
+  public error(message: string): void {
     this.preservedError = this.preserveMessages(message);
     const alert: Alert = { level: 'error', message };
     this.errorObserver.next(alert);
@@ -101,9 +99,7 @@ export class AlertService {
     this.push(alert);
   }
 
-  public warning({ phrase, replacements}: Omit<AlertStatusParams, 'preserve'>): void {
-    const message = this.getTranslationWithReplacements(phrase, replacements);
-
+  public warning(message: string): void {
     this.preservedWarning = this.preserveMessages(message);
     const alert: Alert = { level: 'warning', message };
     this.warningObserver.next(alert);
@@ -112,12 +108,10 @@ export class AlertService {
     this.push(alert);
   }
 
-  public success({ preserve, phrase, replacements}: AlertStatusParams): void {
-    const message = this.getTranslationWithReplacements(phrase, replacements);
-
+  public success(message: string, preserve = false): void {
+    this.preservedSuccess = this.preserveMessages(message);
     this.preserveAlerts = preserve || this.preserveAlerts;
     const alert: Alert = { level: 'success', message };
-    this.preservedSuccess = this.preserveMessages(message);
     this.successObserver.next(alert);
 
     // EUI-3381.

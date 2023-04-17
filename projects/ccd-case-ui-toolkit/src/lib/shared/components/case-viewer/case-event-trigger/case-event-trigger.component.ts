@@ -100,19 +100,11 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       .navigate([this.parentUrl])
       .then(() => {
         const caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
-        const replacements = { CASEREFERENCE: caseReference, NAME: this.eventTrigger.name };
         if (EventStatusService.isIncomplete(eventStatus)) {
-          this.alertService.warning({
-            phrase: `Case #%CASEREFERENCE% has been updated with event: %NAME%
-            but the callback service cannot be completed`,
-            replacements
-          });
+          this.alertService.warning(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name} `
+            + `but the callback service cannot be completed`);
         } else {
-          this.alertService.success({
-            phrase: 'Case #%CASEREFERENCE% has been updated with event: %NAME%',
-            replacements,
-            preserve: true
-          });
+          this.alertService.success(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name}`, true);
         }
     });
   }

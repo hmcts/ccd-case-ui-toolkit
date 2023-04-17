@@ -59,8 +59,7 @@ export class CaseEditWizardGuard implements Resolve<boolean> {
     if (!wizard.hasPage(pageId)) {
       this.goToFirst(wizard, canShowPredicate, route)
         .then(() => {
-          const replacements = { PAGEID: pageId };
-          this.alertService.error({ phrase: 'No page could be found for %PAGEID%', replacements });
+          this.alertService.error(`No page could be found for '${pageId}'`);
         });
       return Promise.resolve(false);
     }

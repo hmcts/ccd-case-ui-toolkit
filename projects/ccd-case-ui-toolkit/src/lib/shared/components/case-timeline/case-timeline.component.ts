@@ -41,7 +41,7 @@ export class CaseTimelineComponent implements OnInit {
       )
       .toPromise()
       .catch((error: HttpError) => {
-        this.alertService.error({ phrase: error.message });
+        this.alertService.error(error.message);
         return throwError(error);
       });
   }
