@@ -37,7 +37,7 @@ describe('WindowService', () => {
   });
 
   it('should trigger alert', () => {
-    spyOn(window, 'alert');
+    spyOn(windowService, 'alert');
     windowService.alert('test');
     expect(windowService.alert).toHaveBeenCalled();
   });
