@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { of } from 'rxjs';
+import { CaseEditValidationError } from '../../../../../../../lib/shared';
+import { CaseEditDataService } from '../../../../../commons/case-edit-data/case-edit-data.service';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
 import { SelectFlagLocationComponent } from './select-flag-location.component';
-import { CaseEditDataService } from '../../../../../commons/case-edit-data/case-edit-data.service';
-import { of } from 'rxjs';
-import { CaseEditValidationError } from '../../../../../../../lib/shared';
 
 describe('SelectFlagLocationComponent', () => {
   let component: SelectFlagLocationComponent;

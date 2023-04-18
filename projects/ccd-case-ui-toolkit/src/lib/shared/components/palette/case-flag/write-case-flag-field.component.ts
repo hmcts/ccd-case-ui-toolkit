@@ -1,13 +1,13 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField, ErrorMessage } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ccd-write-case-flag-field',

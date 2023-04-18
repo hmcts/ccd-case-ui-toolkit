@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ErrorMessage } from '../../../../../domain';
+import { Subscription } from 'rxjs';
 import { CaseEditDataService } from '../../../../../commons/case-edit-data/case-edit-data.service';
+import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagLocationErrorMessage } from '../../enums';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ccd-select-flag-location',
