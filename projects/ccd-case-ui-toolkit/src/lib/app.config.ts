@@ -93,6 +93,7 @@ export abstract class AbstractAppConfig {
     return undefined;
   }
   public abstract getRefundsUrl(): string;
+  public abstract getNotificationUrl(): string;
   public abstract getPaymentReturnUrl(): string;
   public abstract getCategoriesAndDocumentsUrl(): string;
   public abstract getDocumentDataUrl(): string;
@@ -161,6 +162,7 @@ export class CaseEditorConfig {
   public location_ref_api_url?: string;
   public cam_role_assignments_api_url?: string;
   public refunds_url: string;
+  public notification_url: string;
   public payment_return_url: string;
   public categories_and_documents_url: string;
   public document_data_url: string;
