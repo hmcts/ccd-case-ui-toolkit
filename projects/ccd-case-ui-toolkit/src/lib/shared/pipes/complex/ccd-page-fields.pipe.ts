@@ -2,16 +2,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { WizardPage } from '../../components/case-editor/domain/wizard-page.model';
-
 import { CaseField } from '../../domain/definition';
 
 @Pipe({
   name: 'ccdPageFields'
 })
 export class CcdPageFieldsPipe implements PipeTransform {
-
   public transform(page: WizardPage, dataFormGroup: FormGroup): CaseField {
-    const complex_fields: CaseField[] = Object.keys((dataFormGroup.controls['data'] as FormGroup).controls).map(key => {
+    const complexFields: CaseField[] = Object.keys((dataFormGroup.controls['data'] as FormGroup).controls).map(key => {
       const control: AbstractControl = (dataFormGroup.controls['data'] as FormGroup).get(key);
       return control['caseField'] as CaseField;
     }).filter(field => {
@@ -32,9 +30,8 @@ export class CcdPageFieldsPipe implements PipeTransform {
       field_type: {
         id: page.id,
         type: 'Complex',
-        complex_fields
+        complex_fields: complexFields
       }
     });
   }
-
 }

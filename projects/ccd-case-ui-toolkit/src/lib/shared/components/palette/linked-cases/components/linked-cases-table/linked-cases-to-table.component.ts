@@ -89,7 +89,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       } else {
         secondLevelresultArray.push({ ...item });
       }
-    })
+    });
     return topLevelresultArray.concat(secondLevelresultArray);
   }
 
@@ -129,7 +129,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
         this.linkedCasesService.linkedCases = caseLinks;
         this.isServerError = false;
       },
-        err => {
+      err => {
           this.isServerError = true;
           this.notifyAPIFailure.emit(true);
         }

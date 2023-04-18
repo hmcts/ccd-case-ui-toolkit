@@ -326,16 +326,16 @@ describe('WriteLinkedCasesFieldComponent', () => {
 
   it('should navigate to correct page', () => {
     spyOn(caseEditDataService, 'setLinkedCasesJourneyAtFinalStep');
-		spyOn(component.formGroup, 'updateValueAndValidity');
+    spyOn(component.formGroup, 'updateValueAndValidity');
     spyOn(component, 'submitLinkedCases');
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     component.proceedToNextPage();
-		expect(caseEditDataService.setLinkedCasesJourneyAtFinalStep).toHaveBeenCalledWith(false);
+    expect(caseEditDataService.setLinkedCasesJourneyAtFinalStep).toHaveBeenCalledWith(false);
     expect(component.formGroup.updateValueAndValidity).not.toHaveBeenCalled();
     expect(component.submitLinkedCases).not.toHaveBeenCalled();
     component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
     component.proceedToNextPage();
-		expect(caseEditDataService.setLinkedCasesJourneyAtFinalStep).toHaveBeenCalledWith(true);
+    expect(caseEditDataService.setLinkedCasesJourneyAtFinalStep).toHaveBeenCalledWith(true);
     expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
     expect(component.submitLinkedCases).toHaveBeenCalled();
   });
@@ -344,7 +344,6 @@ describe('WriteLinkedCasesFieldComponent', () => {
     spyOn(caseEditDataService, 'setCaseEditForm');
     linkedCasesService.isLinkedCasesEventTrigger = true;
     component.caseEditForm = FORM_GROUP;
-    console.log('FORM GROUP', component.formGroup);
     component.submitLinkedCases();
     expect(component.formGroup.value.caseLinks).toEqual(linkedCases);
     expect(caseEditDataService.setCaseEditForm).toHaveBeenCalled();

@@ -8,11 +8,10 @@ import { ProfileService } from './profile.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('ProfileService', () => {
-
   const MOCK_PROFILE: Profile = createAProfile();
 
   const API_URL = 'http://data.ccd.reform';
-  const PROFILE_URL = API_URL + '/internal/profile';
+  const PROFILE_URL = `${API_URL}/internal/profile`;
 
   let appConfig: any;
   let httpService: any;
@@ -20,7 +19,6 @@ describe('ProfileService', () => {
   let profileService: ProfileService;
 
   describe('get()', () => {
-
     beforeEach(() => {
       appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl']);
       appConfig.getApiUrl.and.returnValue(API_URL);
@@ -53,6 +51,5 @@ describe('ProfileService', () => {
           profile => expect(profile).toEqual(MOCK_PROFILE)
         );
     });
-
   });
 });

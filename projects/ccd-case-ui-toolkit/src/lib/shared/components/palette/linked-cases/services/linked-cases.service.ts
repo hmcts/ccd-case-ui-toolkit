@@ -8,7 +8,6 @@ import { CaseLink, ESQueryType, LinkReason } from '../domain';
 
 @Injectable()
 export class LinkedCasesService {
-
   private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
 
   public caseFieldValue = [];
@@ -41,7 +40,7 @@ export class LinkedCasesService {
       (rv[x.value[key]] = rv[x.value[key]] || []).push(x.value['CaseReference']);
       return rv;
     }, {});
-  };
+  }
 
   public constructElasticSearchQuery(caseIds: any[], size: number): ESQueryType {
     return {
@@ -87,7 +86,7 @@ export class LinkedCasesService {
           });
         });
 
-        const caseLinks = casesResponse.map(item => {
+        this.linkedCases = casesResponse.map(item => {
           return {
             caseReference: item.caseReference,
             caseName: item.caseName,
@@ -101,7 +100,6 @@ export class LinkedCasesService {
             }),
           } as CaseLink;
         });
-        this.linkedCases = caseLinks;
         this.serverLinkedApiError = null;
       },
       err => {

@@ -27,7 +27,6 @@ import { PageValidationService } from '../services/page-validation.service';
   styleUrls: ['./case-edit-page.scss']
 })
 export class CaseEditPageComponent implements OnInit, AfterViewChecked {
-
   public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
   public static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
   public static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
@@ -170,7 +169,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           const label = casefield.label || 'Field';
           let id = casefield.id;
           if (fieldElement['component'] && fieldElement['component'].parent) {
-            if (fieldElement['component'].idPrefix.indexOf('_' + id + '_') === -1) {
+            if (fieldElement['component'].idPrefix.indexOf(`_${id}_`) === -1) {
               id = `${fieldElement['component'].idPrefix}${id}`;
             } else {
               id = `${fieldElement['component'].idPrefix}`;
@@ -305,8 +304,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
-    this.ignoreWarning = errorContext.ignore_warning;
-    this.triggerText = errorContext.trigger_text;
+    this.ignoreWarning = errorContext.ignoreWarning;
+    this.triggerText = errorContext.triggerText;
   }
 
   public next(): Promise<boolean> {
