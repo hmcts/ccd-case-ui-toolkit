@@ -5,7 +5,6 @@ import { AbstractAppConfig } from '../../../../../app.config';
   name: 'ccdPrintUrl'
 })
 export class PrintUrlPipe implements PipeTransform {
-
   private static readonly MSIE_BROWSER_NAME = 'MSIE';
   private static readonly IE11_BROWSER_ENGINE = 'Trident';
 
@@ -23,7 +22,7 @@ export class PrintUrlPipe implements PipeTransform {
    * or the empty string
    */
   public transform(remoteUrl: string): string {
-    if (remoteUrl && remoteUrl.length > 0) {
+    if (remoteUrl?.length > 0) {
       let printServiceUrlPathname: string;
 
       /**
@@ -40,7 +39,7 @@ export class PrintUrlPipe implements PipeTransform {
         printServiceUrlPathname = urlParser.pathname;
         if (printServiceUrlPathname[0] !== '/') {
           // Fix for IE11; it returns the pathname without leading slash
-          printServiceUrlPathname = '/' + printServiceUrlPathname;
+          printServiceUrlPathname = `/${printServiceUrlPathname}`;
         }
       } else {
         // Get the pathname parsed from the "remote" Print Service URL object

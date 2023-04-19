@@ -16,7 +16,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
   let wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper;
   const INCOMPLETE_SHOW_CONDITION_ONE = 'AddressLine2="test"';
   const INCOMPLETE_SHOW_CONDITION_TWO = 'AddressLine1CONTAINS"test"';
-  const INCOMPLETE_SHOW_CONDITION = INCOMPLETE_SHOW_CONDITION_ONE + ' AND ' + INCOMPLETE_SHOW_CONDITION_TWO;
+  const INCOMPLETE_SHOW_CONDITION = `${INCOMPLETE_SHOW_CONDITION_ONE} AND ${INCOMPLETE_SHOW_CONDITION_TWO}`;
 
   const CASE_FIELDS = [
     createCaseField('debtorName', 'Debtor name', '', textFieldType(), 'MANDATORY'),
@@ -148,8 +148,7 @@ describe('WizardPageFieldToCaseFieldMapper', () => {
     const addressAttended = finalReturn.field_type.complex_fields[0];
     const addressLine1 = addressAttended.field_type.complex_fields.find(e => e.id === 'AddressLine1');
 
-    expect(addressLine1.show_condition).toBe('finalReturn.addressAttended.' + INCOMPLETE_SHOW_CONDITION_ONE
-      + ' AND ' + 'finalReturn.addressAttended.' + INCOMPLETE_SHOW_CONDITION_TWO);
+    expect(addressLine1.show_condition).toBe(`finalReturn.addressAttended.${INCOMPLETE_SHOW_CONDITION_ONE} AND finalReturn.addressAttended.${INCOMPLETE_SHOW_CONDITION_TWO}`);
   });
 });
 

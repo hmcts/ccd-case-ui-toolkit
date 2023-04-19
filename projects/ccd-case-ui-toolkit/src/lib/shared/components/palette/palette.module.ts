@@ -32,7 +32,6 @@ import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view';
-import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { CaseFileViewFolderSelectorComponent } from './case-file-view/components/case-file-view-folder-selector/case-file-view-folder-selector.component';
 import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
@@ -53,6 +52,7 @@ import { ReadDocumentFieldComponent } from './document/read-document-field.compo
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { DynamicListPipe, ReadDynamicListFieldComponent } from './dynamic-list';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { DynamicRadioListPipe, ReadDynamicRadioListFieldComponent } from './dynamic-radio-list';
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
@@ -135,6 +135,8 @@ const PALETTE_COMPONENTS = [
   WriteDocumentFieldComponent,
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
+  WriteDynamicMultiSelectListFieldComponent,
+  ReadDynamicMultiSelectListFieldComponent,
   WriteTextFieldComponent,
   WriteDateContainerFieldComponent,
   WriteTextAreaFieldComponent,
@@ -160,12 +162,18 @@ const PALETTE_COMPONENTS = [
 
   // ComponentLauncher web components
   CaseFileViewFieldComponent,
-  CaseFileViewFieldReadComponent,
   CaseFileViewFolderComponent,
   CaseFileViewFolderSortComponent,
   CaseFileViewOverlayMenuComponent,
   CaseFileViewFolderDocumentActionsComponent,
   CaseFileViewFolderSelectorComponent,
+  // component for dynamic list
+  WriteDynamicMultiSelectListFieldComponent,
+  WriteDynamicRadioListFieldComponent,
+  WriteDynamicListFieldComponent,
+  ReadDynamicMultiSelectListFieldComponent,
+  ReadDynamicListFieldComponent,
+  ReadDynamicRadioListFieldComponent,
   LinkedCasesToTableComponent,
   LinkedCasesFromTableComponent,
   BeforeYouStartComponent,

@@ -1,8 +1,8 @@
 import createSpyObj = jasmine.createSpyObj;
+import { waitForAsync } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 import { NavigationNotifierService } from './navigation-notifier.service';
 import { NavigationOrigin } from './navigation-origin.model';
-import { waitForAsync } from '@angular/core/testing';
 
 describe('NavigationNotifierService', () => {
   let navigationNotifierService: NavigationNotifierService;

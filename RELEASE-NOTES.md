@@ -26,11 +26,17 @@
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
+### Version 6.14.1--fee-pay-props
+**EUI-7489** Added additional props to nested ccpay instance
+
 ### Version 5.0.50-case-file-view-restrict-document-move
 **EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
 
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
+
+### Version 5.0.46-fix-case-link
+**EUI-7521** Fix case link hyperlink on applications tab
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab

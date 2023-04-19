@@ -13,6 +13,7 @@ export type FieldTypeEnum =
   | 'DynamicList'
   | 'FixedRadioList'
   | 'DynamicRadioList'
+  | 'DynamicMultiSelectList'
   | 'Complex'
   | 'Collection'
   | 'MultiSelectList'
