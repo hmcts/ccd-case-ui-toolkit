@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.14.0-restricted-case-access
+### Version 6.14.0-restricted-case-access-v2
 **EUI-7382** Restricted case access after merge
 
 ### Version 6.13.10-rc1
