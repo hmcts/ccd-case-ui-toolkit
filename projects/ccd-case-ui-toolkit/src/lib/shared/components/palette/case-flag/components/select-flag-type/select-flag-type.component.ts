@@ -6,6 +6,7 @@ import { ErrorMessage } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService } from '../../../../../services';
 import { RefdataCaseFlagType } from '../../../../../services/case-flag/refdata-case-flag-type.enum';
+import { CaseEditDataService } from '../../../../../commons/case-edit-data/case-edit-data.service';
 import { CaseFlagState } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
 
@@ -49,12 +50,13 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
   public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
+  private caseValidationErrorsSubscription$: Subscription;
 
   public get caseFlagWizardStepTitle(): typeof CaseFlagWizardStepTitle {
     return CaseFlagWizardStepTitle;
   }
 
-  constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
+  constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService, private readonly caseEditDataService: CaseEditDataService) { }
 
   public ngOnInit(): void {
     this.flagTypes = [];
@@ -91,12 +93,22 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
           error: error => this.onRefdataError(error)
         });
     }
+    this.caseValidationErrorsSubscription$ = this.caseEditDataService.caseFormValidationErrors$.subscribe({
+      next: (validationErrors) => {
+        if (validationErrors.length) {
+          this.errorMessages = [];
+          this.flagTypeNotSelectedErrorMessage = '';
+          this.flagTypeErrorMessage = '';
+        }
+      }
+    });
   }
 
   public ngOnDestroy(): void {
     if (this.flagRefdata$) {
       this.flagRefdata$.unsubscribe();
     }
+    this.caseValidationErrorsSubscription$.unsubscribe();
   }
 
   public onFlagTypeChanged(flagType: FlagType): void {
@@ -142,17 +154,17 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     if (!this.selectedFlagType) {
       this.flagTypeNotSelectedErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
-      this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED}`, fieldId: 'conditional-radios-list'});
+      this.errorMessages.push({ title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED}`, fieldId: 'conditional-radios-list' });
     }
     if (this.otherFlagTypeSelected) {
       const otherFlagTypeDescription = this.formGroup.get(this.descriptionControlName).value;
       if (!otherFlagTypeDescription) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
-        this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description'});
+        this.errorMessages.push({ title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description' });
       }
       if (otherFlagTypeDescription.length > this.maxCharactersForOtherFlagType) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED;
-        this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description'});
+        this.errorMessages.push({ title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description' });
       }
     }
   }
@@ -161,7 +173,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     // Set error flag on component to remove the "Next" button (user cannot proceed with flag creation)
     this.refdataError = true;
     this.errorMessages = [];
-    this.errorMessages.push({title: '', description: error.message, fieldId: 'conditional-radios-list'});
+    this.errorMessages.push({ title: '', description: error.message, fieldId: 'conditional-radios-list' });
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
   }
