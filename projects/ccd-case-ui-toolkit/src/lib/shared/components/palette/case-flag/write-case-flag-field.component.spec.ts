@@ -1,8 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagFieldState, CaseFlagStatus } from './enums';
@@ -311,8 +310,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ WriteCaseFlagFieldComponent ],
       providers: [
-        { provide: ActivatedRoute, useValue: mockRoute },
-        CaseEditDataService
+        { provide: ActivatedRoute, useValue: mockRoute }
       ]
     })
     .compileComponents();
