@@ -200,7 +200,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
                 id,
                 message: `Please select Next to complete the ${action} of the ${action === 'update' ? 'selected ' : ''}case flag`
               });
-              this.caseEditDataService.setFormValidationErrors(this.validationErrors);
             } else {
               this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();
