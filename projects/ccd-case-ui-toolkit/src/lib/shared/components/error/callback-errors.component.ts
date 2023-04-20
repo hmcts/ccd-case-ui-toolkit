@@ -57,11 +57,11 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
   private buildCallbackErrorsContext(): CallbackErrorsContext {
     const errorContext: CallbackErrorsContext = new CallbackErrorsContext();
     if (this.hasWarnings() && !this.hasErrors() && !this.hasInvalidData()) {
-      errorContext.ignore_warning = true;
-      errorContext.trigger_text = this.triggerTextIgnore;
+      errorContext.ignoreWarning = true;
+      errorContext.triggerText = this.triggerTextIgnore;
     } else {
-      errorContext.ignore_warning = false;
-      errorContext.trigger_text = this.triggerTextContinue;
+      errorContext.ignoreWarning = false;
+      errorContext.triggerText = this.triggerTextContinue;
     }
     return errorContext;
   }

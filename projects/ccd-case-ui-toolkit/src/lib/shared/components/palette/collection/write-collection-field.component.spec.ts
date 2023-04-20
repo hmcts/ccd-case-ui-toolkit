@@ -5,14 +5,12 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { MockComponent } from 'ng2-mock-component';
-import { async, BehaviorSubject, of } from 'rxjs';
-
+import { BehaviorSubject, of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { ProfileNotifier } from '../../../services';
 import { FormValidatorsService } from '../../../services/form';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
-import { FieldReadComponent, FieldWriteComponent } from '../base-field';
 import { PaletteUtilsModule } from '../utils';
 import { CollectionCreateCheckerService } from './collection-create-checker.service';
 import { WriteCollectionFieldComponent } from './write-collection-field.component';
@@ -44,12 +42,6 @@ const DYNAMIC_FIELD_TYPE: FieldType = {
     id: 'DynamicRadioList',
     type: 'Complex'
   }
-};
-
-const DYNAMIC_FIELD_TYPE_NULL: FieldType = {
-  id: 'Address',
-  type: 'Collection',
-  collection_field_type: null
 };
 
 const VALUES = [

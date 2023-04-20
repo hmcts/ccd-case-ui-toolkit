@@ -346,7 +346,6 @@ describe('WriteLinkedCasesFieldComponent', () => {
     spyOn(caseEditDataService, 'setCaseEditForm');
     linkedCasesService.isLinkedCasesEventTrigger = true;
     component.caseEditForm = FORM_GROUP;
-    console.log('FORM GROUP', component.formGroup);
     component.submitLinkedCases();
     expect(component.formGroup.value.caseLinks).toEqual(linkedCases);
     expect(caseEditDataService.setCaseEditForm).toHaveBeenCalled();
@@ -398,11 +397,11 @@ describe('WriteLinkedCasesFieldComponent', () => {
     expect(document.getElementById).not.toHaveBeenCalled();
   });
 
-  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+  function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {
     const cf = new CaseField();
     cf.id = id;
     cf.value = value;
-    cf.display_context = display_context;
+    cf.display_context = displayContext;
     return cf;
   }
 

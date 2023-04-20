@@ -495,7 +495,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
       flags: null,
       pathToFlagsFormGroup: '',
       caseField: component.flagsData[2].caseField
-    } as FlagsWithFormGroupPath
+    } as FlagsWithFormGroupPath;
     component.selectedFlagsLocation = newFlag;
     component.addFlagToCollection();
     expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();

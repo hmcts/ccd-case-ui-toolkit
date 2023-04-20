@@ -10,11 +10,10 @@ import { CaseNotifier } from '../case-editor';
   templateUrl: './case-viewer.component.html'
 })
 export class CaseViewerComponent implements OnInit, OnDestroy {
-
-  static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
-  static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
-  static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
-  static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
+  public static readonly METADATA_FIELD_ACCESS_PROCEES_ID = '[ACCESS_PROCESS]';
+  public static readonly METADATA_FIELD_ACCESS_GRANTED_ID = '[ACCESS_GRANTED]';
+  public static readonly NON_STANDARD_USER_ACCESS_TYPES = ['CHALLENGED', 'SPECIFIC'];
+  public static readonly BASIC_USER_ACCESS_TYPES = 'BASIC';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -57,12 +56,12 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   public setUserAccessType(caseDetails: CaseView): void {
     if (caseDetails && Array.isArray(caseDetails.metadataFields)) {
-      const access_process = caseDetails.metadataFields.find(metadataField =>
+      const accessProcess = caseDetails.metadataFields.find(metadataField =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
-      const access_granted = caseDetails.metadataFields.find(metadataField =>
+      const accessGranted = caseDetails.metadataFields.find(metadataField =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_GRANTED_ID);
-        this.accessGranted = access_granted ? access_granted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
-      this.userAccessType = access_process ? access_process.value : null;
+        this.accessGranted = accessGranted ? accessGranted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
+      this.userAccessType = accessProcess ? accessProcess.value : null;
     }
   }
 
