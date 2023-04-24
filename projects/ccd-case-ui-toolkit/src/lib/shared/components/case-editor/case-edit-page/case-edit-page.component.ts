@@ -333,6 +333,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     } else {
       this.caseEdit.cancelled.emit();
     }
+
+    this.caseEditDataService.clearFormValidationErrors();
   }
 
   public submitting(): boolean {
