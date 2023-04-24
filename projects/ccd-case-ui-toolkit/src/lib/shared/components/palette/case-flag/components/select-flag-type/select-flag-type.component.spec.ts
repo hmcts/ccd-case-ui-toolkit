@@ -7,6 +7,8 @@ import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../serv
 import { FlagPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagTypeErrorMessage } from '../../enums';
 import { SelectFlagTypeComponent } from './select-flag-type.component';
+import { CaseEditDataService } from '../../../../../commons/case-edit-data/case-edit-data.service';
+import { CaseEditValidationError } from '../../../../../../../lib/shared';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -14,6 +16,10 @@ describe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;
   let fixture: ComponentFixture<SelectFlagTypeComponent>;
   let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
+  let caseEditDataServiceSpy: CaseEditDataService;
+  caseEditDataServiceSpy = {
+    caseFormValidationErrors$: of([] as any),
+  } as CaseEditDataService;
   const flagTypes = [
     {
       name: 'Party',
@@ -166,10 +172,11 @@ describe('SelectFlagTypeComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [SelectFlagTypeComponent],
       providers: [
-        { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService }
+        { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService },
+        { provide: CaseEditDataService, useValue: caseEditDataServiceSpy },
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -405,5 +412,23 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.flagRefdata$).toBeTruthy();
     component.ngOnDestroy();
     expect(component.flagRefdata$.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should remove case Form Validation Errors and errormessages to undefined', () => {
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    component.ngOnInit();
+    caseEditDataServiceSpy = {
+      caseFormValidationErrors$: of([{}] as CaseEditValidationError[]),
+    } as CaseEditDataService;
+    expect(component).toBeTruthy();
+    expect(component.errorMessages).toBe(undefined);
+  });
+
+  it('should remove case Form Validation Errors and errormessages to empty', () => {
+    caseEditDataServiceSpy = {
+      caseFormValidationErrors$: of([{}] as CaseEditValidationError[]),
+    } as CaseEditDataService;
+    expect(component.errorMessages).toEqual([]);
+    expect(component.flagTypeNotSelectedErrorMessage.length).toEqual(0);
   });
 });
