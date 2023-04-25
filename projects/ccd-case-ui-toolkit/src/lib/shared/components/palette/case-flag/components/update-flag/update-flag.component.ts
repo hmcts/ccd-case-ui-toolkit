@@ -114,10 +114,12 @@ export class UpdateFlagComponent implements OnInit {
     // is no existing comment then one is not required for validation to pass
     const comment = this.formGroup.get(CaseFlagFormFields.COMMENTS).value;
     if (!comment && (this.flagDetail.flagComment || this.flagDetail.flagComment_cy)) {
-      this.updateFlagNotEnteredErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
+      this.updateFlagNotEnteredErrorMessage = this.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE
+        ? UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED
+        : UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL;
       this.errorMessages.push({
         title: '',
-        description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
+        description: this.updateFlagNotEnteredErrorMessage,
         fieldId: CaseFlagFormFields.COMMENTS
       });
     }

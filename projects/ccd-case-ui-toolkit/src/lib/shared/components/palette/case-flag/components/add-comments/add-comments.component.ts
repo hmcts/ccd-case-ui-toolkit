@@ -48,10 +48,12 @@ export class AddCommentsComponent implements OnInit {
     this.flagCommentsCharLimitErrorMessage = null;
     this.errorMessages = [];
     if (!this.optional && !this.formGroup.get(this.flagCommentsControlName).value) {
-      this.flagCommentsNotEnteredErrorMessage = AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
+      this.flagCommentsNotEnteredErrorMessage = this.isDisplayContextParameterExternal
+        ? AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL
+        : AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
-        description: AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
+        description: this.flagCommentsNotEnteredErrorMessage,
         fieldId: this.flagCommentsControlName
       });
     }
