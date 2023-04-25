@@ -4,7 +4,11 @@
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 id="flag-type-heading" class="govuk-fieldset__heading govuk-!-margin-bottom-1">
           <ng-container *ngIf="!selectionTitle; else selectionTitlePresent">
-            {{caseFlagWizardStepTitle.SELECT_CASE_FLAG | rpxTranslate}}
+            {{
+              isDisplayContextParameterExternal
+                ? (caseFlagWizardStepTitle.SELECT_CASE_FLAG_EXTERNAL | rpxTranslate)
+                : (caseFlagWizardStepTitle.SELECT_CASE_FLAG | rpxTranslate)
+            }}
           </ng-container>
           <ng-template #selectionTitlePresent>
             {{selectionTitle | rpxTranslate}}
@@ -27,7 +31,13 @@
         </div>
         <div class="govuk-radios__conditional" *ngIf="otherFlagTypeSelected" id="conditional-flagType">
           <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeErrorMessage.length > 0}">
-            <label class="govuk-label" for="other-flag-type-description">{{'Enter a flag type' | rpxTranslate}}</label>
+            <label class="govuk-label" for="other-flag-type-description">
+              {{
+                isDisplayContextParameterExternal
+                  ? (caseFlagWizardStepTitle.OTHER_FLAG_TYPE_DESCRIPTION_EXTERNAL | rpxTranslate)
+                  : (caseFlagWizardStepTitle.OTHER_FLAG_TYPE_DESCRIPTION | rpxTranslate)
+              }}
+            </label>
             <div id="flag-type-error-message" class="govuk-error-message" *ngIf="flagTypeErrorMessage.length > 0">
               <span class="govuk-visually-hidden">Error:</span> {{flagTypeErrorMessage | rpxTranslate}}
             </div>

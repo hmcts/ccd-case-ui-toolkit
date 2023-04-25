@@ -27,7 +27,8 @@ export class AddCommentsComponent implements OnInit {
   public ngOnInit(): void {
     this.addCommentsTitle = !this.isDisplayContextParameterExternal ?
       CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS : CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS_EXTERNAL_MODE;
-    this.addCommentsHint = AddCommentsStep.HINT_TEXT;
+    this.addCommentsHint = !this.isDisplayContextParameterExternal ?
+      AddCommentsStep.HINT_TEXT : AddCommentsStep.HINT_TEXT_EXTERNAL;
     this.addCommentsCharLimitInfo = AddCommentsStep.CHARACTER_LIMIT_INFO;
 
     if (!this.formGroup.get(this.flagCommentsControlName)) {
