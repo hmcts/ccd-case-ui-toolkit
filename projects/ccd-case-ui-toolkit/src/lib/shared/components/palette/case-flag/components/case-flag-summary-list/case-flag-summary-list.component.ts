@@ -1,6 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
-import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagSummaryListDisplayMode } from '../../enums';
+import {
+  CaseFlagCheckYourAnswersPageStep,
+  CaseFlagDisplayContextParameter,
+  CaseFlagFieldState,
+  CaseFlagSummaryListDisplayMode
+} from '../../enums';
 
 @Component({
   selector: 'ccd-case-flag-summary-list',
@@ -21,11 +26,10 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
   public addUpdateFlagHeaderText: string;
   public caseFlagFieldState = CaseFlagFieldState;
-  public readonly caseLevelLocation = 'Case level';
-  private readonly updateFlagHeaderText = 'Update flag for';
-  private readonly addFlagHeaderText = 'Add flag to';
   public displayMode = CaseFlagSummaryListDisplayMode;
   public canDisplayStatus = false;
+  public flagTypeHeaderText: string;
+  public caseFlagCheckYourAnswersPageStep = CaseFlagCheckYourAnswersPageStep;
 
   public ngOnInit(): void {
     if (this.flagForSummaryDisplay) {
@@ -35,7 +39,8 @@ export class CaseFlagSummaryListComponent implements OnInit {
       this.flagComments = flagDetail.flagComment;
       this.flagCommentsWelsh = flagDetail.flagComment_cy;
       this.flagStatus = flagDetail.status;
-      this.addUpdateFlagHeaderText = this.getHeaderText();
+      this.addUpdateFlagHeaderText = this.getAddUpdateFlagHeaderText();
+      this.flagTypeHeaderText = this.getFlagTypeHeaderText();
       this.summaryListDisplayMode = this.getSummaryListDisplayMode();
       this.canDisplayStatus = this.getCanDisplayStatus();
     }
@@ -47,14 +52,30 @@ export class CaseFlagSummaryListComponent implements OnInit {
     return `${flagDetail.name}${otherDescription}${subTypeValue}`;
   }
 
-  private getHeaderText(): string {
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE ||
-      this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) {
-      return this.addFlagHeaderText;
+  private getAddUpdateFlagHeaderText(): string {
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE) {
+      return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT;
     }
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE ||
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) {
+      return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT_EXTERNAL;
+    }
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE) {
+      return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT;
+    }
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
+      return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT_EXTERNAL;
+    }
+    return '';
+  }
+
+  private getFlagTypeHeaderText(): string {
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE ||
+      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE) {
+      return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT;
+    }
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
       this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
-      return this.updateFlagHeaderText;
+      return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT_EXTERNAL;
     }
     return '';
   }
