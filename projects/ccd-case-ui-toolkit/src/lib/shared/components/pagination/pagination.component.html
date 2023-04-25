@@ -1,6 +1,6 @@
 <pagination-template #p="paginationApi" [id]="id" [maxSize]="maxSize" (pageChange)="pageChange.emit($event)"
   (pageBoundsCorrection)="pageBoundsCorrection.emit($event)">
-  <nav role="navigation" aria-label="Pagination">
+  <nav class="ngx-pagination-wrapper" role="navigation" aria-label="Pagination">
     <ul class="ngx-pagination" role="navigation" [attr.aria-label]="screenReaderPaginationLabel"
       [class.responsive]="responsive" *ngIf="!(autoHide && p.pages.length <= 1)">
       <li class="pagination-previous" [class.disabled]="p.isFirstPage()" *ngIf="directionLinks">
@@ -38,4 +38,8 @@
       </li>
     </ul>
   </nav>
+  <div class="ngx-go-to-page">
+    <span>Go to page</span>
+    <input type="number" (keyup.enter)="goToPage($event, p);$event.target.blur();" (blur)="goToPage($event, p)" (focus)="goToPageInput.select()" class="govuk-input" maxlength="5" min="1" #goToPageInput />
+  </div>
 </pagination-template>

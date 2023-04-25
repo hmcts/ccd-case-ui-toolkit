@@ -11,7 +11,6 @@ import locale from '@angular/common/locales/de';
 registerLocaleData(locale);
 
 describe('PaginationComponent:', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -142,19 +141,17 @@ describe('PaginationComponent:', () => {
     expect(controlsDirective.getCurrent()).toBe(2);
   }));
 
-  it('should highlight the currently-active page when currentPage is passed as a numeric string',
-    fakeAsync(() => {
-      const fixture = TestBed.createComponent(ComponentTestComponent);
-      const instance: ComponentTestComponent = fixture.componentInstance;
-      instance.config.currentPage = '2' as any;
-      fixture.detectChanges();
+  it('should highlight the currently-active page when currentPage is passed as a numeric string', fakeAsync(() => {
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance: ComponentTestComponent = fixture.componentInstance;
+    instance.config.currentPage = '2' as any;
+    fixture.detectChanges();
 
-      const current: DebugElement = fixture.debugElement.query(By.css('.current'));
+    const current: DebugElement = fixture.debugElement.query(By.css('.current'));
 
-      expect(current).not.toBeNull();
-      expect(current.nativeElement.innerText).toContain('2');
-    })
-  );
+    expect(current).not.toBeNull();
+    expect(current.nativeElement.innerText).toContain('2');
+  }));
 
   it('should allow the pagination-controls to come before the PaginatePipe', () => {
     overrideTemplate(ComponentTestComponent, `
