@@ -308,8 +308,81 @@ describe('PaginationComponent:', () => {
     expect(controlsCmp.responsive).toBe(true);
   });
 
-  describe('custom labels', () => {
+  describe('PaginationComponent', () => {
+    let component: PaginationComponent;
 
+    beforeEach(() => {
+      component = new PaginationComponent();
+    });
+
+    it('should update current page when valid page number entered', () => {
+      const mockPagination = {
+        getCurrent: () => 1,
+        setCurrent: jasmine.createSpy('setCurrent')
+      };
+      const mockEvent = {
+        target: {
+          value: '2'
+        }
+      };
+
+      component.goToPage(mockEvent, mockPagination);
+
+      expect(mockPagination.setCurrent).toHaveBeenCalledWith(2);
+    });
+
+    it('should update current page when negative page number entered', () => {
+      const mockPagination = {
+        getCurrent: () => 3,
+        setCurrent: jasmine.createSpy('setCurrent')
+      };
+      const mockEvent = {
+        target: {
+          value: '-2'
+        }
+      };
+
+      component.goToPage(mockEvent, mockPagination);
+
+      expect(mockEvent.target.value).toBe('2');
+      expect(mockPagination.setCurrent).toHaveBeenCalledWith(2);
+    });
+
+    it('should clear input when empty page number entered', () => {
+      const mockPagination = {
+        getCurrent: () => 5,
+        setCurrent: jasmine.createSpy('setCurrent')
+      };
+      const mockEvent = {
+        target: {
+          value: ''
+        }
+      };
+
+      component.goToPage(mockEvent, mockPagination);
+
+      expect(mockEvent.target.value).toBe('');
+      expect(mockPagination.setCurrent).not.toHaveBeenCalled();
+    });
+
+    it('should not update current page when same page number entered', () => {
+      const mockPagination = {
+        getCurrent: () => 4,
+        setCurrent: jasmine.createSpy('setCurrent')
+      };
+      const mockEvent = {
+        target: {
+          value: '4'
+        }
+      };
+
+      component.goToPage(mockEvent, mockPagination);
+
+      expect(mockPagination.setCurrent).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('custom labels', () => {
     const TEST_LABEL = 'pqowieur';
 
     it('previousLabel should bind in correct locations', fakeAsync(() => {

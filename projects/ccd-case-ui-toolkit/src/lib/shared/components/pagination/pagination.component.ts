@@ -59,7 +59,7 @@ export class PaginationComponent {
       if (pageNumber > 0) {
         p.setCurrent(pageNumber);
       } else if (pageNumber < 0) {
-        $event.target.value = Math.abs(pageNumber);
+        $event.target.value = (Math.abs(pageNumber)).toString();
 
         if (Math.abs(pageNumber) !== p.getCurrent()) {
           p.setCurrent(Math.abs(pageNumber));
