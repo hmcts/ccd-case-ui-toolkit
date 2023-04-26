@@ -38,7 +38,7 @@
       </li>
     </ul>
   </nav>
-  <div class="ngx-go-to-page">
+  <div class="ngx-go-to-page" *ngIf="!(autoHide && p.pages.length <= 1)">
     <span>Go to page</span>
     <input type="number" (keyup.enter)="goToPage($event, p);$event.target.blur();" (blur)="goToPage($event, p)" (focus)="goToPageInput.select()" class="govuk-input" maxlength="5" min="1" #goToPageInput />
   </div>
