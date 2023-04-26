@@ -65,7 +65,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
     if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
       return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT_EXTERNAL;
     }
-    return '';
+    return CaseFlagCheckYourAnswersPageStep.NONE;
   }
 
   private getFlagTypeHeaderText(): string {
@@ -77,7 +77,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
       this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
       return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT_EXTERNAL;
     }
-    return '';
+    return CaseFlagCheckYourAnswersPageStep.NONE;
   }
 
   private getSummaryListDisplayMode(): number {

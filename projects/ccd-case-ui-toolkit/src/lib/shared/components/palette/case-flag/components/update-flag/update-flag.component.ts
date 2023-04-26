@@ -79,11 +79,12 @@ export class UpdateFlagComponent implements OnInit {
     switch (this.displayContextParameter) {
       case CaseFlagDisplayContextParameter.UPDATE:
         if (flagDetail?.name) {
-          return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}"` : '"'}`;
+          const subTypeValue = flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}` : ''
+          return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${subTypeValue}"`;
         }
         return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE}`;
       case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
-        return CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_SUPPORT;
+        return CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_EXTERNAL;
       default:
         return CaseFlagWizardStepTitle.NONE;
     }
@@ -114,9 +115,7 @@ export class UpdateFlagComponent implements OnInit {
     // is no existing comment then one is not required for validation to pass
     const comment = this.formGroup.get(CaseFlagFormFields.COMMENTS).value;
     if (!comment && (this.flagDetail.flagComment || this.flagDetail.flagComment_cy)) {
-      this.updateFlagNotEnteredErrorMessage = this.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE
-        ? UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED
-        : UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL;
+      this.updateFlagNotEnteredErrorMessage = this.getUpdateFlagNotEnteredErrorMessage();
       this.errorMessages.push({
         title: '',
         description: this.updateFlagNotEnteredErrorMessage,
@@ -152,5 +151,15 @@ export class UpdateFlagComponent implements OnInit {
         fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
       });
     }
+  }
+
+  private getUpdateFlagNotEnteredErrorMessage(): UpdateFlagErrorMessage {
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE) {
+      return UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
+    }
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
+      return UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL;
+    }
+    return UpdateFlagErrorMessage.NONE;
   }
 }

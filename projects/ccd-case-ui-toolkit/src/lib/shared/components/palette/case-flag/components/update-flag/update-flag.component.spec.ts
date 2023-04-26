@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage } from '../../enums';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
 import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
@@ -47,6 +47,17 @@ describe('UpdateFlagComponent', () => {
     hearingRelevant: false,
     flagCode: 'FL4',
     status: 'Not approved'
+  } as FlagDetail;
+  const activeFlagWithSubTypeValue = {
+    name: 'Flag 1',
+    flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'FL1',
+    status: 'Active',
+    subTypeValue: 'Sub Type'
   } as FlagDetail;
   const selectedFlag1 = {
     flagDetailDisplay: {
@@ -94,7 +105,7 @@ describe('UpdateFlagComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagComponent);
     component = fixture.componentInstance;
-    component.displayContextParameter = '#ARGUMENT(UPDATE)';
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag1)
     });
@@ -175,6 +186,53 @@ describe('UpdateFlagComponent', () => {
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
+  });
+
+  it('should show correct error message for support request on clicking "Next" if existing comments have been deleted', () => {
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = 'First flag';
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = null;
+    component.selectedFlag = selectedFlag1;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    fixture.detectChanges();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    // Delete existing flag comments
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    textarea.value = '';
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL,
+      fieldId: CaseFlagFormFields.COMMENTS
+    });
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL);
+  });
+
+  it('should show no error message if displayContextParameter is empty and clicked on "Next" button if existing comments have been deleted', () => {
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = 'First flag';
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = null;
+    component.selectedFlag = selectedFlag1;
+    component.displayContextParameter = '';
+    fixture.detectChanges();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    // Delete existing flag comments
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    textarea.value = '';
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(fixture.debugElement.nativeElement.querySelector('.govuk-error-message')).toBeNull();
   });
 
   it('should show an error message on clicking "Next" if existing comments in Welsh have been deleted', () => {
@@ -438,19 +496,26 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should display correct title based on the display mode', () => {
-    component.displayContextParameter = '#ARGUMENT(UPDATE)';
-    component.setUpdateCaseFlagTitle(activeFlag);
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
+    // component.setUpdateCaseFlagTitle(activeFlag);
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual('Update flag "Flag 1"');
-    component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
-    component.setUpdateCaseFlagTitle(activeFlag);
-    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_SUPPORT);
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    // component.setUpdateCaseFlagTitle(activeFlag);
+    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_EXTERNAL);
     component.displayContextParameter = '';
-    component.setUpdateCaseFlagTitle(activeFlag);
+    // component.setUpdateCaseFlagTitle(activeFlag);
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.NONE);
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
+    // component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValue);
+    expect(component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValue)).toEqual(`${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Sub Type"`);
+    const flag = {} as FlagDetail;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
+    // component.setUpdateCaseFlagTitle(flag);
+    expect(component.setUpdateCaseFlagTitle(flag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE);
   });
 
   it('should display only comments text area for manage support', () => {
-    component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     fixture.detectChanges();
     const commentsTextarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     expect(commentsTextarea).toBeDefined();

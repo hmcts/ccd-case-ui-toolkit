@@ -5,5 +5,6 @@ export enum CaseFlagCheckYourAnswersPageStep {
   UPDATE_FLAG_HEADER_TEXT = 'Update flag for',
   UPDATE_FLAG_HEADER_TEXT_EXTERNAL = 'Update support for',
   FLAG_TYPE_HEADER_TEXT = 'Flag type',
-  FLAG_TYPE_HEADER_TEXT_EXTERNAL = 'Support type'
+  FLAG_TYPE_HEADER_TEXT_EXTERNAL = 'Support type',
+  NONE = ''
 }
