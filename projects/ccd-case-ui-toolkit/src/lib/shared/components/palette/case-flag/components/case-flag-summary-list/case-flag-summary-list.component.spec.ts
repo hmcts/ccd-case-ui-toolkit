@@ -13,7 +13,7 @@ describe('CaseFlagSummaryListComponent', () => {
   const updateFlagHeaderText = 'Update flag for';
   const addFlagHeaderText = 'Add flag to';
 
-  const flag = {
+  const flagDetailDisplay = {
     partyName: 'Rose Bank',
     flagDetail: {
       name: 'Flag 1',
@@ -48,15 +48,15 @@ describe('CaseFlagSummaryListComponent', () => {
   });
 
   it('should display the flag summary for a flag with comments, as part of the Create Case Flag journey', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE;
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(addFlagHeaderText);
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
-    expect(summaryListValues[0].textContent).toContain(flag.partyName);
-    expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
-    expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
+    expect(summaryListValues[0].textContent).toContain(flagDetailDisplay.partyName);
+    expect(summaryListValues[1].textContent).toContain(flagDetailDisplay.flagDetail.name);
+    expect(summaryListValues[2].textContent).toContain(flagDetailDisplay.flagDetail.flagComment);
     // Flag status is not expected to be displayed if the summary page is shown during the Create Case Flag journey
     expect(summaryListValues[3]).toBeUndefined();
   });
@@ -143,17 +143,17 @@ describe('CaseFlagSummaryListComponent', () => {
   });
 
   it('should display the flag summary for a flag with comments, as part of the Manage Case Flags journey', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     fixture.detectChanges();
     const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
     expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateFlagHeaderText);
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
-    expect(summaryListValues[0].textContent).toContain(flag.partyName);
-    expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
-    expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
+    expect(summaryListValues[0].textContent).toContain(flagDetailDisplay.partyName);
+    expect(summaryListValues[1].textContent).toContain(flagDetailDisplay.flagDetail.name);
+    expect(summaryListValues[2].textContent).toContain(flagDetailDisplay.flagDetail.flagComment);
     // Flag status is expected to be displayed if the summary page is shown during the Manage Case Flags journey
-    expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
+    expect(summaryListValues[3].textContent).toContain(flagDetailDisplay.flagDetail.status);
   });
 
   it('should display summary details for Welsh', () => {
@@ -186,70 +186,70 @@ describe('CaseFlagSummaryListComponent', () => {
   });
 
   it('should return correct flag type header text for "CREATE" display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE;
     fixture.detectChanges();
     expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT);
   });
 
   it('should return correct flag type header text for "CREATE EXTERNAL" display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE_EXTERNAL;
     fixture.detectChanges();
     expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT_EXTERNAL);
   });
 
   it('should return correct flag type header text for "UPDATE" display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     fixture.detectChanges();
     expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT);
   });
 
   it('should return correct flag type header text for "UPDATE EXTERNAL" display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     fixture.detectChanges();
     expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT_EXTERNAL);
   });
 
   it('should return correct flag type header text for empty display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = '';
     fixture.detectChanges();
     expect(component.flagTypeHeaderText).toEqual('');
   });
 
   it('should return correct add update flag header text for "CREATE" display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE;
     fixture.detectChanges();
     expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT);
   });
 
   it('should return correct add update flag header text for "CREATE EXTERNAL" display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE_EXTERNAL;
     fixture.detectChanges();
     expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT_EXTERNAL);
   });
 
   it('should return correct add update flag header text for "UPDATE" display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     fixture.detectChanges();
     expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT);
   });
 
   it('should return correct add update flag header text for "UPDATE EXTERNAL" display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     fixture.detectChanges();
     expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT_EXTERNAL);
   });
 
   it('should return correct add update flag header text for empty display context parameter', () => {
-    component.flagForSummaryDisplay = flag;
+    component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = '';
     fixture.detectChanges();
     expect(component.addUpdateFlagHeaderText).toEqual('');
