@@ -96,21 +96,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       this.flagRefdata$ = this.caseFlagRefdataService
         .getCaseFlagsRefdata(this.hmctsServiceId, flagType, false, this.isDisplayContextParameterExternal)
         .subscribe({
-          next: flagTypes => {
-            // First (and only) object in the returned array should be the top-level "Party" flag type
-            this.flagTypes = flagTypes[0].childFlags;
-
-            const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
-            if (formControl?.value) {
-              // Cache Path based on existing flagCode -- needed for nested choices
-              const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
-              this.cachedPath = [
-                ...path,
-                foundFlagType
-              ];
-              formControl.setValue(this.cachedPath[0], { emitEvent: false });
-            }
-          },
+          next: flagTypes => this.setFlagTypesAndFormControl(flagTypes),
           error: error => this.onRefdataError(error)
         });
     } else {
@@ -125,23 +111,25 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
             false, this.isDisplayContextParameterExternal))
         )
         .subscribe({
-          next: flagTypes => {
-            // First (and only) object in the returned array should be the top-level "Party" flag type
-            this.flagTypes = flagTypes[0].childFlags;
-
-            const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
-            if (formControl?.value) {
-              // Cache Path based on existing flagCode -- needed for nested choices
-              const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
-              this.cachedPath = [
-                ...path,
-                foundFlagType
-              ];
-              formControl.setValue(this.cachedPath[0], { emitEvent: false });
-            }
-          },
+          next: flagTypes => this.setFlagTypesAndFormControl(flagTypes),
           error: error => this.onRefdataError(error)
         });
+    }
+  }
+
+  private setFlagTypesAndFormControl(flagTypes: FlagType[]): void {
+    // First (and only) object in the returned array should be the top-level "Party" flag type
+    this.flagTypes = flagTypes[0].childFlags;
+
+    const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
+    if (formControl?.value) {
+      // Cache Path based on existing flagCode -- needed for nested choices
+      const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
+      this.cachedPath = [
+        ...path,
+        foundFlagType
+      ];
+      formControl.setValue(this.cachedPath[0], { emitEvent: false });
     }
   }
 
