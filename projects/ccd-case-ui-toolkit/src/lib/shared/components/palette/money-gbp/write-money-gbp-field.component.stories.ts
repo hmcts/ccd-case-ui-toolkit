@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
-import { MarkdownComponent } from '../markdown/markdown.component';
 import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteUtilsModule } from '../utils/utils.module';
-
 import { MoneyGbpInputComponent } from './money-gbp-input.component';
 import { WriteMoneyGbpFieldComponent } from './write-money-gbp-field.component';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 
 const caseFieldType = createFieldType('money', 'MoneyGBP');
 const caseField = createCaseField('id', 'Money', 'Enter some money', caseFieldType, 'MANDATORY');

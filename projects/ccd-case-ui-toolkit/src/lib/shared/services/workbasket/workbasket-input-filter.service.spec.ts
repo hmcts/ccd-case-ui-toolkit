@@ -9,9 +9,9 @@ import createSpyObj = jasmine.createSpyObj;
 
 describe('WorkbasketInputFilterService', () => {
   const API_DATA_URL = 'http://data.ccd.reform/aggregated';
-  const JurisdictionId = 'PROBATE';
-  const CaseTypeId = 'TestAddressBookCase';
-  const CASE_TYPES_URL = API_DATA_URL + `/internal/case-types/${CaseTypeId}/work-basket-inputs`;
+  const JURISDICTION_ID = 'PROBATE';
+  const CASE_TYPE_ID = 'TestAddressBookCase';
+  const CASE_TYPES_URL = `${API_DATA_URL}/internal/case-types/${CASE_TYPE_ID}/work-basket-inputs`;
   let appConfig: any;
   let httpService: any;
   let workbasketInputFilterService: WorkbasketInputFilterService;
@@ -32,7 +32,7 @@ describe('WorkbasketInputFilterService', () => {
 
     it('should use HttpService::get with correct url', waitForAsync(() => {
       workbasketInputFilterService
-        .getWorkbasketInputs(JurisdictionId, CaseTypeId)
+        .getWorkbasketInputs(JURISDICTION_ID, CASE_TYPE_ID)
         .subscribe()
         .add(() => {
           expect(httpService.get).toHaveBeenCalledWith(CASE_TYPES_URL, {
@@ -47,9 +47,9 @@ describe('WorkbasketInputFilterService', () => {
 
     it('should retrieve workbasketInput array from server', waitForAsync(() => {
       workbasketInputFilterService
-        .getWorkbasketInputs(JurisdictionId, CaseTypeId)
+        .getWorkbasketInputs(JURISDICTION_ID, CASE_TYPE_ID)
         .subscribe(workbasketInputs => {
-          expect(workbasketInputs).toEqual(createWorkbasketInputs())
+          expect(workbasketInputs).toEqual(createWorkbasketInputs());
         });
     }));
 

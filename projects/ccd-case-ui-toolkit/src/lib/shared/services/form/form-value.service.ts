@@ -526,7 +526,7 @@ export class FormValueService {
                 }
               });
             }
-        };
+        }
       });
     }
   }

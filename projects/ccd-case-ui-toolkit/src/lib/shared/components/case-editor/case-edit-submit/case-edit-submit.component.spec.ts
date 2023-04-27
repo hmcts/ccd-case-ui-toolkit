@@ -13,8 +13,8 @@ import { aCaseField, createCaseField, createFieldType, createMultiSelectListFiel
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { CcdCaseTitlePipe } from '../../../pipes/case-title/ccd-case-title.pipe';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
+import { CcdPageFieldsPipe } from '../../../pipes/complex/ccd-page-fields.pipe';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
-import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import {
   CaseFieldService,
@@ -666,7 +666,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -810,7 +809,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1023,7 +1021,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1170,7 +1167,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1304,7 +1300,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1451,7 +1446,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1588,7 +1582,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1737,8 +1730,8 @@ describe('CaseEditSubmitComponent', () => {
 
     it('should check for callback error context', () => {
       const callbackErrorsContext = new CallbackErrorsContext();
-      callbackErrorsContext.ignore_warning = true;
-      callbackErrorsContext.trigger_text = 'test';
+      callbackErrorsContext.ignoreWarning = true;
+      callbackErrorsContext.triggerText = 'test';
       comp.callbackErrorsNotify(callbackErrorsContext);
       expect(comp.ignoreWarning).toBe(true);
       expect(comp.triggerText).toBe('test');
@@ -1784,7 +1777,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -1924,7 +1916,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2058,7 +2049,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2201,7 +2191,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2336,7 +2325,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2499,7 +2487,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2647,7 +2634,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2787,7 +2773,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -2938,7 +2923,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3075,7 +3059,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3222,7 +3205,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3368,7 +3350,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3520,7 +3501,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3668,7 +3648,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3831,7 +3810,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -3989,7 +3967,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -4142,7 +4119,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -4345,7 +4321,7 @@ describe('CaseEditSubmitComponent', () => {
     beforeEach(waitForAsync(() => {
       orderService = new OrderService();
       casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
-      cancelled = createSpyObj(cancelled, ['emit'])
+      cancelled = createSpyObj(cancelled, ['emit']);
       caseEditComponent = {
         form: new FormGroup({
           data: new FormGroup({
