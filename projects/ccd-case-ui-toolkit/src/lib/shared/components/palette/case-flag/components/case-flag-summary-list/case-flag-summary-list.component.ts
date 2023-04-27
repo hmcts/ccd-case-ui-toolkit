@@ -53,31 +53,31 @@ export class CaseFlagSummaryListComponent implements OnInit {
   }
 
   private getAddUpdateFlagHeaderText(): string {
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE) {
-      return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT;
+    switch(this.displayContextParameter) {
+      case CaseFlagDisplayContextParameter.CREATE:
+        return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT;
+      case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
+        return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT_EXTERNAL;
+      case CaseFlagDisplayContextParameter.UPDATE:
+        return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT;
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
+        return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT_EXTERNAL;
+      default:
+        CaseFlagCheckYourAnswersPageStep.NONE;
     }
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) {
-      return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT_EXTERNAL;
-    }
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE) {
-      return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT;
-    }
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
-      return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT_EXTERNAL;
-    }
-    return CaseFlagCheckYourAnswersPageStep.NONE;
   }
 
   private getFlagTypeHeaderText(): string {
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE ||
-      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE) {
-      return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT;
+    switch(this.displayContextParameter) {
+      case CaseFlagDisplayContextParameter.CREATE:
+      case CaseFlagDisplayContextParameter.UPDATE:
+        return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT;
+      case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
+        return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT_EXTERNAL;
+      default:
+        return CaseFlagCheckYourAnswersPageStep.NONE;
     }
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
-      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
-      return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT_EXTERNAL;
-    }
-    return CaseFlagCheckYourAnswersPageStep.NONE;
   }
 
   private getSummaryListDisplayMode(): number {

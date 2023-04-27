@@ -497,20 +497,15 @@ describe('UpdateFlagComponent', () => {
 
   it('should display correct title based on the display mode', () => {
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
-    // component.setUpdateCaseFlagTitle(activeFlag);
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual('Update flag "Flag 1"');
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
-    // component.setUpdateCaseFlagTitle(activeFlag);
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_EXTERNAL);
     component.displayContextParameter = '';
-    // component.setUpdateCaseFlagTitle(activeFlag);
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.NONE);
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
-    // component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValue);
     expect(component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValue)).toEqual(`${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Sub Type"`);
     const flag = {} as FlagDetail;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
-    // component.setUpdateCaseFlagTitle(flag);
     expect(component.setUpdateCaseFlagTitle(flag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE);
   });
 

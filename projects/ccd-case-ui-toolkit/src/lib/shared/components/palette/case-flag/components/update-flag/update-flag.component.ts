@@ -154,12 +154,13 @@ export class UpdateFlagComponent implements OnInit {
   }
 
   private getUpdateFlagNotEnteredErrorMessage(): UpdateFlagErrorMessage {
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE) {
-      return UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
+    switch(this.displayContextParameter) {
+      case CaseFlagDisplayContextParameter.UPDATE:
+        return UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
+        return UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL;
+      default:
+        return UpdateFlagErrorMessage.NONE;
     }
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
-      return UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL;
-    }
-    return UpdateFlagErrorMessage.NONE;
   }
 }
