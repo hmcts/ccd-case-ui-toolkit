@@ -2,6 +2,9 @@
 ### Version 6.13.11-welsh-release-v4
 **EUI-5497** Welsh release part 1
 
+### Version 6.13.10-linked-cases-continue-button-validation-v6
+**EUI-8025** Linked cases continue button validation
+
 ### Version 6.13.10-rc1
 **EUI-5298** Release 6.13.10 including 6.13.0, linked cases (EUI-7676) and case file view fix (EUI-7417)
 
@@ -25,6 +28,9 @@
 
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
+
+### Version 6.14.1--fee-pay-props
+**EUI-7489** Added additional props to nested ccpay instance
 
 ### Version 5.0.50-case-file-view-restrict-document-move
 **EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
