@@ -684,6 +684,7 @@ describe('WriteCollectionFieldComponent', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -785,6 +786,7 @@ describe('WriteCollectionFieldComponent', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent
         ],

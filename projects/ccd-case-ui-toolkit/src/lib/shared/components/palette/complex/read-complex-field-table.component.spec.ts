@@ -150,7 +150,7 @@ describe('ReadComplexFieldTableComponent', () => {
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
             // Mocks
-            MockRpxTranslatePipe
+            MockRpxTranslatePipe,
             fieldReadComponentMock
           ],
           providers: [
