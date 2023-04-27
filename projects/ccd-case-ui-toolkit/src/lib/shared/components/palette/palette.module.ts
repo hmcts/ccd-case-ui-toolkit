@@ -15,7 +15,6 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
-import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
@@ -33,25 +32,24 @@ import { WindowService } from '../../services/window';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view';
-import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { CaseFileViewFolderSelectorComponent } from './case-file-view/components/case-file-view-folder-selector/case-file-view-folder-selector.component';
 import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import {
-  AddCommentsComponent,
-  CaseFlagSummaryListComponent,
-  CaseFlagTableComponent,
-  ConfirmFlagStatusComponent,
-  ManageCaseFlagsComponent,
-  ReadCaseFlagFieldComponent,
-  SearchLanguageInterpreterComponent,
-  SelectFlagLocationComponent,
-  SelectFlagTypeComponent,
-  UpdateFlagComponent,
-  UpdateFlagAddTranslationFormComponent,
-  WriteCaseFlagFieldComponent
+	AddCommentsComponent,
+	CaseFlagSummaryListComponent,
+	CaseFlagTableComponent,
+	ConfirmFlagStatusComponent,
+	ManageCaseFlagsComponent,
+	ReadCaseFlagFieldComponent,
+	SearchLanguageInterpreterComponent,
+	SelectFlagLocationComponent,
+	SelectFlagTypeComponent,
+	UpdateFlagAddTranslationFormComponent,
+	UpdateFlagComponent,
+	WriteCaseFlagFieldComponent
 } from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
@@ -64,9 +62,10 @@ import { DocumentUrlPipe } from './document';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
-import { WriteDocumentFieldComponent } from './document/write-document-field.component'
+import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { DynamicListPipe, ReadDynamicListFieldComponent } from './dynamic-list';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { DynamicRadioListPipe, ReadDynamicRadioListFieldComponent } from './dynamic-radio-list';
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
@@ -92,6 +91,7 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -149,6 +149,8 @@ const PALETTE_COMPONENTS = [
   WriteDocumentFieldComponent,
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
+  WriteDynamicMultiSelectListFieldComponent,
+  ReadDynamicMultiSelectListFieldComponent,
   WriteTextFieldComponent,
   WriteDateContainerFieldComponent,
   WriteTextAreaFieldComponent,
@@ -174,23 +176,18 @@ const PALETTE_COMPONENTS = [
 
   // ComponentLauncher web components
   CaseFileViewFieldComponent,
-  CaseFileViewFieldReadComponent,
   CaseFileViewFolderComponent,
   CaseFileViewFolderSortComponent,
   CaseFileViewOverlayMenuComponent,
   CaseFileViewFolderDocumentActionsComponent,
   CaseFileViewFolderSelectorComponent,
-
-  CaseFlagTableComponent,
-  SelectFlagTypeComponent,
-  SearchLanguageInterpreterComponent,
-  SelectFlagLocationComponent,
-  ManageCaseFlagsComponent,
-  AddCommentsComponent,
-  UpdateFlagComponent,
-  CaseFlagSummaryListComponent,
-  ConfirmFlagStatusComponent,
-  UpdateFlagAddTranslationFormComponent,
+  // component for dynamic list
+  WriteDynamicMultiSelectListFieldComponent,
+  WriteDynamicRadioListFieldComponent,
+  WriteDynamicListFieldComponent,
+  ReadDynamicMultiSelectListFieldComponent,
+  ReadDynamicListFieldComponent,
+  ReadDynamicRadioListFieldComponent,
   LinkedCasesToTableComponent,
   LinkedCasesFromTableComponent,
   BeforeYouStartComponent,
@@ -239,7 +236,18 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
-    ...PALETTE_COMPONENTS,
+
+    CaseFlagTableComponent,
+    SelectFlagTypeComponent,
+    SearchLanguageInterpreterComponent,
+    SelectFlagLocationComponent,
+    ManageCaseFlagsComponent,
+    AddCommentsComponent,
+    UpdateFlagComponent,
+    UpdateFlagAddTranslationFormComponent,
+    CaseFlagSummaryListComponent,
+    ConfirmFlagStatusComponent,
+    ...PALETTE_COMPONENTS
   ],
   exports: [
     NgxMatDatetimePickerModule,

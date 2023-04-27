@@ -12,7 +12,6 @@ import { ReadOrderSummaryFieldComponent } from './read-order-summary-field.compo
 import { ReadOrderSummaryRowComponent } from './read-order-summary-row.component';
 
 describe('ReadOrderSummaryFieldComponent', () => {
-
   const FIELD_TYPE: FieldType = {
     id: 'PersonOrderSummary',
     type: 'Complex'
@@ -111,9 +110,9 @@ describe('ReadOrderSummaryFieldComponent', () => {
 
         for (let i = 1; i <= VALUE.Fees.length; i++) {
 
-          const feeCode = text(de.query(By.css('table>tbody tr:nth-child(' + i + ') td:nth-child(1)')));
-          const feeDescription = text(de.query(By.css('table>tbody tr:nth-child(' + i + ') td:nth-child(2)')));
-          const feeAmount = text(de.query(By.css('table>tbody tr:nth-child(' + i + ') td:nth-child(3)')));
+          const feeCode = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(1)`)));
+          const feeDescription = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(2)`)));
+          const feeAmount = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(3)`)));
 
           expect(feeCode).toBe(VALUE.Fees[i - 1].value.FeeCode);
           expect(feeDescription).toBe(VALUE.Fees[i - 1].value.FeeDescription);

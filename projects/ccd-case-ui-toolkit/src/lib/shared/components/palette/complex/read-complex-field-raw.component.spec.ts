@@ -68,20 +68,19 @@ const expectContext = (de, expectedContext) => {
 };
 
 describe('ReadComplexFieldRawComponent', () => {
-
   const $COMPLEX_LIST = By.css('dl.complex-raw');
   const $COMPLEX_LIST_ITEMS = By.css('dl.complex-raw>dd');
   const $COMPLEX_LIST_LABELS = By.css('dl.complex-raw>dt');
   const $COMPLEX_LIST_VALUES = By.css('dl.complex-raw>dd>ccd-field-read');
 
-  let FieldReadComponent;
+  let fieldReadComponentMock;
 
   let fixture: ComponentFixture<ReadComplexFieldRawComponent>;
   let component: ReadComplexFieldRawComponent;
   let de: DebugElement;
 
   beforeEach(() => {
-    FieldReadComponent = MockComponent({
+    fieldReadComponentMock = MockComponent({
       selector: 'ccd-field-read',
       inputs: ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
     });
@@ -136,7 +135,7 @@ describe('ReadComplexFieldRawComponent', () => {
       }) as CaseField);
 
       const test = initTests(caseField, [
-        FieldReadComponent
+        fieldReadComponentMock
       ]);
       de = test.de;
       fixture = test.fixture;
@@ -180,7 +179,6 @@ describe('ReadComplexFieldRawComponent', () => {
       expectContext(complexListValues[1], PaletteContext.CHECK_YOUR_ANSWER);
       expectContext(complexListValues[2], PaletteContext.CHECK_YOUR_ANSWER);
     });
-
   });
 
   describe('when empty values split across children fields', () => {
@@ -232,7 +230,7 @@ describe('ReadComplexFieldRawComponent', () => {
       }) as CaseField);
 
       const test = initTests(caseField, [
-        FieldReadComponent
+        fieldReadComponentMock
       ]);
       de = test.de;
       fixture = test.fixture;
@@ -246,7 +244,6 @@ describe('ReadComplexFieldRawComponent', () => {
       expectCaseFieldPartial(complexListValues[0], FIELD_TYPE_WITH_MISSING_VALUE.complex_fields[0]);
       expectCaseFieldPartial(complexListValues[1], FIELD_TYPE_WITH_MISSING_VALUE.complex_fields[2]);
     });
-
   });
 
   describe('when simple values as object on root field', () => {
@@ -300,7 +297,7 @@ describe('ReadComplexFieldRawComponent', () => {
       }) as CaseField);
 
       const test = initTests(caseField, [
-        FieldReadComponent
+        fieldReadComponentMock
       ]);
       de = test.de;
       fixture = test.fixture;
@@ -333,7 +330,6 @@ describe('ReadComplexFieldRawComponent', () => {
         }
       ));
     });
-
   });
 
   describe('when empty values as object on root field', () => {
@@ -386,7 +382,7 @@ describe('ReadComplexFieldRawComponent', () => {
       }) as CaseField);
 
       const test = initTests(caseField, [
-        FieldReadComponent
+        fieldReadComponentMock
       ]);
       de = test.de;
       fixture = test.fixture;
@@ -412,7 +408,5 @@ describe('ReadComplexFieldRawComponent', () => {
         }
       ));
     });
-
   });
-
 });

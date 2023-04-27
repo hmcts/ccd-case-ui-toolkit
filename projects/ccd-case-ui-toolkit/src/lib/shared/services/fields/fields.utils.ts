@@ -13,7 +13,6 @@ import { FormatTranslatorService } from '../case-fields/format-translator.servic
 // @dynamic
 @Injectable()
 export class FieldsUtils {
-
   private static readonly caseLevelCaseFlagsFieldId = 'caseFlags';
   private static readonly currencyPipe: CurrencyPipe = new CurrencyPipe('en-GB');
   private static readonly datePipe: DatePipe = new DatePipe(new FormatTranslatorService());
@@ -39,9 +38,9 @@ export class FieldsUtils {
     return valueMap;
   }
 
-  public static getType(elem: any): string {
-    return Object.prototype.toString.call(elem).slice(8, -1);
-  }
+  // public static getType(elem: any): string {
+  //   return Object.prototype.toString.call(elem).slice(8, -1);
+  // }
 
   public static isObject(elem: any): boolean {
     return typeof elem === 'object' && elem !== null;
@@ -133,8 +132,7 @@ export class FieldsUtils {
    *
    * @param jsonBody - { case_fields: [ CaseField, CaseField ] }
    */
-   public static handleNestedDynamicLists(jsonBody: { case_fields: CaseField[] }): any {
-
+  public static handleNestedDynamicLists(jsonBody: { case_fields: CaseField[] }): any {
     if (jsonBody.case_fields) {
       jsonBody.case_fields.forEach(caseField => {
         if (caseField.field_type) {
@@ -166,7 +164,7 @@ export class FieldsUtils {
 
   private static readonly LABEL_MERGE_FUNCTION = function mergeFunction(field: CaseField, result: object): void {
     if (!result) {
-      result = {}
+      result = {};
     }
     if (!result.hasOwnProperty(field.id)) {
       result[field.id] = field.value;
@@ -215,6 +213,7 @@ export class FieldsUtils {
         const elements = (result[field.id] || field.value);
         if (elements) {
           elements.forEach((elem: any) => {
+            // tslint:disable-next-line:switch-default
             switch (field.field_type.collection_field_type.type) {
               case 'MoneyGBP': {
                 elem.value = FieldsUtils.getMoneyGBP(elem.value);
@@ -316,7 +315,6 @@ export class FieldsUtils {
   }
 
   private static getDynamicListValue(jsonBlock: any, key: string) {
-
     const data = jsonBlock ? this.getNestedFieldValues(jsonBlock, key, []) : [];
 
     return data.length > 0 ? data : null;
@@ -372,6 +370,15 @@ export class FieldsUtils {
     }
 
     return caseField.field_type.type === 'ComponentLauncher';
+  }
+
+  public static isLinkedCasesCaseField(caseField: CaseField): boolean {
+    return FieldsUtils.isComponentLauncherCaseField(caseField) &&
+      caseField.id === 'LinkedCasesComponentLauncher';
+  }
+
+  public static containsLinkedCasesCaseField(caseFields: CaseField[]): boolean {
+    return caseFields?.some(caseField => FieldsUtils.isLinkedCasesCaseField(caseField));
   }
 
   public static isFlagsFieldType(fieldType: FieldType): boolean {

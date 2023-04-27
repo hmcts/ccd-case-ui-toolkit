@@ -169,7 +169,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   public addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    const item = { value: null };
+    let item = { value: null };
+
+    if ( this.isCollectionDynamic() ) {
+      item  = {...this.caseField.value[this.caseField.value.length - 1]};
+      const key: number = Number(item['id'][item['id'].length - 1]) + 1;
+      (item as any).id = item['id'].replace(/.$/, key.toString() );
+    }
     this.caseField.value.push(item);
     const index = this.caseField.value.length - 1;
     const caseField: CaseField = this.buildCaseField(item, index, true);
@@ -191,6 +197,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     } else {
       setTimeout(() => this.focusLastItem());
     }
+  }
+
+  private isCollectionDynamic(): boolean {
+    if (!this.caseField.field_type || !this.caseField.field_type.collection_field_type) {
+      return false;
+    }
+    return this.caseField.field_type.collection_field_type.id === 'DynamicRadioList';
   }
 
   private newCaseField(id: string, item, index, isNew = false) {
@@ -250,19 +263,18 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         this.collItems[i].caseField.id = i.toString();
       }
 
-      const idPrefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
-      const idPrefix1Current = idPrefix1.replace('_' + i.toString(), '_' + counter.toString());
+      const idPrefix1 = this.collItems[i].prefix ? this.collItems[i].prefix.replace(`_${counter.toString()}`, `_${i.toString()}`) : '';
+      const idPrefix1Current = idPrefix1.replace(`_${i.toString()}`, `_${counter.toString()}`);
 
       if (this.collItems[i].prefix && this.collItems[i].prefix === idPrefix1Current) {
         this.collItems[i].prefix = idPrefix1;
       }
 
-      const idPrefixAvailable = this.collItems[i].container && this.collItems[i].container['component']
-        && this.collItems[i].container['component'].idPrefix ? true : false;
+      const idPrefixAvailable = !!this.collItems[i].container?.['component']?.idPrefix;
 
       const idPrefix2 = idPrefixAvailable ?
-        this.collItems[i].container['component'].idPrefix.replace('_' + counter.toString(), '_' + i.toString()) : '';
-      const idPrefix2current = idPrefix2.replace('_' + i.toString(), '_' + counter.toString());
+        this.collItems[i].container['component'].idPrefix.replace(`_${counter.toString()}`, `_${i.toString()}`) : '';
+      const idPrefix2current = idPrefix2.replace(`_${i.toString()}`, `_${counter.toString()}`);
 
       if (idPrefixAvailable && this.collItems[i].container['component'].idPrefix === idPrefix2current) {
         this.collItems[i].container['component'].idPrefix = idPrefix2;

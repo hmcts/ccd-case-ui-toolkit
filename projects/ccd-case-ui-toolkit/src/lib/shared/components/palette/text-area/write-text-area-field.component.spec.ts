@@ -26,11 +26,10 @@ const CASE_FIELD: CaseField = ({
 const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WriteTextAreaFieldComponent', () => {
-
   const $INPUT = By.css('.form-group textarea');
 
   // Textarea input is mocked so that one-way bound inputs can be tested
-  const Textarea: any = MockComponent({ selector: 'textarea', inputs: [
+  const textareaComponentMock: any = MockComponent({ selector: 'textarea', inputs: [
     'formControl'
   ]});
 
@@ -47,9 +46,9 @@ describe('WriteTextAreaFieldComponent', () => {
         ],
         declarations: [
           WriteTextAreaFieldComponent,
+          // Mocks
           MockRpxTranslatePipe,
-          // Mock
-          Textarea,
+          textareaComponentMock
         ],
         providers: []
       })
@@ -75,7 +74,6 @@ describe('WriteTextAreaFieldComponent', () => {
 
   it('should render text input element linked to formControl', () => {
     const input = de.query($INPUT);
-
     expect(input.componentInstance.formControl).toEqual(component.textareaControl);
   });
 });
