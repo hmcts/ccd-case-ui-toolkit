@@ -63,7 +63,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
       case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
         return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT_EXTERNAL;
       default:
-        CaseFlagCheckYourAnswersPageStep.NONE;
+        return CaseFlagCheckYourAnswersPageStep.NONE;
     }
   }
 
