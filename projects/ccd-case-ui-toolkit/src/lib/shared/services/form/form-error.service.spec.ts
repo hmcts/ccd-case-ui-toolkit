@@ -2,7 +2,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FormErrorService } from './form-error.service';
 
 describe('FormErrorService', () => {
-
   const FIELD_1 = 'Field1';
   const FIELD_2 = 'Field2';
   const FIELD_3 = 'Field3';
@@ -116,7 +115,7 @@ describe('FormErrorService', () => {
     it('should ignore nested errors for unknown fields', () => {
       const errors = [
         {
-          id: FIELD_1 + '.' + FIELD_3,
+          id: `${FIELD_1}.${FIELD_3}`,
           message: MESSAGE_1
         }
       ];
@@ -138,7 +137,7 @@ describe('FormErrorService', () => {
     it('should ignore nested errors for unknown group', () => {
       const errors = [
         {
-          id: FIELD_3 + '.' + FIELD_3 + '.' + FIELD_3,
+          id: `${FIELD_3}.${FIELD_3}.${FIELD_3}`,
           message: MESSAGE_1
         }
       ];
@@ -182,7 +181,6 @@ describe('FormErrorService', () => {
 
       expect(form.controls[FIELD_1].errors).toBeNull();
       expect(field3.errors).toBeNull();
-
     });
   });
 });

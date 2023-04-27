@@ -2,7 +2,6 @@ import { Injectable, Type } from '@angular/core';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { DisplayContextCustomParameter, DisplayContextParameter } from '../../domain/definition/display-context-enum.model';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
-import { CaseFileViewFieldReadComponent } from './case-file-view/case-file-view-field-read.component';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
 import { ReadCaseFlagFieldComponent } from './case-flag/read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './case-flag/write-case-flag-field.component';
@@ -18,6 +17,7 @@ import { ReadDocumentFieldComponent } from './document/read-document-field.compo
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { ReadDynamicListFieldComponent } from './dynamic-list/read-dynamic-list-field.component';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { ReadDynamicRadioListFieldComponent } from './dynamic-radio-list/read-dynamic-radio-list-field.component';
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { ReadEmailFieldComponent } from './email/read-email-field.component';
@@ -56,7 +56,7 @@ import { WriteYesNoFieldComponent } from './yes-no/write-yes-no-field.component'
 @Injectable()
 export class PaletteService {
   private readonly componentLauncherRegistry = {
-    [DisplayContextCustomParameter.CaseFileView]: [CaseFileViewFieldComponent, CaseFileViewFieldReadComponent],
+    [DisplayContextCustomParameter.CaseFileView]: [CaseFileViewFieldComponent, CaseFileViewFieldComponent],
     [DisplayContextCustomParameter.LinkedCases]: [WriteLinkedCasesFieldComponent, ReadLinkedCasesFieldComponent]
   };
 
@@ -86,6 +86,8 @@ export class PaletteService {
         return write ? WriteFixedListFieldComponent : ReadFixedListFieldComponent;
       case 'DynamicRadioList':
         return write ? WriteDynamicRadioListFieldComponent : ReadDynamicRadioListFieldComponent;
+      case 'DynamicMultiSelectList':
+          return write ? WriteDynamicMultiSelectListFieldComponent : ReadDynamicMultiSelectListFieldComponent;
       case 'FixedRadioList':
         return write ? WriteFixedRadioListFieldComponent : ReadFixedRadioListFieldComponent;
       case 'Complex':

@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { Expose, Type } from 'class-transformer';
 import * as _ from 'underscore';
 import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
@@ -38,8 +39,10 @@ export class CaseField implements Orderable {
 
   @Expose()
   public get value(): any {
-    if (this.isDynamic()) {
+    if (this.field_type && (this.field_type.type === 'DynamicList' || this.field_type.type === 'DynamicRadioList')) {
       return this._value && this._value.value ? this._value.value.code : this._value;
+    } else if (this.field_type && this.field_type.type === 'DynamicMultiSelectList') {
+      return this._value && this._value.value ? this._value.value : this._value;
     } else {
       return this._value;
     }
@@ -135,7 +138,7 @@ export class CaseField implements Orderable {
 
   @Expose()
   public isDynamic(): boolean {
-    const dynamicFieldTypes: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
+    const dynamicFieldTypes: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList', 'DynamicMultiSelectList'];
 
     if (!this.field_type) {
       return false;

@@ -20,27 +20,32 @@ export const textFieldType = (): FieldType => {
 
 export const createCaseEventTrigger = (id: string,
                                        name: string,
-                                       case_id: string,
-                                       show_summary: boolean,
-                                       case_fields: CaseField[],
-                                       wizard_pages = [],
-                                       can_save_draft = false): CaseEventTrigger => {
+                                       caseId: string,
+                                       showSummary: boolean,
+                                       caseFields: CaseField[],
+                                       wizardPages = [],
+                                       canSaveDraft = false): CaseEventTrigger => {
   const eventTrigger = new CaseEventTrigger();
 
   eventTrigger.id = id;
   eventTrigger.name = name;
-  eventTrigger.case_id = case_id;
-  eventTrigger.show_summary = show_summary;
-  eventTrigger.wizard_pages = wizard_pages;
+  eventTrigger.case_id = caseId;
+  eventTrigger.show_summary = showSummary;
+  eventTrigger.wizard_pages = wizardPages;
   eventTrigger.event_token = 'test-token';
-  eventTrigger.case_fields = case_fields;
-  eventTrigger.can_save_draft = can_save_draft;
+  eventTrigger.case_fields = caseFields;
+  eventTrigger.can_save_draft = canSaveDraft;
   return eventTrigger;
 };
 
-export const aCaseField = (id: string, label: string, type: FieldTypeEnum, display_context: string,
-                           show_summary_content_option: number, typeComplexFields: CaseField[] = [],
-                           retain_hidden_value?: boolean, hidden?: boolean): CaseField => {
+export const aCaseField = (id: string,
+                           label: string,
+                           type: FieldTypeEnum,
+                           displayContext: string,
+                           showSummaryContentOption: number,
+                           typeComplexFields: CaseField[] = [],
+                           retainHiddenValue?: boolean,
+                           hidden?: boolean): CaseField => {
   return ({
     id: id || 'personFirstName',
     field_type: {
@@ -48,11 +53,10 @@ export const aCaseField = (id: string, label: string, type: FieldTypeEnum, displ
       type: type || 'Text',
       complex_fields: typeComplexFields || []
     },
-    display_context: display_context || 'OPTIONAL',
-    display_context_parameter: display_context || 'OPTIONAL',
+    display_context: displayContext || 'OPTIONAL',
     label: label || 'First name',
-    show_summary_content_option,
-    retain_hidden_value: retain_hidden_value || false,
+    show_summary_content_option: showSummaryContentOption,
+    retain_hidden_value: retainHiddenValue || false,
     hidden: hidden || false
   }) as CaseField;
 };
@@ -113,21 +117,21 @@ export const createCaseField = (id: string,
                                 label: string,
                                 hint: string,
                                 fieldType: FieldType,
-                                display_context: string,
+                                displayContext: string,
                                 order = undefined,
-                                show_condition = undefined,
-                                ACLs: AccessControlList[] = undefined,
+                                showCondition = undefined,
+                                acls: AccessControlList[] = undefined,
                                 hidden?: boolean): CaseField => {
   return CaseFieldBuilder.create()
     .withId(id || 'personFirstName')
     .withFieldType(fieldType || textFieldType())
-    .withDisplayContext(display_context || 'OPTIONAL')
+    .withDisplayContext(displayContext || 'OPTIONAL')
     .withLabel(label || 'First name')
     .withHintText(hint || 'First name hint text')
     .withShowSummaryContentOption(0)
     .withOrder(order)
-    .withShowCondition(show_condition || undefined)
-    .withACLs(ACLs)
+    .withShowCondition(showCondition || undefined)
+    .withACLs(acls)
     .withHidden(hidden || false)
     .build();
 };
@@ -136,12 +140,12 @@ export const newCaseField = (id: string,
                              label: string,
                              hint: string,
                              fieldType: FieldType,
-                             display_context: string,
+                             displayContext: string,
                              order = undefined): CaseFieldBuilder => {
   return CaseFieldBuilder.create()
     .withId(id || 'personFirstName')
     .withFieldType(fieldType || textFieldType())
-    .withDisplayContext(display_context || 'OPTIONAL')
+    .withDisplayContext(displayContext || 'OPTIONAL')
     .withHintText(hint || 'First name hint text')
     .withLabel(label || 'First name')
     .withOrder(order)
@@ -150,20 +154,20 @@ export const newCaseField = (id: string,
 
 export const createFieldType = (typeId: string,
                                 type: FieldTypeEnum,
-                                complex_fields: CaseField[] = [],
-                                collection_field_type: FieldType = undefined): FieldType => {
+                                complexFields: CaseField[] = [],
+                                collectionFieldType: FieldType = undefined): FieldType => {
   return {
     id: typeId || 'Text',
     type: type || 'Text',
-    complex_fields: complex_fields || [],
-    collection_field_type: collection_field_type || undefined
+    complex_fields: complexFields || [],
+    collection_field_type: collectionFieldType || undefined
   };
 };
 
 export const createFixedListFieldType = (typeId: string,
                                          fixedListItems: FixedListItem[] = []): FieldType => {
   return {
-    id: 'FixedList-' + typeId,
+    id: `FixedList-${typeId}`,
     type: 'FixedList',
     fixed_list_items: fixedListItems || []
   };
@@ -172,18 +176,22 @@ export const createFixedListFieldType = (typeId: string,
 export const createMultiSelectListFieldType = (typeId: string,
                                                fixedListItems: FixedListItem[] = []): FieldType => {
   return {
-    id: 'MultiSelectList-' + typeId,
+    id: `MultiSelectList-${typeId}`,
     type: 'MultiSelectList',
     fixed_list_items: fixedListItems || []
   };
 };
 
-export const createACL = (role: string, create: boolean, read: boolean, update: boolean, _delete: boolean): AccessControlList => {
+export const createACL = (role: string,
+                          aclCreate: boolean,
+                          aclRead: boolean,
+                          aclUpdate: boolean,
+                          aclDelete: boolean): AccessControlList => {
   return ({
     role: role || 'roleX',
-    create,
-    read,
-    update,
-    delete: _delete
+    create: aclCreate,
+    read: aclRead,
+    update: aclUpdate,
+    delete: aclDelete
   }) as AccessControlList;
 };

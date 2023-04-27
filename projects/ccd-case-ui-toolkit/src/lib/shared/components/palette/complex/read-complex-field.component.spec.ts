@@ -14,30 +14,28 @@ import { ReadComplexFieldComponent } from './read-complex-field.component';
 const inputs: string[] = ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix'];
 
 describe('ReadComplexFieldComponent', () => {
-
-  let ReadComplexFieldRawComponent;
-  let ReadComplexFieldTableComponent;
-  let ReadComplexFieldNewTableComponent;
+  let readComplexFieldRawComponentMock;
+  let readComplexFieldTableComponentMock;
+  let readComplexFieldNewTableComponentMock;
 
   function setupComponents() {
-    ReadComplexFieldRawComponent = MockComponent({
+    readComplexFieldRawComponentMock = MockComponent({
       selector: 'ccd-read-complex-field-raw',
       inputs
     });
 
-    ReadComplexFieldTableComponent = MockComponent({
+    readComplexFieldTableComponentMock = MockComponent({
       selector: 'ccd-read-complex-field-table',
       inputs
     });
 
-    ReadComplexFieldNewTableComponent = MockComponent({
+    readComplexFieldNewTableComponentMock = MockComponent({
       selector: 'ccd-read-complex-field-collection-table',
       inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
     });
   }
 
   describe('Non-persistable readonly complex field', () => {
-
     describe('when context is DEFAULT or CHECK_YOUR_ANSWER', () => {
       const $COMPLEX_AS_TABLE = By.css('ccd-read-complex-field-table');
       const $COMPLEX_AS_COLLECTION_TABLE = By.css('ccd-read-complex-field-collection-table');
@@ -84,10 +82,10 @@ describe('ReadComplexFieldComponent', () => {
               ReadComplexFieldComponent,
               FieldsFilterPipe,
 
-              // Mock
-              ReadComplexFieldRawComponent,
-              ReadComplexFieldTableComponent,
-              ReadComplexFieldNewTableComponent,
+              // Mocks
+              readComplexFieldRawComponentMock,
+              readComplexFieldTableComponentMock,
+              readComplexFieldNewTableComponentMock
             ],
             providers: []
           })
@@ -142,7 +140,7 @@ describe('ReadComplexFieldComponent', () => {
       let fixture: ComponentFixture<ReadComplexFieldComponent>;
       let component: ReadComplexFieldComponent;
       let de: DebugElement;
-      const caseField_dsp: CaseField = new CaseField();
+      const caseFieldDsp: CaseField = new CaseField();
       const FORM_GROUP: FormGroup = new FormGroup({});
 
       const expectCollectionTable = () => {
@@ -151,11 +149,11 @@ describe('ReadComplexFieldComponent', () => {
         expect(de.query($COMPLEX_AS_COLLECTION_TABLE)).toBeTruthy();
       };
       const expectInputs = (componentInstance, expectedContext) => {
-        expect(componentInstance.caseField).toBe(caseField_dsp);
+        expect(componentInstance.caseField).toBe(caseFieldDsp);
         expect(componentInstance.context).toBe(expectedContext);
       };
 
-      caseField_dsp.display_context_parameter = '#TABLE(AddressLine1, AddressLine2)';
+      caseFieldDsp.display_context_parameter = '#TABLE(AddressLine1, AddressLine2)';
 
       beforeEach(waitForAsync(() => {
         setupComponents();
@@ -170,10 +168,10 @@ describe('ReadComplexFieldComponent', () => {
               ReadComplexFieldComponent,
               FieldsFilterPipe,
 
-              // Mock
-              ReadComplexFieldRawComponent,
-              ReadComplexFieldTableComponent,
-              ReadComplexFieldNewTableComponent,
+              // Mocks
+              readComplexFieldRawComponentMock,
+              readComplexFieldTableComponentMock,
+              readComplexFieldNewTableComponentMock
             ],
             providers: []
           })
@@ -181,7 +179,7 @@ describe('ReadComplexFieldComponent', () => {
 
         fixture = TestBed.createComponent(ReadComplexFieldComponent);
         component = fixture.componentInstance;
-        component.caseField = caseField_dsp;
+        component.caseField = caseFieldDsp;
         component.formGroup = FORM_GROUP;
         component.context = null;
 
@@ -194,8 +192,8 @@ describe('ReadComplexFieldComponent', () => {
         expectInputs(de.query($COMPLEX_AS_COLLECTION_TABLE).componentInstance, PaletteContext.TABLE_VIEW);
       });
     });
-
   });
+
   describe('Persistable readonly complex field', () => {
     const FORM_GROUP: FormGroup = new FormGroup({});
     const FIELD_TYPE_WITH_VALUES: FieldType = {
@@ -232,12 +230,14 @@ describe('ReadComplexFieldComponent', () => {
       AddressLine1: '1 West',
       AddressLine2: 'South'
     };
-    const CASE_FIELD: CaseField = ({
+    /* tslint:disable-next-line */
+    const CASE_FIELD = ({
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES,
-      value: VALUE
+      value: VALUE,
+      isDynamic: (()=>{})
     }) as CaseField;
 
     let fixture: ComponentFixture<ReadComplexFieldComponent>;
@@ -257,10 +257,10 @@ describe('ReadComplexFieldComponent', () => {
             ReadComplexFieldComponent,
             FieldsFilterPipe,
 
-            // Mock
-            ReadComplexFieldRawComponent,
-            ReadComplexFieldTableComponent,
-            ReadComplexFieldNewTableComponent,
+            // Mocks
+            readComplexFieldRawComponentMock,
+            readComplexFieldTableComponentMock,
+            readComplexFieldNewTableComponentMock
           ],
           providers: []
         })

@@ -42,10 +42,10 @@ const RESPONSE_FIRST_DOCUMENT: DocumentData = {
       originalDocumentName: 'howto.pdf',
       _links: {
         self: {
-          href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+          href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123`
         },
         binary: {
-          href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+          href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123/binary`
         }
       }
     }]
@@ -54,10 +54,10 @@ const RESPONSE_FIRST_DOCUMENT: DocumentData = {
     originalDocumentName: 'howto.pdf',
     _links: {
       self: {
-        href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+        href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123`
       },
       binary: {
-        href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+        href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123/binary`
       }
     }
   }]
@@ -68,10 +68,10 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
       originalDocumentName: 'plop.pdf',
       _links: {
         self: {
-          href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
+          href: `${DOCUMENT_MANAGEMENT_URL}/cdef4567`
         },
         binary: {
-          href: DOCUMENT_MANAGEMENT_URL + '/cdef4567/binary'
+          href: `${DOCUMENT_MANAGEMENT_URL}/cdef4567/binary`
         }
       }
     }]
@@ -80,24 +80,22 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
     originalDocumentName: 'plop.pdf',
     _links: {
       self: {
-        href: DOCUMENT_MANAGEMENT_URL + '/cdef4567'
+        href: `${DOCUMENT_MANAGEMENT_URL}/cdef4567`
       },
       binary: {
-        href: DOCUMENT_MANAGEMENT_URL + '/cdef4567/binary'
+        href: `${DOCUMENT_MANAGEMENT_URL}/cdef4567/binary`
       }
     }
   }]
 };
 
 describe('WriteDocumentFieldComponent', () => {
-
-  const FORM_GROUP_ID = 'document_url';
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
 
-  const ReadDocumentComponent = MockComponent({
+  const readDocumentComponentMock = MockComponent({
     selector: 'ccd-read-document-field',
     inputs: ['caseField']
   });
@@ -140,8 +138,8 @@ describe('WriteDocumentFieldComponent', () => {
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
-          // Mock
-          ReadDocumentComponent,
+          // Mocks
+          readDocumentComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -237,10 +235,10 @@ describe('WriteDocumentFieldComponent', () => {
           originalDocumentName: 'test.pdf',
           _links: {
             self: {
-              href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+              href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123`
             },
             binary: {
-              href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+              href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123/binary`
             }
           }
         }]
@@ -249,10 +247,10 @@ describe('WriteDocumentFieldComponent', () => {
         originalDocumentName: 'test.pdf',
         _links: {
           self: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+            href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123`
           },
           binary: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+            href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123/binary`
           }
         }
       }]
@@ -375,13 +373,10 @@ describe('WriteDocumentFieldComponent', () => {
     expect(fileUploadSubscriptionSpy).toHaveBeenCalled();
     expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
     expect(component.valid).toBeTruthy();
-
   });
-
 });
 
 describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
-
   const FIELD_TYPE_MANDATORY: FieldType = {
     id: 'Document',
     type: 'Document'
@@ -406,10 +401,10 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
         originalDocumentName: 'howto.pdf',
         _links: {
           self: {
-            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123'
+            href: `${DOCUMENT_MANAGEMENT_URL_MANDATORY}/abcd0123`
           },
           binary: {
-            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123/binary'
+            href: `${DOCUMENT_MANAGEMENT_URL_MANDATORY}/abcd0123/binary`
           }
         }
       }]
@@ -418,10 +413,10 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       originalDocumentName: 'howto.pdf',
       _links: {
         self: {
-          href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123'
+          href: `${DOCUMENT_MANAGEMENT_URL_MANDATORY}/abcd0123`
         },
         binary: {
-          href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/abcd0123/binary'
+          href: `${DOCUMENT_MANAGEMENT_URL_MANDATORY}/abcd0123/binary`
         }
       }
     }]
@@ -432,10 +427,10 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
         originalDocumentName: 'plop.pdf',
         _links: {
           self: {
-            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567'
+            href: `${DOCUMENT_MANAGEMENT_URL_MANDATORY}/cdef4567`
           },
           binary: {
-            href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567/binary'
+            href: `${DOCUMENT_MANAGEMENT_URL_MANDATORY}/cdef4567/binary`
           }
         }
       }]
@@ -444,17 +439,17 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
       originalDocumentName: 'plop.pdf',
       _links: {
         self: {
-          href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567'
+          href: `${DOCUMENT_MANAGEMENT_URL_MANDATORY}/cdef4567`
         },
         binary: {
-          href: DOCUMENT_MANAGEMENT_URL_MANDATORY + '/cdef4567/binary'
+          href: `${DOCUMENT_MANAGEMENT_URL_MANDATORY}/cdef4567/binary`
         }
       }
     }]
   };
   const DIALOG_CONFIG = new MatDialogConfig();
 
-  const ReadDocumentComponent = MockComponent({
+  const readDocumentComponentMock = MockComponent({
     selector: 'ccd-read-document-field',
     inputs: ['caseField']
   });
@@ -468,7 +463,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
-  let casesService: any
+  let casesService: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -494,8 +489,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
-          // Mock
-          ReadDocumentComponent,
+          // Mocks
+          readDocumentComponentMock,
           MockRpxTranslatePipe
         ],
         providers: [

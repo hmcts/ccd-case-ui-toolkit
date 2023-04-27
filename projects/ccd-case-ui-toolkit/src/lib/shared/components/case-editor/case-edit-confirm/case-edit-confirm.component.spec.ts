@@ -140,7 +140,7 @@ describe('CaseEditConfirmComponent', () => {
         declarations: [
           CaseEditConfirmComponent,
           MarkdownComponent,
-          // Mock
+          // Mocks
           MockRpxTranslatePipe
         ],
         providers: [

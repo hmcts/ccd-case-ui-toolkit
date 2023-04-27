@@ -75,12 +75,12 @@ describe('CaseSpecificAccessRequestComponent', () => {
   let de: DebugElement;
   let component: CaseReviewSpecificAccessRequestComponent;
   let fixture: ComponentFixture<CaseReviewSpecificAccessRequestComponent>;
-  const case_id = '1234123412341234';
+  const caseId = '1234123412341234';
   const mockRoute = {
     snapshot: {
       data: {
         case: {
-          case_id,
+          case_id: caseId
         },
       },
     },

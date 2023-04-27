@@ -21,7 +21,7 @@ import { ReadOrganisationFieldRawComponent } from './read-organisation-field-raw
 describe('ReadOrganisationFieldRawComponent', () => {
   let component: ReadOrganisationFieldRawComponent;
   let fixture: ComponentFixture<ReadOrganisationFieldRawComponent>;
-  const FieldReadComponent = MockComponent({
+  const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
   });
@@ -116,8 +116,8 @@ describe('ReadOrganisationFieldRawComponent', () => {
         MarkdownComponent,
         ReadOrganisationFieldRawComponent,
         FieldsFilterPipe,
-        FieldReadComponent,
-        MockRpxTranslatePipe
+        MockRpxTranslatePipe,
+        fieldReadComponentMock
       ],
       providers: [
         PaletteService,

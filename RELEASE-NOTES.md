@@ -41,6 +41,8 @@
 
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
+### Version 6.13.10-linked-cases-continue-button-validation-v6
+**EUI-8025** Linked cases continue button validation
 
 ### Version 6.13.10-rc1
 **EUI-5298** Release 6.13.10 including 6.13.0, linked cases (EUI-7676) and case file view fix (EUI-7417)
@@ -71,6 +73,9 @@
 
 ### Version 5.0.50-case-flags-multiple-case-flags-tabs-support
 **EUI-7688** Support multiple Case Flags tabs
+
+### Version 6.14.1--fee-pay-props
+**EUI-7489** Added additional props to nested ccpay instance
 
 ### Version 5.0.50-case-file-view-restrict-document-move
 **EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`

@@ -7,11 +7,11 @@ import { CaseChallengedAccessSuccessComponent } from './case-challenged-access-s
 describe('CaseChallengedAccessSuccessComponent', () => {
   let component: CaseChallengedAccessSuccessComponent;
   let fixture: ComponentFixture<CaseChallengedAccessSuccessComponent>;
-  const case_id = '1234123412341234';
+  const caseId = '1234123412341234';
   const mockRoute = {
     snapshot: {
       params: {
-        cid: case_id
+        cid: caseId
       }
     }
   };
@@ -36,11 +36,11 @@ describe('CaseChallengedAccessSuccessComponent', () => {
   it('should create component and show the correct Case Reference', () => {
     expect(component).toBeDefined();
     const confirmationMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-panel__body');
-    expect(confirmationMessageElement.textContent).toContain(case_id);
+    expect(confirmationMessageElement.textContent).toContain(caseId);
   });
 
   it('should have the correct Case Reference in the \"View case file\" link URL', () => {
     const viewCaseFileLinkElement = fixture.debugElement.nativeElement.querySelector('p.govuk-body a');
-    expect(viewCaseFileLinkElement.getAttribute('href')).toContain(`/cases/case-details/${case_id}`);
+    expect(viewCaseFileLinkElement.getAttribute('href')).toContain(`/cases/case-details/${caseId}`);
   });
 });

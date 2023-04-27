@@ -64,8 +64,8 @@ describe('CallbackErrorsComponent', () => {
     callbackErrorsSubject.next(error);
 
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    expectedCallbackErrorsContext.ignore_warning = true;
-    expectedCallbackErrorsContext.trigger_text = triggerTextIgnore;
+    expectedCallbackErrorsContext.ignoreWarning = true;
+    expectedCallbackErrorsContext.triggerText = triggerTextIgnore;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -75,8 +75,8 @@ describe('CallbackErrorsComponent', () => {
     callbackErrorsSubject.next(error);
 
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    expectedCallbackErrorsContext.ignore_warning = false;
-    expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
+    expectedCallbackErrorsContext.ignoreWarning = false;
+    expectedCallbackErrorsContext.triggerText = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -85,8 +85,8 @@ describe('CallbackErrorsComponent', () => {
     callbackErrorsSubject.next(error);
 
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    expectedCallbackErrorsContext.ignore_warning = false;
-    expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
+    expectedCallbackErrorsContext.ignoreWarning = false;
+    expectedCallbackErrorsContext.triggerText = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -132,8 +132,8 @@ describe('CallbackErrorsComponent', () => {
 
     expect(component.error).toEqual(httpError);
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    expectedCallbackErrorsContext.ignore_warning = false;
-    expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
+    expectedCallbackErrorsContext.ignoreWarning = false;
+    expectedCallbackErrorsContext.triggerText = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 

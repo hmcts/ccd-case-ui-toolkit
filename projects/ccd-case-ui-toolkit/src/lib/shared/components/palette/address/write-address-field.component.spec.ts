@@ -100,13 +100,13 @@ xdescribe('WriteAddressFieldComponent', () => {
 
   function buildAddress(entryNo: number): AddressModel {
     const address = new AddressModel();
-    address.AddressLine1 = 'AddressLine1-' + entryNo;
-    address.AddressLine2 = 'AddressLine2-' + entryNo;
-    address.AddressLine3 = 'AddressLine3-' + entryNo;
-    address.PostTown = 'PostTown-' + entryNo;
-    address.County = 'County-' + entryNo;
-    address.PostCode = 'PostCode-' + entryNo;
-    address.Country = 'Country-' + entryNo;
+    address.AddressLine1 = `AddressLine1-${entryNo}`;
+    address.AddressLine2 = `AddressLine2-${entryNo}`;
+    address.AddressLine3 = `AddressLine3-${entryNo}`;
+    address.PostTown = `PostTown-${entryNo}`;
+    address.County = `County-${entryNo}`;
+    address.PostCode = `PostCode-${entryNo}`;
+    address.Country = `Country-${entryNo}`;
     return address;
   }
 
@@ -133,6 +133,7 @@ xdescribe('WriteAddressFieldComponent', () => {
           WriteAddressFieldComponent,
           TestHostComponent,
           FieldLabelPipe,
+
           // Mocks
           MockWriteComplexFieldComponent,
           MockRpxTranslatePipe

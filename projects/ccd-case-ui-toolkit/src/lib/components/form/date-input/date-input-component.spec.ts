@@ -12,13 +12,14 @@ describe('Date input component', () => {
   let fixture: ComponentFixture<DateInputComponent>;
   let component: DateInputComponent;
   let de: DebugElement;
-  let Input: any;
+  let inputComponentMock: any;
   let onChange;
   const DATE = '2018-04-09T08:02:27.542';
   const INVALIDDATE = 'x';
+
   beforeEach(waitForAsync(() => {
     // Input is mocked so that one-way bound inputs can be tested
-    Input = MockComponent({
+    inputComponentMock = MockComponent({
       selector: 'input', inputs: [
         'type',
         'value',
@@ -37,8 +38,8 @@ describe('Date input component', () => {
           DateInputComponent,
           MockRpxTranslatePipe,
 
-          // Mock
-          Input
+          // Mocks
+          inputComponentMock
         ],
         providers: []
       })
@@ -50,6 +51,7 @@ describe('Date input component', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
+
   it('should verify day, month, year value from date', async () => {
     component.id = 'dateField';
     component.writeValue('2021-04-09T08:02:27.542');
@@ -61,6 +63,19 @@ describe('Date input component', () => {
     const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
     expect(yearInput.value).toBe('2021');
   });
+
+  it('should verify day, month, year value from date', async () => {
+    component.id = 'dateField';
+    component.writeValue('someRandomValue');
+    fixture.detectChanges();
+    const monthInput = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
+    expect(monthInput.value).toBe('');
+    const dayInput = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
+    expect(dayInput.value).toBe('');
+    const yearInput = await de.query(By.css(`#${component.yearId()}`)).componentInstance;
+    expect(yearInput.value).toBe('someRandomValue');
+  });
+
   it('should be valid when the date is in correct format', () => {
     const results = component.validate({ value: DATE } as FormControl);
     expect(results).toBeUndefined();
@@ -121,7 +136,6 @@ describe('Date input component', () => {
       const input = await de.query(By.css(`#${component.dayId()}`)).componentInstance;
       expect(input.value).toBeNull();
     });
-
   });
 
   describe('month input component', () => {
@@ -133,6 +147,7 @@ describe('Date input component', () => {
       const input = await de.query(By.css(`#${component.monthId()}`)).componentInstance;
       expect(input.value).toBe('04');
     });
+
     it('month input should null for a null value', async () => {
       component.id = 'monthInput';
       component.monthChange(null);
@@ -144,7 +159,6 @@ describe('Date input component', () => {
   });
 
   describe('year input component', () => {
-
     it('year input should null for a null value', async () => {
       component.id = 'yearInput';
       component.yearChange('2021');
