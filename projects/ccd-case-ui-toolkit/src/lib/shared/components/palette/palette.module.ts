@@ -253,6 +253,7 @@ const PALETTE_COMPONENTS = [
     WindowService,
     CommonDataService,
     JurisdictionService,
+    LinkedCasesService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   entryComponents: [ CaseFileViewFolderSelectorComponent ]
