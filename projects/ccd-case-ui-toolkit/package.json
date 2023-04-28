@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.13.11-welsh-form-validation-errors-v5",
+  "version": "6.13.11-welsh-release-v7",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
