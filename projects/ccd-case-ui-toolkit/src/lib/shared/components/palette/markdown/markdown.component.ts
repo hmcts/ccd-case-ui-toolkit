@@ -1,10 +1,10 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'ccd-markdown',
   templateUrl: './markdown.html'
 })
-export class MarkdownComponent implements OnInit {
+export class MarkdownComponent implements OnChanges {
   @Input()
   public content: string;
   @Input()
@@ -12,7 +12,7 @@ export class MarkdownComponent implements OnInit {
 
   constructor() {}
 
-  public ngOnInit(): void {
+  public ngOnChanges(): void {
     this.content = this.content.replace(/  \n/g, '<br>');
   }
 
