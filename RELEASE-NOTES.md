@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-## Version 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page
+## Version 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2
 **EUI-8246** Reasonable Adjustments legal rep hide Event Summary and Event Description section on CYA page
 
 ### Version 6.10.7-case-flags-v2-view-case-flags-ui-amendments-v2

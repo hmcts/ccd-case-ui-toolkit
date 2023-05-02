@@ -601,7 +601,6 @@ describe('CaseEditSubmitComponent', () => {
     it('should show event notes when set in event trigger and showEventNotes is called', () => {
       comp.profile.user.idam.roles = ['caseworker-divorce'];
       comp.caseFlagField = null;
-      console.log('PROFILE', comp.profile);
       comp.eventTrigger.show_event_notes = true;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -613,7 +612,6 @@ describe('CaseEditSubmitComponent', () => {
     it('should hide event notes when set in event trigger and profile is solicitor and showEventNotes is called', () => {
       comp.profile.user.idam.roles = ['divorce-solicitor'];
       comp.caseFlagField = null;
-      console.log('PROFILE', comp.profile);
       comp.eventTrigger.show_event_notes = true;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -625,7 +623,6 @@ describe('CaseEditSubmitComponent', () => {
     it('should hide event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
       comp.profile.user.idam.roles = ['caseworker-divorce'];
       comp.caseFlagField = caseFieldCaseFlagCreate;
-      console.log('PROFILE', comp.profile);
       comp.eventTrigger.show_event_notes = true;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
