@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+### Version 6.10.8-case-flags-v2-reasonable-adjustments-text-amendments-v7
+**EUI-8283** Reasonable adjustments amend the term flag and flag type
+**EUI-8284** Reasonable adjustments amend screen caption text on the tell us more about the request screen
+**EUI-8287** Reasonable adjustments amend the update screen caption text to remove for not approved
+
 ### Version 6.10.7-case-flags-v2-view-case-flags-ui-amendments-v2
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types (ported from Case Flags v1)
 **EUI-8070** Display "decision reason" (flag update comment) for "Not approved" flags to internal HMCTS users only

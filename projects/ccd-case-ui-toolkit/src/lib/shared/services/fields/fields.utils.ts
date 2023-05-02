@@ -349,7 +349,22 @@ export class FieldsUtils {
     return caseField.field_type.type === 'FlagLauncher';
   }
 
-  public static isComponentLauncherCaseField(caseField: CaseField): boolean {
+  public static getValidationErrorMessageForFlagLauncherCaseField(caseField: CaseField): string {
+    switch(caseField.display_context_parameter) {
+      case '#ARGUMENT(CREATE)':
+        return 'Please select Next to complete the creation of the case flag';
+      case '#ARGUMENT(CREATE,EXTERNAL)':
+        return 'Please select Next to complete the creation of the support request';
+      case '#ARGUMENT(UPDATE)':
+        return 'Please select Next to complete the update of the selected case flag';
+      case '#ARGUMENT(UPDATE,EXTERNAL)':
+        return 'Please select Next to complete the update of the selected support request';
+      default:
+        return '';
+    }
+  }
+
+	public static isComponentLauncherCaseField(caseField: CaseField): boolean {
     if (!caseField) {
       return false;
     }

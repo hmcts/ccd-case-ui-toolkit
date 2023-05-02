@@ -96,21 +96,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       this.flagRefdata$ = this.caseFlagRefdataService
         .getCaseFlagsRefdata(this.hmctsServiceId, flagType, false, this.isDisplayContextParameterExternal)
         .subscribe({
-          next: flagTypes => {
-            // First (and only) object in the returned array should be the top-level "Party" flag type
-            this.flagTypes = flagTypes[0].childFlags;
-
-            const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
-            if (formControl?.value) {
-              // Cache Path based on existing flagCode -- needed for nested choices
-              const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
-              this.cachedPath = [
-                ...path,
-                foundFlagType
-              ];
-              formControl.setValue(this.cachedPath[0], { emitEvent: false });
-            }
-          },
+          next: flagTypes => this.setFlagTypesAndFormControl(flagTypes),
           error: error => this.onRefdataError(error)
         });
     } else {
@@ -125,23 +111,25 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
             false, this.isDisplayContextParameterExternal))
         )
         .subscribe({
-          next: flagTypes => {
-            // First (and only) object in the returned array should be the top-level "Party" flag type
-            this.flagTypes = flagTypes[0].childFlags;
-
-            const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
-            if (formControl?.value) {
-              // Cache Path based on existing flagCode -- needed for nested choices
-              const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
-              this.cachedPath = [
-                ...path,
-                foundFlagType
-              ];
-              formControl.setValue(this.cachedPath[0], { emitEvent: false });
-            }
-          },
+          next: flagTypes => this.setFlagTypesAndFormControl(flagTypes),
           error: error => this.onRefdataError(error)
         });
+    }
+  }
+
+  private setFlagTypesAndFormControl(flagTypes: FlagType[]): void {
+    // First (and only) object in the returned array should be the top-level "Party" flag type
+    this.flagTypes = flagTypes[0].childFlags;
+
+    const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
+    if (formControl?.value) {
+      // Cache Path based on existing flagCode -- needed for nested choices
+      const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
+      this.cachedPath = [
+        ...path,
+        foundFlagType
+      ];
+      formControl.setValue(this.cachedPath[0], { emitEvent: false });
     }
   }
 
@@ -185,15 +173,22 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     if (!this.selectedFlagType) {
       // If there is any selection then the message will differ. We use the selectionTitle property
-      const errorMessage = !this.selectionTitle ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED : SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
-      this.flagTypeNotSelectedErrorMessage = errorMessage;
-      this.errorMessages.push({title: '', description: errorMessage, fieldId: 'conditional-radios-list'});
+      if (this.selectionTitle) {
+        this.flagTypeNotSelectedErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
+      } else {
+        this.flagTypeNotSelectedErrorMessage = this.isDisplayContextParameterExternal
+          ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED_EXTERNAL
+          : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
+      }
+      this.errorMessages.push({title: '', description: this.flagTypeNotSelectedErrorMessage, fieldId: 'conditional-radios-list'});
     }
     if (this.otherFlagTypeSelected) {
       const otherFlagTypeDescription = this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
       if (!otherFlagTypeDescription) {
-        this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
-        this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description'});
+        this.flagTypeErrorMessage = this.isDisplayContextParameterExternal
+          ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED_EXTERNAL
+          : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
+        this.errorMessages.push({title: '', description: `${this.flagTypeErrorMessage}`, fieldId: 'other-flag-type-description'});
       }
       if (otherFlagTypeDescription.length > this.maxCharactersForOtherFlagType) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED;
