@@ -54,13 +54,7 @@
         </fieldset>
 
         <div id="update-flag-status-hint" class="govuk-hint">
-          {{
-            displayContextParameter === caseFlagDisplayContextParameter.UPDATE
-              ? (updateFlagStepEnum.STATUS_HINT_TEXT | rpxTranslate)
-              : displayContextParameter === caseFlagDisplayContextParameter.UPDATE_EXTERNAL
-                ? (updateFlagStepEnum.STATUS_HINT_TEXT_EXTERNAL | rpxTranslate)
-                : ''
-          }}
+          {{updateFlagStepEnum.STATUS_HINT_TEXT | rpxTranslate}}
         </div>
         <div id="update-flag-status-reason-not-entered-error-message" class="govuk-error-message"
               *ngIf="statusReasonNotEnteredErrorMessage">
