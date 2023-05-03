@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.16.0-query-management-orchestrator
+**EUI-8303** Query management orchestrator to get the mock data
+
 ### Version 6.13.10-linked-cases-continue-button-validation-v6
 **EUI-8025** Linked cases continue button validation
 
