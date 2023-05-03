@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.13.11-linked-reasons-sorting-fix-v2",
+  "version": "6.13.12-setupHidden",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
