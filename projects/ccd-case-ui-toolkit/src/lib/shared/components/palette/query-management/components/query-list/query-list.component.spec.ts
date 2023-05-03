@@ -1,21 +1,21 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ReadQueryManagementFieldComponent } from './read-query-management-field.component';
+import { QueryListComponent } from './query-list.component';
 
-describe('ReadQueryManagementFieldComponent', () => {
-  let component: ReadQueryManagementFieldComponent;
-  let fixture: ComponentFixture<ReadQueryManagementFieldComponent>;
+describe('QueryListComponent', () => {
+  let component: QueryListComponent;
+  let fixture: ComponentFixture<QueryListComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ReadQueryManagementFieldComponent]
+      declarations: [QueryListComponent]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReadQueryManagementFieldComponent);
+    fixture = TestBed.createComponent(QueryListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
