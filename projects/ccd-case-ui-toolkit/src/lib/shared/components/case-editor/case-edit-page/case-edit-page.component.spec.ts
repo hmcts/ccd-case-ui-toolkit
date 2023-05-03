@@ -478,7 +478,7 @@ xdescribe('CaseEditPageComponent', () => {
         trigger_text: 'Some error!',
       };
       comp.callbackErrorsNotify(errorContext);
-      expect(comp.ignoreWarning).toBeTruthy();
+      expect(comp.caseEdit.ignoreWarning).toBeTruthy();
       expect(comp.triggerText).toEqual('Some error!');
     });
 
@@ -1072,7 +1072,7 @@ xdescribe('CaseEditPageComponent', () => {
         // I will likely create an additional unit test for the buildCaseEventData method.
         // expect(eventData.event_data).toEqual(FORM_GROUP.value.data);
         // expect(eventData.data).toEqual(FORM_GROUP.value.data);
-        expect(eventData.ignore_warning).toEqual(comp.ignoreWarning);
+        expect(eventData.ignore_warning).toEqual(comp.caseEdit.ignoreWarning);
         expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
         expect(comp.showSpinner).toBeFalsy();
@@ -1080,7 +1080,7 @@ xdescribe('CaseEditPageComponent', () => {
     });
 
     it('should display generic error heading and message when form error is set but no callback errors, warnings, or error details', () => {
-      comp.error = {
+      comp.caseEdit.error = {
         status: 200,
         callbackErrors: null,
         callbackWarnings: null,
@@ -1100,7 +1100,7 @@ xdescribe('CaseEditPageComponent', () => {
     });
 
     it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
-      comp.error = {
+      comp.caseEdit.error = {
         status: 422,
         callbackErrors: null,
         callbackWarnings: null,
@@ -1137,7 +1137,7 @@ xdescribe('CaseEditPageComponent', () => {
     });
 
     it('should not display generic error heading and message when there are specific callback errors', () => {
-      comp.error = {
+      comp.caseEdit.error = {
         status: 422,
         callbackErrors: ['First error', 'Second error'],
         callbackWarnings: null,
@@ -1151,7 +1151,7 @@ xdescribe('CaseEditPageComponent', () => {
     });
 
     it('should not display generic error heading and message when there are specific callback warnings', () => {
-      comp.error = {
+      comp.caseEdit.error = {
         status: 422,
         callbackErrors: null,
         callbackWarnings: ['First warning', 'Second warning'],
@@ -1175,7 +1175,7 @@ xdescribe('CaseEditPageComponent', () => {
       expect(button.nativeElement.textContent).toEqual(
         CaseEditPageText.TRIGGER_TEXT_START
       );
-      expect(comp.ignoreWarning).toBeFalsy();
+      expect(comp.caseEdit.ignoreWarning).toBeFalsy();
 
       callbackErrorsContext.ignore_warning = true;
       callbackErrorsContext.trigger_text =
@@ -1186,7 +1186,7 @@ xdescribe('CaseEditPageComponent', () => {
       expect(button.nativeElement.textContent).toEqual(
         CaseEditPageText.TRIGGER_TEXT_CONTINUE
       );
-      expect(comp.ignoreWarning).toBeTruthy();
+      expect(comp.caseEdit.ignoreWarning).toBeTruthy();
     });
   });
 
@@ -1312,7 +1312,7 @@ xdescribe('CaseEditPageComponent', () => {
         );
         expect(caseEventDataPrevious.event_data).toEqual(FORM_GROUP.value.data);
         expect(caseEventDataPrevious.ignore_warning).toEqual(
-          comp.ignoreWarning
+          comp.caseEdit.ignoreWarning
         );
         expect(caseEventDataPrevious.event_token).toEqual(
           comp.eventTrigger.event_token
