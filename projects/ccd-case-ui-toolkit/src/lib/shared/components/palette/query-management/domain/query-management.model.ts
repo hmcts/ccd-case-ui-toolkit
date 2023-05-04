@@ -1,8 +1,10 @@
-export interface CaseMessage {
+import { Document } from '../../../../domain/document/document-data.model';
+
+export interface PartyMessage {
   id: string;
-  subject: string;
+  subject?: string;
   body: string;
-  attachments?: string[];
+  attachments?: Document[];
   isHearingRelated: boolean;
   hearingDate?: Date;
   createdOn: Date;
@@ -10,7 +12,8 @@ export interface CaseMessage {
   parentId?: string;
 }
 
-export interface CaseQueries {
+export interface PartyMessages {
   partyName: string;
-  caseMessages: CaseMessage[];
+  roleOnCase?: string;
+  partyMessages: PartyMessage[];
 }

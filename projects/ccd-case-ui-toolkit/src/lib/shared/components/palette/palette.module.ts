@@ -72,14 +72,14 @@ import { ReadOrganisationFieldComponent, ReadOrganisationFieldRawComponent, Read
 import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
+import { ReadQueryManagementFieldComponent, WriteQueryManagementFieldComponent } from './query-management';
+import { QueryCreateComponent, QueryDetailComponent, QueryListComponent } from './query-management/components';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { ReadQueryManagementFieldComponent, WriteQueryManagementFieldComponent } from './query-management';
-import { QueryCreateComponent, QueryDetailComponent, QueryListComponent } from './query-management/components';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,

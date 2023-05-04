@@ -1,9 +1,9 @@
-import { CaseQueries } from '../domain';
+import { PartyMessages } from '../domain';
 
-export const caseQueriesMockData: CaseQueries[] = [
+export const partyMessagesMockData: PartyMessages[] = [
   {
     partyName: 'John Smith - Appellant',
-    caseMessages: [
+    partyMessages: [
       {
         id: 'case-message-001',
         subject: 'Review attached document',
@@ -50,7 +50,7 @@ export const caseQueriesMockData: CaseQueries[] = [
   },
   {
     partyName: 'Kevin Peterson - Respondent',
-    caseMessages: [
+    partyMessages: [
       {
         id: 'case-message-005',
         subject: 'Add respondent detention order',

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CaseQueries } from '../../domain';
+import { PartyMessages } from '../../domain';
 
 @Component({
   selector: 'ccd-query-list',
@@ -7,7 +7,7 @@ import { CaseQueries } from '../../domain';
 })
 export class QueryListComponent implements OnInit {
 
-  @Input() public caseQueries: CaseQueries[];
+  @Input() public partyMessages: PartyMessages[];
 
   constructor() {
   }

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { CaseTab } from '../../../domain';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
-import { CaseTab } from '../../../domain';
-import { ActivatedRoute } from '@angular/router';
+import { partyMessagesMockData } from './__mocks__';
+import { PartyMessages } from './domain';
 import { QueryManagementUtils } from './utils/query-management.utils';
-import { CaseQueries } from './domain';
-import { caseQueriesMockData } from './__mocks__';
 
 @Component({
   selector: 'ccd-read-query-management-field',
@@ -13,7 +13,7 @@ import { caseQueriesMockData } from './__mocks__';
 })
 export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit {
 
-  public caseQueries: CaseQueries[];
+  public partyMessages: PartyMessages[];
 
   constructor(private readonly route: ActivatedRoute) {
     super();
@@ -22,12 +22,12 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public ngOnInit(): void {
     if (this.context === PaletteContext.DEFAULT) {
       // EUI-8303 Using mock data until CCD is ready with the API and data contract
-      this.caseQueries = caseQueriesMockData;
+      this.partyMessages = partyMessagesMockData;
 
       // TODO: Actual implementation once the CCD API and data contract is available
-      // Each parties will have a separate collection of case queries
-      // Find whether query management tab is available in the case data
-      const queryManagementTab = (this.route.snapshot.data.case.tabs as CaseTab[])
+      // Each parties will have a separate collection of party messages
+      // Find whether queries tab is available in the case data
+      const queriesTab = (this.route.snapshot.data.case.tabs as CaseTab[])
         .filter(tab => tab.fields && tab.fields
         .some(caseField => caseField.id === 'QueryManagement'));
 
