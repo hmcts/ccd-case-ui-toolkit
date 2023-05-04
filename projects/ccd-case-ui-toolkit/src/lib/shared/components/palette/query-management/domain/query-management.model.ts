@@ -1,12 +1,16 @@
-export interface QueryDetail {
-  name: string;
-  lastSubmittedBy: string;
-  lastSubmissionDate: Date;
-  lastResponseBy?: string;
-  lastResponseDate?: Date;
+export interface CaseMessage {
+  id: string;
+  subject: string;
+  body: string;
+  attachments?: string[];
+  isHearingRelated: boolean;
+  hearingDate?: Date;
+  createdOn: Date;
+  createdBy: string;
+  parentId?: string;
 }
 
-export interface Queries {
+export interface CaseQueries {
   partyName: string;
-  queryDetails: QueryDetail[];
+  caseMessages: CaseMessage[];
 }
