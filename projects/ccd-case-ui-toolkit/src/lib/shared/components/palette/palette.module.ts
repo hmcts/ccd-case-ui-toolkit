@@ -78,6 +78,8 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { ReadQueryManagementFieldComponent, WriteQueryManagementFieldComponent } from './query-management';
+import { QueryCreateComponent, QueryDetailComponent, QueryListComponent } from './query-management/components';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -126,6 +128,7 @@ const PALETTE_COMPONENTS = [
   ReadComplexFieldCollectionTableComponent,
   ReadCaseFlagFieldComponent,
   ReadLinkedCasesFieldComponent,
+  ReadQueryManagementFieldComponent,
 
   // Write
   WriteJudicialUserFieldComponent,
@@ -146,6 +149,7 @@ const PALETTE_COMPONENTS = [
   WriteDateFieldComponent,
   WriteCaseFlagFieldComponent,
   WriteLinkedCasesFieldComponent,
+  WriteQueryManagementFieldComponent,
 
   // new
   WriteYesNoFieldComponent,
@@ -174,13 +178,27 @@ const PALETTE_COMPONENTS = [
   ReadDynamicMultiSelectListFieldComponent,
   ReadDynamicListFieldComponent,
   ReadDynamicRadioListFieldComponent,
+  // Components for Case flags
+  CaseFlagTableComponent,
+  SelectFlagTypeComponent,
+  SearchLanguageInterpreterComponent,
+  SelectFlagLocationComponent,
+  ManageCaseFlagsComponent,
+  AddCommentsComponent,
+  UpdateFlagComponent,
+  CaseFlagSummaryListComponent,
+  // Components for linked cases
   LinkedCasesToTableComponent,
   LinkedCasesFromTableComponent,
   BeforeYouStartComponent,
   LinkCasesComponent,
   CheckYourAnswersComponent,
   UnLinkCasesComponent,
-  NoLinkedCasesComponent
+  NoLinkedCasesComponent,
+  // Components for query management
+  QueryCreateComponent,
+  QueryDetailComponent,
+  QueryListComponent
 ];
 
 @NgModule({
@@ -221,15 +239,6 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
-
-    CaseFlagTableComponent,
-    SelectFlagTypeComponent,
-    SearchLanguageInterpreterComponent,
-    SelectFlagLocationComponent,
-    ManageCaseFlagsComponent,
-    AddCommentsComponent,
-    UpdateFlagComponent,
-    CaseFlagSummaryListComponent,
     ...PALETTE_COMPONENTS
   ],
   exports: [
