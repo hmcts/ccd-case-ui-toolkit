@@ -3,6 +3,7 @@ import { PartyMessages } from '../domain';
 export const partyMessagesMockData: PartyMessages[] = [
   {
     partyName: 'John Smith - Appellant',
+    roleOnCase: null,
     partyMessages: [
       {
         id: 'case-message-001',
@@ -50,6 +51,7 @@ export const partyMessagesMockData: PartyMessages[] = [
   },
   {
     partyName: 'Kevin Peterson - Respondent',
+    roleOnCase: null,
     partyMessages: [
       {
         id: 'case-message-005',

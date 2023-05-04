@@ -14,6 +14,6 @@ export interface PartyMessage {
 
 export interface PartyMessages {
   partyName: string;
-  roleOnCase?: string;
+  roleOnCase: string;
   partyMessages: PartyMessage[];
 }
