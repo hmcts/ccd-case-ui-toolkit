@@ -4,7 +4,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, O
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
-import { By } from '@angular/platform-browser';
+import { By, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -2013,5 +2013,125 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     subscriptionMock = null;
     caseViewerComponent.unsubscribe(subscriptionMock);
     expect(subscribeSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe('CaseFullAccessViewComponent - window title', () => {
+  let comp: CaseFullAccessViewComponent;
+  let f: ComponentFixture<CaseFullAccessViewComponent>;
+  let d: DebugElement;
+  let convertHrefToRouterService;
+  let titleServiceMock: jasmine.SpyObj<Title>;
+
+  beforeEach((() => {
+    titleServiceMock = jasmine.createSpyObj<Title>('Title', ['setTitle']);
+
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          MatTabsModule,
+          BrowserAnimationsModule,
+          PaletteModule,
+          PaymentLibModule,
+          NotificationBannerModule,
+          RouterTestingModule.withRoutes([
+            {
+              path: 'cases',
+              children: [
+                {
+                  path: 'case-details',
+                  children: [
+                    {
+                      path: ':id',
+                      children: [
+                        {
+                          path: 'tasks',
+                          component: TasksContainerComponent
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]),
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([])
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        declarations: [
+          TasksContainerComponent,
+          CaseFullAccessViewComponent,
+          DeleteOrCancelDialogComponent,
+
+          // Mocks
+          caseActivityComponentMock,
+          EventTriggerComponent,
+          caseHeaderComponentMock,
+          linkComponentMock,
+          CallbackErrorsComponent
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          OrderService,
+          {
+            provide: Location,
+            useClass: class MockLocation {
+              public path = (_: string) => 'cases/case-details/1234567890123456/tasks';
+            }
+          },
+          ErrorNotifierService,
+          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
+          ActivityService,
+          HttpService,
+          HttpErrorService,
+          AuthService,
+          SessionStorageService,
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          DeleteOrCancelDialogComponent,
+          { provide: Title, useValue: titleServiceMock }
+        ]
+      })
+      .compileComponents();
+
+    f = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp = f.componentInstance;
+    comp.caseDetails = CASE_VIEW;
+    d = f.debugElement;
+    const router = TestBed.get(Router);
+    spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
+    f.detectChanges();
+  }));
+
+  it('should set the correct title when caseDetails has a caseNameHmctsInternal property', () => {
+    comp.caseDetails.basicFields = {
+      caseNameHmctsInternal: 'Mock case name'
+    };
+
+    comp.ngOnInit();
+
+    expect(titleServiceMock.setTitle).toHaveBeenCalledWith('Mock case name (1234-5678-9012-3456) - HM Courts & Tribunals Service - GOV.UK');
+  });
+
+  it('should set the correct title when caseDetails does not have a caseNameHmctsInternal property', () => {
+    comp.caseDetails.basicFields = null;
+
+    comp.ngOnInit();
+
+    expect(titleServiceMock.setTitle).toHaveBeenCalledWith('1234-5678-9012-3456 - HM Courts & Tribunals Service - GOV.UK');
   });
 });
