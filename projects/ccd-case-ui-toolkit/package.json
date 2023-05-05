@@ -2,7 +2,7 @@
   "name": "@hmcts/ccd-case-ui-toolkit",
   "version": "6.14.2-case-details-in-title",
   "engines": {
-    "yarn": "^1.22.15",
+    "yarn": "^3.5.0",
     "npm": "^8.10.0"
   },
   "description": "Case UI Toolkit",

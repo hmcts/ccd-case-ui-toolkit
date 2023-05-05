@@ -243,8 +243,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
-    this.ignoreWarning = callbackErrorsContext.ignore_warning;
-    this.triggerText = callbackErrorsContext.trigger_text;
+    this.ignoreWarning = callbackErrorsContext.ignoreWarning;
+    this.triggerText = callbackErrorsContext.triggerText;
   }
 
   public isDraft(): boolean {

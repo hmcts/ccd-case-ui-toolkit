@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { By } from '@angular/platform-browser';
@@ -82,7 +82,7 @@ describe('WriteJudicialUserFieldComponent', () => {
   let activatedRoute: any;
   let nativeElement: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
     jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['searchJudicialUsers']);
     jurisdictionService.searchJudicialUsers.and.returnValue(of(JUDICIAL_USERS));
