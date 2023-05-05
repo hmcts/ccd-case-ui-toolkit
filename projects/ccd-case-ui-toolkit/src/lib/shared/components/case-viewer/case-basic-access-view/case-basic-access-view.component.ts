@@ -1,12 +1,15 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CaseView } from '../../../domain/case-view/case-view.model';
+import { CaseReferencePipe } from '../../../pipes';
 import { CasesService } from '../../case-editor/services/cases.service';
 
 @Component({
   selector: 'ccd-case-basic-access-view',
-  templateUrl: 'case-basic-access-view.component.html'
+  templateUrl: 'case-basic-access-view.component.html',
+  providers: [CaseReferencePipe]
 })
 export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
   public static CANCEL_LINK_DESTINATION = '/work/my-work/list';
@@ -23,9 +26,20 @@ export class CaseBasicAccessViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly casesService: CasesService,
-    private readonly router: Router) {}
+    private readonly router: Router,
+    private readonly titleService: Title,
+    private readonly caseReferencePipe: CaseReferencePipe
+  ) {}
 
   public ngOnInit(): void {
+    const caseName: string = this.caseDetails.basicFields?.caseNameHmctsInternal;
+
+    if (caseName) {
+      this.titleService.setTitle(`${caseName} (${this.caseReferencePipe.transform(this.caseDetails.case_id)}) - HM Courts & Tribunals Service - GOV.UK`);
+    } else {
+      this.titleService.setTitle(`${this.caseReferencePipe.transform(this.caseDetails.case_id)} - HM Courts & Tribunals Service - GOV.UK`);
+    }
+
     const locationId = this.caseDetails &&
                         this.caseDetails.basicFields &&
                         this.caseDetails.basicFields.caseManagementLocation &&

@@ -4,6 +4,7 @@ import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnIn
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject } from 'rxjs';
@@ -16,6 +17,7 @@ import {
 } from '../../../../components/banners/notification-banner';
 import { ShowCondition } from '../../../directives';
 import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
+import { CaseReferencePipe } from '../../../pipes';
 import {
   ActivityPollingService,
   AlertService,
@@ -35,7 +37,8 @@ import { initDialog } from '../../helpers';
 @Component({
   selector: 'ccd-case-full-access-view',
   templateUrl: './case-full-access-view.component.html',
-  styleUrls: ['./case-full-access-view.component.scss']
+  styleUrls: ['./case-full-access-view.component.scss'],
+  providers: [CaseReferencePipe]
 })
 export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges {
   public static readonly ORIGIN_QUERY_PARAM = 'origin';
@@ -87,11 +90,20 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location,
     private readonly crf: ChangeDetectorRef,
-    private readonly sessionStorageService: SessionStorageService
-  ) {
-  }
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly titleService: Title,
+    private readonly caseReferencePipe: CaseReferencePipe
+  ) {}
 
   public ngOnInit(): void {
+    const caseName: string = this.caseDetails.basicFields?.caseNameHmctsInternal;
+
+    if (caseName) {
+      this.titleService.setTitle(`${caseName} (${this.caseReferencePipe.transform(this.caseDetails.case_id)}) - HM Courts & Tribunals Service - GOV.UK`);
+    } else {
+      this.titleService.setTitle(`${this.caseReferencePipe.transform(this.caseDetails.case_id)} - HM Courts & Tribunals Service - GOV.UK`);
+    }
+
     initDialog();
     this.init();
     this.callbackErrorsSubject.subscribe(errorEvent => {
