@@ -8,41 +8,32 @@ export const partyMessagesMockData: PartyMessages[] = [
       {
         id: 'case-message-001',
         subject: 'Review attached document',
+        name: 'Maggie Conroy',
         body: 'Please review attached document and advise if hearing should proceed?',
         attachments: [],
         isHearingRelated: true,
-        hearingDate: new Date(2023, 0, 10),
+        hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
         createdBy: '1111-1111-1111-1111'
       },
       {
         id: 'case-message-002',
         subject: 'Games',
+        name: 'Maggie Conroy',
         body: 'Can I play games in my phone when my solicitor is talking?',
         attachments: [],
         isHearingRelated: true,
-        hearingDate: new Date(2023, 0, 10),
+        hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
         createdBy: '1111-1111-1111-1111'
       },
       {
         id: 'case-message-003',
-        subject: 'Games',
+        name: 'Maggie Conroy',
         body: 'Using mobile phone is strictly prohibited in the court room.',
         attachments: [],
         isHearingRelated: true,
-        hearingDate: new Date(2023, 0, 10),
-        createdOn: new Date(2023, 0, 4),
-        createdBy: '2222-2222-2222-2222',
-        parentId: 'case-message-002'
-      },
-      {
-        id: 'case-message-004',
-        subject: 'Games',
-        body: 'In addition to my previous message, the mobile phones must be switched off inside the premises.',
-        attachments: [],
-        isHearingRelated: true,
-        hearingDate: new Date(2023, 0, 10),
+        hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 4),
         createdBy: '2222-2222-2222-2222',
         parentId: 'case-message-002'
@@ -56,6 +47,7 @@ export const partyMessagesMockData: PartyMessages[] = [
       {
         id: 'case-message-005',
         subject: 'Add respondent detention order',
+        name: 'Maggie Conroy',
         body: 'Please add respondent detention order to the file XX20230423-DX.',
         attachments: [],
         isHearingRelated: false,
@@ -64,7 +56,7 @@ export const partyMessagesMockData: PartyMessages[] = [
       },
       {
         id: 'case-message-006',
-        subject: 'Actioned: Respondent detention order added',
+        name: 'Maggie Conroy',
         body: 'I confirm that the respondent detention order is now added to the file XX20230423-DX.',
         attachments: [],
         isHearingRelated: false,
@@ -75,20 +67,21 @@ export const partyMessagesMockData: PartyMessages[] = [
       {
         id: 'case-message-007',
         subject: 'Food',
+        name: 'Maggie Conroy',
         body: 'Can I eat in the hearings?',
         attachments: [],
         isHearingRelated: true,
-        hearingDate: new Date(2023, 0, 10),
+        hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
         createdBy: '1111-1111-1111-1111'
       },
       {
         id: 'case-message-008',
-        subject: 'Food',
+        name: 'Maggie Conroy',
         body: 'Consumption of food is not allowed when a hearing is taking place.',
         attachments: [],
         isHearingRelated: true,
-        hearingDate: new Date(2023, 0, 10),
+        hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 5),
         createdBy: '2222-2222-2222-2222',
         parentId: 'case-message-007'
@@ -96,31 +89,21 @@ export const partyMessagesMockData: PartyMessages[] = [
       {
         id: 'case-message-009',
         subject: 'Bring relatives',
+        name: 'Maggie Conroy',
         body: 'Can I bring my grandma with me so she get out from the residence?',
         attachments: [],
         isHearingRelated: true,
-        hearingDate: new Date(2023, 0, 10),
+        hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 6),
         createdBy: '1111-1111-1111-1111'
       },
       {
         id: 'case-message-010',
-        subject: 'Bring relatives',
+        name: 'Maggie Conroy',
         body: 'Sorry, only those required for the hearing should be present inside the court room.',
         attachments: [],
         isHearingRelated: true,
-        hearingDate: new Date(2023, 0, 10),
-        createdOn: new Date(2023, 0, 7),
-        createdBy: '2222-2222-2222-2222',
-        parentId: 'case-message-009'
-      },
-      {
-        id: 'case-message-011',
-        subject: 'Bring relatives',
-        body: 'You are allowed to bring only those mentioned in the hearing request. For example, sign language interpreter.',
-        attachments: [],
-        isHearingRelated: true,
-        hearingDate: new Date(2023, 0, 10),
+        hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 7),
         createdBy: '2222-2222-2222-2222',
         parentId: 'case-message-009'

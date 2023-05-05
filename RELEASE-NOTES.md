@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.16.0-query-management-orchestrator-v2
+### Version 6.16.0-query-management-orchestrator-v3
 **EUI-8303** Query management orchestrator to get the mock data
 
 ### Version 6.13.10-linked-cases-continue-button-validation-v6
