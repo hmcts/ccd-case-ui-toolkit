@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { CaseEventTrigger, CaseField, HttpError, Profile } from '../../../domain';
+import { CaseEventTrigger, CaseField, Profile } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
@@ -119,8 +119,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {
-    this.caseEdit.ignoreWarning = errorContext.ignore_warning;
-    this.triggerText = errorContext.trigger_text;
+    this.caseEdit.ignoreWarning = errorContext.ignoreWarning;
+    this.triggerText = errorContext.triggerText;
   }
 
   public summaryCaseField(field: CaseField): CaseField {

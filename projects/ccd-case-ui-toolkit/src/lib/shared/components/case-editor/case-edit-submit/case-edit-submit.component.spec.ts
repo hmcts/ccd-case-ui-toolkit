@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
 import { CaseField, Profile } from '../../../domain';
@@ -12,8 +12,8 @@ import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { CcdCaseTitlePipe } from '../../../pipes/case-title/ccd-case-title.pipe';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
+import { CcdPageFieldsPipe } from '../../../pipes/complex/ccd-page-fields.pipe';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
-import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import {
   CaseFieldService,
@@ -459,7 +459,6 @@ describe('CaseEditSubmitComponent', () => {
       ],
       queryParamMap: queryParamMapNoProfile,
     };
-    const PROFILE_OBS: Observable<Profile> = of(PROFILE);
     const mockRouteNoProfile = {
       params: of({id: 123}),
       snapshot: snapshotNoProfile
@@ -709,12 +708,12 @@ describe('CaseEditSubmitComponent', () => {
     describe('callbackErrorsNotify', () => {
       it('should update triggerText and caseEdits ignoreWarning', () => {
         const sampleCallbackErrorsContext = {
-          trigger_text: 'trigger text',
-          ignore_warning: true
+          triggerText: 'trigger text',
+          ignoreWarning: true
         };
         comp.callbackErrorsNotify(sampleCallbackErrorsContext);
-        expect(caseEditComponent.ignoreWarning).toEqual(sampleCallbackErrorsContext.ignore_warning);
-        expect(comp.triggerText).toEqual(sampleCallbackErrorsContext.trigger_text);
+        expect(caseEditComponent.ignoreWarning).toEqual(sampleCallbackErrorsContext.ignoreWarning);
+        expect(comp.triggerText).toEqual(sampleCallbackErrorsContext.triggerText);
       })
     })
   });

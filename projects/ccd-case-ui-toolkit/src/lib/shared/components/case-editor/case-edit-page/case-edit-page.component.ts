@@ -26,7 +26,6 @@ import { PageValidationService } from '../services/page-validation.service';
   styleUrls: ['./case-edit-page.scss']
 })
 export class CaseEditPageComponent implements OnInit, AfterViewChecked {
-
   public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
   public static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
   public static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
@@ -50,6 +49,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public showSpinner: boolean;
   public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public callbackErrorsSubject: Subject<any> = new Subject();
+  public isLinkedCasesJourneyAtFinalStep: boolean;
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
@@ -105,6 +105,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.editForm = editForm
     });
+    this.caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$.subscribe({
+      next: isLinkedCasesJourneyAtFinalStep => this.isLinkedCasesJourneyAtFinalStep = isLinkedCasesJourneyAtFinalStep
+    });
     this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
       next: state => {
         if (state) {
@@ -129,7 +132,12 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   public currentPageIsNotValid(): boolean {
-    return !this.pageValidationService.isPageValid(this.currentPage, this.editForm);
+    return !this.pageValidationService.isPageValid(this.currentPage, this.editForm) ||
+      (this.isLinkedCasesJourney() && !this.isLinkedCasesJourneyAtFinalStep);
+  }
+
+  public isLinkedCasesJourney(): boolean {
+    return FieldsUtils.containsLinkedCasesCaseField(this.currentPage.case_fields);
   }
 
   /**
@@ -158,7 +166,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           const label = casefield.label || 'Field';
           let id = casefield.id;
           if (fieldElement['component'] && fieldElement['component'].parent) {
-            if (fieldElement['component'].idPrefix.indexOf('_' + id + '_') === -1) {
+            if (fieldElement['component'].idPrefix.indexOf(`_${id}_`) === -1) {
               id = `${fieldElement['component'].idPrefix}${id}`;
             } else {
               id = `${fieldElement['component'].idPrefix}`;
@@ -226,7 +234,15 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.caseEditDataService.clearFormValidationErrors();
 
     if (this.currentPageIsNotValid()) {
-      this.generateErrorMessage(this.currentPage.case_fields);
+      // The generateErrorMessage method filters out the hidden fields.
+      // The error message for LinkedCases journey will never get displayed because the
+      // LinkedCases is configured with ComponentLauncher field as visible and caseLinks field as hidden.
+      if (this.isLinkedCasesJourney()) {
+        this.validationErrors.push({ id: 'next-button', message: 'Please select Next to go to the next page' });
+        CaseEditPageComponent.scrollToTop();
+      } else {
+        this.generateErrorMessage(this.currentPage.case_fields);
+      }
     }
     if (!this.caseEdit.isSubmitting && !this.currentPageIsNotValid()) {
       this.caseEdit.isSubmitting = true;
@@ -319,8 +335,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
-    this.caseEdit.ignoreWarning = errorContext.ignore_warning;
-    this.triggerText = errorContext.trigger_text;
+    this.caseEdit.ignoreWarning = errorContext.ignoreWarning;
+    this.triggerText = errorContext.triggerText;
   }
 
   public next(): Promise<boolean> {

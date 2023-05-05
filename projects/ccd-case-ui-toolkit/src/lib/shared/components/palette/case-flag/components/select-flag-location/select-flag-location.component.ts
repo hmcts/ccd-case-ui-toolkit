@@ -9,7 +9,6 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagLocationErrorMes
   templateUrl: './select-flag-location.component.html'
 })
 export class SelectFlagLocationComponent implements OnInit {
-
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
 
@@ -31,7 +30,7 @@ export class SelectFlagLocationComponent implements OnInit {
     // is expected not to have a party name)
     if (this.flagsData) {
       this.filteredFlagsData =
-        this.flagsData.filter(f => f.flags.partyName != null || f.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
+        this.flagsData.filter(f => f.flags.partyName !== null || f.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
     }
 
     // Add a FormControl for the selected flag location if there is at least one flags instance remaining after filtering

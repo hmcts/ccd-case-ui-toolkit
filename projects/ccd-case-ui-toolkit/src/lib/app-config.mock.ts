@@ -5,155 +5,155 @@ import {
 } from './app.config';
 
 export class AppMockConfig implements AbstractAppConfig {
-  getActivityBatchCollectionDelayMs(): number {
+  public getActivityBatchCollectionDelayMs(): number {
     return 0;
   }
 
-  getActivityMaxRequestPerBatch(): number {
+  public getActivityMaxRequestPerBatch(): number {
     return 0;
   }
 
-  getActivityNexPollRequestMs(): number {
+  public getActivityNexPollRequestMs(): number {
     return 0;
   }
 
-  getActivityRetry(): number {
+  public getActivityRetry(): number {
     return 0;
   }
 
-  getActivityUrl(): string {
+  public getActivityUrl(): string {
     return '';
   }
 
-  getAnnotationApiUrl(): string {
+  public getAnnotationApiUrl(): string {
     return '';
   }
 
-  getApiUrl(): string {
+  public getApiUrl(): string {
     return '';
   }
 
-  getBannersUrl(): string {
+  public getBannersUrl(): string {
     return '';
   }
 
-  getCacheTimeOut(): number {
+  public getCacheTimeOut(): number {
     return 0;
   }
 
-  getCaseDataUrl(): string {
+  public getCaseDataUrl(): string {
     return '';
   }
 
-  getCaseHistoryUrl(caseId: string, eventId: string): string {
+  public getCaseHistoryUrl(caseId: string, eventId: string): string {
     return '';
   }
 
-  getCreateOrUpdateDraftsUrl(ctid: string): string {
+  public getCreateOrUpdateDraftsUrl(ctid: string): string {
     return '';
   }
 
-  getDocumentManagementUrl(): string {
+  public getDocumentManagementUrl(): string {
     return '';
   }
 
-  getHrsUrl(): string {
+  public getHrsUrl(): string {
     return '';
   }
 
-  getLoginUrl(): string {
+  public getLoginUrl(): string {
     return '';
   }
 
-  getOAuth2ClientId(): string {
+  public getOAuth2ClientId(): string {
     return '';
   }
 
-  getPaginationPageSize(): number {
+  public getPaginationPageSize(): number {
     return 0;
   }
 
-  getPayBulkScanBaseUrl(): string {
+  public getPayBulkScanBaseUrl(): string {
     return '';
   }
 
-  getPaymentsUrl(): string {
+  public getPaymentsUrl(): string {
     return '';
   }
 
-  getPostcodeLookupUrl(): string {
+  public getPostcodeLookupUrl(): string {
     return '';
   }
 
-  getPrdUrl(): string {
+  public getPrdUrl(): string {
     return '';
   }
 
-  getPrintServiceUrl(): string {
+  public getPrintServiceUrl(): string {
     return '';
   }
 
-  getRemoteDocumentManagementUrl(): string {
+  public getRemoteDocumentManagementUrl(): string {
     return '';
   }
 
-  getRemoteHrsUrl(): string {
+  public getRemoteHrsUrl(): string {
     return '';
   }
 
-  getRemotePrintServiceUrl(): string {
+  public getRemotePrintServiceUrl(): string {
     return '';
   }
 
-  getUserInfoApiUrl(): string {
+  public getUserInfoApiUrl(): string {
     return '';
   }
 
-  getViewOrDeleteDraftsUrl(did: string): string {
+  public getViewOrDeleteDraftsUrl(did: string): string {
     return '';
   }
 
-  getWorkAllocationApiUrl(): string {
+  public getWorkAllocationApiUrl(): string {
     return '';
   }
 
-  load(): Promise<void> {
+  public load(): Promise<void> {
     return Promise.resolve(undefined);
   }
 
-  getDocumentManagementUrlV2(): string {
+  public getDocumentManagementUrlV2(): string {
     return '';
   }
 
-  getDocumentSecureMode(): boolean {
+  public getDocumentSecureMode(): boolean {
     return false;
   }
 
-  getWAServiceConfig(): any {
+  public getWAServiceConfig(): any {
     return null;
   }
 
-  getAccessManagementMode(): boolean {
+  public getAccessManagementMode(): boolean {
     return false;
   }
 
-  getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
+  public getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return {};
   }
 
-  getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
+  public getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
     return {};
   }
 
-  getLocationRefApiUrl(): string {
+  public getLocationRefApiUrl(): string {
     return '';
   }
 
-  getCamRoleAssignmentsApiUrl(): string {
+  public getCamRoleAssignmentsApiUrl(): string {
     return '';
   }
 
-  getRefundsUrl(): string {
+  public getRefundsUrl(): string {
     return '';
   }
 
@@ -169,19 +169,19 @@ export class AppMockConfig implements AbstractAppConfig {
     return '';
   }
 
-  getDocumentDataUrl(): string {
+  public getDocumentDataUrl(): string {
     return '';
   }
 
-  getCaseFlagsRefdataApiUrl(): string {
+  public getCaseFlagsRefdataApiUrl(): string {
     return '';
   }
 
-  getRDCommonDataApiUrl(): string {
+  public getRDCommonDataApiUrl(): string {
     return '';
   }
 
-  getCaseDataStoreApiUrl(): string {
+  public getCaseDataStoreApiUrl(): string {
     return '';
   }
 }

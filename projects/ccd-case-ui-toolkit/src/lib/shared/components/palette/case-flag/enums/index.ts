@@ -10,4 +10,4 @@ export * from './select-flag-location-error-message.enum';
 export * from './select-flag-type-error-message.enum';
 export * from './write-case-flag-field.enum';
 export * from './update-flag-error-message.enum';
-export * from './update-flag-step.enum'
+export * from './update-flag-step.enum';

@@ -27,10 +27,10 @@ import {
   HttpError,
 } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
+import { CcdPageFieldsPipe } from '../../../pipes';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
-import { CcdPageFieldsPipe } from '../../../pipes/complex/cdd-page-fields.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import {
   CaseFieldService,
@@ -474,8 +474,8 @@ xdescribe('CaseEditPageComponent', () => {
 
     it('should return true on hasPrevious check', () => {
       const errorContext = {
-        ignore_warning: true,
-        trigger_text: 'Some error!',
+        ignoreWarning: true,
+        triggerText: 'Some error!',
       };
       comp.callbackErrorsNotify(errorContext);
       expect(comp.caseEdit.ignoreWarning).toBeTruthy();
@@ -1167,7 +1167,7 @@ xdescribe('CaseEditPageComponent', () => {
     it('should change button label when callback warnings notified ', () => {
       const callbackErrorsContext: CallbackErrorsContext =
         new CallbackErrorsContext();
-      callbackErrorsContext.trigger_text = CaseEditPageText.TRIGGER_TEXT_START;
+      callbackErrorsContext.triggerText = CaseEditPageText.TRIGGER_TEXT_START;
       comp.callbackErrorsNotify(callbackErrorsContext);
 
       fixture.detectChanges();
@@ -1177,8 +1177,8 @@ xdescribe('CaseEditPageComponent', () => {
       );
       expect(comp.caseEdit.ignoreWarning).toBeFalsy();
 
-      callbackErrorsContext.ignore_warning = true;
-      callbackErrorsContext.trigger_text =
+      callbackErrorsContext.ignoreWarning = true;
+      callbackErrorsContext.triggerText =
         CaseEditPageText.TRIGGER_TEXT_CONTINUE;
       comp.callbackErrorsNotify(callbackErrorsContext);
 

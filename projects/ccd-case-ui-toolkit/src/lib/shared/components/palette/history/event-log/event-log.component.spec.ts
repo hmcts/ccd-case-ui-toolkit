@@ -88,7 +88,8 @@ describe('EventLogComponent', () => {
           imports: [],
           declarations: [
             EventLogComponent,
-            // Mock
+
+            // Mocks
             EventLogTableComponent,
             EventLogDetailsComponent,
             DatePipe
@@ -169,7 +170,8 @@ describe('EventLogComponent', () => {
           imports: [],
           declarations: [
             EventLogComponent,
-            // Mock
+
+            // Mocks
             EventLogTableComponent,
             EventLogDetailsComponent,
             DatePipe

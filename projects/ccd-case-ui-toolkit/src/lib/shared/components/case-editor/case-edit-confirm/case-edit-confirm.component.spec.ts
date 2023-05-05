@@ -156,7 +156,6 @@ describe('CaseEditConfirmComponent', () => {
         declarations: [
           CaseEditConfirmComponent,
           MarkdownComponent
-          // Mock
         ],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditCompStub},

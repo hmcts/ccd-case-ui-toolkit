@@ -21,7 +21,6 @@ import { CaseEditComponent } from './case-edit.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditComponent', () => {
-
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     'TEST_TRIGGER',
     'Test Trigger',
@@ -180,22 +179,22 @@ describe('CaseEditComponent', () => {
   let component: CaseEditComponent;
   let de: DebugElement;
 
-  const EventTriggerHeaderComponent: any = MockComponent({
+  const eventTriggerHeaderComponentMock: any = MockComponent({
     selector: 'ccd-event-trigger-header',
     inputs: ['eventTrigger']
   });
 
-  const FieldRead: any = MockComponent({
+  const fieldReadComponentMock: any = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField']
   });
 
-  const FieldWrite: any = MockComponent({
+  const fieldWriteComponentMock: any = MockComponent({
     selector: 'ccd-field-write',
     inputs: ['caseField', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
-  const RouterLinkComponent: any = MockComponent({
+  const routerLinkComponentMock: any = MockComponent({
     selector: 'a',
     inputs: ['routerLink']
   });
@@ -297,12 +296,12 @@ describe('CaseEditComponent', () => {
           declarations: [
             CaseEditComponent,
 
-            // Mock
-            EventTriggerHeaderComponent,
-            RouterLinkComponent,
+            // Mocks
+            eventTriggerHeaderComponentMock,
+            routerLinkComponentMock,
             FieldsFilterPipe,
-            FieldRead,
-            FieldWrite
+            fieldReadComponentMock,
+            fieldWriteComponentMock
           ],
           providers: [
             WizardFactoryService,
@@ -354,9 +353,7 @@ describe('CaseEditComponent', () => {
     });
 
     describe('fieldShowCondition', () => {
-
       describe('next page', () => {
-
         it('should navigate to next page when next is called and do not clear READONLY hidden field value', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
@@ -592,9 +589,7 @@ describe('CaseEditComponent', () => {
     });
 
     describe('pageShowCondition', () => {
-
       describe('next page', () => {
-
         it('should navigate to next page when next is called and do not clear visible field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
@@ -818,7 +813,6 @@ describe('CaseEditComponent', () => {
       });
 
       describe('previous page', () => {
-
         it('should navigate to previous page when previous is called and do not clear visible field', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
@@ -849,8 +843,7 @@ describe('CaseEditComponent', () => {
           expect(component.form.get('data').get(CASE_FIELD_3.id)).not.toBeNull();
         });
 
-        it('should navigate to previous page when previous is called and retain hidden simple form fields with ' +
-        'retain_hidden_value = true', () => {
+        it('should navigate to previous page when previous is called and retain hidden simple form fields with retain_hidden_value = true', () => {
           component.wizard = wizard;
           const currentPage = new WizardPage();
           currentPage.wizard_page_fields = [WIZARD_PAGE_1];
@@ -1253,7 +1246,6 @@ describe('CaseEditComponent', () => {
   });
 
   xdescribe('profile not available in route', () => {
-
     const USER = {
       idam: {
         id: 'userId',
@@ -1332,11 +1324,11 @@ describe('CaseEditComponent', () => {
           declarations: [
             CaseEditComponent,
 
-            // Mock
-            EventTriggerHeaderComponent,
-            RouterLinkComponent,
-            FieldRead,
-            FieldWrite
+            // Mocks
+            eventTriggerHeaderComponentMock,
+            routerLinkComponentMock,
+            fieldReadComponentMock,
+            fieldWriteComponentMock
           ],
           providers: [
             WizardFactoryService,
