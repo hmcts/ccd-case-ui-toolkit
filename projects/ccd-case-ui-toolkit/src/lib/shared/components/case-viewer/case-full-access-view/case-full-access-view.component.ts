@@ -97,12 +97,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public ngOnInit(): void {
     const caseName: string = this.caseDetails.basicFields?.caseNameHmctsInternal;
+    let caseDetails: string;
 
     if (caseName) {
-      this.titleService.setTitle(`${caseName} (${this.caseReferencePipe.transform(this.caseDetails.case_id)}) - HM Courts & Tribunals Service - GOV.UK`);
+      caseDetails = `${caseName} (${this.caseReferencePipe.transform(this.caseDetails.case_id)})`;
     } else {
-      this.titleService.setTitle(`${this.caseReferencePipe.transform(this.caseDetails.case_id)} - HM Courts & Tribunals Service - GOV.UK`);
+      caseDetails = this.caseReferencePipe.transform(this.caseDetails.case_id);
     }
+    this.titleService.setTitle(`${caseDetails} - HM Courts & Tribunals Service - GOV.UK`);
 
     initDialog();
     this.init();
