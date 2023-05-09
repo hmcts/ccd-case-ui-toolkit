@@ -1,0 +1,25 @@
+<table class="govuk-table query-list__table">
+  <caption class="govuk-table__cell query-list__caption query-list__row">
+    <div>{{ partyMessages.partyName }}</div>
+  </caption>
+  <thead class="govuk-table__head">
+  <tr class="govuk-table__row query-list__row">
+    <th scope="col" class="govuk-table__header">Queries</th>
+    <th scope="col" class="govuk-table__header">Last submitted by</th>
+    <th scope="col" class="govuk-table__header">Last submission date</th>
+    <th scope="col" class="govuk-table__header">Last submitted response date</th>
+    <th scope="col" class="govuk-table__header">Response by</th>
+  </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row query-list__row"
+      *ngFor="let message of partyMessages.partyMessages"
+  >
+    <td class="govuk-table__cell">{{ message.subject }}</td>
+    <td class="govuk-table__cell">{{ message.createdBy }}</td>
+    <td class="govuk-table__cell"></td>
+    <td class="govuk-table__cell"></td>
+    <td class="govuk-table__cell">{{ message.name }}</td>
+  </tr>
+  </tbody>
+</table>

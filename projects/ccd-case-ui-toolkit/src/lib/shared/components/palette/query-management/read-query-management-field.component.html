@@ -1,1 +1,5 @@
-<ccd-query-list [partyMessages]="partyMessages"></ccd-query-list>
+<ng-container *ngFor="let singlePartyMessages of partyMessages">
+  <div class="govuk-!-margin-top-8 govuk-!-margin-bottom-8">
+    <ccd-query-list [partyMessages]="singlePartyMessages"></ccd-query-list>
+  </div>
+</ng-container>

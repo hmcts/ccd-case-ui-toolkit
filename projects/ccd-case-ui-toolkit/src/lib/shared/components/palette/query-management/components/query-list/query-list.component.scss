@@ -1,0 +1,23 @@
+@import "~govuk-frontend/govuk/helpers/colour";
+
+.query-list {
+  &__table {
+    border: 1px solid #{govuk-colour('mid-grey')};
+  }
+
+  &__caption {
+    background: govuk-colour('light-grey');
+    border: 1px solid #{govuk-colour('mid-grey')};
+    border-bottom: 0;
+    font-weight: 700;
+  }
+
+  &__row {
+    & > *:first-child {
+      padding-left: 10px;
+    }
+    & > *:last-child {
+      padding-right: 10px;
+    }
+  }
+}
