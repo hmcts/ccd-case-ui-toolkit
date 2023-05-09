@@ -2525,7 +2525,7 @@ __metadata:
     rollup-plugin-commonjs: ^9.1.8
     rollup-plugin-node-resolve: ^3.0.0
     rollup-plugin-typescript: ^1.0.0
-    rpx-xui-translation: ^0.1.6
+    rpx-xui-translation: 0.2.2-yesno-translations-fix
     rx-polling: 1.1.0
     rxjs: ^6.6.7
     rxjs-compat: ^6.6.7
@@ -20592,9 +20592,9 @@ proxy-middleware@latest:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:^0.1.6":
-  version: 0.1.8
-  resolution: "rpx-xui-translation@npm:0.1.8"
+"rpx-xui-translation@npm:0.2.2-yesno-translations-fix":
+  version: 0.2.2-yesno-translations-fix
+  resolution: "rpx-xui-translation@npm:0.2.2-yesno-translations-fix"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
@@ -20602,7 +20602,7 @@ proxy-middleware@latest:
   peerDependencies:
     "@angular/common": ^9.1.13
     "@angular/core": ^9.1.13
-  checksum: 24893242255be711e7a67dcf18b79f28d2f34598eaa9116bcb0495134a7a87c15cb604a4665c1b995927ca3203884ed89c8e74b86ee89e61939d8ef8467436b6
+  checksum: 1aeff378e0b69afa95509404dbd5f602e0c8afc1efdf96fd3c00bb5b3bf129e9898c1d255719ed1b480cb13a44595080c534358d22f437a82304b9c59ecb0891
   languageName: node
   linkType: hard
 
