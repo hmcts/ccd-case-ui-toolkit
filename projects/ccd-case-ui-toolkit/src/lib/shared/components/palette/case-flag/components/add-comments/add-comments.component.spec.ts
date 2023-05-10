@@ -1,9 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { AddCommentsErrorMessage, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
 import { AddCommentsComponent } from './add-comments.component';
-import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('AddCommentsComponent', () => {
   let component: AddCommentsComponent;

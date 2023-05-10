@@ -1,15 +1,18 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CaseField } from '../../../../../domain';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 import { ManageCaseFlagsComponent } from './manage-case-flags.component';
-import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('ManageCaseFlagsComponent', () => {
   let component: ManageCaseFlagsComponent;
   let fixture: ComponentFixture<ManageCaseFlagsComponent>;
+  let mockRpxTranslationService: any;
   const flagsData = [
     {
       flags: {
@@ -107,7 +110,9 @@ describe('ManageCaseFlagsComponent', () => {
           {
             id: '5678',
             name: 'Flag 5',
+            name_cy: 'Fflag 5',
             flagComment: 'Fifth flag',
+            flagComment_cy: 'Fifth flag - Welsh',
             dateTimeCreated: new Date(),
             path: [
               { id: null, value: 'Level 1' }
@@ -116,7 +121,8 @@ describe('ManageCaseFlagsComponent', () => {
             flagCode: 'FL1',
             status: 'Active',
             subTypeKey: 'Dummy subtype key',
-            subTypeValue: 'Dummy subtype value'
+            subTypeValue: 'Dummy subtype value',
+            subTypeValue_cy: 'Dummy subtype value - Welsh'
           }
         ] as FlagDetail[],
         flagsCaseFieldId: 'CaseFlag3'
@@ -132,10 +138,28 @@ describe('ManageCaseFlagsComponent', () => {
   const updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
 
   beforeEach(waitForAsync(() => {
+    const source = new BehaviorSubject<RpxLanguage>('en');
+    let currentLanguage: RpxLanguage = 'en';
+    mockRpxTranslationService = {
+      language$: source.asObservable(),
+      set language(lang: RpxLanguage) {
+        currentLanguage = lang;
+        source.next(lang);
+      },
+      get language(): RpxLanguage {
+        return currentLanguage;
+      },
+      getTranslation(_: string): Observable<string> {
+        return of('Dummy Welsh translation');
+      }
+    };
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ManageCaseFlagsComponent, MockRpxTranslatePipe ]
+      declarations: [ ManageCaseFlagsComponent, MockRpxTranslatePipe ],
+      providers: [
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
+      ]
     })
     .compileComponents();
   }));
@@ -372,8 +396,6 @@ describe('ManageCaseFlagsComponent', () => {
     });
   });
 
-
-
   it('should get correct party name', () => {
     const flagDisplay = {
       flagDetailDisplay: {
@@ -389,12 +411,40 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.getPartyName(flagDisplay)).toEqual('');
   });
 
+  it('should get correct party name when page language is set to Welsh', () => {
+    mockRpxTranslationService.language = 'cy';
+    const flagDisplay = {
+      flagDetailDisplay: {
+        partyName: flagsData[2].flags.partyName,
+        flagDetail: flagsData[2].flags.details[0],
+        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
+      },
+      pathToFlagsFormGroup: 'caseFlags',
+      caseField: flagsData[2].caseField
+    } as FlagDetailDisplayWithFormGroupPath;
+    expect(component.getPartyName(flagDisplay)).toEqual('Dummy Welsh translation');
+    flagDisplay.pathToFlagsFormGroup = null;
+    expect(component.getPartyName(flagDisplay)).toEqual('');
+  });
+
   it('should get correct flag name', () => {
     let flagDetail = flagsData[2].flags.details[0];
     expect(component.getFlagName(flagDetail)).toEqual('Level 2');
     flagDetail = flagsData[3].flags.details[0];
-    expect(component.getFlagName(flagDetail)).toEqual('Dummy subtype value');
+    expect(component.getFlagName(flagDetail)).toEqual('Flag 5, Dummy subtype value');
     flagDetail = flagsData[0].flags.details[0];
+    expect(component.getFlagName(flagDetail)).toEqual('Flag 1');
+  });
+
+  it('should get correct flag name when page language is set to Welsh', () => {
+    mockRpxTranslationService.language = 'cy';
+    let flagDetail = flagsData[2].flags.details[0];
+    // Currently, flag path values are stored in English only
+    expect(component.getFlagName(flagDetail)).toEqual('Level 2');
+    flagDetail = flagsData[3].flags.details[0];
+    expect(component.getFlagName(flagDetail)).toEqual('Fflag 5, Dummy subtype value - Welsh');
+    flagDetail = flagsData[0].flags.details[0];
+    // No Welsh flag name is available (undefined name_cy), so fall back on English name
     expect(component.getFlagName(flagDetail)).toEqual('Flag 1');
   });
 
@@ -416,8 +466,34 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.getFlagComments(flagsData[3].flags.details[0])).toEqual(' (Fifth flag)');
   });
 
+  it('should get flag comment when page language is set to Welsh', () => {
+    mockRpxTranslationService.language = 'cy';
+    expect(component.getFlagComments(flagsData[3].flags.details[0])).toEqual(' (Fifth flag - Welsh)');
+    // No Welsh flag comment is available (undefined flagComment_cy), so fall back on English comment
+    expect(component.getFlagComments(flagsData[2].flags.details[0])).toEqual(' (Fourth flag)');
+  });
+
   it('should set Manage Case Flags component title correctly', () => {
     expect(component.setManageCaseFlagTitle(updateMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
     expect(component.setManageCaseFlagTitle(updateExternalMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
+  });
+
+  it('should unsubscribe from any Observables when the component is destroyed', () => {
+    mockRpxTranslationService.language = 'cy';
+    const flagDisplay = {
+      flagDetailDisplay: {
+        partyName: flagsData[2].flags.partyName,
+        flagDetail: flagsData[2].flags.details[0],
+        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
+      },
+      pathToFlagsFormGroup: 'caseFlags',
+      caseField: flagsData[2].caseField
+    } as FlagDetailDisplayWithFormGroupPath;
+    // Trigger subscription to RpxTranslationService.getTranslation() Observable by calling getPartyName()
+    component.getPartyName(flagDisplay);
+    spyOn(component.translation$, 'unsubscribe');
+    expect(component.translation$).toBeTruthy();
+    component.ngOnDestroy();
+    expect(component.translation$.unsubscribe).toHaveBeenCalled();
   });
 });

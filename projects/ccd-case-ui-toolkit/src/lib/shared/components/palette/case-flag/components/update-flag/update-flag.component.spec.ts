@@ -2,18 +2,19 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { RpxTranslationService } from 'rpx-xui-translation';
+import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
+import { BehaviorSubject } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
-import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('UpdateFlagComponent', () => {
   let component: UpdateFlagComponent;
   let fixture: ComponentFixture<UpdateFlagComponent>;
   let nextButton: HTMLElement;
   let textareaInput: string;
-  let rpxTranslationServiceSpy: jasmine.SpyObj<RpxTranslationService>;
+  let mockRpxTranslationService: any;
   const activeFlag = {
     name: 'Flag 1',
     flagComment: 'First flag',
@@ -78,14 +79,24 @@ describe('UpdateFlagComponent', () => {
   } as FlagDetailDisplayWithFormGroupPath;
 
   beforeEach(waitForAsync(() => {
-    rpxTranslationServiceSpy = jasmine.createSpyObj('RpxTranslationService', ['']);
-    rpxTranslationServiceSpy.language = 'en';
+    const source = new BehaviorSubject<RpxLanguage>('en');
+    let currentLanguage: RpxLanguage = 'en';
+    mockRpxTranslationService = {
+      language$: source.asObservable(),
+      set language(lang: RpxLanguage) {
+        currentLanguage = lang;
+        source.next(lang);
+      },
+      get language() {
+        return currentLanguage;
+      }
+    };
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [UpdateFlagComponent, MockRpxTranslatePipe],
       providers: [
-        { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]
     })
     .compileComponents();
@@ -98,14 +109,15 @@ describe('UpdateFlagComponent', () => {
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag1)
     });
-
+    nextButton = fixture.debugElement.query(By.css('#updateFlagNextButton')).nativeElement;
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
       '5555555555' + '6666666666' + '7777777777' + '8888888888' + '9999999999';
-    // Deliberately omitted fixture.detectChanges() here to allow for a different selected flag to be set for each test
-
-    nextButton = fixture.debugElement.query(By.css('#updateFlagNextButton')).nativeElement;
+    // Set default translation language to English
+    mockRpxTranslationService.language = 'en';
+    // Deliberately omitted fixture.detectChanges() here to allow for a different selected flag to be set for each test, and
+    // to allow translation language to be set to Welsh for selected tests
   });
 
   it('should create component', () => {
@@ -121,7 +133,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should populate the flag comments textarea from Welsh comments field when only Welsh comments are available', () => {
-    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = null;
+    activeFlag.flagComment = null;
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     // Check the textarea value property, rather than textContent, because this input element has no child nodes
@@ -130,8 +142,8 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should populate the flag comments textarea from Welsh comments field when selected language is Welsh', () => {
-    rpxTranslationServiceSpy.language = 'cy';
-    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = 'First flag';
+    mockRpxTranslationService.language = 'cy';
+    activeFlag.flagComment = 'First flag';
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     // Check the textarea value property, rather than textContent, because this input element has no child nodes
@@ -140,8 +152,8 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should populate from English comments field when the selected language is Welsh but there are no Welsh comments', () => {
-    rpxTranslationServiceSpy.language = 'cy';
-    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = null;
+    mockRpxTranslationService.language = 'cy';
+    activeFlag.flagComment_cy = null;
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     // Check the textarea value property, rather than textContent, because this input element has no child nodes
@@ -150,8 +162,8 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if existing comments have been deleted', () => {
-    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = 'First flag';
-    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = null;
+    activeFlag.flagComment = 'First flag';
+    activeFlag.flagComment_cy = null;
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
@@ -178,8 +190,8 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if existing comments in Welsh have been deleted', () => {
-    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = null;
-    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = 'Cymraeg';
+    activeFlag.flagComment = null;
+    activeFlag.flagComment_cy = 'Cymraeg';
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();

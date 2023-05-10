@@ -1,5 +1,5 @@
 <ng-container [formGroup]="formGroup">
-  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="100">
+  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
       <fieldset class="govuk-fieldset" aria-describedby="confirm-flag-status-heading">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -22,11 +22,11 @@
       </div>
       <div id="status-reason-not-entered-error-message" class="govuk-error-message"
         *ngIf="statusReasonNotEnteredErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{statusReasonNotEnteredErrorMessage | rpxTranslate}}
+        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{statusReasonNotEnteredErrorMessage | rpxTranslate}}
       </div>
       <div id="status-reason-char-limit-error" class="govuk-error-message"
         *ngIf="statusReasonCharLimitErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{statusReasonCharLimitErrorMessage | rpxTranslate}}
+        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{statusReasonCharLimitErrorMessage | rpxTranslate}}
       </div>
       <textarea class="govuk-textarea" [id]="statusReasonControlName"
         [name]="statusReasonControlName" [formControlName]="statusReasonControlName" rows="5"

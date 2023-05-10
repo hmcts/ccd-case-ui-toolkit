@@ -2,7 +2,7 @@
   <div class="govuk-form-group" [ngClass]="{'form-group-error': languageNotSelectedErrorMessage || languageEnteredInBothFieldsErrorMessage}">
     <h1 class="govuk-label-wrapper">
       <label class="govuk-label govuk-label--l" [for]="SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM">
-        {{flagType?.name}}
+        {{flagType | flagFieldDisplay:'name'}}
       </label>
     </h1>
     <div id="language-search-box-hint" class="govuk-hint">
@@ -11,18 +11,18 @@
     <div class="auto-complete-container">
       <div id="language-not-selected-error-message" class="govuk-error-message"
         *ngIf="languageNotSelectedErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{languageNotSelectedErrorMessage | rpxTranslate}}
+        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{languageNotSelectedErrorMessage | rpxTranslate}}
       </div>
       <div id="language-entered-in-both-fields-error-message" class="govuk-error-message"
         *ngIf="languageEnteredInBothFieldsErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{languageEnteredInBothFieldsErrorMessage | rpxTranslate}}
+        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{languageEnteredInBothFieldsErrorMessage | rpxTranslate}}
       </div>
       <input aria-label="Language search box" matInput [formControlName]="SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM" [matAutocomplete]="autoSearchLanguage"
         class="govuk-input search-language__input" type="text">
       <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLanguage="matAutocomplete"
         [displayWith]="displayLanguage">
         <mat-option *ngFor="let language of filteredLanguages$ | async" [value]="language">
-          {{language.value | rpxTranslate}}
+          {{language | languageInterpreterDisplay}}
         </mat-option>
         <mat-option *ngIf="noResults && searchTerm && searchTerm.length >= minSearchCharacters" disabled>{{'No results found' | rpxTranslate}}</mat-option>
       </mat-autocomplete>
@@ -40,11 +40,11 @@
           <label class="govuk-label" for="manual-language-entry">{{searchLanguageInterpreterStep.INPUT_LABEL | rpxTranslate}}</label>
           <div id="language-not-entered-error-message" class="govuk-error-message"
             *ngIf="languageNotEnteredErrorMessage">
-            <span class="govuk-visually-hidden">Error:</span> {{languageNotEnteredErrorMessage | rpxTranslate}}
+            <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{languageNotEnteredErrorMessage | rpxTranslate}}
           </div>
           <div id="language-char-limit-error-message" class="govuk-error-message"
             *ngIf="languageCharLimitErrorMessage">
-            <span class="govuk-visually-hidden">Error:</span> {{languageCharLimitErrorMessage}}
+            <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{languageCharLimitErrorMessage | rpxTranslate}}
           </div>
           <input class="govuk-input govuk-input--width-20" id="manual-language-entry" [name]="SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY" type="text"
             [formControlName]="SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY">

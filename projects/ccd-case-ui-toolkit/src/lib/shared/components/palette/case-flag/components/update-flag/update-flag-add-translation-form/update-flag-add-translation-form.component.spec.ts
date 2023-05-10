@@ -2,10 +2,10 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { MockRpxTranslatePipe } from '../../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, UpdateFlagAddTranslationErrorMessage } from '../../../enums';
 import { UpdateFlagAddTranslationFormComponent } from './update-flag-add-translation-form.component';
-import { MockRpxTranslatePipe } from '../../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('UpdateFlagAddTranslationFormComponent', () => {
   let component: UpdateFlagAddTranslationFormComponent;

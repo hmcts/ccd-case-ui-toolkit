@@ -3,7 +3,15 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
-import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
+import {
+  CaseFlagDisplayContextParameter,
+  CaseFlagFieldState,
+  CaseFlagFormFields,
+  CaseFlagStatus,
+  CaseFlagWizardStepTitle,
+  UpdateFlagErrorMessage,
+  UpdateFlagStep
+} from '../../enums';
 
 @Component({
   selector: 'ccd-update-flag',
@@ -39,16 +47,14 @@ export class UpdateFlagComponent implements OnInit {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
       const currentFlagStatusKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === this.flagDetail.status);
 
-      // Populate flag comments text area with existing comments
+      // Populate flag comments text area with existing comments; use the comments appropriate for the selected language,
+      // falling back on their alternate counterpart if none are available. Comments are to be populated one time only -
+      // when the user first visits the page - even if they switch language subsequently
       let existingComments: string;
       if (this.rpxTranslationService.language === 'cy') {
-        existingComments = this.flagDetail.flagComment_cy
-          ? this.flagDetail.flagComment_cy
-          : this.flagDetail.flagComment;
+        existingComments = this.flagDetail.flagComment_cy || this.flagDetail.flagComment;
       } else {
-        existingComments = this.flagDetail.flagComment
-          ? this.flagDetail.flagComment
-          : this.flagDetail.flagComment_cy;
+        existingComments = this.flagDetail.flagComment || this.flagDetail.flagComment_cy;
       }
       this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(existingComments));
       this.formGroup.addControl(CaseFlagFormFields.STATUS, new FormControl(currentFlagStatusKey));

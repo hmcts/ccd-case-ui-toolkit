@@ -44,13 +44,15 @@ import {
   CaseFlagSummaryListComponent,
   CaseFlagTableComponent,
   ConfirmFlagStatusComponent,
+  FlagFieldDisplayPipe,
+  LanguageInterpreterDisplayPipe,
   ManageCaseFlagsComponent,
   ReadCaseFlagFieldComponent,
   SearchLanguageInterpreterComponent,
   SelectFlagLocationComponent,
   SelectFlagTypeComponent,
-  UpdateFlagComponent,
   UpdateFlagAddTranslationFormComponent,
+  UpdateFlagComponent,
   WriteCaseFlagFieldComponent
 } from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -64,7 +66,7 @@ import { DocumentUrlPipe } from './document';
 import { FileUploadProgressGuard } from './document/file-upload-progress.guard';
 import { FileUploadStateService } from './document/file-upload-state.service';
 import { ReadDocumentFieldComponent } from './document/read-document-field.component';
-import { WriteDocumentFieldComponent } from './document/write-document-field.component'
+import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { DynamicListPipe, ReadDynamicListFieldComponent } from './dynamic-list';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
 import { DynamicRadioListPipe, ReadDynamicRadioListFieldComponent } from './dynamic-radio-list';
@@ -239,6 +241,8 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
+    FlagFieldDisplayPipe,
+    LanguageInterpreterDisplayPipe,
     ...PALETTE_COMPONENTS,
   ],
   exports: [

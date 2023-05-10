@@ -1,6 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
+import { BehaviorSubject } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
 import { CaseFlagDisplayContextParameter } from '../../enums';
@@ -10,14 +12,30 @@ describe('CaseFlagSummaryListComponent', () => {
   let component: CaseFlagSummaryListComponent;
   let fixture: ComponentFixture<CaseFlagSummaryListComponent>;
   let nativeElement: any;
+  let mockRpxTranslationService: any;
   const updateFlagHeaderText = 'Update flag for';
   const addFlagHeaderText = 'Add flag to';
 
   beforeEach(waitForAsync(() => {
+    const source = new BehaviorSubject<RpxLanguage>('en');
+    let currentLanguage: RpxLanguage = 'en';
+    mockRpxTranslationService = {
+      language$: source.asObservable(),
+      set language(lang: RpxLanguage) {
+        currentLanguage = lang;
+        source.next(lang);
+      },
+      get language() {
+        return currentLanguage;
+      }
+    };
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ CaseFlagSummaryListComponent, MockRpxTranslatePipe ]
+      declarations: [ CaseFlagSummaryListComponent, MockRpxTranslatePipe ],
+      providers: [
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
+      ]
     })
     .compileComponents();
   }));
@@ -26,6 +44,8 @@ describe('CaseFlagSummaryListComponent', () => {
     fixture = TestBed.createComponent(CaseFlagSummaryListComponent);
     component = fixture.componentInstance;
     nativeElement = fixture.debugElement.nativeElement;
+    // Set default translation language to English
+    mockRpxTranslationService.language = 'en';
     // Deliberately omitted fixture.detectChanges() here because this will trigger the component's ngOnInit() before
     // the flagForSummaryDisplay input value has been set in each test, causing false failures
   });
@@ -194,5 +214,33 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[3].textContent).toContain(flag.flagDetail.flagComment);
     expect(summaryListValues[4].textContent).toContain(flag.flagDetail.flagComment_cy);
     expect(summaryListValues[5].textContent).toContain(flag.flagDetail.status);
+  });
+
+  it('should use the stored Welsh values for flag name and sub-type value if the selected language is Welsh', () => {
+    mockRpxTranslationService.language = 'cy';
+    const flag = {
+      partyName: 'Rose Bank',
+      flagDetail: {
+        name: 'Flag 1',
+        name_cy: 'Flag 1 (Cymraeg)',
+        dateTimeCreated: new Date(),
+        path: [{ id: '', value: 'Reasonable adjustment' }],
+        hearingRelevant: false,
+        flagCode: 'FL1',
+        otherDescription: 'Other description',
+        otherDescription_cy: 'Other description for Welsh',
+        subTypeValue_cy: 'Sub-type value (Cymraeg)',
+        status: 'Active'
+      } as FlagDetail
+    } as FlagDetailDisplay;
+    component.flagForSummaryDisplay = flag;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
+    fixture.detectChanges();
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    expect(summaryListValues[0].textContent).toContain(flag.partyName);
+    // The otherDescription field is expected to be shown verbatim because otherDescription for Welsh is shown separately
+    expect(summaryListValues[1].textContent).toContain(
+      `${flag.flagDetail.name_cy} - ${flag.flagDetail.otherDescription} - ${flag.flagDetail.subTypeValue_cy}`);
+    expect(summaryListValues[2].textContent).toContain(flag.flagDetail.otherDescription_cy);
   });
 });

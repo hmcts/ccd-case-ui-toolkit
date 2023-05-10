@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { RpxTranslationService } from 'rpx-xui-translation';
+import { Subscription } from 'rxjs';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
@@ -10,7 +12,7 @@ import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, Ca
   styleUrls: ['./manage-case-flags.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ManageCaseFlagsComponent implements OnInit {
+export class ManageCaseFlagsComponent implements OnInit, OnDestroy {
 
   private static readonly CASE_LEVEL_CASE_FLAGS_FIELD_ID = 'caseFlags';
 
@@ -26,8 +28,11 @@ export class ManageCaseFlagsComponent implements OnInit {
   public flagsDisplayData: FlagDetailDisplayWithFormGroupPath[];
   public flags: Flags;
   public noFlagsError = false;
+  public translation$: Subscription;
   public readonly selectedControlName = 'selectedManageCaseLocation';
   private readonly excludedFlagStatuses: CaseFlagStatus[] = [CaseFlagStatus.INACTIVE, CaseFlagStatus.NOT_APPROVED];
+
+  constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
   public ngOnInit(): void {
     this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
@@ -95,7 +100,13 @@ export class ManageCaseFlagsComponent implements OnInit {
 
   public getPartyName(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
     if (flagDisplay.pathToFlagsFormGroup && flagDisplay.pathToFlagsFormGroup === ManageCaseFlagsComponent.CASE_LEVEL_CASE_FLAGS_FIELD_ID) {
-      return 'Case level';
+      let caseLevelName = 'Case level';
+      if (this.rpxTranslationService.language === 'cy') {
+        this.translation$ = this.rpxTranslationService.getTranslation('Case level').subscribe(translation => {
+          caseLevelName = translation;
+        });
+      }
+      return caseLevelName;
     }
     if (flagDisplay.flagDetailDisplay.partyName) {
       return `${flagDisplay.flagDetailDisplay.partyName}`;
@@ -105,26 +116,35 @@ export class ManageCaseFlagsComponent implements OnInit {
 
   public getFlagName(flagDetail: FlagDetail): string {
     if (flagDetail && flagDetail.path && flagDetail.path.length > 1) {
+      // Currently, flag path values are stored in English only
       return flagDetail.path[1].value;
     }
-    if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
-      return flagDetail.subTypeValue;
-    }
-    return flagDetail.name;
+    return flagDetail.subTypeValue || flagDetail.subTypeValue_cy
+      ? this.rpxTranslationService.language === 'cy'
+        ? `${flagDetail.name_cy || flagDetail.name}, ${flagDetail.subTypeValue_cy || flagDetail.subTypeValue}`
+        : `${flagDetail.name || flagDetail.name_cy}, ${flagDetail.subTypeValue || flagDetail.subTypeValue_cy}`
+      : this.rpxTranslationService.language === 'cy'
+        ? flagDetail.name_cy || flagDetail.name
+        : flagDetail.name || flagDetail.name_cy;
   }
 
   public getFlagDescription(flagDetail: FlagDetail): string {
     /* istanbul ignore else */
     if (flagDetail && flagDetail.name) {
       /* istanbul ignore else */
-      if (flagDetail.name === 'Other' && flagDetail.otherDescription) {
-        return flagDetail.otherDescription;
+      if (flagDetail.name === 'Other' && flagDetail.otherDescription ||
+        flagDetail.name_cy === 'Arall' && flagDetail.otherDescription_cy) {
+        return this.rpxTranslationService.language === 'cy'
+          ? flagDetail.otherDescription_cy || flagDetail.otherDescription
+          : flagDetail.otherDescription || flagDetail.otherDescription_cy;
       }
-      /* istanbul ignore else */
-      if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
-        return flagDetail.subTypeValue;
-      }
-      return flagDetail.name;
+      return flagDetail.subTypeValue || flagDetail.subTypeValue_cy
+      ? this.rpxTranslationService.language === 'cy'
+        ? `${flagDetail.name_cy || flagDetail.name}, ${flagDetail.subTypeValue_cy || flagDetail.subTypeValue}`
+        : `${flagDetail.name || flagDetail.name_cy}, ${flagDetail.subTypeValue || flagDetail.subTypeValue_cy}`
+      : this.rpxTranslationService.language === 'cy'
+        ? flagDetail.name_cy || flagDetail.name
+        : flagDetail.name || flagDetail.name_cy;
     }
     return '';
   }
@@ -137,8 +157,10 @@ export class ManageCaseFlagsComponent implements OnInit {
   }
 
   public getFlagComments(flagDetail: FlagDetail): string {
-    if (flagDetail.flagComment) {
-      return ` (${flagDetail.flagComment})`;
+    if (flagDetail.flagComment || flagDetail.flagComment_cy) {
+      return this.rpxTranslationService.language === 'cy'
+        ? ` (${flagDetail.flagComment_cy || flagDetail.flagComment})`
+        : ` (${flagDetail.flagComment || flagDetail.flagComment_cy})`;
     }
     return '';
   }
@@ -167,6 +189,10 @@ export class ManageCaseFlagsComponent implements OnInit {
       default:
         return CaseFlagWizardStepTitle.NONE;
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.translation$?.unsubscribe();
   }
 
   private validateSelection(): void {

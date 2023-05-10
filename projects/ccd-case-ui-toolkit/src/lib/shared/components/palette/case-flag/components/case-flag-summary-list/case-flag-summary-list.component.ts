@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagSummaryListDisplayMode } from '../../enums';
 
@@ -27,6 +28,8 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public displayMode = CaseFlagSummaryListDisplayMode;
   public canDisplayStatus = false;
 
+  constructor(private readonly rpxTranslationService: RpxTranslationService) { }
+
   public ngOnInit(): void {
     if (this.flagForSummaryDisplay) {
       const flagDetail = this.flagForSummaryDisplay.flagDetail;
@@ -42,9 +45,19 @@ export class CaseFlagSummaryListComponent implements OnInit {
   }
 
   private getFlagDescription(flagDetail: FlagDetail): string {
+    let flagName: string;
+    let subTypeValue: string;
+    if (this.rpxTranslationService.language === 'cy') {
+      flagName = flagDetail.name_cy || flagDetail.name;
+      subTypeValue = flagDetail.subTypeValue_cy || flagDetail.subTypeValue;
+    } else {
+      flagName = flagDetail.name || flagDetail.name_cy;
+      subTypeValue = flagDetail.subTypeValue || flagDetail.subTypeValue_cy;
+    }
+    // The otherDescription field should be shown verbatim; otherDescription for Welsh is shown separately
     const otherDescription = flagDetail.otherDescription ? ` - ${flagDetail.otherDescription}` : '';
-    const subTypeValue = flagDetail.subTypeValue ? ` - ${flagDetail.subTypeValue}` : '';
-    return `${flagDetail.name}${otherDescription}${subTypeValue}`;
+    const subTypeValueForDisplay = subTypeValue ? ` - ${subTypeValue}` : '';
+    return `${flagName}${otherDescription}${subTypeValueForDisplay}`;
   }
 
   private getHeaderText(): string {

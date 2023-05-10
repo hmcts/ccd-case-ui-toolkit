@@ -17,7 +17,7 @@ export class FlagType {
   public Path: string[];
   public childFlags: FlagType[];
   public listOfValuesLength = 0;
-  public listOfValues: {key: string, value: string}[] = [];
+  public listOfValues: {key: string, value: string, value_cy: string}[] = [];
 
   public static searchPathByFlagTypeObject(singleFlag: FlagType, flags: FlagType[], path: FlagType[] = []): [FlagType | false, FlagType[]] {
     for (const flag of flags) {

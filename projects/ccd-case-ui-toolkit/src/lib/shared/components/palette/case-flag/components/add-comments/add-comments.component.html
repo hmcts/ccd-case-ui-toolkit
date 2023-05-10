@@ -1,5 +1,5 @@
 <ng-container [formGroup]="formGroup">
-  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="100">
+  <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
       <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" [for]="flagCommentsControlName">
           {{addCommentsTitle | rpxTranslate}}<span *ngIf="optional"> ({{'optional' | rpxTranslate}})</span>
@@ -10,11 +10,11 @@
       </div>
       <div id="flag-comments-not-entered-error-message" class="govuk-error-message"
         *ngIf="flagCommentsNotEnteredErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{flagCommentsNotEnteredErrorMessage | rpxTranslate}}
+        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagCommentsNotEnteredErrorMessage | rpxTranslate}}
       </div>
       <div id="add-comments-char-limit-error" class="govuk-error-message"
         *ngIf="flagCommentsCharLimitErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{flagCommentsCharLimitErrorMessage | rpxTranslate}}
+        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagCommentsCharLimitErrorMessage | rpxTranslate}}
       </div>
       <textarea class="govuk-textarea" [id]="flagCommentsControlName"
         [name]="flagCommentsControlName" [formControlName]="flagCommentsControlName" rows="5"
