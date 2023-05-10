@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CaseField } from '../../../../../domain/definition';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
 import { CaseView } from '../../../../../domain';
+import { CaseField } from '../../../../../domain/definition';
+import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLinkResponse, LinkedCasesResponse } from '../../domain/linked-cases.model';
-import { ActivatedRoute } from '@angular/router';
-import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
-import { Observable } from 'rxjs';
 import { LinkedCasesService } from '../../services';
 
 @Component({
