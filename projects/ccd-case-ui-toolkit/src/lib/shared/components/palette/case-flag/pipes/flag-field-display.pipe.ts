@@ -20,11 +20,10 @@ export class FlagFieldDisplayPipe extends AsyncPipe implements PipeTransform {
     super(ref);
   }
 
-  transform<T>(obj: Observable<T>|Subscribable<T>|Promise<T>): T|null;
-  transform<T>(obj: null|undefined): null;
-  transform<T>(obj: Observable<T>|Subscribable<T>|Promise<T>|null|undefined): T|null;
-  transform<T = FlagType | FlagDetail>(value: T, fieldName: string): string|null;
-  transform<T = FlagType | FlagDetail>(value: T, fieldName: string = ''): string|null {
+  public transform<T>(obj: null|undefined): null;
+  public transform<T>(obj: Observable<T>|Subscribable<T>|Promise<T>|null|undefined): T|null;
+  public transform<T = FlagType | FlagDetail>(value: T, fieldName: string): string|null;
+  public transform<T = FlagType | FlagDetail>(value: T, fieldName: string = ''): string|null {
     if (typeof value === 'object' && value.hasOwnProperty(fieldName)) {
       // Use a map from FlagType code + fieldName + fieldName_cy to an Observable returned by RpxTranslationService,
       // to keep track of which Observables exist already. This is to avoid problems with the async pipe, caused by a

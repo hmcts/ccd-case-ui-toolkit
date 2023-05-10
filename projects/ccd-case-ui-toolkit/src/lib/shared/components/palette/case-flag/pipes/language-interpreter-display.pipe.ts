@@ -19,11 +19,10 @@ export class LanguageInterpreterDisplayPipe extends AsyncPipe implements PipeTra
     super(ref);
   }
 
-  transform<T>(obj: Observable<T>|Subscribable<T>|Promise<T>): T|null;
-  transform<T>(obj: null|undefined): null;
-  transform<T>(obj: Observable<T>|Subscribable<T>|Promise<T>|null|undefined): T|null;
-  transform<T = Language>(value: T): string|null;
-  transform<T = Language>(value: T): string|null {
+  public transform<T>(obj: null|undefined): null;
+  public transform<T>(obj: Observable<T>|Subscribable<T>|Promise<T>|null|undefined): T|null;
+  public transform<T = Language>(value: T): string|null;
+  public transform<T = Language>(value: T): string|null {
     if (typeof value === 'object') {
       // Use a map from Language key to an Observable returned by RpxTranslationService, to keep track of which
       // Observables exist already. This is to avoid problems with the async pipe, caused by a new Observable being
