@@ -3,14 +3,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable, of } from 'rxjs';
-
 import { CaseEventData, CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
-
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEventTriggerComponent', () => {
@@ -68,38 +66,38 @@ describe('CaseEventTriggerComponent', () => {
   let fixture: ComponentFixture<CaseEventTriggerComponent>;
   let component: CaseEventTriggerComponent;
 
-  const CaseEditComponent: any = MockComponent({
+  const caseEditComponentMock: any = MockComponent({
     selector: 'ccd-case-edit',
     inputs: ['eventTrigger', 'submit', 'validate', 'caseDetails', 'saveDraft'],
     outputs: ['cancelled', 'submitted']
   });
 
-  const CaseActivityComponent: any = MockComponent({
+  const caseActivityComponentMock: any = MockComponent({
     selector: 'ccd-activity',
     inputs: ['caseId', 'displayMode']
   });
 
-  const CaseHeaderComponent: any = MockComponent({
+  const caseHeaderComponentMock: any = MockComponent({
     selector: 'ccd-case-header',
     inputs: ['caseDetails']
   });
 
-  const EventTriggerHeaderComponent: any = MockComponent({
+  const eventTriggerHeaderComponentMock: any = MockComponent({
     selector: 'ccd-event-trigger-header',
     inputs: ['eventTrigger']
   });
 
-  const FieldRead: any = MockComponent({
+  const fieldReadComponentMock: any = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField']
   });
 
-  const FieldWrite: any = MockComponent({
+  const fieldWriteComponentMock: any = MockComponent({
     selector: 'ccd-field-write',
     inputs: ['caseField', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
-  const RouterLinkComponent: any = MockComponent({
+  const routerLinkComponentMock: any = MockComponent({
     selector: 'a'
   });
 
@@ -152,16 +150,16 @@ describe('CaseEventTriggerComponent', () => {
           ReactiveFormsModule
         ],
         declarations: [
-          CaseEditComponent,
+          caseEditComponentMock,
           CaseEventTriggerComponent,
 
-          // Mock
-          CaseActivityComponent,
-          CaseHeaderComponent,
-          EventTriggerHeaderComponent,
-          RouterLinkComponent,
-          FieldRead,
-          FieldWrite,
+          // Mocks
+          caseActivityComponentMock,
+          caseHeaderComponentMock,
+          eventTriggerHeaderComponentMock,
+          routerLinkComponentMock,
+          fieldReadComponentMock,
+          fieldWriteComponentMock,
           CaseReferencePipe
         ],
         providers: [
@@ -199,7 +197,7 @@ describe('CaseEventTriggerComponent', () => {
 
     component.submitted({caseId: 123});
 
-    expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path]);
+    expect(router.navigate).toHaveBeenCalledWith([`/${URL_SEGMENTS[0].path}/${URL_SEGMENTS[1].path}`]);
   });
 
   it('should alert success message after navigation upon successful event creation', () => {
@@ -229,7 +227,7 @@ describe('CaseEventTriggerComponent', () => {
   it('should have a cancel button going back to the create case', () => {
     component.cancel();
 
-    expect(router.navigate).toHaveBeenCalledWith(['/' + URL_SEGMENTS[0].path + '/' + URL_SEGMENTS[1].path]);
+    expect(router.navigate).toHaveBeenCalledWith([`/${URL_SEGMENTS[0].path}/${URL_SEGMENTS[1].path}`]);
   });
 
   it('should cancel navigate to linked cases tab', () => {

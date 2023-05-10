@@ -18,11 +18,10 @@ import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils';
 import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
 
-
 describe('ReadOrganisationFieldTableComponent', () => {
   let component: ReadOrganisationFieldTableComponent;
   let fixture: ComponentFixture<ReadOrganisationFieldTableComponent>;
-  const FieldReadComponent = MockComponent({
+  const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
   });
@@ -117,8 +116,8 @@ describe('ReadOrganisationFieldTableComponent', () => {
         MarkdownComponent,
         ReadOrganisationFieldTableComponent,
         FieldsFilterPipe,
-        FieldReadComponent,
-        MockRpxTranslatePipe
+        MockRpxTranslatePipe,
+        fieldReadComponentMock
       ],
       providers: [
         PaletteService,

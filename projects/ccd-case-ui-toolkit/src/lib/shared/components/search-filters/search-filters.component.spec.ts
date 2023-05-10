@@ -501,7 +501,7 @@ describe('SearchFiltersComponent', () => {
     const complexFieldSearchInput = TEST_SEARCH_INPUTS[2];
     mockSearchService.getSearchInputs.and.returnValue(createObservableFrom([complexFieldSearchInput]));
 
-    const expectedFieldId = complexFieldSearchInput.field.id + '.' + complexFieldSearchInput.field.elementPath;
+    const expectedFieldId = `${complexFieldSearchInput.field.id}.${complexFieldSearchInput.field.elementPath}`;
 
     component.onCaseTypeIdChange();
     fixture.detectChanges();

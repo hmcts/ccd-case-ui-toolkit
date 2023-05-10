@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 /**
  * DTO to provide typing of the response from the Reference Data Common API for Case Flags data.
  *

@@ -8,9 +8,9 @@ function buildCaseField(id: string, properties: object, value?: any): CaseField 
     value
   }) as CaseField;
 }
-function getComplexField(id: string, complex_fields: CaseField[], value?: any): CaseField {
+function getComplexField(id: string, complexFields: CaseField[], value?: any): CaseField {
   return buildCaseField(id, {
-    field_type: { id: 'Complex', type: 'Complex', complex_fields }
+    field_type: { id: 'Complex', type: 'Complex', complex_fields: complexFields }
   }, value);
 }
 
@@ -29,7 +29,7 @@ describe('ReadFieldsFilterPipe', () => {
     type: 'INDIVIDUAL',
     individualFirstName: 'Aamir',
     individualLastName: 'Khan'
-  }
+  };
 
   const complexCaseField: CaseField = buildCaseField('ViewApplicationTab', {
     display_context: 'COMPLEX',
@@ -228,12 +228,11 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[2].hidden).toEqual(false);
   });
   it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field', () => {
-    const value1 = {
+    complexCaseField.value = {
       type: 'ORGANISATION',
       individualFirstName: 'Aamir',
       individualLastName: 'Khan'
-    }
-    complexCaseField.value = value1;
+    };
     const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true);
     expect(RESULT.length).toEqual(3);
     expect(RESULT[1].hidden).toEqual(true);

@@ -3,39 +3,37 @@ import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 describe('FieldTypeSanitiser', () => {
 
-  const VALUE_DYNAMIC_LIST = JSON.parse('{\n' +
-    '            "value": {\n' +
-    '              "code": "F",\n' +
-    '              "label": "Female"\n' +
-    '            },\n' +
-    '            "list_items": [\n' +
-    '              {\n' +
-    '                "code": "F",\n' +
-    '                "label": "Female"\n' +
-    '              },\n' +
-    '              {\n' +
-    '                "code": "M",\n' +
-    '                "label": "Male"\n' +
-    '              }' +
-    '            ]\n' +
-    '          }');
+  const VALUE_DYNAMIC_LIST = JSON.parse(`{
+            "value": {
+              "code": "F",
+              "label": "Female"
+            },
+            "list_items": [
+              {
+                "code": "F",
+                "label": "Female"
+              },
+              {
+                "code": "M",
+                "label": "Male"
+              }            ]
+          }`);
 
-  const EXPECTED_VALUE_DYNAMIC_LIST = JSON.parse('{\n' +
-    '            "value": {\n' +
-    '              "code": "M",\n' +
-    '              "label": "Male"\n' +
-    '            },\n' +
-    '            "list_items": [\n' +
-    '              {\n' +
-    '                "code": "F",\n' +
-    '                "label": "Female"\n' +
-    '              },\n' +
-    '              {\n' +
-    '                "code": "M",\n' +
-    '                "label": "Male"\n' +
-    '              }' +
-    '            ]\n' +
-    '          }');
+  const EXPECTED_VALUE_DYNAMIC_LIST = JSON.parse(`{
+            "value": {
+              "code": "M",
+              "label": "Male"
+            },
+            "list_items": [
+              {
+                "code": "F",
+                "label": "Female"
+              },
+              {
+                "code": "M",
+                "label": "Male"
+              }            ]
+          }`);
 
   const editForm = {
     data: {
@@ -96,6 +94,28 @@ describe('FieldTypeSanitiser', () => {
       field_type: {
         id: 'dynamicList',
         type: 'DynamicList',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: 'dynamicList',
+      label: 'DynamicMultiSelectList',
+      value: VALUE_DYNAMIC_LIST,
+      hint_text: null,
+      field_type: {
+        id: 'dynamicList',
+        type: 'DynamicMultiSelectList',
         min: null,
         max: null,
         regular_expression: null,

@@ -32,9 +32,7 @@ class FieldReadComponent {
 }
 
 describe('SearchResultComponent', () => {
-
   describe('with results', () => {
-
     const JURISDICTION: Jurisdiction = {
       id: 'TEST',
       name: 'Test',
@@ -56,8 +54,8 @@ describe('SearchResultComponent', () => {
       description: 'A test Case State'
     };
     const PAGINATION_METADATA: PaginationMetadata = {
-      total_results_count: 3,
-      total_pages_count: 1
+      totalResultsCount: 3,
+      totalPagesCount: 1
     };
     const METADATA_FIELDS: string[] = ['state'];
     const RESULT_VIEW: SearchResultView = {
@@ -194,6 +192,7 @@ describe('SearchResultComponent', () => {
             SearchResultComponent,
             SortSearchResultPipe,
             CaseReferencePipe,
+
             // Mocks
             PaginatePipe,
             MockRpxTranslatePipe,
@@ -256,7 +255,6 @@ describe('SearchResultComponent', () => {
 
     it('should render pagination controls if results and metadata not empty', () => {
       const pagination = de.queryAll(By.css('ccd-pagination'));
-
       expect(pagination.length).toBeTruthy();
     });
 
@@ -267,15 +265,14 @@ describe('SearchResultComponent', () => {
 
     it('should render the pagination limit warning ', () => {
       component.paginationMetadata = {
-        total_results_count: 10100,
-        total_pages_count: 500
+        totalResultsCount: 10100,
+        totalPagesCount: 500
       };
 
       expect(component.resultTotal).toBe(10000);
     });
 
     it('should render columns based on SearchResultView', () => {
-
       const headRow = de.query(By.css('div>table>thead>tr'));
       // added +1 for case activity column
       expect(headRow.children.length).toBe(RESULT_VIEW.columns.length + 1);
@@ -302,7 +299,6 @@ describe('SearchResultComponent', () => {
 
     it('should sort columns with higher order last', () => {
       const lastHeader = de.query(By.css('div>table>thead>tr th:nth-child(3)')).nativeElement.textContent.trim();
-
       expect(lastHeader.startsWith(RESULT_VIEW.columns[0].label)).toBe(true);
 
       const lastValue = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3)')).nativeElement.textContent.trim();
@@ -314,13 +310,11 @@ describe('SearchResultComponent', () => {
       expect(lastHeader.startsWith(RESULT_VIEW.columns[1].label)).toBe(true);
 
       const lastValue = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(1)')).nativeElement.textContent.trim();
-
       expect(lastValue.startsWith(RESULT_VIEW.results[1].case_fields['PersonLastName'])).toBe(true);
     });
 
     it('should render one row for each SearchResultViewItem', () => {
       const tbody = de.query(By.css('div>table>tbody'));
-
       expect(tbody.children.length).toEqual(RESULT_VIEW.results.length);
     });
 
@@ -357,7 +351,6 @@ describe('SearchResultComponent', () => {
 
     it('should render an case activity column with header', () => {
       const headRow = de.query(By.css('div>table>thead>tr th:nth-child(4)'));
-
       expect(headRow.nativeElement.textContent).toBe('');
     });
 
@@ -367,13 +360,11 @@ describe('SearchResultComponent', () => {
       fixture.detectChanges();
 
       const headRow = de.query(By.css('div>table>thead>tr th:nth-child(5)'));
-
       expect(headRow).toBeNull();
     });
 
     it('should not display error message when results present', () => {
       const error = de.query(By.css('div.notification'));
-
       expect(error).toBeFalsy();
     });
 
@@ -400,7 +391,7 @@ describe('SearchResultComponent', () => {
     it('should replace the caseLink url placeholders with a valid data', () => {
       const id = 'ID001';
       const url = component.prepareCaseLinkUrl(id);
-      expect(url).toBe('/case/' + JURISDICTION.id + '/' + CASE_TYPE.id + '/' + id);
+      expect(url).toBe(`/case/${JURISDICTION.id}/${CASE_TYPE.id}/${id}`);
     });
 
     it('should select correct page if new page triggered from outside', () => {
@@ -413,8 +404,8 @@ describe('SearchResultComponent', () => {
     it('should calculate correct values for first, last and total number of results', () => {
       component.draftsCount = 4;
       component.paginationMetadata = {
-        total_results_count: 105,
-        total_pages_count: 5
+        totalResultsCount: 105,
+        totalPagesCount: 5
       };
       component.ngOnChanges({ page: new SimpleChange(null, 5, true) });
       fixture.detectChanges();
@@ -430,7 +421,6 @@ describe('SearchResultComponent', () => {
 
     it('should render case reference value in first column with hyperlink if not draft and first column field value is null', () => {
       const fourthRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(1) a'));
-
       expect(fourthRowFirstCol.nativeElement.textContent.trim()).toBe(new CaseReferencePipe().transform(RESULT_VIEW.results[3].case_id));
     });
 
@@ -528,7 +518,6 @@ describe('SearchResultComponent', () => {
         supplementary_data: null
       };
       expect(component.isSelected(tempCaseItem)).toBeFalsy();
-
     });
 
     it('select all cases is enabled', () => {
@@ -746,13 +735,12 @@ describe('SearchResultComponent', () => {
       component.ngOnInit();
       expect(component.selectedCases.length).toEqual(2);
     });
-
   });
 
   describe('without results', () => {
     const PAGINATION_METADATA: PaginationMetadata = {
-      total_results_count: 0,
-      total_pages_count: 0
+      totalResultsCount: 0,
+      totalPagesCount: 0
     };
     const RESULT_VIEW: SearchResultView = {
       columns: [
@@ -823,6 +811,7 @@ describe('SearchResultComponent', () => {
             SearchResultComponent,
             SortSearchResultPipe,
             CaseReferencePipe,
+
             // Mocks
             PaginatePipe,
             MockRpxTranslatePipe,
@@ -857,16 +846,14 @@ describe('SearchResultComponent', () => {
 
     it('should display error message when no results', () => {
       const error = de.query(By.css('div.notification'));
-
       expect(error).toBeTruthy();
     });
 
     it('should not display table when no results', () => {
-      const NON_EMPTY_PAGINATION_METADATA: PaginationMetadata = {
-        total_results_count: 1,
-        total_pages_count: 1
+      component.paginationMetadata = {
+        totalResultsCount: 1,
+        totalPagesCount: 1
       };
-      component.paginationMetadata = NON_EMPTY_PAGINATION_METADATA;
 
       fixture.detectChanges();
 
@@ -886,11 +873,10 @@ describe('SearchResultComponent', () => {
     });
 
     it('should not display pagination controls when no results', () => {
-      const NON_EMPTY_PAGINATION_METADATA: PaginationMetadata = {
-        total_results_count: 1,
-        total_pages_count: 1
+      component.paginationMetadata = {
+        totalResultsCount: 1,
+        totalPagesCount: 1
       };
-      component.paginationMetadata = NON_EMPTY_PAGINATION_METADATA;
 
       fixture.detectChanges();
 
