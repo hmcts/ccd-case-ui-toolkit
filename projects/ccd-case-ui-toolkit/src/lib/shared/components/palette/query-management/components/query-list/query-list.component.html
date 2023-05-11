@@ -9,7 +9,7 @@
       <th scope="col" class="govuk-table__header">Last submitted by</th>
       <th scope="col" class="govuk-table__header">Last submission date</th>
       <th scope="col" class="govuk-table__header">Last response date</th>
-      <th scope="col" class="govuk-table__header">Response status</th>
+      <th scope="col" class="govuk-table__header">Response by</th>
     </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -22,7 +22,7 @@
       <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedBy }}</td>
       <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedDate | date: 'dd MMM YYYY' }}</td>
       <td class="govuk-table__cell query-list__cell">{{ message.lastResponseDate | date: 'dd MMM YYYY' }}</td>
-      <td class="govuk-table__cell query-list__cell">{{ message.responseStatus }}</td>
+      <td class="govuk-table__cell query-list__cell">{{ message.lastResponseBy }}</td>
     </tr>
     </tbody>
   </table>
