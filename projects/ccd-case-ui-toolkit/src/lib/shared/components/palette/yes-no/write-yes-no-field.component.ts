@@ -18,8 +18,4 @@ export class WriteYesNoFieldComponent extends AbstractFieldWriteComponent implem
   public ngOnInit() {
     this.yesNoControl = this.registerControl(new FormControl(this.yesNoService.format(this.caseField.value))) as FormControl;
   }
-
-  public toLowerCase(value: string) {
-    return value.toLowerCase();
-  }
 }
