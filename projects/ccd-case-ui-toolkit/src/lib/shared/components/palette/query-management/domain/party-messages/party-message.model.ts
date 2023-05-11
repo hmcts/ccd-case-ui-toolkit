@@ -1,4 +1,4 @@
-import { Document } from '../../../../domain/document/document-data.model';
+import { Document } from '../../../../../domain';
 
 export interface PartyMessage {
   id: string;
@@ -11,10 +11,4 @@ export interface PartyMessage {
   createdOn: Date;
   createdBy: string;
   parentId?: string;
-}
-
-export interface PartyMessages {
-  partyName: string;
-  roleOnCase: string;
-  partyMessages: PartyMessage[];
 }

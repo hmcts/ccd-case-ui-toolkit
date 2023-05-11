@@ -20,4 +20,10 @@
       padding-right: 10px;
     }
   }
+
+  &__cell {
+    &--first {
+      width: 33%;
+    }
+  }
 }
