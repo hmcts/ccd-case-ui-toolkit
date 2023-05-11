@@ -10,8 +10,7 @@ function coerceToBoolean(input: string | boolean): boolean {
   styleUrls: ['./pagination.component.scss']
 })
 export class PaginationComponent {
-  @Input()
-  public visibilityLabel: string;
+  @Input() public visibilityLabel: string;
   @Input() public id: string;
   @Input() public maxSize = 7;
   @Input() public previousLabel = 'Previous';
@@ -51,5 +50,23 @@ export class PaginationComponent {
 
   public set responsive(value: boolean) {
     this.pResponsive = coerceToBoolean(value);
+  }
+
+  public goToPage($event, p) {
+    const pageNumber: number = Number($event.target.value);
+
+    if ($event.target.value !== '' && pageNumber !== p.getCurrent()) {
+      if (pageNumber > 0) {
+        p.setCurrent(pageNumber);
+      } else if (pageNumber < 0) {
+        $event.target.value = (Math.abs(pageNumber)).toString();
+
+        if (Math.abs(pageNumber) !== p.getCurrent()) {
+          p.setCurrent(Math.abs(pageNumber));
+        }
+      } else {
+        $event.target.value = '';
+      }
+    }
   }
 }

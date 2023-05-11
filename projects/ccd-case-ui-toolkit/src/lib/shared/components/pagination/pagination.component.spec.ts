@@ -11,7 +11,6 @@ import locale from '@angular/common/locales/de';
 registerLocaleData(locale);
 
 describe('PaginationComponent:', () => {
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -142,19 +141,17 @@ describe('PaginationComponent:', () => {
     expect(controlsDirective.getCurrent()).toBe(2);
   }));
 
-  it('should highlight the currently-active page when currentPage is passed as a numeric string',
-    fakeAsync(() => {
-      const fixture = TestBed.createComponent(ComponentTestComponent);
-      const instance: ComponentTestComponent = fixture.componentInstance;
-      instance.config.currentPage = '2' as any;
-      fixture.detectChanges();
+  it('should highlight the currently-active page when currentPage is passed as a numeric string', fakeAsync(() => {
+    const fixture = TestBed.createComponent(ComponentTestComponent);
+    const instance: ComponentTestComponent = fixture.componentInstance;
+    instance.config.currentPage = '2' as any;
+    fixture.detectChanges();
 
-      const current: DebugElement = fixture.debugElement.query(By.css('.current'));
+    const current: DebugElement = fixture.debugElement.query(By.css('.current'));
 
-      expect(current).not.toBeNull();
-      expect(current.nativeElement.innerText).toContain('2');
-    })
-  );
+    expect(current).not.toBeNull();
+    expect(current.nativeElement.innerText).toContain('2');
+  }));
 
   it('should allow the pagination-controls to come before the PaginatePipe', () => {
     overrideTemplate(ComponentTestComponent, `
@@ -311,8 +308,81 @@ describe('PaginationComponent:', () => {
     expect(controlsCmp.responsive).toBe(true);
   });
 
-  describe('custom labels', () => {
+  describe('PaginationComponent', () => {
+    let component: PaginationComponent;
 
+    beforeEach(() => {
+      component = new PaginationComponent();
+    });
+
+    it('should update current page when valid page number entered', () => {
+      const mockPagination = {
+        getCurrent: () => 1,
+        setCurrent: jasmine.createSpy('setCurrent')
+      };
+      const mockEvent = {
+        target: {
+          value: '2'
+        }
+      };
+
+      component.goToPage(mockEvent, mockPagination);
+
+      expect(mockPagination.setCurrent).toHaveBeenCalledWith(2);
+    });
+
+    it('should update current page when negative page number entered', () => {
+      const mockPagination = {
+        getCurrent: () => 3,
+        setCurrent: jasmine.createSpy('setCurrent')
+      };
+      const mockEvent = {
+        target: {
+          value: '-2'
+        }
+      };
+
+      component.goToPage(mockEvent, mockPagination);
+
+      expect(mockEvent.target.value).toBe('2');
+      expect(mockPagination.setCurrent).toHaveBeenCalledWith(2);
+    });
+
+    it('should clear input when empty page number entered', () => {
+      const mockPagination = {
+        getCurrent: () => 5,
+        setCurrent: jasmine.createSpy('setCurrent')
+      };
+      const mockEvent = {
+        target: {
+          value: ''
+        }
+      };
+
+      component.goToPage(mockEvent, mockPagination);
+
+      expect(mockEvent.target.value).toBe('');
+      expect(mockPagination.setCurrent).not.toHaveBeenCalled();
+    });
+
+    it('should not update current page when same page number entered', () => {
+      const mockPagination = {
+        getCurrent: () => 4,
+        setCurrent: jasmine.createSpy('setCurrent')
+      };
+      const mockEvent = {
+        target: {
+          value: '4'
+        }
+      };
+
+      component.goToPage(mockEvent, mockPagination);
+
+      expect(mockPagination.setCurrent).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('custom labels', () => {
     const TEST_LABEL = 'pqowieur';
 
     it('previousLabel should bind in correct locations', fakeAsync(() => {
