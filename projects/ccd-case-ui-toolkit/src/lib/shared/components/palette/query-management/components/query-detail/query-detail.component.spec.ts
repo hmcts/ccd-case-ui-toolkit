@@ -1,8 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { QueryDetailComponent } from './query-detail.component';
 
-describe('QueryListComponent', () => {
+describe('QueryDetailComponent', () => {
   let component: QueryDetailComponent;
   let fixture: ComponentFixture<QueryDetailComponent>;
 

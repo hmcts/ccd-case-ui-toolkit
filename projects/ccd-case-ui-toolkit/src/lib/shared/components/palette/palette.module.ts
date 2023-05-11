@@ -80,6 +80,7 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -231,7 +232,8 @@ const PALETTE_COMPONENTS = [
     ScrollToModule.forRoot(),
     MatDialogModule,
     MediaViewerModule,
-    LoadingModule
+    LoadingModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     FixedListPipe,

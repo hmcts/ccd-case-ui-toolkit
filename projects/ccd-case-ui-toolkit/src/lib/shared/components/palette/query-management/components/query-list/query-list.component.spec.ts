@@ -1,7 +1,14 @@
-import { CUSTOM_ELEMENTS_SCHEMA, SimpleChange } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { PartyMessage, PartyMessagesGroup, QueryListData, QueryListItem } from '../../domain';
 import { QueryListComponent } from './query-list.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('QueryListComponent', () => {
   let component: QueryListComponent;
@@ -57,7 +64,7 @@ describe('QueryListComponent', () => {
 
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [QueryListComponent]
+      declarations: [QueryListComponent, RpxTranslateMockPipe]
     })
     .compileComponents();
   }));
