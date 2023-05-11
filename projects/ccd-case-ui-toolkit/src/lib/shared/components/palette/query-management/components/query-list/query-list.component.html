@@ -1,25 +1,29 @@
-<table class="govuk-table query-list__table">
-  <caption class="govuk-table__cell query-list__caption query-list__row">
-    <div>{{ partyMessages.partyName }}</div>
-  </caption>
-  <thead class="govuk-table__head">
-  <tr class="govuk-table__row query-list__row">
-    <th scope="col" class="govuk-table__header">Queries</th>
-    <th scope="col" class="govuk-table__header">Last submitted by</th>
-    <th scope="col" class="govuk-table__header">Last submission date</th>
-    <th scope="col" class="govuk-table__header">Last submitted response date</th>
-    <th scope="col" class="govuk-table__header">Response by</th>
-  </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-  <tr class="govuk-table__row query-list__row"
-      *ngFor="let message of partyMessages.partyMessages"
-  >
-    <td class="govuk-table__cell">{{ message.subject }}</td>
-    <td class="govuk-table__cell">{{ message.createdBy }}</td>
-    <td class="govuk-table__cell"></td>
-    <td class="govuk-table__cell"></td>
-    <td class="govuk-table__cell">{{ message.name }}</td>
-  </tr>
-  </tbody>
-</table>
+<ng-container *ngIf="queryListData">
+  <table class="govuk-table query-list__table">
+    <caption class="govuk-table__cell query-list__caption query-list__row">
+      <div>{{ queryListData.partyName }}</div>
+    </caption>
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row query-list__row">
+      <th scope="col" class="govuk-table__header">Queries</th>
+      <th scope="col" class="govuk-table__header">Last submitted by</th>
+      <th scope="col" class="govuk-table__header">Last submission date</th>
+      <th scope="col" class="govuk-table__header">Last response date</th>
+      <th scope="col" class="govuk-table__header">Response status</th>
+    </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row query-list__row"
+        *ngFor="let message of queryListData.partyMessages"
+    >
+      <td class="govuk-table__cell query-list__cell query-list__cell--first">
+        <a href="javascript:void(0)">{{ message.subject }}</a>
+      </td>
+      <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedBy }}</td>
+      <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedDate | date: 'dd MMM YYYY' }}</td>
+      <td class="govuk-table__cell query-list__cell">{{ message.lastResponseDate | date: 'dd MMM YYYY' }}</td>
+      <td class="govuk-table__cell query-list__cell">{{ message.responseStatus }}</td>
+    </tr>
+    </tbody>
+  </table>
+</ng-container>
