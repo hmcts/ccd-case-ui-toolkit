@@ -14,7 +14,9 @@
       <div class="multiple-choice">
         <input class="form-control" id="{{ createElementId(checkbox.code) }}" name="{{ id() }}" type="checkbox"
           [value]="checkbox.code" [checked]="isSelected(checkbox.code)" (change)="onCheckChange($event)">
-        <label class="form-label" for="{{ createElementId(checkbox.code) }}">{{checkbox.label}}</label>
+        <label class="form-label" for="{{ createElementId(checkbox.code) }}" >raw={{checkbox.label}}
+          <ccd-markdown [content]="checkbox.label"></ccd-markdown>
+        </label>
       </div>
 
     </ng-container>
