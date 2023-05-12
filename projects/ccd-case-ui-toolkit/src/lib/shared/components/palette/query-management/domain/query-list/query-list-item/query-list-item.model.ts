@@ -1,6 +1,5 @@
 import { Document } from '../../../../../../domain';
 import { PartyMessage } from '../../party-messages/party-message.model';
-import { QueryListResponseStatus } from '../query-list-response-status.enum';
 
 export class QueryListItem implements PartyMessage {
   public id: string;
@@ -13,16 +12,25 @@ export class QueryListItem implements PartyMessage {
   public createdOn: Date;
   public createdBy: string;
   public parentId?: string;
-  public children: PartyMessage[];
+  public children: QueryListItem[] = [];
 
-  private get lastSubmittedMessage(): PartyMessage {
-    if (this.children && this.children.length > 0) {
-      return this.children.reduce((prev, current) => {
-        return (prev.createdOn > current.createdOn) ? prev : current;
-      });
-    } else {
-      return this;
-    }
+  public get lastSubmittedMessage(): QueryListItem {
+    const getLastSubmittedMessage = (item: QueryListItem): QueryListItem => {
+      let lastSubmittedMessage: QueryListItem = item;
+
+      if (item.children && item.children.length > 0) {
+        for (const child of item.children) {
+          const childLastSubmittedMessage = getLastSubmittedMessage(child);
+          if (childLastSubmittedMessage.createdOn > lastSubmittedMessage.createdOn) {
+            lastSubmittedMessage = childLastSubmittedMessage;
+          }
+        }
+      }
+
+      return lastSubmittedMessage;
+    };
+
+    return getLastSubmittedMessage(this);
   }
 
   public get lastSubmittedBy(): string {
@@ -39,9 +47,5 @@ export class QueryListItem implements PartyMessage {
 
   public get lastResponseDate(): Date | null {
     return this.children?.length > 0 ? new Date(this.lastSubmittedMessage.createdOn) : null;
-  }
-
-  public get responseStatus(): QueryListResponseStatus {
-    return this.children?.length > 0 ? QueryListResponseStatus.RESPONDED : QueryListResponseStatus.NEW;
   }
 }

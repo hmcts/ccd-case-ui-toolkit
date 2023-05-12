@@ -43,6 +43,30 @@ describe('QueryListData', () => {
         createdBy: 'Person B',
         parentId: '111-111',
       },
+      {
+        id: '444-444',
+        subject: 'Subject 4',
+        name: 'Name 4',
+        body: 'Body 4',
+        attachments: [],
+        isHearingRelated: false,
+        hearingDate: '',
+        createdOn: new Date(),
+        createdBy: 'Person B',
+        parentId: '333-333',
+      },
+      {
+        id: '555-555',
+        subject: 'Subject 5',
+        name: 'Name 5',
+        body: 'Body 5',
+        attachments: [],
+        isHearingRelated: false,
+        hearingDate: '',
+        createdOn: new Date(),
+        createdBy: 'Person B',
+        parentId: '444-444',
+      },
     ];
     partyMessagesGroups = {
       partyName: 'partyName',
@@ -55,13 +79,23 @@ describe('QueryListData', () => {
 
 
   it('should create an instance with the appropriate fields', () => {
+    expect(queryListData.partyMessages.length).toEqual(1);
     expect(queryListData.partyName).toEqual(partyMessagesGroups.partyName);
     expect(queryListData.roleOnCase).toEqual(partyMessagesGroups.roleOnCase);
   });
 
   it('should set children partyMessages appropriately', () => {
-    expect(queryListData.partyMessages.length).toEqual(1);
     expect(queryListData.partyMessages[0].children.length).toEqual(2);
     expect(queryListData.partyMessages[0].children[0].id).toEqual('222-222');
+  });
+
+  it('should set children of children partyMessages appropriately', () => {
+    const secondChildrenOfTheFirstParentMessage = queryListData.partyMessages[0].children[1];
+    expect(secondChildrenOfTheFirstParentMessage.children.length).toEqual(1);
+    expect(secondChildrenOfTheFirstParentMessage.children[0].id).toEqual('444-444');
+
+    const firstChildrenOfTheSecondChildrenOfTheFirstParentMessage = secondChildrenOfTheFirstParentMessage.children[0];
+    expect(firstChildrenOfTheSecondChildrenOfTheFirstParentMessage.children.length).toEqual(1);
+    expect(firstChildrenOfTheSecondChildrenOfTheFirstParentMessage.children[0].id).toEqual('555-555');
   });
 });

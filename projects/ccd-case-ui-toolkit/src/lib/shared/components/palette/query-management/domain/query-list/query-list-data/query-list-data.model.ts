@@ -13,15 +13,17 @@ export class QueryListData {
 
     // get the parent messages (messages without parentId) and add the children to them
     const parentMessages = partyMessagesGroup.partyMessages.filter((message: PartyMessage) => !message.parentId);
-    this.partyMessages = parentMessages.map((message: PartyMessage) => {
-      const parentMessage = new QueryListItem();
-      Object.assign(parentMessage, {
-        ...message,
-        children: partyMessagesGroup.partyMessages
-          .filter((childMessage: PartyMessage) => childMessage.parentId === message.id)
-      });
+    this.partyMessages = parentMessages.map((message: PartyMessage) => this.buildQueryListItem(message, partyMessagesGroup.partyMessages));
+  }
 
-      return parentMessage;
+  private buildQueryListItem(message: PartyMessage, allMessages: PartyMessage[]): QueryListItem {
+    const queryListItem = new QueryListItem();
+    Object.assign(queryListItem, {
+      ...message,
+      children: allMessages
+        .filter((childMessage: PartyMessage) => childMessage.parentId === message.id)
+        .map((childMessage: PartyMessage) => this.buildQueryListItem(childMessage, allMessages))
     });
+    return queryListItem;
   }
 }
