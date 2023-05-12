@@ -88,8 +88,7 @@ describe('QueryListItem', () => {
         }
       ]
     });
-    console.log(queryListItem.children[2].children[0]);
-    console.log('lastItem', queryListItem.lastSubmittedMessage);
+
     lastSubmittedBy = childrenItems[3];
   });
 
