@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2",
+  "version": "6.10.7-case-flags-v2-reasonable-adjustments-fixes",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -84,7 +84,7 @@
     "ngx-pagination": "5.1.1",
     "npm-registry-fetch": "^4.0.5",
     "pegjs": "^0.10.0",
-    "rpx-xui-translation": "^0.1.6",
+    "rpx-xui-translation": "^0.2.1",
     "rx-polling": "1.1.0",
     "rxjs": "^6.6.7",
     "rxjs-compat": "^6.6.7",
