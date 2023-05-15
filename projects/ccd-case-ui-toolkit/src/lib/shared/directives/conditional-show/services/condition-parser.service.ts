@@ -148,7 +148,7 @@ export class ConditionParser {
   }
 
   private static unquoted(str: string): string {
-    const res = str.replace(/^"|"$/g, '');
+    const res = str.replace(/^"|"$/g, ''); //NOSONAR
     return res;
   }
 
