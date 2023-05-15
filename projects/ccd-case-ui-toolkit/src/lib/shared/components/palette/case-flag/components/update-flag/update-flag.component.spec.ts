@@ -2,18 +2,20 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { RpxTranslationService } from 'rpx-xui-translation';
+import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
+import { BehaviorSubject } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage } from '../../enums';
+import { UpdateFlagTitleDisplayPipe } from '../../pipes';
 import { UpdateFlagComponent } from './update-flag.component';
-import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('UpdateFlagComponent', () => {
   let component: UpdateFlagComponent;
   let fixture: ComponentFixture<UpdateFlagComponent>;
   let nextButton: HTMLElement;
   let textareaInput: string;
-  let rpxTranslationServiceSpy: jasmine.SpyObj<RpxTranslationService>;
+  let mockRpxTranslationService: any;
   const activeFlag = {
     name: 'Flag 1',
     flagComment: 'First flag',
@@ -78,14 +80,24 @@ describe('UpdateFlagComponent', () => {
   } as FlagDetailDisplayWithFormGroupPath;
 
   beforeEach(waitForAsync(() => {
-    rpxTranslationServiceSpy = jasmine.createSpyObj('RpxTranslationService', ['']);
-    rpxTranslationServiceSpy.language = 'en';
+    const source = new BehaviorSubject<RpxLanguage>('en');
+    let currentLanguage: RpxLanguage = 'en';
+    mockRpxTranslationService = {
+      language$: source.asObservable(),
+      set language(lang: RpxLanguage) {
+        currentLanguage = lang;
+        source.next(lang);
+      },
+      get language() {
+        return currentLanguage;
+      }
+    };
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [UpdateFlagComponent, MockRpxTranslatePipe],
+      declarations: [UpdateFlagComponent, MockRpxTranslatePipe, UpdateFlagTitleDisplayPipe],
       providers: [
-        { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]
     })
     .compileComponents();
@@ -106,6 +118,8 @@ describe('UpdateFlagComponent', () => {
     // Deliberately omitted fixture.detectChanges() here to allow for a different selected flag to be set for each test
 
     nextButton = fixture.debugElement.query(By.css('#updateFlagNextButton')).nativeElement;
+    // Set default translation language to English
+    mockRpxTranslationService.language = 'en';
   });
 
   it('should create component', () => {
@@ -130,7 +144,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should populate the flag comments textarea from Welsh comments field when selected language is Welsh', () => {
-    rpxTranslationServiceSpy.language = 'cy';
+    mockRpxTranslationService.language = 'cy';
     selectedFlag1.flagDetailDisplay.flagDetail.flagComment = 'First flag';
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
@@ -140,7 +154,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should populate from English comments field when the selected language is Welsh but there are no Welsh comments', () => {
-    rpxTranslationServiceSpy.language = 'cy';
+    mockRpxTranslationService.language = 'cy';
     selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = null;
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
