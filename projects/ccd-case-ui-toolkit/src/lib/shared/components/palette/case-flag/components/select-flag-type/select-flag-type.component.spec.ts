@@ -518,6 +518,7 @@ describe('SelectFlagTypeComponent', () => {
 
   it('should set flag selection title using the stored Welsh value for a flag name if the selected language is Welsh', () => {
     mockRpxTranslationService.language = 'cy';
+    fixture.detectChanges();
     const flagTypeformControl = component.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
     flagTypeformControl.setValue(flagTypes[0].childFlags[0]);
     component.onNext();
@@ -528,6 +529,7 @@ describe('SelectFlagTypeComponent', () => {
 
   it('should set flag selection title using the stored English value for a flag name if none is available in Welsh', () => {
     mockRpxTranslationService.language = 'cy';
+    fixture.detectChanges();
     const flagTypeformControl = component.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
     flagTypeformControl.setValue(flagTypes[0].childFlags[0].childFlags[0]);
     component.onNext();
@@ -539,6 +541,7 @@ describe('SelectFlagTypeComponent', () => {
 
   it('should not change flag selection title if the user changes flag type selection but does not click "Next"', () => {
     mockRpxTranslationService.language = 'en';
+    fixture.detectChanges();
     const flagTypeformControl = component.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
     const flagTypeHeadingEl = fixture.debugElement.query(By.css('#flag-type-heading'));
     expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(CaseFlagWizardStepTitle.SELECT_CASE_FLAG);
@@ -549,6 +552,7 @@ describe('SelectFlagTypeComponent', () => {
 
   it('should change flag selection title if the user has previously selected a flag type and changes the page language', () => {
     mockRpxTranslationService.language = 'en';
+    fixture.detectChanges();
     const flagTypeformControl = component.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
     const flagTypeHeadingEl = fixture.debugElement.query(By.css('#flag-type-heading'));
     flagTypeformControl.setValue(flagTypes[0].childFlags[0]);
