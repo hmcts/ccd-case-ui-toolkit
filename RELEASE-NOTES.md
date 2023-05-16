@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.10.7-case-flags-v2-welsh-language-support-additional-rework
+### Version 6.10.7-case-flags-v2-welsh-language-support-additional-rework-2
 **EUI-8116** Additional rework of Welsh language support
 
 ### Version 6.10.7-case-flags-v2-reasonable-adjustments-fixes

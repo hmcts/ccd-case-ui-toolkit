@@ -7,6 +7,7 @@ import { CaseField } from '../../../../../domain';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
+import { ManageCaseFlagsLabelDisplayPipe } from '../../pipes';
 import { ManageCaseFlagsComponent } from './manage-case-flags.component';
 
 describe('ManageCaseFlagsComponent', () => {
@@ -156,7 +157,7 @@ describe('ManageCaseFlagsComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ManageCaseFlagsComponent, MockRpxTranslatePipe ],
+      declarations: [ ManageCaseFlagsComponent, MockRpxTranslatePipe, ManageCaseFlagsLabelDisplayPipe ],
       providers: [
         { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]
@@ -195,83 +196,6 @@ describe('ManageCaseFlagsComponent', () => {
     // The "Next" button should not be present if the error condition has been set
     const nextButtonElement = fixture.debugElement.nativeElement.querySelector('.button');
     expect(nextButtonElement).toBeNull();
-  });
-
-  it('should format the flag details (with comment) for display', () => {
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: 'Ann Peterson',
-        flagDetail: {
-          name: 'Language interpreter',
-          flagComment: 'Claimant does not speak English',
-          flagCode: '333'
-        }
-      },
-      pathToFlagsFormGroup: ''
-    } as FlagDetailDisplayWithFormGroupPath;
-    const displayLabel = component.processLabel(flagDisplay);
-    const flagDetail = flagDisplay.flagDetailDisplay.flagDetail;
-    expect(displayLabel).toEqual(`${flagDisplay.flagDetailDisplay.partyName} - <span class="flag-name-and-description">${flagDetail.name}</span> (${flagDetail.flagComment})`);
-  });
-
-  it('should format the flag details (without comment) for display', () => {
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: 'Ann Peterson',
-        flagDetail: {
-          name: 'Language interpreter',
-          flagCode: '333'
-        }
-      },
-      pathToFlagsFormGroup: ''
-    } as FlagDetailDisplayWithFormGroupPath;
-    const displayLabel = component.processLabel(flagDisplay);
-    expect(displayLabel).toEqual(`${flagDisplay.flagDetailDisplay.partyName} - <span class="flag-name-and-description">${flagDisplay.flagDetailDisplay.flagDetail.name}</span>`);
-  });
-
-  it('should format the flag details with child flags (with comment) for display', () => {
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: 'Ann Peterson',
-        flagDetail: {
-          name: 'Sign Language interpreter',
-          flagCode: '333',
-          path: [
-            { id: null, value: 'party' },
-            { id: null, value: 'Reasonable adjustment' },
-            { id: null, value: 'I need help communicating and understanding' }
-          ],
-          flagComment: 'Test comment'
-        }
-      },
-      pathToFlagsFormGroup: ''
-    } as FlagDetailDisplayWithFormGroupPath;
-    const displayLabel = component.processLabel(flagDisplay);
-    const flagDetail = flagDisplay.flagDetailDisplay.flagDetail;
-    expect(displayLabel).toEqual(
-      `${flagDisplay.flagDetailDisplay.partyName} - <span class="flag-name-and-description">${flagDetail.path[1].value}, ${flagDetail.name}</span> (${flagDetail.flagComment})`);
-  });
-
-  it('should format the flag details with child flags (without comment) for display', () => {
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: 'Ann Peterson',
-        flagDetail: {
-          name: 'Sign Language interpreter',
-          flagCode: '333',
-          path: [
-            { id: null, value: 'party' },
-            { id: null, value: 'Reasonable adjustment' },
-            { id: null, value: 'I need help communicating and understanding' }
-          ]
-        }
-      },
-      pathToFlagsFormGroup: ''
-    } as FlagDetailDisplayWithFormGroupPath;
-    const displayLabel = component.processLabel(flagDisplay);
-    const flagDetail = flagDisplay.flagDetailDisplay.flagDetail;
-    expect(displayLabel).toEqual(
-      `${flagDisplay.flagDetailDisplay.partyName} - <span class="flag-name-and-description">${flagDetail.path[1].value}, ${flagDetail.name}</span>`);
   });
 
   it('should map flag details to display model', () => {
@@ -346,8 +270,7 @@ describe('ManageCaseFlagsComponent', () => {
         },
         pathToFlagsFormGroup: '',
         caseField: flagsData[1].caseField,
-        roleOnCase: undefined,
-        label: 'Tom Atin - <span class="flag-name-and-description">Flag 3</span> (First flag)'
+        roleOnCase: undefined
       } as FlagDetailDisplayWithFormGroupPath
     });
     expect(component.errorMessages.length).toBe(0);
@@ -396,104 +319,8 @@ describe('ManageCaseFlagsComponent', () => {
     });
   });
 
-  it('should get correct party name', () => {
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: flagsData[2].flags.partyName,
-        flagDetail: flagsData[2].flags.details[0],
-        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
-      },
-      pathToFlagsFormGroup: 'caseFlags',
-      caseField: flagsData[2].caseField
-    } as FlagDetailDisplayWithFormGroupPath;
-    expect(component.getPartyName(flagDisplay)).toEqual('Case level');
-    flagDisplay.pathToFlagsFormGroup = null;
-    expect(component.getPartyName(flagDisplay)).toEqual('');
-  });
-
-  it('should get correct party name when page language is set to Welsh', () => {
-    mockRpxTranslationService.language = 'cy';
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: flagsData[2].flags.partyName,
-        flagDetail: flagsData[2].flags.details[0],
-        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
-      },
-      pathToFlagsFormGroup: 'caseFlags',
-      caseField: flagsData[2].caseField
-    } as FlagDetailDisplayWithFormGroupPath;
-    expect(component.getPartyName(flagDisplay)).toEqual('Dummy Welsh translation');
-    flagDisplay.pathToFlagsFormGroup = null;
-    expect(component.getPartyName(flagDisplay)).toEqual('');
-  });
-
-  it('should get correct flag name', () => {
-    let flagDetail = flagsData[2].flags.details[0];
-    expect(component.getFlagName(flagDetail)).toEqual('Level 2');
-    flagDetail = flagsData[3].flags.details[0];
-    expect(component.getFlagName(flagDetail)).toEqual('Flag 5, Dummy subtype value');
-    flagDetail = flagsData[0].flags.details[0];
-    expect(component.getFlagName(flagDetail)).toEqual('Flag 1');
-  });
-
-  it('should get correct flag name when page language is set to Welsh', () => {
-    mockRpxTranslationService.language = 'cy';
-    let flagDetail = flagsData[2].flags.details[0];
-    // Currently, flag path values are stored in English only
-    expect(component.getFlagName(flagDetail)).toEqual('Level 2');
-    flagDetail = flagsData[3].flags.details[0];
-    expect(component.getFlagName(flagDetail)).toEqual('Fflag 5, Dummy subtype value - Welsh');
-    flagDetail = flagsData[0].flags.details[0];
-    // No Welsh flag name is available (undefined name_cy), so fall back on English name
-    expect(component.getFlagName(flagDetail)).toEqual('Flag 1');
-  });
-
-  it('should get party role on case', () => {
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: flagsData[2].flags.partyName,
-        flagDetail: flagsData[2].flags.details[0],
-        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
-      },
-      pathToFlagsFormGroup: '',
-      caseField: flagsData[2].caseField,
-      roleOnCase: 'Applicant'
-    } as FlagDetailDisplayWithFormGroupPath;
-    expect(component.getRoleOnCase(flagDisplay)).toEqual(' (Applicant)');
-  });
-
-  it('should get flag comment', () => {
-    expect(component.getFlagComments(flagsData[3].flags.details[0])).toEqual(' (Fifth flag)');
-  });
-
-  it('should get flag comment when page language is set to Welsh', () => {
-    mockRpxTranslationService.language = 'cy';
-    expect(component.getFlagComments(flagsData[3].flags.details[0])).toEqual(' (Fifth flag - Welsh)');
-    // No Welsh flag comment is available (undefined flagComment_cy), so fall back on English comment
-    expect(component.getFlagComments(flagsData[2].flags.details[0])).toEqual(' (Fourth flag)');
-  });
-
   it('should set Manage Case Flags component title correctly', () => {
     expect(component.setManageCaseFlagTitle(updateMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
     expect(component.setManageCaseFlagTitle(updateExternalMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
-  });
-
-  it('should unsubscribe from any Observables when the component is destroyed', () => {
-    mockRpxTranslationService.language = 'cy';
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: flagsData[2].flags.partyName,
-        flagDetail: flagsData[2].flags.details[0],
-        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
-      },
-      pathToFlagsFormGroup: 'caseFlags',
-      caseField: flagsData[2].caseField
-    } as FlagDetailDisplayWithFormGroupPath;
-    // Trigger subscription to RpxTranslationService.getTranslation() Observable by calling getPartyName()
-    component.getPartyName(flagDisplay);
-    spyOn(component.translation$, 'unsubscribe');
-    expect(component.translation$).toBeTruthy();
-    component.ngOnDestroy();
-    expect(component.translation$.unsubscribe).toHaveBeenCalled();
   });
 });

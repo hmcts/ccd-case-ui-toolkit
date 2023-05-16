@@ -46,6 +46,7 @@ import {
   FlagFieldDisplayPipe,
   LanguageInterpreterDisplayPipe,
   ManageCaseFlagsComponent,
+  ManageCaseFlagsLabelDisplayPipe,
   ReadCaseFlagFieldComponent,
   SearchLanguageInterpreterComponent,
   SelectFlagLocationComponent,
@@ -251,6 +252,7 @@ const PALETTE_COMPONENTS = [
     DocumentUrlPipe,
     FlagFieldDisplayPipe,
     LanguageInterpreterDisplayPipe,
+    ManageCaseFlagsLabelDisplayPipe,
     UpdateFlagTitleDisplayPipe,
     ...PALETTE_COMPONENTS
   ],

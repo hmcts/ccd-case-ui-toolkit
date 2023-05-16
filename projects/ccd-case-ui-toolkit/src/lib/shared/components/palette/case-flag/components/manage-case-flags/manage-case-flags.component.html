@@ -14,7 +14,7 @@
         <div class="govuk-radios__item" *ngFor="let flagDisplay of flagsDisplayData; index as i">
           <input class="govuk-radios__input" id="flag-selection-{{i}}" [name]="selectedControlName"
             type="radio" [value]="flagDisplay" [formControlName]="selectedControlName"/>
-          <label class="govuk-label govuk-radios__label" for="flag-selection-{{i}}" [innerHtml]="flagDisplay.label"></label>
+          <label class="govuk-label govuk-radios__label" for="flag-selection-{{i}}" [innerHtml]="flagDisplay | manageCaseFlagsLabelDisplay"></label>
         </div>
       </div>
     </fieldset>
