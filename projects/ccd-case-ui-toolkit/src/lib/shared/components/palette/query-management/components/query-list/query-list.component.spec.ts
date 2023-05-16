@@ -242,4 +242,5 @@ describe('QueryListComponent', () => {
       expect(component.sortWidget(col)).toEqual('&#11047;');
     });
   });
+
 });
