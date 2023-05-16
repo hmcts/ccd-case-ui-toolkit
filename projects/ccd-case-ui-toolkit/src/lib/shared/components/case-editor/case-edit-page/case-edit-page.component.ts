@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { CaseEditDataService } from '../../../commons/case-edit-data';
+import { CaseEditDataService, CaseEditValidationError } from '../../../commons/case-edit-data';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
@@ -24,7 +24,7 @@ import { PageValidationService } from '../services/page-validation.service';
 @Component({
   selector: 'ccd-case-edit-page',
   templateUrl: 'case-edit-page.html',
-  styleUrls: ['./case-edit-page.scss']
+  styleUrls: ['./case-edit-page.scss'],
 })
 export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
@@ -50,7 +50,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public formValuesChanged = false;
   public pageChangeSubject: Subject<boolean> = new Subject();
   public caseFields: CaseField[];
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: CaseEditValidationError[] = [];
   public showSpinner: boolean;
   public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isLinkedCasesJourneyAtFinalStep: boolean;
@@ -176,16 +176,16 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
             }
           }
           if (fieldElement.hasError('required')) {
-            this.caseEditDataService.addFormValidationError({ id, message: `${label} is required` });
+            this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
             fieldElement.markAsDirty();
           } else if (fieldElement.hasError('pattern')) {
-            this.caseEditDataService.addFormValidationError({ id, message: `${label} is not valid` });
+            this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is not valid`, label });
             fieldElement.markAsDirty();
           } else if (fieldElement.hasError('minlength')) {
-            this.caseEditDataService.addFormValidationError({ id, message: `${label} is below the minimum length` });
+            this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is below the minimum length`, label });
             fieldElement.markAsDirty();
           } else if (fieldElement.hasError('maxlength')) {
-            this.caseEditDataService.addFormValidationError({ id, message: `${label} exceeds the maximum length` });
+            this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% exceeds the maximum length`, label });
             fieldElement.markAsDirty();
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
@@ -491,5 +491,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.caseEditDataService.caseFormValidationErrors$.subscribe({
       next: (validationErrors) => this.validationErrors = validationErrors
     });
+  }
+
+  public getRpxTranslatePipeArgs(fieldLabel: string) {
+    return fieldLabel ? ({ FIELDLABEL: fieldLabel }) : null;
   }
 }

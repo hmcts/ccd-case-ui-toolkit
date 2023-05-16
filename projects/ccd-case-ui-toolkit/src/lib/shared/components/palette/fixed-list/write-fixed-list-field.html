@@ -4,7 +4,9 @@
     <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel) | rpxTranslate}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" *ngIf="fixedListFormControl.errors && (fixedListFormControl.dirty || fixedListFormControl.touched)">{{(fixedListFormControl.errors | ccdFirstError:caseField.label) | rpxTranslate}}</span>
+  <span class="error-message" *ngIf="fixedListFormControl.errors && (fixedListFormControl.dirty || fixedListFormControl.touched)">
+    {{ fixedListFormControl.errors | ccdFirstError:caseField.label }}
+  </span>
 
   <select class="form-control ccd-dropdown bottom-30" [id]="id()" [formControl]="fixedListFormControl">
     <option [ngValue]=null>--Select a value--</option>

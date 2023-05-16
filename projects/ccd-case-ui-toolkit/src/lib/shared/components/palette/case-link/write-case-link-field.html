@@ -3,6 +3,8 @@
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel | rpxTranslate}}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" *ngIf="caseReferenceControl.errors && (caseReferenceControl.dirty || caseReferenceControl.touched)">{{caseReferenceControl.errors | ccdFirstError:caseField.label | rpxTranslate}}</span>
+  <span class="error-message" *ngIf="caseReferenceControl.errors && (caseReferenceControl.dirty || caseReferenceControl.touched)">
+    {{ caseReferenceControl.errors | ccdFirstError:caseField.label }}
+  </span>
   <input class="form-control bottom-30" [id]="id()" type="text" [formControl]="caseReferenceControl">
 </div>
