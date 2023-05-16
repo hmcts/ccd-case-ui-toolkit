@@ -90,4 +90,12 @@ describe('FirstErrorPipe', () => {
 
     expect(message).toBe(`${FIELD_LABEL} exceeds the maximum length`);
   });
+
+  it('should return exact error along with label name when field value is not valid date', () => {
+    const message = firstError.transform({
+      matDatetimePickerParse: true
+    }, FIELD_LABEL);
+
+    expect(message).toBe(`The date entered is not valid. Please provide a valid date`);
+  });
 });
