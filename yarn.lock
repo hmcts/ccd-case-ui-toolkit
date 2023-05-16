@@ -2525,6 +2525,7 @@ __metadata:
     rollup-plugin-commonjs: ^9.1.8
     rollup-plugin-node-resolve: ^3.0.0
     rollup-plugin-typescript: ^1.0.0
+    rpx-xui-translation: 0.2.1
     rx-polling: 1.1.0
     rxjs: ^6.6.7
     rxjs-compat: ^6.6.7
@@ -9444,6 +9445,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dexie@npm:^3.2.2":
+  version: 3.2.3
+  resolution: "dexie@npm:3.2.3"
+  checksum: 54fd7bc94364ed601dc2d53f8b488e49ac61d4ec532f001a68fde9ffccb4bf3c6a8af310b41d8f52c94c1a99c0e165437d7b223b655df582ceda90b9bfcd60e7
+  languageName: node
+  linkType: hard
+
 "dfa@npm:^1.2.0":
   version: 1.2.0
   resolution: "dfa@npm:1.2.0"
@@ -15486,6 +15494,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^2.4.0":
+  version: 2.5.2
+  resolution: "luxon@npm:2.5.2"
+  checksum: d8b671ffd2ff0b438af862ac11082a81b3aedd9f8b6a4ca636f944224f8dd381125cd4d274ca0a8aedcaf2cfca0fc2ca96fe4cc1b16a28b7af701afb95c0bff8
+  languageName: node
+  linkType: hard
+
 "lz-string@npm:^1.4.4":
   version: 1.4.4
   resolution: "lz-string@npm:1.4.4"
@@ -20574,6 +20589,20 @@ proxy-middleware@latest:
   bin:
     rollup: dist/bin/rollup
   checksum: 6a2bf167b3587d4df709b37d149ad0300692cc5deb510f89ac7bdc77c8738c9546ae3de9322b0968e1ed2b0e984571f5f55aae28fa7de4cfcb1bc5402a4e2be6
+  languageName: node
+  linkType: hard
+
+"rpx-xui-translation@npm:0.2.1":
+  version: 0.2.1
+  resolution: "rpx-xui-translation@npm:0.2.1"
+  dependencies:
+    dexie: ^3.2.2
+    luxon: ^2.4.0
+    tslib: ^1.10.0
+  peerDependencies:
+    "@angular/common": ^9.1.13
+    "@angular/core": ^9.1.13
+  checksum: 79f0e08bfee4e20710f8175d0e32091630b75150d37e047ad7048f638889740c567f5f81df75e5c360df7eedb3d2784c595e1368fd3191775f8fbbd1e9d4f2b4
   languageName: node
   linkType: hard
 

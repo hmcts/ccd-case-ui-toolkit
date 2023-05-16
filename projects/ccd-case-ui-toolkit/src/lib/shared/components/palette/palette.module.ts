@@ -15,6 +15,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
@@ -231,7 +232,8 @@ const PALETTE_COMPONENTS = [
     ScrollToModule.forRoot(),
     MatDialogModule,
     MediaViewerModule,
-    LoadingModule
+    LoadingModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     FixedListPipe,

@@ -1,6 +1,6 @@
-import { PartyMessages } from '../domain';
+import { PartyMessagesGroup } from '../domain';
 
-export const partyMessagesMockData: PartyMessages[] = [
+export const partyMessagesMockData: PartyMessagesGroup[] = [
   {
     partyName: 'John Smith - Appellant',
     roleOnCase: null,
