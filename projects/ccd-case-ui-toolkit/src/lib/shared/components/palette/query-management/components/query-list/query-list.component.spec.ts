@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SortOrder } from '../../../complex/sort-order';
-import { PartyMessage, PartyMessagesGroup, QueryListData, QueryListItem, column } from '../../domain';
+import { PartyMessage, PartyMessagesGroup, QueryListData, QueryListItem, queryListColumn } from '../../domain';
 import { QueryListComponent } from './query-list.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -153,7 +153,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by subject in Ascending order if sortorder is unsorted', () => {
-      const col: column = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.UNSORTED }
+      const col: queryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.UNSORTED }
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
@@ -161,7 +161,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by subject in Descending order if sortorder is Ascending', () => {
-      const col: column = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.ASCENDING }
+      const col: queryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.ASCENDING }
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => (a[col.name] > b[col.name]) ? 1 : -1);
@@ -169,7 +169,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by subject in Ascending order if sortorder is Descending', () => {
-      const col: column = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.DESCENDING }
+      const col: queryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.DESCENDING }
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
@@ -177,7 +177,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by response date in Ascending order if sortorder is unsorted', () => {
-      const col: column = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED }
+      const col: queryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED }
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
@@ -185,7 +185,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by response date in Descending order if sortorder is Ascending', () => {
-      const col: column = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.ASCENDING }
+      const col: queryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.ASCENDING }
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
@@ -193,7 +193,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by response date in Ascending order if sortorder is Descending', () => {
-      const col: column = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.DESCENDING }
+      const col: queryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.DESCENDING }
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => b[col.name] - a[col.name]);
