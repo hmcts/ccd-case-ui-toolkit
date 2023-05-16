@@ -28,18 +28,21 @@ export class FirstErrorPipe implements PipeTransform {
 
     const fieldLabel = this.rpxTranslationPipe.transform(args);
 
+    let errorMessage: string;
     if (keys[0] === 'required') {
-      return this.rpxTranslationPipe.transform('%FIELDLABEL% is required', { FIELDLABEL: fieldLabel });
+      errorMessage = '%FIELDLABEL% is required';
     } else if (keys[0] === 'pattern') {
-      return this.rpxTranslationPipe.transform('The data entered is not valid for %FIELDLABEL%', { FIELDLABEL: fieldLabel });
+      errorMessage = 'The data entered is not valid for %FIELDLABEL%';
     } else if (keys[0] === 'minlength') {
-      return this.rpxTranslationPipe.transform('%FIELDLABEL% is below the minimum length', { FIELDLABEL: fieldLabel });
+      errorMessage = '%FIELDLABEL% is below the minimum length';
     } else if (keys[0] === 'maxlength') {
-      return this.rpxTranslationPipe.transform('%FIELDLABEL% exceeds the maximum length', { FIELDLABEL: fieldLabel });
+      errorMessage = '%FIELDLABEL% exceeds the maximum length';
     } else if (value.hasOwnProperty('matDatetimePickerParse')) {
-      return this.rpxTranslationPipe.transform('The date entered is not valid. Please provide a valid date');
+      errorMessage = 'The date entered is not valid. Please provide a valid date';
+    } else {
+      errorMessage = value[keys[0]];
     }
 
-    return value[keys[0]];
+    return this.rpxTranslationPipe.transform(errorMessage, { FIELDLABEL: fieldLabel });
   }
 }
