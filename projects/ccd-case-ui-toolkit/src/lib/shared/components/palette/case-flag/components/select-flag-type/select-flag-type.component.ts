@@ -99,7 +99,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
         .subscribe({
           next: flagTypes => {
             // First (and only) object in the returned array should be the top-level "Party" flag type
-            this.flagTypes = flagTypes[0].childFlags;
+            // The "Other" flag type should be removed from the top level if the user is external
+            this.flagTypes = flagTypes[0].childFlags.filter(flag =>
+              this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
 
             const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
             if (formControl?.value) {
@@ -128,7 +130,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
         .subscribe({
           next: flagTypes => {
             // First (and only) object in the returned array should be the top-level "Party" flag type
-            this.flagTypes = flagTypes[0].childFlags;
+            // The "Other" flag type should be removed from the top level if the user is external
+            this.flagTypes = flagTypes[0].childFlags.filter(flag =>
+              this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
 
             const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
             if (formControl?.value) {

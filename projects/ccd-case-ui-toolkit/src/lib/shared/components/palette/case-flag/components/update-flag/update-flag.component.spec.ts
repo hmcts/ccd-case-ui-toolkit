@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage } from '../../enums';
+import { UpdateFlagTitleDisplayPipe } from '../../pipes';
 import { UpdateFlagComponent } from './update-flag.component';
 
 describe('UpdateFlagComponent', () => {
@@ -94,7 +95,7 @@ describe('UpdateFlagComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [UpdateFlagComponent, MockRpxTranslatePipe],
+      declarations: [UpdateFlagComponent, MockRpxTranslatePipe, UpdateFlagTitleDisplayPipe],
       providers: [
         { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]

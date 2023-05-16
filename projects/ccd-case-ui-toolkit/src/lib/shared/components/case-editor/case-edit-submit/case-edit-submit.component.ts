@@ -392,7 +392,15 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public showEventNotes(): boolean {
-    return this.eventTrigger.show_event_notes !== false;
+    // Display event notes related controls only if the following conditions are met
+    // 1. show_event_notes flag is set to true
+    // 2. profile is not a solicitor
+    // 3. is not a case flags journey, as it uses a custom check your answers component
+    if (this.eventTrigger.show_event_notes) {
+      return !this.profile?.isSolicitor()
+        && !this.caseFlagField;
+    }
+    return false;
   }
 
   private getLastPageShown(): WizardPage {
@@ -424,10 +432,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public canShowFieldInCYA(field: CaseField): boolean {
     return field.show_summary_change_option;
-  }
-
-  public isSolicitor(): boolean {
-    return this.profile.isSolicitor();
   }
 
   private buildConfirmation(response: object): Confirmation {

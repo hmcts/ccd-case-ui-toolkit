@@ -198,7 +198,8 @@ describe('SelectFlagTypeComponent', () => {
     component.caseTypeId = caseTypeId;
     component.formGroup = new FormGroup({});
     component.isDisplayContextParameterExternal = false;
-    fixture.detectChanges();
+    // Deliberately omitted fixture.detectChanges() here to allow for setting isDisplayContextParameterExternal to
+    // "true" for one test that needs to run as if the user is external
   });
 
   it('should create component', () => {
@@ -206,6 +207,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should set selected flag type if radio button selected for "Other"', () => {
+    fixture.detectChanges();
     // Third radio button (with index 2) expected to be "Other" from test data
     const radioOtherElement = fixture.debugElement.nativeElement.querySelector('#flag-type-2');
     radioOtherElement.click();
@@ -214,13 +216,27 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should set selected flag type if radio button selected but not for "Other"', () => {
+    fixture.detectChanges();
     const radioElement = fixture.debugElement.nativeElement.querySelector('#flag-type-0');
     radioElement.click();
     expect(component.selectedFlagType).toEqual(flagTypes[0].childFlags[0]);
     expect(component.otherFlagTypeSelected).toBe(false);
   });
 
+  it('should not display "Other" flag type if user is external', () => {
+    component.isDisplayContextParameterExternal = true;
+    fixture.detectChanges();
+    const radioElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input');
+    // Only two flag types expected; "Other" flag type expected not to be present
+    expect(radioElements.length).toBe(2);
+    radioElements[0].click();
+    expect(component.selectedFlagType.name).toEqual('Reasonable adjustment');
+    radioElements[1].click();
+    expect(component.selectedFlagType.name).toEqual('Potentially suicidal');
+  });
+
   it('should emit to parent if the validation succeeds and a parent flag type is selected', () => {
+    fixture.detectChanges();
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
@@ -236,6 +252,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should emit to parent if the validation succeeds and a non-parent flag type is selected', () => {
+    fixture.detectChanges();
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     // Second radio button (with index 1) expected to be "Potentially suicidal" from test data; flag type is a non-parent
@@ -253,6 +270,7 @@ describe('SelectFlagTypeComponent', () => {
   // Test excluded; currently failing with error ExpressionChangedAfterItHasBeenCheckedError due to caching current FlagType
   // selection, which comes from a FormControl value, and multiple fixture.detectChanges() calls
   xit('should emit to parent with a list of values if a flag type that has a list of values is selected', () => {
+    fixture.detectChanges();
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
@@ -277,6 +295,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should emit "flag comments optional" event to parent if comments for the selected flag type are optional', () => {
+    fixture.detectChanges();
     spyOn(component.flagCommentsOptionalEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     // Second radio button (with index 1) expected to be "Potentially suicidal" from test data; comments optional for this flag type
@@ -287,6 +306,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should not emit "flag comments optional" event to parent if an intermediate (non-child) flag type is selected', () => {
+    fixture.detectChanges();
     spyOn(component.flagCommentsOptionalEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
@@ -297,6 +317,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should not emit "flag comments optional" event to parent if comments for the selected flag type are mandatory', () => {
+    fixture.detectChanges();
     spyOn(component.flagCommentsOptionalEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     // Third radio button (with index 2) expected to be "Other" from test data; comments mandatory for this flag type
@@ -307,6 +328,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should fail validation if no flag type is selected', () => {
+    fixture.detectChanges();
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('.button').click();
@@ -326,6 +348,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should fail if a flag type with children is selected and then no option is selected on next screen', () => {
+    fixture.detectChanges();
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     component.formGroup.get(CaseFlagFormFields.FLAG_TYPE).setValue(flagTypes[0].childFlags[0]);
@@ -345,6 +368,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should fail validation if "Other" flag type selected and description not entered', () => {
+    fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
     fixture.detectChanges();
@@ -357,6 +381,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should fail validation if "Other" flag type selected and description entered is more than 80 characters', () => {
+    fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-type-2').click();
     fixture.detectChanges();
@@ -372,6 +397,7 @@ describe('SelectFlagTypeComponent', () => {
   });
 
   it('should load the list of child flag types and reset current selection if selected flag type is a parent', () => {
+    fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
     // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
     nativeElement.querySelector('#flag-type-0').click();
@@ -473,6 +499,7 @@ describe('SelectFlagTypeComponent', () => {
   // selection, which comes from a FormControl value, and multiple fixture.detectChanges() calls
   xit('should cache selected flag type from the FormControl on every onNext() call and display its name as title subsequently', () => {
     mockRpxTranslationService.language = 'en';
+    fixture.detectChanges();
     const flagTypeformControl = component.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
     const flagTypeHeadingEl = fixture.debugElement.query(By.css('#flag-type-heading'));
     flagTypeformControl.setValue(flagTypes[0].childFlags[0]);

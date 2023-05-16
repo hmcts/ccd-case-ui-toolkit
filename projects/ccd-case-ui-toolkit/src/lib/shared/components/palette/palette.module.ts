@@ -52,6 +52,7 @@ import {
   SelectFlagTypeComponent,
   UpdateFlagAddTranslationFormComponent,
   UpdateFlagComponent,
+  UpdateFlagTitleDisplayPipe,
   WriteCaseFlagFieldComponent
 } from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -250,6 +251,7 @@ const PALETTE_COMPONENTS = [
     DocumentUrlPipe,
     FlagFieldDisplayPipe,
     LanguageInterpreterDisplayPipe,
+    UpdateFlagTitleDisplayPipe,
     ...PALETTE_COMPONENTS
   ],
   exports: [

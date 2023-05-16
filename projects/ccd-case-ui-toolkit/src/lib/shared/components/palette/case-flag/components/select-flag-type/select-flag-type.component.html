@@ -17,9 +17,6 @@
       </div>
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
         <div class="govuk-radios__item" *ngFor="let flagType of flagTypes; index as i; trackBy: identifyFlagType">
-          <!-- All parent flag types have the same flagCode of "CATGRY", so each radio button value needs to be made
-            unique by appending the index - radio buttons shouldn't share the same value.
-            It is OK to amend flagCode this way because parent flag types cannot be selected as a final value -->
           <input class="govuk-radios__input" id="flag-type-{{i}}" [name]="caseFlagFormField.FLAG_TYPE"
             type="radio" [value]="flagType"
             [formControlName]="caseFlagFormField.FLAG_TYPE"/>

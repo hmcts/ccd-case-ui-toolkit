@@ -2,6 +2,13 @@
 ### Version 6.10.7-case-flags-v2-welsh-language-support-additional-rework
 **EUI-8116** Additional rework of Welsh language support
 
+### Version 6.10.7-case-flags-v2-reasonable-adjustments-fixes
+**EUI-8370** Ensure "Other" support type is not shown at the top-level selection when the user is external
+**EUI-8371** Show details of the selected support being updated when the user is external
+
+### Version 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2
+**EUI-8246** Reasonable Adjustments legal rep hide Event Summary and Event Description section on CYA page
+
 ### Version 6.10.7-case-flags-v2-view-case-flags-ui-amendments-v2
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types (ported from Case Flags v1)
 **EUI-8070** Display "decision reason" (flag update comment) for "Not approved" flags to internal HMCTS users only
