@@ -234,9 +234,9 @@ describe('QueryListComponent', () => {
     });
 
     it('sortWidget - should return correct code', () => {
-      const col: queryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING }    
+      const col: queryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING }
       expect(component.sortWidget(col)).toEqual('&#9660;');
-      col.sortOrder = SortOrder.ASCENDING;   
+      col.sortOrder = SortOrder.ASCENDING;
       expect(component.sortWidget(col)).toEqual('&#9650;');
       col.sortOrder = SortOrder.UNSORTED;
       expect(component.sortWidget(col)).toEqual('&#11047;');
