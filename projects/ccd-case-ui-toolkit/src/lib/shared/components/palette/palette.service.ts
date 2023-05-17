@@ -59,7 +59,8 @@ export class PaletteService {
   private readonly componentLauncherRegistry = {
     [DisplayContextCustomParameter.CaseFileView]: [CaseFileViewFieldComponent, CaseFileViewFieldComponent],
     [DisplayContextCustomParameter.LinkedCases]: [WriteLinkedCasesFieldComponent, ReadLinkedCasesFieldComponent],
-    [DisplayContextCustomParameter.QueryManagement]: [WriteQueryManagementFieldComponent, ReadQueryManagementFieldComponent]
+    [DisplayContextCustomParameter.QueryManagement]: [WriteQueryManagementFieldComponent, ReadQueryManagementFieldComponent],
+    [DisplayContextCustomParameter.QueryManagementWriteTest]: [WriteQueryManagementFieldComponent, WriteQueryManagementFieldComponent]
   };
 
   public getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
