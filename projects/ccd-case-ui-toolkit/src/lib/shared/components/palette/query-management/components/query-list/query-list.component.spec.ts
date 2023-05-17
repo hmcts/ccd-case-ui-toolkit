@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { PartyMessage, PartyMessagesGroup, QueryListData, QueryListItem } from '../../domain';
+import { SortOrder } from '../../../complex/sort-order';
+import { PartyMessage, PartyMessagesGroup, QueryListData, QueryListItem, queryListColumn } from '../../domain';
 import { QueryListComponent } from './query-list.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -126,4 +127,120 @@ describe('QueryListComponent', () => {
       expect(tableCells[4].innerText).toEqual(firstRowItem.lastResponseBy);
     });
   });
+
+  describe('sortTable', () => {
+    const partyMes: Partial<QueryListItem>[] = [
+      {
+        subject: 'value1',
+        lastSubmittedBy: 'John',
+        lastSubmittedDate: new Date('2023-01-14'),
+        lastResponseDate: new Date('2023-01-17'),
+        lastResponseBy: ''
+      },
+      {
+        subject: 'value3',
+        lastSubmittedBy: '',
+        lastSubmittedDate: new Date('2023-01-15'),
+        lastResponseDate: new Date('2023-01-15'),
+        lastResponseBy: 'Smith'
+      },
+      {
+        subject: 'value2',
+        lastSubmittedBy: 'Smith',
+        lastSubmittedDate: null,
+        lastResponseDate: new Date('2023-01-16'),
+        lastResponseBy: ''
+      }
+    ];
+
+    beforeEach(() => {
+      // Required to set queryListData
+      component.ngOnChanges({
+        partyMessageGroup: new SimpleChange(undefined, dummyPartyMessageGroup, false)
+      });
+      fixture.detectChanges();
+    });
+
+    it('should sort the query list by subject in Ascending order if sortorder is unsorted', () => {
+      const col: queryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.UNSORTED }
+      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.sortTable(col);
+      const sorted = partyMes.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
+      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+    });
+
+    it('should sort the query list by subject in Descending order if sortorder is Ascending', () => {
+      const col: queryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.ASCENDING }
+      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.sortTable(col);
+      const sorted = partyMes.sort((a, b) => (a[col.name] > b[col.name]) ? 1 : -1);
+      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+    });
+
+    it('should sort the query list by subject in Ascending order if sortorder is Descending', () => {
+      const col: queryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.DESCENDING }
+      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.sortTable(col);
+      const sorted = partyMes.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
+      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+    });
+
+    it('should sort the query list by response date in Ascending order if sortorder is unsorted', () => {
+      const col: queryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED }
+      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.sortTable(col);
+      const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
+      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+    });
+
+    it('should sort the query list by response date in Descending order if sortorder is Ascending', () => {
+      const col: queryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.ASCENDING }
+      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.sortTable(col);
+      const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
+      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+    });
+
+    it('should sort the query list by response date in Ascending order if sortorder is Descending', () => {
+      const col: queryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.DESCENDING }
+      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.sortTable(col);
+      const sorted = partyMes.sort((a, b) => b[col.name] - a[col.name]);
+      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+    });
+
+    it('should sort the query list by lastSubmittedBy in Ascending order if sortorder is unsorted', () => {
+      const col: queryListColumn = { name: 'lastSubmittedBy', displayName: 'Last submitted by', sortOrder: SortOrder.UNSORTED }
+      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.sortTable(col);
+      const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
+      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+    });
+
+    it('should sort the query list by lastSubmittedDate in Descending order if sortorder is Ascending', () => {
+      const col: queryListColumn = { name: 'lastSubmittedDate', displayName: 'Last submission date', sortOrder: SortOrder.ASCENDING }
+      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.sortTable(col);
+      const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
+      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+    });
+
+    it('should sort the query list by lastResponseBy in Ascending order if sortorder is Descending', () => {
+      const col: queryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING }
+      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.sortTable(col);
+      const sorted = partyMes.sort((a, b) => b[col.name] - a[col.name]);
+      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+    });
+
+    it('sortWidget - should return correct code', () => {
+      const col: queryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING }
+      expect(component.sortWidget(col)).toEqual('&#9660;');
+      col.sortOrder = SortOrder.ASCENDING;
+      expect(component.sortWidget(col)).toEqual('&#9650;');
+      col.sortOrder = SortOrder.UNSORTED;
+      expect(component.sortWidget(col)).toEqual('&#11047;');
+    });
+  });
+
 });

@@ -5,11 +5,10 @@
     </caption>
     <thead class="govuk-table__head">
     <tr class="govuk-table__row query-list__row">
-      <th scope="col" class="govuk-table__header">{{ 'Queries' | rpxTranslate }}</th>
-      <th scope="col" class="govuk-table__header">{{ 'Last submitted by' | rpxTranslate }}</th>
-      <th scope="col" class="govuk-table__header">{{ 'Last submission date' | rpxTranslate }}</th>
-      <th scope="col" class="govuk-table__header">{{ 'Last response date' | rpxTranslate }}</th>
-      <th scope="col" class="govuk-table__header">{{ 'Response by' | rpxTranslate }}</th>
+      <th class="govuk-table__header" *ngFor="let col of displayedColumns">
+        {{ col.displayName | rpxTranslate }}
+        <a (click)="sortTable(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"></a>
+      </th>
     </tr>
     </thead>
     <tbody class="govuk-table__body">
