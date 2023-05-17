@@ -7,5 +7,6 @@ export enum DisplayContextParameter {
 export enum DisplayContextCustomParameter {
   CaseFileView = 'CaseFileView',
   LinkedCases = 'LinkedCases',
-  QueryManagement = 'QueryManagement'
+  QueryManagement = 'QueryManagement',
+  QueryManagementWriteTest = 'QueryManagementWriteTest'
 }
