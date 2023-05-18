@@ -9,7 +9,7 @@ import { partyMessagesMockData } from './__mocks__';
   templateUrl: './write-query-management-field.component.html',
   styleUrls: ['./write-query-management-field.component.scss']
 })
-export class WriteQueryManagementFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class WriteQueryManagementFieldComponent extends AbstractFieldWriteComponent {
   public queryItem: QueryListItem;
   public responseFormGroup = new FormGroup({
     response: new FormControl('', Validators.required),
@@ -21,6 +21,4 @@ export class WriteQueryManagementFieldComponent extends AbstractFieldWriteCompon
     this.queryItem = new QueryListItem();
     Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
   }
-
-  public ngOnInit(): void {}
 }
