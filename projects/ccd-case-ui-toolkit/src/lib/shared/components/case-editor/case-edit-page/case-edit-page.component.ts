@@ -493,7 +493,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  public getRpxTranslatePipeArgs(fieldLabel: string) {
+  public getRpxTranslatePipeArgs(fieldLabel: string): { FIELDLABEL: string } | null {
     return fieldLabel ? ({ FIELDLABEL: fieldLabel }) : null;
   }
 }
