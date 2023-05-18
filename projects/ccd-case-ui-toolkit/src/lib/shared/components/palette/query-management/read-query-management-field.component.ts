@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
-import { PartyMessagesGroup } from './domain';
+import { PartyMessagesGroup } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
 import { partyMessagesMockData } from './__mocks__';
 

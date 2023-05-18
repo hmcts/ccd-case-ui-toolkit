@@ -73,8 +73,7 @@ import { ReadOrganisationFieldComponent, ReadOrganisationFieldRawComponent, Read
 import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
-import { ReadQueryManagementFieldComponent, WriteQueryManagementFieldComponent } from './query-management';
-import { QueryCreateComponent, QueryDetailComponent, QueryListComponent } from './query-management/components';
+import { QueryManagementModule } from './query-management/query-management.module';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
@@ -129,7 +128,6 @@ const PALETTE_COMPONENTS = [
   ReadComplexFieldCollectionTableComponent,
   ReadCaseFlagFieldComponent,
   ReadLinkedCasesFieldComponent,
-  ReadQueryManagementFieldComponent,
 
   // Write
   WriteJudicialUserFieldComponent,
@@ -150,7 +148,6 @@ const PALETTE_COMPONENTS = [
   WriteDateFieldComponent,
   WriteCaseFlagFieldComponent,
   WriteLinkedCasesFieldComponent,
-  WriteQueryManagementFieldComponent,
 
   // new
   WriteYesNoFieldComponent,
@@ -197,9 +194,6 @@ const PALETTE_COMPONENTS = [
   UnLinkCasesComponent,
   NoLinkedCasesComponent,
   // Components for query management
-  QueryCreateComponent,
-  QueryDetailComponent,
-  QueryListComponent
 ];
 
 @NgModule({
@@ -233,7 +227,9 @@ const PALETTE_COMPONENTS = [
     MatDialogModule,
     MediaViewerModule,
     LoadingModule,
-    RpxTranslationModule.forChild()
+    RpxTranslationModule.forChild(),
+
+    QueryManagementModule
   ],
   declarations: [
     FixedListPipe,

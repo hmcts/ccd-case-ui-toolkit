@@ -5,7 +5,6 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './query-create.component.html',
 })
 export class QueryCreateComponent implements OnInit {
-
   constructor() {
   }
 
