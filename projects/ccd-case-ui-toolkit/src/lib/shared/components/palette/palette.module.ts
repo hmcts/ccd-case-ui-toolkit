@@ -15,6 +15,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
@@ -38,19 +39,22 @@ import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/com
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import {
-	AddCommentsComponent,
-	CaseFlagSummaryListComponent,
-	CaseFlagTableComponent,
-	ConfirmFlagStatusComponent,
-	ManageCaseFlagsComponent,
-	ReadCaseFlagFieldComponent,
-	SearchLanguageInterpreterComponent,
-	SelectFlagLocationComponent,
-	SelectFlagTypeComponent,
-	UpdateFlagAddTranslationFormComponent,
-	UpdateFlagComponent,
-	UpdateFlagTitleDisplayPipe,
-	WriteCaseFlagFieldComponent
+  AddCommentsComponent,
+  CaseFlagSummaryListComponent,
+  CaseFlagTableComponent,
+  ConfirmFlagStatusComponent,
+  FlagFieldDisplayPipe,
+  LanguageInterpreterDisplayPipe,
+  ManageCaseFlagsComponent,
+  ManageCaseFlagsLabelDisplayPipe,
+  ReadCaseFlagFieldComponent,
+  SearchLanguageInterpreterComponent,
+  SelectFlagLocationComponent,
+  SelectFlagTypeComponent,
+  UpdateFlagAddTranslationFormComponent,
+  UpdateFlagComponent,
+  UpdateFlagTitleDisplayPipe,
+  WriteCaseFlagFieldComponent
 } from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
@@ -92,7 +96,6 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { RpxTranslationModule } from 'rpx-xui-translation';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -150,8 +153,6 @@ const PALETTE_COMPONENTS = [
   WriteDocumentFieldComponent,
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
-  WriteDynamicMultiSelectListFieldComponent,
-  ReadDynamicMultiSelectListFieldComponent,
   WriteTextFieldComponent,
   WriteDateContainerFieldComponent,
   WriteTextAreaFieldComponent,
@@ -195,7 +196,19 @@ const PALETTE_COMPONENTS = [
   LinkCasesComponent,
   CheckYourAnswersComponent,
   UnLinkCasesComponent,
-  NoLinkedCasesComponent
+  NoLinkedCasesComponent,
+
+  // Case Flags components
+  CaseFlagTableComponent,
+  SelectFlagTypeComponent,
+  SearchLanguageInterpreterComponent,
+  SelectFlagLocationComponent,
+  ManageCaseFlagsComponent,
+  AddCommentsComponent,
+  UpdateFlagComponent,
+  CaseFlagSummaryListComponent,
+  ConfirmFlagStatusComponent,
+  UpdateFlagAddTranslationFormComponent
 ];
 
 @NgModule({
@@ -237,18 +250,10 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
+    FlagFieldDisplayPipe,
+    LanguageInterpreterDisplayPipe,
+    ManageCaseFlagsLabelDisplayPipe,
     UpdateFlagTitleDisplayPipe,
-
-    CaseFlagTableComponent,
-    SelectFlagTypeComponent,
-    SearchLanguageInterpreterComponent,
-    SelectFlagLocationComponent,
-    ManageCaseFlagsComponent,
-    AddCommentsComponent,
-    UpdateFlagComponent,
-    UpdateFlagAddTranslationFormComponent,
-    CaseFlagSummaryListComponent,
-    ConfirmFlagStatusComponent,
     ...PALETTE_COMPONENTS
   ],
   exports: [

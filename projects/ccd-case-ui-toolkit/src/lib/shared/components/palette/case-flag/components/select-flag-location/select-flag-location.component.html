@@ -8,7 +8,7 @@
       </legend>
       <div id="flag-location-not-selected-error-message" class="govuk-error-message"
         *ngIf="flagLocationNotSelectedErrorMessage">
-        <span class="govuk-visually-hidden">Error:</span> {{flagLocationNotSelectedErrorMessage | rpxTranslate}}
+        <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{flagLocationNotSelectedErrorMessage | rpxTranslate}}
       </div>
       <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios" id="conditional-radios-list">
         <div class="govuk-radios__item" *ngFor="let flagsInstance of filteredFlagsData; index as i">

@@ -290,25 +290,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         value.details.forEach(flagDetail => {
           const originalFlagDetail = formattedValue.details.find(detail => detail.id === flagDetail.id);
           if (originalFlagDetail) {
-            flagDetail.value.otherDescription = originalFlagDetail.value.otherDescription
-              ? originalFlagDetail.value.otherDescription
-              : null;
-            flagDetail.value.otherDescription_cy = originalFlagDetail.value.otherDescription_cy
-              ? originalFlagDetail.value.otherDescription_cy
-              : null;
-            flagDetail.value.flagComment = originalFlagDetail.value.flagComment
-              ? originalFlagDetail.value.flagComment
-              : null;
-            flagDetail.value.flagComment_cy = originalFlagDetail.value.flagComment_cy
-              ? originalFlagDetail.value.flagComment_cy
-              : null;
-            flagDetail.value.flagUpdateComment = originalFlagDetail.value.flagUpdateComment
-              ? originalFlagDetail.value.flagUpdateComment
-              : null;
+            flagDetail.value.otherDescription = originalFlagDetail.value.otherDescription || null;
+            flagDetail.value.otherDescription_cy = originalFlagDetail.value.otherDescription_cy || null;
+            flagDetail.value.flagComment = originalFlagDetail.value.flagComment || null;
+            flagDetail.value.flagComment_cy = originalFlagDetail.value.flagComment_cy || null;
+            flagDetail.value.flagUpdateComment = originalFlagDetail.value.flagUpdateComment || null;
             flagDetail.value.status = originalFlagDetail.value.status;
-            flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified
-              ? originalFlagDetail.value.dateTimeModified
-              : null;
+            flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified || null;
           }
         });
       }
@@ -380,12 +368,17 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     return {
       name: formValues?.flagType?.name,
       name_cy: formValues?.flagType?.name_cy,
-      // Currently, subTypeValue and subTypeKey are applicable only to language flag types
-      subTypeValue: formValues?.languageSearchTerm
+      // Currently, subTypeValue, subTypeValue_cy and subTypeKey are applicable only to language flag types
+      subTypeValue: formValues?.languageSearchTerm && this.rpxTranslationService.language === 'en'
         ? formValues?.languageSearchTerm.value
-        : formValues?.manualLanguageEntry
+        : formValues?.manualLanguageEntry && this.rpxTranslationService.language === 'en'
           ? formValues?.manualLanguageEntry
           : null,
+      subTypeValue_cy: formValues?.languageSearchTerm && this.rpxTranslationService.language === 'cy'
+      ? formValues?.languageSearchTerm.value_cy
+      : formValues?.manualLanguageEntry && this.rpxTranslationService.language === 'cy'
+        ? formValues?.manualLanguageEntry
+        : null,
       // For user-entered (i.e. non-Reference Data) languages, there is no key
       subTypeKey: formValues?.languageSearchTerm
         ? formValues?.languageSearchTerm.key
@@ -408,9 +401,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       dateTimeCreated: new Date().toISOString(),
       path: formValues?.flagType?.Path &&
         formValues?.flagType?.Path.map(pathValue => Object.assign({ id: null, value: pathValue })),
-      hearingRelevant: formValues?.flagType?.hearingRelevantFlag ? 'Yes' : 'No',
+      hearingRelevant: formValues?.flagType?.hearingRelevant ? 'Yes' : 'No',
       flagCode: formValues?.flagType?.flagCode,
-      status: CaseFlagStatus[formValues?.selectedStatus],
+      // Status should be set to whatever the default is for this flag type, if flag is being created by an external user
+      status: this.isDisplayContextParameterExternal ? formValues?.flagType?.defaultStatus : CaseFlagStatus[formValues?.selectedStatus],
       availableExternally: formValues?.flagType?.externallyAvailable ? 'Yes' : 'No'
     } as FlagDetail;
   }

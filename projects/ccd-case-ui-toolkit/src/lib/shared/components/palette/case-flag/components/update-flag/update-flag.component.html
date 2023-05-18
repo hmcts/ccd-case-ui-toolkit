@@ -3,7 +3,7 @@
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
       <h1 class="govuk-label-wrapper govuk-!-margin-bottom-4">
         <label class="govuk-label govuk-label--l">
-          {{ updateFlagTitle | rpxTranslate}}
+          {{updateFlagTitle | rpxTranslate}}
         </label>
       </h1>
       <div id="update-flag-hint" class="govuk-hint"
@@ -13,18 +13,18 @@
 
       <div class="govuk-!-margin-bottom-4">
         <label class="govuk-label govuk-label--s" [for]="caseFlagFormFields.COMMENTS">
-          {{ updateFlagTitle | rpxTranslate}} {{'comments' | rpxTranslate}}
+          {{updateFlagTitle | rpxTranslate}} {{'comments' | rpxTranslate}}
         </label>
         <div id="update-flag-hint" class="govuk-hint">
           {{updateFlagStepEnum.COMMENT_HINT_TEXT | rpxTranslate}}
         </div>
         <div id="update-flag-not-entered-error-message" class="govuk-error-message"
               *ngIf="updateFlagNotEnteredErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{updateFlagNotEnteredErrorMessage | rpxTranslate}}
+          <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{updateFlagNotEnteredErrorMessage | rpxTranslate}}
         </div>
         <div id="update-flag-char-limit-error" class="govuk-error-message"
               *ngIf="updateFlagCharLimitErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{updateFlagCharLimitErrorMessage | rpxTranslate}}
+          <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{updateFlagCharLimitErrorMessage | rpxTranslate}}
         </div>
         <textarea class="govuk-textarea" [id]="caseFlagFormFields.COMMENTS"
                   [name]="caseFlagFormFields.COMMENTS" [formControlName]="caseFlagFormFields.COMMENTS" rows="5"
@@ -51,7 +51,7 @@
                       [formControlName]="caseFlagFormFields.STATUS"
                       [value]="status">
               <label class="govuk-label govuk-radios__label" [for]="caseFlagFormFields.STATUS + '_' + status">
-                {{ caseFlagStatusEnum[status] | rpxTranslate}}
+                {{caseFlagStatusEnum[status] | rpxTranslate}}
               </label>
             </div>
           </div>
@@ -62,11 +62,11 @@
         </div>
         <div id="update-flag-status-reason-not-entered-error-message" class="govuk-error-message"
               *ngIf="statusReasonNotEnteredErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{statusReasonNotEnteredErrorMessage | rpxTranslate}}
+          <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{statusReasonNotEnteredErrorMessage | rpxTranslate}}
         </div>
         <div id="update-flag-status-reason-char-limit-error" class="govuk-error-message"
               *ngIf="statusReasonCharLimitErrorMessage">
-          <span class="govuk-visually-hidden">Error:</span> {{statusReasonCharLimitErrorMessage | rpxTranslate}}
+          <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{statusReasonCharLimitErrorMessage | rpxTranslate}}
         </div>
         <textarea class="govuk-textarea"
                   [id]="caseFlagFormFields.STATUS_CHANGE_REASON"

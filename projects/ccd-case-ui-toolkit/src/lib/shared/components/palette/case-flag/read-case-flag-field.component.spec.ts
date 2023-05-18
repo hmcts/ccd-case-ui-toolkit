@@ -380,7 +380,7 @@ describe('ReadCaseFlagFieldComponent', () => {
       declarations: [ ReadCaseFlagFieldComponent, MockRpxTranslatePipe ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
-        { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy },
+        { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy }
       ]
     })
     .compileComponents();

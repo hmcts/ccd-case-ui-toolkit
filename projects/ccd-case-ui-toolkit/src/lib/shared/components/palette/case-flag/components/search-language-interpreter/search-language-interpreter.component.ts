@@ -1,16 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagState, Language } from '../../domain';
-import {
-  CaseFlagFieldState,
-  CaseFlagWizardStepTitle,
-  SearchLanguageInterpreterErrorMessage,
-  SearchLanguageInterpreterStep
-} from '../../enums';
+import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
 import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';
 
 @Component({
@@ -46,6 +42,8 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   public noResults = false;
   private readonly languageMaxCharLimit = 80;
   private readonly signLanguageFlagCode = 'RA0042';
+
+  constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
   public ngOnInit(): void {
     this.searchLanguageInterpreterHint = this.flagType.flagCode === this.signLanguageFlagCode
@@ -139,7 +137,17 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     }
 
     return this.flagType.listOfValues
-      ? this.flagType.listOfValues.filter(language => language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0))
+      ? this.flagType.listOfValues.filter(language =>
+        // If a language has both English and Welsh values, match only on the value appropriate for the page language,
+        // i.e. if RpxTranslationService.language is 'cy' then match on the value_cy property only. This is to prevent
+        // cross-matches, where a user enters a search term in English and sees the corresponding Welsh value (because
+        // the page language is Welsh) and vice versa
+        this.rpxTranslationService.language === 'cy' && language.value && language.value_cy &&
+        language.value_cy.toLowerCase().includes(searchTerm.toLowerCase(), 0) ||
+        this.rpxTranslationService.language !== 'cy' && language.value && language.value_cy &&
+        language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0) ||
+        !language.value_cy && language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0) ||
+        !language.value && language.value_cy.toLowerCase().includes(searchTerm.toLowerCase(), 0))
       : [];
   }
 }

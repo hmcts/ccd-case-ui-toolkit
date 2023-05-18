@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.7-case-flags-v2-reasonable-adjustments-fixes",
+  "version": "6.10.7-case-flags-v2-welsh-language-support-additional-rework-2",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -23,6 +23,7 @@
     "build:library:watch": "npm run build:library -- --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
+    "clean": "rimraf node_modules",
     "clean:all": "npm run clean:tmp && rimraf node_modules",
     "clean:tmp": "rimraf coverage dist tmp docs",
     "coverage": "nyc report --reporter=json && codecov -f coverage/coverage-final.json",

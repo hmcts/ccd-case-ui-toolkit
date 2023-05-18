@@ -11,9 +11,6 @@ import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, Ca
   encapsulation: ViewEncapsulation.None
 })
 export class ManageCaseFlagsComponent implements OnInit {
-
-  private static readonly CASE_LEVEL_CASE_FLAGS_FIELD_ID = 'caseFlags';
-
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
   @Input() public caseTitle: string;
@@ -51,10 +48,6 @@ export class ManageCaseFlagsComponent implements OnInit {
         }
         return displayData;
       }, []).filter(flagDetailDisplay => !!flagDetailDisplay);
-
-      this.flagsDisplayData.forEach(flagDisplayData => {
-        flagDisplayData.label = this.processLabel(flagDisplayData);
-      });
     }
 
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
@@ -78,69 +71,6 @@ export class ManageCaseFlagsComponent implements OnInit {
       caseField: flagsInstance.caseField,
       roleOnCase: flagsInstance.flags.roleOnCase
     };
-  }
-
-  public processLabel(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
-    const flagDetail = flagDisplay.flagDetailDisplay.flagDetail;
-    const partyName = this.getPartyName(flagDisplay);
-    const flagName = this.getFlagName(flagDetail);
-    const flagDescription = this.getFlagDescription(flagDetail);
-    const roleOnCase = this.getRoleOnCase(flagDisplay);
-    const flagComment = this.getFlagComments(flagDetail);
-
-    return flagName === flagDescription
-      ? `${partyName}${roleOnCase} - <span class="flag-name-and-description">${flagDescription}</span>${flagComment}`
-      : `${partyName}${roleOnCase} - <span class="flag-name-and-description">${flagName}, ${flagDescription}</span>${flagComment}`;
-  }
-
-  public getPartyName(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
-    if (flagDisplay.pathToFlagsFormGroup && flagDisplay.pathToFlagsFormGroup === ManageCaseFlagsComponent.CASE_LEVEL_CASE_FLAGS_FIELD_ID) {
-      return 'Case level';
-    }
-    if (flagDisplay.flagDetailDisplay.partyName) {
-      return `${flagDisplay.flagDetailDisplay.partyName}`;
-    }
-    return '';
-  }
-
-  public getFlagName(flagDetail: FlagDetail): string {
-    if (flagDetail && flagDetail.path && flagDetail.path.length > 1) {
-      return flagDetail.path[1].value;
-    }
-    if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
-      return flagDetail.subTypeValue;
-    }
-    return flagDetail.name;
-  }
-
-  public getFlagDescription(flagDetail: FlagDetail): string {
-    /* istanbul ignore else */
-    if (flagDetail && flagDetail.name) {
-      /* istanbul ignore else */
-      if (flagDetail.name === 'Other' && flagDetail.otherDescription) {
-        return flagDetail.otherDescription;
-      }
-      /* istanbul ignore else */
-      if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
-        return flagDetail.subTypeValue;
-      }
-      return flagDetail.name;
-    }
-    return '';
-  }
-
-  public getRoleOnCase(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
-    if (flagDisplay && flagDisplay.roleOnCase) {
-      return ` (${flagDisplay.roleOnCase})`;
-    }
-    return '';
-  }
-
-  public getFlagComments(flagDetail: FlagDetail): string {
-    if (flagDetail.flagComment) {
-      return ` (${flagDetail.flagComment})`;
-    }
-    return '';
   }
 
   public onNext(): void {

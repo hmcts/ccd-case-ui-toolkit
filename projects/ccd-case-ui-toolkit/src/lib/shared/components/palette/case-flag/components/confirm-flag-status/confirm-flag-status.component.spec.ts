@@ -1,9 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { CaseFlagFieldState, ConfirmStatusErrorMessage } from '../../enums';
 import { ConfirmFlagStatusComponent } from './confirm-flag-status.component';
-import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('ConfirmFlagStatusComponent', () => {
   let component: ConfirmFlagStatusComponent;

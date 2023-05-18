@@ -22,9 +22,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public displayContextParameter: string;
   public caseFlagsExternalUser = false;
   public pathToFlagsFormGroup: string;
-  public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
-  public readonly caseNameMissing = 'Case name missing';
   public readonly readSupportMode = '#ARGUMENT(READ,EXTERNAL)';
+  private readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   constructor(
     private readonly route: ActivatedRoute,

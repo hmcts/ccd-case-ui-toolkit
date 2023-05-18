@@ -137,7 +137,7 @@ describe('Case Flag Refdata Service', () => {
       next: flagTypes => expect(flagTypes).toEqual(dummyFlagsData.flags[0].FlagDetails)
     });
 
-    const req = httpMock.expectOne(`${caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')}?welsh-required=N&external-flags-only=true`);
+    const req = httpMock.expectOne(`${caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')}?welsh-required=N&available-external-flag=Y`);
     expect(req.request.method).toEqual('GET');
     req.flush(dummyFlagsData);
   });

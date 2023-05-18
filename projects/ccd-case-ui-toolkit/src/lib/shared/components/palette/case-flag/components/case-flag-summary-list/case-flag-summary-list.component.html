@@ -9,7 +9,7 @@
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
         (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : caseFlagFieldState.FLAG_LOCATION)">
-        Change<span class="govuk-visually-hidden"> party name</span>
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'party name' | rpxTranslate}}</span>
       </a>
     </dd>
   </div>
@@ -18,12 +18,12 @@
       {{'Flag type' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagDescription | rpxTranslate}}
+      {{flagDescription}}
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
         (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : caseFlagFieldState.FLAG_TYPE)">
-        Change<span class="govuk-visually-hidden"> description</span>
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'flag type' | rpxTranslate}}</span>
       </a>
     </dd>
   </div>
@@ -37,7 +37,7 @@
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
         (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION : caseFlagFieldState.FLAG_TYPE)">
-        Change<span class="govuk-visually-hidden"> description (Welsh)</span>
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'other description (Welsh)' | rpxTranslate}}</span>
       </a>
     </dd>
   </div>
@@ -46,18 +46,18 @@
       {{'Comments' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagComments | rpxTranslate}}
+      {{flagComments}}
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
         (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE: caseFlagFieldState.FLAG_COMMENTS)">
-        Change<span class="govuk-visually-hidden"> comments</span>
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'comments' | rpxTranslate}}</span>
       </a>
     </dd>
   </div>
   <div class="govuk-summary-list__row" *ngIf="flagCommentsWelsh?.length > 0">
     <dt class="govuk-summary-list__key">
-      Comments (Welsh)
+      {{'Comments (Welsh)' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagCommentsWelsh}}
@@ -65,7 +65,7 @@
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
         (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION: caseFlagFieldState.FLAG_COMMENTS)">
-        Change<span class="govuk-visually-hidden"> comments (Welsh)</span>
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'comments (Welsh)' | rpxTranslate}}</span>
       </a>
     </dd>
   </div>
@@ -79,7 +79,7 @@
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
         (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_UPDATE)">
-        Change<span class="govuk-visually-hidden"> status</span>
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'status' | rpxTranslate}}</span>
       </a>
     </dd>
   </div>
