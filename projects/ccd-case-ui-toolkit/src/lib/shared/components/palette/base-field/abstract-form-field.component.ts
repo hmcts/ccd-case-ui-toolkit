@@ -21,6 +21,9 @@ export abstract class AbstractFormFieldComponent {
   @Input()
   public idPrefix = '';
 
+  @Input()
+  public caseReference: string = '';
+
   public id() {
     return this.idPrefix + this.caseField.id;
   }

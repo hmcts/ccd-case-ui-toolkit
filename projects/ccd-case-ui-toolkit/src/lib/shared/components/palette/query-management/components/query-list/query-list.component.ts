@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { SortOrder } from '../../../complex/sort-order';
-import { PartyMessagesGroup, QueryListData, queryListColumn } from '../../domain';
+import { PartyMessagesGroup, QueryListColumn, QueryListData } from '../../models';
 
 @Component({
   selector: 'ccd-query-list',
@@ -10,7 +10,7 @@ import { PartyMessagesGroup, QueryListData, queryListColumn } from '../../domain
 export class QueryListComponent implements OnChanges {
   @Input() public partyMessageGroup: PartyMessagesGroup;
   public queryListData: QueryListData | undefined;
-  public displayedColumns: queryListColumn[] = [
+  public displayedColumns: QueryListColumn[] = [
     { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.UNSORTED },
     { name: 'lastSubmittedBy', displayName: 'Last submitted by', sortOrder: SortOrder.UNSORTED },
     { name: 'lastSubmittedDate', displayName: 'Last submission date', sortOrder: SortOrder.UNSORTED },
@@ -25,7 +25,7 @@ export class QueryListComponent implements OnChanges {
     }
   }
 
-  public sortTable(col: queryListColumn) {
+  public sortTable(col: QueryListColumn) {
     switch (col.displayName) {
       case 'Queries': {
         this.sort(col);
@@ -54,7 +54,7 @@ export class QueryListComponent implements OnChanges {
     }
   }
 
-  public sortWidget(col: queryListColumn): string {
+  public sortWidget(col: QueryListColumn): string {
     switch (col.sortOrder) {
       case SortOrder.DESCENDING: {
         return '&#9660;';
@@ -68,7 +68,7 @@ export class QueryListComponent implements OnChanges {
     }
   }
 
-  private sort(col: queryListColumn) {
+  private sort(col: QueryListColumn) {
     if (col.sortOrder === SortOrder.ASCENDING) {
       this.queryListData.partyMessages.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
       this.displayedColumns.forEach((c) => c.sortOrder = SortOrder.UNSORTED);
@@ -80,7 +80,7 @@ export class QueryListComponent implements OnChanges {
     }
   }
 
-  private sortDate(col: queryListColumn) {
+  private sortDate(col: QueryListColumn) {
     if (col.sortOrder === SortOrder.ASCENDING) {
       this.queryListData.partyMessages.sort((a, b) => b[col.name] - a[col.name]);
       this.displayedColumns.forEach((c) => c.sortOrder = SortOrder.UNSORTED);

@@ -1,4 +1,4 @@
-import { PartyMessagesGroup } from '../domain';
+import { PartyMessagesGroup } from '../models';
 
 export const partyMessagesMockData: PartyMessagesGroup[] = [
   {
@@ -10,11 +10,20 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         subject: 'Review attached document',
         name: 'Maggie Conroy',
         body: 'Please review attached document and advise if hearing should proceed?',
-        attachments: [],
+        attachments: [
+          {
+            _links: {
+              self: { href: '/' },
+              binary: { href: '/' },
+            },
+            originalDocumentName: 'documentName.pdf',
+          }
+        ],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
         createdBy: '1111-1111-1111-1111'
+
       },
       {
         id: 'case-message-002',

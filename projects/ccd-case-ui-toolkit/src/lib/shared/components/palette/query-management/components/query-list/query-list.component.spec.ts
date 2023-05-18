@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SortOrder } from '../../../complex/sort-order';
-import { PartyMessage, PartyMessagesGroup, QueryListData, QueryListItem, queryListColumn } from '../../domain';
+import { PartyMessage, PartyMessagesGroup, QueryListColumn, QueryListData, QueryListItem } from '../../models';
 import { QueryListComponent } from './query-list.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -162,7 +162,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by subject in Ascending order if sortorder is unsorted', () => {
-      const col: queryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.UNSORTED }
+      const col: QueryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.UNSORTED };
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
@@ -170,7 +170,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by subject in Descending order if sortorder is Ascending', () => {
-      const col: queryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.ASCENDING }
+      const col: QueryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.ASCENDING };
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => (a[col.name] > b[col.name]) ? 1 : -1);
@@ -178,7 +178,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by subject in Ascending order if sortorder is Descending', () => {
-      const col: queryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.DESCENDING }
+      const col: QueryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.DESCENDING };
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
@@ -186,7 +186,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by response date in Ascending order if sortorder is unsorted', () => {
-      const col: queryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED }
+      const col: QueryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED };
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
@@ -194,7 +194,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by response date in Descending order if sortorder is Ascending', () => {
-      const col: queryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.ASCENDING }
+      const col: QueryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.ASCENDING };
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
@@ -202,7 +202,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by response date in Ascending order if sortorder is Descending', () => {
-      const col: queryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.DESCENDING }
+      const col: QueryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.DESCENDING };
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => b[col.name] - a[col.name]);
@@ -210,7 +210,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by lastSubmittedBy in Ascending order if sortorder is unsorted', () => {
-      const col: queryListColumn = { name: 'lastSubmittedBy', displayName: 'Last submitted by', sortOrder: SortOrder.UNSORTED }
+      const col: QueryListColumn = { name: 'lastSubmittedBy', displayName: 'Last submitted by', sortOrder: SortOrder.UNSORTED };
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
@@ -218,7 +218,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by lastSubmittedDate in Descending order if sortorder is Ascending', () => {
-      const col: queryListColumn = { name: 'lastSubmittedDate', displayName: 'Last submission date', sortOrder: SortOrder.ASCENDING }
+      const col: QueryListColumn = { name: 'lastSubmittedDate', displayName: 'Last submission date', sortOrder: SortOrder.ASCENDING };
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
@@ -226,7 +226,7 @@ describe('QueryListComponent', () => {
     });
 
     it('should sort the query list by lastResponseBy in Ascending order if sortorder is Descending', () => {
-      const col: queryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING }
+      const col: QueryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING };
       component.queryListData.partyMessages = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => b[col.name] - a[col.name]);
@@ -234,7 +234,7 @@ describe('QueryListComponent', () => {
     });
 
     it('sortWidget - should return correct code', () => {
-      const col: queryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING }
+      const col: QueryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING };
       expect(component.sortWidget(col)).toEqual('&#9660;');
       col.sortOrder = SortOrder.ASCENDING;
       expect(component.sortWidget(col)).toEqual('&#9650;');
