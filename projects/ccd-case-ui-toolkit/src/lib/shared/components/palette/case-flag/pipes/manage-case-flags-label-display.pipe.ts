@@ -39,7 +39,7 @@ export class ManageCaseFlagsLabelDisplayPipe extends AsyncPipe implements PipeTr
             const flagComment = this.getFlagComments(flagDetail);
             return flagName === flagDescription
               ? `<span class="flag-name-and-description">${flagDescription}</span>${flagComment}`
-              : `<span class="flag-name-and-description">${flagName}, ${flagDescription}</span>${flagComment}`
+              : `<span class="flag-name-and-description">${flagName}, ${flagDescription}</span>${flagComment}`;
           })
         );
         const combined = combineLatest([partyName$, o$]).pipe(
@@ -80,13 +80,7 @@ export class ManageCaseFlagsLabelDisplayPipe extends AsyncPipe implements PipeTr
       // Currently, flag path values are stored in English only
       return flagDetail.path[1].value;
     }
-    return flagDetail.subTypeValue || flagDetail.subTypeValue_cy
-      ? this.translationService.language === 'cy'
-        ? `${flagDetail.name_cy || flagDetail.name}, ${flagDetail.subTypeValue_cy || flagDetail.subTypeValue}`
-        : `${flagDetail.name || flagDetail.name_cy}, ${flagDetail.subTypeValue || flagDetail.subTypeValue_cy}`
-      : this.translationService.language === 'cy'
-        ? flagDetail.name_cy || flagDetail.name
-        : flagDetail.name || flagDetail.name_cy;
+    return this.getNonFlagPathName(flagDetail);
   }
 
   public getFlagDescription(flagDetail: FlagDetail): string {
@@ -99,13 +93,7 @@ export class ManageCaseFlagsLabelDisplayPipe extends AsyncPipe implements PipeTr
           ? flagDetail.otherDescription_cy || flagDetail.otherDescription
           : flagDetail.otherDescription || flagDetail.otherDescription_cy;
       }
-      return flagDetail.subTypeValue || flagDetail.subTypeValue_cy
-      ? this.translationService.language === 'cy'
-        ? `${flagDetail.name_cy || flagDetail.name}, ${flagDetail.subTypeValue_cy || flagDetail.subTypeValue}`
-        : `${flagDetail.name || flagDetail.name_cy}, ${flagDetail.subTypeValue || flagDetail.subTypeValue_cy}`
-      : this.translationService.language === 'cy'
-        ? flagDetail.name_cy || flagDetail.name
-        : flagDetail.name || flagDetail.name_cy;
+      return this.getNonFlagPathName(flagDetail);
     }
     return '';
   }
@@ -117,5 +105,15 @@ export class ManageCaseFlagsLabelDisplayPipe extends AsyncPipe implements PipeTr
         : ` (${flagDetail.flagComment || flagDetail.flagComment_cy})`;
     }
     return '';
+  }
+
+  private getNonFlagPathName(flagDetail: FlagDetail): string {
+    return flagDetail.subTypeValue || flagDetail.subTypeValue_cy
+      ? this.translationService.language === 'cy'
+        ? `${flagDetail.name_cy || flagDetail.name}, ${flagDetail.subTypeValue_cy || flagDetail.subTypeValue}`
+        : `${flagDetail.name || flagDetail.name_cy}, ${flagDetail.subTypeValue || flagDetail.subTypeValue_cy}`
+      : this.translationService.language === 'cy'
+        ? flagDetail.name_cy || flagDetail.name
+        : flagDetail.name || flagDetail.name_cy;
   }
 }

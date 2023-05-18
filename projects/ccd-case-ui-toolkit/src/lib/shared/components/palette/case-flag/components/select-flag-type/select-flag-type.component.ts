@@ -97,23 +97,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       this.flagRefdata$ = this.caseFlagRefdataService
         .getCaseFlagsRefdata(this.hmctsServiceId, flagType, true, this.isDisplayContextParameterExternal)
         .subscribe({
-          next: flagTypes => {
-            // First (and only) object in the returned array should be the top-level "Party" flag type
-            // The "Other" flag type should be removed from the top level if the user is external
-            this.flagTypes = flagTypes[0].childFlags.filter(flag =>
-              this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
-
-            const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
-            if (formControl?.value) {
-              // Cache Path based on existing flagCode -- needed for nested choices
-              const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
-              this.cachedPath = [
-                ...path,
-                foundFlagType
-              ];
-              formControl.setValue(this.cachedPath[0], { emitEvent: false });
-            }
-          },
+          next: flagTypes => this.processFlagTypes(flagTypes),
           error: error => this.onRefdataError(error)
         });
     } else {
@@ -128,23 +112,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
             true, this.isDisplayContextParameterExternal))
         )
         .subscribe({
-          next: flagTypes => {
-            // First (and only) object in the returned array should be the top-level "Party" flag type
-            // The "Other" flag type should be removed from the top level if the user is external
-            this.flagTypes = flagTypes[0].childFlags.filter(flag =>
-              this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
-
-            const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
-            if (formControl?.value) {
-              // Cache Path based on existing flagCode -- needed for nested choices
-              const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
-              this.cachedPath = [
-                ...path,
-                foundFlagType
-              ];
-              formControl.setValue(this.cachedPath[0], { emitEvent: false });
-            }
-          },
+          next: flagTypes => this.processFlagTypes(flagTypes),
           error: error => this.onRefdataError(error)
         });
     }
@@ -211,6 +179,24 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED;
         this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description'});
       }
+    }
+  }
+
+  private processFlagTypes(flagTypes: FlagType[]): void {
+    // First (and only) object in the returned array should be the top-level "Party" flag type
+    // The "Other" flag type should be removed from the top level if the user is external
+    this.flagTypes = flagTypes[0].childFlags.filter(flag =>
+      this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
+
+    const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
+    if (formControl?.value) {
+      // Cache Path based on existing flagCode -- needed for nested choices
+      const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
+      this.cachedPath = [
+        ...path,
+        foundFlagType
+      ];
+      formControl.setValue(this.cachedPath[0], { emitEvent: false });
     }
   }
 

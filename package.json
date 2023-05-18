@@ -23,6 +23,7 @@
     "build:library:watch": "npm run build:library -- --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
+    "clean": "rimraf node_modules",
     "clean:all": "npm run clean:tmp && rimraf node_modules",
     "clean:tmp": "rimraf coverage dist tmp docs",
     "coverage": "nyc report --reporter=json && codecov -f coverage/coverage-final.json",

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
@@ -123,6 +123,35 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
         flagsCaseFieldId: 'CaseFlag3'
       },
       pathToFlagsFormGroup: 'caseFlags',
+      caseField: {
+        id: 'CaseFlag3'
+      } as CaseField
+    },
+    {
+      flags: {
+        partyName: 'Brent Ford',
+        roleOnCase: 'Applicant 1',
+        details: [
+          {
+            id: '5678',
+            name: 'Other',
+            name_cy: 'Arall',
+            otherDescription: 'Flag description',
+            otherDescription_cy: 'Flag description - Welsh',
+            flagComment: 'Sixth flag',
+            flagComment_cy: 'Sixth flag - Welsh',
+            dateTimeCreated: new Date(),
+            path: [
+              { id: null, value: 'Level 1' }
+            ],
+            hearingRelevant: false,
+            flagCode: 'OT0001',
+            status: 'Active'
+          }
+        ] as FlagDetail[],
+        flagsCaseFieldId: 'CaseFlag3'
+      },
+      pathToFlagsFormGroup: '',
       caseField: {
         id: 'CaseFlag3'
       } as CaseField
@@ -253,9 +282,9 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
     expect(pipe.getFlagComments(flagsData[2].flags.details[0])).toEqual(' (Fourth flag)');
   });
 
-  xit('should return the English formatted string for the flag details', () => {
+  it('should return the English formatted string for the case-level flag details', () => {
     const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
-    let flagDisplay = {
+    const flagDisplay = {
       flagDetailDisplay: {
         partyName: flagsData[3].flags.partyName,
         flagDetail: flagsData[3].flags.details[0],
@@ -266,7 +295,11 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
     } as FlagDetailDisplayWithFormGroupPath;
     expect(pipe.transform(flagDisplay)).toEqual(
       'Case level - <span class="flag-name-and-description">Flag 5, Dummy subtype value</span> (Fifth flag)');
-    flagDisplay = {
+  });
+
+  it('should return the English formatted string for the party-level flag details', () => {
+    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
+    const flagDisplay = {
       flagDetailDisplay: {
         partyName: flagsData[3].flags.partyName,
         flagDetail: flagsData[3].flags.details[0],
@@ -279,7 +312,38 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       'Brent Ford - <span class="flag-name-and-description">Flag 5, Dummy subtype value</span> (Fifth flag)');
   });
 
-  xit('should return the Welsh formatted string for the flag details', () => {
+  it('should return the English formatted string for the party-level flag details with child flags', () => {
+    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
+    const flagDisplay = {
+      flagDetailDisplay: {
+        partyName: flagsData[2].flags.partyName,
+        flagDetail: flagsData[2].flags.details[0],
+        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
+      },
+      pathToFlagsFormGroup: '',
+      caseField: flagsData[2].caseField
+    } as FlagDetailDisplayWithFormGroupPath;
+    expect(pipe.transform(flagDisplay)).toEqual(
+      ' - <span class="flag-name-and-description">Level 2, Flag 4</span> (Fourth flag)');
+  });
+
+  it('should return the English formatted string for the flag details of flag type "Other" with party role on case', () => {
+    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
+    const flagDisplay = {
+      flagDetailDisplay: {
+        partyName: flagsData[4].flags.partyName,
+        flagDetail: flagsData[4].flags.details[0],
+        flagsCaseFieldId: flagsData[4].flags.flagsCaseFieldId
+      },
+      pathToFlagsFormGroup: '',
+      caseField: flagsData[4].caseField,
+      roleOnCase: flagsData[4].flags.roleOnCase
+    } as FlagDetailDisplayWithFormGroupPath;
+    expect(pipe.transform(flagDisplay)).toEqual(
+      'Brent Ford (Applicant 1) - <span class="flag-name-and-description">Other, Flag description</span> (Sixth flag)');
+  });
+
+  it('should return the Welsh formatted string for the case-level flag details', fakeAsync(() => {
     const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
     mockRpxTranslationService.language = 'cy';
     const flagDisplay = {
@@ -291,7 +355,66 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       pathToFlagsFormGroup: 'caseFlags',
       caseField: flagsData[3].caseField
     } as FlagDetailDisplayWithFormGroupPath;
+    // Two calls to pipe.transform() needed because first call makes a call to the asynchronous getTranslation() function
+    // in RpxTranslationService
+    pipe.transform(flagDisplay);
+    // Tick() duration needs to match the delay specified in the getTranslation() function for the mock
+    // RpxTranslationService
+    tick(500);
+    // Second call to pipe.transform() will returned the cached Observable
     expect(pipe.transform(flagDisplay)).toEqual(
       'Dummy Welsh translation - <span class="flag-name-and-description">Fflag 5, Dummy subtype value - Welsh</span> (Fifth flag - Welsh)');
+  }));
+
+  it('should return the Welsh formatted string for the party-level flag details', () => {
+    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
+    mockRpxTranslationService.language = 'cy';
+    const flagDisplay = {
+      flagDetailDisplay: {
+        partyName: flagsData[3].flags.partyName,
+        flagDetail: flagsData[3].flags.details[0],
+        flagsCaseFieldId: flagsData[3].flags.flagsCaseFieldId
+      },
+      pathToFlagsFormGroup: '',
+      caseField: flagsData[3].caseField
+    } as FlagDetailDisplayWithFormGroupPath;
+    expect(pipe.transform(flagDisplay)).toEqual(
+      'Brent Ford - <span class="flag-name-and-description">Fflag 5, Dummy subtype value - Welsh</span> (Fifth flag - Welsh)');
+  });
+
+  it('should return the Welsh formatted string for the party-level flag details with child flags', () => {
+    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
+    mockRpxTranslationService.language = 'cy';
+    const flagDisplay = {
+      flagDetailDisplay: {
+        partyName: flagsData[2].flags.partyName,
+        flagDetail: flagsData[2].flags.details[0],
+        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
+      },
+      pathToFlagsFormGroup: '',
+      caseField: flagsData[2].caseField
+    } as FlagDetailDisplayWithFormGroupPath;
+    // The resulting string is expected to be the same as the English version because this case flag has no Welsh
+    // name (name_cy) nor Welsh comments (flagComment_cy), so it falls back on the English name and comments
+    expect(pipe.transform(flagDisplay)).toEqual(
+      ' - <span class="flag-name-and-description">Level 2, Flag 4</span> (Fourth flag)');
+  });
+
+  it('should return the Welsh formatted string for the flag details of flag type "Other" with party role on case', () => {
+    const pipe = new ManageCaseFlagsLabelDisplayPipe(mockRpxTranslationService, mockChangeDetectorRef);
+    mockRpxTranslationService.language = 'cy';
+    const flagDisplay = {
+      flagDetailDisplay: {
+        partyName: flagsData[4].flags.partyName,
+        flagDetail: flagsData[4].flags.details[0],
+        flagsCaseFieldId: flagsData[4].flags.flagsCaseFieldId
+      },
+      pathToFlagsFormGroup: '',
+      caseField: flagsData[4].caseField,
+      roleOnCase: flagsData[4].flags.roleOnCase
+    } as FlagDetailDisplayWithFormGroupPath;
+    // The roleOnCase value is not stored in Welsh anywhere in the Flags object, so it can only be displayed in English
+    expect(pipe.transform(flagDisplay)).toEqual(
+      'Brent Ford (Applicant 1) - <span class="flag-name-and-description">Arall, Flag description - Welsh</span> (Sixth flag - Welsh)');
   });
 });

@@ -36,7 +36,7 @@ export class UpdateFlagTitleDisplayPipe extends AsyncPipe implements PipeTransfo
             const flagComment = this.getFlagComments(value as unknown as FlagDetail);
             return flagName === flagDescription
               ? `${flagDescription}${flagComment}`
-              : `${flagName}, ${flagDescription}${flagComment}`
+              : `${flagName}, ${flagDescription}${flagComment}`;
           })
         );
         this.languageObservables.set(languageObservableKey, o);
@@ -67,13 +67,7 @@ export class UpdateFlagTitleDisplayPipe extends AsyncPipe implements PipeTransfo
           ? flagDetail.otherDescription_cy || flagDetail.otherDescription
           : flagDetail.otherDescription || flagDetail.otherDescription_cy;
       }
-      return flagDetail.subTypeValue || flagDetail.subTypeValue_cy
-      ? this.translationService.language === 'cy'
-        ? `${flagDetail.name_cy || flagDetail.name}, ${flagDetail.subTypeValue_cy || flagDetail.subTypeValue}`
-        : `${flagDetail.name || flagDetail.name_cy}, ${flagDetail.subTypeValue || flagDetail.subTypeValue_cy}`
-      : this.translationService.language === 'cy'
-        ? flagDetail.name_cy || flagDetail.name
-        : flagDetail.name || flagDetail.name_cy;
+      return this.getFlagName(flagDetail);
     }
     return '';
   }
