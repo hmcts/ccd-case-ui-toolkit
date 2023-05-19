@@ -1,32 +1,32 @@
 <ng-container *ngIf="queryItem">
-  <table class="govuk-table query-details-table" aria-describedby="Details of the query">
+  <table class="govuk-table query-details-table" [attr.aria-describedby]="'Details of the query' | rpxTranslate">
     <tbody class="govuk-table__body">
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Last submitted by</th>
+        <th scope="row" class="govuk-table__header">{{ 'Last submitted by' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.lastSubmittedBy }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Submission date</th>
+        <th scope="row" class="govuk-table__header">{{ 'Submission date' | rpxTranslate}}</th>
         <td class="govuk-table__cell">{{ queryItem.createdOn | date: 'd MMM yyyy' }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Query subject</th>
+        <th scope="row" class="govuk-table__header">{{ 'Query subject' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.subject }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Query body</th>
+        <th scope="row" class="govuk-table__header">{{ 'Query body' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.body }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Is the query hearing related?</th>
+        <th scope="row" class="govuk-table__header">{{ 'Is the query hearing related ?' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.isHearingRelated ? 'Yes' : 'No' }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">What is the date of the hearing your query related to?</th>
+        <th scope="row" class="govuk-table__header">{{ 'What is the date of the hearing your query related to ?' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.hearingDate | date: 'd MMM yyyy' }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Attachments</th>
+        <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
         <td class="govuk-table__cell">
           <div *ngFor="let attachment of queryItem.attachments">
             <a [href]="attachment._links.self.href" target="_blank">{{ attachment.originalDocumentName }}</a>
