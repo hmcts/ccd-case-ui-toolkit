@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.16.0-query-management-orchestrator-v3
+**EUI-8303** Query management orchestrator to get the mock data
+
 ### Version 6.10.7-case-flags-v2-welsh-language-support-additional-rework-2
 **EUI-8116** Additional rework of Welsh language support
 
@@ -51,6 +54,7 @@
 
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
+
 ### Version 6.13.10-linked-cases-continue-button-validation-v6
 **EUI-8025** Linked cases continue button validation
 

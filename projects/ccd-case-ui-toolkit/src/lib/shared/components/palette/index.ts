@@ -9,9 +9,8 @@ export * from './date';
 export * from './datetime-picker';
 export * from './document';
 export * from './dynamic-list';
-export * from './dynamic-radio-list';
 export * from './dynamic-multi-select-list';
-
+export * from './dynamic-radio-list';
 export * from './email';
 export * from './fixed-list';
 export * from './fixed-radio-list';
@@ -29,6 +28,7 @@ export * from './palette.module';
 export * from './palette.service';
 export * from './payment';
 export * from './phone-uk';
+export * from './query-management';
 export * from './text';
 export * from './text-area';
 export * from './unsupported-field.component';
