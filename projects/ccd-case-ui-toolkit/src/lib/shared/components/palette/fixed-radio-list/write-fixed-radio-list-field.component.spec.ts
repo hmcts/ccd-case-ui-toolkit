@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { attr } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteFixedRadioListFieldComponent } from './write-fixed-radio-list-field.component';
 
@@ -59,6 +60,7 @@ describe('WriteFixedRadioListFieldComponent', () => {
         ],
         declarations: [
           WriteFixedRadioListFieldComponent,
+          MockRpxTranslatePipe
         ],
         providers: []
       })

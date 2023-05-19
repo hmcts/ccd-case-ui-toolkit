@@ -38,7 +38,24 @@ import { CaseFileViewFolderSelectorComponent } from './case-file-view/components
 import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
-import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
+import {
+  AddCommentsComponent,
+  CaseFlagSummaryListComponent,
+  CaseFlagTableComponent,
+  ConfirmFlagStatusComponent,
+  FlagFieldDisplayPipe,
+  LanguageInterpreterDisplayPipe,
+  ManageCaseFlagsComponent,
+  ManageCaseFlagsLabelDisplayPipe,
+  ReadCaseFlagFieldComponent,
+  SearchLanguageInterpreterComponent,
+  SelectFlagLocationComponent,
+  SelectFlagTypeComponent,
+  UpdateFlagAddTranslationFormComponent,
+  UpdateFlagComponent,
+  UpdateFlagTitleDisplayPipe,
+  WriteCaseFlagFieldComponent
+} from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -139,8 +156,6 @@ const PALETTE_COMPONENTS = [
   WriteDocumentFieldComponent,
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
-  WriteDynamicMultiSelectListFieldComponent,
-  ReadDynamicMultiSelectListFieldComponent,
   WriteTextFieldComponent,
   WriteDateContainerFieldComponent,
   WriteTextAreaFieldComponent,
@@ -179,7 +194,7 @@ const PALETTE_COMPONENTS = [
   ReadDynamicMultiSelectListFieldComponent,
   ReadDynamicListFieldComponent,
   ReadDynamicRadioListFieldComponent,
-  // Components for Case flags
+  // Components for case flags
   CaseFlagTableComponent,
   SelectFlagTypeComponent,
   SearchLanguageInterpreterComponent,
@@ -188,6 +203,8 @@ const PALETTE_COMPONENTS = [
   AddCommentsComponent,
   UpdateFlagComponent,
   CaseFlagSummaryListComponent,
+  ConfirmFlagStatusComponent,
+  UpdateFlagAddTranslationFormComponent,
   // Components for linked cases
   LinkedCasesToTableComponent,
   LinkedCasesFromTableComponent,
@@ -230,6 +247,7 @@ const PALETTE_COMPONENTS = [
     OverlayModule,
     PaymentLibModule,
     ScrollToModule.forRoot(),
+    RpxTranslationModule.forChild(),
     MatDialogModule,
     MediaViewerModule,
     LoadingModule,
@@ -241,6 +259,10 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
+    FlagFieldDisplayPipe,
+    LanguageInterpreterDisplayPipe,
+    ManageCaseFlagsLabelDisplayPipe,
+    UpdateFlagTitleDisplayPipe,
     ...PALETTE_COMPONENTS
   ],
   exports: [

@@ -3,16 +3,16 @@
   <fieldset>
 
     <legend>
-      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
+      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel | rpxTranslate}}</span>
     </legend>
-    <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text}}</span>
-    <span *ngIf="checkboxes.errors && (checkboxes.dirty || checkboxes.touched)" class="error-message">{{checkboxes.errors | ccdFirstError:caseField.label}}</span>
+    <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text | rpxTranslate}}</span>
+    <span *ngIf="checkboxes.errors && (checkboxes.dirty || checkboxes.touched)" class="error-message">{{checkboxes.errors | ccdFirstError:caseField.label | rpxTranslate}}</span>
 
     <ng-container *ngFor="let checkbox of caseField.field_type.fixed_list_items">
 
       <div class="multiple-choice">
         <input class="form-control" [id]="id()+'-'+checkbox.code" [name]="id()" type="checkbox" [value]="checkbox.code" [checked]="isSelected(checkbox.code)" (change)="onCheckChange($event)">
-        <label class="form-label" [for]="id()+'-'+checkbox.code">{{checkbox.label}}</label>
+        <label class="form-label" [for]="id()+'-'+checkbox.code">{{checkbox.label | rpxTranslate}}</label>
       </div>
 
     </ng-container>

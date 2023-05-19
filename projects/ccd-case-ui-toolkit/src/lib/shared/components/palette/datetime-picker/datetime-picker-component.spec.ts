@@ -11,6 +11,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FieldLabelPipe, FirstErrorPipe } from '../utils';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { DatetimePickerComponent } from './datetime-picker.component';
@@ -55,7 +56,7 @@ describe('DatetimePickerComponent', () => {
             ReactiveFormsModule
           ],
           declarations: [
-            DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe
+            DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe
           ],
           providers: [FormatTranslatorService,
             { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.16.0-query-management-sorting-v2",
+  "version": "6.10.7-case-flags-v2-welsh-language-support-additional-rework-2",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -23,6 +23,7 @@
     "build:library:watch": "npm run build:library -- --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
     "ci": "npm run lint && npm run test && npm run build && npm run docs",
+    "clean": "rimraf node_modules",
     "clean:all": "npm run clean:tmp && rimraf node_modules",
     "clean:tmp": "rimraf coverage dist tmp docs",
     "coverage": "nyc report --reporter=json && codecov -f coverage/coverage-final.json",
@@ -39,7 +40,7 @@
     "test": "ng test ccd-case-ui-toolkit-lib  --code-coverage",
     "test:codacy-upload": "echo `cat ./coverage/ccd-case-ui-toolkit/lcov-report/lcov.info | codacy-coverage`",
     "test:coverage": "ng test ccd-case-ui-toolkit-lib --code-coverage",
-    "test:watch": "ng test ccd-case-ui-toolkit-lib --watch=true",
+    "test:watch": "ng test ccd-case-ui-toolkit-lib --code-coverage --watch=true",
     "test:audit": "./bin/run-yarn-audit.sh -f yarn-audit-known-issues",
     "tslint": "tslint",
     "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
@@ -84,7 +85,7 @@
     "ngx-pagination": "5.1.1",
     "npm-registry-fetch": "^4.0.5",
     "pegjs": "^0.10.0",
-    "rpx-xui-translation": "0.2.1",
+    "rpx-xui-translation": "^0.2.1",
     "rx-polling": "1.1.0",
     "rxjs": "^6.6.7",
     "rxjs-compat": "^6.6.7",

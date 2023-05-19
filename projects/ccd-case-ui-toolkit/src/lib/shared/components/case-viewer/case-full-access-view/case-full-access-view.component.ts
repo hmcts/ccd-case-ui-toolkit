@@ -69,6 +69,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public notificationBannerConfig: NotificationBannerConfig;
   public selectedTabIndex = 0;
   public activeCaseFlags = false;
+  public caseFlagsExternalUser = false;
+  private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
@@ -120,7 +122,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       });
     }
 
-    this.checkRouteAndSetCaseViewTab ();
+    this.checkRouteAndSetCaseViewTab();
 
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
@@ -337,6 +339,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       : null;
 
     if (caseFlagsTab) {
+      // Check whether the FlagLauncher CaseField is in external mode or not; the notification banner should not be
+      // displayed for external users
+      this.caseFlagsExternalUser = caseFlagsTab.fields.find(
+        caseField => FieldsUtils.isFlagLauncherCaseField(caseField)).display_context_parameter === this.caseFlagsReadExternalMode;
+
       // Get the active case flags count
       // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
       // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection

@@ -1,7 +1,6 @@
 <div class="form-date">
-
   <div class="form-group form-group-day">
-    <label class="form-label" [for]="dayId()">Day</label>
+    <label class="form-label" [for]="dayId()">{{'Day' | rpxTranslate}}</label>
     <input #dayInput
            class="form-control"
            [id]="dayId()"
@@ -17,7 +16,7 @@
   </div>
 
   <div class="form-group form-group-month">
-    <label class="form-label" [for]="monthId()">Month</label>
+    <label class="form-label" [for]="monthId()">{{'Month' | rpxTranslate}}</label>
     <input #monthInput
            class="form-control"
            [id]="monthId()"
@@ -33,7 +32,7 @@
   </div>
 
   <div class="form-group form-group-year">
-    <label class="form-label" [for]="yearId()">Year</label>
+    <label class="form-label" [for]="yearId()">{{'Year' | rpxTranslate}}</label>
     <input #yearInput
            class="form-control"
            [id]="yearId()"
@@ -49,7 +48,7 @@
   </div>
 
   <div class="form-group form-group-hour" *ngIf="isDateTime">
-    <label class="form-label" [for]="hourId()">Hour</label>
+    <label class="form-label" [for]="hourId()">{{'Hour' | rpxTranslate}}</label>
     <input #hourInput
            class="form-control"
            [id]="hourId()"
@@ -63,7 +62,7 @@
   </div>
 
   <div class="form-group form-group-minute" *ngIf="isDateTime">
-    <label class="form-label" [for]="minuteId()">Minute</label>
+    <label class="form-label" [for]="minuteId()">{{'Minute' | rpxTranslate}}</label>
     <input #minuteInput
            class="form-control"
            [id]="minuteId()"
@@ -77,7 +76,7 @@
   </div>
 
   <div class="form-group form-group-second" *ngIf="isDateTime">
-    <label class="form-label" [for]="secondId()">Second</label>
+    <label class="form-label" [for]="secondId()">{{'Second' | rpxTranslate}}</label>
     <input #secondInput
            class="form-control"
            [id]="secondId()"
@@ -89,5 +88,4 @@
            (focus)="inputFocus()"
            [ngClass]="{'govuk-input--error': isInvalid}">
   </div>
-
 </div>

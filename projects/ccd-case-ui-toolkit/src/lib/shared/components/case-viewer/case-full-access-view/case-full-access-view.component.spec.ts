@@ -48,6 +48,7 @@ import { AlertService } from '../../../services/alert';
 import { DraftService } from '../../../services/draft';
 import { OrderService } from '../../../services/order';
 import { attr, text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseEditComponent, CaseEditPageComponent, CaseNotifier, ConvertHrefToRouterService, PageValidationService, WizardFactoryService } from '../../case-editor';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CaseFlagStatus, PaletteModule } from '../../palette';
@@ -570,6 +571,7 @@ const WORK_ALLOCATION_CASE_VIEW = {
 const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
 const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
 const DIALOG_CONFIG = new MatDialogConfig();
+const CASE_FLAGS_READ_EXTERNAL_MODE = '#ARGUMENT(READ,EXTERNAL)';
 
 let fixture: ComponentFixture<CaseFullAccessViewComponent>;
 let fixtureDialog: ComponentFixture<DeleteOrCancelDialogComponent>;
@@ -636,17 +638,17 @@ xdescribe('CaseFullAccessViewComponent', () => {
           CaseFullAccessViewComponent,
           LabelSubstitutorDirective,
           DeleteOrCancelDialogComponent,
-
-          // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
-          EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          markdownComponentMock
+          EventTriggerComponent,
+          // Mocks
+          caseActivityComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock,
+          markdownComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1079,17 +1081,17 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           CaseFullAccessViewComponent,
           LabelSubstitutorDirective,
           DeleteOrCancelDialogComponent,
-
-          // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          markdownComponentMock
+          // Mocks
+          caseActivityComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock,
+          markdownComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1165,17 +1167,17 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           CaseFullAccessViewComponent,
           LabelSubstitutorDirective,
           DeleteOrCancelDialogComponent,
-
-          // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          markdownComponentMock
+          // Mocks
+          caseActivityComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock,
+          markdownComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1263,13 +1265,14 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1390,13 +1393,13 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1538,6 +1541,26 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     f.detectChanges();
     expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('true');
   });
+
+  it('should not display active Case Flags banner message for an external user, even if there are active Case Flags', () => {
+    // Set the display_context_parameter attribute of the FlagLauncher CaseField to external mode
+    CASE_VIEW.tabs[3].fields[0].display_context_parameter = CASE_FLAGS_READ_EXTERNAL_MODE;
+    // Set both Case Flags' status to "Active"
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.status = CaseFlagStatus.ACTIVE;
+    CASE_VIEW.tabs[3].fields[1].value.details[1].value.status = CaseFlagStatus.ACTIVE;
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() as above
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement).toBeNull();
+    expect(comp.activeCaseFlags).toBe(true);
+  });
 });
 
 xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
@@ -1585,13 +1608,13 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1726,13 +1749,13 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1899,13 +1922,13 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,

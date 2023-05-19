@@ -2,6 +2,59 @@
 ### Version 6.16.0-query-management-orchestrator-v3
 **EUI-8303** Query management orchestrator to get the mock data
 
+### Version 6.10.7-case-flags-v2-welsh-language-support-additional-rework-2
+**EUI-8116** Additional rework of Welsh language support
+
+### Version 6.10.7-case-flags-v2-reasonable-adjustments-fixes
+**EUI-8370** Ensure "Other" support type is not shown at the top-level selection when the user is external
+**EUI-8371** Show details of the selected support being updated when the user is external
+
+### Version 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2
+**EUI-8246** Reasonable Adjustments legal rep hide Event Summary and Event Description section on CYA page
+
+### Version 6.10.7-case-flags-v2-view-case-flags-ui-amendments-v2
+**EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types (ported from Case Flags v1)
+**EUI-8070** Display "decision reason" (flag update comment) for "Not approved" flags to internal HMCTS users only
+**EUI-8071** Hide "Active flags" banner from external users
+
+### Version 6.10.7-case-flags-legal-rep-comments-page-v3
+**EUI-7373** Reasonable Adjustments legal rep display and edit 'Tell us why the support is no longer needed' screen
+
+### Version 6.10.7-case-flags-welsh-language-support
+**EUI-7858** Ensure support for Welsh language toggle by storing flag description and comments entries in correct `_cy` fields, and displaying flag comments according to language selection
+
+### Version 6.10.7-case-flags-legal-rep-review-details-page
+**EUI-7375** Reasonable adjustments legal rep display review flag details page
+
+### Version 6.10.7-case-flags-review-details-page-v4
+**EUI-7351** Reasonable adjustments display review flag details page
+
+### Version 6.10.7-manage-case-flags-valid-status-progression
+**EUI-7929** Set the valid flag status options available on the "Update flag" page, based on the current status of the selected flag
+
+### Version 6.10.7-manage-case-flags-filter-out-inactive-and-not-approved
+**EUI-7354** Ensure flags with a status of either "Inactive" or "Not approved" are filtered out from display on "Manage case flags" page, so they cannot be selected for update
+
+### Version 6.10.7-case-flags-add-translations-page-validation
+**EUI-7932** Add validation to "Add translations to flag" page and map additional fields for "Other" description (English/Welsh) and flag comments (Welsh) for persistence as part of flag update
+
+### Version 6.10.7-case-flags-manage-case-flags-ui-amendments
+**EUI-7777** Change wording for "translation needed" checkbox on "Update flag" page
+**EUI-7842** Remove read-only setting from English description and comments boxes on "Add Welsh translation to flag" page
+**EUI-7900** Add validation to "Update flag" page
+
+### Version 6.10.7-case-flags-confirm-flag-status-page-validation
+**EUI-7611** Add validation to "Confirm the status of the flag" page
+
+### Version 6.10.7-case-flags-write-component-fixes-for-legal-rep-journey
+**EUI-7362** Ensure correct titles and captions are shown for "Request support" and "Manage support" journeys for legal reps
+
+### Version 6.10.7-case-flags-confirm-flag-status-step
+**EUI-7350** Add "confirm flag status" step of Create Case Flag journey
+
+### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
+**EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
+
 ### Version 6.13.10-linked-cases-continue-button-validation-v6
 **EUI-8025** Linked cases continue button validation
 
@@ -29,6 +82,12 @@
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
+### Version 6.10.6-r3.5-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs (re-release following update to Release 3.5)
+
+### Version 5.0.50-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs
+
 ### Version 6.14.1--fee-pay-props
 **EUI-7489** Added additional props to nested ccpay instance
 
@@ -38,11 +97,8 @@
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
 
-### Version 5.0.46-fix-case-link
-**EUI-7521** Fix case link hyperlink on applications tab
-
-### Version 5.0.46-fix-case-link
-**EUI-7521** Fix case link hyperlink on applications tab
+### Version 5.0.46-case-flags-not-approved-status
+**EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
 
 ### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
 **EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary
