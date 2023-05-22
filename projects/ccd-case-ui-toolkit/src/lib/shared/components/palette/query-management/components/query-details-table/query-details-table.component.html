@@ -18,11 +18,11 @@
         <td class="govuk-table__cell">{{ queryItem.body }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">{{ 'Is the query hearing related ?' | rpxTranslate }}</th>
+        <th scope="row" class="govuk-table__header">{{ 'Is the query hearing related?' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.isHearingRelated ? 'Yes' : 'No' }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">{{ 'What is the date of the hearing your query related to ?' | rpxTranslate }}</th>
+        <th scope="row" class="govuk-table__header">{{ 'What is the date of the hearing your query related to?' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.hearingDate | date: 'd MMM yyyy' }}</td>
       </tr>
       <tr class="govuk-table__row">
