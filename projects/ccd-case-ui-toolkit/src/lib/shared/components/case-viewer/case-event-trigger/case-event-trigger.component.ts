@@ -115,9 +115,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
 
   public cancel(): Promise<boolean> {
     if (this.router.url && this.router.url.includes('linkCases')) {
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-        window.location.hash = 'Linked cases';
-      });
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: 'Linked cases' });
     } else {
       return this.router.navigate([this.parentUrl]);
     }
