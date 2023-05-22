@@ -24,5 +24,4 @@ export abstract class AbstractFieldReadComponent extends AbstractFormFieldCompon
       this.registerControl(new FormControl(this.caseField.value));
     }
   }
-
 }
