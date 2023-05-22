@@ -45,5 +45,12 @@ describe('WriteQueryManagementFieldComponent', () => {
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('ngOnInit', () => {
+    it('should initialise the component and set queryItem', () => {
+      component.ngOnInit();
+      expect(component.queryItem).toBeDefined();
+    });
+  });
 });
 
