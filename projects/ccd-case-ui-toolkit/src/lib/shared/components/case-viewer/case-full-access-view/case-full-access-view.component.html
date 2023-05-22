@@ -54,7 +54,7 @@
 <div class="grid-row">
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
-      <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true"
+      <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true"
         [selectedIndex]="selectedTabIndex">
         <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label | rpxTranslate">
         </mat-tab>

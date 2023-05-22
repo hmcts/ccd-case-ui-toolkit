@@ -1,9 +1,10 @@
 import { Location } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
-  SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+  SimpleChanges, ViewChild, ViewContainerRef
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
+import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject } from 'rxjs';
@@ -43,6 +44,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
   public static readonly UNICODE_SPACE = '%20';
   public static readonly EMPTY_SPACE = ' ';
+  private readonly HEARINGS_TAB_LABEL = 'Hearings';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -70,6 +72,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public selectedTabIndex = 0;
   public activeCaseFlags = false;
   public caseFlagsExternalUser = false;
+  private subs: Subscription[] = [];
   private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
 
   public callbackErrorsSubject: Subject<any> = new Subject();
@@ -150,6 +153,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.unsubscribe(this.callbackErrorsSubject);
     this.unsubscribe(this.errorSubscription);
     this.unsubscribe(this.subscription);
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   public unsubscribe(subscription: any) {
@@ -159,20 +163,20 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private checkRouteAndSetCaseViewTab(): void {
-    this.router.events
+    this.subs.push(this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         const url = event && (event as any).url;
         if (url) {
-          const tabUrl = url ? url.split('#') : null ;
+          const tabUrl = url ? url.split('#') : null;
           const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
-          const matTab = this.tabGroup._tabs.find( (x) => x.textLabel.toLowerCase() === tab.toLowerCase());
+          const matTab = this.tabGroup._tabs.find((x) => x.textLabel.toLowerCase() === tab.toLowerCase());
           if (matTab && matTab.position) {
             this.tabGroup.selectedIndex = matTab.position;
           }
         }
-      });
-  }
+      }));
+  };
 
   public postViewActivity(): Observable<Activity[]> {
     return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
@@ -303,20 +307,24 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
-  public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    // Update selected tab index
-    this.selectedTabIndex = tabChangeEvent.index;
-
-    const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
-    const id = (tab.element.nativeElement as HTMLElement).id;
-    // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
-    // so have to hard code the hearings id here
-    if ((tabChangeEvent.index <= 1 && this.prependedTabs && this.prependedTabs.length) ||
-      (this.appendedTabs && this.appendedTabs.length && id === 'hearings')) {
-      this.router.navigate([id], {relativeTo: this.route});
+  // Refactored under EXUI-110 to address infinite tab loop to use tabIndexChanged instead
+  public tabChanged(tabIndexChanged: number): void {
+    const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
+    const tabLabel = matTab.textLabel;
+    // sortedTabs are fragments
+    // appended/prepepended tabs use router navigation
+    if ((tabIndexChanged <= 1 && this.prependedTabs && this.prependedTabs.length) ||
+      (this.appendedTabs && this.appendedTabs.length && tabLabel === this.HEARINGS_TAB_LABEL)) {
+      // Hack to get ID from tab as it's not easily achieved through Angular Material Tabs
+      const tab = matTab['_viewContainerRef'] as ViewContainerRef;
+      const id = (tab.element.nativeElement as HTMLElement).id;
+      // cases/case-details/:caseId/hearings
+      // cases/case-details/:caseId/roles-and-access
+      this.router.navigate([id], { relativeTo: this.route });
     } else {
-      const label = tabChangeEvent.tab.textLabel;
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: label });
+      // Routing here is based on tab label, not ideal
+      // cases/case-details/:caseId#tabLabel
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel })
     }
   }
 
@@ -434,6 +442,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.error = null;
     this.callbackErrorsSubject.next(null);
     this.alertService.clear();
+  }
+
+  private getUrlFragment(url: string) {
+    return url.split('#')[url.split('#').length - 1];
+  }
+
+  private getTabIndexByTabLabel(tabGroup: MatTabGroup, tabLabel) {
+    return tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tabLabel.toLowerCase());
   }
 
 }
