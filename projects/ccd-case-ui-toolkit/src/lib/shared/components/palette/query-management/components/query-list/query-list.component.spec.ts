@@ -84,6 +84,12 @@ describe('QueryListComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should emit event on clcking the query link', () => {
+    spyOn(component.selectedQuery, 'emit');
+    component.showDetails(partyMessages[0]);
+    expect(component.selectedQuery.emit).toHaveBeenCalled();
+  });
+
   describe('ngOnChanges', () => {
     it('should set queryListData on ngChanges', () => {
       expect(component.queryListData).toBeUndefined();

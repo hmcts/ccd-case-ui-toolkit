@@ -22,4 +22,10 @@ describe('QueryDetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should emit event on clcking back to queries', () => {
+    spyOn(component.backClicked, 'emit');
+    component.onBack();
+    expect(component.backClicked.emit).toHaveBeenCalled();
+  });
 });
