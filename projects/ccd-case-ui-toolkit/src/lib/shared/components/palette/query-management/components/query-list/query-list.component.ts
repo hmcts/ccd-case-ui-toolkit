@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { SortOrder } from '../../../complex/sort-order';
-import { PartyMessagesGroup, QueryListColumn, QueryListData } from '../../models';
+import { PartyMessagesGroup, QueryListColumn, QueryListData, QueryListItem } from '../../models';
 
 @Component({
   selector: 'ccd-query-list',
@@ -9,6 +9,7 @@ import { PartyMessagesGroup, QueryListColumn, QueryListData } from '../../models
 })
 export class QueryListComponent implements OnChanges {
   @Input() public partyMessageGroup: PartyMessagesGroup;
+  @Output() public selectedQuery: EventEmitter<QueryListItem> = new EventEmitter();
   public queryListData: QueryListData | undefined;
   public displayedColumns: QueryListColumn[] = [
     { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.UNSORTED },
@@ -27,24 +28,9 @@ export class QueryListComponent implements OnChanges {
 
   public sortTable(col: QueryListColumn) {
     switch (col.displayName) {
-      case 'Queries': {
-        this.sort(col);
-        break;
-      }
-      case 'Last submitted by': {
-        this.sort(col);
-        break;
-      }
-      case 'Last submission date': {
-        this.sortDate(col);
-        break;
-      }
+      case 'Last submission date':
       case 'Last response date': {
         this.sortDate(col);
-        break;
-      }
-      case 'Response by': {
-        this.sort(col);
         break;
       }
       default: {
@@ -56,16 +42,17 @@ export class QueryListComponent implements OnChanges {
 
   public sortWidget(col: QueryListColumn): string {
     switch (col.sortOrder) {
-      case SortOrder.DESCENDING: {
-        return '&#9660;';
-      }
       case SortOrder.ASCENDING: {
         return '&#9650;';
       }
       default: {
-        return '&#11047;';
+        return '&#9660;';
       }
     }
+  }
+
+  public showDetails(query) {
+    this.selectedQuery.emit(query);
   }
 
   private sort(col: QueryListColumn) {

@@ -21,7 +21,7 @@
         <th scope="row" class="govuk-table__header">{{ 'Is the query hearing related?' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.isHearingRelated ? 'Yes' : 'No' }}</td>
       </tr>
-      <tr class="govuk-table__row">
+      <tr class="govuk-table__row" *ngIf="queryItem.isHearingRelated">
         <th scope="row" class="govuk-table__header">{{ 'What is the date of the hearing your query related to?' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.hearingDate | date: 'd MMM yyyy' }}</td>
       </tr>

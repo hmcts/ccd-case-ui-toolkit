@@ -239,7 +239,7 @@ describe('QueryListComponent', () => {
       col.sortOrder = SortOrder.ASCENDING;
       expect(component.sortWidget(col)).toEqual('&#9650;');
       col.sortOrder = SortOrder.UNSORTED;
-      expect(component.sortWidget(col)).toEqual('&#11047;');
+      expect(component.sortWidget(col)).toEqual('&#9660;');
     });
   });
 
