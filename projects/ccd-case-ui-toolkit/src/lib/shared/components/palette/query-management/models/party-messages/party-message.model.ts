@@ -11,4 +11,5 @@ export interface PartyMessage {
   createdOn: Date;
   createdBy: string;
   parentId?: string;
+  responseStatus?: string;
 }

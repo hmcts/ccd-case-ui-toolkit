@@ -15,7 +15,7 @@ export class QueryListComponent implements OnChanges {
     { name: 'lastSubmittedBy', displayName: 'Last submitted by', sortOrder: SortOrder.UNSORTED },
     { name: 'lastSubmittedDate', displayName: 'Last submission date', sortOrder: SortOrder.UNSORTED },
     { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED },
-    { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.UNSORTED }
+    { name: 'lastResponseBy', displayName: 'Response status', sortOrder: SortOrder.UNSORTED }
   ];
 
   public ngOnChanges(simpleChanges: SimpleChanges) {

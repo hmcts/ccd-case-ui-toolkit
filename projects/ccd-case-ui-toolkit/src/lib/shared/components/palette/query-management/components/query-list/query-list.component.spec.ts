@@ -30,6 +30,7 @@ describe('QueryListComponent', () => {
         hearingDate: '',
         createdOn: new Date('2021-01-01'),
         createdBy: 'Person A',
+        responseStatus: ''
       },
       {
         id: '222-222',
@@ -42,6 +43,7 @@ describe('QueryListComponent', () => {
         createdOn: new Date('2021-02-01'),
         createdBy: 'Person B',
         parentId: '111-111',
+        responseStatus: ''
       },
       {
         id: '333-333',
@@ -54,6 +56,7 @@ describe('QueryListComponent', () => {
         createdOn: new Date('2021-03-01'),
         createdBy: 'Person B',
         parentId: '111-111',
+        responseStatus: ''
       },
     ];
 
@@ -124,7 +127,7 @@ describe('QueryListComponent', () => {
       expect(tableCells[1].innerText).toEqual(firstRowItem.lastSubmittedBy);
       expect(new Date(tableCells[2].innerText)).toEqual(firstRowItem.lastSubmittedDate);
       expect(new Date(tableCells[3].innerText)).toEqual(firstRowItem.lastResponseDate);
-      expect(tableCells[4].innerText).toEqual(firstRowItem.lastResponseBy);
+      expect(tableCells[4].innerText).toEqual(firstRowItem.responseStatus);
     });
   });
 
