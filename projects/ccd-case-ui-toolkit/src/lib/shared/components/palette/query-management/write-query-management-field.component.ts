@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractFieldReadComponent } from '../base-field';
-import { QueryListItem } from './models';
 import { partyMessagesMockData } from './__mocks__';
+import { QueryListItem } from './models';
 
 @Component({
   selector: 'ccd-write-query-management-field',
@@ -20,7 +20,7 @@ export class WriteQueryManagementFieldComponent extends AbstractFieldReadCompone
     super();
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.queryItem = new QueryListItem();
     Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
   }
