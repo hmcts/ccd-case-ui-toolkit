@@ -9,6 +9,7 @@ import { QueryDetailsComponent } from './components/query-details/query-details.
 import { QueryListComponent } from './components/query-list/query-list.component';
 import { ReadQueryManagementFieldComponent } from './read-query-management-field.component';
 import { WriteQueryManagementFieldComponent } from './write-query-management-field.component';
+import { QueryManagementErrorMessagesComponent } from './components/query-management-error-messages/query-management-error-messages.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { WriteQueryManagementFieldComponent } from './write-query-management-fie
     QueryCreateComponent,
     QueryListComponent,
     QueryDetailsTableComponent,
+    QueryManagementErrorMessagesComponent,
   ],
   imports: [
     CommonModule,

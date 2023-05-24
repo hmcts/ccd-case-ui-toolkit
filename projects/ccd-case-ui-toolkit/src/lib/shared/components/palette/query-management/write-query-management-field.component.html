@@ -1,12 +1,14 @@
 <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-  <div class="govuk-!-margin-bottom-2">
+  <ccd-query-management-error-messages [errorMessages]="errorMessages"></ccd-query-management-error-messages>
+
+  <div class="govuk-!-margin-bottom-4">
     <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-top-0">{{ 'Back to tasks' | rpxTranslate }}</a>
   </div>
 
   <div class="govuk-!-margin-bottom-6">
-    <div class="govuk-caption-l govuk-!-margin-bottom-6">{{ 'Respond to query' | rpxTranslate }}</div>
+    <div class="govuk-caption-l govuk-!-margin-bottom-4">{{ 'Respond to query' | rpxTranslate }}</div>
 
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-4">{{ 'Query details' | rpxTranslate }}</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-1">{{ 'Query details' | rpxTranslate }}</h1>
     <div class="govuk-!-margin-bottom-4">
       <div class="govuk-body-l govuk-!-margin-bottom-0">{{ caseReference | ccdCaseReference}}</div>
     </div>
@@ -19,52 +21,56 @@
   <div class="govuk-!-margin-bottom-4">
     <h1 class="govuk-heading-m">{{ 'Respond to a query' | rpxTranslate }}</h1>
 
-    <div [formGroup]="responseFormGroup">
+    <form [formGroup]="responseFormGroup">
       <div class="govuk-form-group response-textarea"
-           [class.govuk-form-group--error]="responseFormGroup.get('response')?.errors?.length">
+           [class.govuk-form-group--error]="submitted && responseFormGroup.get('response')?.errors">
         <div class="govuk-label-wrapper">
           <label class="govuk-label govuk-!-font-weight-bold" for="query-response">
             {{ 'Response message' | rpxTranslate }}
           </label>
         </div>
         <p id="query-response-error" class="govuk-error-message"
-           *ngIf="responseFormGroup.get('response')?.errors?.length">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a response message' | rpxTranslate }}
+           *ngIf="submitted && responseFormGroup.get('response')?.hasError('required')">
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ 'Enter a response message' | rpxTranslate }}
         </p>
-        <textarea [formControlName]="'response'"
-          class="govuk-textarea" [class.govuk-textarea--error]="responseFormGroup.get('response')?.errors?.length"
+        <textarea [formControlName]="'response'" class="govuk-textarea"
+          [class.govuk-textarea--error]="submitted && responseFormGroup.get('response')?.hasError('required')"
           id="query-response" name="query-response"
           rows="5" aria-describedby="query-response-hint query-response-error">
         </textarea>
       </div>
 
       <div>
-        <div class="govuk-form-group" [class.govuk-form-group--error]="responseFormGroup.get('documents')?.errors?.length">
+        <div class="govuk-form-group"
+             [class.govuk-form-group--error]="submitted && responseFormGroup.get('documents')?.errors">
           <div class="govuk-label-wrapper">
             <label class="govuk-label" for="add-documents">
               <div class=" govuk-!-font-weight-bold">{{ 'Add document (optional)' | rpxTranslate }}</div>
               <div>{{ 'Attach a document to this message' | rpxTranslate }}</div>
             </label>
           </div>
-          <p id="add-documents-error" class="govuk-error-message" *ngIf="responseFormGroup.get('response')?.errors?.length">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'File error message' | rpxTranslate }}
+          <p *ngIf="submitted && responseFormGroup.get('documents')?.errors"
+             id="add-documents-error" class="govuk-error-message"
+          >
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ 'File error message' | rpxTranslate }}
           </p>
 
           <input class="govuk-file-upload" id="add-documents" name="add-documents" type="file">
         </div>
       </div>
-    </div>
+    </form>
+    <button class="govuk-button" data-module="govuk-button">
+      {{ 'Next' | rpxTranslate}}
+    </button>
   </div>
 
   <div>
-    <div class="govuk-button-group">
-      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" [disabled]="true">
-        {{ 'Previous' | rpxTranslate}}
-      </button>
-      <button class="govuk-button" data-module="govuk-button">
-        {{ 'Continue' | rpxTranslate }}
-      </button>
-    </div>
+    <button class="govuk-button govuk-button--secondary govuk-!-margin-right-3" data-module="govuk-button" [disabled]="true">
+      {{ 'Previous' | rpxTranslate}}
+    </button>
+    <button class="govuk-button" data-module="govuk-button" (click)="submitForm()">
+      {{ 'Continue' | rpxTranslate }}
+    </button>
   </div>
 
 
