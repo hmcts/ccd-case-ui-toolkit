@@ -36,7 +36,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     }
   }
 
-  public setQuery(query) {
+  public setQuery(query): void {
     this.showQueryList = false;
     this.query = query;
   }

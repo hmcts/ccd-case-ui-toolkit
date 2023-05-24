@@ -26,7 +26,7 @@ export class QueryListComponent implements OnChanges {
     }
   }
 
-  public sortTable(col: QueryListColumn) {
+  public sortTable(col: QueryListColumn): void {
     switch (col.displayName) {
       case 'Last submission date':
       case 'Last response date': {
@@ -55,7 +55,7 @@ export class QueryListComponent implements OnChanges {
     this.selectedQuery.emit(query);
   }
 
-  private sort(col: QueryListColumn) {
+  private sort(col: QueryListColumn): void {
     if (col.sortOrder === SortOrder.ASCENDING) {
       this.queryListData.partyMessages.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
       this.displayedColumns.forEach((c) => c.sortOrder = SortOrder.UNSORTED);
@@ -67,7 +67,7 @@ export class QueryListComponent implements OnChanges {
     }
   }
 
-  private sortDate(col: QueryListColumn) {
+  private sortDate(col: QueryListColumn): void {
     if (col.sortOrder === SortOrder.ASCENDING) {
       this.queryListData.partyMessages.sort((a, b) => b[col.name] - a[col.name]);
       this.displayedColumns.forEach((c) => c.sortOrder = SortOrder.UNSORTED);
