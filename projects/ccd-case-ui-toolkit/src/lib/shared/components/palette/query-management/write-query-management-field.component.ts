@@ -28,7 +28,7 @@ export class WriteQueryManagementFieldComponent extends AbstractFieldReadCompone
   }
 
   public addNewAttachment(): void {
-    let document: Document = {
+    const document: Document = {
       _links: {} as DocumentLinks,
       originalDocumentName: ''
     };
