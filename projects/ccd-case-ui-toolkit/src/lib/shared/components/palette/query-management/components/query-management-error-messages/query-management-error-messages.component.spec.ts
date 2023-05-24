@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { Pipe, PipeTransform } from '@angular/core';
 import { QueryManagementErrorMessage } from './query-management-error-message.model';
 import { QueryManagementErrorMessagesComponent } from './query-management-error-messages.component';
-import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
-  transform(value: string): string {
+  public transform(value: string): string {
     return value;
   }
 }
