@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { WriteQueryManagementFieldComponent } from './write-query-management-field.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { WriteQueryManagementFieldComponent } from './write-query-management-field.component';
 
 @Pipe({ name: 'ccdCaseReference' })
 class CcdCaseReferenceMockPipe implements PipeTransform {
@@ -59,6 +59,12 @@ describe('WriteQueryManagementFieldComponent', () => {
     it('should set submitted to true', () => {
       component.submitForm();
       expect(component.submitted).toBe(true);
+    });
+
+    it('should set window scroll to top', () => {
+      spyOn(window, 'scrollTo');
+      component.submitForm();
+      expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
     });
 
     it('should set errorMessages to empty array', () => {
