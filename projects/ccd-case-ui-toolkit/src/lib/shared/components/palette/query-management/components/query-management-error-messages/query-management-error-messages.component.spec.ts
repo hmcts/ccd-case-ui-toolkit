@@ -49,7 +49,7 @@ describe('QueryManagementErrorMessagesComponent', () => {
   it('should display error messages', () => {
     component.errorMessages = mockErrorMessages;
     fixture.detectChanges();
-    const errorMessages = fixture.nativeElement.querySelectorAll('.govuk-error-message');
+    const errorMessages = fixture.nativeElement.querySelectorAll('.govuk-error-summary__list > li');
     expect(errorMessages.length).toBe(2);
     expect(errorMessages[0].textContent).toContain('Add a response before continue');
     expect(errorMessages[1].textContent).toContain('Add a document before continue');
