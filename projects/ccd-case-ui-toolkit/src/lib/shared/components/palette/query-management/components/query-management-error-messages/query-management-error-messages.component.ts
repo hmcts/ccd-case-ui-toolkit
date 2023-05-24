@@ -3,8 +3,7 @@ import { QueryManagementErrorMessage } from './query-management-error-message.mo
 
 @Component({
   selector: 'ccd-query-management-error-messages',
-  templateUrl: './query-management-error-messages.component.html',
-  styleUrls: ['./query-management-error-messages.component.scss']
+  templateUrl: './query-management-error-messages.component.html'
 })
 export class QueryManagementErrorMessagesComponent {
   @Input() public errorMessages: QueryManagementErrorMessage[] = [];

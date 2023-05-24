@@ -34,8 +34,7 @@ export class WriteQueryManagementFieldComponent extends AbstractFieldReadCompone
     this.errorMessages = [];
     window.scrollTo(0, 0);
 
-    if (this.responseFormGroup.valid) {
-    } else {
+    if (!this.responseFormGroup.valid) {
       if (this.responseFormGroup.controls.response.hasError('required')) {
         this.errorMessages.push({ controlName: 'response', message: 'Add a response before continue' });
       }
