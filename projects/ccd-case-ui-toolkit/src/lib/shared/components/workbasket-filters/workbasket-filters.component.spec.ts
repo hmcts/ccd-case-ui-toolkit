@@ -15,6 +15,7 @@ import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.se
 import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { AbstractFieldWriteComponent } from '../palette/base-field/abstract-field-write.component';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 
@@ -210,7 +211,8 @@ describe('Clear localStorage for workbasket filters', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -278,7 +280,8 @@ describe('with defaults', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -694,7 +697,8 @@ describe('with defaults and CRUD', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -795,7 +799,8 @@ describe('with defaults and CRUD and empty case types', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -871,7 +876,8 @@ describe('with defaults and CRUD and type with empty case states', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -954,7 +960,8 @@ describe('with query parameters', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -1040,7 +1047,8 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -1121,7 +1129,8 @@ describe('with no defaults', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },

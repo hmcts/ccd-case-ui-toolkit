@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { HttpError } from '../../domain/http';
 import { text } from '../../test/helpers';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { CallbackErrorsComponent } from './callback-errors.component';
 import { CallbackErrorsContext } from './domain/error-context';
 import createSpyObj = jasmine.createSpyObj;
@@ -41,7 +42,8 @@ describe('CallbackErrorsComponent', () => {
     TestBed
       .configureTestingModule({
         declarations: [
-          CallbackErrorsComponent
+          CallbackErrorsComponent,
+          MockRpxTranslatePipe
         ]
       })
       .compileComponents();
@@ -62,8 +64,8 @@ describe('CallbackErrorsComponent', () => {
     callbackErrorsSubject.next(error);
 
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    expectedCallbackErrorsContext.ignore_warning = true;
-    expectedCallbackErrorsContext.trigger_text = triggerTextIgnore;
+    expectedCallbackErrorsContext.ignoreWarning = true;
+    expectedCallbackErrorsContext.triggerText = triggerTextIgnore;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -73,8 +75,8 @@ describe('CallbackErrorsComponent', () => {
     callbackErrorsSubject.next(error);
 
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    expectedCallbackErrorsContext.ignore_warning = false;
-    expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
+    expectedCallbackErrorsContext.ignoreWarning = false;
+    expectedCallbackErrorsContext.triggerText = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -83,8 +85,8 @@ describe('CallbackErrorsComponent', () => {
     callbackErrorsSubject.next(error);
 
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    expectedCallbackErrorsContext.ignore_warning = false;
-    expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
+    expectedCallbackErrorsContext.ignoreWarning = false;
+    expectedCallbackErrorsContext.triggerText = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -130,8 +132,8 @@ describe('CallbackErrorsComponent', () => {
 
     expect(component.error).toEqual(httpError);
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
-    expectedCallbackErrorsContext.ignore_warning = false;
-    expectedCallbackErrorsContext.trigger_text = triggerTextContinue;
+    expectedCallbackErrorsContext.ignoreWarning = false;
+    expectedCallbackErrorsContext.triggerText = triggerTextContinue;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 

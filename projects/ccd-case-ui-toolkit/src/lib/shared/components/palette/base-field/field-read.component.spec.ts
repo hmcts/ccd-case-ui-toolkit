@@ -1,13 +1,13 @@
 import { Component, DebugElement, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseField } from '../../../domain/definition';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { Draft } from '../../../domain/draft.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
@@ -19,6 +19,7 @@ import { PageValidationService } from '../../case-editor/services/page-validatio
 import { PaletteService } from '../palette.service';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteContext } from './palette-context.enum';
+
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -67,7 +68,6 @@ class FieldReadLabelComponent {
 }
 
 describe('FieldReadComponent', () => {
-
   let fixture: ComponentFixture<FieldReadComponent>;
   let component: FieldReadComponent;
   let de: DebugElement;
@@ -136,10 +136,11 @@ describe('FieldReadComponent', () => {
         ],
         declarations: [
           FieldReadComponent,
-
-          // Mock
           FieldTestComponent,
           FieldReadLabelComponent,
+          FieldReadLabelComponent,
+          // Mocks
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: PaletteService, useValue: paletteService },
@@ -205,11 +206,11 @@ describe('FieldReadComponent', () => {
     expect(fieldReadLabel.withLabel).toBe(true);
   });
 
-  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+  function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {
     const cf = new CaseField();
     cf.id = id;
     cf.value = value;
-    cf.display_context = display_context;
+    cf.display_context = displayContext;
     return cf;
   }
 

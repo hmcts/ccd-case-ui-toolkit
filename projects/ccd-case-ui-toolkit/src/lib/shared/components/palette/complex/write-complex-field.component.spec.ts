@@ -4,11 +4,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { plainToClassFromExist } from 'class-transformer';
 import { MockComponent } from 'ng2-mock-component';
-
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { IsCompoundPipe, IsReadOnlyPipe, PaletteUtilsModule } from '../utils';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
 
@@ -26,18 +26,18 @@ describe('WriteComplexFieldComponent', () => {
   const $COMPLEX_PANEL_TITLE = By.css('h2');
   const $COMPLEX_PANEL_VALUES = By.css('ccd-field-write');
 
-  const FieldWriteComponent = MockComponent({
+  const fieldWriteComponentMock = MockComponent({
     selector: 'ccd-field-write',
     inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
   });
 
-  const FieldReadComponent = MockComponent({
+  const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel']
   });
 
   @Pipe({name: 'ccdIsReadOnly'})
-  class MockIsReadOnlyPipe implements PipeTransform {
+  class IsReadOnlyPipeMock implements PipeTransform {
     public transform(field: CaseField): boolean {
       if (!field || !field.display_context) {
         return false;
@@ -62,10 +62,11 @@ describe('WriteComplexFieldComponent', () => {
           WriteComplexFieldComponent,
           FieldsFilterPipe,
 
-          // Mock
-          FieldWriteComponent,
-          FieldReadComponent,
-          MockIsReadOnlyPipe
+          // Mocks
+          fieldWriteComponentMock,
+          fieldReadComponentMock,
+          IsReadOnlyPipeMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           IsCompoundPipe,
@@ -198,7 +199,7 @@ describe('WriteComplexFieldComponent', () => {
         .query($COMPLEX_PANEL_TITLE);
 
       expect(panelTitle).toBeTruthy();
-      expect(panelTitle.nativeElement.textContent).toBe(CASE_FIELD.label + ' (Optional)');
+      expect(panelTitle.nativeElement.textContent).toBe(`${CASE_FIELD.label} (Optional)`);
     });
 
     it('should render a field write component for each field in the complex type', () => {

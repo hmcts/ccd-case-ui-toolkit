@@ -11,14 +11,13 @@ import { CaseCreateComponent } from './case-create.component';
 
 import createSpyObj = jasmine.createSpyObj;
 
-const CaseEditComponent: any = MockComponent({
+const caseEditComponentMock: any = MockComponent({
   selector: 'ccd-case-edit',
   inputs: ['eventTrigger', 'submit', 'validate', 'caseDetails', 'saveDraft'],
   outputs: ['cancelled', 'submitted']
 });
 
 describe('CaseCreateComponent event trigger resolved and draft does not exist', () => {
-
   const ETID = 'TEST_TRIGGER';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     ETID,
@@ -99,7 +98,7 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
-          CaseEditComponent,
+          caseEditComponentMock,
           CaseCreateComponent,
         ],
         providers: [
@@ -163,11 +162,9 @@ describe('CaseCreateComponent event trigger resolved and draft does not exist', 
 
     expect(draftService.createOrUpdateDraft).toHaveBeenCalledWith(CTID, undefined, SANITISED_EDIT_FORM);
   });
-
 });
 
 describe('CaseCreateComponent event trigger resolved and draft does exist', () => {
-
   const ETID = 'TEST_TRIGGER';
   const DRAFT_ID = '12345';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -241,14 +238,14 @@ describe('CaseCreateComponent event trigger resolved and draft does exist', () =
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
-          CaseEditComponent,
+          caseEditComponentMock,
           CaseCreateComponent,
         ],
         providers: [
           { provide: CasesService, useValue: casesService },
           { provide: DraftService, useValue: draftService },
           { provide: AlertService, useValue: alertService },
-          { provide: EventTriggerService, useValue: eventTriggerService },
+          { provide: EventTriggerService, useValue: eventTriggerService }
         ]
       })
       .compileComponents();
@@ -307,14 +304,14 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         declarations: [
-          CaseEditComponent,
+          caseEditComponentMock,
           CaseCreateComponent,
         ],
         providers: [
           { provide: CasesService, useValue: casesService },
           { provide: DraftService, useValue: draftsService },
           { provide: AlertService, useValue: alertService },
-          { provide: EventTriggerService, useValue: eventTriggerService },
+          { provide: EventTriggerService, useValue: eventTriggerService }
         ]
       })
       .compileComponents();
@@ -329,9 +326,7 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
   }));
 
   it('should alert warning message and never announce event trigger if getting event trigger fails', () => {
-
-    expect(alertService.error).toHaveBeenCalledWith('ERROR!');
+    expect(alertService.error).toHaveBeenCalledWith({ phrase: 'ERROR!' });
     expect(eventTriggerService.announceEventTrigger).not.toHaveBeenCalled();
   });
-
 });

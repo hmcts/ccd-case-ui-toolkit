@@ -297,7 +297,6 @@ describe('WriteLinkedCasesFieldComponent', () => {
   });
 
   it('should validate linked cases state emitter when navigate to next page is true', () => {
-    spyOn(component, 'setContinueButtonValidationErrorMessage');
     spyOn(component, 'proceedToNextPage');
     spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
@@ -306,13 +305,11 @@ describe('WriteLinkedCasesFieldComponent', () => {
       navigateToNextPage: true
     };
     component.onLinkedCasesStateEmitted(linkedCasesState);
-    expect(component.setContinueButtonValidationErrorMessage).toHaveBeenCalled();
     expect(component.proceedToNextPage).toHaveBeenCalled();
     expect(component.linkedCasesPage).toEqual(LinkedCasesPages.LINK_CASE);
   });
 
   it('should validate linked cases state emitter when navigate to next page is false', () => {
-    spyOn(component, 'setContinueButtonValidationErrorMessage');
     spyOn(component, 'proceedToNextPage');
     spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
     spyOn(caseEditDataService, 'addFormValidationError').and.callThrough();
@@ -323,21 +320,22 @@ describe('WriteLinkedCasesFieldComponent', () => {
       navigateToNextPage: false
     };
     component.onLinkedCasesStateEmitted(linkedCasesState);
-    expect(component.setContinueButtonValidationErrorMessage).not.toHaveBeenCalled();
     expect(component.proceedToNextPage).not.toHaveBeenCalled();
     expect(caseEditDataService.addFormValidationError).toHaveBeenCalledTimes(1);
   });
 
   it('should navigate to correct page', () => {
+    spyOn(caseEditDataService, 'setLinkedCasesJourneyAtFinalStep');
     spyOn(component.formGroup, 'updateValueAndValidity');
     spyOn(component, 'submitLinkedCases');
-    spyOn(caseEditDataService, 'clearCaseLinkError').and.callThrough();
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     component.proceedToNextPage();
+    expect(caseEditDataService.setLinkedCasesJourneyAtFinalStep).toHaveBeenCalledWith(false);
     expect(component.formGroup.updateValueAndValidity).not.toHaveBeenCalled();
     expect(component.submitLinkedCases).not.toHaveBeenCalled();
     component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
     component.proceedToNextPage();
+    expect(caseEditDataService.setLinkedCasesJourneyAtFinalStep).toHaveBeenCalledWith(true);
     expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
     expect(component.submitLinkedCases).toHaveBeenCalled();
   });
@@ -346,7 +344,6 @@ describe('WriteLinkedCasesFieldComponent', () => {
     spyOn(caseEditDataService, 'setCaseEditForm');
     linkedCasesService.isLinkedCasesEventTrigger = true;
     component.caseEditForm = FORM_GROUP;
-    console.log('FORM GROUP', component.formGroup);
     component.submitLinkedCases();
     expect(component.formGroup.value.caseLinks).toEqual(linkedCases);
     expect(caseEditDataService.setCaseEditForm).toHaveBeenCalled();
@@ -360,13 +357,6 @@ describe('WriteLinkedCasesFieldComponent', () => {
     component.submitLinkedCases();
     expect(component.formGroup.value.caseLinks).toEqual(linkedCases);
     expect(caseEditDataService.setCaseEditForm).toHaveBeenCalled();
-  });
-
-  it('should set continue button validation error message', () => {
-    linkedCasesService.isLinkedCasesEventTrigger = true;
-    spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-    component.setContinueButtonValidationErrorMessage();
-    expect(caseEditDataService.setCaseLinkError).toHaveBeenCalled();
   });
 
   it('should isAtFinalPage return correct value', () => {
@@ -392,17 +382,11 @@ describe('WriteLinkedCasesFieldComponent', () => {
     expect(component.getNextPage(linkedCasesState2)).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
   });
 
-  it('should not navigate to error element', () => {
-    spyOn(document, 'getElementById').and.returnValue(null);
-    component.navigateToErrorElement(null);
-    expect(document.getElementById).not.toHaveBeenCalled();
-  });
-
-  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+  function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {
     const cf = new CaseField();
     cf.id = id;
     cf.value = value;
-    cf.display_context = display_context;
+    cf.display_context = displayContext;
     return cf;
   }
 

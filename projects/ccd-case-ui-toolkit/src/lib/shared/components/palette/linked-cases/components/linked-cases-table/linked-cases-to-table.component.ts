@@ -89,7 +89,7 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
       } else {
         secondLevelresultArray.push({ ...item });
       }
-    })
+    });
     return topLevelresultArray.concat(secondLevelresultArray);
   }
 
@@ -104,10 +104,11 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     });
     if (searchCasesResponse.length) {
       this.searchCasesByCaseIds(searchCasesResponse).subscribe((searchCases: any) => {
-        const casesResponse = [];
+        let casesResponse = [];
         searchCases.forEach(response => {
           casesResponse.push(this.mapResponse(response));
         });
+        casesResponse = this.sortReasonCodes(casesResponse);
         this.linkedCasesFromResponse = this.sortLinkedCasesByReasonCode(casesResponse);
         this.isLoaded = true;
         const caseLinks = this.linkedCasesFromResponse.map(item => {
@@ -128,12 +129,35 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
         this.linkedCasesService.linkedCases = caseLinks;
         this.isServerError = false;
       },
-        err => {
+      err => {
           this.isServerError = true;
           this.notifyAPIFailure.emit(true);
         }
       );
     }
+  }
+
+  public sortReasonCodes(searchCasesResponse): LinkedCasesResponse[] {
+    searchCasesResponse.forEach((item: any) => {
+      if (item?.reasons?.length) {
+        item.reasons.forEach((reason) => {
+          reason.sortOrder = this.getReasonSortOrder(reason.value.Reason);
+        });
+        item.reasons = item.reasons.sort((a, b) => a.sortOrder - b.sortOrder);
+        item.sortOrder = item.reasons[0].sortOrder;
+      }
+    });
+    searchCasesResponse = searchCasesResponse?.sort((a, b) => a.sortOrder - b.sortOrder);
+    return searchCasesResponse;
+  }
+
+  public getReasonSortOrder(reasonCode: string): number {
+    if (reasonCode === LinkedCasesToTableComponent.CASE_PROGRESS_REASON_CODE) {
+      return 1;
+    } else if (reasonCode === LinkedCasesToTableComponent.CASE_CONSOLIDATED_REASON_CODE) {
+      return 2;
+    }
+    return 3;
   }
 
   public searchCasesByCaseIds(searchCasesResponse: any[]): Observable<unknown[]> {

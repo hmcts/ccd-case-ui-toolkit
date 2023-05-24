@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteTextFieldComponent } from './write-text-field.component';
 
@@ -25,11 +26,10 @@ const CASE_FIELD: CaseField = ({
 const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WriteTextFieldComponent', () => {
-
   const $INPUT = By.css('.form-group input');
 
   // Input is mocked so that one-way bound inputs can be tested
-  const Input: any = MockComponent({ selector: 'input', inputs: [
+  const inputComponentMock: any = MockComponent({ selector: 'input', inputs: [
     'type',
     'formControl'
   ]});
@@ -47,9 +47,9 @@ describe('WriteTextFieldComponent', () => {
         ],
         declarations: [
           WriteTextFieldComponent,
-
-          // Mock
-          Input,
+          // Mocks
+          MockRpxTranslatePipe,
+          inputComponentMock
         ],
         providers: []
       })

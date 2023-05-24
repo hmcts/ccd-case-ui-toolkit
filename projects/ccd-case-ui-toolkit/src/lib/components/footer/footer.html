@@ -6,29 +6,31 @@
       <div class="footer-meta-inner">
         <ng-content select="[footerSolsNavLinks]"></ng-content>
         <div class="open-government-licence">
-          <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
-          <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
+          <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">{{'Open Government Licence' | rpxTranslate}}</a></p>
+          <p>{{'All content is available under the' | rpxTranslate}} <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">{{'Open Government Licence v3.0' | rpxTranslate}}</a>, {{'except where otherwise stated' | rpxTranslate}}</p>
         </div>
       </div>
 
       <div class="copyright">
-        <a href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">© Crown copyright</a>
+        <a href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">
+          © {{'Crown copyright' | rpxTranslate}}
+        </a>
       </div>
     </div>
 
     <!-- Condition: Case Worker -->
     <div *ngIf="!isSolicitor" class="footer-meta">
       <div class="title">
-        <span class="footer-text">Help</span>
+        <span class="footer-text">{{'Help' | rpxTranslate}}</span>
       </div>
       <div class="email">
-        <span class="footer-text">Email: <a href="mailto:{{email}}">{{email}}</a></span>
+        <span class="footer-text">{{'Email' | rpxTranslate}}: <a href="mailto:{{email}}">{{email}}</a></span>
       </div>
       <div class="phone">
-        <span class="footer-text">Phone: {{phone}}</span>
+        <span class="footer-text">{{'Phone' | rpxTranslate}}: {{phone}}</span>
       </div>
       <div class="work-hours">
-        <span class="footer-text">{{workhours}}</span>
+        <span class="footer-text">{{workhours | rpxTranslate}}</span>
       </div>
       <ng-content select="[footerCaseWorkerNavLinks]"></ng-content>
     </div>

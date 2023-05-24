@@ -10,12 +10,12 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldTableComponent } from './read-complex-field-table.component';
 
 describe('ReadComplexFieldTableComponent', () => {
-
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('table>tbody>tr.complex-panel-simple-field>th>span');
@@ -23,7 +23,7 @@ describe('ReadComplexFieldTableComponent', () => {
   const $COMPLEX_PANEL_COMPOUND_ROWS_VALUES = By.css('table>tbody>tr.complex-panel-compound-field>td>span>ccd-field-read');
   const $COMPLEX_PANEL_ALL_VALUES = By.css('table>tbody>tr>td>span>ccd-field-read');
 
-  const FieldReadComponent = MockComponent({
+  const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context', 'topLevelFormGroup']
   });
@@ -149,9 +149,9 @@ describe('ReadComplexFieldTableComponent', () => {
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
-
-            // Mock
-            FieldReadComponent,
+            // Mocks
+            MockRpxTranslatePipe,
+            fieldReadComponentMock
           ],
           providers: [
             FieldsUtils,
@@ -340,9 +340,9 @@ describe('ReadComplexFieldTableComponent', () => {
             ReadComplexFieldTableComponent,
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
-
-            // Mock
-            FieldReadComponent,
+            // Mocks
+            MockRpxTranslatePipe,
+            fieldReadComponentMock
           ],
           providers: [
             FieldsUtils,

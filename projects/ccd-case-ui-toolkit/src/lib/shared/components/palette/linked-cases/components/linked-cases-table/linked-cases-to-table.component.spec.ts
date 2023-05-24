@@ -43,8 +43,8 @@ describe('LinkCasesToTableComponent', () => {
   const linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases: mocklinkedCases,
-    getAllLinkedCaseInformation() {},
-    getCaseName() {},
+    getAllLinkedCaseInformation() { },
+    getCaseName() { },
     jurisdictionsResponse: [
       {
         id: 'SSCS',
@@ -61,7 +61,7 @@ describe('LinkCasesToTableComponent', () => {
         states: [{}],
       },
     ],
-    mapLookupIDToValueFromJurisdictions() {}
+    mapLookupIDToValueFromJurisdictions() { }
   };
 
   const caseViewData = {
@@ -172,6 +172,12 @@ describe('LinkCasesToTableComponent', () => {
   it('should get case reference link return ', () => {
     component.caseId = '1111222233334444';
     expect(component.getCaseRefereneLink('1111222233334444')).toEqual('4444');
+  });
+
+  it('should get sort order based on reason code', () => {
+    expect(component.getReasonSortOrder('CLRC016')).toEqual(1);
+    expect(component.getReasonSortOrder('CLRC015')).toEqual(2);
+    expect(component.getReasonSortOrder('any')).toEqual(3);
   });
 
   it('should map api response', () => {

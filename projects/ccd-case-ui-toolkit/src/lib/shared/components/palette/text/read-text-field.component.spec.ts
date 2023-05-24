@@ -3,10 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ReadTextFieldComponent } from './read-text-field.component';
 
 describe('ReadTextFieldComponent', () => {
-
   const FIELD_TYPE: FieldType = {
     id: 'Text',
     type: 'Text'
@@ -32,7 +32,8 @@ describe('ReadTextFieldComponent', () => {
         .configureTestingModule({
           imports: [],
           declarations: [
-            ReadTextFieldComponent
+            ReadTextFieldComponent,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -89,7 +90,8 @@ describe('ReadTextFieldComponent', () => {
         .configureTestingModule({
           imports: [],
           declarations: [
-            ReadTextFieldComponent
+            ReadTextFieldComponent,
+            MockRpxTranslatePipe
           ],
           providers: []
         })

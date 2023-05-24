@@ -1,33 +1,54 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
+import { BehaviorSubject } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
+import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage } from '../../enums';
+import { UpdateFlagTitleDisplayPipe } from '../../pipes';
 import { UpdateFlagComponent } from './update-flag.component';
 
 describe('UpdateFlagComponent', () => {
   let component: UpdateFlagComponent;
   let fixture: ComponentFixture<UpdateFlagComponent>;
-  let nextButton: any;
-  let textarea: any;
+  let nextButton: HTMLElement;
   let textareaInput: string;
+  let mockRpxTranslationService: any;
   const activeFlag = {
     name: 'Flag 1',
     flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{ id: null, value: 'Reasonable adjustment' }],
+    path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active'
   } as FlagDetail;
   const inactiveFlag = {
     name: 'Flag 2',
-    flagComment: 'Rose\'s second flag',
     dateTimeCreated: new Date(),
-    path: [{ id: null, value: 'Reasonable adjustment' }],
+    path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
     flagCode: 'FL2',
     status: 'Inactive'
+  } as FlagDetail;
+  const requestedFlag = {
+    name: 'Flag 3',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'FL3',
+    status: 'Requested'
+  } as FlagDetail;
+  const notApprovedFlag = {
+    name: 'Flag 4',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'FL4',
+    status: 'Not approved'
   } as FlagDetail;
   const selectedFlag1 = {
     flagDetailDisplay: {
@@ -43,12 +64,41 @@ describe('UpdateFlagComponent', () => {
     },
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
+  const selectedFlag3 = {
+    flagDetailDisplay: {
+      partyName: 'Rose Bank',
+      flagDetail: requestedFlag
+    },
+    pathToFlagsFormGroup: ''
+  } as FlagDetailDisplayWithFormGroupPath;
+  const selectedFlag4 = {
+    flagDetailDisplay: {
+      partyName: 'Rose Bank',
+      flagDetail: notApprovedFlag
+    },
+    pathToFlagsFormGroup: ''
+  } as FlagDetailDisplayWithFormGroupPath;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
+    const source = new BehaviorSubject<RpxLanguage>('en');
+    let currentLanguage: RpxLanguage = 'en';
+    mockRpxTranslationService = {
+      language$: source.asObservable(),
+      set language(lang: RpxLanguage) {
+        currentLanguage = lang;
+        source.next(lang);
+      },
+      get language() {
+        return currentLanguage;
+      }
+    };
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ UpdateFlagComponent ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [UpdateFlagComponent, MockRpxTranslatePipe, UpdateFlagTitleDisplayPipe],
+      providers: [
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
+      ]
     })
     .compileComponents();
   }));
@@ -56,30 +106,71 @@ describe('UpdateFlagComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagComponent);
     component = fixture.componentInstance;
-    component.formGroup = new FormGroup({});
-    component.selectedFlag = selectedFlag1;
-    nextButton = fixture.debugElement.nativeElement.querySelector('.button-primary');
-    textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
+    component.displayContextParameter = '#ARGUMENT(UPDATE)';
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1)
+    });
+    nextButton = fixture.debugElement.query(By.css('#updateFlagNextButton')).nativeElement;
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
       '5555555555' + '6666666666' + '7777777777' + '8888888888' + '9999999999';
-    fixture.detectChanges();
+    // Set default translation language to English
+    mockRpxTranslationService.language = 'en';
+    // Deliberately omitted fixture.detectChanges() here to allow for a different selected flag to be set for each test, and
+    // to allow translation language to be set to Welsh for selected tests
   });
 
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should populate the flag comments textarea with existing comments', () => {
+  it('should populate the flag comments textarea from English comments field when selected language is English (default)', () => {
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
     // Check the textarea value property, rather than textContent, because this input element has no child nodes
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     expect(textarea.value).toEqual(activeFlag.flagComment);
   });
 
-  it('should show an error message on clicking "Next" if comments are mandatory but none have been entered', () => {
+  it('should populate the flag comments textarea from Welsh comments field when only Welsh comments are available', () => {
+    activeFlag.flagComment = null;
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    // Check the textarea value property, rather than textContent, because this input element has no child nodes
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    expect(textarea.value).toEqual(activeFlag.flagComment_cy);
+  });
+
+  it('should populate the flag comments textarea from Welsh comments field when selected language is Welsh', () => {
+    mockRpxTranslationService.language = 'cy';
+    activeFlag.flagComment = 'First flag';
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    // Check the textarea value property, rather than textContent, because this input element has no child nodes
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    expect(textarea.value).toEqual(activeFlag.flagComment_cy);
+  });
+
+  it('should populate from English comments field when the selected language is Welsh but there are no Welsh comments', () => {
+    mockRpxTranslationService.language = 'cy';
+    activeFlag.flagComment_cy = null;
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    // Check the textarea value property, rather than textContent, because this input element has no child nodes
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    expect(textarea.value).toEqual(activeFlag.flagComment);
+  });
+
+  it('should show an error message on clicking "Next" if existing comments have been deleted', () => {
+    activeFlag.flagComment = 'First flag';
+    activeFlag.flagComment_cy = null;
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
     // Delete existing flag comments
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     textarea.value = '';
     textarea.dispatchEvent(new Event('input'));
     nextButton.click();
@@ -93,27 +184,75 @@ describe('UpdateFlagComponent', () => {
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
-      fieldId: component.updateFlagControlName
+      fieldId: CaseFlagFormFields.COMMENTS
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
   });
 
+  it('should show an error message on clicking "Next" if existing comments in Welsh have been deleted', () => {
+    activeFlag.flagComment = null;
+    activeFlag.flagComment_cy = 'Cymraeg';
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    // Delete existing flag comments
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    textarea.value = '';
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
+      fieldId: CaseFlagFormFields.COMMENTS
+    });
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
+  });
+
+  it('should not show an error message on clicking "Next" if no comments exist and none have been entered', () => {
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag2)
+    });
+    fixture.detectChanges();
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    expect(textarea.value).toEqual('');
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.errorMessages.length).toBe(0);
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement).toBeNull();
+  });
+
   it('should show an error message on clicking "Next" if comments exceed a 200-character limit', () => {
-    textarea.value = textareaInput + '0';
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
     nextButton.click();
     fixture.detectChanges();
     expect(component.errorMessages[0]).toEqual({
       title: '',
       description: UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
-      fieldId: component.updateFlagControlName
+      fieldId: CaseFlagFormFields.COMMENTS
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED);
   });
 
   it('should not show an error message on clicking "Next" if comments equal a 200-character limit', () => {
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
     nextButton.click();
@@ -123,43 +262,216 @@ describe('UpdateFlagComponent', () => {
     expect(errorMessageElement).toBeNull();
   });
 
-  it('should render the "Active" flag status correctly', () => {
-    const statusElement = fixture.debugElement.nativeElement.querySelector('.govuk-tag');
-    expect(statusElement.getAttribute('class')).not.toContain('govuk-tag--grey');
+  it('should render flag status radio buttons correctly when current flag status is "Requested"', () => {
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
+    fixture.detectChanges();
+    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
+
+    const displayedStatuses = [] as string[];
+    for (const element of statusCheckboxLabelsElements.values()) {
+      displayedStatuses.push(element.textContent.trim());
+    }
+
+    expect(displayedStatuses).toEqual(Object.values(CaseFlagStatus));
   });
 
-  it('should render the "Inactive" flag status correctly', () => {
+  it('should render flag status radio buttons correctly when current flag status is "Active"', () => {
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
+
+    const displayedStatuses = [] as string[];
+    for (const element of statusCheckboxLabelsElements.values()) {
+      displayedStatuses.push(element.textContent.trim());
+    }
+
+    expect(displayedStatuses).toEqual([CaseFlagStatus.ACTIVE, CaseFlagStatus.INACTIVE]);
+  });
+
+  it('should not render any flag status radio buttons when current flag status is "Inactive"', () => {
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag2)
+    });
     component.selectedFlag = selectedFlag2;
     fixture.detectChanges();
-    const statusElement = fixture.debugElement.nativeElement.querySelector('.govuk-tag');
-    expect(statusElement.getAttribute('class')).toContain('govuk-tag--grey');
   });
 
-  it('should update the flag comments and status', () => {
-    spyOn(component, 'onChangeStatus').and.callThrough();
+  it('should not render any flag status radio buttons when current flag status is "Not approved"', () => {
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag4)
+    });
+    fixture.detectChanges();
+    const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
+
+    expect(statusCheckboxLabelsElements.length).toBe(0);
+  });
+
+  it('should show an error message on clicking "Next" if status reason is mandatory but none has been entered', () => {
+    // Select flag with current status of "Requested", so that all status radio buttons are displayed
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
+    fixture.detectChanges();
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
-    // Edit existing flag comments
-    textarea.value = 'Edited comment';
-    textarea.dispatchEvent(new Event('input'));
-    // Click the "Make inactive" button to change the flag status
-    fixture.debugElement.nativeElement.querySelector('.button-secondary').click();
+    const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
+    // Clicking fourth radio button with status "Not approved" makes entering status reason mandatory
+    radioButtons[3].click();
     nextButton.click();
     fixture.detectChanges();
-    expect(component.onChangeStatus).toHaveBeenCalled();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
       errorMessages: component.errorMessages,
       selectedFlag: component.selectedFlag
     });
-    expect(component.selectedFlag.flagDetailDisplay.flagDetail.flagComment).toEqual(textarea.value);
-    expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED,
+      fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+    });
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED);
   });
 
-  it('should not change an inactive flag status to active', () => {
-    component.selectedFlag = selectedFlag2;
-    component.onChangeStatus();
-    expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
+  it('should not show an error message on clicking "Next" if status reason is not mandatory and none has been entered', () => {
+    // Select flag with current status of "Requested", so that all status radio buttons are displayed
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
+    fixture.detectChanges();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
+    // Clicking first radio button with status "Requested" makes entering status reason optional
+    radioButtons[0].click();
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.errorMessages.length).toBe(0);
+    let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement).toBeNull();
+    // Clicking second radio button with status "Active" makes entering status reason optional
+    radioButtons[1].click();
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.errorMessages.length).toBe(0);
+    errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement).toBeNull();
+    // Clicking third radio button with status "Inactive" makes entering status reason optional
+    radioButtons[2].click();
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.errorMessages.length).toBe(0);
+    errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement).toBeNull();
+  });
+
+  it('should show an error message on clicking "Next" if status reason exceeds 200-character limit, regardless of optionality', () => {
+    // Select flag with current status of "Requested", so that all status radio buttons are displayed
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
+    fixture.detectChanges();
+    const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
+    // Clicking first radio button with status "Requested" makes entering status reason optional
+    radioButtons[0].click();
+    const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    textarea.value = `${textareaInput}0`;
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED,
+      fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+    });
+    let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED);
+    // Clicking fourth radio button with status "Not approved" makes entering status reason mandatory
+    radioButtons[3].click();
+    textarea.value = `${textareaInput}0`;
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED,
+      fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+    });
+    errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.STATUS_REASON_CHAR_LIMIT_EXCEEDED);
+  });
+
+  it('should not show an error message if status reason equals a 200-character limit, regardless of optionality', () => {
+    // Select flag with current status of "Requested", so that all status radio buttons are displayed
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
+    fixture.detectChanges();
+    const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
+    // Clicking first radio button with status "Requested" makes entering status reason optional
+    radioButtons[0].click();
+    const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    textarea.value = textareaInput;
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.errorMessages.length).toBe(0);
+    let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement).toBeNull();
+    // Clicking fourth radio button with status "Not approved" makes entering status reason mandatory
+    radioButtons[3].click();
+    textarea.value = textareaInput;
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.errorMessages.length).toBe(0);
+    errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement).toBeNull();
+  });
+
+  it('should display correct title based on the display mode', () => {
+    component.displayContextParameter = '#ARGUMENT(UPDATE)';
+    component.setUpdateCaseFlagTitle(activeFlag);
+    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual('Update flag "Flag 1"');
+    component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
+    component.setUpdateCaseFlagTitle(activeFlag);
+    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_SUPPORT);
+    component.displayContextParameter = '';
+    component.setUpdateCaseFlagTitle(activeFlag);
+    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.NONE);
+  });
+
+  it('should display only comments text area for manage support', () => {
+    component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
+    fixture.detectChanges();
+    const commentsTextarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    expect(commentsTextarea).toBeDefined();
+    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    expect(statusChangeReasontextarea).toBeNull();
+    const radioButtons = fixture.debugElement.nativeElement.querySelector('#flag-status-container');
+    expect(radioButtons).toBeNull();
+    const checkboxWelshTranslation = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED}`));
+    expect(checkboxWelshTranslation).toBeNull();
   });
 });

@@ -1,5 +1,5 @@
 <!-- Current Page && Event trigger name -->
-<h1 class="heading-h1">{{ eventTrigger.name}}</h1>
+<h1 class="heading-h1">{{ eventTrigger.name | rpxTranslate}}</h1>
 
 <!--Case ID or Title -->
 <div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
@@ -12,10 +12,10 @@
 
 <form [formGroup]="formGroup" (submit)="submit()">
   <div id="confirmation-header" *ngIf="confirmation.getHeader()">
-    <ccd-markdown [content]="confirmation.getHeader()"></ccd-markdown>
+    <ccd-markdown [content]="confirmation.getHeader() | rpxTranslate"></ccd-markdown>
   </div>
   <div id="confirmation-body" *ngIf="confirmation.getBody()">
-    <ccd-markdown [content]="confirmation.getBody()"></ccd-markdown>
+    <ccd-markdown [content]="confirmation.getBody() | rpxTranslate"></ccd-markdown>
   </div>
-  <button type="submit" class="button" data-ng-click="submit()">{{triggerText}}</button>
+  <button type="submit" class="button" data-ng-click="submit()">{{this.triggerText | rpxTranslate}}</button>
 </form>

@@ -1,11 +1,12 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { CaseField, CaseView } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes/case-reference';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CasesService } from '../../case-editor/services';
 import { CaseBasicAccessViewComponent } from './case-basic-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -67,6 +68,7 @@ describe('CaseBasicAccessViewComponent', () => {
             declarations: [
                 CaseBasicAccessViewComponent,
                 CaseReferencePipe,
+                MockRpxTranslatePipe,
                 StubComponent
             ],
             providers: [

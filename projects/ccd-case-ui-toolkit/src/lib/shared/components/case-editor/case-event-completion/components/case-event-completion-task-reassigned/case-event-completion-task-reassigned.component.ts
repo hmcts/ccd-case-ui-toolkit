@@ -1,20 +1,19 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertService } from '../../../../../services/alert/alert.service';
 import { Subscription, throwError } from 'rxjs';
 import { Task } from '../../../../../domain/work-allocation/Task';
+import { AlertService } from '../../../../../services/alert/alert.service';
+import { SessionStorageService } from '../../../../../services/session/session-storage.service';
 import { CaseworkerService } from '../../../services/case-worker.service';
 import { JudicialworkerService } from '../../../services/judicial-worker.service';
 import { WorkAllocationService } from '../../../services/work-allocation.service';
 import { CaseEventCompletionComponent, COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
-import { SessionStorageService } from '../../../../../services/session/session-storage.service';
 
 @Component({
   selector: 'app-case-event-completion-task-reassigned',
   templateUrl: './case-event-completion-task-reassigned.html'
 })
 export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDestroy {
-
   public caseId: string;
   public assignedUserId: string;
   public assignedUserName: string;

@@ -18,10 +18,11 @@ export class CaseFlagRefdataService {
    *
    * @param serviceId The HMCTS Service Code for a jurisdiction or service. **Note:** This is _not_ the service name
    * @param flagType `PARTY` for party-level flags; `CASE` for case-level
-   * @param welshRequired `true` if Welsh language versions of flags are required; `false` otherwise (future feature)
+   * @param welshRequired `true` if Welsh language versions of flags are required; `false` otherwise
+   * @param externalFlagsOnly Only flags with the attribute `availableExternally` set to `true` will be returned
    * @returns An `Observable` of an array of flag types
    */
-  public getCaseFlagsRefdata(serviceId: string, flagType?: RefdataCaseFlagType, welshRequired?: boolean): Observable<FlagType[]> {
+  public getCaseFlagsRefdata(serviceId: string, flagType?: RefdataCaseFlagType, welshRequired?: boolean, externalFlagsOnly?: boolean): Observable<FlagType[]> {
     let url = this.appConfig.getCaseFlagsRefdataApiUrl();
 
     if (url) {
@@ -29,10 +30,16 @@ export class CaseFlagRefdataService {
       if (flagType) {
         url += `?flag-type=${flagType}`;
       }
-      if (welshRequired != null) {
-        // Check if flag-type has been added to the query string; if so, append welsh-required with '&'
+      if (typeof welshRequired === 'boolean') {
+        // Check if anything has been added to the query string; if so, append welsh-required with '&'
         url.indexOf('?') > -1 ? url += '&' : url += '?';
         welshRequired ? url += 'welsh-required=Y' : url += 'welsh-required=N';
+      }
+
+      if (externalFlagsOnly) {
+        // Check if anything has been added to the query string; if so, append available-external-flag with '&'
+        url.indexOf('?') > -1 ? url += '&' : url += '?';
+        url += 'available-external-flag=Y';
       }
 
       return this.http

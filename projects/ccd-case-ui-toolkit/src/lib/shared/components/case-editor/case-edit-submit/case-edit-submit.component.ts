@@ -20,6 +20,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier } from '../services';
+import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 
 // @dynamic
 @Component({
@@ -44,7 +45,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public task: Task;
   public eventCompletionParams: EventCompletionParams;
   public eventCompletionChecksRequired = false;
-  public isCaseFlagSubmission = false;
+  public caseFlagField: CaseField;
   public pageTitle: string;
   public isLinkedCasesSubmission = false;
 
@@ -96,9 +97,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.contextFields = this.getCaseFields();
     // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
     // a FlagLauncher field in the event trigger
-    this.isCaseFlagSubmission = this.eventTrigger.case_fields.some(
+    this.caseFlagField = this.eventTrigger.case_fields.find(
       caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
-    this.pageTitle = this.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
+    const isCaseFlagExternalMode = this.caseFlagField?.display_context_parameter === '#ARGUMENT(UPDATE,EXTERNAL)' ||
+      this.caseFlagField?.display_context_parameter === '#ARGUMENT(CREATE,EXTERNAL)';
+    this.pageTitle = this.caseFlagField ? (isCaseFlagExternalMode ? CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST : CaseEditSubmitTitles.REVIEW_FLAG_DETAILS)
+      : CaseEditSubmitTitles.CHECK_YOUR_ANSWERS;
     this.isLinkedCasesSubmission = this.eventTrigger.case_fields.some(
       caseField => FieldsUtils.isComponentLauncherCaseField(caseField));
   }
@@ -162,7 +166,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, this.eventTrigger.case_fields);
     // If this is a Case Flag submission (and thus a FlagLauncher field is present in the event trigger), the flag
     // details data needs populating for each Flags field, then the FlagLauncher field needs removing
-    if (this.isCaseFlagSubmission) {
+    if (this.caseFlagField) {
       this.formValueService.populateFlagDetailsFromCaseFields(caseEventData.data, this.eventTrigger.case_fields);
       this.formValueService.removeFlagLauncherField(caseEventData.data, this.eventTrigger.case_fields);
     }
@@ -258,7 +262,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
         if (caseField.field_type.type === 'Complex') {
           // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
           // handle both null and undefined values
-          if (caseField.value != null) {
+          if (caseField.value !== null) {
             // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
             // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
             // parent)
@@ -327,8 +331,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext): void {
-    this.ignoreWarning = errorContext.ignore_warning;
-    this.triggerText = errorContext.trigger_text;
+    this.ignoreWarning = errorContext.ignoreWarning;
+    this.triggerText = errorContext.triggerText;
   }
 
   public summaryCaseField(field: CaseField): CaseField {
@@ -388,7 +392,15 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public showEventNotes(): boolean {
-    return this.eventTrigger.show_event_notes !== false;
+    // Display event notes related controls only if the following conditions are met
+    // 1. show_event_notes flag is set to true
+    // 2. profile is not a solicitor
+    // 3. is not a case flags journey, as it uses a custom check your answers component
+    if (this.eventTrigger.show_event_notes) {
+      return !this.profile?.isSolicitor()
+        && !this.caseFlagField;
+    }
+    return false;
   }
 
   private getLastPageShown(): WizardPage {
@@ -420,10 +432,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public canShowFieldInCYA(field: CaseField): boolean {
     return field.show_summary_change_option;
-  }
-
-  public isSolicitor(): boolean {
-    return this.profile.isSolicitor();
   }
 
   private buildConfirmation(response: object): Confirmation {

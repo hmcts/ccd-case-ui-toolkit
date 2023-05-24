@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent } from '../money-gbp';
 import { OrderSummary } from './order-summary.model';
 import { ReadOrderSummaryFieldComponent } from './read-order-summary-field.component';
@@ -12,7 +13,6 @@ import { ReadOrderSummaryRowComponent } from './read-order-summary-row.component
 import { WriteOrderSummaryFieldComponent } from './write-order-summary-field.component';
 
 describe('WriteOrderSummaryFieldComponent', () => {
-
   const FIELD_TYPE: FieldType = {
     id: 'PersonOrderSummary',
     type: 'Complex'
@@ -86,9 +86,11 @@ describe('WriteOrderSummaryFieldComponent', () => {
             MoneyGbpInputComponent,
             WriteOrderSummaryFieldComponent,
             ReadMoneyGbpFieldComponent,
-            // Mocks
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
+            ReadOrderSummaryRowComponent,
+            // Mocks
+            MockRpxTranslatePipe
           ]
         })
         .compileComponents();
@@ -114,9 +116,9 @@ describe('WriteOrderSummaryFieldComponent', () => {
 
       for (let i = 1; i <= VALUE.Fees.length; i++) {
 
-        const feeCode = text(de.query(By.css('table>tbody tr:nth-child(' + i + ') td:nth-child(1)')));
-        const feeDescription = text(de.query(By.css('table>tbody tr:nth-child(' + i + ') td:nth-child(2)')));
-        const feeAmount = text(de.query(By.css('table>tbody tr:nth-child(' + i + ') td:nth-child(3)')));
+        const feeCode = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(1)`)));
+        const feeDescription = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(2)`)));
+        const feeAmount = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(3)`)));
 
         expect(feeCode).toBe(VALUE.Fees[i - 1].value.FeeCode);
         expect(feeDescription).toBe(VALUE.Fees[i - 1].value.FeeDescription);
@@ -148,6 +150,7 @@ describe('WriteOrderSummaryFieldComponent', () => {
             MoneyGbpInputComponent,
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
+            MockRpxTranslatePipe
           ]
         })
         .compileComponents();
@@ -197,6 +200,7 @@ describe('WriteOrderSummaryFieldComponent', () => {
             MoneyGbpInputComponent,
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
+            MockRpxTranslatePipe
           ]
         })
         .compileComponents();

@@ -8,12 +8,12 @@ import { CaseFlagStatus } from '../../enums';
   styleUrls: ['./case-flag-table.component.scss']
 })
 export class CaseFlagTableComponent {
-
   @Input() public tableCaption: string;
   @Input() public flagData: FlagsWithFormGroupPath;
   @Input() public firstColumnHeader: string;
+  @Input() public caseFlagsExternalUser = false;
 
   public get caseFlagStatus(): typeof CaseFlagStatus {
-    return CaseFlagStatus
+    return CaseFlagStatus;
   }
 }

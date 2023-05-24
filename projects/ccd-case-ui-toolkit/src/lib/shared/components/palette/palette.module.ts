@@ -15,6 +15,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { BodyModule } from '../../../components/body/body.module';
@@ -37,7 +38,24 @@ import { CaseFileViewFolderSelectorComponent } from './case-file-view/components
 import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
 import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
-import { AddCommentsComponent, CaseFlagSummaryListComponent, CaseFlagTableComponent, ManageCaseFlagsComponent, ReadCaseFlagFieldComponent, SearchLanguageInterpreterComponent, SelectFlagLocationComponent, SelectFlagTypeComponent, UpdateFlagComponent, WriteCaseFlagFieldComponent } from './case-flag';
+import {
+  AddCommentsComponent,
+  CaseFlagSummaryListComponent,
+  CaseFlagTableComponent,
+  ConfirmFlagStatusComponent,
+  FlagFieldDisplayPipe,
+  LanguageInterpreterDisplayPipe,
+  ManageCaseFlagsComponent,
+  ManageCaseFlagsLabelDisplayPipe,
+  ReadCaseFlagFieldComponent,
+  SearchLanguageInterpreterComponent,
+  SelectFlagLocationComponent,
+  SelectFlagTypeComponent,
+  UpdateFlagAddTranslationFormComponent,
+  UpdateFlagComponent,
+  UpdateFlagTitleDisplayPipe,
+  WriteCaseFlagFieldComponent
+} from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
@@ -52,6 +70,7 @@ import { ReadDocumentFieldComponent } from './document/read-document-field.compo
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { DynamicListPipe, ReadDynamicListFieldComponent } from './dynamic-list';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { DynamicRadioListPipe, ReadDynamicRadioListFieldComponent } from './dynamic-radio-list';
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { ReadEmailFieldComponent, WriteEmailFieldComponent } from './email';
@@ -71,13 +90,14 @@ import { ReadOrganisationFieldComponent, ReadOrganisationFieldRawComponent, Read
 import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
+import { ReadQueryManagementFieldComponent, WriteQueryManagementFieldComponent } from './query-management';
+import { QueryCreateComponent, QueryDetailComponent, QueryListComponent } from './query-management/components';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -126,6 +146,7 @@ const PALETTE_COMPONENTS = [
   ReadComplexFieldCollectionTableComponent,
   ReadCaseFlagFieldComponent,
   ReadLinkedCasesFieldComponent,
+  ReadQueryManagementFieldComponent,
 
   // Write
   WriteJudicialUserFieldComponent,
@@ -135,8 +156,6 @@ const PALETTE_COMPONENTS = [
   WriteDocumentFieldComponent,
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
-  WriteDynamicMultiSelectListFieldComponent,
-  ReadDynamicMultiSelectListFieldComponent,
   WriteTextFieldComponent,
   WriteDateContainerFieldComponent,
   WriteTextAreaFieldComponent,
@@ -146,6 +165,7 @@ const PALETTE_COMPONENTS = [
   WriteDateFieldComponent,
   WriteCaseFlagFieldComponent,
   WriteLinkedCasesFieldComponent,
+  WriteQueryManagementFieldComponent,
 
   // new
   WriteYesNoFieldComponent,
@@ -174,13 +194,29 @@ const PALETTE_COMPONENTS = [
   ReadDynamicMultiSelectListFieldComponent,
   ReadDynamicListFieldComponent,
   ReadDynamicRadioListFieldComponent,
+  // Components for case flags
+  CaseFlagTableComponent,
+  SelectFlagTypeComponent,
+  SearchLanguageInterpreterComponent,
+  SelectFlagLocationComponent,
+  ManageCaseFlagsComponent,
+  AddCommentsComponent,
+  UpdateFlagComponent,
+  CaseFlagSummaryListComponent,
+  ConfirmFlagStatusComponent,
+  UpdateFlagAddTranslationFormComponent,
+  // Components for linked cases
   LinkedCasesToTableComponent,
   LinkedCasesFromTableComponent,
   BeforeYouStartComponent,
   LinkCasesComponent,
   CheckYourAnswersComponent,
   UnLinkCasesComponent,
-  NoLinkedCasesComponent
+  NoLinkedCasesComponent,
+  // Components for query management
+  QueryCreateComponent,
+  QueryDetailComponent,
+  QueryListComponent
 ];
 
 @NgModule({
@@ -211,9 +247,11 @@ const PALETTE_COMPONENTS = [
     OverlayModule,
     PaymentLibModule,
     ScrollToModule.forRoot(),
+    RpxTranslationModule.forChild(),
     MatDialogModule,
     MediaViewerModule,
-    LoadingModule
+    LoadingModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     FixedListPipe,
@@ -221,15 +259,10 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
-
-    CaseFlagTableComponent,
-    SelectFlagTypeComponent,
-    SearchLanguageInterpreterComponent,
-    SelectFlagLocationComponent,
-    ManageCaseFlagsComponent,
-    AddCommentsComponent,
-    UpdateFlagComponent,
-    CaseFlagSummaryListComponent,
+    FlagFieldDisplayPipe,
+    LanguageInterpreterDisplayPipe,
+    ManageCaseFlagsLabelDisplayPipe,
+    UpdateFlagTitleDisplayPipe,
     ...PALETTE_COMPONENTS
   ],
   exports: [
@@ -251,9 +284,9 @@ const PALETTE_COMPONENTS = [
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
-    LinkedCasesService,
     CommonDataService,
     JurisdictionService,
+    LinkedCasesService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   entryComponents: [ CaseFileViewFolderSelectorComponent ]

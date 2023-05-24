@@ -8,6 +8,7 @@ import { createFieldType, newCaseField, textFieldType } from '../../../fixture';
 import { CcdCollectionTableCaseFieldsFilterPipe } from '../../../pipes/complex/ccd-collection-table-value-case-fields.pipe';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-collection-table.component';
@@ -37,7 +38,6 @@ class MockReadCaseLinkFieldComponent {
 }
 
 describe('ReadComplexFieldCollectionTableComponent', () => {
-
   const $COMPLEX_PANEL = By.css('div.complex-panel');
   const $COMPLEX_PANEL_TITLE = By.css('dl.complex-panel-title');
   const $COMPLEX_PANEL_SIMPLE_ROWS_HEADERS = By.css('div>table>tbody>tr>th>span');
@@ -113,9 +113,10 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             ReadFieldsFilterPipe,
             CcdCollectionTableCaseFieldsFilterPipe,
 
-            // Mock
+            // Mocks
             MockFieldReadComponent,
             MockReadCaseLinkFieldComponent,
+            MockRpxTranslatePipe,
           ],
           providers: []
         })
@@ -195,7 +196,6 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       // row 2
       expect(expandedRowsValues[2].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value[FOURTH_COLUMN]);
       expect(expandedRowsValues[3].componentInstance.caseField.value).toEqual(CASE_FIELD.value[1].value[FIFTH_COLUMN]);
-
     });
 
     it('should sort rows based on column name', () => {
@@ -214,11 +214,9 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
       expect(component.rows[0].AddressLine2).toEqual(CASE_FIELD.value[0].value[SECOND_COLUMN]);
     });
   });
-
 });
 
 describe('ReadComplexFieldCollectionTableComponent - nested complex field values', () => {
-
   const NAME_COLUMN = 'Name';
   const ADDRESS_LINE1_COLUMN = 'AddressLine1';
   const ADDRESS_LINE2_COLUMN = 'AddressLine2';
@@ -317,10 +315,10 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
             CcdCollectionTableCaseFieldsFilterPipe,
-
-            // Mock
+            // Mocks
             MockFieldReadComponent,
             MockReadCaseLinkFieldComponent,
+            MockRpxTranslatePipe,
           ],
           providers: []
         })
@@ -366,15 +364,14 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       expect(fieldReads[11].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE3_COLUMN]);
       expect(fieldReads[12].caseField.id).toEqual(ADDRESS_LINE2_COLUMN);
       expect(fieldReads[12].caseField.value).toEqual(COMPANY_DETAILS_CASE_FIELD.value[1].value.BusinessAddress[ADDRESS_LINE2_COLUMN]);
-
     });
 
     it('should render all case links', () => {
       const caseLinks = de.queryAll($COMPLEX_PANEL_CASE_LINKS);
       expect(caseLinks.length).toBe(2);
 
-      expect(caseLinks[0].properties.href).toEqual('/v2/case/' + COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink.CaseReference);
-      expect(caseLinks[1].properties.href).toEqual('/v2/case/' + COMPANY_DETAILS_CASE_FIELD.value[1].value.SomeCaseLink.CaseReference);
+      expect(caseLinks[0].properties.href).toEqual(`/v2/case/${COMPANY_DETAILS_CASE_FIELD.value[0].value.SomeCaseLink.CaseReference}`);
+      expect(caseLinks[1].properties.href).toEqual(`/v2/case/${COMPANY_DETAILS_CASE_FIELD.value[1].value.SomeCaseLink.CaseReference}`);
     });
 
     it('should render all case link values', () => {
@@ -385,5 +382,4 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
       expect(caseLinkValues[1].nativeElement.textContent.trim()).toBe(COMPANY_DETAILS_CASE_FIELD.value[1].value.SomeCaseLink.CaseReference);
     });
   });
-
 });
