@@ -51,7 +51,7 @@ export class QueryListComponent implements OnChanges {
     }
   }
 
-  public showDetails(query) {
+  public showDetails(query): void {
     this.selectedQuery.emit(query);
   }
 
