@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { Document, DocumentLinks } from '../../../domain';
 import { WriteQueryManagementFieldComponent } from './write-query-management-field.component';
 
 @Pipe({ name: 'ccdCaseReference' })
@@ -19,6 +20,16 @@ class RpxTranslateMockPipe implements PipeTransform {
 describe('WriteQueryManagementFieldComponent', () => {
   let component: WriteQueryManagementFieldComponent;
   let fixture: ComponentFixture<WriteQueryManagementFieldComponent>;
+  const attachments: Document[] = [
+    {
+      _links: {} as DocumentLinks,
+      originalDocumentName: 'document_1'
+    },
+    {
+      _links: {} as DocumentLinks,
+      originalDocumentName: 'document_2'
+    }
+  ]
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -29,7 +40,7 @@ describe('WriteQueryManagementFieldComponent', () => {
         RpxTranslateMockPipe
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -44,6 +55,15 @@ describe('WriteQueryManagementFieldComponent', () => {
 
   it('should create component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should add and remove Attachment document', () => {
+    component.attachments = attachments;
+    expect(component.attachments.length).toBe(2);
+    component.addNewAttachment();
+    expect(component.attachments.length).toBe(3);
+    component.removeAttachment(1);
+    expect(component.attachments.length).toBe(2);
   });
 
   describe('ngOnInit', () => {
