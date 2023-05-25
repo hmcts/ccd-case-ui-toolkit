@@ -10,7 +10,7 @@
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-1">{{ 'Query details' | rpxTranslate }}</h1>
     <div class="govuk-!-margin-bottom-4">
-      <div class="govuk-body-l govuk-!-margin-bottom-0">{{ caseReference | ccdCaseReference}}</div>
+      <div class="govuk-body-l govuk-!-margin-bottom-0">{{ caseReference | ccdCaseReference }}</div>
     </div>
 
     <div>
@@ -60,13 +60,13 @@
       </div>
     </form>
     <button class="govuk-button" data-module="govuk-button">
-      {{ 'Next' | rpxTranslate}}
+      {{ 'Next' | rpxTranslate }}
     </button>
   </div>
 
   <div>
     <button class="govuk-button govuk-button--secondary govuk-!-margin-right-3" data-module="govuk-button" [disabled]="true">
-      {{ 'Previous' | rpxTranslate}}
+      {{ 'Previous' | rpxTranslate }}
     </button>
     <button class="govuk-button" data-module="govuk-button" (click)="submitForm()">
       {{ 'Continue' | rpxTranslate }}
