@@ -246,8 +246,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public isTriggerButtonDisabled(): boolean {
     return (this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length)
+        && this.error.callbackErrors
+        && this.error.callbackErrors.length)
       || (this.error
         && this.error.details
         && this.error.details.field_errors
@@ -276,7 +276,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
           this.tabGroup.selectedIndex = matTab.position;
         });
-      // last path is caseId
+        // last path is caseId
       } else {
         // sort with the order of CCD predefined tabs
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
@@ -299,7 +299,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
-                                hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
+        hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
       if (matTab && matTab.position) {
         this.tabGroup.selectedIndex = matTab.position;
       }
