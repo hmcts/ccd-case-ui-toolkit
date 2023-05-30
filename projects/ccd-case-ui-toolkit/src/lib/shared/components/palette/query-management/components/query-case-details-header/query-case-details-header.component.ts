@@ -1,4 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { CaseView } from '../../../../../domain';
+import { CaseNotifier } from '../../../../case-editor';
 
 @Component({
   selector: 'ccd-query-case-details-header',
@@ -6,6 +9,9 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./query-case-details-header.component.scss']
 })
 export class QueryCaseDetailsHeaderComponent {
-  @Input() public caseId: string;
-  @Input() public caseTitleDisplay: string;
+  public caseView$: Observable<CaseView>;
+
+  constructor(caseNotifier: CaseNotifier) {
+    this.caseView$ = caseNotifier.caseView;
+  }
 }

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CaseView } from '../../../../../../domain';
 
 @Component({
   selector: 'ccd-query-write-raise-query',
@@ -9,7 +8,6 @@ import { CaseView } from '../../../../../../domain';
 })
 export class QueryWriteRaiseQueryComponent implements OnInit {
   @Input() public formGroup: FormGroup;
-  @Input() public caseView: CaseView;
 
   constructor() { }
 

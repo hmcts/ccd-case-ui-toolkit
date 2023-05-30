@@ -1,12 +1,15 @@
-<div>
-  <div class="govuk-body-l govuk-!-margin-bottom-0">{{ caseId | ccdCaseReference }}</div>
-  <ng-container *ngIf="caseTitleDisplay; else caseNameMissing">
-    <ccd-markdown [content]="caseTitleDisplay"></ccd-markdown>
-  </ng-container>
+<div *ngIf="(caseView$ | async) as caseView">
+  <div class="govuk-body-l govuk-!-margin-bottom-0">{{ caseView.case_id | ccdCaseReference }}</div>
 
-  <ng-template #caseNameMissing>
-    <div class="govuk-body-l govuk-!-margin-bottom-0">
-      Case name missing
-    </div>
-  </ng-template>
+  <ng-container>
+    <ng-container *ngIf="caseView?.state?.title_display; else caseNameMissing">
+      <ccd-markdown [content]="caseView.state.title_display"></ccd-markdown>
+    </ng-container>
+
+    <ng-template #caseNameMissing>
+      <div class="govuk-body-l govuk-!-margin-bottom-0">
+        Case name missing
+      </div>
+    </ng-template>
+  </ng-container>
 </div>
