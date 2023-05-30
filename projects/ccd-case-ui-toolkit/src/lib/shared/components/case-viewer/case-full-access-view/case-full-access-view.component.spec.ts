@@ -896,7 +896,7 @@ describe('CaseFullAccessViewComponent', () => {
       const spyObj = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
       await component.applyTrigger(respondToQueryTrigger);
-      expect(spyObj).toHaveBeenCalledWith([`/cases/query/${component.caseDetails.case_id}`]);
+      expect(spyObj).toHaveBeenCalledWith([`/query-management/query/${component.caseDetails.case_id}`]);
     });
   });
 
