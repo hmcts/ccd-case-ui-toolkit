@@ -131,7 +131,7 @@ export class AlertService {
         message = translation;
       });
     } else {
-      this.rpxTranslationService.getTranslation(phrase).subscribe(translation => {
+      this.rpxTranslationService.getTranslation$(phrase).subscribe(translation => {
         message = translation;
       });
     }
