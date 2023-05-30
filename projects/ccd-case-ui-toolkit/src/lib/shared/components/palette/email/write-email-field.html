@@ -4,7 +4,8 @@
     <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel) | rpxTranslate}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" *ngIf="emailControl.errors && (emailControl.dirty || emailControl.touched)">{{(emailControl.errors | ccdFirstError:caseField.label) | rpxTranslate}}</span>
+  <span class="error-message" *ngIf="emailControl.errors && (emailControl.dirty || emailControl.touched)">
+    {{ (emailControl.errors | ccdFirstError:caseField.label) }}</span>
 
   <input class="form-control" [ngClass]="{'govuk-input--error': emailControl.errors && (emailControl.dirty || emailControl.touched)}"
     [id]="id()" type="email" [formControl]="emailControl">

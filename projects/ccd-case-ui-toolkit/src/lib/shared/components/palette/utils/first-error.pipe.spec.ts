@@ -1,5 +1,13 @@
+import { Pipe, PipeTransform } from '@angular/core';
+import { RpxTranslatePipe } from 'rpx-xui-translation';
 import { FirstErrorPipe } from './first-error.pipe';
 
+@Pipe({ name: 'rpxTranslate' })
+export class MockRpxTranslatePipe implements PipeTransform {
+  public transform(value: string, args: { [key: string]: string } = {}) {
+    return value;
+  }
+}
 describe('FirstErrorPipe', () => {
   const ERROR_MESSAGE = 'This is wrong';
   const FIELD_LABEL = 'Field1';
@@ -7,7 +15,19 @@ describe('FirstErrorPipe', () => {
   let firstError: FirstErrorPipe;
 
   beforeEach(() => {
-    firstError = new FirstErrorPipe();
+    firstError = new FirstErrorPipe({
+      transform: (value: string, replacements: { [key: string]: string } = {}): string => {
+        Object.keys(replacements).forEach(key => {
+          // Ideally use replaceAll here, but that isn't fully compatible with targeted browsers and packaging yet
+          const search = `%${key}%`;
+          while (value.indexOf(search) !== -1) {
+            value = value.replace(search, replacements[key]);
+          }
+        });
+
+        return value;
+      }
+    } as RpxTranslatePipe);
   });
 
   it('should return empty string when null errors', () => {
@@ -69,5 +89,13 @@ describe('FirstErrorPipe', () => {
     }, FIELD_LABEL);
 
     expect(message).toBe(`${FIELD_LABEL} exceeds the maximum length`);
+  });
+
+  it('should return exact error along with label name when field value is not valid date', () => {
+    const message = firstError.transform({
+      matDatetimePickerParse: true
+    }, FIELD_LABEL);
+
+    expect(message).toBe(`The date entered is not valid. Please provide a valid date`);
   });
 });

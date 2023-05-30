@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.13.11-welsh-release-v5",
+  "version": "6.13.11-welsh-form-validation-errors-v4",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -84,7 +84,7 @@
     "ngx-pagination": "5.1.1",
     "npm-registry-fetch": "^4.0.5",
     "pegjs": "^0.10.0",
-    "rpx-xui-translation": "^0.1.6",
+    "rpx-xui-translation": "0.2.3",
     "rx-polling": "1.1.0",
     "rxjs": "^6.6.7",
     "rxjs-compat": "^6.6.7",
