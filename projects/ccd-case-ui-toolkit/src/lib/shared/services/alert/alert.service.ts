@@ -127,7 +127,7 @@ export class AlertService {
   private getTranslationWithReplacements(phrase: string, replacements: AlertStatusParams['replacements']): string {
     let message: string;
     if (replacements) {
-      this.rpxTranslationService.getTranslationWithReplacements(phrase, replacements).subscribe(translation => {
+      this.rpxTranslationService.getTranslationWithReplacements$(phrase, replacements).subscribe(translation => {
         message = translation;
       });
     } else {
