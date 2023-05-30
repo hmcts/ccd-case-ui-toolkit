@@ -81,7 +81,7 @@ import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from 
 import { LabelFieldComponent } from './label';
 import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, ReadLinkedCasesFieldComponent, UnLinkCasesComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
 import { LinkedCasesService } from './linked-cases/services';
-import { MarkdownComponent } from './markdown';
+import { MarkdownComponentModule } from './markdown/markdown-component.module';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent, WriteMoneyGbpFieldComponent } from './money-gbp';
 import { ReadMultiSelectListFieldComponent, WriteMultiSelectListFieldComponent } from './multi-select-list';
 import { ReadNumberFieldComponent, WriteNumberFieldComponent } from './number';
@@ -102,7 +102,6 @@ const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
   DatetimePickerComponent,
   WaysToPayFieldComponent,
-  MarkdownComponent,
   FieldReadComponent,
   FieldWriteComponent,
   FieldReadLabelComponent,
@@ -245,7 +244,8 @@ const PALETTE_COMPONENTS = [
     MediaViewerModule,
     LoadingModule,
     RpxTranslationModule.forChild(),
-    QueryManagementModule
+    QueryManagementModule,
+    MarkdownComponentModule
   ],
   declarations: [
     FixedListPipe,
@@ -267,6 +267,7 @@ const PALETTE_COMPONENTS = [
     PaletteUtilsModule,
     PipesModule,
     QueryManagementModule,
+    MarkdownComponentModule,
     ...PALETTE_COMPONENTS
   ],
   providers: [

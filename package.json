@@ -85,7 +85,7 @@
     "ngx-pagination": "5.1.1",
     "npm-registry-fetch": "^4.0.5",
     "pegjs": "^0.10.0",
-    "rpx-xui-translation": "^0.2.1",
+    "rpx-xui-translation": "0.2.3-yesno-translations-fix-v2",
     "rx-polling": "1.1.0",
     "rxjs": "^6.6.7",
     "rxjs-compat": "^6.6.7",

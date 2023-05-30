@@ -1,0 +1,12 @@
+<div>
+  <div class="govuk-body-l govuk-!-margin-bottom-0">{{ caseId | ccdCaseReference }}</div>
+  <ng-container *ngIf="caseTitleDisplay; else caseNameMissing">
+    <ccd-markdown [content]="caseTitleDisplay"></ccd-markdown>
+  </ng-container>
+
+  <ng-template #caseNameMissing>
+    <div class="govuk-body-l govuk-!-margin-bottom-0">
+      Case name missing
+    </div>
+  </ng-template>
+</div>
