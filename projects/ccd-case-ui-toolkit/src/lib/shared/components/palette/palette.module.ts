@@ -210,7 +210,6 @@ const PALETTE_COMPONENTS = [
   CheckYourAnswersComponent,
   UnLinkCasesComponent,
   NoLinkedCasesComponent,
-  // Components for query management
 ];
 
 @NgModule({
