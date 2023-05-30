@@ -20,7 +20,7 @@ export class WriteQueryManagementFieldComponent extends AbstractFieldReadCompone
     super();
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.queryItem = new QueryListItem();
     Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
   }

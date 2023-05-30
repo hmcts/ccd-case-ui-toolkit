@@ -13,7 +13,8 @@ import { partyMessagesMockData } from './__mocks__';
 })
 export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit {
   public partyMessagesGroups: PartyMessagesGroup[];
-
+  public query: QueryListItem;
+  public showQueryList: boolean = true;
   constructor(private readonly route: ActivatedRoute) {
     super();
   }
@@ -33,5 +34,10 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
       // Loop through the list of parties and their case queries collections
       QueryManagementUtils.extractCaseQueriesFromCaseField();
     }
+  }
+
+  public setQuery(query): void {
+    this.showQueryList = false;
+    this.query = query;
   }
 }

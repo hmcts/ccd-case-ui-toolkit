@@ -210,7 +210,6 @@ const PALETTE_COMPONENTS = [
   CheckYourAnswersComponent,
   UnLinkCasesComponent,
   NoLinkedCasesComponent,
-  // Components for query management
 ];
 
 @NgModule({
@@ -241,12 +240,10 @@ const PALETTE_COMPONENTS = [
     OverlayModule,
     PaymentLibModule,
     ScrollToModule.forRoot(),
-    RpxTranslationModule.forChild(),
     MatDialogModule,
     MediaViewerModule,
     LoadingModule,
     RpxTranslationModule.forChild(),
-
     QueryManagementModule
   ],
   declarations: [
@@ -268,6 +265,7 @@ const PALETTE_COMPONENTS = [
     TabsModule,
     PaletteUtilsModule,
     PipesModule,
+    QueryManagementModule,
     ...PALETTE_COMPONENTS
   ],
   providers: [

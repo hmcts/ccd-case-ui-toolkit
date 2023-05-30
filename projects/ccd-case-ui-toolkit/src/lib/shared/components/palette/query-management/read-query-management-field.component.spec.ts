@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { QueryListItem } from './models';
 import { ReadQueryManagementFieldComponent } from './read-query-management-field.component';
 
 describe('ReadQueryManagementFieldComponent', () => {
@@ -54,5 +55,11 @@ describe('ReadQueryManagementFieldComponent', () => {
 
   it('should create component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should hide query list and show query detiails', () => {
+    component.setQuery(new QueryListItem());
+    expect(component.showQueryList).toBeFalsy();
+    expect(component.query).toEqual(new QueryListItem())
   });
 });
