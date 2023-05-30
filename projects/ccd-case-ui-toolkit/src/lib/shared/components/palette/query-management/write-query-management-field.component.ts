@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseView } from '../../../domain';
 import { AbstractFieldReadComponent } from '../base-field';
 import { QueryListItem } from './models';
 import { CaseNotifier } from '../../case-editor';
+import { partyMessagesMockData } from './__mocks__';
 
 @Component({
   selector: 'ccd-write-query-management-field',
@@ -19,8 +19,7 @@ export class WriteQueryManagementFieldComponent extends AbstractFieldReadCompone
   }
 
   public ngOnInit(): void {
-    console.log(this);
-    // this.queryItem = new QueryListItem();
-    // Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
+    this.queryItem = new QueryListItem();
+    Object.assign(this.queryItem, partyMessagesMockData[0].partyMessages[0]);
   }
 }

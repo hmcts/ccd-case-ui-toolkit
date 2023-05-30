@@ -21,6 +21,5 @@ export class QueryWriteRaiseQueryComponent implements OnInit {
       isHearingRelated: new FormControl(null, Validators.required),
       documents: new FormControl([], Validators.required)
     });
-    console.log(this.caseView);
   }
 }
