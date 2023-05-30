@@ -20,6 +20,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import clone from 'just-clone';
 import { MockComponent } from 'ng2-mock-component';
 import { of, Subject, Subscription } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
@@ -64,7 +65,6 @@ import { CaseEditComponent, CaseEditPageComponent, CaseNotifier, ConvertHrefToRo
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CaseFlagStatus, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
-import clone from 'just-clone';
 
 @Component({
   // tslint:disable-next-line
@@ -896,10 +896,7 @@ describe('CaseFullAccessViewComponent', () => {
       const spyObj = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
       await component.applyTrigger(respondToQueryTrigger);
-      expect(spyObj).toHaveBeenCalledWith(
-        [`query-management/query/${component.caseDetails.case_id}`],
-        { relativeTo: activatedRoute }
-      );
+      expect(spyObj).toHaveBeenCalledWith([`/cases/query/${component.caseDetails.case_id}`]);
     });
   });
 

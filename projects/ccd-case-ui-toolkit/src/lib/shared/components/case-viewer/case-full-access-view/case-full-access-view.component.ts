@@ -196,7 +196,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
     // we may need to take care of different triggers in the future
     if (trigger.id === CaseViewEventIds.QueryManagementRaiseQuery) {
-      await this.router.navigate([`query-management/query/${this.caseDetails.case_id}`], { relativeTo: this.route });
+      await this.router.navigate([`/cases/query/${this.caseDetails.case_id}`]);
     } else if (trigger.id === CaseViewEventIds.DELETE) {
       const dialogRef = this.dialog.open(DeleteOrCancelDialogComponent, this.dialogConfig);
       dialogRef.afterClosed().subscribe(result => {
