@@ -10,7 +10,7 @@ import { CaseView } from '../../../../../domain';
 export class QueryCaseDetailsHeaderComponent {
   public caseView: CaseView;
 
-  constructor(private activatedRoute: ActivatedRoute) {
-    this.caseView = this.activatedRoute.snapshot.data.case;
+  constructor(activatedRoute: ActivatedRoute) {
+    this.caseView = activatedRoute.snapshot.data.case;
   }
 }
