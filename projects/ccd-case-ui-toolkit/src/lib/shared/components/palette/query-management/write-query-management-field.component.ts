@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AbstractFieldReadComponent } from '../base-field';
 import { QueryListItem } from './models';
-import { CaseNotifier } from '../../case-editor';
 import { partyMessagesMockData } from './__mocks__';
 
 @Component({
@@ -14,7 +13,7 @@ export class WriteQueryManagementFieldComponent extends AbstractFieldReadCompone
   public queryItem: QueryListItem;
   public formGroup: FormGroup = new FormGroup({});
 
-  constructor(public caseNotifierService: CaseNotifier) {
+  constructor() {
     super();
   }
 

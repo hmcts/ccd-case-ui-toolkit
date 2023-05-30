@@ -1,4 +1,4 @@
-<div *ngIf="(caseView$ | async) as caseView">
+<div *ngIf="caseView">
   <div class="govuk-body-l govuk-!-margin-bottom-0">{{ caseView.case_id | ccdCaseReference }}</div>
 
   <ng-container>

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { CaseView } from '../../../../../domain';
-import { CaseNotifier } from '../../../../case-editor';
 
 @Component({
   selector: 'ccd-query-case-details-header',
@@ -9,9 +8,9 @@ import { CaseNotifier } from '../../../../case-editor';
   styleUrls: ['./query-case-details-header.component.scss']
 })
 export class QueryCaseDetailsHeaderComponent {
-  public caseView$: Observable<CaseView>;
+  public caseView: CaseView;
 
-  constructor(caseNotifier: CaseNotifier) {
-    this.caseView$ = caseNotifier.caseView;
+  constructor(private activatedRoute: ActivatedRoute) {
+    this.caseView = this.activatedRoute.snapshot.data.case;
   }
 }
