@@ -1,1 +1,7 @@
-<p>query-details works!</p>
+<ng-container *ngIf="query">
+    <p>
+        <br><a class="govuk-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back to queries' | rpxTranslate }}</a>
+    </p>
+    <div class="query_details_caption">{{ 'Query details' | rpxTranslate }}</div>
+    <ccd-query-details-table [queryItem]="query"></ccd-query-details-table>
+</ng-container>
