@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -12,16 +12,18 @@ import { NgxMdModule } from 'ngx-md';
 import { PipesModule } from '../../../pipes';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-const VALUES = [{
-  code: 'Option1',
-  label: 'Option 1',
-  order: 1
-},
-{
-  code: 'Option2',
-  label: 'Option 2',
-  order: 2
-}];
+const VALUES = [
+  {
+    code: 'Option1',
+    label: 'Option 1',
+    order: 1
+  },
+  {
+    code: 'Option2',
+    label: 'Option 2',
+    order: 2
+  }
+];
 const FIELD_ID = 'DynamicMultiSelectList';
 const LIST_ITEMS = [
   {
@@ -39,12 +41,12 @@ const LIST_ITEMS = [
 const MD_LIST_ITEMS = [
   {
     code: 'Option1',
-    label: '[Option 1](https://www.google.com/search?q=option+1)',
+    label: 'Option 1 (https://www.google.com/search?q=option+1)',
     order: 1
   },
   {
     code: 'Option2',
-    label: '[Option 2](https://www.google.com/search?q=option+2)',
+    label: 'Option 2 (https://www.google.com/search?q=option+2)',
     order: 2
   }
 ];
@@ -74,12 +76,13 @@ const moduleDef = {
   providers: [
     NgxMdModule
   ]
-}
+};
 
 const $CHECKBOXES = By.css('input[type="checkbox"]');
 const $SELECTED_CHECKBOXES = By.css('input[type="checkbox"]:checked');
 const $UNSELECTED_CHECKBOXES = By.css('input[type="checkbox"]:not(:checked)');
 const $OPTION_1 = By.css('input[value="Option1"]');
+const $LABELS = By.css('input[type="checkbox"] + label');
 
 describe('WriteDynamicMultiSelectListFieldComponent', () => {
   let fixture: ComponentFixture<WriteDynamicMultiSelectListFieldComponent>;
@@ -87,8 +90,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
   let de: DebugElement;
 
   describe('List Value Dynamic Case Field', () => {
-    beforeEach(async(() => {
-
+    beforeEach(waitForAsync(() => {
       CASE_FIELD = ({
         id: FIELD_ID,
         label: 'X',
@@ -142,16 +144,15 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     });
 
     it('should show a link in the checkbox label', () => {
-      const cbs = de.queryAll($CHECKBOXES);
-      cbs.forEach(c => {
-        expect(c.nativeElement.label.toBeTruthy)
+      const labels = de.queryAll($LABELS);
+      labels.forEach(lb => {
+        expect(lb.nativeElement.innerHTML).toMatch(new RegExp('<ccd-markdown></ccd-markdown>'));
       });
-    })
+    });
   });
 
   describe('Null Value Dynamic Case Field', () => {
-    beforeEach(async(() => {
-
+    beforeEach(waitForAsync(() => {
       CASE_FIELD = ({
         id: FIELD_ID,
         label: 'X',
@@ -189,8 +190,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
   });
 
   describe('Object Value Dynamic Case Field', () => {
-    beforeEach(async(() => {
-
+    beforeEach(waitForAsync(() => {
       CASE_FIELD = ({
         id: FIELD_ID,
         label: 'X',
