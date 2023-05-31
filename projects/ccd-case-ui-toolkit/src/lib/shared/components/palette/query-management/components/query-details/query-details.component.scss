@@ -1,0 +1,8 @@
+@import "~govuk-frontend/govuk/helpers/colour";
+
+.query_details_caption {
+    background: govuk-colour('light-grey');
+    padding: 10px;
+    font-size: x-large;
+    font-weight: bold;
+  }
