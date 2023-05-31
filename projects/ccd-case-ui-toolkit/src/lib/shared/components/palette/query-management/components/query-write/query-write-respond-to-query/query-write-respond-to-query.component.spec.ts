@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
-import { ActivatedRoute } from '@angular/router';
 import { Pipe } from '@angular/core';
 
 @Pipe({ name: 'rpxTranslate' })

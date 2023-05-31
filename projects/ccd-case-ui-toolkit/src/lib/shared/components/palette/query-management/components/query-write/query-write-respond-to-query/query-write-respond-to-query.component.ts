@@ -11,7 +11,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.formGroup = new FormGroup({
       response: new FormControl('', Validators.required),
       documents: new FormControl([], Validators.required)
