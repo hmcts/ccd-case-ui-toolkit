@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WriteQueryManagementFieldComponent } from './write-query-management-field.component';
+import { CaseField } from '../../../domain';
 
 @Pipe({ name: 'ccdCaseReference' })
 class CcdCaseReferenceMockPipe implements PipeTransform {
@@ -35,6 +36,10 @@ describe('WriteQueryManagementFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteQueryManagementFieldComponent);
     component = fixture.componentInstance;
+    component.caseField = {
+      id: 'WriteQueryManagementField',
+      metadata: false
+    } as CaseField;
     fixture.detectChanges();
   });
 
