@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AbstractFieldReadComponent } from '../base-field';
 import { QueryListItem } from './models';
@@ -8,13 +8,11 @@ import { QueryListItem } from './models';
   templateUrl: './write-query-management-field.component.html',
   styleUrls: ['./write-query-management-field.component.scss']
 })
-export class WriteQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit {
-  @Input() public queryItem: QueryListItem;
+export class WriteQueryManagementFieldComponent extends AbstractFieldReadComponent {
+  public queryItem: QueryListItem;
   public formGroup: FormGroup = new FormGroup({});
 
   constructor() {
     super();
   }
-
-  public ngOnInit() {}
 }

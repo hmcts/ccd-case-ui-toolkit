@@ -26,7 +26,7 @@ describe('QueryCaseDetailsHeaderComponent', () => {
   beforeEach(async () => {
     const snapshotActivatedRoute = { data: { case: { case_id: '123', title_display: 'TitleDisplay' } } };
     await TestBed.configureTestingModule({
-      declarations: [ QueryCaseDetailsHeaderComponent, MockCaseReferencePipe ],
+      declarations: [ QueryCaseDetailsHeaderComponent, MockTranslatePipe, MockCaseReferencePipe ],
       providers: [
         { provide: ActivatedRoute, useValue: { snapshot:  snapshotActivatedRoute } },
       ]
