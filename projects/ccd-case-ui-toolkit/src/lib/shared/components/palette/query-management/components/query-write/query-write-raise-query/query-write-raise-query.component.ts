@@ -9,8 +9,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class QueryWriteRaiseQueryComponent implements OnInit {
   @Input() public formGroup: FormGroup;
 
-  constructor() { }
-
   public ngOnInit(): void {
     this.formGroup = new FormGroup({
       fullName: new FormControl('', Validators.required),

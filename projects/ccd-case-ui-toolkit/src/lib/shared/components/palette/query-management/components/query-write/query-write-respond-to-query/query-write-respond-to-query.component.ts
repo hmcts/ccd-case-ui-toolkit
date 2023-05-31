@@ -4,8 +4,7 @@ import { QueryListItem } from '../../../models';
 
 @Component({
   selector: 'ccd-query-write-respond-to-query',
-  templateUrl: './query-write-respond-to-query.component.html',
-  styleUrls: ['./query-write-respond-to-query.component.scss']
+  templateUrl: './query-write-respond-to-query.component.html'
 })
 export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public queryItem: QueryListItem;

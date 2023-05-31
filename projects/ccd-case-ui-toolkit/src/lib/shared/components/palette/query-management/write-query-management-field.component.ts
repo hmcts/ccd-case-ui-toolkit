@@ -16,5 +16,7 @@ export class WriteQueryManagementFieldComponent extends AbstractFieldReadCompone
     super();
   }
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    super.ngOnInit();
+  }
 }
