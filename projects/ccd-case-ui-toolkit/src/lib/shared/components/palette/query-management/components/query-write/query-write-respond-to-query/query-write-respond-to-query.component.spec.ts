@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { Pipe, PipeTransform } from '@angular/core';
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
-import { Pipe } from '@angular/core';
 
 @Pipe({ name: 'rpxTranslate' })
-class MockRpxTranslatePipe {
+class MockRpxTranslatePipe implements PipeTransform {
   public transform(value: string, ...args: any[]) {
     return value;
   }
