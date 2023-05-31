@@ -11,7 +11,7 @@ export class QueryWriteRaiseQueryComponent implements OnInit {
 
   constructor() { }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.formGroup = new FormGroup({
       fullName: new FormControl('', Validators.required),
       subject: new FormControl('', Validators.required),
