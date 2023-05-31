@@ -172,7 +172,7 @@ describe('ManageCaseFlagsLabelDisplayPipe', () => {
       get language() {
         return currentLanguage;
       },
-      getTranslation(_: string): Observable<string> {
+      getTranslation$(_: string): Observable<string> {
         // Use delayed Observable to better simulate response from the RpxTranslationService
         return of('Dummy Welsh translation').pipe(delay(500));
       }

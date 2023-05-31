@@ -1,6 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
+import { ActivatedRoute } from '@angular/router';
+import { Pipe } from '@angular/core';
+
+@Pipe({ name: 'rpxTranslate' })
+class MockRpxTranslatePipe {
+  public transform(value: string, ...args: any[]) {
+    return value;
+  }
+}
 
 describe('QueryWriteRespondToQueryComponent', () => {
   let component: QueryWriteRespondToQueryComponent;
@@ -8,7 +17,7 @@ describe('QueryWriteRespondToQueryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ QueryWriteRespondToQueryComponent ]
+      declarations: [ QueryWriteRespondToQueryComponent, MockRpxTranslatePipe ]
     })
     .compileComponents();
   });

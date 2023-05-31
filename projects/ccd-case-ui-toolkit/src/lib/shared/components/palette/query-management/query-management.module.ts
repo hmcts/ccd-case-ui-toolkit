@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { PipesModule } from '../../../pipes';
-import { MarkdownComponent } from '../markdown';
+import { MarkdownComponentModule } from '../markdown/markdown-component.module';
 import { QueryCaseDetailsHeaderComponent } from './components/query-case-details-header/query-case-details-header.component';
 import { QueryCreateComponent } from './components/query-create/query-create.component';
 import { QueryDetailsTableComponent } from './components/query-details-table/query-details-table.component';
@@ -15,7 +15,6 @@ import {
 } from './components/query-write/query-write-respond-to-query/query-write-respond-to-query.component';
 import { ReadQueryManagementFieldComponent } from './read-query-management-field.component';
 import { WriteQueryManagementFieldComponent } from './write-query-management-field.component';
-import { MarkdownComponentModule } from '../markdown/markdown-component.module';
 
 @NgModule({
   declarations: [
@@ -38,7 +37,8 @@ import { MarkdownComponentModule } from '../markdown/markdown-component.module';
   ],
   exports: [
     ReadQueryManagementFieldComponent,
-    WriteQueryManagementFieldComponent
+    QueryWriteRaiseQueryComponent,
+    QueryWriteRespondToQueryComponent
   ],
 })
 export class QueryManagementModule {}
