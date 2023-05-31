@@ -16,6 +16,7 @@ import {
 } from '../../../../components/banners/notification-banner';
 import { ShowCondition } from '../../../directives';
 import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
+import { CaseViewEventIds } from '../../../domain/case-view/case-view-event-ids.enum';
 import {
   ActivityPollingService,
   AlertService,
@@ -184,7 +185,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
   }
 
-  public applyTrigger(trigger: CaseViewTrigger): void {
+  public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
     this.error = null;
 
     const theQueryParams: Params = {};
@@ -194,7 +195,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
 
     // we may need to take care of different triggers in the future
-    if (trigger.id === CaseViewTrigger.DELETE) {
+    if (trigger.id === CaseViewEventIds.QueryManagementRaiseQuery) {
+      await this.router.navigate([`/query-management/query/${this.caseDetails.case_id}`]);
+    } else if (trigger.id === CaseViewEventIds.DELETE) {
       const dialogRef = this.dialog.open(DeleteOrCancelDialogComponent, this.dialogConfig);
       dialogRef.afterClosed().subscribe(result => {
         if (result === 'Delete') {
@@ -206,7 +209,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
             });
         }
       });
-    } else if (this.isDraft() && trigger.id !== CaseViewTrigger.DELETE) {
+    } else if (this.isDraft() && trigger.id !== CaseViewEventIds.DELETE) {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseFullAccessViewComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
       this.navigationNotifierService.announceNavigation(
