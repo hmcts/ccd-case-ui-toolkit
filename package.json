@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.15.0-6.16-case-event-spinner-fix",
+  "version": "6.15.0-6.16-case-event-spinner-fix-v2",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
