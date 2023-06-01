@@ -26,6 +26,7 @@ import { LinkedCasesPages } from './enums';
 import { LinkedCasesService } from './services';
 import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.component';
 import createSpyObj = jasmine.createSpyObj;
+import { LoadingService } from '../../../services';
 
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
@@ -83,7 +84,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
   const caseFieldService = new CaseFieldService();
   const pageValidationService = new PageValidationService(caseFieldService);
   caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
-    route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, new CaseEditDataService());
+    route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, new CaseEditDataService(), new LoadingService());
 
   const caseInfo = {
     case_id: '1682374819203471',

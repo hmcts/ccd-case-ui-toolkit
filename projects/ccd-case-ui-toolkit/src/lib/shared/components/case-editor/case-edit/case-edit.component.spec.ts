@@ -11,7 +11,7 @@ import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.m
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
-import { FieldsPurger, FieldsUtils, SessionStorageService, WindowService } from '../../../services';
+import { FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, WindowService } from '../../../services';
 import { FormErrorService, FormValueService } from '../../../services/form';
 import { PaletteUtilsModule } from '../../palette';
 import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
@@ -243,6 +243,7 @@ describe('CaseEditComponent', () => {
       isSolicitor: FUNC,
       isCourtAdmin: FUNC
     };
+    let loadingServiceMock: jasmine.SpyObj<LoadingService>;
 
     beforeEach(waitForAsync(() => {
       cancelHandler = createSpyObj('cancelHandler', ['applyFilters']);
@@ -286,6 +287,8 @@ describe('CaseEditComponent', () => {
         params: of({})
       };
 
+      loadingServiceMock = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+
       TestBed
         .configureTestingModule({
           imports: [
@@ -314,7 +317,8 @@ describe('CaseEditComponent', () => {
             {provide: Router, useValue: routerStub},
             {provide: ActivatedRoute, useValue: route},
             SessionStorageService,
-            WindowService
+            WindowService,
+            { provide: LoadingService, loadingServiceMock }
           ]
         })
         .compileComponents();
@@ -329,10 +333,6 @@ describe('CaseEditComponent', () => {
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
-
-    beforeEach(() => {
-    });
-
     // Moved this test case to case-edit-page.component
 
     it('should return true for hasPrevious', () => {

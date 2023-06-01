@@ -36,7 +36,7 @@ import {
   CaseFieldService,
   FieldTypeSanitiser,
   FormErrorService,
-  FormValueService,
+  FormValueService, LoadingService,
 } from '../../../services';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
@@ -70,6 +70,7 @@ describe('CaseEditPageComponent', () => {
     dialog = {},
     caseFieldService = {},
     caseEditDataService = {},
+    loadingService = {},
   }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -80,7 +81,8 @@ describe('CaseEditPageComponent', () => {
     pageValidationService as PageValidationService,
     dialog as MatDialog,
     caseFieldService as CaseFieldService,
-    caseEditDataService as CaseEditDataService
+    caseEditDataService as CaseEditDataService,
+    loadingService as LoadingService
   );
 
   it('should create', () => {
@@ -328,6 +330,7 @@ xdescribe('CaseEditPageComponent', () => {
       name: 'Test event trigger name',
       can_save_draft: true,
     };
+    let loadingServiceMock: LoadingService;
 
     beforeEach(
       waitForAsync(() => {
@@ -390,6 +393,7 @@ xdescribe('CaseEditPageComponent', () => {
             'setCaseEventTriggerName',
           ]),
         };
+        loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
 
         TestBed.configureTestingModule({
           imports: [FormsModule, ReactiveFormsModule],
@@ -651,6 +655,8 @@ xdescribe('CaseEditPageComponent', () => {
   });
 
   describe('Save and Resume disabled', () => {
+    let loadingServiceMock: jasmine.SpyObj<LoadingService>;
+
     beforeEach(
       waitForAsync(() => {
         firstPage.id = 'first page';
@@ -717,6 +723,8 @@ xdescribe('CaseEditPageComponent', () => {
           ]),
         };
 
+        loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+
         TestBed.configureTestingModule({
           declarations: [
             CaseEditPageComponent,
@@ -735,6 +743,7 @@ xdescribe('CaseEditPageComponent', () => {
             { provide: CaseEditDataService, useValue: caseEditDataService },
             FieldsUtils,
             PlaceholderService,
+            { provide: LoadingService, useValue: loadingServiceMock },
           ],
         }).compileComponents();
       })
@@ -794,6 +803,7 @@ xdescribe('CaseEditPageComponent', () => {
       hasFields: () => true,
       hasPages: () => true,
     };
+    let loadingServiceMock: jasmine.SpyObj<LoadingService>;
 
     const formGroup: FormGroup = new FormGroup({
       data: new FormGroup({ field1: new FormControl('SOME_VALUE') }),
@@ -851,7 +861,12 @@ xdescribe('CaseEditPageComponent', () => {
           setCaseEventTriggerName: createSpyObj('caseEditDataService', [
             'setCaseEventTriggerName',
           ]),
+          setCaseDetails: createSpyObj('caseEditDataService', [
+            'setCaseDetails',
+          ]),
         };
+
+        loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -871,6 +886,7 @@ xdescribe('CaseEditPageComponent', () => {
             { provide: CaseEditDataService, useValue: caseEditDataService },
             FieldsUtils,
             PlaceholderService,
+            { provide: LoadingService, useValue: loadingServiceMock },
           ],
         }).compileComponents();
       })
@@ -920,6 +936,8 @@ xdescribe('CaseEditPageComponent', () => {
   });
 
   describe('submit the form', () => {
+    const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+
     beforeEach(
       waitForAsync(() => {
         firstPage.id = 'first page';
@@ -986,24 +1004,24 @@ xdescribe('CaseEditPageComponent', () => {
           eventData
         );
 
-        caseEditDataService = {
-          caseEventTriggerName$: of('ADD'),
-          clearFormValidationErrors: createSpyObj('caseEditDataService', [
-            'clearFormValidationErrors',
-          ]),
-          addFormValidationError: createSpyObj('caseEditDataService', [
-            'addFormValidationError',
-          ]),
-          setCaseLinkError: createSpyObj('caseEditDataService', [
-            'setCaseLinkError',
-          ]),
-          clearCaseLinkError: createSpyObj('caseEditDataService', [
-            'clearCaseLinkError',
-          ]),
-          setCaseEventTriggerName: createSpyObj('caseEditDataService', [
+        caseEditDataService = createSpyObj('caseEditDataService',
+          [
+            'setCaseEditForm',
+            'setCaseDetails',
             'setCaseEventTriggerName',
-          ]),
-        };
+            'setCaseLinkError',
+            'clearCaseLinkError',
+            'clearFormValidationErrors',
+            'addFormValidationError',
+            'setCaseTitle',
+            'setTriggerSubmitEvent',
+            'getNextPage'
+          ]
+        );
+        caseEditDataService.caseTriggerSubmitEvent$ = of('SUBMITTED');
+        caseEditDataService.caseFormValidationErrors$ = of('ADD');
+        caseEditDataService.caseEditForm$ = of(FORM_GROUP);
+        caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$ = of(false);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -1026,6 +1044,7 @@ xdescribe('CaseEditPageComponent', () => {
             { provide: CaseEditDataService, useValue: caseEditDataService },
             FieldsUtils,
             PlaceholderService,
+            { provide: LoadingService, useValue: loadingServiceMock },
           ],
         }).compileComponents();
       })
@@ -1045,8 +1064,6 @@ xdescribe('CaseEditPageComponent', () => {
       comp.currentPage = wizardPage;
 
       de = fixture.debugElement;
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callThrough();
-      spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       comp.ngOnInit();
       fixture.detectChanges();
     });
@@ -1055,9 +1072,10 @@ xdescribe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       expect(eventData.case_reference).toBeUndefined();
-      expect(comp.showSpinner).toBeFalsy();
-
+      // expect(comp.showSpinner).toBeFalsy();
+      expect(loadingServiceMock.register).not.toHaveBeenCalled();
       comp.submit();
+      expect(loadingServiceMock.register).toHaveBeenCalled();
 
       fixture.whenStable().then(() => {
         expect(eventData.case_reference).toEqual(
@@ -1075,7 +1093,7 @@ xdescribe('CaseEditPageComponent', () => {
         expect(eventData.ignore_warning).toEqual(comp.caseEdit.ignoreWarning);
         expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
-        expect(comp.showSpinner).toBeFalsy();
+        expect(loadingServiceMock.unregister).toHaveBeenCalled();
       });
     });
 
@@ -1096,7 +1114,6 @@ xdescribe('CaseEditPageComponent', () => {
 
       const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
       expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
-      expect(comp.showSpinner).toBeFalsy();
     });
 
     it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
@@ -1133,7 +1150,7 @@ xdescribe('CaseEditPageComponent', () => {
       expect(text(firstFieldError)).toBe('First field error');
       const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
       expect(text(secondFieldError)).toBe('Second field error');
-      expect(comp.showSpinner).toBeFalsy();
+      // expect(comp.showSpinner).toBeFalsy();
     });
 
     it('should not display generic error heading and message when there are specific callback errors', () => {

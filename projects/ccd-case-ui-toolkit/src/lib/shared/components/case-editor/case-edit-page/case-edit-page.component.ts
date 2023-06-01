@@ -19,6 +19,8 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
+import { LoadingService } from '../../../services';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -46,7 +48,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public pageChangeSubject: Subject<boolean> = new Subject();
   public caseFields: CaseField[];
   public validationErrors: { id: string, message: string }[] = [];
-  public showSpinner: boolean;
   public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public callbackErrorsSubject: Subject<any> = new Subject();
   public isLinkedCasesJourneyAtFinalStep: boolean;
@@ -71,7 +72,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     private readonly pageValidationService: PageValidationService,
     private readonly dialog: MatDialog,
     private readonly caseFieldService: CaseFieldService,
-    private readonly caseEditDataService: CaseEditDataService
+    private readonly caseEditDataService: CaseEditDataService,
+    private readonly loadingService: LoadingService
   ) {}
 
   public ngOnInit(): void {
@@ -82,25 +84,25 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.caseFields = this.getCaseFields();
 
     this.syncCaseEditDataService();
-
-    this.route.params
-      .subscribe(params => {
-        const pageId = params['page'];
-        /* istanbul ignore else */
-        if (!this.currentPage || pageId !== this.currentPage?.id) {
-          const page = this.caseEdit.getPage(pageId);
-          if (page) {
-            this.currentPage = page;
-          } else {
-            if (this.currentPage) {
-              return this.next();
-            } else {
-              return this.first();
-            }
-          }
-          this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage?.id));
-        }
-      });
+    //
+    // this.route.params
+    //   .subscribe(params => {
+    //     const pageId = params['page'];
+    //     /* istanbul ignore else */
+    //     if (!this.currentPage || pageId !== this.currentPage?.id) {
+    //       const page = this.caseEdit.getPage(pageId);
+    //       if (page) {
+    //         this.currentPage = page;
+    //       } else {
+    //         if (this.currentPage) {
+    //           return this.next();
+    //         } else {
+    //           return this.first();
+    //         }
+    //       }
+    //       this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage?.id));
+    //     }
+    //   });
     CaseEditPageComponent.setFocusToTop();
     this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.editForm = editForm
@@ -244,12 +246,18 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         this.generateErrorMessage(this.currentPage.case_fields);
       }
     }
+
     if (!this.caseEdit.isSubmitting && !this.currentPageIsNotValid()) {
       this.caseEdit.isSubmitting = true;
       this.caseEdit.error = null;
       const caseEventData: CaseEventData = this.buildCaseEventData();
-      this.showSpinner = true;
+      const loadingSpinnerToken = this.loadingService.register();
       this.caseEdit.validate(caseEventData, this.currentPage.id)
+        .pipe(
+          finalize(() => {
+            this.loadingService.unregister(loadingSpinnerToken);
+          })
+        )
         .subscribe((jsonData) => {
           /* istanbul ignore else */
           if (jsonData) {
@@ -258,7 +266,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           this.saveDraft();
           this.next();
         }, error => {
-          this.showSpinner = false;
           this.handleError(error);
         });
       CaseEditPageComponent.scrollToTop();
@@ -341,7 +348,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   public next(): Promise<boolean> {
     if (this.canNavigateToSummaryPage()) {
-      this.showSpinner = false;
       this.caseEdit.isSubmitting = false;
     }
     this.resetErrors();
