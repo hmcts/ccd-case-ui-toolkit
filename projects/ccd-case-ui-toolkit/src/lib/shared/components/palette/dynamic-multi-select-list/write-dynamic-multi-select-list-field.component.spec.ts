@@ -1,16 +1,18 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
 import { attr } from '../../../test/helpers';
 import { WriteDynamicMultiSelectListFieldComponent } from './write-dynamic-multi-select-list-field.component';
-import { MarkdownComponent } from '../../../components/palette/markdown/markdown.component';
 import { NgxMdModule } from 'ngx-md';
 import { PipesModule } from '../../../pipes';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MarkdownComponent } from '../markdown';
+
+var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
 const VALUES = [
   {
@@ -41,12 +43,12 @@ const LIST_ITEMS = [
 const MD_LIST_ITEMS = [
   {
     code: 'Option1',
-    label: 'Option 1 (https://www.google.com/search?q=option+1)',
+    label: '[Option 1](https://www.google.com/search?q=option+1)',
     order: 1
   },
   {
     code: 'Option2',
-    label: 'Option 2 (https://www.google.com/search?q=option+2)',
+    label: '[Option 2](https://www.google.com/search?q=option+2)',
     order: 2
   }
 ];
@@ -66,12 +68,9 @@ const moduleDef = {
     HttpClientTestingModule,
     NgxMdModule.forRoot(),
   ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ],
   declarations: [
     WriteDynamicMultiSelectListFieldComponent,
-
+    MarkdownComponent
   ],
   providers: [
     NgxMdModule
@@ -145,8 +144,9 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
 
     it('should show a link in the checkbox label', () => {
       const labels = de.queryAll($LABELS);
-      labels.forEach(lb => {
-        expect(lb.nativeElement.innerHTML).toMatch(new RegExp('<ccd-markdown></ccd-markdown>'));
+      labels.forEach((lb, i) => {
+        const mockUrl = MD_LIST_ITEMS[i].label.match(urlRegex)[0];
+        expect(lb.nativeElement.innerHTML).toContain(`<a href="${mockUrl}">`);
       });
     });
   });
