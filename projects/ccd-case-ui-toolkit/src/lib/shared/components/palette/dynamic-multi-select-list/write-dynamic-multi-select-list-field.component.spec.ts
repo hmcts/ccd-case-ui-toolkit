@@ -12,7 +12,7 @@ import { PipesModule } from '../../../pipes';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MarkdownComponent } from '../markdown';
 
-var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
 const VALUES = [
   {
@@ -145,7 +145,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     it('should show a link in the checkbox label', () => {
       const labels = de.queryAll($LABELS);
       labels.forEach((lb, i) => {
-        const mockUrl = MD_LIST_ITEMS[i].label.match(urlRegex)[0];
+        const mockUrl = MD_LIST_ITEMS[i].label.match(URL_REGEX)[0];
         expect(lb.nativeElement.innerHTML).toContain(`<a href="${mockUrl}">`);
       });
     });
