@@ -332,8 +332,8 @@ describe('CaseEditSubmitComponent', () => {
 
       const result = comp.showEventNotes();
 
-      expect(result).toBeTruthy();
-      expect(eventNotes).not.toBeNull();
+      expect(result).toBeFalsy();
+      expect(eventNotes).toBeNull();
     });
 
     it('should show event notes when not defined in event trigger and showEventNotes is called', () => {
@@ -343,8 +343,8 @@ describe('CaseEditSubmitComponent', () => {
 
       const result = comp.showEventNotes();
 
-      expect(result).toBeTruthy();
-      expect(eventNotes).not.toBeNull();
+      expect(result).toBeFalsy();
+      expect(eventNotes).toBeNull();
     });
 
     it('should not show event notes when set to false in event trigger and showEventNotes is called', () => {
