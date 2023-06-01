@@ -36,7 +36,8 @@ import {
   CaseFieldService,
   FieldTypeSanitiser,
   FormErrorService,
-  FormValueService, LoadingService,
+  FormValueService,
+  LoadingService,
 } from '../../../services';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
