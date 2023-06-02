@@ -3,11 +3,13 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
 import { DRAFT_PREFIX } from '../../../domain/draft.model';
+import { LoadingService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FieldsUtils } from '../../../services/fields';
 import { FormErrorService } from '../../../services/form/form-error.service';
@@ -19,8 +21,6 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
-import { LoadingService } from '../../../services';
-import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-edit-page',

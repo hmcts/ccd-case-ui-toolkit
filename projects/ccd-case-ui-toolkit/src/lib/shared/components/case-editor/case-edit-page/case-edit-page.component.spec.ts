@@ -1073,7 +1073,6 @@ xdescribe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       expect(eventData.case_reference).toBeUndefined();
-      // expect(comp.showSpinner).toBeFalsy();
       expect(loadingServiceMock.register).not.toHaveBeenCalled();
       comp.submit();
       expect(loadingServiceMock.register).toHaveBeenCalled();
@@ -1151,7 +1150,6 @@ xdescribe('CaseEditPageComponent', () => {
       expect(text(firstFieldError)).toBe('First field error');
       const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
       expect(text(secondFieldError)).toBe('Second field error');
-      // expect(comp.showSpinner).toBeFalsy();
     });
 
     it('should not display generic error heading and message when there are specific callback errors', () => {

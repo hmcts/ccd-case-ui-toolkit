@@ -10,6 +10,8 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseView } from '../../../domain/case-view';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { Draft } from '../../../domain/draft.model';
+import createSpyObj = jasmine.createSpyObj;
+import { LoadingService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
@@ -25,8 +27,6 @@ import { CaseLink, LinkedCasesState } from './domain';
 import { LinkedCasesPages } from './enums';
 import { LinkedCasesService } from './services';
 import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.component';
-import createSpyObj = jasmine.createSpyObj;
-import { LoadingService } from '../../../services';
 
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
