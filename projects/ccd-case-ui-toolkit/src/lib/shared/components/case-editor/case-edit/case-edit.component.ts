@@ -409,7 +409,7 @@ private caseSubmit({ form, caseEventData, submit }: CaseEditCaseSubmit ): void {
         this.sessionStorageService.removeItem('eventUrl');
         const confirmation: Confirmation = this.buildConfirmation(response);
         if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
-          this.confirm(confirmation).then().catch();
+          this.confirm(confirmation);
         } else {
           this.emitSubmitted(response);
         }
