@@ -44,7 +44,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   public loadCaseDetails(): void {
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
-      this.caseDetails.tabs = [...new Map(this.caseDetails.tabs.map(item => [item['label'], item])).values()];
+      this.caseDetails.tabs = [...new Map(this.caseDetails.tabs.slice().reverse().map((item) => [item['label'], item])).values()].reverse();
       this.setUserAccessType(this.caseDetails);
     } else {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {

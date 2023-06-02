@@ -143,7 +143,7 @@ describe('CaseViewerComponent', () => {
   mockActivatedRoute.snapshot.data = {} as Data;
 
   mockAppConfig.getAccessManagementMode.and.returnValue(false);
-  mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({active: false});
+  mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({ active: false });
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -191,6 +191,35 @@ describe('CaseViewerComponent', () => {
       fixture.detectChanges();
       component.loadCaseDetails();
       expect(component.caseDetails.case_type.id).toEqual('case_view_2_type_id');
+    });
+
+    it('should remove duplicate tabs with retaining first occurance', () => {
+      mockActivatedRoute.snapshot.data = { case: CASE_VIEW_FROM_ROUTE } as Data;
+      mockActivatedRoute.snapshot.data.case.tabs = [
+        { id: '1', label: 'Application', fields: [] },
+        { id: '2', label: 'Application', fields: [] }];
+      fixture.detectChanges();
+      component.loadCaseDetails();
+      expect(component.caseDetails.tabs).toEqual([{ id: '1', label: 'Application', fields: [] }]);
+    });
+
+    it('should remove duplicate tabs with retaining first occurance', () => {
+      mockActivatedRoute.snapshot.data = { case: CASE_VIEW_FROM_ROUTE } as Data;
+      mockActivatedRoute.snapshot.data.case.tabs = [
+        { id: '4', label: 'Application', fields: [] },
+        { id: '2', label: 'Payment', fields: [] },
+        { id: '3', label: 'Application', fields: [] },
+        { id: '4', label: 'Payment', fields: [] },
+        { id: '1', label: 'AOS', fields: [] }
+      ];
+      fixture.detectChanges();
+      component.loadCaseDetails();
+      const expected = [
+        { id: '4', label: 'Application', fields: [] },
+        { id: '2', label: 'Payment', fields: [] },
+        { id: '1', label: 'AOS', fields: [] }
+      ]
+      expect(component.caseDetails.tabs).toEqual(expected);
     });
   });
 

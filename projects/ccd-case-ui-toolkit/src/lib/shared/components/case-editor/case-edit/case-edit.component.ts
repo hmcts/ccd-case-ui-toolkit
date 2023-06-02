@@ -3,17 +3,18 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
+import { finalize } from 'rxjs/operators';
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import {
   CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage,
-  CaseEditSubmitForm,
   CaseEditonEventCanBeCompleted,
+  CaseEditSubmitForm,
   CaseEventData, CaseEventTrigger, CaseField,
   CaseView, Draft, HttpError, Profile
 } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
-  FieldsPurger, FieldsUtils, FormErrorService, FormValueService,
+  FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
   SessionStorageService, WindowService
 } from '../../../services';
 import { Confirmation, Wizard, WizardPage } from '../domain';
@@ -94,6 +95,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     private readonly windowsService: WindowService,
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
+    private readonly loadingService: LoadingService
   ) {}
 
   public ngOnInit(): void {
@@ -167,7 +169,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     });
 
     /* istanbul ignore else */
-    if(!nextPage && !this.eventTrigger.show_summary) {
+    if(!nextPage && !this.eventTrigger.show_summary && !this.eventTrigger.show_event_notes) {
       this.submitForm({
         eventTrigger: this.eventTrigger,
         form: this.form,
@@ -249,7 +251,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       });
       this.caseSubmit({form,
         caseEventData,
-        submit});
+        submit
+      });
     }
   }
 
@@ -401,30 +404,35 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
   return rawFormValueData;
 }
 
-private caseSubmit({ form, caseEventData, submit }: CaseEditCaseSubmit ): void {
- submit(caseEventData)
-    .subscribe(
-      response => {
-        this.caseNotifier.cachedCaseView = null;
-        this.sessionStorageService.removeItem('eventUrl');
-        const confirmation: Confirmation = this.buildConfirmation(response);
-        if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
-          this.confirm(confirmation);
-        } else {
-          this.emitSubmitted(response);
+  private caseSubmit({form, caseEventData, submit}: CaseEditCaseSubmit): void {
+    const loadingSpinnerToken = this.loadingService.register();
+
+    submit(caseEventData)
+      .pipe(finalize(() => {
+        this.loadingService.unregister(loadingSpinnerToken);
+      }))
+      .subscribe(
+        response => {
+          this.caseNotifier.cachedCaseView = null;
+          this.sessionStorageService.removeItem('eventUrl');
+          const confirmation: Confirmation = this.buildConfirmation(response);
+          if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
+            this.confirm(confirmation);
+          } else {
+            this.emitSubmitted(response);
+          }
+        },
+        error => {
+          this.error = error;
+          this.callbackErrorsSubject.next(error);
+          /* istanbul ignore else */
+          if (this.error.details) {
+            this.formErrorService
+              .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
+          }
+          this.isSubmitting = false;
         }
-      },
-      error => {
-        this.error = error;
-        this.callbackErrorsSubject.next(error);
-        /* istanbul ignore else */
-        if (this.error.details) {
-          this.formErrorService
-            .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
-        }
-        this.isSubmitting = false;
-      }
-    );
+      );
   }
 
   private buildConfirmation(response: object): Confirmation {
