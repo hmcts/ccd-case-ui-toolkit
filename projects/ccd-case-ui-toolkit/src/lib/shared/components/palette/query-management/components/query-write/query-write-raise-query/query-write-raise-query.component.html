@@ -105,22 +105,7 @@
           </div>
 
           <div>
-            <div class="govuk-form-group"
-                 [class.govuk-form-group--error]="formGroup.get('documents')?.errors?.length">
-              <div class="govuk-label-wrapper">
-                <label class="govuk-label" for="add-documents">
-                  <div class=" govuk-!-font-weight-bold">{{ 'Add document (optional)' | rpxTranslate }}</div>
-                  <div>{{ 'Attach a document to this message' | rpxTranslate }}</div>
-                </label>
-              </div>
-              <p id="add-documents-error" class="govuk-error-message"
-                 *ngIf="formGroup.get('response')?.errors?.length">
-                <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'File error message' |
-                rpxTranslate }}
-              </p>
-
-              <input class="govuk-file-upload" id="add-documents" name="add-documents" type="file">
-            </div>
+            <ccd-query-write-add-documents [formGroup]="formGroup"></ccd-query-write-add-documents>
           </div>
 
           <button class="govuk-button" data-module="govuk-button">

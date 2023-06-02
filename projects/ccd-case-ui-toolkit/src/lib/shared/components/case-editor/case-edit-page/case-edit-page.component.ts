@@ -83,6 +83,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
     this.wizard = this.caseEdit.wizard;
+    console.log(this.caseEdit.eventTrigger);
+    console.log(this.wizard);
     this.caseFields = this.getCaseFields();
     this.triggerText = this.getTriggerText();
 

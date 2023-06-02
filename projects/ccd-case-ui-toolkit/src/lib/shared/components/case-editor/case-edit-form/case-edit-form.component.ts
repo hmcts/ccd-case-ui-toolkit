@@ -52,6 +52,8 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
       });
     });
     this.subscribeToFormChanges();
+
+    console.log(this);
   }
 
   public subscribeToFormChanges() {
