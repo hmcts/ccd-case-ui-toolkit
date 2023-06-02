@@ -215,7 +215,7 @@ describe('CaseViewerComponent', () => {
       fixture.detectChanges();
       component.loadCaseDetails();
       const expected = [
-        { id: '4', label: 'Application', fields: [] },        
+        { id: '4', label: 'Application', fields: [] },
         { id: '2', label: 'Payment', fields: [] },
         { id: '1', label: 'AOS', fields: [] }
       ]
