@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
-import { PartyMessagesGroup } from './models';
+import { PartyMessagesGroup, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
 import { partyMessagesMockData } from './__mocks__';
 
@@ -13,6 +13,8 @@ import { partyMessagesMockData } from './__mocks__';
 })
 export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit {
   public partyMessagesGroups: PartyMessagesGroup[];
+  public query: QueryListItem;
+  public showQueryList: boolean = true;
 
   constructor(private readonly route: ActivatedRoute) {
     super();
@@ -33,5 +35,10 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
       // Loop through the list of parties and their case queries collections
       QueryManagementUtils.extractCaseQueriesFromCaseField();
     }
+  }
+
+  public setQuery(query): void {
+    this.showQueryList = false;
+    this.query = query;
   }
 }

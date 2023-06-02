@@ -6,8 +6,8 @@
         <td class="govuk-table__cell">{{ queryItem.lastSubmittedBy }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">{{ 'Submission date' | rpxTranslate}}</th>
-        <td class="govuk-table__cell">{{ queryItem.createdOn | date: 'd MMM yyyy' }}</td>
+        <th scope="row" class="govuk-table__header">{{ 'Submission date' | rpxTranslate }}</th>
+        <td class="govuk-table__cell">{{ queryItem.createdOn | date: 'dd MMM yyyy' }}</td>
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Query subject' | rpxTranslate }}</th>
@@ -21,9 +21,10 @@
         <th scope="row" class="govuk-table__header">{{ 'Is the query hearing related?' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.isHearingRelated ? 'Yes' : 'No' }}</td>
       </tr>
-      <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">{{ 'What is the date of the hearing your query related to?' | rpxTranslate }}</th>
-        <td class="govuk-table__cell">{{ queryItem.hearingDate | date: 'd MMM yyyy' }}</td>
+      <tr class="govuk-table__row" *ngIf="queryItem.isHearingRelated">
+        <th scope="row" class="govuk-table__header">{{ 'What is the date of the hearing your query related to?' |
+          rpxTranslate }}</th>
+        <td class="govuk-table__cell">{{ queryItem.hearingDate | date: 'dd MMM yyyy' }}</td>
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
