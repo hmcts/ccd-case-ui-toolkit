@@ -1,26 +1,10 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FormDocument } from '../../../../../../domain';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ccd-query-write-raise-query',
-  templateUrl: './query-write-raise-query.component.html',
-  styleUrls: ['./query-write-raise-query.component.scss']
+  templateUrl: './query-write-raise-query.component.html'
 })
 export class QueryWriteRaiseQueryComponent {
-  public formGroup: FormGroup;
-
-  constructor() {
-    this.formGroup = new FormGroup({
-      fullName: new FormControl('', Validators.required),
-      subject: new FormControl('', Validators.required),
-      body: new FormControl('', Validators.required),
-      isHearingRelated: new FormControl(null, Validators.required),
-      documents: new FormControl([])
-    });
-  }
-
-  public onDocumentCollectionUpdate(documents: FormDocument[]): void {
-    this.formGroup.get('documents').setValue(documents);
-  }
+  @Input() public formGroup: FormGroup;
 }

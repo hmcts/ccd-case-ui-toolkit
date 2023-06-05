@@ -50,7 +50,9 @@ export class QueryWriteAddDocumentsComponent implements AfterViewInit, OnDestroy
     if (formControl) {
       this.documentFormControlSubscription = (formControl.valueChanges as Observable<{ id: string, value: FormDocument}[]>)
         .pipe(
-          map(documents => documents.filter((document) => !!document?.value?.document_url)),
+          map(documents => (
+            documents.filter((document) => !!document?.value?.document_url))
+          ),
           map(documents => documents.map(document => document?.value)),
           tap(documents => this.documentCollectionUpdate.emit(documents)),
         )
