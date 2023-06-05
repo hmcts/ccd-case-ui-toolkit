@@ -1,5 +1,6 @@
 import { Location } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
+import {
+  ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
   SimpleChanges, ViewChild, ViewContainerRef
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -8,15 +9,15 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
+import { filter } from 'rxjs/operators';
 import {
   NotificationBannerConfig,
   NotificationBannerHeaderClass,
   NotificationBannerType
 } from '../../../../components/banners/notification-banner';
 import { ShowCondition } from '../../../directives';
-import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DRAFT_QUERY_PARAM, DisplayMode, Draft } from '../../../domain';
 import {
   ActivityPollingService,
   AlertService,
@@ -235,8 +236,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
-    this.ignoreWarning = callbackErrorsContext.ignore_warning;
-    this.triggerText = callbackErrorsContext.trigger_text;
+    this.ignoreWarning = callbackErrorsContext.ignoreWarning;
+    this.triggerText = callbackErrorsContext.triggerText;
   }
 
   public isDraft(): boolean {
@@ -281,7 +282,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // preselect the 1st order of CCD predefined tabs
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], {fragment: preSelectTab.label}).then(() => {
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           this.tabGroup.selectedIndex = matTab.position;
         });

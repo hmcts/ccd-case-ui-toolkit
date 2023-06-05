@@ -125,7 +125,7 @@ describe('CaseProgressComponent event trigger resolved and draft does not exist'
         declarations: [
           CaseProgressComponent,
 
-          // mock
+          // Mocks
           caseEditComponent,
         ],
         providers: [
