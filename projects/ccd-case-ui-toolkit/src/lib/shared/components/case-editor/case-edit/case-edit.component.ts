@@ -7,8 +7,8 @@ import { finalize } from 'rxjs/operators';
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import {
   CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage,
-  CaseEditonEventCanBeCompleted,
   CaseEditSubmitForm,
+  CaseEditonEventCanBeCompleted,
   CaseEventData, CaseEventTrigger, CaseField,
   CaseView, Draft, HttpError, Profile
 } from '../../../domain';
@@ -417,7 +417,8 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
           this.sessionStorageService.removeItem('eventUrl');
           const confirmation: Confirmation = this.buildConfirmation(response);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
-            this.confirm(confirmation);
+            // Add finally to fix sonar bug
+            this.confirm(confirmation).finally();
           } else {
             this.emitSubmitted(response);
           }
