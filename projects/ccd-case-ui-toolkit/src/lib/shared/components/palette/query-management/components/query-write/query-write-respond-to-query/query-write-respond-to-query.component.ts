@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QueryListItem } from '../../../models';
 
@@ -9,11 +9,17 @@ import { QueryListItem } from '../../../models';
 export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
+  @Output() public confirmDetails: EventEmitter<boolean> = new EventEmitter();
 
   public ngOnInit(): void {
     this.formGroup = new FormGroup({
-      response: new FormControl('', Validators.required),
+      response: new FormControl(this.queryItem?.response ? this.queryItem.response : '', Validators.required),
       documents: new FormControl([], Validators.required)
     });
+  }
+
+  public submitForm(): void {
+    this.queryItem.response = this.formGroup.controls['response'].value;
+    this.confirmDetails.emit(true);
   }
 }
