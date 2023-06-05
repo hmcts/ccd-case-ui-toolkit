@@ -417,8 +417,7 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
           this.sessionStorageService.removeItem('eventUrl');
           const confirmation: Confirmation = this.buildConfirmation(response);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
-            // Add finally to fix sonar bug
-            this.confirm(confirmation).finally();
+            void this.confirm(confirmation);
           } else {
             this.emitSubmitted(response);
           }
