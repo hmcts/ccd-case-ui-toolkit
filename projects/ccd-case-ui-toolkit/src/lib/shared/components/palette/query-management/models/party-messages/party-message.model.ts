@@ -1,11 +1,11 @@
-import { Document } from '../../../../../domain';
+import { FormDocument } from '../../../../../domain';
 
 export interface PartyMessage {
   id: string;
   subject?: string;
   name: string;
   body: string;
-  attachments?: Document[];
+  attachments?: FormDocument[];
   isHearingRelated: boolean;
   hearingDate?: string;
   createdOn: Date;

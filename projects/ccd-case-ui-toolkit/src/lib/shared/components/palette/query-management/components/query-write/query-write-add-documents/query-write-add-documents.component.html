@@ -1,22 +1,2 @@
-<div class="govuk-form-group"
-     [class.govuk-form-group--error]="formGroup.get('documents')?.errors?.length">
-<!--  <div class="govuk-!-margin-bottom-4">-->
-<!--    <div class="govuk-label-wrapper">-->
-<!--      <label class="govuk-label">-->
-<!--        <div class=" govuk-!-font-weight-bold">{{ 'Add document (optional)' | rpxTranslate }}</div>-->
-<!--        <div>{{ 'Attach a document to this message' | rpxTranslate }}</div>-->
-<!--      </label>-->
-<!--    </div>-->
-<!--    <p id="add-documents-error" class="govuk-error-message"-->
-<!--       *ngIf="formGroup.get('response')?.errors?.length">-->
-<!--      <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'File error message' |-->
-<!--      rpxTranslate }}-->
-<!--    </p>-->
-<!--  </div>-->
-
-<!--  <button class="govuk-button">Add new</button>-->
-
-  <ng-container>
-    <ccd-write-collection-field [caseField]="mockDocumentCaseField" [formGroup]="formGroup"></ccd-write-collection-field>
-  </ng-container>
-</div>
+<ccd-write-collection-field [formGroup]="documentFormGroup" [caseField]="mockDocumentCaseField" >
+</ccd-write-collection-field>
