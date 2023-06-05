@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { FormDocument } from '../../../../../../domain';
-import { QueryWriteRaiseQueryComponent } from './query-write-raise-query.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { QueryWriteRaiseQueryComponent } from './query-write-raise-query.component';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
