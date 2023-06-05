@@ -1,12 +1,15 @@
 <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-  <ng-container *ngIf="queryItem; else raiseQuery">
-    <ccd-query-write-respond-to-query
-      [queryItem]="queryItem" [formGroup]="formGroup"
-    ></ccd-query-write-respond-to-query>
+  <ng-container *ngIf="!showSummary">
+    <ng-container *ngIf="queryItem; else raiseQuery">
+      <ccd-query-write-respond-to-query [queryItem]="queryItem" [formGroup]="formGroup"
+        (confirmDetails)="confirmDetails()">
+      </ccd-query-write-respond-to-query>
+    </ng-container>
+    <ng-template #raiseQuery>
+      <ccd-query-write-raise-query [formGroup]="formGroup">
+      </ccd-query-write-raise-query>
+    </ng-template>
   </ng-container>
-  <ng-template #raiseQuery>
-    <ccd-query-write-raise-query
-      [formGroup]="formGroup">
-    </ccd-query-write-raise-query>
-  </ng-template>
+  <ccd-query-check-your-answers *ngIf="showSummary" [queryItem]="queryItem" (backClicked)="showResponseForm()">
+  </ccd-query-check-your-answers>
 </div>
