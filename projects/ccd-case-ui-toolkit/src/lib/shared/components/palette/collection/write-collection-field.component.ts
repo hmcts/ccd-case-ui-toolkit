@@ -156,9 +156,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   public buildIdPrefix(index: number): string {
     const prefix = `${this.idPrefix}${this.caseField.id}_`;
-    if (this.caseField.field_type.collection_field_type.type === 'Complex') {
+    if (this.caseField.field_type.collection_field_type?.type === 'Complex') {
       return `${prefix}${index}_`;
     }
+
     return prefix;
   }
 

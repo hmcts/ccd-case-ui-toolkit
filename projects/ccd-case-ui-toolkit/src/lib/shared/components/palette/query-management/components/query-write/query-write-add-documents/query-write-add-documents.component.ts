@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -47,14 +47,16 @@ export class QueryWriteAddDocumentsComponent implements AfterViewInit, OnDestroy
   }
 
   public ngAfterViewInit(): void {
-    this.documentFormControlSubscription = (this.documentFormGroup.get(QueryWriteAddDocumentsComponent.DOCUMENTS_FORM_CONTROL_NAME)
-      .valueChanges as Observable<{ id: string, value: FormDocument}[]>)
-      .pipe(
-        map(documents => documents.filter((document) => !!document.value?.document_url)),
-        map(documents => documents.map(document => document.value)),
-        tap(documents => this.documentCollectionUpdate.emit(documents)),
-      )
-      .subscribe();
+    const formControl = this.documentFormGroup.get(QueryWriteAddDocumentsComponent.DOCUMENTS_FORM_CONTROL_NAME);
+    if (formControl) {
+      this.documentFormControlSubscription = (formControl.valueChanges as Observable<{ id: string, value: FormDocument}[]>)
+        .pipe(
+          map(documents => documents.filter((document) => !!document?.value?.document_url)),
+          map(documents => documents.map(document => document?.value)),
+          tap(documents => this.documentCollectionUpdate.emit(documents)),
+        )
+        .subscribe();
+    }
   }
 
   public ngOnDestroy(): void {
