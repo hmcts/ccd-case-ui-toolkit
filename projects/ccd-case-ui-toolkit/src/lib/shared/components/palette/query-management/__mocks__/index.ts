@@ -12,9 +12,11 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         body: 'Please review attached document and advise if hearing should proceed?',
         attachments: [
           {
-            document_url: '/',
-            document_binary_url: '/',
-            document_filename: 'document.pdf',
+            _links: {
+              self: { href: '/' },
+              binary: { href: '/' },
+            },
+            originalDocumentName: 'documentName.pdf',
           }
         ],
         isHearingRelated: true,

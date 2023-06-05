@@ -1,4 +1,4 @@
-import { FormDocument } from '../../../../../../domain';
+import { Document } from '../../../../../../domain';
 import { PartyMessage } from '../../party-messages/party-message.model';
 
 export class QueryListItem implements PartyMessage {
@@ -6,7 +6,7 @@ export class QueryListItem implements PartyMessage {
   public subject?: string;
   public name: string;
   public body: string;
-  public attachments?: FormDocument[];
+  public attachments?: Document[];
   public isHearingRelated: boolean;
   public hearingDate?: string;
   public createdOn: Date;
