@@ -20,7 +20,7 @@ import { WizardFactoryService } from '../services/wizard-factory.service';
 import { CaseEditComponent } from './case-edit.component';
 import createSpyObj = jasmine.createSpyObj;
 
-// this suite is breaking the test runner, needs addressing 
+// this suite is breaking the test runner, needs addressing
 xdescribe('CaseEditComponent', () => {
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     'TEST_TRIGGER',

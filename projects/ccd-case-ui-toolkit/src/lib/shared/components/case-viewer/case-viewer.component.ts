@@ -79,7 +79,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
             : true;
   }
 
-  private suffixDuplicateTabs(tabs: CaseTab[]) {
+  private suffixDuplicateTabs(tabs: CaseTab[]): CaseTab[] {
 
     const count = {};
     const firstOccurences = {};
