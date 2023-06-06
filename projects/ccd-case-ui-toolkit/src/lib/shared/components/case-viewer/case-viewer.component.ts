@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseTab, CaseView } from '../../domain';
 import { CaseNotifier } from '../case-editor';
+import { OrderService } from '../../services';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -29,6 +30,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly caseNotifier: CaseNotifier,
     private readonly appConfig: AbstractAppConfig,
+    private readonly orderService: OrderService
   ) {}
 
   public ngOnInit(): void {
@@ -44,7 +46,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   public loadCaseDetails(): void {
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
-      this.caseDetails.tabs = [...new Map(this.caseDetails.tabs.slice().reverse().map((item) => [item['label'], item])).values()].reverse();
+      this.caseDetails.tabs = this.orderService.sort(this.caseDetails.tabs);
+      this.caseDetails.tabs = this.suffixDuplicateTabs(this.caseDetails.tabs);
       this.setUserAccessType(this.caseDetails);
     } else {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
@@ -74,5 +77,25 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     return featureToggleOn ?
             !this.accessGranted ? CaseViewerComponent.NON_STANDARD_USER_ACCESS_TYPES.indexOf(this.userAccessType) === -1 : true
             : true;
+  }
+
+  private suffixDuplicateTabs(tabs: CaseTab[]) {
+
+    const count = {};
+    const firstOccurences = {};
+
+    let item, itemCount;
+    for (let i = 0, c = tabs.length; i < c; i++) {
+      item = tabs[i].label;
+      itemCount = count[item];
+      itemCount = count[item] = (itemCount == null ? 1 : itemCount + 1);
+
+      if (count[item] > 1)
+        tabs[i].label = tabs[i].label + Array(count[item] - 1).fill('_').join('');
+      else
+        firstOccurences[item] = i;
+    }
+
+    return tabs;
   }
 }
