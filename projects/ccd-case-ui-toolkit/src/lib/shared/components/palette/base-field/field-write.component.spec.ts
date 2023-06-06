@@ -1,16 +1,12 @@
 import { Component, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
-import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { CaseEventData, Draft } from '../../../domain';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseFieldService, FieldTypeSanitiser, FormErrorService, FormValidatorsService, FormValueService } from '../../../services';
-import { CaseEditPageComponent } from '../../case-editor/case-edit-page/case-edit-page.component';
 import { Wizard, WizardPage } from '../../case-editor/domain';
-import { PageValidationService } from '../../case-editor/services';
 import { PaletteService } from '../palette.service';
 import { FieldWriteComponent } from './field-write.component';
 import createSpyObj = jasmine.createSpyObj;

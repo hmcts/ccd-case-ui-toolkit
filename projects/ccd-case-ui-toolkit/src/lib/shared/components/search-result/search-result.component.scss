@@ -10,6 +10,10 @@ table {
 
   thead tr th {
     vertical-align: top;
+
+    &.activity-column {
+      width: 110px;
+    }
   }
 
   tbody tr td {
@@ -80,5 +84,5 @@ span.heading-medium {
 }
 
 #search-result-heading__text:focus {
-  outline: none; 
+  outline: none;
 }

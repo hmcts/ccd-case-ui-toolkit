@@ -4,10 +4,9 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
-import { finalize, take } from 'rxjs/operators';
-import { FieldType } from '../../../domain/definition/field-type.model';
-
+import { finalize } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { Profile } from '../../../domain/profile/profile.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
@@ -307,7 +306,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     if (this.isExpanded) {
       return false;
     }
-    // Was reassesed as part of EUI-3505. There is still a caveat around CRD, but that was deemed an unlikely scenario
+    // Was reassessed as part of EUI-3505. There is still a caveat around CRD, but that was deemed an unlikely scenario
     const id = this.getControlIdAt(index);
     if (id) {
       if (!!this.profile.user && !!this.profile.user.idam) {
@@ -358,7 +357,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
    * Applied full solution as part of EUI-3505
    */
   private getControlIdAt(index: number): string {
-
     // this.formArray contains [ FormGroup( id: FormControl, value: FormGroup ), ... ].
     // Here, we need to get the value of the id FormControl.
     const group: FormGroup = this.formArray.at(index) as FormGroup;

@@ -1,10 +1,8 @@
 .tooltip {
-    position: relative;
-    display: inline-block;
-    /*border-bottom: 1px dotted black;*/
-}
+  position: relative;
+  display: inline-block;
 
-.tooltip .tooltiptext {
+  .tooltiptext {
     visibility: hidden;
     width: 140px;
     background-color: #1175B2;
@@ -17,9 +15,12 @@
     margin-left: -50px;
     opacity: 0;
     transition: opacity 1s;
-}
+  }
 
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
+  &:hover {
+    .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 }

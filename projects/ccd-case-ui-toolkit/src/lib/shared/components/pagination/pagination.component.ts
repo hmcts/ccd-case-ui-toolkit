@@ -10,8 +10,7 @@ function coerceToBoolean(input: string | boolean): boolean {
   styleUrls: ['./pagination.component.scss']
 })
 export class PaginationComponent {
-  @Input()
-  public visibilityLabel: string;
+  @Input() public visibilityLabel: string;
   @Input() public id: string;
   @Input() public maxSize = 7;
   @Input() public previousLabel = 'Previous';

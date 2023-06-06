@@ -140,8 +140,8 @@ const markdownComponentMock: any = MockComponent({
 });
 
 const caseActivityComponentMock: any = MockComponent({
-  selector: 'ccd-activity',
-  inputs: ['caseId', 'displayMode']
+  selector: 'ccd-case-activity',
+  inputs: ['caseId', 'iconOnly']
 });
 
 const fieldReadComponentMock: any = MockComponent({
@@ -1536,8 +1536,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     const matTabLabels: DebugElement = d.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
     expect(matTabHTMLElement.children.length).toBe(7);
-    const hearingsTab: HTMLElement = matTabHTMLElement.children[6] as HTMLElement;
-    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Hearings');
+    const hearingsTab: HTMLElement = matTabHTMLElement.children[5] as HTMLElement;
+    expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('Case flags');
   });
 
   it('should display active Case Flags banner message if at least one of the Case Flags is active', () => {
@@ -1740,7 +1740,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   it('should render 1st order of tabs', () => {
     const matTabLabels: DebugElement = debugElement.query(By.css('.mat-tab-labels'));
     const matTabHTMLElement: HTMLElement = matTabLabels.nativeElement as HTMLElement;
-    expect(matTabHTMLElement.children.length).toBe(4);
+    expect(matTabHTMLElement.children.length).toBe(3);
     const hearingsTab: HTMLElement = matTabHTMLElement.children[0] as HTMLElement;
     expect((hearingsTab.querySelector('.mat-tab-label-content') as HTMLElement).innerText).toBe('History');
   });

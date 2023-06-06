@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
+import { BehaviorSubject } from 'rxjs';
 import { AbstractAppConfig as AppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
@@ -17,7 +18,8 @@ import {
   SearchResultViewItem
 } from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
-import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
+import { ActivityService, ActivitySocketService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
+import { MODES } from '../../services/activity/utils';
 import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { SearchResultComponent } from './search-result.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -32,6 +34,37 @@ class FieldReadComponent {
 }
 
 describe('SearchResultComponent', () => {
+  const MOCK_USER = { id: 'abcdefg123456', forename: 'Bob', surname: 'Smith' };
+  const switchMap = {
+    switchMap: () => ({
+      retryWhen: () => ({
+        subscribe: () => ({})
+      })
+    })
+  };
+  let sessionStorageService: any;
+  let activitySocketService: any;
+  let activityService: any;
+
+  beforeEach(() => {
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify(MOCK_USER));
+
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['removeItem']);
+
+    activitySocketService = {
+      watching: [],
+      isEnabled: true,
+      watchCases: (caseIds: string[]): void => {
+        activitySocketService.watching.push(caseIds);
+      },
+      user: MOCK_USER
+    };
+    activityService = createSpyObj<ActivityService>('activityService', ['postActivity']);
+    activityService.postActivity.and.returnValue(switchMap);
+    activityService.modeSubject = new BehaviorSubject<MODES>(MODES.off);
+  });
+
   describe('with results', () => {
     const JURISDICTION: Jurisdiction = {
       id: 'TEST',
@@ -152,24 +185,15 @@ describe('SearchResultComponent', () => {
       hasDrafts: () => false
     };
 
-    const switchMap = {
-      switchMap: () => ({
-        retryWhen: () => ({
-          subscribe: () => ({})
-        })
-      })
-    };
-
     let fixture: ComponentFixture<SearchResultComponent>;
     let component: SearchResultComponent;
     let de: DebugElement;
-    let activityService: any;
     let searchHandler;
     let appConfig: any;
     const caseReferencePipe = new CaseReferencePipe();
     const caseActivityComponent: any = MockComponent({
-      selector: 'ccd-activity',
-      inputs: ['caseId', 'displayMode']
+      selector: 'ccd-case-activity',
+      inputs: ['caseId', 'iconOnly']
     });
 
     beforeEach(waitForAsync(() => {
@@ -194,7 +218,6 @@ describe('SearchResultComponent', () => {
             CaseReferencePipe,
 
             // Mocks
-            PaginatePipe,
             MockRpxTranslatePipe,
             caseActivityComponent,
             PaginatePipe
@@ -204,12 +227,13 @@ describe('SearchResultComponent', () => {
             PlaceholderService,
             FieldsUtils,
             SearchResultViewItemComparatorFactory,
+            { provide: SessionStorageService, useValue: sessionStorageService },
             { provide: ActivityService, useValue: activityService },
+            { provide: ActivitySocketService, useValue: activitySocketService },
             PaginationService,
             { provide: AppConfig, useValue: appConfig },
             { provide: CaseReferencePipe, useValue: caseReferencePipe },
-            BrowserService,
-            SessionStorageService
+            BrowserService
           ]
         })
         .compileComponents();
@@ -419,6 +443,46 @@ describe('SearchResultComponent', () => {
       expect(totalResults).toBe(109);
     });
 
+    it('should render widget matching ordering (defaulting to sort descending if unordered) and sort rows when widget pressed', () => {
+      const sortFirstNameLink = de.query(By.css('div>table>thead>tr th:nth-child(3) a'));
+      const sortLastNameLink = de.query(By.css('div>table>thead>tr th:nth-child(1) a'));
+
+      expect(sortFirstNameLink.nativeElement.textContent).toBe('▼');
+      expect(sortLastNameLink.nativeElement.textContent).toBe('▲');
+
+      // Check unordered
+      assertOrder([0, 1, 2, 3]);
+
+      fixture.whenStable().then(() => {
+        sortFirstNameLink.triggerEventHandler('click', null);
+        fixture.detectChanges();
+        assertOrder([2, 0, 1, 3]);
+
+        sortFirstNameLink.triggerEventHandler('click', null);
+        fixture.detectChanges();
+        assertOrder([3, 1, 0, 2]);
+      });
+    });
+
+    function assertOrder(order: number[]) {
+      const firstField = de.query(By.css('div>table>tbody tr:nth-child(1) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
+      const secondField = de.query(By.css('div>table>tbody tr:nth-child(2) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
+      const thirdField = de.query(By.css('div>table>tbody tr:nth-child(3) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
+      const fourthField = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(3) div ccd-field-read')).nativeElement.textContent;
+
+      expect(firstField).toBe(RESULT_VIEW.results[order[0]].case_fields['PersonFirstName']);
+      expect(secondField).toBe(RESULT_VIEW.results[order[1]].case_fields['PersonFirstName']);
+      expect(thirdField).toBe(RESULT_VIEW.results[order[2]].case_fields['PersonFirstName']);
+      expect(fourthField).toBe(RESULT_VIEW.results[order[3]].case_fields['PersonFirstName']);
+    }
+
+    it('should not break while sorting with unknown sort comparators like Complex type Address', () => {
+      const complexType = de.query(By.css('div>table>thead>tr th:nth-child(2) div'));
+      complexType.triggerEventHandler('click', null);
+      fixture.detectChanges();
+      expect(complexType.nativeElement.textContent).toBe('Address');
+    });
+
     it('should render case reference value in first column with hyperlink if not draft and first column field value is null', () => {
       const fourthRowFirstCol = de.query(By.css('div>table>tbody tr:nth-child(4) td:nth-child(1) a'));
       expect(fourthRowFirstCol.nativeElement.textContent.trim()).toBe(new CaseReferencePipe().transform(RESULT_VIEW.results[3].case_id));
@@ -465,7 +529,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('can any be shared', () => {
-        component.resultView.results = [{
+      component.resultView.results = [{
         case_id: '1',
         case_fields: {
           OrganisationPolicyField: {
@@ -485,7 +549,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('check if case is selected', () => {
-        component.selectedCases = [{
+      component.selectedCases = [{
         case_id: '1',
         case_fields: null
       }, {
@@ -504,7 +568,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('check if case is not selected', () => {
-        component.selectedCases = [{
+      component.selectedCases = [{
         case_id: '1',
         case_fields: null
       }, {
@@ -521,7 +585,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('select all cases is enabled', () => {
-       component.selectedCases = [{
+      component.selectedCases = [{
         case_id: 'DRAFT190',
         case_fields: {
           PersonFirstName: 'Jason',
@@ -780,20 +844,11 @@ describe('SearchResultComponent', () => {
     let component: SearchResultComponent;
     let de: DebugElement;
 
-    const switchMap = {
-      switchMap: () => ({
-        retryWhen: () => ({
-          subscribe: () => ({})
-        })
-      })
-    };
-
-    let activityService: any;
     let appConfig: any;
     const caseReferencePipe = new CaseReferencePipe();
     const caseActivityComponent: any = MockComponent({
-      selector: 'ccd-activity',
-      inputs: ['caseId', 'displayMode']
+      selector: 'ccd-case-activity',
+      inputs: ['caseId', 'iconOnly']
     });
 
     beforeEach(waitForAsync(() => {
@@ -811,9 +866,7 @@ describe('SearchResultComponent', () => {
             SearchResultComponent,
             SortSearchResultPipe,
             CaseReferencePipe,
-
             // Mocks
-            PaginatePipe,
             MockRpxTranslatePipe,
             caseActivityComponent,
             PaginatePipe
@@ -823,12 +876,12 @@ describe('SearchResultComponent', () => {
             PlaceholderService,
             FieldsUtils,
             SearchResultViewItemComparatorFactory,
+            { provide: SessionStorageService, useValue: sessionStorageService },
             { provide: ActivityService, useValue: activityService },
             PaginationService,
             { provide: AppConfig, useValue: appConfig },
             { provide: CaseReferencePipe, useValue: caseReferencePipe },
-            BrowserService,
-            SessionStorageService
+            BrowserService
           ]
         })
         .compileComponents();

@@ -1,0 +1,20 @@
+<div class="activity-component" *ngIf="activity">
+  <ng-container *ngIf="iconOnly">
+    <div *ngIf="activity.editors" class="activity-icon" [class.editors-only]="!activity.viewers">
+      <ccd-activity-icon imageLink="/assets/img/editor.png" [description]="activity.editors"></ccd-activity-icon>
+    </div>
+    <div *ngIf="activity.viewers" class="activity-icon">
+      <ccd-activity-icon imageLink="/assets/img/viewer.png" [description]="activity.viewers"></ccd-activity-icon>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!iconOnly">
+    <ccd-activity-banner
+      *ngIf="activity.editors" bannerType="editor"
+      imageLink="/assets/img/editorBanner.png" [description]="activity.editors">
+    </ccd-activity-banner>
+    <ccd-activity-banner
+      *ngIf="activity.viewers" bannerType="viewer"
+      imageLink="/assets/img/viewerBanner.png" [description]="activity.viewers">
+    </ccd-activity-banner>
+  </ng-container>
+</div>

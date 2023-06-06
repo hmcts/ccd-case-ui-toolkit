@@ -5,15 +5,18 @@ import { FieldType } from './field-type.model';
 describe('CaseField', () => {
   let component: CaseField;
   const VALUE: any = {
-    value: {code: 'Code1', label: 'Label 1'}, list_items: [{code: 'Code1', label: 'Label 1'},
-      {code: 'Code2', label: 'Label 2'}]
+    value: {code: 'Code1', label: 'Label 1'},
+    list_items: [
+      {code: 'Code1', label: 'Label 1'},
+      {code: 'Code2', label: 'Label 2'}
+    ]
   };
 
   beforeEach(waitForAsync(() => {
     component = new CaseField();
   }));
 
-  it('should be able to retrieve right values from the accessors menthods when FieldType is DynamicLists', () => {
+  it('should be able to retrieve right values from the accessors methods when FieldType is DynamicLists', () => {
     const fieldType: FieldType = new FieldType();
     fieldType.type = 'DynamicList';
     component.field_type = fieldType;
@@ -23,7 +26,7 @@ describe('CaseField', () => {
     expect(component.value).toBe(null);
   });
 
-  it('should be able to retrieve right values from the accessors menthods when FieldType is MultiSelectList', () => {
+  it('should be able to retrieve right values from the accessors methods when FieldType is MultiSelectList', () => {
     const fieldType: FieldType = new FieldType();
     fieldType.type = 'DynamicMultiSelectList';
     component.field_type = fieldType;
@@ -33,7 +36,7 @@ describe('CaseField', () => {
     expect(component.value).toBe(null);
   });
 
-  it('should be able to retrieve right values from the accessors menthods when FieldType is Text', () => {
+  it('should be able to retrieve right values from the accessors methods when FieldType is Text', () => {
     const fieldType: FieldType = new FieldType();
     fieldType.type = 'Text';
     component.field_type = fieldType;
@@ -126,32 +129,32 @@ describe('CaseField', () => {
     expect(component.isComplexEntry()).toBe(true);
   });
 
-  it ( 'should be able to extract display format from list of display context params ', () => {
+  it('should be able to extract display format from list of display context params ', () => {
     component.display_context_parameter = 'foo, bar, #DATETIMEDISPLAY(wibble), thud ';
     expect(component.dateTimeDisplayFormat).toBe('wibble');
   });
 
-  it ('should be able to extract display format from a single display context param', () => {
+  it('should be able to extract display format from a single display context param', () => {
     component.display_context_parameter = '#DATETIMEDISPLAY(DDMMYYHHMMSS)';
     expect(component.dateTimeDisplayFormat).toBe('DDMMYYHHMMSS');
   });
 
-  it ('should be able to extract the first param where there are more than one', () => {
+  it('should be able to extract the first param where there are more than one', () => {
     component.display_context_parameter = 'fish, cheese, steak, #DATETIMEDISPLAY(GRAPES), bananas, #DATETIMEDISPLAY(CHOCOLATE)';
     expect(component.dateTimeDisplayFormat).toBe('GRAPES');
   });
 
-  it ( 'should be able to extract entry format from list of entry context params ', () => {
+  it('should be able to extract entry format from list of entry context params ', () => {
     component.display_context_parameter = 'foo, bar, #DATETIMEENTRY(wibble), thud ';
     expect(component.dateTimeEntryFormat).toBe('wibble');
   });
 
-  it ( 'should be able to extract format from different bracket values ', () => {
+  it('should be able to extract format from different bracket values ', () => {
     component.display_context_parameter = '#test(bla), foo, bar, #DATETIMEENTRY(wibble), thud ';
     expect(component.dateTimeEntryFormat).toBe('wibble');
   });
 
-  it ('should be return null for null/undef/empty display context parameterm', () => {
+  it('should be return null for null/undef/empty display context parameterm', () => {
     component.display_context_parameter = null;
     expect(component.dateTimeDisplayFormat).toBeNull();
     component.display_context_parameter = undefined;

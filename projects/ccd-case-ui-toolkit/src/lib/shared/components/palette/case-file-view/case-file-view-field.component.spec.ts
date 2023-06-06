@@ -8,8 +8,8 @@ import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-fil
 import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
-import createSpyObj = jasmine.createSpyObj;
 import { CaseFileViewFieldComponent } from './case-file-view-field.component';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;

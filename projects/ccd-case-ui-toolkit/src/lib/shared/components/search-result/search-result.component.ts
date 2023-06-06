@@ -2,11 +2,17 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
-import { CaseField, CaseState, CaseType, DisplayMode,
-  DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
-  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+import { CaseField, CaseState, CaseType, DRAFT_PREFIX, Jurisdiction, PaginationMetadata } from '../../domain';
+import { SearchResultView, SearchResultViewColumn, SearchResultViewItem } from '../../domain/search';
+import { SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain/search/sorting';
 import { CaseReferencePipe } from '../../pipes';
-import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
+import {
+  ActivityService,
+  ActivitySocketService,
+  BrowserService,
+  SearchResultViewItemComparatorFactory,
+  SessionStorageService
+} from '../../services';
 
 @Component({
   selector: 'ccd-search-result',
@@ -14,14 +20,11 @@ import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory,
   styleUrls: ['./search-result.component.scss']
 })
 export class SearchResultComponent implements OnChanges, OnInit {
-
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
 
   private readonly PAGINATION_MAX_ITEM_RESULT = 10000;
-
-  public ICON = DisplayMode.ICON;
 
   @Input()
   public caseLinkUrlTemplate: string;
@@ -104,7 +107,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
     private readonly activityService: ActivityService,
     private readonly caseReferencePipe: CaseReferencePipe,
     private readonly placeholderService: PlaceholderService,
-    private readonly browserService: BrowserService,
+    private browserService: BrowserService,
+    private readonly activitySocketService: ActivitySocketService,
     private readonly sessionStorageService: SessionStorageService
   ) {
     this.searchResultViewItemComparatorFactory = searchResultViewItemComparatorFactory;
@@ -115,7 +119,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public ngOnInit(): void {
     if (this.preSelectedCases) {
       for (const preSelectedCase of this.preSelectedCases) {
-        if (this.selectedCases && !this.selectedCases.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
+        if (!this.selectedCases?.some(aCase => aCase.case_id === preSelectedCase.case_id)) {
           this.selectedCases.push(preSelectedCase);
         }
       }
@@ -143,6 +147,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
       this.hydrateResultView();
       this.draftsCount = this.draftsCount ? this.draftsCount : this.numberOfDrafts();
+      this.watchResults();
     }
     if (changes['page']) {
       this.selected.page = (changes['page']).currentValue;
@@ -163,7 +168,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public canBeShared(caseView: SearchResultViewItem): boolean {
-    return caseView.supplementary_data && caseView.supplementary_data.hasOwnProperty('orgs_assigned_users');
+    return caseView.supplementary_data?.hasOwnProperty('orgs_assigned_users');
   }
 
   public canAnyBeShared(): boolean {
@@ -230,10 +235,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
         return false;
       }
     }
-    if (canBeSharedCount === 0) {
-      return false;
-    }
-    return true;
+    return canBeSharedCount !== 0;
   }
 
   /**
@@ -348,7 +350,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public sortWidget(column: SearchResultViewColumn) {
-    let condition = false;
+    let condition;
+
     if (this.consumerSortingEnabled) {
       const isColumn = column.case_field_id === this.consumerSortParameters.column;
       const isAscending = this.consumerSortParameters.order === SortOrder.ASCENDING;
@@ -360,7 +363,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     return condition ? '&#9660;' : '&#9650;';
   }
 
-  public activityEnabled(): boolean {
+  public get activityEnabled(): boolean {
     return this.activityService.isEnabled;
   }
 
@@ -452,6 +455,17 @@ export class SearchResultComponent implements OnChanges, OnInit {
     if ($event.key === 'Space') {
       if (this.browserService.isFirefox || this.browserService.isSafari || this.browserService.isIEOrEdge) {
         this.changeSelection(c);
+      }
+    }
+  }
+
+  private watchResults(): void {
+    if (this.activitySocketService.isEnabled) {
+      if (this.resultView?.results) {
+        const caseIds: string[] = this.resultView.results.map(value => value.case_id);
+        this.activitySocketService.watchCases(caseIds);
+      } else {
+        this.activitySocketService.watchCases([]);
       }
     }
   }
