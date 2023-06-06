@@ -84,7 +84,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     const count = {};
     const firstOccurences = {};
 
-    let item, itemCount;
+    let item: string;
+    let itemCount: number;
     for (let i = 0, c = tabs.length; i < c; i++) {
       item = tabs[i].label;
       itemCount = count[item];
