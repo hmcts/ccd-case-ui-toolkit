@@ -8,7 +8,6 @@ import { QueryListItem } from '../../models';
   templateUrl: './query-check-your-answers.component.html',
   styleUrls: ['./query-check-your-answers.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
 export class QueryCheckYourAnswersComponent implements OnInit {
 
