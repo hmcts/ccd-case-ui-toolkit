@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { HttpError } from '../../domain/http';
 import { text } from '../../test/helpers';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { CallbackErrorsComponent } from './callback-errors.component';
 import { CallbackErrorsContext } from './domain/error-context';
 import createSpyObj = jasmine.createSpyObj;
@@ -41,7 +42,8 @@ describe('CallbackErrorsComponent', () => {
     TestBed
       .configureTestingModule({
         declarations: [
-          CallbackErrorsComponent
+          CallbackErrorsComponent,
+          MockRpxTranslatePipe
         ]
       })
       .compileComponents();

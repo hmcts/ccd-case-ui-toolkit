@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { MultipleTasksExistComponent } from './components/multiple-tasks-exist/multiple-tasks-exist.component';
 import { NoTasksAvailableComponent } from './components/no-tasks-available/no-tasks-available.component';
 import { TaskAssignedComponent } from './components/task-assigned/task-assigned.component';
@@ -17,7 +18,8 @@ import { EventStartStateMachineService } from './services';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     EventStartComponent,

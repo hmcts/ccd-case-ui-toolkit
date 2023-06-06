@@ -47,7 +47,7 @@ export class CaseProgressComponent implements OnInit {
         this.eventTrigger = eventTrigger;
       })
       .catch((error: HttpError) => {
-        this.alertService.error(error.message);
+        this.alertService.error({ phrase: error.message });
         return throwError(error);
       });
   }

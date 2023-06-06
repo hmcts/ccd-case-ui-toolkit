@@ -20,6 +20,7 @@ import {
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
 import { ActivityService, ActivitySocketService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
 import { MODES } from '../../services/activity/utils';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { SearchResultComponent } from './search-result.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -217,6 +218,7 @@ describe('SearchResultComponent', () => {
             CaseReferencePipe,
 
             // Mocks
+            MockRpxTranslatePipe,
             caseActivityComponent,
             PaginatePipe
           ],
@@ -865,6 +867,7 @@ describe('SearchResultComponent', () => {
             SortSearchResultPipe,
             CaseReferencePipe,
             // Mocks
+            MockRpxTranslatePipe,
             caseActivityComponent,
             PaginatePipe
           ],

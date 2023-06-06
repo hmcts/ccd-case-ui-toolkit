@@ -4,6 +4,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { DynamicRadioListPipe } from './dynamic-radio-list.pipe';
 import { ReadDynamicRadioListFieldComponent } from './read-dynamic-radio-list-field.component';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 
 describe('ReadDynamicRadioListFieldComponent', () => {
 
@@ -75,7 +76,8 @@ describe('ReadDynamicRadioListFieldComponent', () => {
           imports: [],
           declarations: [
             ReadDynamicRadioListFieldComponent,
-            DynamicRadioListPipe
+            DynamicRadioListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })

@@ -326,7 +326,7 @@ describe('CaseCreateComponent failed to resolve event trigger', () => {
   }));
 
   it('should alert warning message and never announce event trigger if getting event trigger fails', () => {
-    expect(alertService.error).toHaveBeenCalledWith('ERROR!');
+    expect(alertService.error).toHaveBeenCalledWith({ phrase: 'ERROR!' });
     expect(eventTriggerService.announceEventTrigger).not.toHaveBeenCalled();
   });
 });

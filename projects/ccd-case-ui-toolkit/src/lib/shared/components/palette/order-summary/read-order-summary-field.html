@@ -1,13 +1,18 @@
-<div class="order-summary-title">Order Summary</div>
-<table aria-describedby="order summary table">
+<div class="order-summary-title">{{'Order Summary' | rpxTranslate}}</div>
+<table [attr.aria-describedby]="'order summary table' | rpxTranslate">
     <thead>
-      <tr><th id="hiddenHeader" style="display: none;"></th><td>Code</td><td>Description</td><td>Amount</td></tr>
+      <tr>
+        <th id="hiddenHeader" style="display: none;"></th>
+        <td>{{'Code' | rpxTranslate}}</td>
+        <td>{{'Description' | rpxTranslate}}</td>
+        <td>{{'Amount' | rpxTranslate}}</td>
+      </tr>
     </thead>
     <tbody>
         <tr ccdReadOrderSummaryRow *ngFor="let feeValue of getFees()" [feeValue]="feeValue"></tr>
         <tr>
             <td></td>
-            <td class="payment-total">Total</td>
+            <td class="payment-total">{{'Total' | rpxTranslate}}</td>
             <td><ccd-read-money-gbp-field [amount]="getPaymentTotal()"></ccd-read-money-gbp-field></td>
         </tr>
     </tbody>

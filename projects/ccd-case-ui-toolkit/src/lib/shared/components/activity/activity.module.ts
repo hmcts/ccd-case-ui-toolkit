@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { ActivityPollingService, ActivityService, ActivitySocketService, SessionStorageService } from '../../services';
 import { ActivityBannerComponent } from './activity-banner';
 import { ActivityIconComponent } from './activity-icon';
@@ -10,16 +11,17 @@ import { CaseActivityComponent } from './case-activity.component';
   imports: [
     CommonModule,
     RouterModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     ActivityBannerComponent,
     ActivityIconComponent,
-    CaseActivityComponent,
+    CaseActivityComponent
   ],
   exports: [
     ActivityBannerComponent,
     ActivityIconComponent,
-    CaseActivityComponent,
+    CaseActivityComponent
   ],
   providers: [
     ActivityService,

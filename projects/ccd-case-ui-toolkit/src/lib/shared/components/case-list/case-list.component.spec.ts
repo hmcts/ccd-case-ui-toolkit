@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { PaginatePipe, PaginationService } from 'ngx-pagination';
 import { BrowserService } from '../../services';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { CaseListComponent, TableConfig } from './case-list.component';
 
 describe('CaseListComponent', () => {
@@ -54,7 +55,7 @@ describe('CaseListComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ RouterModule ],
-      declarations: [ CaseListComponent, PaginatePipe ],
+      declarations: [ CaseListComponent, PaginatePipe, MockRpxTranslatePipe ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [ PaginationService, BrowserService ]
     })

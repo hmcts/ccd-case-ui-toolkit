@@ -1,12 +1,12 @@
 <form *ngIf="triggers && triggers.length" class="event-trigger" (ngSubmit)="triggerSubmit()" [formGroup]="triggerForm">
   <div class="form-group">
-    <label class="form-label" for="next-step">Next step</label>
+    <label class="form-label" for="next-step">{{'Next step' | rpxTranslate}}</label>
     <select class="form-control ccd-dropdown" id="next-step" (change)="triggerChange()" formControlName="trigger" [ngClass]="{
           'EventTrigger-empty': !triggerForm.value['trigger']
         }">
-      <option *ngIf="1 !== triggers.length" value="" data-default>Select action</option>
-      <option *ngFor="let trigger of triggers" [ngValue]="trigger" [title]="trigger.description">{{trigger.name}}</option>
+      <option *ngIf="1 !== triggers.length" value="" data-default>{{'Select action' | rpxTranslate}}</option>
+      <option *ngFor="let trigger of triggers" [ngValue]="trigger" [title]="trigger.description">{{trigger.name | rpxTranslate}}</option>
     </select>
   </div>
-  <button [disabled]="isButtonDisabled()" type="submit" class="button">{{triggerText}}</button>
+  <button [disabled]="isButtonDisabled()" type="submit" class="button">{{triggerText | rpxTranslate}}</button>
 </form>

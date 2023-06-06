@@ -707,4 +707,48 @@ describe('FieldsUtils', () => {
       ]);
     });
   });
+
+  describe('isComponentLauncherCaseField() function test', () => {
+    it('should return false if case field is null', () => {
+      expect(FieldsUtils.isComponentLauncherCaseField(null)).toBe(false);
+    });
+
+    it('should return false if case field is not of type ComponentLauncher', () => {
+      const caseField = aCaseField('componentLauncher', 'ComponentLauncher', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isComponentLauncherCaseField(caseField)).toBe(false);
+    });
+
+    it('should return true if case field is of type ComponentLauncher', () => {
+      const caseField = aCaseField('componentLauncher', 'componentLauncher', 'ComponentLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isComponentLauncherCaseField(caseField)).toBe(true);
+    });
+  });
+
+  describe('isLinkedCasesCaseField() function test', () => {
+    it('should return false if case field is null', () => {
+      expect(FieldsUtils.isLinkedCasesCaseField(null)).toBe(false);
+    });
+
+    it('should return false if case field is not of type ComponentLauncher', () => {
+      const caseField = aCaseField('LinkedCasesComponentLauncher', 'ComponentLauncher', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isComponentLauncherCaseField(caseField)).toBe(false);
+    });
+
+    it('should return true if case field is of type ComponentLauncher', () => {
+      const caseField = aCaseField('LinkedCasesComponentLauncher', 'componentLauncher', 'ComponentLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isComponentLauncherCaseField(caseField)).toBe(true);
+    });
+  });
+
+  describe('containsLinkedCasesCaseField() function test', () => {
+    it('should return false if case field is not of type ComponentLauncher', () => {
+      const caseFields = [aCaseField('LinkedCasesComponentLauncher', 'componentLauncher', 'Complex', 'OPTIONAL', null)];
+      expect(FieldsUtils.containsLinkedCasesCaseField(caseFields)).toBe(false);
+    });
+
+    it('should return true if case field is of type ComponentLauncher', () => {
+      const caseFields = [aCaseField('LinkedCasesComponentLauncher', 'componentLauncher', 'ComponentLauncher', 'OPTIONAL', null, null, false, true)];
+      expect(FieldsUtils.containsLinkedCasesCaseField(caseFields)).toBe(true);
+    });
+  });
 });

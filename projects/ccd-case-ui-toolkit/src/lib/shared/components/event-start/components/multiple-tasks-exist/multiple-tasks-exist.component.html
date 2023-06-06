@@ -1,24 +1,23 @@
 <div class="govuk-!-margin-9">
   <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
     <h2 class="govuk-error-summary__title" id="error-summary-title">
-      There is a problem
+      {{'There is a problem' | rpxTranslate}}
     </h2>
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         <li>
-          <a href="#">Multiple tasks exist</a>
+          <a href="#">{{'Multiple tasks exist' | rpxTranslate}}</a>
         </li>
       </ul>
     </div>
   </div>
 
   <div class="govuk-form-group govuk-form-group--error">
-    <h2 class="govuk-heading-m">Multiple tasks exist</h2>
-
-    <p>You're starting work which could complete more than one of the active tasks for this case.</p>
-
-    <p>Return to tasks tab and start the event from there.</p>
-
-    <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">Return to tasks tab</a>
+    <h2 class="govuk-heading-m">
+      {{'Multiple tasks exist' | rpxTranslate}}
+    </h2>
+    <p>{{"You're starting work which could complete more than one of the active tasks for this case." | rpxTranslate}}</p>
+    <p>{{'Return to tasks tab and start the event from there.' | rpxTranslate}}</p>
+    <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">{{'Return to tasks tab' | rpxTranslate}}</a>
   </div>
 </div>

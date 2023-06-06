@@ -47,7 +47,9 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     if (FIX_CASEFIELD_FOR.indexOf(this.caseField.field_type.type) > -1 && !(this.caseField instanceof CaseField)) {
       this.caseField = plainToClassFromExist(new CaseField(), this.caseField);
     }
-    component.instance['caseField'] =  this.caseField;
+    component.instance['caseField'] = this.caseField;
+
+
     component.instance['caseFields'] = this.caseFields;
     component.instance['formGroup'] = this.formGroup;
     component.instance['parent'] = this.parent;
@@ -57,7 +59,6 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     }
     component.instance['isExpanded'] = this.isExpanded;
     component.instance['isInSearchBlock'] = this.isInSearchBlock;
-
     this.fieldContainer.insert(component.hostView);
 
     // EUI-3267.

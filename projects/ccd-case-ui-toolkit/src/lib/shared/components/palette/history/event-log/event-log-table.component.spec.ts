@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
+import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
 import { DatePipe } from '../../utils';
 import { EventLogTableComponent } from './event-log-table.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -72,7 +73,8 @@ describe('EventLogTableComponent', () => {
           imports: [RouterTestingModule],
           declarations: [
             EventLogTableComponent,
-            DatePipe
+            DatePipe,
+            MockRpxTranslatePipe
           ],
           providers: [FormatTranslatorService]
         })
@@ -208,7 +210,8 @@ describe('EventLogTableComponent', () => {
           imports: [RouterTestingModule],
           declarations: [
             EventLogTableComponent,
-            DatePipe
+            DatePipe,
+            MockRpxTranslatePipe
           ],
           providers: [FormatTranslatorService]
         })

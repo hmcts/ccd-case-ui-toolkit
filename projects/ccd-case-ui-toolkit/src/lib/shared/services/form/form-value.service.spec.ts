@@ -1,4 +1,4 @@
-import { CaseLink, FlagDetail, FlagsWithFormGroupPath } from '../../components';
+import { FlagDetail, FlagsWithFormGroupPath } from '../../components';
 import { CaseField, FieldType } from '../../domain/definition';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';

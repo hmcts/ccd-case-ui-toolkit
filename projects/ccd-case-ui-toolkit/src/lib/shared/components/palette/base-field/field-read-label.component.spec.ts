@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { createFieldType, newCaseField } from '../../../fixture';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FieldReadLabelComponent } from './field-read-label.component';
 
 const CASE_FIELD: CaseField = newCaseField('PersonFirstName', 'First name', null, null, 'OPTIONAL')
@@ -35,6 +36,7 @@ describe('FieldReadLabelComponent', () => {
         ],
         declarations: [
           FieldReadLabelComponent,
+          MockRpxTranslatePipe
         ],
         providers: []
       })

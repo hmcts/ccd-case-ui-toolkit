@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { RemoveDialogComponent } from './remove-dialog.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -19,7 +20,7 @@ describe('RemoveDialogComponent', () => {
     matDialogRef = createSpyObj<MatDialogRef<RemoveDialogComponent>>('MatDialogRef', ['close']);
 
     TestBed.configureTestingModule({
-      declarations: [ RemoveDialogComponent ],
+      declarations: [ RemoveDialogComponent, MockRpxTranslatePipe ],
       providers: [
         { provide: MatDialogRef, useValue: matDialogRef }
       ]

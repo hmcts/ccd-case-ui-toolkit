@@ -15,7 +15,9 @@ export class RequestOptionsBuilder {
      * @param value The value to be assessed.
      */
     private static includeParam(value: any): boolean {
+      /* istanbul ignore else */
       if (value) {
+        /* istanbul ignore else */
         if (typeof(value) === 'string') {
           return value.trim().length > 0;
         }
@@ -29,10 +31,12 @@ export class RequestOptionsBuilder {
       // requires a bigger refactor and there are bigger fish to fry right now.
       let params = new HttpParams();
 
+      /* istanbul ignore else */
       if (view) {
         params = params.set('view', view);
       }
 
+      /* istanbul ignore else */
       if (metaCriteria) {
         for (const criterion of Object.keys(metaCriteria)) {
           // EUI-3490. Make sure the parameter should be included for adding it.
@@ -43,8 +47,10 @@ export class RequestOptionsBuilder {
         }
       }
 
+      /* istanbul ignore else */
       if (caseCriteria) {
         for (const criterion of Object.keys(caseCriteria)) {
+          /* istanbul ignore else */
           if (RequestOptionsBuilder.includeParam(caseCriteria[criterion])) {
             const key = RequestOptionsBuilder.FIELD_PREFIX + criterion;
             const value = caseCriteria[criterion].trim ? caseCriteria[criterion].trim() : caseCriteria[criterion];

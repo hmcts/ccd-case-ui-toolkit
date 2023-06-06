@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { ConditionalShowModule, LabelSubstitutorModule } from '../../directives';
 import { CaseReferencePipe } from '../../pipes';
@@ -55,6 +56,8 @@ import { CaseResolver, EventTriggerResolver } from './services';
     CaseHistoryModule,
     MatTabsModule,
     ReactiveFormsModule,
+    LabelSubstitutorModule,
+    RpxTranslationModule.forChild(),
     BannersModule,
     LabelSubstitutorModule,
     LoadingSpinnerModule,

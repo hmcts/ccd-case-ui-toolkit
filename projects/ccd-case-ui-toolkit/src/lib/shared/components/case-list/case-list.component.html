@@ -1,5 +1,5 @@
 <table class="{{'govuk-table ' + classes}}">
-  <caption class="govuk-table__caption">{{caption}}</caption>
+  <caption class="govuk-table__caption">{{caption | rpxTranslate}}</caption>
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
       <th class="govuk-table__header" scope="col" *ngIf="selectionEnabled">
@@ -11,7 +11,7 @@
           </label>
         </div>
       </th>
-      <th class="govuk-table__header" scope="col" *ngFor="let h of tableConfig.columnConfigs">{{h.header}}</th>
+      <th class="govuk-table__header" scope="col" *ngFor="let h of tableConfig.columnConfigs">{{h.header | rpxTranslate}}}}</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
@@ -28,19 +28,19 @@
         </th>
         <ng-container *ngFor="let col of tableConfig.columnConfigs; first as isFirst">
           <th data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="isFirst && firstCellIsHeader">
-            <ng-container *ngIf="!col.type || col.type === 'text'">{{c[col.key]}}</ng-container>
+            <ng-container *ngIf="!col.type || col.type === 'text'">{{c[col.key] | rpxTranslate}}</ng-container>
             <ng-container *ngIf="col.type === 'link' && c.routerLink">
-              <a class="govuk-link" [routerLink]="c.routerLink">{{c[col.key]}}</a>
+              <a class="govuk-link" [routerLink]="c.routerLink">{{c[col.key] | rpxTranslate}}</a>
             </ng-container>
           </th>
           <td data-selector="table-cell" class="govuk-table__cell" *ngIf="!(isFirst && firstCellIsHeader)" [ngSwitch]="col?.type">
             <ng-container *ngIf="col.type === 'link' && c.routerLink">
-              <a class="govuk-link" [routerLink]="c.routerLink">{{c[col.key]}}</a>
+              <a class="govuk-link" [routerLink]="c.routerLink">{{c[col.key] | rpxTranslate}}</a>
             </ng-container>
             <ng-container *ngSwitchCase="'money'">-{{ c[col.key] | currency:'GBP' }}</ng-container>
             <ng-container *ngSwitchCase="'date'">{{formatDate(c[col.key])}}</ng-container>
             <ng-container *ngSwitchCase="'dateAtTime'">{{formatDateAtTime(c[col.key])}}</ng-container>
-            <ng-container *ngSwitchDefault>{{c[col.key]}}</ng-container>
+            <ng-container *ngSwitchDefault>{{c[col.key] | rpxTranslate}}</ng-container>
           </td>
         </ng-container>
       </tr>
@@ -48,5 +48,5 @@
   </tbody>
 </table>
 <ccd-pagination *ngIf="totalResultsCount > pageSize"
-  (pageChange)="goToPage($event)" 
+  (pageChange)="goToPage($event)"
 ></ccd-pagination>

@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
 import { TaskUnassignedComponent } from './task-unassigned.component';
 
 describe('TaskUnassignedComponent', () => {
@@ -21,7 +22,7 @@ describe('TaskUnassignedComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [TaskUnassignedComponent],
+      declarations: [TaskUnassignedComponent, MockRpxTranslatePipe],
       providers: [
         {provide: ActivatedRoute, useValue: mockRoute}
       ]

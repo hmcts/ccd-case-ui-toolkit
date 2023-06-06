@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } fro
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 
 @Component({
   selector: 'ccd-manage-case-flags',
@@ -11,12 +11,10 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } f
   encapsulation: ViewEncapsulation.None
 })
 export class ManageCaseFlagsComponent implements OnInit {
-
-  private static readonly CASE_LEVEL_CASE_FLAGS_FIELD_ID = 'caseFlags';
-
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
   @Input() public caseTitle: string;
+  @Input() public displayContextParameter: string;
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public manageCaseFlagTitle: CaseFlagWizardStepTitle;
@@ -26,27 +24,30 @@ export class ManageCaseFlagsComponent implements OnInit {
   public flags: Flags;
   public noFlagsError = false;
   public readonly selectedControlName = 'selectedManageCaseLocation';
+  private readonly excludedFlagStatuses: CaseFlagStatus[] = [CaseFlagStatus.INACTIVE, CaseFlagStatus.NOT_APPROVED];
 
   public ngOnInit(): void {
-    this.manageCaseFlagTitle = CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
+    this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
 
     // Map flags instances to objects for display
+    /* istanbul ignore else */
     if (this.flagsData) {
       this.flagsDisplayData = this.flagsData.reduce((displayData, flagsInstance) => {
+        /* istanbul ignore else */
         if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
           displayData = [
             ...displayData,
-            ...flagsInstance.flags.details.map(detail =>
-              this.mapFlagDetailForDisplay(detail, flagsInstance)
-            )
+            ...flagsInstance.flags.details.map(detail => {
+              // Only map flags instances where the status is neither "Inactive" nor "Not approved"
+              // This will result in some undefined mappings, which need to be filtered out after the reduce operation
+              if (!this.excludedFlagStatuses.includes(detail.status as CaseFlagStatus)) {
+                return this.mapFlagDetailForDisplay(detail, flagsInstance);
+              }
+            })
           ];
         }
         return displayData;
-      }, []);
-
-      this.flagsDisplayData.forEach(flagDisplayData => {
-        flagDisplayData.label = this.processLabel(flagDisplayData);
-      });
+      }, []).filter(flagDetailDisplay => !!flagDetailDisplay);
     }
 
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
@@ -72,66 +73,6 @@ export class ManageCaseFlagsComponent implements OnInit {
     };
   }
 
-  public processLabel(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
-    const flagDetail = flagDisplay.flagDetailDisplay.flagDetail;
-    const partyName = this.getPartyName(flagDisplay);
-    const flagName = this.getFlagName(flagDetail);
-    const flagDescription = this.getFlagDescription(flagDetail);
-    const roleOnCase = this.getRoleOnCase(flagDisplay);
-    const flagComment = this.getFlagComments(flagDetail);
-
-    return flagName === flagDescription
-      ? `${partyName}${roleOnCase} - <span class="flag-name-and-description">${flagDescription}</span>${flagComment}`
-      : `${partyName}${roleOnCase} - <span class="flag-name-and-description">${flagName}, ${flagDescription}</span>${flagComment}`;
-  }
-
-  public getPartyName(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
-    if (flagDisplay.pathToFlagsFormGroup && flagDisplay.pathToFlagsFormGroup === ManageCaseFlagsComponent.CASE_LEVEL_CASE_FLAGS_FIELD_ID) {
-      return 'Case level';
-    }
-    if (flagDisplay.flagDetailDisplay.partyName) {
-      return `${flagDisplay.flagDetailDisplay.partyName}`;
-    }
-    return '';
-  }
-
-  public getFlagName(flagDetail: FlagDetail): string {
-    if (flagDetail && flagDetail.path && flagDetail.path.length > 1) {
-      return flagDetail.path[1].value;
-    }
-    if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
-      return flagDetail.subTypeValue;
-    }
-    return flagDetail.name;
-  }
-
-  public getFlagDescription(flagDetail: FlagDetail): string {
-    if (flagDetail && flagDetail.name) {
-      if (flagDetail.name === 'Other' && flagDetail.otherDescription) {
-        return flagDetail.otherDescription;
-      }
-      if (flagDetail.subTypeKey && flagDetail.subTypeValue) {
-        return flagDetail.subTypeValue;
-      }
-      return flagDetail.name;
-    }
-    return '';
-  }
-
-  public getRoleOnCase(flagDisplay: FlagDetailDisplayWithFormGroupPath): string {
-    if (flagDisplay && flagDisplay.roleOnCase) {
-      return ` (${flagDisplay.roleOnCase})`;
-    }
-    return '';
-  }
-
-  public getFlagComments(flagDetail: FlagDetail): string {
-    if (flagDetail.flagComment) {
-      return ` (${flagDetail.flagComment})`;
-    }
-    return '';
-  }
-
   public onNext(): void {
     // Validate flag selection
     this.validateSelection();
@@ -143,16 +84,31 @@ export class ManageCaseFlagsComponent implements OnInit {
         ? this.formGroup.get(this.selectedControlName).value as FlagDetailDisplayWithFormGroupPath
         : null
     });
+
+    window.scrollTo(0, 0);
+  }
+
+  public setManageCaseFlagTitle(displayContextParameter: string): CaseFlagWizardStepTitle {
+    switch (displayContextParameter) {
+      case CaseFlagDisplayContextParameter.UPDATE:
+        return CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
+        return CaseFlagWizardStepTitle.MANAGE_SUPPORT;
+      default:
+        return CaseFlagWizardStepTitle.NONE;
+    }
   }
 
   private validateSelection(): void {
     this.manageCaseFlagSelectedErrorMessage = null;
     this.errorMessages = [];
     if (!this.formGroup.get(this.selectedControlName).value) {
-      this.manageCaseFlagSelectedErrorMessage = SelectFlagErrorMessage.FLAG_NOT_SELECTED;
+      const errorMessage = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ?
+        SelectFlagErrorMessage.MANAGE_SUPPORT_FLAG_NOT_SELECTED : SelectFlagErrorMessage.MANAGE_CASE_FLAGS_FLAG_NOT_SELECTED;
+      this.manageCaseFlagSelectedErrorMessage = errorMessage;
       this.errorMessages.push({
         title: '',
-        description: SelectFlagErrorMessage.FLAG_NOT_SELECTED,
+        description: errorMessage,
         fieldId: 'conditional-radios-list'
       });
     }

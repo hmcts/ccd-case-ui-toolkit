@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { ActivityModule } from '../activity';
 import { EventTriggerComponent } from './event-trigger.component';
 
@@ -9,6 +10,7 @@ import { EventTriggerComponent } from './event-trigger.component';
     CommonModule,
     ReactiveFormsModule,
     ActivityModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     EventTriggerComponent

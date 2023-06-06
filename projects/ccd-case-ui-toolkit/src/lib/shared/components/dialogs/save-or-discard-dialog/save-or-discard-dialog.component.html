@@ -1,16 +1,15 @@
-
 <div>
   <div class="dialog-header">
     <h2 (click)="cancel()" class="heading-h2 x">X</h2>
   </div>
   <div>
-    <h2 class="heading-h2 dialog-title">Would you like to save changes to this page?</h2>
+    <h2 class="heading-h2 dialog-title">{{'Would you like to save changes to this page ?' | rpxTranslate}}</h2>
   </div>
   <div class="dialog-info">
-    <span class="text-info">You will be taken back to your case list.</span>
+    <span class="text-info">{{'You will be taken back to your case list.' | rpxTranslate}}</span>
   </div>
   <div>
-    <button type="button" title="Save" class="button action-button" (click)="save()">Save</button>
-    <button type="button" title="Discard" class="button button-secondary" (click)="discard()">Discard</button>
+    <button type="button" title="Save" class="button action-button" (click)="save()">{{'Save' | rpxTranslate}}</button>
+    <button type="button" title="Discard" class="button button-secondary" (click)="discard()">{{'Discard' | rpxTranslate}}</button>
   </div>
 </div>

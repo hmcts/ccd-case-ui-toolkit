@@ -1,34 +1,86 @@
 <dl class="govuk-summary-list" *ngIf="flagForSummaryDisplay">
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">
-      {{addUpdateFlagHeaderText}}
+      {{addUpdateFlagHeaderText | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagForSummaryDisplay.partyName || caseLevelLocation}}
+      {{flagForSummaryDisplay.partyName || caseLevelLocation | rpxTranslate}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : caseFlagFieldState.FLAG_LOCATION)">
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'party name' | rpxTranslate}}</span>
+      </a>
     </dd>
   </div>
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">
-      Flag type
+      {{'Flag type' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagDescription}}
     </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : caseFlagFieldState.FLAG_TYPE)">
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'flag type' | rpxTranslate}}</span>
+      </a>
+    </dd>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="flagDescriptionWelsh?.length > 0">
     <dt class="govuk-summary-list__key">
-      Comments
+      {{'Other description (Welsh)' | rpxTranslate}}
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{flagDescriptionWelsh}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION : caseFlagFieldState.FLAG_TYPE)">
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'other description (Welsh)' | rpxTranslate}}</span>
+      </a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row" *ngIf="flagComments?.length > 0">
+    <dt class="govuk-summary-list__key">
+      {{'Comments' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagComments}}
     </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE: caseFlagFieldState.FLAG_COMMENTS)">
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'comments' | rpxTranslate}}</span>
+      </a>
+    </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="summaryListDisplayMode === displayMode.MANAGE">
+  <div class="govuk-summary-list__row" *ngIf="flagCommentsWelsh?.length > 0">
     <dt class="govuk-summary-list__key">
-      Status
+      {{'Comments (Welsh)' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagStatus}}
+      {{flagCommentsWelsh}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION: caseFlagFieldState.FLAG_COMMENTS)">
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'comments (Welsh)' | rpxTranslate}}</span>
+      </a>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row" *ngIf="canDisplayStatus">
+    <dt class="govuk-summary-list__key">
+      {{'Status' | rpxTranslate}}
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{flagStatus | rpxTranslate}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_UPDATE)">
+        {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'status' | rpxTranslate}}</span>
+      </a>
     </dd>
   </div>
 </dl>

@@ -1,22 +1,23 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AddCommentsErrorMessage, CaseFlagFieldState } from '../../enums';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
+import { AddCommentsErrorMessage, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
 import { AddCommentsComponent } from './add-comments.component';
 
 describe('AddCommentsComponent', () => {
   let component: AddCommentsComponent;
   let fixture: ComponentFixture<AddCommentsComponent>;
-  let nextButton: any;
+  let nextButton: HTMLElement;
   let textareaInput: string;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ AddCommentsComponent ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [AddCommentsComponent, MockRpxTranslatePipe],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -132,5 +133,13 @@ describe('AddCommentsComponent', () => {
   it('should not show the text "(optional)" in the textarea label if comments are mandatory', () => {
     const flagCommentsLabel = fixture.debugElement.nativeElement.querySelector('.govuk-label--l');
     expect(flagCommentsLabel.textContent).not.toContain('(optional)');
+  });
+
+  it('should set addCommentsTitle to ADD_FLAG_COMMENTS_EXTERNAL_MODE if input isDisplayContextParameterExternal is true', () => {
+    expect(component.isDisplayContextParameterExternal).toBe(false);
+    expect(component.addCommentsTitle).toBe(CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS);
+    component.isDisplayContextParameterExternal = true;
+    component.ngOnInit();
+    expect(component.addCommentsTitle).toBe(CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS_EXTERNAL_MODE);
   });
 });

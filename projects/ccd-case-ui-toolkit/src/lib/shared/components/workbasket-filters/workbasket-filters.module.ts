@@ -9,13 +9,15 @@ import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
 import { PaletteModule } from '../palette/palette.module';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
         PaletteModule,
-        ConditionalShowModule
+        ConditionalShowModule,
+        RpxTranslationModule.forChild()
     ],
     declarations: [
         WorkbasketFiltersComponent,

@@ -1,35 +1,88 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FlagDetailDisplay } from '../../domain';
-import { CaseFlagSummaryListDisplayMode } from '../../enums';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { RpxTranslationService } from 'rpx-xui-translation';
+import { FlagDetail, FlagDetailDisplay } from '../../domain';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagSummaryListDisplayMode } from '../../enums';
 
 @Component({
   selector: 'ccd-case-flag-summary-list',
   templateUrl: './case-flag-summary-list.component.html'
 })
 export class CaseFlagSummaryListComponent implements OnInit {
-
   @Input() public flagForSummaryDisplay: FlagDetailDisplay;
-  @Input() public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
+  @Input() public displayContextParameter: string;
+  @Output() public changeButtonEmitter = new EventEmitter<number>();
 
   public flagDescription: string;
   public flagComments: string;
   public flagStatus: string;
-  public displayMode = CaseFlagSummaryListDisplayMode;
+  public flagDescriptionWelsh: string;
+  public flagCommentsWelsh: string;
+  public otherDescription: string;
+  public otherDescriptionWelsh: string;
+  public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
   public addUpdateFlagHeaderText: string;
+  public caseFlagFieldState = CaseFlagFieldState;
   public readonly caseLevelLocation = 'Case level';
   private readonly updateFlagHeaderText = 'Update flag for';
   private readonly addFlagHeaderText = 'Add flag to';
+  public displayMode = CaseFlagSummaryListDisplayMode;
+  public canDisplayStatus = false;
+
+  constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
   public ngOnInit(): void {
     if (this.flagForSummaryDisplay) {
       const flagDetail = this.flagForSummaryDisplay.flagDetail;
-      this.flagDescription = `${flagDetail.name}${flagDetail.otherDescription
-        ? ` - ${flagDetail.otherDescription}`
-        : ''}${flagDetail.subTypeValue ? ` - ${flagDetail.subTypeValue}` : ''}`;
+      this.flagDescription = this.getFlagDescription(flagDetail);
+      this.flagDescriptionWelsh = flagDetail.otherDescription_cy;
       this.flagComments = flagDetail.flagComment;
+      this.flagCommentsWelsh = flagDetail.flagComment_cy;
       this.flagStatus = flagDetail.status;
-      this.addUpdateFlagHeaderText =
-        this.summaryListDisplayMode === CaseFlagSummaryListDisplayMode.MANAGE ? this.updateFlagHeaderText : this.addFlagHeaderText;
+      this.addUpdateFlagHeaderText = this.getHeaderText();
+      this.summaryListDisplayMode = this.getSummaryListDisplayMode();
+      this.canDisplayStatus = this.getCanDisplayStatus();
     }
+  }
+
+  private getFlagDescription(flagDetail: FlagDetail): string {
+    let flagName: string;
+    let subTypeValue: string;
+    if (this.rpxTranslationService.language === 'cy') {
+      flagName = flagDetail.name_cy || flagDetail.name;
+      subTypeValue = flagDetail.subTypeValue_cy || flagDetail.subTypeValue;
+    } else {
+      flagName = flagDetail.name || flagDetail.name_cy;
+      subTypeValue = flagDetail.subTypeValue || flagDetail.subTypeValue_cy;
+    }
+    // The otherDescription field should be shown verbatim; otherDescription for Welsh is shown separately
+    const otherDescription = flagDetail.otherDescription ? ` - ${flagDetail.otherDescription}` : '';
+    const subTypeValueForDisplay = subTypeValue ? ` - ${subTypeValue}` : '';
+    return `${flagName}${otherDescription}${subTypeValueForDisplay}`;
+  }
+
+  private getHeaderText(): string {
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE ||
+      this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) {
+      return this.addFlagHeaderText;
+    }
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE ||
+      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
+      return this.updateFlagHeaderText;
+    }
+    return '';
+  }
+
+  private getSummaryListDisplayMode(): number {
+    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE ||
+        this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) {
+      return CaseFlagSummaryListDisplayMode.CREATE;
+    }
+    return CaseFlagSummaryListDisplayMode.MANAGE;
+  }
+
+  private getCanDisplayStatus(): boolean {
+    return !(this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
+      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ||
+      this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE);
   }
 }

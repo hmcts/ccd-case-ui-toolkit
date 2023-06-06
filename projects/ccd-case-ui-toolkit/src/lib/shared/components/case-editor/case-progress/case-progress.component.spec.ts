@@ -271,7 +271,7 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
   it('should alert warning message and never announce event trigger if getting case details fails', () => {
     component.ngOnInit();
 
-    expect(alertService.error).toHaveBeenCalledWith('ERROR!');
+    expect(alertService.error).toHaveBeenCalledWith({ phrase: 'ERROR!' });
     expect(eventTriggerService.announceEventTrigger).not.toHaveBeenCalled();
   });
 
@@ -280,7 +280,7 @@ describe('CaseProgressComponent failed to resolve case details or event trigger'
     casesService.getEventTrigger.and.returnValue(ERROR_OBS);
     component.ngOnInit();
 
-    expect(alertService.error).toHaveBeenCalledWith('ERROR!');
+    expect(alertService.error).toHaveBeenCalledWith({ phrase: 'ERROR!' });
     expect(eventTriggerService.announceEventTrigger).not.toHaveBeenCalled();
   });
 });

@@ -5,6 +5,7 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
 import { OrganisationService } from '../../../services/organisation';
 import { WindowService } from '../../../services/window';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { MarkdownComponent } from '../markdown/markdown.component';
 import { WriteOrganisationComplexFieldComponent } from './write-organisation-complex-field.component';
 import { WriteOrganisationFieldComponent } from './write-organisation-field.component';
@@ -97,7 +98,8 @@ describe('WriteOrganisationFieldComponent', () => {
       declarations: [
         MarkdownComponent,
         WriteOrganisationFieldComponent,
-        WriteOrganisationComplexFieldComponent
+        WriteOrganisationComplexFieldComponent,
+        MockRpxTranslatePipe
       ],
       providers: [
         WindowService,

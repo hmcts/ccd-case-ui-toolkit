@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { FieldsUtils } from '../../../services/fields';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagSummaryListDisplayMode } from './enums';
+import { CaseFlagDisplayContextParameter, CaseFlagStatus } from './enums';
 
 @Component({
   selector: 'ccd-read-case-flag-field',
@@ -13,25 +14,32 @@ import { CaseFlagSummaryListDisplayMode } from './enums';
   styleUrls: ['./read-case-flag-field.component.scss']
 })
 export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent implements OnInit {
-
   public flagsData: FlagsWithFormGroupPath[];
   public partyLevelCaseFlagData: FlagsWithFormGroupPath[];
   public caseLevelCaseFlagData: FlagsWithFormGroupPath;
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
-  public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
-  public readonly caseLevelCaseFlagsFieldId = 'caseFlags';
-  public readonly caseNameMissing = 'Case name missing';
-  private readonly createMode = '#ARGUMENT(CREATE)';
-  private readonly updateMode = '#ARGUMENT(UPDATE)';
+  public displayContextParameter: string;
+  public caseFlagsExternalUser = false;
+  public pathToFlagsFormGroup: string;
+  public readonly readSupportMode = '#ARGUMENT(READ,EXTERNAL)';
+  private readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   constructor(
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly caseFlagStateService: CaseFlagStateService
   ) {
     super();
   }
 
   public ngOnInit(): void {
+    const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
+      controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.get(controlName)['caseField']));
+    const flagLauncherComponent = this.formGroup.get(flagLauncherControlName)?.['component'];
+    this.displayContextParameter = flagLauncherComponent?.caseField?.display_context_parameter;
+    this.caseFlagsExternalUser = this.displayContextParameter === this.readSupportMode;
+
     // If the context is PaletteContext.DEFAULT, the Flags fields need to be located by CaseTab (they won't be present
     // in the FormGroup - only the FlagLauncher field is present)
     if (this.context === PaletteContext.DEFAULT) {
@@ -40,7 +48,9 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
         this.flagsData = (this.route.snapshot.data.case.tabs as CaseTab[])
         .filter(tab => tab.fields && tab.fields
-          .some(caseField => caseField.field_type.type === 'FlagLauncher'))
+          // There could be more than one FlagLauncher field instance so an additional check of caseField ID is
+          // required to ensure the correct instance is obtained
+          .some(caseField => caseField.field_type.type === 'FlagLauncher' && caseField.id === this.caseField.id))
         [0].fields.reduce((flags, caseField) => {
           return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
         }, []);
@@ -57,26 +67,32 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to:
       // i) the parent FormGroup for the Flags instance where changes have been made;
       // ii) the currently selected flag (selectedFlag) if one exists
-      const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
-        controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.get(controlName)['caseField']));
-      if (flagLauncherControlName && this.formGroup.get(flagLauncherControlName)['component']) {
-        const flagLauncherComponent = this.formGroup.get(flagLauncherControlName)['component'];
+      if (flagLauncherComponent) {
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
-        if (flagLauncherComponent.caseField.display_context_parameter === this.createMode &&
-          flagLauncherComponent.selectedFlagsLocation) {
-            this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
-              flagLauncherComponent.selectedFlagsLocation);
-            // Set the display mode for the "Review flag details" summary page
-            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+        if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE ||
+            flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL)
+            && flagLauncherComponent.selectedFlagsLocation) {
+          this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
+          this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
+            flagLauncherComponent.selectedFlagsLocation);
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
-        } else if (flagLauncherComponent.caseField.display_context_parameter === this.updateMode &&
+        } else if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE ||
+          flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) &&
           flagLauncherComponent.selectedFlag) {
             this.flagForSummaryDisplay =
               this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
-            // Set the display mode for the "Review flag details" summary page
-            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+          // TODO: not the best solution, the caseFlagStateService should have all the fields, then we can delete a lot of the transformations here
+          // in Create Case Flag it already has all fields
+          const caseFlagFormGroupValue = this.caseFlagStateService.formGroup?.value;
+          if (caseFlagFormGroupValue) {
+            caseFlagFormGroupValue.status = CaseFlagStatus[caseFlagFormGroupValue.status];
+            this.flagForSummaryDisplay.flagDetail = {
+              ...this.flagForSummaryDisplay.flagDetail,
+              ...caseFlagFormGroupValue
+            };
+          }
         }
       }
     }
@@ -95,10 +111,15 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       return {
         partyName: flagsCaseFieldValue.partyName,
         // Look in the details array for the object that does *not* have an id - this indicates it is the new flag
-        flagDetail: flagsCaseFieldValue.details.find(element => !element.hasOwnProperty('id')).value
+        flagDetail: flagsCaseFieldValue.details.find(element => !element.hasOwnProperty('id'))?.value
       } as FlagDetailDisplay;
     }
 
     return null;
+  }
+
+  public navigateBackToForm(fieldState: number): void {
+    this.caseFlagStateService.fieldStateToNavigate = fieldState;
+    this.router.navigate([`../${this.caseFlagStateService.pageLocation}`], { relativeTo: this.route });
   }
 }

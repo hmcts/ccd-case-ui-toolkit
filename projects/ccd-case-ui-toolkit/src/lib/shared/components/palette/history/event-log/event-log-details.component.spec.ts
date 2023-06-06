@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { CaseViewEvent } from '../../../../domain/case-view';
 import { FormatTranslatorService } from '../../../../services/case-fields/format-translator.service';
+import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
 import { DashPipe, DatePipe } from '../../utils';
 import { EventLogDetailsComponent } from './event-log-details.component';
 
@@ -92,7 +93,8 @@ describe('EventLogDetails', () => {
         declarations: [
           EventLogDetailsComponent,
           DatePipe,
-          DashPipe
+          DashPipe,
+          MockRpxTranslatePipe
         ],
         providers: [FormatTranslatorService]
       })
