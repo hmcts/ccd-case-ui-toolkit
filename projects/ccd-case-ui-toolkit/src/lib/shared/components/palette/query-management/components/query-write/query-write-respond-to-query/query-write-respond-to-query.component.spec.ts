@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Pipe, PipeTransform } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -24,6 +25,10 @@ describe('QueryWriteRespondToQueryComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(QueryWriteRespondToQueryComponent);
     component = fixture.componentInstance;
+    component.formGroup = new FormGroup({
+      body: new FormControl('', Validators.required),
+      attachments: new FormControl([])
+    });
     fixture.detectChanges();
   });
 
