@@ -19,20 +19,40 @@
 
 <div class="query-respond">
   <div class="govuk-!-margin-bottom-4">
-    <h1 class="govuk-heading-m">{{ 'Respond to a query' | rpxTranslate }}</h1>
+    <h1 class="govuk-heading-m">
+      {{ context === queryItemTypeEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
+    </h1>
 
     <div [formGroup]="formGroup">
+      <div class="govuk-form-group"
+           [class.govuk-form-group--error]="formGroup.get('fullName')?.errors?.length">
+        <div class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="query-respond-fullName">
+            {{ 'Full name' | rpxTranslate }}
+          </label>
+        </div>
+        <div id="query-respond-fullName-hint" class="govuk-hint">
+          {{ 'Your full name must be included here' | rpxTranslate }}
+        </div>
+        <p id="query-respond-fullName-error" class="govuk-error-message"
+           *ngIf="formGroup.get('fullName')?.errors?.length">
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter your full name' | rpxTranslate }}
+        </p>
+        <input class="govuk-input" id="query-respond-fullName" name="query-respond-fullName" type="text"
+               [class.govuk-input--error]="formGroup.get('fullName')?.errors?.length"
+               [formControlName]="'fullName'"/>
+      </div>
+
       <div class="govuk-form-group body-textarea"
            [class.govuk-form-group--error]="formGroup.get('body')?.errors?.length">
         <div class="govuk-label-wrapper">
           <label class="govuk-label govuk-!-font-weight-bold" for="query-body">
-            {{ 'Response message' | rpxTranslate }}
+            {{ context === queryItemTypeEnum.RESPOND ? 'Response message' : 'Query Body' | rpxTranslate }}
           </label>
         </div>
         <p id="query-body-error" class="govuk-error-message"
            *ngIf="formGroup.get('body')?.errors?.length">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a response message' |
-          rpxTranslate }}
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a response message' | rpxTranslate }}
         </p>
         <textarea [formControlName]="'body'" class="govuk-textarea"
                   [class.govuk-textarea--error]="formGroup.get('body')?.errors?.length" id="query-body"

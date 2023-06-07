@@ -1,12 +1,14 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
-    <h1 class="govuk-heading-l">{{ 'Review query response details' | rpxTranslate }}</h1>
+    <h1 class="govuk-heading-l">
+      {{ 'Review query details' | rpxTranslate }}
+    </h1>
 
     <div class="govuk-!-margin-bottom-4">
       <ccd-query-case-details-header></ccd-query-case-details-header>
     </div>
 
-    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+    <dl *ngIf="context === queryItemTypeEnum.RESPOND" class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ 'Submitted query' | rpxTranslate }}
@@ -19,7 +21,22 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ 'Response message' | rpxTranslate }}
+          {{ 'Full name' | rpxTranslate }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ formGroup.controls['fullName'].value }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
+      </div>
+    </dl>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ context === queryItemTypeEnum.RESPOND ? 'Response message' : 'Query body' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
           {{ formGroup.controls['body'].value }}

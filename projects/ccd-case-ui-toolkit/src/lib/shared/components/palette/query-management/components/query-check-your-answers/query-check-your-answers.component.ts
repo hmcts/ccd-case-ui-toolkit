@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } fro
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
 import { caseFieldMockData } from '../../__mocks__';
-import { QueryListItem } from '../../models';
+import { QueryItemType, QueryListItem } from '../../models';
 
 @Component({
   selector: 'ccd-query-check-your-answers',
@@ -14,10 +14,14 @@ export class QueryCheckYourAnswersComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
+  @Input() public context: string;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   public caseField: CaseField;
+  public queryItemTypeEnum = QueryItemType;
 
   public ngOnInit(): void {
+    // Set default value as false for testing follow up EUI-8387
+    this.context = QueryItemType.FOLLOWUP;
     // Mock object
     caseFieldMockData.value = [
       {
