@@ -1,4 +1,5 @@
 export enum QueryListResponseStatus {
   NEW = 'New',
-  RESPONDED = 'Responded'
+  RESPONDED = 'Responded',
+  FOLLOWUP = 'Followup'
 }
