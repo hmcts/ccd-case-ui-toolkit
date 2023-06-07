@@ -1,5 +1,5 @@
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'ccd-query-write-date-input',
@@ -7,11 +7,6 @@ import { ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator } fro
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => QueryWriteDateInputComponent),
-      multi: true
-    },
-    {
-      provide: NG_VALIDATORS,
       useExisting: forwardRef(() => QueryWriteDateInputComponent),
       multi: true
     }

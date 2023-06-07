@@ -1,9 +1,8 @@
 <div class="govuk-date-input" [id]="formControlName">
-
   <div class="govuk-date-input__item">
     <div class="govuk-form-group">
       <label class="govuk-label govuk-date-input__label" [for]="formControlName + '-day'">
-        Day
+        {{ 'Day' | rpxTranslate }}
       </label>
       <input class="govuk-input govuk-date-input__input govuk-input--width-2" [id]="formControlName + '-day'"
              [name]="formControlName + '-day'" type="text" inputmode="numeric"
@@ -13,7 +12,7 @@
   <div class="govuk-date-input__item">
     <div class="govuk-form-group">
       <label class="govuk-label govuk-date-input__label" [for]="formControlName + '-month'">
-        Month
+        {{ 'Month' | rpxTranslate }}
       </label>
       <input class="govuk-input govuk-date-input__input govuk-input--width-2" [id]="formControlName + '-month'"
              [name]="formControlName + '-month'" type="text" inputmode="numeric"
@@ -23,12 +22,11 @@
   <div class="govuk-date-input__item">
     <div class="govuk-form-group">
       <label class="govuk-label govuk-date-input__label" [for]="formControlName + '-year'">
-        Year
+        {{ 'Year' | rpxTranslate }}
       </label>
       <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="formControlName + '-year'"
              [name]="formControlName + '-year'" type="text" inputmode="numeric"
              [(ngModel)]="year" (input)="updateDate()" [disabled]="disabled">
     </div>
   </div>
-
 </div>
