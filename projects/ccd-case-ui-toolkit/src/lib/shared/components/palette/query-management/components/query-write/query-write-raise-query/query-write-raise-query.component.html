@@ -65,7 +65,7 @@
           </div>
           <p id="query-raise-body-error" class="govuk-error-message"
              *ngIf="formGroup.get('body')?.errors?.length">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a body' |
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a query body' |
             rpxTranslate }}
           </p>
           <textarea [formControlName]="'body'" class="govuk-textarea"
