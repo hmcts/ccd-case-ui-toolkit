@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
 import { caseFieldMockData } from '../../__mocks__';
 import { QueryListItem } from '../../models';
@@ -11,6 +12,7 @@ import { QueryListItem } from '../../models';
 })
 export class QueryCheckYourAnswersComponent implements OnInit {
 
+  @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   public caseField: CaseField;

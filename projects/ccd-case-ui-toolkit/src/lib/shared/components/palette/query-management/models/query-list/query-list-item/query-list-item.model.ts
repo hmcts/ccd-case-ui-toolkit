@@ -13,7 +13,6 @@ export class QueryListItem implements PartyMessage {
   public createdBy: string;
   public parentId?: string;
   public children: QueryListItem[] = [];
-  public response?: string;
 
   public get lastSubmittedMessage(): QueryListItem {
     const getLastSubmittedMessage = (item: QueryListItem): QueryListItem => {
