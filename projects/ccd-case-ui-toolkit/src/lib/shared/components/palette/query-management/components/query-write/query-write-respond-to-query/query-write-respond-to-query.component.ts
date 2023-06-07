@@ -13,7 +13,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit {
 
   public ngOnInit(): void {
     this.formGroup = new FormGroup({
-      response: new FormControl('', Validators.required),
+      response: new FormControl(this.formGroup.controls['response']?.value ? this.formGroup.controls['response'].value : '', Validators.required),
       documents: new FormControl([], Validators.required)
     });
   }
