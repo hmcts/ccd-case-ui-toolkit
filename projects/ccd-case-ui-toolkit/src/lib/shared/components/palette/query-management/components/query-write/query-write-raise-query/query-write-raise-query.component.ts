@@ -1,21 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ccd-query-write-raise-query',
-  templateUrl: './query-write-raise-query.component.html',
-  styleUrls: ['./query-write-raise-query.component.scss']
+  templateUrl: './query-write-raise-query.component.html'
 })
-export class QueryWriteRaiseQueryComponent implements OnInit {
+export class QueryWriteRaiseQueryComponent {
   @Input() public formGroup: FormGroup;
-
-  public ngOnInit(): void {
-    this.formGroup = new FormGroup({
-      fullName: new FormControl('', Validators.required),
-      subject: new FormControl('', Validators.required),
-      body: new FormControl('', Validators.required),
-      isHearingRelated: new FormControl(null, Validators.required),
-      documents: new FormControl([], Validators.required)
-    });
-  }
 }

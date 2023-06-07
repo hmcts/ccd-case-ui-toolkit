@@ -118,15 +118,19 @@ import {
 import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
-import { QueryWriteRaiseQueryComponent, QueryWriteRespondToQueryComponent, ReadQueryManagementFieldComponent, WriteQueryManagementFieldComponent } from './query-management';
 import {
-  QueryCaseDetailsHeaderComponent
-} from './query-management/components/query-case-details-header/query-case-details-header.component';
-import { QueryCheckYourAnswersComponent } from './query-management/components/query-check-your-answers/query-check-your-answers.component';
-import { QueryCreateComponent } from './query-management/components/query-create/query-create.component';
-import { QueryDetailsTableComponent } from './query-management/components/query-details-table/query-details-table.component';
-import { QueryDetailsComponent } from './query-management/components/query-details/query-details.component';
-import { QueryListComponent } from './query-management/components/query-list/query-list.component';
+  QueryCaseDetailsHeaderComponent,
+  QueryCheckYourAnswersComponent,
+  QueryCreateComponent,
+  QueryDetailsComponent,
+  QueryDetailsTableComponent,
+  QueryListComponent,
+  QueryWriteAddDocumentsComponent,
+  QueryWriteRaiseQueryComponent,
+  QueryWriteRespondToQueryComponent,
+  ReadQueryManagementFieldComponent,
+  WriteQueryManagementFieldComponent
+} from './query-management';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
@@ -256,7 +260,8 @@ const PALETTE_COMPONENTS = [
   QueryWriteRespondToQueryComponent,
   QueryWriteRaiseQueryComponent,
   QueryCaseDetailsHeaderComponent,
-  QueryCheckYourAnswersComponent
+  QueryCheckYourAnswersComponent,
+  QueryWriteAddDocumentsComponent,
 ];
 
 @NgModule({

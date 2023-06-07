@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { QueryListItem } from '../../models';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
 
@@ -31,8 +32,11 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.queryItem = Object.assign(new QueryListItem(), {
       subject: 'test',
       response: 'test'
-    }
-    )
+    })
+    component.formGroup = new FormGroup({
+      body: new FormControl('', Validators.required),
+      attachments: new FormControl([])
+    });
     fixture.detectChanges();
   });
 

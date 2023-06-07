@@ -22,7 +22,7 @@
           {{ 'Response message' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
-          {{ formGroup.controls['response'].value }}
+          {{ formGroup.controls['body'].value }}
         </dd>
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" (click)="goBack()">
@@ -55,11 +55,6 @@
       <button class="govuk-button" data-module="govuk-button">
         {{ 'Submit' | rpxTranslate }}
       </button>
-    </div>
-
-
-    <div class="govuk-!-margin-bottom-2">
-      <a [routerLink]="['/', 'cases']">{{ 'Cancel and return to case' | rpxTranslate }}</a>
     </div>
   </div>
 </div>

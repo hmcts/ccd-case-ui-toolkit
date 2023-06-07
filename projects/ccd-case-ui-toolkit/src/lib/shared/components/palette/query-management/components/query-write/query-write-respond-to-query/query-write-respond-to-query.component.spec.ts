@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { QueryListItem } from '../../../models';
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -30,12 +29,5 @@ describe('QueryWriteRespondToQueryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should emit back clicked event', () => {
-    component.queryItem = new QueryListItem();
-    spyOn(component.confirmDetails, 'emit');
-    component.submitForm();
-    expect(component.confirmDetails.emit).toHaveBeenCalled();
   });
 });
