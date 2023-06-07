@@ -119,28 +119,23 @@ import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
 import {
+  QueryCaseDetailsHeaderComponent,
+  QueryCreateComponent,
+  QueryDetailsComponent,
+  QueryDetailsTableComponent,
+  QueryListComponent,
+  QueryWriteAddDocumentsComponent, QueryWriteDateInputComponent,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent,
   WriteQueryManagementFieldComponent
 } from './query-management';
-import {
-  QueryCaseDetailsHeaderComponent
-} from './query-management/components/query-case-details-header/query-case-details-header.component';
-import { QueryCreateComponent } from './query-management/components/query-create/query-create.component';
-import { QueryDetailsTableComponent } from './query-management/components/query-details-table/query-details-table.component';
-import { QueryDetailsComponent } from './query-management/components/query-details/query-details.component';
-import { QueryListComponent } from './query-management/components/query-list/query-list.component';
-import {
-  QueryWriteAddDocumentsComponent
-} from './query-management/components/query-write/query-write-add-documents/query-write-add-documents.component';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { QueryWriteDateInputComponent } from './query-management/components/query-write/query-write-date-input/query-write-date-input.component';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -265,6 +260,7 @@ const PALETTE_COMPONENTS = [
   QueryWriteRaiseQueryComponent,
   QueryCaseDetailsHeaderComponent,
   QueryWriteAddDocumentsComponent,
+  QueryWriteDateInputComponent
 ];
 
 @NgModule({
@@ -311,8 +307,7 @@ const PALETTE_COMPONENTS = [
     LanguageInterpreterDisplayPipe,
     ManageCaseFlagsLabelDisplayPipe,
     UpdateFlagTitleDisplayPipe,
-    ...PALETTE_COMPONENTS,
-    QueryWriteDateInputComponent
+    ...PALETTE_COMPONENTS
   ],
   exports: [
     NgxMatDatetimePickerModule,
