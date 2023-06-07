@@ -81,10 +81,10 @@
                 {{ 'Is the query hearing related?' | rpxTranslate }}
               </label>
             </legend>
-
             <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="query-raise-isHearingRelated-yes" name="query-raise-isHearingRelated-yes" type="radio"
+                <input class="govuk-radios__input" id="query-raise-isHearingRelated-yes" name="isHearingRelated" type="radio"
+                       formControlName="isHearingRelated"
                        [checked]="formGroup.get('isHearingRelated').value === true" [value]="true"
                 >
                 <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-yes">
@@ -92,7 +92,8 @@
                 </label>
               </div>
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="query-raise-isHearingRelated-no" name="query-raise-isHearingRelated-no" type="radio"
+                <input class="govuk-radios__input" id="query-raise-isHearingRelated-no" name="isHearingRelated" type="radio"
+                       formControlName="isHearingRelated"
                        [checked]="formGroup.get('isHearingRelated').value === false" [value]="false"
                 >
                 <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-no">
@@ -101,6 +102,12 @@
               </div>
             </div>
           </fieldset>
+
+          <ng-container *ngIf="formGroup.get('isHearingRelated').value">
+            <fieldset class="govuk-fieldset" role="group">
+              <ccd-query-write-date-input formControlName="hearingDate"></ccd-query-write-date-input>
+            </fieldset>
+          </ng-container>
         </div>
       </div>
     </div>
