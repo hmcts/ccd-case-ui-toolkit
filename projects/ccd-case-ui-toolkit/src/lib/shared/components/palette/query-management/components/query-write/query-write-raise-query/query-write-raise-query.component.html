@@ -107,9 +107,11 @@
         <ng-container *ngIf="formGroup.get('isHearingRelated').value">
           <div class="govuk-!-margin-top-1">
             <fieldset class="govuk-fieldset" role="group">
-              <label class="govuk-label govuk-label--s">
-                {{ 'Hearing Date' | rpxTranslate }}
-              </label>
+              <legend>
+                <label class="govuk-label govuk-label--s">
+                  {{ 'Hearing Date' | rpxTranslate }}
+                </label>
+              </legend>
               <ccd-query-write-date-input formControlName="hearingDate"></ccd-query-write-date-input>
             </fieldset>
           </div>
