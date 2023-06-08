@@ -34,7 +34,7 @@
         </div>
         <p id="query-respond-fullName-error" class="govuk-error-message"
            *ngIf="formGroup.get('fullName')?.errors?.length">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a message' | rpxTranslate }}
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter your full name' | rpxTranslate }}
         </p>
         <input class="govuk-input" id="query-respond-fullName" name="query-respond-fullName" type="text"
                [class.govuk-input--error]="formGroup.get('fullName')?.errors?.length"
