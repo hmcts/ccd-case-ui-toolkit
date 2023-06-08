@@ -251,9 +251,9 @@ const PALETTE_COMPONENTS = [
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
-    LinkedCasesService,
     CommonDataService,
     JurisdictionService,
+    LinkedCasesService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   entryComponents: [ CaseFileViewFolderSelectorComponent ]

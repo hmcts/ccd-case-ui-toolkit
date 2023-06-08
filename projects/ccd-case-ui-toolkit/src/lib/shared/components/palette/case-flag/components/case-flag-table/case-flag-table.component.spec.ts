@@ -79,4 +79,13 @@ describe('CaseFlagTableComponent', () => {
     const caseViewerFieldLabelElement = fixture.debugElement.nativeElement.querySelector('#case-viewer-field-label');
     expect(caseViewerFieldLabelElement).toBeNull();
   });
+
+  it('should display the sub-type value (i.e. language name) when displaying a "language interpreter" case flag type', () => {
+    component.flagData = flagData;
+    fixture.detectChanges();
+    const tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the first element of the second row of five (i.e. sixth element) contains the language name
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[5].textContent).toContain(flagData.flags.details[1].subTypeValue);
+  });
 });

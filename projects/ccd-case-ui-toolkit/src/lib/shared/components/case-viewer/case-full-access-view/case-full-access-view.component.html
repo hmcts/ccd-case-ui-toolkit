@@ -1,6 +1,6 @@
 <!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
 <div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
-      role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+     role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
   <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
     Something went wrong
   </h1>
@@ -11,7 +11,7 @@
 </div>
 <!-- Callback error heading and error message to be displayed if there are specific error details -->
 <div *ngIf="error && error.details" class="error-summary" role="group"
-      aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
+     aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
   <h2 class="heading-h2 error-summary-heading" id="edit-case-event_error-summary-heading">
     The callback data failed validation
   </h2>
@@ -38,8 +38,8 @@
   </div>
   <div *ngIf="hasEventSelector" class="column-one-half">
     <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()" [triggers]="caseDetails.triggers"
-                        [triggerText]="triggerText" (onTriggerChange)="clearErrorsAndWarnings()"
-                        (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
+                       [triggerText]="triggerText" (onTriggerChange)="clearErrorsAndWarnings()"
+                       (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
   </div>
 </div>
 <div class="grid-row" *ngIf="activeCaseFlags">
@@ -51,11 +51,11 @@
 <div class="grid-row">
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
-      <mat-tab-group #tabGroup animationDuration="0ms" (selectedTabChange)="tabChanged($event)" [disableRipple]="true"
+      <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true"
         [selectedIndex]="selectedTabIndex">
         <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label">
         </mat-tab>
-        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
+        <mat-tab *ngFor="let tab of sortedTabs" [id]="tab.id" [label]="tab.label">
           <ng-template matTabContent>
             <table [class]="tab.id" aria-describedby="case viewer table">
               <tbody>
@@ -69,8 +69,8 @@
                       <td [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
-                          [caseField]="field" [caseReference]="caseDetails.case_id"
-                          [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
+                                          [caseField]="field" [caseReference]="caseDetails.case_id"
+                                          [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
                           </ccd-field-read>
                         </span>
                       </td>
@@ -79,8 +79,8 @@
                       <th [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
                           <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
-                          [caseField]="field" [caseReference]="caseDetails.case_id"
-                          [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
+                                          [caseField]="field" [caseReference]="caseDetails.case_id"
+                                          [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
                           </ccd-field-read>
                         </span>
                       </th>

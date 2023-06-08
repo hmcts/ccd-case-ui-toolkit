@@ -266,6 +266,14 @@ describe('PaletteService', () => {
       expect(paletteService.getFieldComponentClass(caseField, false)).toBe(ReadLinkedCasesFieldComponent);
     });
 
+    it('should get LinkedCasesFieldComponent component class for ComponentLauncher field with argument of "LinkedCases"', () => {
+      const caseField = new CaseField();
+      caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
+      caseField.display_context_parameter = '#ARGUMENT(CREATE,LinkedCases)';
+      expect(paletteService.getFieldComponentClass(caseField, true)).toBe(WriteLinkedCasesFieldComponent);
+      expect(paletteService.getFieldComponentClass(caseField, false)).toBe(ReadLinkedCasesFieldComponent);
+    });
+
     it('should get UnsupportedFieldComponent component class for ComponentLauncher field with unknown argument', () => {
       const caseField = new CaseField();
       caseField.field_type = { id: 'ComponentLauncher', type: 'ComponentLauncher' };
