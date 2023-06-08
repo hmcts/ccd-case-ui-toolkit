@@ -9,15 +9,15 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { Observable, Subject } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
 import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
 import {
   NotificationBannerConfig,
   NotificationBannerHeaderClass,
   NotificationBannerType
 } from '../../../../components/banners/notification-banner';
 import { ShowCondition } from '../../../directives';
-import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DRAFT_QUERY_PARAM, DisplayMode, Draft } from '../../../domain';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
 import {
   ActivityPollingService,
   AlertService,
@@ -323,7 +323,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     } else {
       // Routing here is based on tab label, not ideal
       // cases/case-details/:caseId#tabLabel
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel })
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel });
     }
   }
 
@@ -445,5 +445,4 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   private getTabIndexByTabLabel(tabGroup: MatTabGroup, tabLabel) {
     return tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tabLabel.toLowerCase());
   }
-
 }

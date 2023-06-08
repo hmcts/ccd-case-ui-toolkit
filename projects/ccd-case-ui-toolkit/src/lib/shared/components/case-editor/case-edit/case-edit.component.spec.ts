@@ -1,4 +1,4 @@
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -1042,7 +1042,7 @@ xdescribe('CaseEditComponent', () => {
           'delete_draft_response_status': 'delete_draft_response_status',
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
-        }
+        };
         const actual = component.getStatus(response);
         expect(actual).toEqual(response['callback_response_status']);
       });
@@ -1053,11 +1053,11 @@ xdescribe('CaseEditComponent', () => {
           'delete_draft_response_status': 'delete_draft_response_status',
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_COMPLETED'
-        }
+        };
         const actual = component.getStatus(response);
         expect(actual).toEqual(response['delete_draft_response_status']);
       });
-    })
+    });
 
     describe('emitSubmitted', () => {
       it('should emit submitted', () => {
@@ -1066,13 +1066,13 @@ xdescribe('CaseEditComponent', () => {
           'delete_draft_response_status': 'delete_draft_response_status',
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
-        }
+        };
         spyOn(component.submitted, 'emit');
         component.emitSubmitted(response);
 
         expect(component.submitted.emit).toHaveBeenCalled();
       });
-    })
+    });
 
     describe('confirm', () => {
       it('should call routers navigate', () => {
@@ -1081,7 +1081,7 @@ xdescribe('CaseEditComponent', () => {
         expect(routerStub.navigate).toHaveBeenCalled();
         expect(component.confirmation).toEqual({} as unknown as Confirmation);
       });
-    })
+    });
 
     describe('getCaseId', () => {
       it('should return case id', () => {
@@ -1092,13 +1092,13 @@ xdescribe('CaseEditComponent', () => {
 
         expect(actual).toEqual('case_id');
       });
-    })
+    });
 
     describe('submitForm', () => {
       it('should submit case', () => {
         const mockClass = {
           submit: () => of({})
-        }
+        };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
           /* tslint:disable:object-literal-key-quotes */
@@ -1110,8 +1110,8 @@ xdescribe('CaseEditComponent', () => {
           /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
-        }))
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        }));
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
 
         fixture.detectChanges();
 
@@ -1125,13 +1125,13 @@ xdescribe('CaseEditComponent', () => {
         expect(component.isSubmitting).toEqual(true);
         expect(formValueService.sanitise).toHaveBeenCalled();
       });
-    })
+    });
 
     describe('onEventCanBeCompleted', () => {
       it('should submit the case', () => {
         const mockClass = {
           submit: () => of({})
-        }
+        };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
           /* tslint:disable:object-literal-key-quotes */
@@ -1143,15 +1143,15 @@ xdescribe('CaseEditComponent', () => {
           /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
-        }))
+        }));
 
-        spyOn(component, 'confirm')
+        spyOn(component, 'confirm');
 
         component.isCaseFlagSubmission = true;
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1170,15 +1170,15 @@ xdescribe('CaseEditComponent', () => {
       it('should NOT submit the case due to error', () => {
         const mockClass = {
           submit: () => of({})
-        }
-        spyOn(mockClass, 'submit').and.returnValue(throwError(({ details: 'details' } as unknown as HttpError)))
-        spyOn(component, 'confirm')
+        };
+        spyOn(mockClass, 'submit').and.returnValue(throwError(({ details: 'details' } as unknown as HttpError)));
+        spyOn(component, 'confirm');
 
         component.isCaseFlagSubmission = true;
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1195,16 +1195,16 @@ xdescribe('CaseEditComponent', () => {
       it('should NOT submit the case and should navigate to tasks tab', () => {
         const mockClass = {
           submit: () => of({})
-        }
+        };
         spyOn(mockClass, 'submit');
 
-        spyOn(component, 'confirm')
+        spyOn(component, 'confirm');
 
         component.isCaseFlagSubmission = true;
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: false,
@@ -1221,17 +1221,17 @@ xdescribe('CaseEditComponent', () => {
       it('should emit submit as after_submit_callback_response is NOT present in response', () => {
         const mockClass = {
           submit: () => of({})
-        }
+        };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
-        }))
+        }));
 
         spyOn(component, 'confirm');
         spyOn(component, 'emitSubmitted');
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1243,7 +1243,7 @@ xdescribe('CaseEditComponent', () => {
         expect(component.confirm).not.toHaveBeenCalled();
         expect(component.emitSubmitted).toHaveBeenCalled();
       });
-    })
+    });
   });
 
   xdescribe('profile not available in route', () => {

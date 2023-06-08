@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseTab, CaseView } from '../../domain';
-import { CaseNotifier } from '../case-editor';
 import { OrderService } from '../../services';
+import { CaseNotifier } from '../case-editor';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -82,7 +82,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   private suffixDuplicateTabs(tabs: CaseTab[]): CaseTab[] {
 
     const count = {};
-    const firstOccurences = {};
+    const firstOccurrences = {};
 
     let item: string;
     let itemCount: number;
@@ -91,10 +91,11 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       itemCount = count[item];
       itemCount = count[item] = (itemCount == null ? 1 : itemCount + 1);
 
-      if (count[item] > 1)
+      if (count[item] > 1) {
         tabs[i].label = tabs[i].label + Array(count[item] - 1).fill('_').join('');
-      else
-        firstOccurences[item] = i;
+      } else {
+        firstOccurrences[item] = i;
+      }
     }
 
     return tabs;
