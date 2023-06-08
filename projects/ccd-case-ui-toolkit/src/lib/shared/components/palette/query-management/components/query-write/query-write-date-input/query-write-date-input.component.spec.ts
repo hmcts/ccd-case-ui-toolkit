@@ -1,6 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { QueryWriteDateInputComponent } from './query-write-date-input.component';
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string, ...args: any[]): string {
+    return value;
+  }
+}
 
 describe('QueryWriteDateInputComponent', () => {
   let component: QueryWriteDateInputComponent;
@@ -9,7 +17,7 @@ describe('QueryWriteDateInputComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FormsModule],
-      declarations: [QueryWriteDateInputComponent]
+      declarations: [QueryWriteDateInputComponent, RpxTranslateMockPipe]
     }).compileComponents();
   });
 
