@@ -157,6 +157,10 @@ export class AppMockConfig implements AbstractAppConfig {
     return '';
   }
 
+  public getNotificationUrl(): string {
+    return '';
+  }
+
   public getPaymentReturnUrl(): string {
     return '';
   }

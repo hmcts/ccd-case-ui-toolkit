@@ -17,7 +17,7 @@ import {
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
-import { LinkCaseReason, LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
+import { LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -72,7 +72,6 @@ export class CasesService {
     private orderService: OrderService,
     private errorService: HttpErrorService,
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
-    private readonly workAllocationService: WorkAllocationService,
     private loadingService: LoadingService,
     private readonly sessionStorageService: SessionStorageService
   ) {
