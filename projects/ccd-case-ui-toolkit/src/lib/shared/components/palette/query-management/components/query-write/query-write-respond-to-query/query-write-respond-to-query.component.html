@@ -20,7 +20,7 @@
 <div class="query-respond">
   <div class="govuk-!-margin-bottom-4">
     <h1 class="govuk-heading-m">
-      {{ context === 'Responded' ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
+      {{ context === queryItemTypeEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
     </h1>
 
     <div [formGroup]="formGroup">
@@ -47,7 +47,7 @@
            [class.govuk-form-group--error]="formGroup.get('body')?.errors?.length">
         <div class="govuk-label-wrapper">
           <label class="govuk-label govuk-!-font-weight-bold" for="query-body">
-            {{ context === 'Responded' ? 'Response message' : 'Query Body' | rpxTranslate }}
+            {{ context === queryItemTypeEnum.RESPOND ? 'Response message' : 'Query Body' | rpxTranslate }}
           </label>
         </div>
         <p id="query-body-error" class="govuk-error-message"
