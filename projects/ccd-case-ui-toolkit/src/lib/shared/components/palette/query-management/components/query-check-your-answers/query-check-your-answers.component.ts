@@ -14,14 +14,14 @@ export class QueryCheckYourAnswersComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
-  @Input() public context: string;
+  @Input() public QueryCreateContext: QueryItemType;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   public caseField: CaseField;
   public queryItemTypeEnum = QueryItemType;
 
   public ngOnInit(): void {
     // Set default value as false for testing follow up EUI-8387
-    this.context = QueryItemType.FOLLOWUP;
+    this.QueryCreateContext = QueryItemType.FOLLOWUP;
     // Mock object
     caseFieldMockData.value = [
       {
