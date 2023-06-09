@@ -46,6 +46,7 @@
           <input class="govuk-input" id="subject" name="subject" type="text"
                   [formControlName]="'subject'"/>
         </div>
+      </div>
 
         <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('body').hasError('required')}">
           <div class="govuk-label-wrapper">
@@ -64,55 +65,51 @@
                     id="body"name="body" rows="5"
                     aria-describedby="body-hint body-error">
           </textarea>
-        </div>
+      </div>
 
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
-            <legend>
-              <label class="govuk-label govuk-label--m govuk-!-font-weight-bold">
-                {{ 'Is the query hearing related?' | rpxTranslate }}
-              </label>
-            </legend>
-
-            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="query-raise-isHearingRelated-yes" name="query-raise-isHearingRelated-yes" type="radio"
-                        [checked]="formGroup.get('isHearingRelated').value === true" [value]="true"
-                >
-                <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-yes">
-                  {{ 'Is the query hearing related?' | rpxTranslate: null : 'Yes' }}
-                </label>
-              </div>
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="query-raise-isHearingRelated-no" name="query-raise-isHearingRelated-no" type="radio"
-                        [checked]="formGroup.get('isHearingRelated').value === false" [value]="false"
-                >
-                <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-no">
-                  {{ 'Is the query hearing related?' | rpxTranslate: null : 'No' }}
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-
-        <div>
-          <div class="govuk-form-group"
-                [class.govuk-form-group--error]="formGroup.get('documents')?.errors?.length">
-            <div class="govuk-label-wrapper">
-              <label class="govuk-label" for="add-documents">
-                <div class=" govuk-!-font-weight-bold">{{ 'Add document (optional)' | rpxTranslate }}</div>
-                <div>{{ 'Attach a document to this message' | rpxTranslate }}</div>
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend>
+            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold">
+              {{ 'Is the query hearing related?' | rpxTranslate }}
+            </label>
+          </legend>
+          <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="query-raise-isHearingRelated-yes" name="isHearingRelated"
+                     type="radio"
+                     formControlName="isHearingRelated"
+                     [checked]="formGroup.get('isHearingRelated').value === true" [value]="true"
+              >
+              <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-yes">
+                {{ 'Is the query hearing related?' | rpxTranslate: null : 'Yes' }}
               </label>
             </div>
-            <p id="add-documents-error" class="govuk-error-message"
-                *ngIf="formGroup.get('response')?.errors?.length">
-              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'File error message' |
-              rpxTranslate }}
-            </p>
-
-            <input class="govuk-file-upload" id="add-documents" name="add-documents" type="file">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="query-raise-isHearingRelated-no" name="isHearingRelated"
+                     type="radio"
+                     formControlName="isHearingRelated"
+                     [checked]="formGroup.get('isHearingRelated').value === false" [value]="false"
+              >
+              <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-no">
+                {{ 'Is the query hearing related?' | rpxTranslate: null : 'No' }}
+              </label>
+            </div>
           </div>
-        </div>
+        </fieldset>
+
+        <ng-container *ngIf="formGroup.get('isHearingRelated').value">
+          <div class="govuk-!-margin-top-1">
+            <fieldset class="govuk-fieldset" role="group">
+              <legend>
+                <label class="govuk-label govuk-label--s">
+                  {{ 'Hearing date' | rpxTranslate }}
+                </label>
+              </legend>
+              <ccd-query-write-date-input formControlName="hearingDate"></ccd-query-write-date-input>
+            </fieldset>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>
