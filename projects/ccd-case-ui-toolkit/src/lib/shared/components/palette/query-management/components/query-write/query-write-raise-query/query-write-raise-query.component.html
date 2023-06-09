@@ -1,16 +1,3 @@
-<!-- Error message summary -->
-<div *ngIf="errorMessages.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-  <h2 class="govuk-error-summary__title" id="error-summary-title">
-    {{'There is a problem' | rpxTranslate}}
-  </h2>
-  <div *ngFor="let errorMessage of errorMessages" class="govuk-error-summary__body">
-    <ul class="govuk-list govuk-error-summary__list">
-      <li>
-        <a (click)="navigateToErrorElement(errorMessage.fieldId)" class="validation-error">{{errorMessage.description | rpxTranslate}}</a>
-      </li>
-    </ul>
-  </div>
-</div>
 <div>
   <div class="govuk-!-margin-bottom-6">
     <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
@@ -26,57 +13,57 @@
   <div class="govuk-!-margin-bottom-4">
     <div [formGroup]="formGroup">
       <div>
-        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!queryFullNameError}">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('fullName').hasError('required')}">
           <div class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="query-raise-fullName">
+            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="fullName">
               {{ 'Full name' | rpxTranslate }}
             </label>
           </div>
-          <div id="query-raise-fullName-hint" class="govuk-hint">
+          <div id="fullName-hint" class="govuk-hint">
             {{ 'Your full name must be included here' | rpxTranslate }}
           </div>
-          <p id="query-raise-fullName-error" class="govuk-error-message"
-              *ngIf="queryFullNameError">
+          <p id="fullName-error" class="govuk-error-message"
+              *ngIf="submitted && formGroup.get('fullName').hasError('required')">
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.FULL_NAME | rpxTranslate }}
           </p>
-          <input class="govuk-input" id="query-raise-fullName" name="query-raise-fullName" type="text"
+          <input class="govuk-input" id="fullName" name="fullName" type="text"
                   [formControlName]="'fullName'"/>
         </div>
 
-        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!querySubjectError}">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('subject').hasError('required')}">
           <div class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="query-raise-subject">
+            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="subject">
               {{ 'Query subject' | rpxTranslate }}
             </label>
           </div>
-          <div id="query-raise-subject-hint" class="govuk-hint">
+          <div id="subject-hint" class="govuk-hint">
             {{ 'The subject should be a summary of your query' | rpxTranslate }}
           </div>
-          <p id="query-raise-subject-error" class="govuk-error-message"
-              *ngIf="querySubjectError">
+          <p id="subject-error" class="govuk-error-message"
+              *ngIf="submitted && formGroup.get('subject').hasError('required')">
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_SUBJECT | rpxTranslate }}
           </p>
-          <input class="govuk-input" id="query-raise-subject" name="query-raise-subject" type="text"
+          <input class="govuk-input" id="subject" name="subject" type="text"
                   [formControlName]="'subject'"/>
         </div>
 
-        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!queryBodyError}">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('body').hasError('required')}">
           <div class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="query-raise-body">
+            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
               {{ 'Query body' | rpxTranslate }}
             </label>
           </div>
-          <div id="query-raise-body-hint" class="govuk-hint">
+          <div id="body-hint" class="govuk-hint">
             {{ 'Include as many details as possible so case workers can respond to your query' | rpxTranslate }}
           </div>
-          <p id="query-raise-body-error" class="govuk-error-message"
-              *ngIf="queryBodyError">
+          <p id="body-error" class="govuk-error-message"
+              *ngIf="submitted && formGroup.get('body').hasError('required')">
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_BODY | rpxTranslate }}
           </p>
           <textarea [formControlName]="'body'" class="govuk-textarea"
-                    id="query-raise-body"name="query-raise-body" rows="5"
-                    aria-describedby="query-raise-body-hint query-raise-body-error">
-        </textarea>
+                    id="body"name="body" rows="5"
+                    aria-describedby="body-hint body-error">
+          </textarea>
         </div>
 
         <div class="govuk-form-group">
@@ -126,10 +113,6 @@
             <input class="govuk-file-upload" id="add-documents" name="add-documents" type="file">
           </div>
         </div>
-
-        <button class="govuk-button" data-module="govuk-button" (click)="onNext()">
-          {{ 'Next' | rpxTranslate }}
-        </button>
       </div>
     </div>
   </div>
