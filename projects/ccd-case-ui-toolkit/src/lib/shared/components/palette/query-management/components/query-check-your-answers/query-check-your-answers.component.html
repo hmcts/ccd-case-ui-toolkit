@@ -25,7 +25,7 @@
           {{ formGroup.controls['body'].value }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" (click)="goBack()">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
           </a>
         </dd>
@@ -36,11 +36,11 @@
         <dt class="govuk-summary-list__key">
           {{ 'Document attached' | rpxTranslate }}
         </dt>
-        <dd class="govuk-summary-list__value">
+        <dd class="govuk-summary-list__value govuk-summary-list__value--documentAttached">
           <ccd-read-collection-field *ngIf="caseField" [caseField]="caseField"></ccd-read-collection-field>
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" (click)="goBack()">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
           </a>
         </dd>

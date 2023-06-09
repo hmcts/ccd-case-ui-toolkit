@@ -1,5 +1,12 @@
-.collection-field-table {
-  tr>td {
-    border-bottom: none;
+ccd-query-check-your-answers {
+  .collection-field-table {
+    tr > td {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  .govuk-summary-list__value--documentAttached {
+    vertical-align: middle;
   }
 }
