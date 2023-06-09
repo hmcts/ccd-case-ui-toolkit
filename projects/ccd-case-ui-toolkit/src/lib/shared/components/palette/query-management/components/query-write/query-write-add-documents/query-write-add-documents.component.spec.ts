@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { CaseField } from '../../../../../../domain';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { CaseField, Document, FormDocument } from '../../../../../../domain';
 import { QueryWriteAddDocumentsComponent } from './query-write-add-documents.component';
 
 describe('QueryWriteAddDocumentsComponent', () => {
@@ -22,6 +22,9 @@ describe('QueryWriteAddDocumentsComponent', () => {
     // setting a mock FormArray -- child component (i.e. write-collection-field) does it on ngOnInit
     component.documentFormGroup.addControl(QueryWriteAddDocumentsComponent.DOCUMENTS_FORM_CONTROL_NAME,
       new FormArray([]));
+    component.formGroup = new FormGroup({
+      attachments: new FormControl([])
+    });
     fixture.detectChanges();
   });
 
@@ -32,6 +35,38 @@ describe('QueryWriteAddDocumentsComponent', () => {
   it('should add the mock case field', () => {
     expect(component.mockDocumentCaseField).toEqual(jasmine.any(CaseField));
     expect(component.mockDocumentCaseField.id).toEqual(QueryWriteAddDocumentsComponent.DOCUMENTS_FORM_CONTROL_NAME);
+  });
+
+  describe('ngOnInit', () => {
+    it('should set the mockDocumentCaseField value (type FormDocument) off the formGroup\'s attachments value (type Document)', () => {
+      const documents: Document[] = [
+        {
+          originalDocumentName: 'test.txt',
+          _links: {
+            self: {
+              href: 'http://localhost:3451/documents/123'
+            },
+            binary: {
+              href: 'http://localhost:3451/documents/123/binary'
+            }
+          }
+        }
+      ];
+      const formDocuments: { id: string; value: FormDocument }[] = [
+        {
+          id: null,
+          value: {
+            document_filename: 'test.txt',
+            document_url: 'http://localhost:3451/documents/123',
+            document_binary_url: 'http://localhost:3451/documents/123/binary'
+          }
+        }
+      ];
+
+      component.formGroup.get('attachments').setValue(documents);
+      component.ngOnInit();
+      expect(component.mockDocumentCaseField.value).toEqual(formDocuments);
+    });
   });
 
   describe('ngOnDestroy', () => {
