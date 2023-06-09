@@ -373,7 +373,6 @@ describe('ReadComplexFieldTableComponent', () => {
         label: line1.label,
         display_context: 'OPTIONAL',
         field_type: line1.field_type,
-        hidden: false,
         value: CASE_FIELD.value['AddressLine1']
       });
 
@@ -383,7 +382,6 @@ describe('ReadComplexFieldTableComponent', () => {
         label: line2.label,
         display_context: 'OPTIONAL',
         field_type: line2.field_type,
-        hidden: false,
         value: CASE_FIELD.value['AddressLine2']
       });
 
@@ -393,7 +391,6 @@ describe('ReadComplexFieldTableComponent', () => {
         label: postcode.label,
         display_context: 'OPTIONAL',
         field_type: postcode.field_type,
-        hidden: false,
         value: CASE_FIELD.value['AddressPostcode']
       });
     });
