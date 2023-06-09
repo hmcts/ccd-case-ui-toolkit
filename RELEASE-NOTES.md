@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.16.0-query-management-raise-a-query-error-scenarios
+**EUI-8453** Query management raise a query error scenarios
+
 ### Version 6.16.0-query-management-orchestrator-v3
 **EUI-8303** Query management orchestrator to get the mock data
 
