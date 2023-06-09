@@ -1,7 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { Pipe, PipeTransform } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { QueryWriteRespondToQueryComponent } from './query-write-respond-to-query.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -15,12 +17,26 @@ describe('QueryWriteRespondToQueryComponent', () => {
   let component: QueryWriteRespondToQueryComponent;
   let fixture: ComponentFixture<QueryWriteRespondToQueryComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ QueryWriteRespondToQueryComponent, MockRpxTranslatePipe ]
+  const caseId = '1234';
+  const mockRoute = {
+    snapshot: {
+      params: {
+        cid: caseId
+      }
+    }
+  };
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [QueryWriteRespondToQueryComponent, MockRpxTranslatePipe],
+      imports: [RouterTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        { provide: ActivatedRoute, useValue: mockRoute }
+      ]
     })
-    .compileComponents();
-  });
+      .compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(QueryWriteRespondToQueryComponent);
@@ -34,5 +50,10 @@ describe('QueryWriteRespondToQueryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have the correct back to task link URL', () => {
+    const backToTaskElement = fixture.debugElement.nativeElement.querySelector('div a.govuk-back-link');
+    expect(backToTaskElement.getAttribute('href')).toContain(`/cases/case-details/${caseId}/tasks`);
   });
 });
