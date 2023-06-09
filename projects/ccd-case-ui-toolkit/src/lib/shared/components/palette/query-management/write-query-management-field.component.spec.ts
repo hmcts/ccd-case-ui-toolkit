@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { WriteQueryManagementFieldComponent } from './write-query-management-field.component';
 import { CaseField } from '../../../domain';
+import { WriteQueryManagementFieldComponent } from './write-query-management-field.component';
 
 @Pipe({ name: 'ccdCaseReference' })
 class CcdCaseReferenceMockPipe implements PipeTransform {

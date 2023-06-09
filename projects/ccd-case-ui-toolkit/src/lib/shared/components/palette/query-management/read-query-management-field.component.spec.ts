@@ -60,6 +60,6 @@ describe('ReadQueryManagementFieldComponent', () => {
   it('should hide query list and show query detiails', () => {
     component.setQuery(new QueryListItem());
     expect(component.showQueryList).toBeFalsy();
-    expect(component.query).toEqual(new QueryListItem())
+    expect(component.query).toEqual(new QueryListItem());
   });
 });
