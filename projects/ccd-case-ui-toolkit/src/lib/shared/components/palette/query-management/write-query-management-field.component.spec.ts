@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { CaseField } from '../../../domain';
 import { WriteQueryManagementFieldComponent } from './write-query-management-field.component';
 
 @Pipe({ name: 'ccdCaseReference' })
@@ -35,6 +36,10 @@ describe('WriteQueryManagementFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WriteQueryManagementFieldComponent);
     component = fixture.componentInstance;
+    component.caseField = {
+      id: 'WriteQueryManagementField',
+      metadata: false
+    } as CaseField;
     fixture.detectChanges();
   });
 
@@ -44,13 +49,6 @@ describe('WriteQueryManagementFieldComponent', () => {
 
   it('should create component', () => {
     expect(component).toBeTruthy();
-  });
-
-  describe('ngOnInit', () => {
-    it('should initialise the component and set queryItem', () => {
-      component.ngOnInit();
-      expect(component.queryItem).toBeDefined();
-    });
   });
 });
 

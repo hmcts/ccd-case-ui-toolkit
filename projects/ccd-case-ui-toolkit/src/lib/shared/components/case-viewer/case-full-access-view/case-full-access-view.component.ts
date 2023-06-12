@@ -396,7 +396,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
-
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
     }
