@@ -24,7 +24,9 @@
   <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
     <ul class="govuk-list govuk-error-summary__list">
       <li>
-        <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">{{validationError.message | rpxTranslate}}</a>
+        <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">
+          {{ validationError.message | rpxTranslate: getRpxTranslatePipeArgs(validationError.label | rpxTranslate): null }}
+        </a>
       </li>
     </ul>
   </div>

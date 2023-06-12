@@ -1,11 +1,13 @@
 <div [id]="id()" class="form-group bottom-30" [ngClass]="{'form-group-error': !yesNoControl.valid && (yesNoControl.dirty || yesNoControl.touched)}">
 	<fieldset class="inline">
     <legend>
-      <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel | rpxTranslate}}</span>
+      <span class="form-label" *ngIf="caseField.label">
+        {{caseField | ccdFieldLabel | rpxTranslate}}
+      </span>
     </legend>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
     <span class="error-message" *ngIf="yesNoControl.errors && (yesNoControl.dirty || yesNoControl.touched)">
-      {{yesNoControl.errors | ccdFirstError:caseField.label | rpxTranslate}}
+      {{ yesNoControl.errors | ccdFirstError: caseField.label }}
     </span>
 
     <div [id]="createElementId('radio')">
