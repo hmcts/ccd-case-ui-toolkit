@@ -1,17 +1,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CaseField } from '../../../domain';
 import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
 import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
-import { CaseFileViewFieldComponent } from './case-file-view-field.component';
-import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;
+import { CaseFileViewFieldComponent } from './case-file-view-field.component';
 
 describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
@@ -19,8 +17,14 @@ describe('CaseFileViewFieldComponent', () => {
   let mockCaseFileViewService: jasmine.SpyObj<CaseFileViewService>;
   let mockLoadingService: jasmine.SpyObj<LoadingService>;
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
-  const cidParam = '1234123412341234';
-  let mockRoute: { params: Observable<{ cid: string }>, snapshot: { paramMap: SpyObj<any> } };
+
+  const mockSnapshot = {
+    paramMap: createSpyObj('paramMap', ['get']),
+  };
+  const mockRoute = {
+    params: of({cid: '1234123412341234'}),
+    snapshot: mockSnapshot
+  };
 
   const mockCaseFieldTrue = {
     acls: [
@@ -47,17 +51,7 @@ describe('CaseFileViewFieldComponent', () => {
   const mockUser: string = JSON.stringify({ roles: ['caseworker-privatelaw-judge'] });
 
   beforeEach(waitForAsync(() => {
-    mockRoute = {
-      params: of({cid: cidParam}),
-      snapshot: {
-        paramMap: createSpyObj('paramMap', ['get']),
-      }
-    };
-    mockRoute.snapshot.paramMap.get.and.returnValue(cidParam);
-
-    mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService',
-      ['getCategoriesAndDocuments', 'updateDocumentCategory']
-    );
+    mockCaseFileViewService = createSpyObj<CaseFileViewService>('CaseFileViewService', ['getCategoriesAndDocuments']);
     mockCaseFileViewService.getCategoriesAndDocuments.and.returnValue(of(null));
 
     mockLoadingService = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
@@ -151,86 +145,5 @@ describe('CaseFileViewFieldComponent', () => {
     component.caseField.acls = mockCaseFieldFalse.acls;
     fixture.detectChanges();
     expect(component.allowMoving).toBeFalsy();
-  });
-
-  it('should reset error messages when calling resetErrorMessages', () => {
-    expect(component.errorMessages.length).toBe(0);
-    component.errorMessages = ['Error 1', 'Error 2', 'Error 3'];
-    expect(component.errorMessages.length).toBeGreaterThan(0);
-    component.resetErrorMessages();
-    expect(component.errorMessages.length).toBe(0);
-  });
-
-  it('should register loadingToken, call updateDocumentCategory and unregister loadingToken on finalize ' +
-    'when calling moveDocument and successful', () => {
-    const document = new DocumentTreeNode();
-    Object.assign(document, {
-      document: {
-        name: 'name',
-        type: DocumentTreeNodeType.DOCUMENT,
-        children: [],
-        document_filename: 'document_filename',
-        document_binary_url: 'document_binary_url',
-        attribute_path: 'attribute_path'
-      },
-      newCategory: 'newCategoryId'
-    });
-
-    const data = {
-      document,
-      newCategory: 'newCategoryId'
-    };
-
-    mockCaseFileViewService.updateDocumentCategory.and.returnValue(of({ response: true }));
-    component.reloadPage = () => {};
-    spyOn(component, 'reloadPage').and.callThrough();
-    spyOn(component, 'resetErrorMessages').and.callThrough();
-
-    component.moveDocument(data);
-
-    expect(mockCaseFileViewService.updateDocumentCategory)
-      // @ts-expect-error - component.caseVersion is a private property
-      .toHaveBeenCalledWith(cidParam, component.caseVersion, data.document.attribute_path, data.newCategory);
-    // @ts-expect-error - loadingService private property
-    expect(component.loadingService.register).toHaveBeenCalled();
-    // @ts-expect-error - loadingService private property
-    expect(component.loadingService.unregister).toHaveBeenCalled();
-    expect(component.resetErrorMessages).toHaveBeenCalled();
-    expect(component.reloadPage).toHaveBeenCalled();
-  });
-
-  it('should set errorMessages after calling updateDocumentCategory and unregister loadingToken on finalize ' +
-    'when calling moveDocument and it throws an error', () => {
-    const document = new DocumentTreeNode();
-    Object.assign(document, {
-      document: {
-        name: 'name',
-        type: DocumentTreeNodeType.DOCUMENT,
-        children: [],
-        document_filename: 'document_filename',
-        document_binary_url: 'document_binary_url',
-        attribute_path: 'attribute_path'
-      },
-      newCategory: 'newCategoryId'
-    });
-
-    const data = {
-      document,
-      newCategory: 'newCategoryId'
-    };
-
-    expect(component.errorMessages.length).toBe(0);
-    mockCaseFileViewService.updateDocumentCategory.and.returnValue(throwError({ response: 'error' }));
-    component.reloadPage = () => {};
-    component.moveDocument(data);
-    expect(component.errorMessages.length).toBe(1);
-  });
-
-  it('should display the error messages', () => {
-    component.errorMessages = ['Error 1', 'Error 2'];
-    fixture.detectChanges();
-    const listElements = fixture.debugElement.queryAll(By.css('#case-file-view-field-errors .govuk-error-summary__list li'));
-    const errorMessagesFromElements = listElements.map(item => item.nativeElement.textContent);
-    expect(component.errorMessages).toEqual(errorMessagesFromElements);
   });
 });
