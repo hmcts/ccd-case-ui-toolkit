@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
-import { QueryListItem } from '../../models';
 import { caseFieldMockData } from '../../__mocks__';
+import { QueryItemType, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
 
 @Component({
@@ -12,10 +12,13 @@ import { QueryManagementUtils } from '../../utils/query-management.utils';
   encapsulation: ViewEncapsulation.None
 })
 export class QueryCheckYourAnswersComponent implements OnInit {
+
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
+  @Input() public QueryCreateContext: QueryItemType;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   public caseField: CaseField;
+  public queryItemTypeEnum = QueryItemType;
 
   public ngOnInit(): void {
     this.caseField = caseFieldMockData;
