@@ -18,7 +18,7 @@ export class QueryCheckYourAnswersComponent implements OnInit {
   @Input() public QueryCreateContext: QueryItemType;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   public caseField: CaseField;
-  public queryItemTypeEnum = QueryItemType; 
+  public queryItemTypeEnum = QueryItemType;
 
   public ngOnInit(): void {
     this.caseField = caseFieldMockData;
