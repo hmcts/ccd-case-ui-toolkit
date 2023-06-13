@@ -9,6 +9,7 @@ import { QueryManagementUtils } from '../../../utils/query-management.utils';
   selector: 'ccd-query-write-add-documents',
   templateUrl: './query-write-add-documents.component.html'
 })
+
 export class QueryWriteAddDocumentsComponent implements OnInit, AfterViewInit, OnDestroy {
   public static DOCUMENTS_FORM_CONTROL_NAME = 'documentCollection';
 
@@ -25,6 +26,7 @@ export class QueryWriteAddDocumentsComponent implements OnInit, AfterViewInit, O
       id: QueryWriteAddDocumentsComponent.DOCUMENTS_FORM_CONTROL_NAME,
       label: 'Add document (optional)',
       hint_text: 'Attach a document to this message',
+      display_context: 'OPTIONAL',
       display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)',
       field_type: Object.assign(new FieldType(), {
         id: 'queryDocuments',
