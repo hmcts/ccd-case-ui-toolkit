@@ -1,5 +1,9 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
+    <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW">
+      <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
+    </ng-container>
+
     <h1 class="govuk-heading-l">
       {{ 'Review query details' | rpxTranslate }}
     </h1>
@@ -28,7 +32,7 @@
           {{ formGroup.get('fullName')?.value }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a class="govuk-link" (click)="goBack()">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
           </a>
         </dd>
