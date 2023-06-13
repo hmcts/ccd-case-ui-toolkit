@@ -7,4 +7,3 @@ export * from './query-list/query-list.component';
 export * from './query-write/query-write-add-documents/query-write-add-documents.component';
 export * from './query-write/query-write-raise-query/query-write-raise-query.component';
 export * from './query-write/query-write-respond-to-query/query-write-respond-to-query.component';
-

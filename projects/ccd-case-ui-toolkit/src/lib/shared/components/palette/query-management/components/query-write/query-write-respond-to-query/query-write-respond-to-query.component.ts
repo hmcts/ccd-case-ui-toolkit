@@ -8,6 +8,7 @@ import { QueryItemType, QueryListItem } from '../../../models';
   templateUrl: './query-write-respond-to-query.component.html',
   styleUrls: ['./query-write-respond-to-query.component.scss']
 })
+
 export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;

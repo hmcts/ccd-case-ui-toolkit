@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
 import { caseFieldMockData } from '../../__mocks__';
 import { QueryItemType, QueryListItem } from '../../models';
+import { QueryManagementUtils } from '../../utils/query-management.utils';
 
 @Component({
   selector: 'ccd-query-check-your-answers',
@@ -11,7 +12,6 @@ import { QueryItemType, QueryListItem } from '../../models';
   encapsulation: ViewEncapsulation.None
 })
 export class QueryCheckYourAnswersComponent implements OnInit {
-
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public QueryCreateContext: QueryItemType;
@@ -20,10 +20,9 @@ export class QueryCheckYourAnswersComponent implements OnInit {
   public queryItemTypeEnum = QueryItemType;
 
   public ngOnInit(): void {
-    // Set default value as false for testing follow up EUI-8387
-    this.QueryCreateContext = QueryItemType.FOLLOWUP;
-    // Mock object
     this.caseField = caseFieldMockData;
+    this.caseField.value = this.formGroup.get('attachments').value
+      .map(QueryManagementUtils.documentToCollectionFormDocument);
   }
 
   public goBack(): void {
