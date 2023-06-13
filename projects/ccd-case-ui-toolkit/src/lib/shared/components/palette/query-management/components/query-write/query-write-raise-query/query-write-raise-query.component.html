@@ -65,7 +65,7 @@
           </div>
           <p id="query-raise-body-error" class="govuk-error-message"
              *ngIf="formGroup.get('body')?.errors?.length">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a body' |
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a query body' |
             rpxTranslate }}
           </p>
           <textarea [formControlName]="'body'" class="govuk-textarea"
@@ -81,10 +81,11 @@
                 {{ 'Is the query hearing related?' | rpxTranslate }}
               </label>
             </legend>
-
             <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="query-raise-isHearingRelated-yes" name="query-raise-isHearingRelated-yes" type="radio"
+                <input class="govuk-radios__input" id="query-raise-isHearingRelated-yes" name="isHearingRelated"
+                       type="radio"
+                       formControlName="isHearingRelated"
                        [checked]="formGroup.get('isHearingRelated').value === true" [value]="true"
                 >
                 <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-yes">
@@ -92,7 +93,9 @@
                 </label>
               </div>
               <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="query-raise-isHearingRelated-no" name="query-raise-isHearingRelated-no" type="radio"
+                <input class="govuk-radios__input" id="query-raise-isHearingRelated-no" name="isHearingRelated"
+                       type="radio"
+                       formControlName="isHearingRelated"
                        [checked]="formGroup.get('isHearingRelated').value === false" [value]="false"
                 >
                 <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-no">
@@ -101,6 +104,19 @@
               </div>
             </div>
           </fieldset>
+
+          <ng-container *ngIf="formGroup.get('isHearingRelated').value">
+            <div class="govuk-!-margin-top-1">
+              <fieldset class="govuk-fieldset" role="group">
+                <legend>
+                  <label class="govuk-label govuk-label--s">
+                    {{ 'Hearing date' | rpxTranslate }}
+                  </label>
+                </legend>
+                <ccd-query-write-date-input formControlName="hearingDate"></ccd-query-write-date-input>
+              </fieldset>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>

@@ -23,8 +23,9 @@ export class QueryWriteAddDocumentsComponent implements OnInit, AfterViewInit, O
     // This field is mocked to allow the document component to be used in isolation
     this.mockDocumentCaseField = Object.assign(new CaseField(), {
       id: QueryWriteAddDocumentsComponent.DOCUMENTS_FORM_CONTROL_NAME,
-      label: 'Add document (optional)',
+      label: 'Add document',
       hint_text: 'Attach a document to this message',
+      display_context: 'OPTIONAL',
       display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)',
       field_type: Object.assign(new FieldType(), {
         id: 'queryDocuments',

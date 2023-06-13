@@ -126,6 +126,7 @@ import {
   QueryDetailsTableComponent,
   QueryListComponent,
   QueryWriteAddDocumentsComponent,
+  QueryWriteDateInputComponent,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent,
@@ -262,6 +263,7 @@ const PALETTE_COMPONENTS = [
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
   QueryWriteAddDocumentsComponent,
+  QueryWriteDateInputComponent
 ];
 
 @NgModule({
