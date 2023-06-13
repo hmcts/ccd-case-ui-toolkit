@@ -1,7 +1,8 @@
 <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">
   <ng-container *ngIf="queryItem; else raiseQuery">
-    <ccd-query-write-respond-to-query [queryItem]="queryItem" [formGroup]="formGroup">
-    </ccd-query-write-respond-to-query>
+    <ccd-query-write-respond-to-query
+      [queryItem]="queryItem" [formGroup]="formGroup"
+    ></ccd-query-write-respond-to-query>
   </ng-container>
   <ng-template #raiseQuery>
     <ccd-query-write-raise-query [formGroup]="formGroup">
