@@ -5,9 +5,7 @@
         <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel) | rpxTranslate}}</span>
       </label>
       <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate }}</span>
-      <span class="error-message" *ngIf="fixedRadioListControl.errors && (fixedRadioListControl.dirty || fixedRadioListControl.touched)">
-        {{ (fixedRadioListControl.errors | ccdFirstError:caseField.label) }}
-      </span>
+      <span class="error-message" *ngIf="fixedRadioListControl.errors && (fixedRadioListControl.dirty || fixedRadioListControl.touched)">{{(fixedRadioListControl.errors | ccdFirstError:caseField.label) | rpxTranslate}}</span>
     </legend>
     <ng-container>
       <div class="multiple-choice" *ngFor="let radioButton of caseField.field_type.fixed_list_items" [ngClass]="{selected: fixedRadioListControl.value === radioButton.code}">

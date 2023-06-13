@@ -110,7 +110,8 @@ describe('CaseTimelineComponent', () => {
             MockRpxTranslatePipe,
             // Mocks
             eventLogComponentMock,
-            caseHistoryComponentMock
+            caseHistoryComponentMock,
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: CaseNotifier, useValue: caseNotifier },
@@ -206,8 +207,8 @@ describe('CaseTimelineComponent', () => {
           imports: [],
           declarations: [
             CaseTimelineComponent,
-            MockRpxTranslatePipe,
             // Mocks
+            MockRpxTranslatePipe,
             eventLogComponentMock,
             caseHistoryComponentMock
           ],

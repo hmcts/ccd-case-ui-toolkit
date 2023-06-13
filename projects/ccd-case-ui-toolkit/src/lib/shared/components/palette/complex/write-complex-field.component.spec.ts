@@ -67,7 +67,8 @@ describe('WriteComplexFieldComponent', () => {
           // Mocks
           fieldWriteComponentMock,
           fieldReadComponentMock,
-          IsReadOnlyPipeMock
+          IsReadOnlyPipeMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           IsCompoundPipe,

@@ -136,8 +136,8 @@ describe('ReadMultiSelectListFieldComponent', () => {
           declarations: [
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
-            MockRpxTranslatePipe,
             // Mocks
+            MockRpxTranslatePipe,
             fieldReadComponentMock
           ],
           providers: []

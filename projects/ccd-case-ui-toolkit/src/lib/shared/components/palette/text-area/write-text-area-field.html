@@ -5,7 +5,7 @@
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
   <span class="error-message" *ngIf="textareaControl.errors && (textareaControl.dirty || textareaControl.touched)">
-    {{ textareaControl.errors | ccdFirstError:caseField.label }}
+    {{textareaControl.errors | ccdFirstError:caseField.label | rpxTranslate}}
   </span>
 
   <textarea (input)="autoGrow($event)" class="form-control bottom-30" [ngClass]="{'govuk-textarea--error': textareaControl.errors && (textareaControl.dirty || textareaControl.touched)}"

@@ -4,7 +4,7 @@
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
   <span class="error-message" *ngIf="phoneUkControl.errors && (phoneUkControl.dirty || phoneUkControl.touched)">
-    {{ phoneUkControl.errors | ccdFirstError:caseField.label }}
+    {{ phoneUkControl.errors | ccdFirstError:caseField.label | rpxTranslate}}
   </span>
   <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': phoneUkControl.errors && phoneUkControl.dirty}"
    [id]="id()" type="tel" [formControl]="phoneUkControl">

@@ -32,6 +32,25 @@ describe('WindowService', () => {
   });
 
   it('should get from session storage', () => {
+    spyOn(window.sessionStorage, 'getItem');
+    windowService.getSessionStorage('organisationDetails');
+    expect(window.sessionStorage.getItem).toHaveBeenCalled();
+  });
+
+  it('should set from session storage', () => {
+    spyOn(window.sessionStorage, 'setItem');
+    windowService.setSessionStorage('organisationDetails', userName);
+    expect(window.sessionStorage.setItem).toHaveBeenCalled();
+  });
+
+  it('should open on new tab', () => {
+    spyOn(window, 'open');
+    windowService.openOnNewTab('organisationDetails');
+    expect(window.open).toHaveBeenCalled();
+  });
+
+  it('should open on confirm message', () => {
+    windowService.confirm('organisationDetails');
     windowService.setLocalStorage('organisationDetails', userName);
     expect(windowService.getLocalStorage('organisationDetails')).toBe(userName);
   });

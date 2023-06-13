@@ -6,7 +6,7 @@
     </legend>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
     <span class="error-message" *ngIf="dateControl && dateControl.errors && (dateControl.dirty || dateControl.touched)">
-      {{ dateControl.errors | ccdFirstError:caseField.label }}
+      {{ (dateControl.errors | ccdFirstError:caseField.label ) | rpxTranslate}}
     </span>
     <cut-date-input [id]="id()"
                     [isDateTime]="isDateTime()"

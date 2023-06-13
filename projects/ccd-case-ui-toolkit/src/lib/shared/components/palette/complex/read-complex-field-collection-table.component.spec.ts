@@ -315,7 +315,6 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
             CcdCollectionTableCaseFieldsFilterPipe,
-
             // Mocks
             MockFieldReadComponent,
             MockReadCaseLinkFieldComponent,

@@ -6,9 +6,7 @@
       <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel | rpxTranslate}}</span>
     </legend>
     <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text | rpxTranslate}}</span>
-    <span *ngIf="checkboxes.errors && (checkboxes.dirty || checkboxes.touched)" class="error-message">
-      {{ checkboxes.errors | ccdFirstError:caseField.label }}
-    </span>
+    <span *ngIf="checkboxes.errors && (checkboxes.dirty || checkboxes.touched)" class="error-message">{{checkboxes.errors | ccdFirstError:caseField.label | rpxTranslate}}</span>
 
     <ng-container *ngFor="let checkbox of caseField.field_type.fixed_list_items">
 

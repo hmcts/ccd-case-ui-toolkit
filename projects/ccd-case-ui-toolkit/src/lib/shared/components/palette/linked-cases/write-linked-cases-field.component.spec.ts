@@ -382,11 +382,11 @@ describe('WriteLinkedCasesFieldComponent', () => {
     expect(component.getNextPage(linkedCasesState2)).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
   });
 
-  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+  function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {
     const cf = new CaseField();
     cf.id = id;
     cf.value = value;
-    cf.display_context = display_context;
+    cf.display_context = displayContext;
     return cf;
   }
 

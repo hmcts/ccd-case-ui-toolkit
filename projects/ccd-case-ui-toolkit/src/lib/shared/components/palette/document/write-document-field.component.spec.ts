@@ -142,7 +142,8 @@ describe('WriteDocumentFieldComponent', () => {
           MockRpxTranslatePipe,
 
           // Mocks
-          readDocumentComponentMock
+          readDocumentComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: DocumentManagementService, useValue: mockDocumentManagementService},
@@ -491,11 +492,9 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
-          // Mock
-          MockRpxTranslatePipe,
-
           // Mocks
-          readDocumentComponentMock
+          readDocumentComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: DocumentManagementService, useValue: mockDocumentManagementService},

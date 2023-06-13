@@ -4,7 +4,7 @@
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
   <span class="error-message" *ngIf="textControl?.errors && (textControl.dirty || textControl.touched)">
-    {{ textControl.errors | ccdFirstError:caseField.label }}
+    {{textControl.errors | ccdFirstError:caseField.label | rpxTranslate}}
   </span>
   <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': textControl?.errors && (textControl.dirty || textControl.touched)}"
   [id]="id()" type="text" [formControl]="textControl" (blur)="onBlur($event)">

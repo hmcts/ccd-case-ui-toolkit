@@ -4,7 +4,7 @@
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
   <span class="error-message" *ngIf="numberControl.errors && numberControl.dirty">
-    {{ numberControl.errors | ccdFirstError:caseField.label }}
+    {{ numberControl.errors | ccdFirstError:caseField.label | rpxTranslate}}
   </span>
 
   <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': numberControl.errors && numberControl.dirty}"

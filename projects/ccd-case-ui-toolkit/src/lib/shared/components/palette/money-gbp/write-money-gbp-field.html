@@ -4,8 +4,7 @@
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel | rpxTranslate}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" *ngIf="moneyGbpControl.errors && (moneyGbpControl.dirty || moneyGbpControl.touched)">
-    {{ moneyGbpControl.errors | ccdFirstError:caseField.label }}</span>
+  <span class="error-message" *ngIf="moneyGbpControl.errors && (moneyGbpControl.dirty || moneyGbpControl.touched)">{{moneyGbpControl.errors | ccdFirstError:caseField.label | rpxTranslate}}</span>
 
   <div class="form-money">
     <span class="form-currency">&#163;</span>

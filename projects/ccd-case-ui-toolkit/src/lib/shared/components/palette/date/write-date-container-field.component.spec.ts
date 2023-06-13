@@ -63,7 +63,7 @@ describe('WriteDateContainerFieldComponent', () => {
           FormatTranslatorService,
           {provide: CaseFieldService, useValue: caseFieldService},
           { provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
-        ['getTranslation', 'translate']) },
+              ['getTranslation$', 'translate']) },
         ]
       })
       .compileComponents();

@@ -7,9 +7,8 @@
         <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
         <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option below' | rpxTranslate}}</span>
         <span class="error-message"
-            *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.dirty">
-          {{ dynamicRadioListControl.errors | ccdFirstError }}
-        </span>
+            *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.dirty">{{(dynamicRadioListControl.errors |
+            ccdFirstError) | rpxTranslate}}</span>
     </label>
 
     <ng-container>

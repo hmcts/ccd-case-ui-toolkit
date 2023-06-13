@@ -52,7 +52,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
       providers: [
         FormBuilder,
         { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
-        ['getTranslation', 'translate']) },
+            ['getTranslation$', 'translate']) },
         { provide: CasesService, useValue: casesService },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseNotifier, useValue: casesNotifier },
