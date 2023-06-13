@@ -10,4 +10,5 @@ import { QueryListItem } from '../../../models';
 export class QueryWriteRespondToQueryComponent {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
+  @Input() public submitted = false;
 }
