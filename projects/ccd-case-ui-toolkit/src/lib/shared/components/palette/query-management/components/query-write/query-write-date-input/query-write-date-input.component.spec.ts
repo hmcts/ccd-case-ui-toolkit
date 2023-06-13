@@ -122,12 +122,12 @@ describe('QueryWriteDateInputComponent', () => {
 
       component.year = -1;
       // @ts-expect-error
-      const isValid = component.isValidDateInput();
+      let isValid = component.isValidDateInput();
       expect(isValid).toBe(false);
 
       component.year = 1969;
       // @ts-expect-error
-      const isValid = component.isValidDateInput();
+      isValid = component.isValidDateInput();
       expect(isValid).toBe(false);
     });
   });
