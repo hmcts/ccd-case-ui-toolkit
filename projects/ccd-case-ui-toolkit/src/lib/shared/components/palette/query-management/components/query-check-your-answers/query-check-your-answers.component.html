@@ -8,7 +8,7 @@
       <ccd-query-case-details-header></ccd-query-case-details-header>
     </div>
 
-    <dl *ngIf="QueryCreateContext === queryItemTypeEnum.RESPOND" class="govuk-summary-list govuk-!-margin-bottom-0">
+    <dl *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND" class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ 'Submitted query' | rpxTranslate }}
@@ -18,13 +18,14 @@
         </dd>
       </div>
     </dl>
+
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ 'Full name' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
-          {{ formGroup.controls['fullName'].value }}
+          {{ formGroup.get('fullName')?.value }}
         </dd>
         <dd class="govuk-summary-list__actions">
           <a class="govuk-link" (click)="goBack()">
@@ -33,10 +34,27 @@
         </dd>
       </div>
     </dl>
+
+    <dl *ngIf="queryCreateContext === queryCreateContextEnum.NEW" class="govuk-summary-list govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ 'Query subject' | rpxTranslate }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ formGroup.get('subject')?.value }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
+      </div>
+    </dl>
+
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ QueryCreateContext === queryItemTypeEnum.RESPOND ? 'Response message' : 'Query body' | rpxTranslate }}
+          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response message' : 'Query body' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
           {{ formGroup.controls['body'].value }}
@@ -48,6 +66,28 @@
         </dd>
       </div>
     </dl>
+
+    <dl *ngIf="queryCreateContext === queryCreateContextEnum.NEW" class="govuk-summary-list govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ 'Is the query hearing related?' | rpxTranslate }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <ng-container *ngIf="formGroup.get('isHearingRelated').value === true; else isHearingRelatedFalse">
+            {{ 'Is the query hearing related?' | rpxTranslate: null : 'Yes' }}
+          </ng-container>
+          <ng-template #isHearingRelatedFalse>
+            {{ 'Is the query hearing related?' | rpxTranslate: null : 'No' }}
+          </ng-template>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
+      </div>
+    </dl>
+
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
@@ -63,7 +103,9 @@
         </dd>
       </div>
     </dl>
+
     <br>
+
     <div>
       <button class="govuk-button govuk-button--secondary govuk-!-margin-right-3" data-module="govuk-button"
         (click)="goBack()">

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
-import { QueryListItem } from '../../models';
-import { caseFieldMockData } from '../../__mocks__';
+import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
+import { caseFieldMockData } from '../../__mocks__';
 
 @Component({
   selector: 'ccd-query-check-your-answers',
@@ -14,14 +14,14 @@ import { QueryManagementUtils } from '../../utils/query-management.utils';
 export class QueryCheckYourAnswersComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
-  @Input() public QueryCreateContext: QueryItemType;
+  @Input() public queryCreateContext: QueryCreateContext;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   public caseField: CaseField;
-  public queryItemTypeEnum = QueryItemType;
+  public queryCreateContextEnum = QueryCreateContext;
 
   public ngOnInit(): void {
     this.caseField = caseFieldMockData;
-    this.caseField.value = this.formGroup.get('attachments').value
+    this.caseField.value = this.formGroup.get('attachments')?.value
       .map(QueryManagementUtils.documentToCollectionFormDocument);
   }
 

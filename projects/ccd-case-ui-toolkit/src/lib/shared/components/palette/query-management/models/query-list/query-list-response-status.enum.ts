@@ -1,5 +1,5 @@
-export enum QueryItemType {
+export enum QueryCreateContext {
   NEW = 'New',
   RESPOND = 'Respond',
-  FOLLOWUP = 'Followup'
+  FOLLOWUP = 'Follow-Up'
 }
