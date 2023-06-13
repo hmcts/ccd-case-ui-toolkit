@@ -50,7 +50,8 @@
         </div>
         <p id="query-body-error" class="govuk-error-message"
            *ngIf="formGroup.get('body')?.errors?.length">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a response message' | rpxTranslate }}
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a response message' |
+          rpxTranslate }}
         </p>
         <textarea [formControlName]="'body'" class="govuk-textarea"
                   [class.govuk-textarea--error]="formGroup.get('body')?.errors?.length" id="query-body"
