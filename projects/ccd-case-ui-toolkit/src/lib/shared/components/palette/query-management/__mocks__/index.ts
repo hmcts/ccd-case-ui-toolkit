@@ -1,3 +1,4 @@
+import { CaseField, FieldType } from '../../../../domain';
 import { PartyMessagesGroup } from '../models';
 
 export const partyMessagesMockData: PartyMessagesGroup[] = [
@@ -120,3 +121,29 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
     ]
   }
 ];
+
+export const caseFieldMockData: CaseField = Object.assign(new CaseField(), {
+  id: '',
+  label: '',
+  hint_text: '',
+  field_type: Object.assign(new FieldType(), {
+    id: 'QueryDocuments',
+    type: 'QueryDocuments',
+    min: null,
+    max: null,
+    regular_expression: null,
+    fixed_list_items: [],
+    complex_fields: [],
+    collection_field_type: Object.assign(new FieldType(), {
+      id: 'Document',
+      type: 'Document',
+      min: null,
+      max: null,
+      regular_expression: null,
+      fixed_list_items: [],
+      complex_fields: [],
+      collection_field_type: null
+    })
+  }),
+  display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)'
+});

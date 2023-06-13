@@ -120,6 +120,7 @@ import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
 import {
   QueryCaseDetailsHeaderComponent,
+  QueryCheckYourAnswersComponent,
   QueryCreateComponent,
   QueryDetailsComponent,
   QueryDetailsTableComponent,
@@ -260,6 +261,7 @@ const PALETTE_COMPONENTS = [
   QueryWriteRespondToQueryComponent,
   QueryWriteRaiseQueryComponent,
   QueryCaseDetailsHeaderComponent,
+  QueryCheckYourAnswersComponent,
   QueryWriteAddDocumentsComponent,
   QueryWriteDateInputComponent
 ];

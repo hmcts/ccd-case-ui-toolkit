@@ -1,0 +1,60 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds-from-desktop">
+    <h1 class="govuk-heading-l">{{ 'Review query response details' | rpxTranslate }}</h1>
+
+    <div class="govuk-!-margin-bottom-4">
+      <ccd-query-case-details-header></ccd-query-case-details-header>
+    </div>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ 'Submitted query' | rpxTranslate }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ queryItem.subject }}
+        </dd>
+      </div>
+    </dl>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ 'Response message' | rpxTranslate }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ formGroup.controls['body'].value }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
+      </div>
+    </dl>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ 'Document attached' | rpxTranslate }}
+        </dt>
+        <dd class="govuk-summary-list__value govuk-summary-list__value--documentAttached">
+          <ccd-read-collection-field *ngIf="caseField" [caseField]="caseField"></ccd-read-collection-field>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
+      </div>
+    </dl>
+    <br>
+    <div>
+      <button class="govuk-button govuk-button--secondary govuk-!-margin-right-3" data-module="govuk-button"
+        (click)="goBack()">
+        {{ 'Previous' | rpxTranslate }}
+      </button>
+      <button class="govuk-button" data-module="govuk-button">
+        {{ 'Submit' | rpxTranslate }}
+      </button>
+    </div>
+  </div>
+</div>
