@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.16.0-query-management-raise-a-query-error-scenarios
+### Version 6.16.0-query-management-raise-a-query-error-scenarios-v1
 **EUI-8453** Query management raise a query error scenarios
 
 ### Version 6.16.0-query-management-orchestrator-v3
