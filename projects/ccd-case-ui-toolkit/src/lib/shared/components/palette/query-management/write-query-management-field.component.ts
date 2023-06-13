@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractFieldReadComponent } from '../base-field';
 import { QueryManagementErrorMessage } from './components/query-management-error-messages/query-management-error-message.model';
