@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
-import { caseFieldMockData } from '../../__mocks__';
 import { QueryItemType, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
+import { caseFieldMockData } from '../../__mocks__';
 
 @Component({
   selector: 'ccd-query-check-your-answers',
