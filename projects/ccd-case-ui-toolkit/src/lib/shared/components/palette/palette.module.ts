@@ -261,7 +261,7 @@ const PALETTE_COMPONENTS = [
   QueryWriteRaiseQueryComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
-  QueryWriteAddDocumentsComponent,
+  QueryWriteAddDocumentsComponent
 ];
 
 @NgModule({
