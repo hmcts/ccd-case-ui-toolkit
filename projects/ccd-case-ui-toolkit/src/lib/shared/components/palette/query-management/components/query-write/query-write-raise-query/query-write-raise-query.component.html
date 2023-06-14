@@ -62,7 +62,7 @@
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_BODY | rpxTranslate }}
           </p>
           <textarea [formControlName]="'body'" class="govuk-textarea"
-                    id="body"name="body" rows="5"
+                    id="body" name="body" rows="5"
                     aria-describedby="body-hint body-error">
           </textarea>
       </div>
@@ -74,7 +74,7 @@
               {{ 'Is the query hearing related?' | rpxTranslate }}
             </label>
           </legend>
-          <p id="body-error" class="govuk-error-message"
+          <p id="isHearingRelated-error" class="govuk-error-message"
               *ngIf="submitted && formGroup.get('isHearingRelated').hasError('required')">
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_HEARING_RELATED | rpxTranslate }}
           </p>
@@ -110,7 +110,7 @@
                   {{ 'Hearing date' | rpxTranslate }}
                 </label>
               </legend>
-              <p id="body-error" class="govuk-error-message"
+              <p id="hearingDate-error" class="govuk-error-message"
                   *ngIf="submitted && formGroup.get('isHearingRelated').value === true && formGroup.get('hearingDate').value === null">
                 <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_HEARING_DATE | rpxTranslate }}
               </p>

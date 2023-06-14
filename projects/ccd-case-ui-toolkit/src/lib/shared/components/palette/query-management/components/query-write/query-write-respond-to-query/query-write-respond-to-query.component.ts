@@ -13,6 +13,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
   @Input() public queryCreateContext: QueryItemType;
+  @Input() public submitted = false;
   public readonly queryItemTypeEnum = QueryItemType;
   public caseId: string;
 
