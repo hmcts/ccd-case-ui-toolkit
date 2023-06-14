@@ -1,14 +1,13 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
     <h1 class="govuk-heading-l">
-      <ng-container *ngIf="QueryCreateContext === queryItemTypeEnum.RESPOND; else genericQueryResponseMessage">
+      <ng-container *ngIf="QueryCreateContext === queryItemTypeEnum.RESPOND; else defaultCheckYourAnswersTitle">
         {{ 'Review query response details' | rpxTranslate }}
       </ng-container>
 
-      <ng-template #genericQueryResponseMessage>
+      <ng-template #defaultCheckYourAnswersTitle>
         {{ 'Review query details' | rpxTranslate }}
       </ng-template>
-      {{ 'Review query details' | rpxTranslate }}
     </h1>
     <div class="govuk-!-margin-bottom-4">
       <ccd-query-case-details-header></ccd-query-case-details-header>
