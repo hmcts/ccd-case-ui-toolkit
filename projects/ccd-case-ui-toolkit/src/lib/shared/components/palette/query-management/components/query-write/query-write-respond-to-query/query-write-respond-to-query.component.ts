@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { CaseNotifier } from '../../../../../case-editor/services';
 import { QueryItemType, QueryListItem } from '../../../models';
 
 @Component({
@@ -13,13 +13,15 @@ export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
   // Set default value as false for testing follow up EUI-8454
-  @Input() public QueryCreateContext: QueryItemType = QueryItemType.FOLLOWUP;
+  @Input() public queryCreateContext: QueryItemType = QueryItemType.FOLLOWUP;
   public readonly queryItemTypeEnum = QueryItemType;
   public caseId: string;
 
-  constructor(private readonly route: ActivatedRoute) { }
+  constructor(private readonly caseNotifier: CaseNotifier) { }
 
   public ngOnInit(): void {
-    this.caseId = this.route.snapshot.params.cid;
+    this.caseNotifier.caseView.subscribe(caseDetails => {
+      this.caseId = caseDetails.case_id;
+    });
   }
 }

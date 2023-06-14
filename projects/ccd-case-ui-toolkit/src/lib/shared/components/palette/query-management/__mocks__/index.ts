@@ -1,5 +1,4 @@
-import { CaseField, FieldType } from '../../../../domain';
-import { CaseFileViewDocument } from '../../../../domain/case-file-view';
+import { CaseField, FieldType, FormDocument } from '../../../../domain';
 import { PartyMessagesGroup } from '../models';
 
 export const partyMessagesMockData: PartyMessagesGroup[] = [
@@ -154,7 +153,7 @@ export const caseFieldMockData: CaseField = Object.assign(new CaseField(), {
         document_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f',
         document_filename: 'Screenshot 2023-06-01 at 16.07.06.png',
         document_binary_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f/binary'
-      } as CaseFileViewDocument
+      } as FormDocument
     },
     {
       id: '725bf4a7-9e4c-4132-b5c1-f8028cb83459',
@@ -162,7 +161,7 @@ export const caseFieldMockData: CaseField = Object.assign(new CaseField(), {
         document_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506',
         document_filename: 'dummy.pdf',
         document_binary_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506/binary'
-      } as CaseFileViewDocument
+      } as FormDocument
     }
   ]
 });

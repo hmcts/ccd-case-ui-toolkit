@@ -15,7 +15,7 @@ export class QueryCheckYourAnswersComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
-  @Input() public QueryCreateContext: QueryItemType;
+  @Input() public queryCreateContext: QueryItemType;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   public caseField: CaseField;
   public queryItemTypeEnum = QueryItemType;
