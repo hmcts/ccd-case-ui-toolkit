@@ -52,24 +52,23 @@
         </div>
       </div>
 
-      <div class="govuk-form-group"
-           [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('body').hasError('required')}">
-        <div class="govuk-label-wrapper">
-          <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
-            {{ 'Query body' | rpxTranslate }}
-          </label>
-        </div>
-        <div id="body-hint" class="govuk-hint">
-          {{ 'Include as many details as possible so case workers can respond to your query' | rpxTranslate }}
-        </div>
-        <p id="body-error" class="govuk-error-message"
-           *ngIf="submitted && formGroup.get('body').hasError('required')">
-          <span
-            class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_BODY | rpxTranslate }}
-        </p>
-        <textarea [formControlName]="'body'" class="govuk-textarea"
-                  id="body" name="body" rows="5"
-                  aria-describedby="body-hint body-error">
+        <div class="govuk-form-group"
+             [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('body').hasError('required')}">
+          <div class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
+              {{ 'Query body' | rpxTranslate }}
+            </label>
+          </div>
+          <div id="body-hint" class="govuk-hint">
+            {{ 'Include as many details as possible so case workers can respond to your query' | rpxTranslate }}
+          </div>
+          <p id="body-error" class="govuk-error-message"
+              *ngIf="submitted && formGroup.get('body').hasError('required')">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_BODY | rpxTranslate }}
+          </p>
+          <textarea [formControlName]="'body'" class="govuk-textarea"
+                    id="body" name="body" rows="5"
+                    aria-describedby="body-hint body-error">
           </textarea>
       </div>
 
@@ -119,10 +118,9 @@
                   {{ 'Hearing date' | rpxTranslate }}
                 </label>
               </legend>
-              <p id="body-error" class="govuk-error-message"
-                 *ngIf="submitted && formGroup.get('isHearingRelated').value === true && formGroup.get('hearingDate').value === null">
-                <span
-                  class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_HEARING_DATE | rpxTranslate }}
+              <p id="hearingDate-error" class="govuk-error-message"
+                  *ngIf="submitted && formGroup.get('isHearingRelated').value === true && formGroup.get('hearingDate').value === null">
+                <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_HEARING_DATE | rpxTranslate }}
               </p>
               <ccd-query-write-date-input formControlName="hearingDate"></ccd-query-write-date-input>
             </fieldset>
