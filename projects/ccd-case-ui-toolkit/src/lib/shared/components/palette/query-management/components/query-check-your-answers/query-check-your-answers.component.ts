@@ -12,6 +12,7 @@ import { QueryManagementUtils } from '../../utils/query-management.utils';
   encapsulation: ViewEncapsulation.None
 })
 export class QueryCheckYourAnswersComponent implements OnInit {
+
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public QueryCreateContext: QueryItemType;
