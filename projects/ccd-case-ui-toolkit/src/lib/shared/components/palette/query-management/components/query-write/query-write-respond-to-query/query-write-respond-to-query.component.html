@@ -35,7 +35,7 @@
           {{ 'Your full name must be included here' | rpxTranslate }}
         </div>
         <p id="query-respond-fullName-error" class="govuk-error-message"
-           *ngIf="formGroup.get('fullName')?.errors?.length">
+           *ngIf="submitted && formGroup.get('fullName')?.errors?.length">
           <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter your full name' | rpxTranslate }}
         </p>
         <input class="govuk-input" id="query-respond-fullName" name="query-respond-fullName" type="text"

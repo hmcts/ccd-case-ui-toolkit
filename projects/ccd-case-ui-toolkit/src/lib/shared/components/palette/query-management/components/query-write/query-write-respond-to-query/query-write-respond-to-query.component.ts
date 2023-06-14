@@ -10,6 +10,7 @@ import { QueryItemType, QueryListItem } from '../../../models';
 export class QueryWriteRespondToQueryComponent {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
+  @Input() public submitted = false;
   // Set default value as false for testing follow up EUI-8454
   @Input() public QueryCreateContext: QueryItemType = QueryItemType.FOLLOWUP;
   public readonly queryItemTypeEnum = QueryItemType;
