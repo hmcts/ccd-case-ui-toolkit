@@ -12,6 +12,6 @@ export class QueryWriteRespondToQueryComponent {
   @Input() public formGroup: FormGroup;
   @Input() public submitted = false;
   // Set default value as false for testing follow up EUI-8454
-  @Input() public QueryCreateContext: QueryCreateContext = QueryCreateContext.FOLLOWUP;
+  @Input() public queryCreateContext: QueryCreateContext = QueryCreateContext.FOLLOWUP;
   public readonly queryItemTypeEnum = QueryCreateContext;
 }

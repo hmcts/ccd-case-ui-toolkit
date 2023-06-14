@@ -5,7 +5,7 @@
     </ng-container>
 
     <h1 class="govuk-heading-l">
-      <ng-container *ngIf="QueryCreateContext === queryItemTypeEnum.RESPOND; else defaultCheckYourAnswersTitle">
+      <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND; else defaultCheckYourAnswersTitle">
         {{ 'Review query response details' | rpxTranslate }}
       </ng-container>
 
@@ -46,7 +46,7 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ QueryCreateContext === queryItemTypeEnum.RESPOND ? 'Response message' : 'Query body' | rpxTranslate }}
+          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response message' : 'Query body' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
           {{ formGroup.get('body')?.value }}
