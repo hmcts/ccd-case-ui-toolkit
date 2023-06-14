@@ -35,6 +35,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       response: 'test'
     });
     component.formGroup = new FormGroup({
+      fullName: new FormControl('', Validators.required),
       body: new FormControl('', Validators.required),
       attachments: new FormControl([])
     });

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { QueryListItem } from '../../../models';
+import { QueryItemType, QueryListItem } from '../../../models';
 
 @Component({
   selector: 'ccd-query-write-respond-to-query',
@@ -10,5 +10,7 @@ import { QueryListItem } from '../../../models';
 export class QueryWriteRespondToQueryComponent {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
-  @Input() public submitted = false;
+  // Set default value as false for testing follow up EUI-8454
+  @Input() public QueryCreateContext: QueryItemType = QueryItemType.FOLLOWUP;
+  public readonly queryItemTypeEnum = QueryItemType;
 }
