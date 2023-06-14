@@ -1,7 +1,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
     <h1 class="govuk-heading-l">
-      <ng-container *ngIf="QueryCreateContext === queryItemTypeEnum.RESPOND; else defaultCheckYourAnswersTitle">
+      <ng-container *ngIf="queryCreateContext === queryItemTypeEnum.RESPOND; else defaultCheckYourAnswersTitle">
         {{ 'Review query response details' | rpxTranslate }}
       </ng-container>
 
