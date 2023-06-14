@@ -12,7 +12,7 @@ class RpxTranslateMockPipe implements PipeTransform {
   }
 }
 
-fdescribe('QueryCheckYourAnswersComponent', () => {
+describe('QueryCheckYourAnswersComponent', () => {
   let component: QueryCheckYourAnswersComponent;
   let fixture: ComponentFixture<QueryCheckYourAnswersComponent>;
 
