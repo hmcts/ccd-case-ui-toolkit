@@ -1,5 +1,7 @@
 <div class="govuk-!-margin-bottom-2">
-  <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-top-0">{{ 'Back to tasks' | rpxTranslate }}</a>
+  <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-top-0">
+    {{ 'Cancel and return to tasks' | rpxTranslate }}
+  </a>
 </div>
 
 <div class="govuk-!-margin-bottom-6">
@@ -18,7 +20,8 @@
 </div>
 
 <div class="query-respond">
-  <h1 class="govuk-heading-m">
+  <div>
+    <h1 class="govuk-heading-m">
       {{ QueryCreateContext === queryItemTypeEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
     </h1>
 
@@ -57,6 +60,7 @@
                   [class.govuk-textarea--error]="formGroup.get('body')?.errors?.length" id="query-body"
                   name="query-body" rows="5" aria-describedby="query-body-hint query-body-error">
       </textarea>
+      </div>
     </div>
   </div>
 </div>

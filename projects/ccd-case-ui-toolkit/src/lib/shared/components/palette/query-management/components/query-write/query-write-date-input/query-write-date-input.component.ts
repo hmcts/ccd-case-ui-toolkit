@@ -57,7 +57,7 @@ export class QueryWriteDateInputComponent implements ControlValueAccessor {
   private isValidDateInput(): boolean {
     const isValidDay = this.day >= 1 && this.day <= 31;
     const isValidMonth = this.month >= 1 && this.month <= 12;
-    const isValidYear = this.year >= 0;
+    const isValidYear = this.year !== null && this.year >= 1970;
 
     return isValidDay && isValidMonth && isValidYear;
   }

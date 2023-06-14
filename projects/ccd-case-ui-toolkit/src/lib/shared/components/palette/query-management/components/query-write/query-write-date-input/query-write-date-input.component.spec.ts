@@ -119,11 +119,15 @@ describe('QueryWriteDateInputComponent', () => {
     it('should return false for isValidDateInput when year is invalid', () => {
       component.day = 7;
       component.month = 6;
+
       component.year = -1;
-
       // @ts-expect-error
-      const isValid = component.isValidDateInput();
+      let isValid = component.isValidDateInput();
+      expect(isValid).toBe(false);
 
+      component.year = 1969;
+      // @ts-expect-error
+      isValid = component.isValidDateInput();
       expect(isValid).toBe(false);
     });
   });
