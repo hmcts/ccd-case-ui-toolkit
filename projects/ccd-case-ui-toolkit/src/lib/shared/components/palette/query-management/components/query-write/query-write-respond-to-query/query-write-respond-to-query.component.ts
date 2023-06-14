@@ -12,8 +12,7 @@ import { QueryItemType, QueryListItem } from '../../../models';
 export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
-  // Set default value as false for testing follow up EUI-8454
-  @Input() public queryCreateContext: QueryItemType = QueryItemType.FOLLOWUP;
+  @Input() public queryCreateContext: QueryItemType;
   public readonly queryItemTypeEnum = QueryItemType;
   public caseId: string;
 

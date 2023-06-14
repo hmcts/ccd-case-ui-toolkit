@@ -13,95 +13,111 @@
   <div class="govuk-!-margin-bottom-4">
     <div [formGroup]="formGroup">
       <div>
-        <div class="govuk-form-group"
-             [class.govuk-form-group--error]="formGroup.get('fullName')?.errors?.length">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('fullName').hasError('required')}">
           <div class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="query-raise-fullName">
+            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="fullName">
               {{ 'Full name' | rpxTranslate }}
             </label>
           </div>
-          <div id="query-raise-fullName-hint" class="govuk-hint">
+          <div id="fullName-hint" class="govuk-hint">
             {{ 'Your full name must be included here' | rpxTranslate }}
           </div>
-          <p id="query-raise-fullName-error" class="govuk-error-message"
-             *ngIf="formGroup.get('body')?.errors?.length">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a message' |
-            rpxTranslate }}
+          <p id="fullName-error" class="govuk-error-message"
+              *ngIf="submitted && formGroup.get('fullName').hasError('required')">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.FULL_NAME | rpxTranslate }}
           </p>
-          <input class="govuk-input" id="query-raise-fullName" name="query-raise-fullName" type="text"
-                 [class.govuk-input--error]="formGroup.get('fullName')?.errors?.length"
-                 [formControlName]="'fullName'"/>
+          <input class="govuk-input" id="fullName" name="fullName" type="text"
+                  [formControlName]="'fullName'"/>
         </div>
 
-        <div class="govuk-form-group"
-             [class.govuk-form-group--error]="formGroup.get('subject')?.errors?.length">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('subject').hasError('required')}">
           <div class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="query-raise-subject">
+            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="subject">
               {{ 'Query subject' | rpxTranslate }}
             </label>
           </div>
-          <div id="query-raise-subject-hint" class="govuk-hint">
+          <div id="subject-hint" class="govuk-hint">
             {{ 'The subject should be a summary of your query' | rpxTranslate }}
           </div>
-          <p id="query-raise-subject-error" class="govuk-error-message"
-             *ngIf="formGroup.get('body')?.errors?.length">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a subject' |
-            rpxTranslate }}
+          <p id="subject-error" class="govuk-error-message"
+              *ngIf="submitted && formGroup.get('subject').hasError('required')">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_SUBJECT | rpxTranslate }}
           </p>
-          <input class="govuk-input" id="query-raise-subject" name="query-raise-subject" type="text"
-                 [class.govuk-input--error]="formGroup.get('subject')?.errors?.length"
-                 [formControlName]="'subject'"/>
+          <input class="govuk-input" id="subject" name="subject" type="text"
+                  [formControlName]="'subject'"/>
         </div>
+      </div>
 
-        <div class="govuk-form-group"
-             [class.govuk-form-group--error]="formGroup.get('body')?.errors?.length">
+        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('body').hasError('required')}">
           <div class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="query-raise-body">
+            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
               {{ 'Query body' | rpxTranslate }}
             </label>
           </div>
-          <div id="query-raise-body-hint" class="govuk-hint">
+          <div id="body-hint" class="govuk-hint">
             {{ 'Include as many details as possible so case workers can respond to your query' | rpxTranslate }}
           </div>
-          <p id="query-raise-body-error" class="govuk-error-message"
-             *ngIf="formGroup.get('body')?.errors?.length">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a query body' |
-            rpxTranslate }}
+          <p id="body-error" class="govuk-error-message"
+              *ngIf="submitted && formGroup.get('body').hasError('required')">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_BODY | rpxTranslate }}
           </p>
           <textarea [formControlName]="'body'" class="govuk-textarea"
-                    [class.govuk-textarea--error]="formGroup.get('body')?.errors?.length" id="query-raise-body"
-                    name="query-body" rows="5" aria-describedby="query-body-hint query-body-error">
+                    id="body"name="body" rows="5"
+                    aria-describedby="body-hint body-error">
           </textarea>
-        </div>
+      </div>
 
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
-            <legend>
-              <label class="govuk-label govuk-label--m govuk-!-font-weight-bold">
-                {{ 'Is the query hearing related?' | rpxTranslate }}
+      <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('isHearingRelated').hasError('required')}">
+        <fieldset class="govuk-fieldset">
+          <legend>
+            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold">
+              {{ 'Is the query hearing related?' | rpxTranslate }}
+            </label>
+          </legend>
+          <p id="body-error" class="govuk-error-message"
+              *ngIf="submitted && formGroup.get('isHearingRelated').hasError('required')">
+            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_HEARING_RELATED | rpxTranslate }}
+          </p>
+          <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="isHearingRelated-yes" name="isHearingRelated"
+                     type="radio"
+                     formControlName="isHearingRelated"
+                     [checked]="formGroup.get('isHearingRelated').value === true" [value]="true"
+              >
+              <label class="govuk-label govuk-radios__label" for="isHearingRelated-yes">
+                {{ 'Is the query hearing related?' | rpxTranslate: null : 'Yes' }}
               </label>
-            </legend>
-
-            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="query-raise-isHearingRelated-yes" name="query-raise-isHearingRelated-yes" type="radio"
-                       [checked]="formGroup.get('isHearingRelated').value === true" [value]="true"
-                >
-                <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-yes">
-                  {{ 'Is the query hearing related?' | rpxTranslate: null : 'Yes' }}
-                </label>
-              </div>
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="query-raise-isHearingRelated-no" name="query-raise-isHearingRelated-no" type="radio"
-                       [checked]="formGroup.get('isHearingRelated').value === false" [value]="false"
-                >
-                <label class="govuk-label govuk-radios__label" for="query-raise-isHearingRelated-no">
-                  {{ 'Is the query hearing related?' | rpxTranslate: null : 'No' }}
-                </label>
-              </div>
             </div>
-          </fieldset>
-        </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="isHearingRelated-no" name="isHearingRelated"
+                     type="radio"
+                     formControlName="isHearingRelated"
+                     [checked]="formGroup.get('isHearingRelated').value === false" [value]="false"
+              >
+              <label class="govuk-label govuk-radios__label" for="isHearingRelated-no">
+                {{ 'Is the query hearing related?' | rpxTranslate: null : 'No' }}
+              </label>
+            </div>
+          </div>
+        </fieldset>
+
+        <ng-container *ngIf="formGroup.get('isHearingRelated').value">
+          <div class="govuk-!-margin-top-1" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('isHearingRelated').value === true && formGroup.get('hearingDate').value === null}">
+            <fieldset class="govuk-fieldset" role="group">
+              <legend>
+                <label class="govuk-label govuk-label--s">
+                  {{ 'Hearing date' | rpxTranslate }}
+                </label>
+              </legend>
+              <p id="body-error" class="govuk-error-message"
+                  *ngIf="submitted && formGroup.get('isHearingRelated').value === true && formGroup.get('hearingDate').value === null">
+                <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_HEARING_DATE | rpxTranslate }}
+              </p>
+              <ccd-query-write-date-input formControlName="hearingDate"></ccd-query-write-date-input>
+            </fieldset>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>
