@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractFieldReadComponent } from '../base-field';
 import { QueryManagementErrorMessage } from './components/query-management-error-messages/query-management-error-message.model';
 import { QueryListItem } from './models';
+
 @Component({
   selector: 'ccd-write-query-management-field',
   templateUrl: './write-query-management-field.component.html',

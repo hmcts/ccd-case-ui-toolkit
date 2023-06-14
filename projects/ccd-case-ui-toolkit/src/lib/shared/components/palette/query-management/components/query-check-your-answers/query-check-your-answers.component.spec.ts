@@ -33,7 +33,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.queryItem = Object.assign(new QueryListItem(), {
       subject: 'test',
       response: 'test'
-    });
+    })
     component.formGroup = new FormGroup({
       fullName: new FormControl('', Validators.required),
       body: new FormControl('', Validators.required),

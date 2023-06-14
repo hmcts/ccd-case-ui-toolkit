@@ -8,4 +8,3 @@ export * from './query-write/query-write-date-input/query-write-date-input.compo
 export * from './query-write/query-write-add-documents/query-write-add-documents.component';
 export * from './query-write/query-write-raise-query/query-write-raise-query.component';
 export * from './query-write/query-write-respond-to-query/query-write-respond-to-query.component';
-
