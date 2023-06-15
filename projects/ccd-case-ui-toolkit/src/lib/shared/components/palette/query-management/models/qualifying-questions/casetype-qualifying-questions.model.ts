@@ -1,4 +1,4 @@
-import { QualifyingQuestion } from "./qualifying-question.model";
+import { QualifyingQuestion } from './qualifying-question.model';
 
 export interface CaseTypeQualifyingQuestions {
   caseTypeId: string;
