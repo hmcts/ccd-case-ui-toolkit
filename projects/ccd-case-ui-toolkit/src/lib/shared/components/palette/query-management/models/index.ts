@@ -1,3 +1,5 @@
+export * from './qualifying-questions/qualifying-question.model';
+
 export * from './party-messages/party-message.model';
 export * from './party-messages/party-messages-group.model';
 

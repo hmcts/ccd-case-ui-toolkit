@@ -1,5 +1,5 @@
 import { CaseField, FieldType } from '../../../../domain';
-import { PartyMessagesGroup } from '../models';
+import { PartyMessagesGroup, QualifyingQuestion } from '../models';
 
 export const partyMessagesMockData: PartyMessagesGroup[] = [
   {
