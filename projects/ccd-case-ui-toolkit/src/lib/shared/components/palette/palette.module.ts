@@ -121,7 +121,6 @@ import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-u
 import {
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
-  QueryCreateComponent,
   QueryDetailsComponent,
   QueryDetailsTableComponent,
   QueryListComponent,
@@ -129,8 +128,7 @@ import {
   QueryWriteDateInputComponent,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
-  ReadQueryManagementFieldComponent,
-  WriteQueryManagementFieldComponent
+  ReadQueryManagementFieldComponent
 } from './query-management';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
@@ -253,9 +251,7 @@ const PALETTE_COMPONENTS = [
 
   // Components for Query Management
   ReadQueryManagementFieldComponent,
-  WriteQueryManagementFieldComponent,
   QueryDetailsComponent,
-  QueryCreateComponent,
   QueryListComponent,
   QueryDetailsTableComponent,
   QueryWriteRespondToQueryComponent,

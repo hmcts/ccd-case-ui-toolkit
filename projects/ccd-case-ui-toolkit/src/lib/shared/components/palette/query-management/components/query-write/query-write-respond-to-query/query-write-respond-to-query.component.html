@@ -25,38 +25,39 @@
 
     <div [formGroup]="formGroup">
       <div class="govuk-form-group"
-           [class.govuk-form-group--error]="formGroup.get('fullName')?.errors?.length">
+           [class.govuk-form-group--error]="submitted && formGroup.get('fullName')?.hasError('required')">
         <div class="govuk-label-wrapper">
-          <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="query-respond-fullName">
+          <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="fullName">
             {{ 'Full name' | rpxTranslate }}
           </label>
         </div>
-        <div id="query-respond-fullName-hint" class="govuk-hint">
+        <div id="fullName-hint" class="govuk-hint">
           {{ 'Your full name must be included here' | rpxTranslate }}
         </div>
-        <p id="query-respond-fullName-error" class="govuk-error-message"
-           *ngIf="submitted && formGroup.get('fullName')?.errors?.length">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter your full name' | rpxTranslate }}
+        <p id="fullName-error" class="govuk-error-message"
+           *ngIf="submitted && formGroup.get('fullName')?.hasError('required')">
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ respondToQueryErrorMessages.FULL_NAME | rpxTranslate }}
         </p>
-        <input class="govuk-input" id="query-respond-fullName" name="query-respond-fullName" type="text"
-               [class.govuk-input--error]="formGroup.get('fullName')?.errors?.length"
-               [formControlName]="'fullName'"/>
+        <input [formControlName]="'fullName'" type="text" name="fullName"
+               class="govuk-input" id="fullName"
+               [class.govuk-input--error]="submitted && formGroup.get('fullName')?.hasError('required')"
+               />
       </div>
 
       <div class="govuk-form-group body-textarea"
-           [class.govuk-form-group--error]="formGroup.get('body')?.errors?.length">
+           [class.govuk-form-group--error]="submitted && formGroup.get('body')?.hasError('required')">
         <div class="govuk-label-wrapper">
-          <label class="govuk-label govuk-!-font-weight-bold" for="query-body">
+          <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
             {{ QueryCreateContext === queryItemTypeEnum.RESPOND ? 'Response message' : 'Query Body' | rpxTranslate }}
           </label>
         </div>
-        <p id="query-body-error" class="govuk-error-message"
-           *ngIf="formGroup.get('body')?.errors?.length">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a response message' | rpxTranslate }}
+        <p id="body-error" class="govuk-error-message"
+           *ngIf="submitted && formGroup.get('body')?.hasError('required')">
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ respondToQueryErrorMessages.QUERY_BODY | rpxTranslate }}
         </p>
         <textarea [formControlName]="'body'" class="govuk-textarea"
-                  [class.govuk-textarea--error]="formGroup.get('body')?.errors?.length" id="query-body"
-                  name="query-body" rows="5" aria-describedby="query-body-hint query-body-error">
+                  [class.govuk-textarea--error]="submitted && formGroup.get('body')?.hasError('required')" id="body"
+                  name="body" rows="5" aria-describedby="body-hint body-error">
       </textarea>
       </div>
     </div>
