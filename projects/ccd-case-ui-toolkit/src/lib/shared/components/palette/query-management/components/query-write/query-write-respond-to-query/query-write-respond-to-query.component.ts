@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { take } from 'rxjs/operators';
 import { CaseNotifier } from '../../../../../case-editor/services';
 import { QueryItemType, QueryListItem } from '../../../models';
 
@@ -20,7 +21,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit {
   constructor(private readonly caseNotifier: CaseNotifier) { }
 
   public ngOnInit(): void {
-    this.caseNotifier.caseView.subscribe(caseDetails => {
+    this.caseNotifier.caseView.pipe(take(1)).subscribe(caseDetails => {
       this.caseId = caseDetails.case_id;
     });
   }
