@@ -79,7 +79,7 @@
         </dd>
       </div>
 
-      <div class="govuk-summary-list__row">
+      <div *ngIf="formGroup.get('isHearingRelated')?.value" class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ 'What is the date of the hearing your query is related to?' | rpxTranslate }}
         </dt>

@@ -111,7 +111,9 @@
 
         <ng-container *ngIf="formGroup.get('isHearingRelated').value">
           <div class="govuk-!-margin-top-1"
-               [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('isHearingRelated').value === true && formGroup.get('hearingDate').value === null}">
+               [ngClass]="{'govuk-form-group--error': submitted &&
+               formGroup.get('isHearingRelated').value === true &&
+               formGroup.get('hearingDate').value === null}">
             <fieldset class="govuk-fieldset" role="group">
               <legend>
                 <label class="govuk-label govuk-label--s">
