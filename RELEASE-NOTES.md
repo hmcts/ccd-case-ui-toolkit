@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.16.1-st-cdam-docstore
+**EXUI-331** Fix issue with secure document store
+
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
 
