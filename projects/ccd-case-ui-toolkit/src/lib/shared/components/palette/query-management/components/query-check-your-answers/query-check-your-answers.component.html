@@ -84,7 +84,7 @@
           {{ 'What is the date of the hearing your query is related to?' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
-          {{ formGroup.get('hearingDate')?.value | date: 'dd/MM/yyyy' }}
+          {{ formGroup.get('hearingDate')?.value | date: 'dd MMM yyyy' }}
         </dd>
         <dd class="govuk-summary-list__actions">
           <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
