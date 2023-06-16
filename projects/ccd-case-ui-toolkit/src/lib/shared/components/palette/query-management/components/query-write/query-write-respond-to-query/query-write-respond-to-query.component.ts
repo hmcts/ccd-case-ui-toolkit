@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QueryItemType, QueryListItem } from '../../../models';
-import { RespondToQueryErrorMessages } from '../../../enums';
+import { RaiseQueryErrorMessage, RespondToQueryErrorMessages } from '../../../enums';
 
 @Component({
   selector: 'ccd-query-write-respond-to-query',
@@ -15,5 +15,5 @@ export class QueryWriteRespondToQueryComponent {
   // Set default value as false for testing follow up EUI-8454
   @Input() public QueryCreateContext: QueryItemType = QueryItemType.FOLLOWUP;
   public readonly queryItemTypeEnum = QueryItemType;
-  public readonly respondToQueryErrorMessages = RespondToQueryErrorMessages;
+  public readonly raiseQueryErrorMessages = RaiseQueryErrorMessage;
 }

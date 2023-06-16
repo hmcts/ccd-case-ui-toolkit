@@ -36,7 +36,7 @@
         </div>
         <p id="fullName-error" class="govuk-error-message"
            *ngIf="submitted && formGroup.get('fullName')?.hasError('required')">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ respondToQueryErrorMessages.FULL_NAME | rpxTranslate }}
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ raiseQueryErrorMessages.FULL_NAME | rpxTranslate }}
         </p>
         <input [formControlName]="'fullName'" type="text" name="fullName"
                class="govuk-input" id="fullName"
@@ -53,7 +53,7 @@
         </div>
         <p id="body-error" class="govuk-error-message"
            *ngIf="submitted && formGroup.get('body')?.hasError('required')">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ respondToQueryErrorMessages.QUERY_BODY | rpxTranslate }}
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ QueryCreateContext === queryItemTypeEnum.RESPOND ? raiseQueryErrorMessages.RESPOND_QUERY_BODY : raiseQueryErrorMessages.QUERY_BODY | rpxTranslate }}
         </p>
         <textarea [formControlName]="'body'" class="govuk-textarea"
                   [class.govuk-textarea--error]="submitted && formGroup.get('body')?.hasError('required')" id="body"
