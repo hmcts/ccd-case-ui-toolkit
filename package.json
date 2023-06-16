@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.15.0-6.16-rc-14",
+  "version": "6.16.1-st-cdam-docstore",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -79,7 +79,7 @@
     "minimist": "1.2.3",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
-    "ngx-chips": "2.1.0",
+    "ngx-chips": ">=3.0.0",
     "ngx-md": "8.1.6",
     "ngx-pagination": "5.1.1",
     "npm-registry-fetch": "^4.0.5",
