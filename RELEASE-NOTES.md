@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.16.0-qualifying-questions-create-data-model-and-mock-data-v2
+### Version 6.16.0-qualifying-questions-create-data-model-and-mock-data-v3
 **EUI-8522** Qualifying questions create data model and mock data
 
 ### Version 6.16.0-query-management-raise-a-query-error-scenarios-v3
