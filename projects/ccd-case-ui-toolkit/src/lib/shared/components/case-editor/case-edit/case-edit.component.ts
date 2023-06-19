@@ -405,13 +405,8 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
 }
 
   private caseSubmit({form, caseEventData, submit}: CaseEditCaseSubmit): void {
-    const loadingSpinnerToken = this.loadingService.register();
-
     submit(caseEventData)
-      .pipe(finalize(() => {
-        this.loadingService.unregister(loadingSpinnerToken);
-      }))
-      .subscribe(
+    .subscribe(
         response => {
           this.caseNotifier.cachedCaseView = null;
           this.sessionStorageService.removeItem('eventUrl');
