@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { QualifyingQuestion } from '../../models';
 
 @Component({
   selector: 'ccd-qualifying-questions',
@@ -6,10 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class QualifyingQuestionsComponent implements OnInit {
 
-  
+  @Input() public qualifyingQuestions: QualifyingQuestion[];
+
+  public qualifyingQuestionSelectionError: string;
 
   public ngOnInit(): void {
-
+    console.log('QUALIFYING QUESTIONS');
   }
-
 }

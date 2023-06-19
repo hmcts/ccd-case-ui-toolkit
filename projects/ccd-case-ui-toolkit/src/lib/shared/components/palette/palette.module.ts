@@ -119,6 +119,7 @@ import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
 import {
+  QualifyingQuestionsComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
   QueryCreateComponent,
@@ -263,7 +264,8 @@ const PALETTE_COMPONENTS = [
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
   QueryWriteAddDocumentsComponent,
-  QueryWriteDateInputComponent
+  QueryWriteDateInputComponent,
+  QualifyingQuestionsComponent
 ];
 
 @NgModule({
