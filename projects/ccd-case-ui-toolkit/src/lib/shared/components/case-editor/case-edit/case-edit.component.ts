@@ -169,8 +169,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     });
 
     /* istanbul ignore else */
-    if(!nextPage && 
-      !(this.eventTrigger.show_summary || this.eventTrigger.show_summary === null) && 
+    if(!nextPage &&
+      !(this.eventTrigger.show_summary || this.eventTrigger.show_summary === null) &&
       !(this.eventTrigger.show_event_notes || this.eventTrigger.show_event_notes === null)) {
       this.submitForm({
         eventTrigger: this.eventTrigger,
