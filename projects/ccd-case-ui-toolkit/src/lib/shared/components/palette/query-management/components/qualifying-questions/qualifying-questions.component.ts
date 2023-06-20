@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { QualifyingQuestion } from '../../models';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'ccd-qualifying-questions',
@@ -7,11 +8,13 @@ import { QualifyingQuestion } from '../../models';
 })
 export class QualifyingQuestionsComponent implements OnInit {
 
-  @Input() public qualifyingQuestions: QualifyingQuestion[];
+  @Input() public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
 
   public qualifyingQuestionSelectionError: string;
 
   public ngOnInit(): void {
-    console.log('QUALIFYING QUESTIONS');
+    this.qualifyingQuestions$?.subscribe(x => {
+      console.log('QUALIFYING QUESTIONS', x);
+    });
   }
 }
