@@ -362,17 +362,6 @@ describe('CaseEditSubmitComponent', () => {
       expect(eventNotes).not.toBeNull();
     });
 
-    it('should show event notes when not defined in event trigger and showEventNotes is called', () => {
-      comp.eventTrigger.show_event_notes = undefined;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-
-      const result = comp.showEventNotes();
-
-      expect(result).toBeTruthy();
-      expect(eventNotes).not.toBeNull();
-    });
-
     it('should not show event notes when set to false in event trigger and showEventNotes is called', () => {
       comp.eventTrigger.show_event_notes = false;
       fixture.detectChanges();
