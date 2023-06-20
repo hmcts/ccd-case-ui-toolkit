@@ -228,6 +228,7 @@ describe('CaseEditSubmitComponent', () => {
       de = fixture.debugElement;
 
       comp.ngOnInit();
+      comp.wizard.pages[0].case_fields = [caseField1];
       fixture.detectChanges();
     });
 
@@ -332,8 +333,8 @@ describe('CaseEditSubmitComponent', () => {
 
       const result = comp.showEventNotes();
 
-      expect(result).toBeFalsy();
-      expect(eventNotes).toBeNull();
+      expect(result).toBeTruthy();
+      expect(eventNotes).not.toBeNull();
     });
 
     it('should show event notes when not defined in event trigger and showEventNotes is called', () => {
@@ -343,8 +344,8 @@ describe('CaseEditSubmitComponent', () => {
 
       const result = comp.showEventNotes();
 
-      expect(result).toBeFalsy();
-      expect(eventNotes).toBeNull();
+      expect(result).toBeTruthy();
+      expect(eventNotes).not.toBeNull();
     });
 
     it('should not show event notes when set to false in event trigger and showEventNotes is called', () => {

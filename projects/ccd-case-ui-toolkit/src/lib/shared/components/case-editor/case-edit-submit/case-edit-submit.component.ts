@@ -158,13 +158,13 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public checkYourAnswerFieldsToDisplayExists(): boolean {
      /* istanbul ignore else */
-    if (!this.eventTrigger.show_summary) {
+    if (!(this.eventTrigger.show_summary !== false)) {
       return false;
     }
 
     for (const page of this.wizard.pages) {
        /* istanbul ignore else */
-      if (this.isShown(page)) {
+      if (page.case_fields && this.isShown(page)) {
         for (const field of page.case_fields) {
            /* istanbul ignore else */
           if (this.canShowFieldInCYA(field)) {
@@ -184,7 +184,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public showEventNotes(): boolean {
-    return this.eventTrigger.show_event_notes === true;
+    return this.eventTrigger.show_event_notes !== false;
   }
 
   private getLastPageShown(): WizardPage {
