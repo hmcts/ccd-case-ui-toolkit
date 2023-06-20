@@ -751,4 +751,40 @@ describe('FieldsUtils', () => {
       expect(FieldsUtils.containsLinkedCasesCaseField(caseFields)).toBe(true);
     });
   });
+
+  describe('isCaseFieldOfType() function test', () => {
+    it('should return false if case field is null', () => {
+      expect(FieldsUtils.isCaseFieldOfType(null, ['FlagLauncher'])).toBe(false);
+    });
+
+    it('should return false if case field is not of the specified type', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])).toBe(false);
+    });
+
+    it('should return false if case field is not any of the specified types', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher', 'FlagLauncher'])).toBe(false);
+    });
+
+    it('should return true if case field is of the specified type', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])).toBe(true);
+    });
+
+    it('should return true if case field is of one of the specified types', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher', 'FlagLauncher'])).toBe(true);
+    });
+
+    it('should return false if the types argument is falsy', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, null)).toBe(false);
+    });
+
+    it('should return false if no types are specified', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, [])).toBe(false);
+    });
+  });
 });

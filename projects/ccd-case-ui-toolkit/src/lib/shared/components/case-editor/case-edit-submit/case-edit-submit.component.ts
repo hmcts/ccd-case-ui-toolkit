@@ -78,9 +78,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.contextFields = this.getCaseFields();
     // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
     // a FlagLauncher field in the event trigger
-    this.caseEdit.isCaseFlagSubmission = this.eventTrigger.case_fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
+    this.caseEdit.isCaseFlagSubmission =
+      this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']));
     this.caseEdit.isLinkedCasesSubmission =
-      this.eventTrigger.case_fields.some(caseField => FieldsUtils.isComponentLauncherCaseField(caseField));
+      this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.caseEdit.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
   }
 

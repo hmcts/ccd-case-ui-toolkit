@@ -278,18 +278,13 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
   // these will fail validation
   this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, eventTrigger.case_fields);
-  // If this is a Case Flag submission (and thus a FlagLauncher field is present in the event trigger), the flag
-  // details data needs populating for each Flags field, then the FlagLauncher field needs removing
-  if (this.isCaseFlagSubmission) {
-    this.formValueService.populateFlagDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
-    this.formValueService.removeFlagLauncherField(caseEventData.data, eventTrigger.case_fields);
-  }
-
-  if (this.isLinkedCasesSubmission) {
-    this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
-    this.formValueService.removeComponentLauncherField(caseEventData.data, eventTrigger.case_fields);
-  }
-
+  // For Case Flag submissions (where a FlagLauncher field is present in the event trigger), the flag details data
+  // needs populating for each Flags field, then the FlagLauncher field needs removing
+  this.formValueService.repopulateFormDataFromCaseFieldValues(caseEventData.data, eventTrigger.case_fields);
+  // Data population step required for Linked Cases
+  this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
+  // Remove "Launcher"-type fields (these have no values and are not intended to be persisted)
+  this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
   caseEventData.event_token = eventTrigger.event_token;
   caseEventData.ignore_warning = this.ignoreWarning;
   if (this.confirmation) {

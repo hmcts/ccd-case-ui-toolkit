@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+### Version 6.16-hotfix-EUI-8515-case-flags-submission
+**EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
+**EUI-8550** Fix incorrect behaviour of showEventNotes() function on Case Event submission, introduced in error by EUI-6693
+
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
 

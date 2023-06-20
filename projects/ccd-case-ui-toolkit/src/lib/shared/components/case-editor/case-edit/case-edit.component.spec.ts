@@ -263,9 +263,8 @@ xdescribe('CaseEditComponent', () => {
         'clearNonCaseFields',
         'removeNullLabels',
         'removeEmptyDocuments',
-        'populateFlagDetailsFromCaseFields',
-        'removeFlagLauncherField',
-        'removeComponentLauncherField',
+        'repopulateFormDataFromCaseFieldValues',
+        'removeCaseFieldsOfType',
         'removeEmptyCollectionsWithMinValidation',
         'populateLinkedCasesDetailsFromCaseFields'
       ]);
@@ -1036,7 +1035,7 @@ xdescribe('CaseEditComponent', () => {
     });
 
     describe('getStatus', () => {
-      it('should get callback_response_status as vallback has failed', () => {
+      it('should get callback_response_status as callback has failed', () => {
         const response = {
           /* tslint:disable:object-literal-key-quotes */
           'delete_draft_response_status': 'delete_draft_response_status',
@@ -1147,8 +1146,6 @@ xdescribe('CaseEditComponent', () => {
 
         spyOn(component, 'confirm')
 
-        component.isCaseFlagSubmission = true;
-        component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
         formValueService.sanitise.and.returnValue({name: 'sweet'})
@@ -1162,9 +1159,9 @@ xdescribe('CaseEditComponent', () => {
 
         expect(component.confirm).toHaveBeenCalled();
         expect(formValueService.populateLinkedCasesDetailsFromCaseFields).toHaveBeenCalled();
-        expect(formValueService.removeComponentLauncherField).toHaveBeenCalled();
-        expect(formValueService.removeFlagLauncherField).toHaveBeenCalled();
-        expect(formValueService.populateFlagDetailsFromCaseFields).toHaveBeenCalled();
+        expect(formValueService.removeCaseFieldsOfType)
+          .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
+        expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
       });
 
       it('should NOT submit the case due to error', () => {
