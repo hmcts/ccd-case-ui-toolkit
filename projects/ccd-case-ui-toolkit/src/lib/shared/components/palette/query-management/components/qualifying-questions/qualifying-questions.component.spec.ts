@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { QualifyingQuestionsComponent } from './qualifying-questions.component';
 import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
+import { QualifyingQuestionsComponent } from './qualifying-questions.component';
 
 describe('QualifyingQuestionsComponent', () => {
   let component: QualifyingQuestionsComponent;

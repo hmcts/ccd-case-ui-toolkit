@@ -1,7 +1,7 @@
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { QueryWriteDateInputComponent } from './query-write-date-input.component';
-import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
