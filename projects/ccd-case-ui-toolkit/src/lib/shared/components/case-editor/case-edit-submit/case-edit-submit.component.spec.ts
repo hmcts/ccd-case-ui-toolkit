@@ -282,8 +282,33 @@ describe('CaseEditSubmitComponent', () => {
 
     it('should return false when no field exists and checkYourAnswerFieldsToDisplayExists is called', () => {
       const result = comp.checkYourAnswerFieldsToDisplayExists();
-
       expect(result).toBeFalsy();
+    });
+
+    it('should return false when show summary is false and checkYourAnswerFieldsToDisplayExists is called', () => {
+      comp.eventTrigger.show_summary = false;
+      const result = comp.checkYourAnswerFieldsToDisplayExists();
+      expect(result).toBeFalsy();
+    });
+
+    it('should return true when show summary is null and checkYourAnswerFieldsToDisplayExists is called', () => {
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      caseField.show_summary_change_option = true;
+      comp.wizard.pages[0].case_fields = [caseField];
+      comp.eventTrigger.show_summary = null;
+
+      const result = comp.checkYourAnswerFieldsToDisplayExists();
+      expect(result).toBeTruthy();
+    });
+
+    it('should return true when no Fields to Display exists and checkYourAnswerFieldsToDisplayExists is called', () => {
+      const caseField: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', null);
+      caseField.show_summary_change_option = true;
+      comp.wizard.pages[0].case_fields = [caseField];
+      comp.eventTrigger.show_summary = true;
+
+      const result = comp.checkYourAnswerFieldsToDisplayExists();
+      expect(result).toBeTruthy();
     });
 
     it('should return true when no Fields to Display exists and checkYourAnswerFieldsToDisplayExists is called', () => {
