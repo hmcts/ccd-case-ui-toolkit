@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { QualifyingQuestionsComponent } from './qualifying-questions.component';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 
 describe('QualifyingQuestionsComponent', () => {
   let component: QualifyingQuestionsComponent;
@@ -9,7 +10,10 @@ describe('QualifyingQuestionsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [QualifyingQuestionsComponent]
+      declarations: [
+        QualifyingQuestionsComponent,
+        MockRpxTranslatePipe
+      ]
     })
     .compileComponents();
   }));

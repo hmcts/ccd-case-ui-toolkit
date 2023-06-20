@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { QualifyingQuestion } from '../../models';
-import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { QualifyingQuestion } from '../../models';
 
 @Component({
   selector: 'ccd-qualifying-questions',
