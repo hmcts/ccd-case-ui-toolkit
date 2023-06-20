@@ -1,18 +1,24 @@
 <h1 class="govuk-heading-l">
-	Are you contacting us about any of the following:
+	{{ 'Are you contacting us about any of the following:' | rpxTranslate }}
 </h1>
-<div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': qualifyingQuestionSelectionError}">
-  <fieldset class="govuk-fieldset" id="qualifying-question">
-    <span class="govuk-error-message" *ngIf="qualifyingQuestionSelectionError">
-      <span class="govuk-visually-hidden">Error:</span> {{qualifyingQuestionSelectionError}}
-    </span>
-    <div class="govuk-radios">
+<div [formGroup]="formGroup">
+  <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': qualifyingQuestionSelectionError}">
+    <fieldset class="govuk-fieldset" id="qualifying-question">
+      <span class="govuk-error-message" *ngIf="qualifyingQuestionSelectionError">
+        <span class="govuk-visually-hidden">Error:</span> {{qualifyingQuestionSelectionError}}
+      </span>
       <div class="govuk-radios">
-        <div *ngFor="let qualifyingQuestion of qualifyingQuestions$ | async" class="govuk-radios__item">
-          <input class="govuk-radios__input" id="{{qualifyingQuestion.name}}" formControlName="stage-option" name="stage-option" type="radio" [value]="qualifyingQuestion.name">
-          <label class="govuk-label govuk-radios__label" [for]="qualifyingQuestion.name">{{qualifyingQuestion.name}}</label>
+        <div class="govuk-radios">
+          <div *ngFor="let qualifyingQuestion of qualifyingQuestions$ | async" class="govuk-radios__item">
+            <input class="govuk-radios__input" id="{{qualifyingQuestion.name}}" [formControlName]="'qualifyingQuestionOption'" name="qualifyingQuestionOption" type="radio" [value]="qualifyingQuestion.name">
+            <label class="govuk-label govuk-radios__label" [for]="qualifyingQuestion.name">{{qualifyingQuestion.name}}</label>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="raiseAQuery" [formControlName]="'qualifyingQuestionOption'" name="qualifyingQuestionOption" type="radio" value="raiseAQuery">
+            <label class="govuk-label govuk-radios__label" for="raise-a-query">{{ 'Raise a query' | rpxTranslate }}</label>
+          </div>
         </div>
       </div>
-    </div>
-  </fieldset>
+    </fieldset>
+  </div>
 </div>

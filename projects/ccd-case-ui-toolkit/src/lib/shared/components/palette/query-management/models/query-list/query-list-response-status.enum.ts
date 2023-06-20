@@ -1,5 +1,6 @@
 export enum QueryItemType {
   NEW = 'New',
   RESPOND = 'Respond',
-  FOLLOWUP = 'Followup'
+  FOLLOWUP = 'Followup',
+  NONE = 'none'
 }
