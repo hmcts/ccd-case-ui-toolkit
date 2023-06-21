@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MockRpxTranslatePipe } from '../../../../../../../shared/test/mock-rpx-translate.pipe';
 import { QualifyingQuestionDetailComponent } from './qualifying-question-detail.component';
 
 describe('QualifyingQuestionDetailComponent', () => {
@@ -8,7 +8,10 @@ describe('QualifyingQuestionDetailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ QualifyingQuestionDetailComponent ]
+      declarations: [
+        QualifyingQuestionDetailComponent,
+        MockRpxTranslatePipe
+      ]
     })
     .compileComponents();
   });

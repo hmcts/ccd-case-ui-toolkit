@@ -314,9 +314,7 @@ const PALETTE_COMPONENTS = [
     LanguageInterpreterDisplayPipe,
     ManageCaseFlagsLabelDisplayPipe,
     UpdateFlagTitleDisplayPipe,
-    ...PALETTE_COMPONENTS,
-    QualifyingQuestionOptionsComponent,
-    QualifyingQuestionDetailComponent
+    ...PALETTE_COMPONENTS
   ],
   exports: [
     NgxMatDatetimePickerModule,
