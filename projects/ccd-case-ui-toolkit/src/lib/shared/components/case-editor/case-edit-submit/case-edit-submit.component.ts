@@ -182,7 +182,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public showEventNotes(): boolean {
-    return this.eventTrigger.show_event_notes || this.eventTrigger.show_event_notes === null;
+    return this.eventTrigger.show_event_notes;
   }
 
   private getLastPageShown(): WizardPage {
