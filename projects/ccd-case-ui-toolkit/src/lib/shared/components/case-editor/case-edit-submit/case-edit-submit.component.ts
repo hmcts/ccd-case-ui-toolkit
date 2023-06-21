@@ -159,25 +159,23 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public checkYourAnswerFieldsToDisplayExists(): boolean {
      /* istanbul ignore else */
-    if (!this.eventTrigger.show_summary) {
+    if (this.eventTrigger.show_summary || this.eventTrigger.show_summary === null) {
+      for (const page of this.wizard.pages) {
+        /* istanbul ignore else */
+       if (page.case_fields && this.isShown(page)) {
+         for (const field of page.case_fields) {
+            /* istanbul ignore else */
+           if (this.canShowFieldInCYA(field)) {
+             // at least one field needs showing
+             return true;
+           }
+         }
+       }
+     }
+    } else {
+      // found no fields to show in CYA summary page
       return false;
     }
-
-    for (const page of this.wizard.pages) {
-       /* istanbul ignore else */
-      if (this.isShown(page)) {
-        for (const field of page.case_fields) {
-           /* istanbul ignore else */
-          if (this.canShowFieldInCYA(field)) {
-            // at least one field needs showing
-            return true;
-          }
-        }
-      }
-    }
-
-    // found no fields to show in CYA summary page
-    return false;
   }
 
   public readOnlySummaryFieldsToDisplayExists(): boolean {
@@ -185,7 +183,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public showEventNotes(): boolean {
-    return this.eventTrigger.show_event_notes === true;
+    return !!this.eventTrigger.show_event_notes;
   }
 
   private getLastPageShown(): WizardPage {
