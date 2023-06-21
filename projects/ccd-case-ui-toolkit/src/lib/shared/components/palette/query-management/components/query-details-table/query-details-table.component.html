@@ -29,9 +29,7 @@
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
         <td class="govuk-table__cell">
-          <div *ngFor="let attachment of queryItem.attachments">
-            <a [href]="attachment._links.self.href" target="_blank">{{ attachment.originalDocumentName }}</a>
-          </div>
+          <ccd-read-collection-field *ngIf="caseField" [caseField]="caseField"></ccd-read-collection-field>
         </td>
       </tr>
     </tbody>
