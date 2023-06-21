@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.16.0-create-qualifying-questions-component-v2",
+  "version": "6.16.0-create-qualifying-questions-component-step-2",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
