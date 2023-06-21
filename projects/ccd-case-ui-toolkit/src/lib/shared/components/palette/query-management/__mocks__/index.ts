@@ -24,7 +24,6 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
         createdBy: '1111-1111-1111-1111'
-
       },
       {
         id: 'case-message-002',
@@ -38,13 +37,35 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         createdBy: '1111-1111-1111-1111'
       },
       {
-        id: 'case-message-003',
-        name: 'Maggie Conroy',
+        id: 'case-message-011',
+        name: 'John Smith',
         body: 'Using mobile phone is strictly prohibited in the court room.',
         attachments: [],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
-        createdOn: new Date(2023, 0, 4),
+        createdOn: new Date(2023, 2, 4),
+        createdBy: '2222-2222-2222-2222',
+        parentId: 'case-message-002'
+      },
+      {
+        id: 'case-message-012',
+        name: 'Maggie Conroy',
+        body: 'Can I use a tablet instead?',
+        attachments: [],
+        isHearingRelated: true,
+        hearingDate: '10 Jan 2023',
+        createdOn: new Date(2023, 3, 8),
+        createdBy: '2222-2222-2222-2222',
+        parentId: 'case-message-002'
+      },
+      {
+        id: 'case-message-013',
+        name: 'John Smith',
+        body: 'No, you cannot use a tablet either.',
+        attachments: [],
+        isHearingRelated: true,
+        hearingDate: '10 Jan 2023',
+        createdOn: new Date(2023, 4, 24),
         createdBy: '2222-2222-2222-2222',
         parentId: 'case-message-002'
       }
