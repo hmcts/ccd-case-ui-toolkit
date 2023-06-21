@@ -2,7 +2,7 @@
 ### Version 6.16.0-create-qualifying-questions-component-step-2
 **EUI-8524** Create qualifying questions component step 2
 
-### Version 6.16.0-create-qualifying-questions-component-v2
+### Version 6.16.0-create-qualifying-questions-component-v3
 **EUI-8523** Create qualifying questions component
 
 ### Version 6.16.0-qualifying-questions-create-data-model-and-mock-data-v3

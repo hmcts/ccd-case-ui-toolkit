@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
+import { caseFieldMockData } from '../../__mocks__';
 import { QueryItemType, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
-import { caseFieldMockData } from '../../__mocks__';
 
 @Component({
   selector: 'ccd-query-check-your-answers',
@@ -15,7 +15,7 @@ export class QueryCheckYourAnswersComponent implements OnInit {
 
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
-  @Input() public QueryCreateContext: QueryItemType;
+  @Input() public queryCreateContext: QueryItemType;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
   public caseField: CaseField;
   public queryItemTypeEnum = QueryItemType;
