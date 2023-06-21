@@ -1,14 +1,20 @@
 import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { QualifyingQuestion } from '../../models';
+import { QualifyingQuestionsErrorMessage } from '../../enums';
+import { QualifyingQuestion, QueryItemType } from '../../models';
 
 @Component({
   selector: 'ccd-qualifying-questions',
   templateUrl: './qualifying-questions.component.html'
 })
 export class QualifyingQuestionsComponent {
-  @Input() public qualifyingQuestionControl: FormControl;
+  @Input() public qualifyingQuestionsControl: FormControl;
   @Input() public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
-  public qualifyingQuestionSelectionError: string;
+  public queryItemTypeEnum = QueryItemType;
+  public qualifyingQuestionsErrorMessage = QualifyingQuestionsErrorMessage;
+
+  public get displayError(): boolean {
+    return this.qualifyingQuestionsControl.touched && this.qualifyingQuestionsControl.hasError('required');
+  }
 }
