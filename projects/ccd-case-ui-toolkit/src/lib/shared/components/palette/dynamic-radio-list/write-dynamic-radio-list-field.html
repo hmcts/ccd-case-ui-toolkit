@@ -13,7 +13,7 @@
 
     <ng-container>
       <div class="multiple-choice" *ngFor="let radioButton of caseField.list_items" [ngClass]="{selected: dynamicRadioListControl.value === radioButton.code}">
-        <input class="form-control" [id]="createElementId(radioButton.code)" [name]="createElementId(radioButton.code)" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
+        <input class="form-control" [id]="createElementId(radioButton.code)" [name]="id()" type="radio" [formControl]="dynamicRadioListControl" [value]="radioButton.code">
         <label class="form-label" [for]="createElementId(radioButton.code)">{{radioButton.label}}</label>
       </div>
     </ng-container>
