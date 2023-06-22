@@ -121,7 +121,6 @@ import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-u
 import {
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
-  QueryCreateComponent,
   QueryDetailsComponent,
   QueryDetailsTableComponent,
   QueryListComponent,
@@ -255,7 +254,6 @@ const PALETTE_COMPONENTS = [
   ReadQueryManagementFieldComponent,
   WriteQueryManagementFieldComponent,
   QueryDetailsComponent,
-  QueryCreateComponent,
   QueryListComponent,
   QueryDetailsTableComponent,
   QueryWriteRespondToQueryComponent,

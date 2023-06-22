@@ -3,6 +3,7 @@
   <p>
     <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back to queries' | rpxTranslate }}</a>
   </p>
+
   <div class="query_details_caption">{{ 'Query details' | rpxTranslate }}</div>
   <ccd-query-details-table [queryItem]="query"></ccd-query-details-table>
 
@@ -23,7 +24,12 @@
 
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
-          <td class="govuk-table__cell">Attachments</td>
+          <td class="govuk-table__cell">
+            <ccd-read-collection-field
+              *ngIf="child.attachmentsForMockCaseField"
+              [caseField]="child.attachmentsForMockCaseField">
+            </ccd-read-collection-field>
+          </td>
         </tr>
         </tbody>
       </table>
