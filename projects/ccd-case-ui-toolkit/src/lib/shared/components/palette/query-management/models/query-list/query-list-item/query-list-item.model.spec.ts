@@ -161,7 +161,7 @@ describe('QueryListItem', () => {
         label: '',
         hint_text: '',
         field_type: Object.assign(new FieldType(), {
-          id: 'QueryDocuments',
+          id: '111-111',
           type: 'QueryDocuments',
           min: null,
           max: null,
