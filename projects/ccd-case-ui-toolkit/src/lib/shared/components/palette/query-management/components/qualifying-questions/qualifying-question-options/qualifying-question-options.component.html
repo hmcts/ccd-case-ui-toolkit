@@ -10,7 +10,7 @@
         </span>
         <div class="govuk-radios">
           <div *ngFor="let qualifyingQuestion of qualifyingQuestions$ | async" class="govuk-radios__item">
-            <input class="govuk-radios__input" id="{{qualifyingQuestion.name}}" [formControl]="qualifyingQuestionControl" name="qualifyingQuestionOption" type="radio" [value]="qualifyingQuestion.name">
+            <input class="govuk-radios__input" id="{{qualifyingQuestion.name}}" [formControl]="qualifyingQuestionControl" name="qualifyingQuestionOption" type="radio" [value]="qualifyingQuestion">
             <label class="govuk-label govuk-radios__label" [for]="qualifyingQuestion.name">{{ qualifyingQuestion.name | rpxTranslate }}</label>
           </div>
         </div>
