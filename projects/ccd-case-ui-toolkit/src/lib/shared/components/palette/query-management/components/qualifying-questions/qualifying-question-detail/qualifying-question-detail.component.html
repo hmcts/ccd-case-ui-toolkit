@@ -1,6 +1,11 @@
-<h1 class="govuk-heading-l">
-	{{ 'Are you contacting us about any of the following:' | rpxTranslate }}
-</h1>
-<ccd-markdown *ngIf="qualifyingQuestion?.markdown"
-  [content]="qualifyingQuestion.markdown | rpxTranslate">
-</ccd-markdown>
+<ng-container *ngIf="qualifyingQuestion?.markdown">
+  <span class="govuk-caption-l">
+    {{ 'Are you contacting us about any of the following:' | rpxTranslate }}
+  </span>
+  <h1 class="govuk-heading-l">
+    {{ qualifyingQuestion.name | rpxTranslate }}
+  </h1>
+  <ccd-markdown
+    [content]="qualifyingQuestion.markdown | rpxTranslate">
+  </ccd-markdown>
+</ng-container>

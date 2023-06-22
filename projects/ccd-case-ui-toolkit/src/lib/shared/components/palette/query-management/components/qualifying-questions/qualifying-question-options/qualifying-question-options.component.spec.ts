@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, Validators } from '@angular/forms';
-import { MockRpxTranslatePipe } from '../../../../../../../shared/test/mock-rpx-translate.pipe';
 import { By } from '@angular/platform-browser';
+import { MockRpxTranslatePipe } from '../../../../../../../shared/test/mock-rpx-translate.pipe';
 import { QualifyingQuestionsErrorMessage } from '../../../enums';
 import { QualifyingQuestionOptionsComponent } from './qualifying-question-options.component';
 
