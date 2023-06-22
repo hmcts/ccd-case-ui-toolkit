@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { QueryListItem } from '../../models';
 
 @Component({
@@ -7,8 +7,6 @@ import { QueryListItem } from '../../models';
   styleUrls: ['./query-details-table.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class QueryDetailsTableComponent implements OnInit{
+export class QueryDetailsTableComponent {
   @Input() public queryItem: QueryListItem;
-
-  public ngOnInit(): void {}
 }
