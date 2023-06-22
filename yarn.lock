@@ -2500,7 +2500,7 @@ __metadata:
     karma-jasmine-html-reporter: ^1.5.0
     karma-spec-reporter: 0.0.34
     local-storage: ^2.0.0
-    marked: ^0.7.0
+    marked: ^4.0.10
     mem: ^6.0.0
     merge-stream: ^1.0.0
     minimist: 1.2.3
