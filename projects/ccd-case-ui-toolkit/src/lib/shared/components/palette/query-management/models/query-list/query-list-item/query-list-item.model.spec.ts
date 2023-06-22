@@ -1,4 +1,5 @@
 import { QueryListItem } from './query-list-item.model';
+import { CaseField, FieldType } from '../../../../../../domain';
 
 describe('QueryListItem', () => {
   let queryListItem: QueryListItem;
@@ -71,7 +72,19 @@ describe('QueryListItem', () => {
       subject: 'Subject 1',
       name: 'Name 1',
       body: 'Body 1',
-      attachments: [],
+      attachments: [
+        {
+          _links: {
+            self: {
+              href: 'https://hmcts.internal/documents/111-111'
+            },
+            binary: {
+              href: 'https://hmcts.internal/documents/111-111/binary'
+            }
+          },
+          originalDocumentName: 'Document 1'
+        }
+      ],
       isHearingRelated: false,
       hearingDate: '',
       createdOn: new Date('2021-01-01'),
@@ -138,6 +151,48 @@ describe('QueryListItem', () => {
       queryListItem.children = [];
       expect(queryListItem.children).toEqual([]);
       expect(queryListItem.lastResponseDate).toEqual(null);
+    });
+  });
+
+  describe('attachmentsForMockCaseField', () => {
+    it('should return the right value', () => {
+      const mockCaseField = Object.assign(new CaseField(), {
+        id: '',
+        label: '',
+        hint_text: '',
+        field_type: Object.assign(new FieldType(), {
+          id: 'QueryDocuments',
+          type: 'QueryDocuments',
+          min: null,
+          max: null,
+          regular_expression: null,
+          fixed_list_items: [],
+          complex_fields: [],
+          collection_field_type: Object.assign(new FieldType(), {
+            id: 'Document',
+            type: 'Document',
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null
+          })
+        }),
+        display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)',
+        value: [
+          {
+            id: '',
+            value: {
+              document_url: 'https://hmcts.internal/documents/111-111',
+              document_filename: 'Document 1',
+              document_binary_url: 'https://hmcts.internal/documents/111-111/binary'
+            }
+          }
+        ]
+      });
+
+      expect(queryListItem.attachmentsForMockCaseField).toEqual(mockCaseField);
     });
   });
 });

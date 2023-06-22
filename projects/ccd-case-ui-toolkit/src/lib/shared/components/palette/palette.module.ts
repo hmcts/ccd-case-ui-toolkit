@@ -129,7 +129,6 @@ import {
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent,
-  WriteQueryManagementFieldComponent
 } from './query-management';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
@@ -252,7 +251,6 @@ const PALETTE_COMPONENTS = [
 
   // Components for Query Management
   ReadQueryManagementFieldComponent,
-  WriteQueryManagementFieldComponent,
   QueryDetailsComponent,
   QueryListComponent,
   QueryDetailsTableComponent,
