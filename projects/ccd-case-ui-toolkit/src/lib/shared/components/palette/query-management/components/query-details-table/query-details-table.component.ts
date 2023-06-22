@@ -1,6 +1,4 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { CaseField } from '../../../../../domain';
-import { caseFieldMockData } from '../../__mocks__';
 import { QueryListItem } from '../../models';
 
 @Component({
@@ -11,10 +9,6 @@ import { QueryListItem } from '../../models';
 })
 export class QueryDetailsTableComponent implements OnInit{
   @Input() public queryItem: QueryListItem;
-  public caseField: CaseField;
 
-  public ngOnInit(): void {
-    // Mock object
-    this.caseField = caseFieldMockData;
-  }
+  public ngOnInit(): void {}
 }

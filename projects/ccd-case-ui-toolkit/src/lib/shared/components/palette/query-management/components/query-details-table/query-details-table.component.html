@@ -29,7 +29,11 @@
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
         <td class="govuk-table__cell">
-          <ccd-read-collection-field *ngIf="caseField" [caseField]="caseField"></ccd-read-collection-field>
+          <ccd-read-collection-field
+            *ngIf="queryItem.attachmentsForMockCaseField"
+            [caseField]="queryItem.attachmentsForMockCaseField"
+          >
+          </ccd-read-collection-field>
         </td>
       </tr>
     </tbody>

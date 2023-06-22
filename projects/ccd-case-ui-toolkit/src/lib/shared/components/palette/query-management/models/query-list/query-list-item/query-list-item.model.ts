@@ -66,7 +66,7 @@ export class QueryListItem implements PartyMessage {
       label: '',
       hint_text: '',
       field_type: Object.assign(new FieldType(), {
-        id: 'QueryDocuments',
+        id: this.id,
         type: 'QueryDocuments',
         min: null,
         max: null,
