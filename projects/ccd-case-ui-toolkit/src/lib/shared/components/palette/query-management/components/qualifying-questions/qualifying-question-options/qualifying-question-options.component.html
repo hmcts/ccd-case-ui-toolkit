@@ -1,20 +1,30 @@
-<h1 class="govuk-heading-l">
-	{{ 'Are you contacting us about any of the following:' | rpxTranslate }}
-</h1>
-<div>
-  <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': qualifyingQuestionSelectionError}">
-    <fieldset class="govuk-fieldset" id="qualifying-question">
-      <legend>
-        <span class="govuk-error-message" *ngIf="qualifyingQuestionSelectionError">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ qualifyingQuestionSelectionError | rpxTranslate }}
-        </span>
-        <div class="govuk-radios">
-          <div *ngFor="let qualifyingQuestion of qualifyingQuestions$ | async" class="govuk-radios__item">
-            <input class="govuk-radios__input" id="{{qualifyingQuestion.name}}" [formControl]="qualifyingQuestionControl" name="qualifyingQuestionOption" type="radio" [value]="qualifyingQuestion">
-            <label class="govuk-label govuk-radios__label" [for]="qualifyingQuestion.name">{{ qualifyingQuestion.name | rpxTranslate }}</label>
-          </div>
-        </div>
+<ng-container *ngIf="qualifyingQuestionsControl">
+  <div class="govuk-form-group" [class.govuk-form-group--error]="displayError">
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 class="govuk-fieldset__heading">
+          {{ 'Are you contacting us about any of the following:' | rpxTranslate }}
+        </h1>
       </legend>
+
+      <ng-container *ngIf="displayError">
+        <p class="govuk-error-message">
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ qualifyingQuestionsErrorMessage.SELECT_AN_OPTION | rpxTranslate }}
+        </p>
+      </ng-container>
+
+      <div class="govuk-radios" data-module="govuk-radios">
+        <div *ngFor="let qualifyingQuestion of qualifyingQuestions$ | async" class="govuk-radios__item">
+          <input class="govuk-radios__input"
+                 id="{{qualifyingQuestion.name}}"
+                 name="qualifyingQuestionOption"
+                 type="radio"
+                 [formControl]="qualifyingQuestionsControl"
+                 [value]="qualifyingQuestion">
+          <label class="govuk-label govuk-radios__label"
+                 [for]="qualifyingQuestion.name">{{ qualifyingQuestion.name | rpxTranslate }}</label>
+        </div>
+      </div>
     </fieldset>
   </div>
-</div>
+</ng-container>
