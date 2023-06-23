@@ -1,4 +1,3 @@
-import { CaseField, FieldType } from '../../../../domain';
 import { PartyMessagesGroup } from '../models';
 
 export const partyMessagesMockData: PartyMessagesGroup[] = [
