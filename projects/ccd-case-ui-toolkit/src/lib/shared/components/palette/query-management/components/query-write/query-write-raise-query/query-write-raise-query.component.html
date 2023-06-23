@@ -13,23 +13,6 @@
   <div class="govuk-!-margin-bottom-4">
     <div [formGroup]="formGroup">
       <div>
-        <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('fullName').hasError('required')}">
-          <div class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="fullName">
-              {{ 'Full name' | rpxTranslate }}
-            </label>
-          </div>
-          <div id="fullName-hint" class="govuk-hint">
-            {{ 'Your full name must be included here' | rpxTranslate }}
-          </div>
-          <p id="fullName-error" class="govuk-error-message"
-              *ngIf="submitted && formGroup.get('fullName').hasError('required')">
-            <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.FULL_NAME | rpxTranslate }}
-          </p>
-          <input class="govuk-input" id="fullName" name="fullName" type="text"
-                  [formControlName]="'fullName'"/>
-        </div>
-
         <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('subject').hasError('required')}">
           <div class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="subject">
