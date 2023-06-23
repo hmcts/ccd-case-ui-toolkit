@@ -136,6 +136,7 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { QueryAttachmentsReadComponent } from './query-management/components/query-attachments-read/query-attachments-read.component';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -306,7 +307,8 @@ const PALETTE_COMPONENTS = [
     LanguageInterpreterDisplayPipe,
     ManageCaseFlagsLabelDisplayPipe,
     UpdateFlagTitleDisplayPipe,
-    ...PALETTE_COMPONENTS
+    ...PALETTE_COMPONENTS,
+    QueryAttachmentsReadComponent
   ],
   exports: [
     NgxMatDatetimePickerModule,

@@ -1,11 +1,10 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { QueryListItem } from '../../models';
 
 @Component({
   selector: 'ccd-query-details-table',
   templateUrl: './query-details-table.component.html',
-  styleUrls: ['./query-details-table.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./query-details-table.component.scss']
 })
 export class QueryDetailsTableComponent {
   @Input() public queryItem: QueryListItem;

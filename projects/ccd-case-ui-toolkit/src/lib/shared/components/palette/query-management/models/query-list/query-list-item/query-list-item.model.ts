@@ -1,4 +1,4 @@
-import { CaseField, Document, FieldType, FormDocument } from '../../../../../../domain';
+import { Document } from '../../../../../../domain';
 import { PartyMessage } from '../../party-messages/party-message.model';
 
 export class QueryListItem implements PartyMessage {
@@ -47,45 +47,5 @@ export class QueryListItem implements PartyMessage {
 
   public get lastResponseDate(): Date | null {
     return this.children?.length > 0 ? new Date(this.lastSubmittedMessage.createdOn) : null;
-  }
-
-  public get attachmentsForMockCaseField(): CaseField {
-    const modifiedAttachments: { id: string; value: FormDocument }[] = this.attachments?.map((attachment: Document) => {
-      return {
-        id: '',
-        value: {
-          document_url: attachment._links.self.href,
-          document_filename: attachment.originalDocumentName,
-          document_binary_url: attachment._links.binary.href
-        }
-      };
-    });
-
-    return Object.assign(new CaseField(), {
-      id: '',
-      label: '',
-      hint_text: '',
-      field_type: Object.assign(new FieldType(), {
-        id: this.id,
-        type: 'QueryDocuments',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: Object.assign(new FieldType(), {
-          id: 'Document',
-          type: 'Document',
-          min: null,
-          max: null,
-          regular_expression: null,
-          fixed_list_items: [],
-          complex_fields: [],
-          collection_field_type: null
-        })
-      }),
-      display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)',
-      value: modifiedAttachments
-    });
   }
 }

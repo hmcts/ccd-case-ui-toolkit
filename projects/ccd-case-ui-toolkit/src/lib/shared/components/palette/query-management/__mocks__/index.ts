@@ -14,10 +14,17 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         attachments: [
           {
             _links: {
-              self: { href: '/' },
-              binary: { href: '/' },
+              self: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f' },
+              binary: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f/binary' },
             },
-            originalDocumentName: 'documentName.pdf',
+            originalDocumentName: 'Screenshot 2023-06-01 at 16.07.06.png',
+          },
+          {
+            _links: {
+              self: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506' },
+              binary: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506/binary' },
+            },
+            originalDocumentName: 'dummy.pdf',
           }
         ],
         isHearingRelated: true,
@@ -30,7 +37,15 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         subject: 'Games',
         name: 'Maggie Conroy',
         body: 'Can I play games in my phone when my solicitor is talking?',
-        attachments: [],
+        attachments: [
+          {
+            _links: {
+              self: { href: '/' },
+              binary: { href: '/' },
+            },
+            originalDocumentName: 'talking-document.pdf',
+          }
+        ],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
@@ -40,7 +55,15 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         id: 'case-message-011',
         name: 'John Smith',
         body: 'Using mobile phone is strictly prohibited in the court room.',
-        attachments: [],
+        attachments: [
+          {
+            _links: {
+              self: { href: '/' },
+              binary: { href: '/' },
+            },
+            originalDocumentName: 'games-document.pdf',
+          }
+        ],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 2, 4),
@@ -51,19 +74,7 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         id: 'case-message-012',
         name: 'Maggie Conroy',
         body: 'Can I use a tablet instead?',
-        attachments: [
-          {
-            _links: {
-              self: {
-                href: 'https://hmcts.internal/documents/111-111'
-              },
-              binary: {
-                href: 'https://hmcts.internal/documents/111-111/binary'
-              }
-            },
-            originalDocumentName: 'Document 1'
-          }
-        ],
+        attachments: [],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 3, 8),
@@ -154,30 +165,3 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
     ]
   }
 ];
-
-export const caseFieldMockData: CaseField = Object.assign(new CaseField(), {
-  id: '',
-  label: '',
-  hint_text: '',
-  field_type: Object.assign(new FieldType(), {
-    id: 'QueryDocuments',
-    type: 'QueryDocuments',
-    min: null,
-    max: null,
-    regular_expression: null,
-    fixed_list_items: [],
-    complex_fields: [],
-    collection_field_type: Object.assign(new FieldType(), {
-      id: 'Document',
-      type: 'Document',
-      min: null,
-      max: null,
-      regular_expression: null,
-      fixed_list_items: [],
-      complex_fields: [],
-      collection_field_type: null
-    })
-  }),
-  display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)',
-  value: []
-});

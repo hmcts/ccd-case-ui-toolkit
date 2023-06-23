@@ -153,46 +153,4 @@ describe('QueryListItem', () => {
       expect(queryListItem.lastResponseDate).toEqual(null);
     });
   });
-
-  describe('attachmentsForMockCaseField', () => {
-    it('should return the right value', () => {
-      const mockCaseField = Object.assign(new CaseField(), {
-        id: '',
-        label: '',
-        hint_text: '',
-        field_type: Object.assign(new FieldType(), {
-          id: '111-111',
-          type: 'QueryDocuments',
-          min: null,
-          max: null,
-          regular_expression: null,
-          fixed_list_items: [],
-          complex_fields: [],
-          collection_field_type: Object.assign(new FieldType(), {
-            id: 'Document',
-            type: 'Document',
-            min: null,
-            max: null,
-            regular_expression: null,
-            fixed_list_items: [],
-            complex_fields: [],
-            collection_field_type: null
-          })
-        }),
-        display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)',
-        value: [
-          {
-            id: '',
-            value: {
-              document_url: 'https://hmcts.internal/documents/111-111',
-              document_filename: 'Document 1',
-              document_binary_url: 'https://hmcts.internal/documents/111-111/binary'
-            }
-          }
-        ]
-      });
-
-      expect(queryListItem.attachmentsForMockCaseField).toEqual(mockCaseField);
-    });
-  });
 });
