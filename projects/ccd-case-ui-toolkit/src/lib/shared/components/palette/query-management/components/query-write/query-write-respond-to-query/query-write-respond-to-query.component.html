@@ -56,7 +56,7 @@
         </div>
         <p id="body-error" class="govuk-error-message"
            *ngIf="submitted && formGroup.get('body')?.hasError('required')">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ QueryCreateContext === queryItemTypeEnum.RESPOND ? raiseQueryErrorMessages.RESPOND_QUERY_BODY : raiseQueryErrorMessages.QUERY_BODY | rpxTranslate }}
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ queryCreateContext === queryItemTypeEnum.RESPOND ? raiseQueryErrorMessages.RESPOND_QUERY_BODY : raiseQueryErrorMessages.QUERY_BODY | rpxTranslate }}
         </p>
         <textarea [formControlName]="'body'" class="govuk-textarea"
                   [class.govuk-textarea--error]="submitted && formGroup.get('body')?.hasError('required')" id="body"
