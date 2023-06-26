@@ -4,13 +4,16 @@
       <div>{{ queryListData.partyName }}</div>
     </caption>
     <thead class="govuk-table__head">
-    <tr class="govuk-table__row query-list__row">
-      <th class="govuk-table__header" *ngFor="let col of displayedColumns">
-        {{ col.displayName | rpxTranslate }}
-        <a (click)="sortTable(col)" class="sort-widget" [innerHTML]="sortWidget(col)" href="javascript:void(0)"></a>
-      </th>
-    </tr>
+      <tr class="govuk-table__row query-list__row">
+        <th scope="col" class="govuk-table__header" [attr.aria-sort]="getAriaSortHeaderValue(col)"
+            *ngFor="let col of displayedColumns; let i = index;">
+          <button type="button" [attr.data-index]="i" aria-sort="none" (click)="sortTable(col)" href="javascript:void(0)">
+            {{ col.displayName | rpxTranslate }}
+          </button>
+        </th>
+      </tr>
     </thead>
+
     <tbody class="govuk-table__body">
     <tr class="govuk-table__row query-list__row"
         *ngFor="let message of queryListData.partyMessages"
