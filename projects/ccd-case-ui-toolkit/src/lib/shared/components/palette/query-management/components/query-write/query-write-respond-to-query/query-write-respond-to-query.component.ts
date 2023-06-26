@@ -13,9 +13,9 @@ import { QueryCreateContext, QueryListItem } from '../../../models';
 export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public queryItem: QueryListItem;
   @Input() public formGroup: FormGroup;
-  @Input() public queryCreateContext: QueryItemType;
+  @Input() public queryCreateContext: QueryCreateContext;
   @Input() public submitted = false;
-  public readonly queryItemTypeEnum = QueryItemType;
+  public readonly queryItemTypeEnum = QueryCreateContext;
   public caseId: string;
 
   constructor(private readonly caseNotifier: CaseNotifier) { }
