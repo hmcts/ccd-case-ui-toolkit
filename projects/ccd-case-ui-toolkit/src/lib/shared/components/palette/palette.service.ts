@@ -107,7 +107,13 @@ export class PaletteService {
             return write ? WriteComplexFieldComponent : ReadComplexFieldComponent;
         }
       case 'Collection':
+        // if (caseField.field_type?.collection_field_type?.id === 'JudicialUser') {
+        //   console.log('INSIDE COLLECTION');
+        //   return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
+        // }
         return write ? WriteCollectionFieldComponent : ReadCollectionFieldComponent;
+      case 'JudicialUser':
+        return write ? WriteJudicialUserFieldComponent : ReadJudicialUserFieldComponent;
       case 'MultiSelectList':
         return write ? WriteMultiSelectListFieldComponent : ReadMultiSelectListFieldComponent;
       case 'Document':

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { catchError, debounceTime, filter, switchMap, tap } from 'rxjs/operators';
@@ -17,7 +17,7 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
   private readonly IDAM_ID = 'idamId';
   private readonly PERSONAL_CODE = 'personalCode';
 
-  public judicialUserFormGroup: FormGroup;
+  // public judicialUserFormGroup: FormGroup;
   public idamIdFormControl: FormControl;
   public personalCodeFormControl: FormControl;
   public jurisdiction: string;
@@ -33,11 +33,14 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
   }
 
   public ngOnInit(): void {
-    this.judicialUserFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
-    this.idamIdFormControl = new FormControl('');
-    this.judicialUserFormGroup.addControl(this.IDAM_ID, this.idamIdFormControl);
-    this.personalCodeFormControl = new FormControl('');
-    this.judicialUserFormGroup.addControl(this.PERSONAL_CODE, this.personalCodeFormControl);
+    // this.judicialUserFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
+    // this.idamIdFormControl = new FormControl('');
+    // this.judicialUserFormGroup.addControl(this.IDAM_ID, this.idamIdFormControl);
+    // this.personalCodeFormControl = new FormControl('');
+    // this.judicialUserFormGroup.addControl(this.PERSONAL_CODE, this.personalCodeFormControl);
+
+    this.idamIdFormControl = this.registerControl(new FormControl('')) as FormControl;
+    this.personalCodeFormControl = this.registerControl(new FormControl('')) as FormControl;
 
     this.setJurisdictionAndCaseType();
 
