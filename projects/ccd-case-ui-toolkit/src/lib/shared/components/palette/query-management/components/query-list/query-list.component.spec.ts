@@ -130,7 +130,7 @@ describe('QueryListComponent', () => {
       expect(tableCells[1].innerText).toEqual(firstRowItem.lastSubmittedBy);
       expect(new Date(tableCells[2].innerText)).toEqual(firstRowItem.lastSubmittedDate);
       expect(new Date(tableCells[3].innerText)).toEqual(firstRowItem.lastResponseDate);
-      expect(tableCells[4].innerText).toEqual(firstRowItem.lastResponseBy);
+      expect(tableCells[4].innerText).toEqual(firstRowItem.responseStatus);
     });
   });
 

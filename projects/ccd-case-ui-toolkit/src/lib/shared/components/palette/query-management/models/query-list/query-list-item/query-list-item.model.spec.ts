@@ -1,4 +1,5 @@
 import { QueryListItem } from './query-list-item.model';
+import { QueryItemResponseStatus } from '../../../enums';
 
 describe('QueryListItem', () => {
   let queryListItem: QueryListItem;
@@ -71,7 +72,19 @@ describe('QueryListItem', () => {
       subject: 'Subject 1',
       name: 'Name 1',
       body: 'Body 1',
-      attachments: [],
+      attachments: [
+        {
+          _links: {
+            self: {
+              href: 'https://hmcts.internal/documents/111-111'
+            },
+            binary: {
+              href: 'https://hmcts.internal/documents/111-111/binary'
+            }
+          },
+          originalDocumentName: 'Document 1'
+        }
+      ],
       isHearingRelated: false,
       hearingDate: '',
       createdOn: new Date('2021-01-01'),
@@ -138,6 +151,19 @@ describe('QueryListItem', () => {
       queryListItem.children = [];
       expect(queryListItem.children).toEqual([]);
       expect(queryListItem.lastResponseDate).toEqual(null);
+    });
+  });
+
+  describe('responseStatus', () => {
+    it('should return "Responded" when it has children', () => {
+      expect(queryListItem.children.length).toBeGreaterThan(0);
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.RESPONDED);
+    });
+
+    it('should return "No response required" when it has no children', () => {
+      queryListItem.children = [];
+      expect(queryListItem.children).toEqual([]);
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.NEW);
     });
   });
 });
