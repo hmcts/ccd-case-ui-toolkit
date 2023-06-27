@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.16.0-create-qualifying-questions-component-v3
+**EUI-8523** Create qualifying questions component
+
 ### Version 6.16.0-qualifying-questions-create-data-model-and-mock-data-v3
 **EUI-8522** Qualifying questions create data model and mock data
 
