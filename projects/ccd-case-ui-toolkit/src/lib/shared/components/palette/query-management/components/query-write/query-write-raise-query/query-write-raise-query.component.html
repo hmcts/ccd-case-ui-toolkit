@@ -27,7 +27,8 @@
             <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ raiseQueryErrorMessage.QUERY_SUBJECT | rpxTranslate }}
           </p>
           <input class="govuk-input" id="subject" name="subject" type="text"
-                  [formControlName]="'subject'"/>
+                 [class.govuk-input--error]="submitted && formGroup.get('subject').hasError('required')"
+                 [formControlName]="'subject'"/>
         </div>
       </div>
 
@@ -46,7 +47,9 @@
           </p>
           <textarea [formControlName]="'body'" class="govuk-textarea"
                     id="body" name="body" rows="5"
-                    aria-describedby="body-hint body-error">
+                    aria-describedby="body-hint body-error"
+                    [class.govuk-textarea--error]="submitted && formGroup.get('body').hasError('required')"
+          >
           </textarea>
       </div>
 
