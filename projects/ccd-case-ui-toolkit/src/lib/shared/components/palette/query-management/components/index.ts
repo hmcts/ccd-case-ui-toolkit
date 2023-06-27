@@ -1,4 +1,5 @@
-export * from './qualifying-questions/qualifying-questions.component';
+export * from './qualifying-questions/qualifying-question-detail/qualifying-question-detail.component';
+export * from './qualifying-questions/qualifying-question-options/qualifying-question-options.component';
 export * from './query-case-details-header/query-case-details-header.component';
 export * from './query-check-your-answers/query-check-your-answers.component';
 export * from './query-create/query-create.component';

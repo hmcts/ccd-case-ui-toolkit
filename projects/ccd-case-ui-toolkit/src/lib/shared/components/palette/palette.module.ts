@@ -119,7 +119,6 @@ import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
 import {
-  QualifyingQuestionsComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
   QueryCreateComponent,
@@ -131,7 +130,9 @@ import {
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent,
-  WriteQueryManagementFieldComponent
+  WriteQueryManagementFieldComponent,
+  QualifyingQuestionOptionsComponent,
+  QualifyingQuestionDetailComponent
 } from './query-management';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
@@ -265,7 +266,8 @@ const PALETTE_COMPONENTS = [
   QueryCheckYourAnswersComponent,
   QueryWriteAddDocumentsComponent,
   QueryWriteDateInputComponent,
-  QualifyingQuestionsComponent
+  QualifyingQuestionOptionsComponent,
+  QualifyingQuestionDetailComponent
 ];
 
 @NgModule({
