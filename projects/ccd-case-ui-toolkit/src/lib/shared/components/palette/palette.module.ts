@@ -130,7 +130,9 @@ import {
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent,
-  WriteQueryManagementFieldComponent
+  WriteQueryManagementFieldComponent,
+  QualifyingQuestionOptionsComponent,
+  QualifyingQuestionDetailComponent
 } from './query-management';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
@@ -263,7 +265,9 @@ const PALETTE_COMPONENTS = [
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
   QueryWriteAddDocumentsComponent,
-  QueryWriteDateInputComponent
+  QueryWriteDateInputComponent,
+  QualifyingQuestionOptionsComponent,
+  QualifyingQuestionDetailComponent
 ];
 
 @NgModule({

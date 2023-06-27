@@ -1,3 +1,5 @@
+export * from './qualifying-questions/qualifying-question-detail/qualifying-question-detail.component';
+export * from './qualifying-questions/qualifying-question-options/qualifying-question-options.component';
 export * from './query-case-details-header/query-case-details-header.component';
 export * from './query-check-your-answers/query-check-your-answers.component';
 export * from './query-create/query-create.component';
@@ -8,4 +10,3 @@ export * from './query-write/query-write-add-documents/query-write-add-documents
 export * from './query-write/query-write-date-input/query-write-date-input.component';
 export * from './query-write/query-write-raise-query/query-write-raise-query.component';
 export * from './query-write/query-write-respond-to-query/query-write-respond-to-query.component';
-
