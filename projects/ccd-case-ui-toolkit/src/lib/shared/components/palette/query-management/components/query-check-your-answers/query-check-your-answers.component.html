@@ -26,21 +26,6 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ 'Full name' | rpxTranslate }}
-        </dt>
-        <dd class="govuk-summary-list__value">
-          {{ formGroup.controls['name'].value }}
-        </dd>
-        <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
-            {{ 'Change' | rpxTranslate }}
-          </a>
-        </dd>
-      </div>
-    </dl>
-    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
           {{ queryCreateContext === queryItemTypeEnum.RESPOND ? 'Response message' : 'Query body' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
