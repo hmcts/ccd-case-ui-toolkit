@@ -128,7 +128,7 @@ import {
   QueryWriteDateInputComponent,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
-  ReadQueryManagementFieldComponent
+  ReadQueryManagementFieldComponent,
   QualifyingQuestionOptionsComponent,
   QualifyingQuestionDetailComponent
 } from './query-management';
