@@ -21,7 +21,7 @@
       <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedBy }}</td>
       <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedDate | date: 'dd MMM YYYY' }}</td>
       <td class="govuk-table__cell query-list__cell">{{ message.lastResponseDate | date: 'dd MMM YYYY' }}</td>
-      <td class="govuk-table__cell query-list__cell">{{ message.lastResponseBy }}</td>
+      <td class="govuk-table__cell query-list__cell">{{ message.responseStatus | rpxTranslate }}</td>
     </tr>
     </tbody>
   </table>

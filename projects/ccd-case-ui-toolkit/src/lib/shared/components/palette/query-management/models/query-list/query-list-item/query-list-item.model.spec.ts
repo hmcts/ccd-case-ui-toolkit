@@ -1,4 +1,5 @@
 import { QueryListItem } from './query-list-item.model';
+import { QueryItemResponseStatus } from '../../../enums';
 
 describe('QueryListItem', () => {
   let queryListItem: QueryListItem;
@@ -138,6 +139,19 @@ describe('QueryListItem', () => {
       queryListItem.children = [];
       expect(queryListItem.children).toEqual([]);
       expect(queryListItem.lastResponseDate).toEqual(null);
+    });
+  });
+
+  describe('responseStatus', () => {
+    it('should return "Responded" when it has children', () => {
+      expect(queryListItem.children.length).toBeGreaterThan(0);
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.RESPONDED);
+    });
+
+    it('should return "No response required" when it has no children', () => {
+      queryListItem.children = [];
+      expect(queryListItem.children).toEqual([]);
+      expect(queryListItem.responseStatus).toEqual(QueryItemResponseStatus.NEW);
     });
   });
 });
