@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.16.0-ccpay-5.2.8-beta06-rc1",
+  "version": "6.16.2-ccpay-5.2.8",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
