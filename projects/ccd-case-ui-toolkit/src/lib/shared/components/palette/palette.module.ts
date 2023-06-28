@@ -119,9 +119,9 @@ import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
 import {
+  QueryAttachmentsReadComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
-  QueryCreateComponent,
   QueryDetailsComponent,
   QueryDetailsTableComponent,
   QueryListComponent,
@@ -130,7 +130,8 @@ import {
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent,
-  WriteQueryManagementFieldComponent
+  QualifyingQuestionOptionsComponent,
+  QualifyingQuestionDetailComponent
 } from './query-management';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
@@ -253,9 +254,7 @@ const PALETTE_COMPONENTS = [
 
   // Components for Query Management
   ReadQueryManagementFieldComponent,
-  WriteQueryManagementFieldComponent,
   QueryDetailsComponent,
-  QueryCreateComponent,
   QueryListComponent,
   QueryDetailsTableComponent,
   QueryWriteRespondToQueryComponent,
@@ -263,7 +262,10 @@ const PALETTE_COMPONENTS = [
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
   QueryWriteAddDocumentsComponent,
-  QueryWriteDateInputComponent
+  QueryWriteDateInputComponent,
+  QualifyingQuestionOptionsComponent,
+  QualifyingQuestionDetailComponent,
+  QueryAttachmentsReadComponent
 ];
 
 @NgModule({
@@ -310,7 +312,7 @@ const PALETTE_COMPONENTS = [
     LanguageInterpreterDisplayPipe,
     ManageCaseFlagsLabelDisplayPipe,
     UpdateFlagTitleDisplayPipe,
-    ...PALETTE_COMPONENTS
+    ...PALETTE_COMPONENTS,
   ],
   exports: [
     NgxMatDatetimePickerModule,
