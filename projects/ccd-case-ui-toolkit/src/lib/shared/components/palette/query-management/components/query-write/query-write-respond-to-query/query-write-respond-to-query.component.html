@@ -21,9 +21,9 @@
 </div>
 
 <div class="query-respond">
-  <div class="govuk-!-margin-bottom-4">
+  <div>
     <h1 class="govuk-heading-m">
-      {{ queryCreateContext === queryItemTypeEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
+      {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
     </h1>
 
     <div [formGroup]="formGroup">
@@ -51,12 +51,12 @@
            [class.govuk-form-group--error]="submitted && formGroup.get('body')?.hasError('required')">
         <div class="govuk-label-wrapper">
           <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
-            {{ queryCreateContext === queryItemTypeEnum.RESPOND ? 'Response message' : 'Query Body' | rpxTranslate }}
+            {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response message' : 'Query Body' | rpxTranslate }}
           </label>
         </div>
         <p id="body-error" class="govuk-error-message"
            *ngIf="submitted && formGroup.get('body')?.hasError('required')">
-          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ queryCreateContext === queryItemTypeEnum.RESPOND ? raiseQueryErrorMessages.RESPOND_QUERY_BODY : raiseQueryErrorMessages.QUERY_BODY | rpxTranslate }}
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ queryCreateContext === queryCreateContextEnum.RESPOND ? raiseQueryErrorMessages.RESPOND_QUERY_BODY : raiseQueryErrorMessages.QUERY_BODY | rpxTranslate }}
         </p>
         <textarea [formControlName]="'body'" class="govuk-textarea"
                   [class.govuk-textarea--error]="submitted && formGroup.get('body')?.hasError('required')" id="body"
