@@ -23,7 +23,7 @@
           {{ 'Query subject' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
-          {{ queryItem.subject }}
+          {{ formGroup.get('subject')?.value }}
         </dd>
       </div>
     </dl>
