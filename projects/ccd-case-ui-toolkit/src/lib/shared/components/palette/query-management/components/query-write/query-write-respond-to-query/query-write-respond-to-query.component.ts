@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { CaseNotifier } from '../../../../../case-editor/services';
+import { RaiseQueryErrorMessage } from '../../../enums';
 import { QueryCreateContext, QueryListItem } from '../../../models';
-import { RaiseQueryErrorMessage, RespondToQueryErrorMessages } from '../../../enums';
 
 @Component({
   selector: 'ccd-query-write-respond-to-query',
@@ -16,7 +16,7 @@ export class QueryWriteRespondToQueryComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public queryCreateContext: QueryCreateContext;
   @Input() public submitted = false;
-  public readonly queryItemTypeEnum = QueryItemType;
+  public readonly queryCreateContextEnum = QueryCreateContext;
   public readonly raiseQueryErrorMessages = RaiseQueryErrorMessage;
   public caseId: string;
 
