@@ -1,6 +1,6 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
-    <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW">
+    <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY">
       <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
     </ng-container>
 
@@ -44,7 +44,7 @@
       </div>
     </dl>
 
-    <dl *ngIf="queryCreateContext === queryCreateContextEnum.NEW"
+    <dl *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY"
         class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
@@ -77,7 +77,7 @@
       </div>
     </dl>
 
-    <dl *ngIf="queryCreateContext === queryCreateContextEnum.NEW" class="govuk-summary-list govuk-!-margin-bottom-0">
+    <dl *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY" class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ 'Is the query hearing related?' | rpxTranslate }}
