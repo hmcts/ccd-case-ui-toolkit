@@ -1,4 +1,5 @@
 import { Document } from '../../../../../../domain';
+import { QueryItemResponseStatus } from '../../../enums/query-item-response-status.enum';
 import { PartyMessage } from '../../party-messages/party-message.model';
 
 export class QueryListItem implements PartyMessage {
@@ -47,5 +48,9 @@ export class QueryListItem implements PartyMessage {
 
   public get lastResponseDate(): Date | null {
     return this.children?.length > 0 ? new Date(this.lastSubmittedMessage.createdOn) : null;
+  }
+
+  public get responseStatus(): QueryItemResponseStatus {
+    return this.children?.length > 0 ? QueryItemResponseStatus.RESPONDED : QueryItemResponseStatus.NEW;
   }
 }
