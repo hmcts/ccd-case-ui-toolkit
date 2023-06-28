@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.14.0-restricted-case-access-v2
+### Version 6.16.0-restricted-case-access-v3
 **EUI-7382** Restricted case access after merge
 
 ### Version 6.16.0-create-qualifying-questions-component-step-2
