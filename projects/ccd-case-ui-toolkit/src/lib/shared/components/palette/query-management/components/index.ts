@@ -2,7 +2,6 @@ export * from './qualifying-questions/qualifying-question-detail/qualifying-ques
 export * from './qualifying-questions/qualifying-question-options/qualifying-question-options.component';
 export * from './query-case-details-header/query-case-details-header.component';
 export * from './query-check-your-answers/query-check-your-answers.component';
-export * from './query-create/query-create.component';
 export * from './query-details-table/query-details-table.component';
 export * from './query-details/query-details.component';
 export * from './query-list/query-list.component';
