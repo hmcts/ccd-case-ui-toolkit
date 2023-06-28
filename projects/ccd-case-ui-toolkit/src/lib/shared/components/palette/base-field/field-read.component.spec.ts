@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseField } from '../../../domain/definition';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { Draft } from '../../../domain/draft.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
@@ -18,6 +19,7 @@ import { PageValidationService } from '../../case-editor/services/page-validatio
 import { PaletteService } from '../palette.service';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteContext } from './palette-context.enum';
+
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -134,10 +136,11 @@ describe('FieldReadComponent', () => {
         ],
         declarations: [
           FieldReadComponent,
-
-          // Mocks
           FieldTestComponent,
-          FieldReadLabelComponent
+          FieldReadLabelComponent,
+          FieldReadLabelComponent,
+          // Mocks
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: PaletteService, useValue: paletteService },

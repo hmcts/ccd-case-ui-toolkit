@@ -8,6 +8,7 @@ import { createFieldType, newCaseField, textFieldType } from '../../../fixture';
 import { CcdCollectionTableCaseFieldsFilterPipe } from '../../../pipes/complex/ccd-collection-table-value-case-fields.pipe';
 import { ReadFieldsFilterPipe } from '../../../pipes/complex/ccd-read-fields-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldCollectionTableComponent } from './read-complex-field-collection-table.component';
@@ -114,7 +115,8 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
 
             // Mocks
             MockFieldReadComponent,
-            MockReadCaseLinkFieldComponent
+            MockReadCaseLinkFieldComponent,
+            MockRpxTranslatePipe,
           ],
           providers: []
         })
@@ -313,10 +315,10 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
             FieldsFilterPipe,
             ReadFieldsFilterPipe,
             CcdCollectionTableCaseFieldsFilterPipe,
-
             // Mocks
             MockFieldReadComponent,
-            MockReadCaseLinkFieldComponent
+            MockReadCaseLinkFieldComponent,
+            MockRpxTranslatePipe,
           ],
           providers: []
         })

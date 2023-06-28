@@ -6,11 +6,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RpxTranslationService } from 'rpx-xui-translation';
 
 import { FormModule } from '../../../../components/form/form.module';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { DatetimePickerComponent } from '../datetime-picker/datetime-picker.component';
 import { PaletteUtilsModule } from '../utils';
 import { WriteDateContainerFieldComponent } from './write-date-container-field.component';
@@ -55,11 +57,13 @@ describe('WriteDateContainerFieldComponent', () => {
           FormModule,
         ],
         declarations: [
-          WriteDateContainerFieldComponent, WriteDateFieldComponent, DatetimePickerComponent
+          WriteDateContainerFieldComponent, WriteDateFieldComponent, DatetimePickerComponent, MockRpxTranslatePipe
         ],
         providers: [
           FormatTranslatorService,
           {provide: CaseFieldService, useValue: caseFieldService},
+          { provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
+        ['getTranslation$', 'translate']) },
         ]
       })
       .compileComponents();

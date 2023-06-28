@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
 import { CaseField, CaseView, FieldType, FixedListItem, HttpError, Profile } from '../../../domain';
@@ -27,6 +27,7 @@ import {
   SessionStorageService
 } from '../../../services';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CallbackErrorsContext } from '../../error';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
@@ -34,6 +35,7 @@ import { aWizardPage } from '../case-edit.spec';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage, WizardPageField } from '../domain';
 import { CaseNotifier } from '../services';
+import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
 
 import createSpy = jasmine.createSpy;
@@ -279,6 +281,9 @@ describe('CaseEditSubmitComponent', () => {
   const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
   const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
+  const caseFieldCaseFlagCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE)', 2);
+  const caseFieldCaseFlagExternalCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE,EXTERNAL)', 2);
+  const caseFieldCaseFlagExternalUpdate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE,EXTERNAL)', 2);
   const complexSubField1: CaseField = aCaseField('childField1', 'childField1', 'Text', 'OPTIONAL', 1, null, true, true);
   const complexSubField2: CaseField = aCaseField('childField2', 'childField2', 'Text', 'OPTIONAL', 2, null, false, true);
   const complexCaseField: CaseField = aCaseField('complexField1', 'complexField1', 'Complex', 'OPTIONAL', 1,
@@ -411,7 +416,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -521,50 +527,6 @@ describe('CaseEditSubmitComponent', () => {
       expect(result).toBeTruthy();
     });
 
-    it('should show event notes when set in event trigger and showEventNotes is called', () => {
-      comp.eventTrigger.show_event_notes = true;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-
-      const result = comp.showEventNotes();
-
-      expect(result).toBeTruthy();
-      expect(eventNotes).not.toBeNull();
-    });
-
-    it('should show event notes when not set in event trigger and showEventNotes is called', () => {
-      comp.eventTrigger.show_event_notes = null;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-
-      const result = comp.showEventNotes();
-
-      expect(result).toBeTruthy();
-      expect(eventNotes).not.toBeNull();
-    });
-
-    it('should show event notes when not defined in event trigger and showEventNotes is called', () => {
-      comp.eventTrigger.show_event_notes = undefined;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-
-      const result = comp.showEventNotes();
-
-      expect(result).toBeTruthy();
-      expect(eventNotes).not.toBeNull();
-    });
-
-    it('should not show event notes when set to false in event trigger and showEventNotes is called', () => {
-      comp.eventTrigger.show_event_notes = false;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-
-      const result = comp.showEventNotes();
-
-      expect(result).toBeFalsy();
-      expect(eventNotes).toBeNull();
-    });
-
     it('should return false when no field exists and readOnlySummaryFieldsToDisplayExists is called', () => {
       comp.eventTrigger.case_fields = [];
       fixture.detectChanges();
@@ -634,6 +596,66 @@ describe('CaseEditSubmitComponent', () => {
 
       const cancelLink = de.query(By.css('a[class=disabled]'));
       expect(cancelLink).toBeNull();
+    });
+
+    it('should show event notes when set in event trigger and showEventNotes is called', () => {
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.caseFlagField = null;
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(true);
+      expect(eventNotes).not.toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and profile is solicitor and showEventNotes is called', () => {
+      comp.profile.user.idam.roles = ['divorce-solicitor'];
+      comp.caseFlagField = null;
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.caseFlagField = caseFieldCaseFlagCreate;
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not set in event trigger and showEventNotes is called', () => {
+      comp.eventTrigger.show_event_notes = null;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not defined in event trigger and showEventNotes is called', () => {
+      comp.eventTrigger.show_event_notes = undefined;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should not show event notes when set to false in event trigger and showEventNotes is called', () => {
+      comp.eventTrigger.show_event_notes = false;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
     });
   });
 
@@ -709,7 +731,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdPageFieldsPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -848,7 +871,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1085,7 +1109,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1223,7 +1248,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1364,7 +1390,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1504,7 +1531,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1653,7 +1681,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1841,7 +1870,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -1974,7 +2004,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2106,7 +2137,8 @@ describe('CaseEditSubmitComponent', () => {
           ReadFieldsFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2249,7 +2281,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2401,7 +2434,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2559,7 +2593,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2698,7 +2733,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2840,7 +2876,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -2982,7 +3019,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3123,7 +3161,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3269,7 +3308,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3417,7 +3457,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3565,7 +3606,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3724,7 +3766,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -3882,7 +3925,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -4034,7 +4078,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -4189,7 +4234,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -4367,7 +4413,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [NO_ERRORS_SCHEMA],
         providers: [
@@ -4404,6 +4451,32 @@ describe('CaseEditSubmitComponent', () => {
       comp.submit();
       expect(populateFlagDetailsSpy).toHaveBeenCalled();
       expect(removeFlagLauncherFieldSpy).toHaveBeenCalled();
+    });
+
+    it('should set right page title', () => {
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalUpdate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseField1
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.CHECK_YOUR_ANSWERS);
     });
   });
 });

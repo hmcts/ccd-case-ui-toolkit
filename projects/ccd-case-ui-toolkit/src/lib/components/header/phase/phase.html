@@ -1,6 +1,6 @@
 <div [class.full-screen]="!isSolicitor" class="phase-banner">
   <p>
-    <strong class="phase-tag">{{phaseLabel}}</strong>
-    <span class="text-16">This is a new service – your <a href="{{phaseLink}}" target="_blank" rel="noopener">feedback</a> will help us to improve it.</span>
+    <strong class="phase-tag">{{phaseLabel | rpxTranslate}}</strong>
+    <span class="text-16">{{'This  is a new service – your' | rpxTranslate}} <a href="{{phaseLink}}" target="_blank" rel="noopener">{{'feedback' | rpxTranslate}}</a> {{'will help us to improve it' | rpxTranslate}}.</span>
   </p>
 </div>

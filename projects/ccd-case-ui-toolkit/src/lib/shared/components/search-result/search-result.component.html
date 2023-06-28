@@ -1,6 +1,6 @@
 <table *ngIf="hasResults() || hasDrafts()">
   <caption>
-    <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ caseState ? 'Your cases' : 'Search result' }}</h2>
+    <h2 class="heading-h2" id="search-result-heading__text" tabindex="-1">{{ (caseState ? 'Your cases' : 'Search result') | rpxTranslate}}</h2>
 
     <div class="govuk-warning-text pagination-limit-warning" *ngIf="paginationLimitEnforced">
       <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -14,14 +14,14 @@
       attr.aria-label="{{ getTotalResults() }} results have been found" role="status">
       <span class="text-16" id="search-result-summary__text">Showing
         <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
-        to
+        {{'to' | rpxTranslate}}
         <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
-        of
-        <span class="govuk-!-font-weight-bold">{{ getTotalResults() }}</span> results</span>
+        {{'of' | rpxTranslate}}
+        <span class="govuk-!-font-weight-bold">{{ getTotalResults() }}</span> {{'results' | rpxTranslate}}</span>
     </div>
     <div *ngIf="(hasResults() || hasDrafts()) && selectionEnabled" class="reset-selection"
-      attr.aria-label="Reset selection">
-      <span><a class="search-result-reset-link" href="javascript:void(0)" (click)="clearSelection()">Reset case selection</a></span>
+    [attr.aria-label]="'Reset selection' | rpxTranslate">
+      <span><a class="search-result-reset-link" href="javascript:void(0)" (click)="clearSelection()">{{'Reset case selection' | rpxTranslate}}</a></span>
     </div>
   </caption>
   <thead>
@@ -45,8 +45,8 @@
       <th *ngIf="activityEnabled()" style="width: 110px;"></th>
     </tr>
   </thead>
-  <tbody>
 
+  <tbody>
     <!-- sorted by consumer -->
     <ng-container *ngIf="consumerSortingEnabled">
       <tr *ngFor="let result of resultView.results | paginate: { itemsPerPage: paginationPageSize, currentPage: selected.page, totalItems: resultTotal }">
@@ -135,6 +135,6 @@
   [screenReaderCurrentLabel]="'You\'re on page'"></ccd-pagination>
 
 <div *ngIf="!(hasResults() || hasDrafts())" class="notification"
-  aria-label="No cases found. Try using different filters.">
-  No cases found. Try using different filters.
+[attr.aria-describedby]="'No cases found. Try using different filters.' | rpxTranslate">
+{{'No cases found. Try using different filters.' | rpxTranslate}}
 </div>

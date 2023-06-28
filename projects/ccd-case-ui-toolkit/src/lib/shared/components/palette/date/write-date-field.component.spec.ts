@@ -1,9 +1,11 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { FormModule } from '../../../../components/form/form.module';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils';
 import { WriteDateFieldComponent } from './write-date-field.component';
 
@@ -40,9 +42,13 @@ describe('WriteDateFieldComponent', () => {
         ],
         declarations: [
           WriteDateFieldComponent,
+          // DateInputComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: CaseFieldService, useValue: caseFieldService},
+          { provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
+        ['getTranslation$', 'translate']) },
         ]
       })
       .compileComponents();

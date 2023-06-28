@@ -4,10 +4,13 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
-import { CaseNotifier, CasesService } from '../..';
 import { AlertModule } from '../../../../components/banners/alert';
 import { CaseView, ChallengedAccessRequest } from '../../../domain';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
+import { CaseNotifier } from '../../case-editor';
+import { CasesService } from '../../case-editor/services/cases.service';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseChallengedAccessRequestComponent } from './case-challenged-access-request.component';
 import { ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
@@ -45,9 +48,11 @@ describe('CaseChallengedAccessRequestComponent', () => {
           { path: 'work/my-work/list', component: StubComponent }
         ])
       ],
-      declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent, StubComponent ],
+      declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent,StubComponent, MockRpxTranslatePipe ],
       providers: [
         FormBuilder,
+        { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
+        ['getTranslation$', 'translate']) },
         { provide: CasesService, useValue: casesService },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseNotifier, useValue: casesNotifier },

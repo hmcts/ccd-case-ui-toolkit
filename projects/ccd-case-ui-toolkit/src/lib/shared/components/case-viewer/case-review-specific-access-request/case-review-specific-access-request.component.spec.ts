@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs';
 import { AbstractAppConfig, AccessManagementRequestReviewMockModel } from '../../../../app.config';
 import { AlertModule } from '../../../../components/banners/alert';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ErrorMessageComponent } from '../../error-message';
 import { CaseReviewSpecificAccessRequestComponent } from './case-review-specific-access-request.component';
 import { ReviewSpecificAccessRequestErrors, ReviewSpecificAccessRequestPageText } from './models';
@@ -112,6 +113,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
       declarations: [
         CaseReviewSpecificAccessRequestComponent,
         ErrorMessageComponent,
+        MockRpxTranslatePipe,
         StubComponent
       ],
       providers: [

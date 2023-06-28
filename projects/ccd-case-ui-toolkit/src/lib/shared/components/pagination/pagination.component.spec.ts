@@ -3,6 +3,7 @@ import { DebugElement, LOCALE_ID } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { PaginatePipe, PaginationControlsComponent, PaginationControlsDirective, PaginationService } from 'ngx-pagination';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { PaginationComponent } from './pagination.component';
 import { ComponentTestComponent, getControlsDirective, getPageLinkItems, overrideTemplate } from './testing/testing-helpers';
 
@@ -19,7 +20,8 @@ describe('PaginationComponent:', () => {
         PaginationControlsDirective,
         PaginationComponent,
         ComponentTestComponent,
-        PaginatePipe
+        PaginatePipe,
+        MockRpxTranslatePipe
       ],
       providers: [PaginationService, { provide: LOCALE_ID, useValue: 'en_US' }],
     });
@@ -49,7 +51,7 @@ describe('PaginationComponent:', () => {
 
   it('should display the correct page links (formatted numbers over 1000) with dot', fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [PaginationControlsComponent, PaginationControlsDirective, ComponentTestComponent, PaginatePipe],
+      declarations: [PaginationControlsComponent, PaginationControlsDirective, ComponentTestComponent, PaginatePipe, MockRpxTranslatePipe],
       providers: [PaginationService, { provide: LOCALE_ID, useValue: 'de_DE' }],
     });
 

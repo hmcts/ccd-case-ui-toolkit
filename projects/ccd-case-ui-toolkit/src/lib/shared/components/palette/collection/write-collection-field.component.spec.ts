@@ -10,6 +10,7 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { ProfileNotifier } from '../../../services';
 import { FormValidatorsService } from '../../../services/form';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
 import { PaletteUtilsModule } from '../utils';
 import { CollectionCreateCheckerService } from './collection-create-checker.service';
@@ -123,6 +124,7 @@ describe('WriteCollectionFieldComponent', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -213,7 +215,7 @@ describe('WriteCollectionFieldComponent', () => {
     addButton.nativeElement.dispatchEvent(new Event('click'));
 
     const writeFields = de.queryAll($WRITE_FIELDS);
-    const lastIndex = writeFields.length;
+    const lastIndex = writeFields.length - 1;
 
     fixture.detectChanges();
 
@@ -371,6 +373,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -486,6 +489,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -574,6 +578,7 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -679,6 +684,7 @@ describe('WriteCollectionFieldComponent', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -780,6 +786,7 @@ describe('WriteCollectionFieldComponent', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -811,8 +818,8 @@ describe('WriteCollectionFieldComponent', () => {
 
   it('should add dynamic item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
-    component.caseField = ({ ...component.caseField, field_type: null } as unknown as CaseField);
-    component.caseFields = [({...component.caseField, field_type: null } as unknown as CaseField)];
+    component.caseField = ({ ...component.caseField, field_type: { id: 'TextField', type: 'Text' } as FieldType } as CaseField);
+    component.caseFields = [{...component.caseField } as CaseField];
     addButton.nativeElement.click();
     fixture.detectChanges();
 

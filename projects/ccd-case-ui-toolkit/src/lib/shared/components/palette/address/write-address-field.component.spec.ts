@@ -9,6 +9,7 @@ import { FocusElementModule } from '../../../directives/focus-element';
 import { AddressModel, CaseField } from '../../../domain';
 import { createFieldType } from '../../../fixture';
 import { AddressesService } from '../../../services/addresses/addresses.service';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FieldLabelPipe, IsCompoundPipe } from '../utils';
 import { WriteAddressFieldComponent } from './write-address-field.component';
 
@@ -134,7 +135,8 @@ xdescribe('WriteAddressFieldComponent', () => {
           FieldLabelPipe,
 
           // Mocks
-          MockWriteComplexFieldComponent
+          MockWriteComplexFieldComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           IsCompoundPipe,

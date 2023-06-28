@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.14.0-restricted-case-access-v2",
+  "version": "6.16.0-query-details-response-and-follow-display-v7",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"

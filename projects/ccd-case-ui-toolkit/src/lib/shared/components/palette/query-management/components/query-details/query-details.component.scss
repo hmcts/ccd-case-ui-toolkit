@@ -1,0 +1,14 @@
+@import "~govuk-frontend/govuk/helpers/colour";
+
+.query_details_caption {
+  background: govuk-colour('light-grey');
+  padding: 10px;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.query-details-table {
+  .govuk-table__header {
+    width: 330px;
+  }
+}

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { CaseHistoryModule } from '../case-history';
 import { ErrorsModule } from '../error/errors.module';
 import { PaletteModule } from '../palette';
@@ -13,7 +14,8 @@ import { CaseTimelineComponent } from './case-timeline.component';
         FormsModule,
         ReactiveFormsModule,
         CaseHistoryModule,
-        PaletteModule
+        PaletteModule,
+        RpxTranslationModule.forChild()
     ],
     declarations: [
         CaseTimelineComponent

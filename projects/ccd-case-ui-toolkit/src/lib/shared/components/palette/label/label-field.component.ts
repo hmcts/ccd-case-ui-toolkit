@@ -13,5 +13,8 @@ export class LabelFieldComponent {
   public caseFields: CaseField[] = [];
 
   @Input()
+  public labelCanBeTranslated = false;
+
+  @Input()
   public markdownUseHrefAsRouterLink?: boolean;
 }

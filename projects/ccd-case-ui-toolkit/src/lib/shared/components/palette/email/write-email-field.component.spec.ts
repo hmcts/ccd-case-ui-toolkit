@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteEmailFieldComponent } from './write-email-field.component';
 
@@ -46,9 +47,9 @@ describe('WriteEmailFieldComponent', () => {
         ],
         declarations: [
           WriteEmailFieldComponent,
-
           // Mocks
-          inputComponentMock
+          inputComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: []
       })
