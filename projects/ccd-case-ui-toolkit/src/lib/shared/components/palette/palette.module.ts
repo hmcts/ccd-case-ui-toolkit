@@ -119,6 +119,7 @@ import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
 import {
+  QueryAttachmentsReadComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
   QueryDetailsComponent,
@@ -129,6 +130,8 @@ import {
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent,
+  QualifyingQuestionOptionsComponent,
+  QualifyingQuestionDetailComponent
 } from './query-management';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
@@ -136,7 +139,6 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
-import { QueryAttachmentsReadComponent } from './query-management/components/query-attachments-read/query-attachments-read.component';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -260,7 +262,10 @@ const PALETTE_COMPONENTS = [
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
   QueryWriteAddDocumentsComponent,
-  QueryWriteDateInputComponent
+  QueryWriteDateInputComponent,
+  QualifyingQuestionOptionsComponent,
+  QualifyingQuestionDetailComponent,
+  QueryAttachmentsReadComponent
 ];
 
 @NgModule({
@@ -308,7 +313,6 @@ const PALETTE_COMPONENTS = [
     ManageCaseFlagsLabelDisplayPipe,
     UpdateFlagTitleDisplayPipe,
     ...PALETTE_COMPONENTS,
-    QueryAttachmentsReadComponent
   ],
   exports: [
     NgxMatDatetimePickerModule,
