@@ -1,5 +1,5 @@
 import { QueryListItem } from './query-list-item.model';
-import { QueryItemResponseStatus } from '../../../enums';
+import { CaseField, FieldType } from '../../../../../../domain';
 
 describe('QueryListItem', () => {
   let queryListItem: QueryListItem;
@@ -72,7 +72,19 @@ describe('QueryListItem', () => {
       subject: 'Subject 1',
       name: 'Name 1',
       body: 'Body 1',
-      attachments: [],
+      attachments: [
+        {
+          _links: {
+            self: {
+              href: 'https://hmcts.internal/documents/111-111'
+            },
+            binary: {
+              href: 'https://hmcts.internal/documents/111-111/binary'
+            }
+          },
+          originalDocumentName: 'Document 1'
+        }
+      ],
       isHearingRelated: false,
       hearingDate: '',
       createdOn: new Date('2021-01-01'),

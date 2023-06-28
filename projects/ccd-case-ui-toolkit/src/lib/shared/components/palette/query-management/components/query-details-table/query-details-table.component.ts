@@ -1,20 +1,11 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { CaseField } from '../../../../../domain';
-import { caseFieldMockData } from '../../__mocks__';
+import { Component, Input } from '@angular/core';
 import { QueryListItem } from '../../models';
 
 @Component({
   selector: 'ccd-query-details-table',
   templateUrl: './query-details-table.component.html',
-  styleUrls: ['./query-details-table.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./query-details-table.component.scss']
 })
-export class QueryDetailsTableComponent implements OnInit{
+export class QueryDetailsTableComponent {
   @Input() public queryItem: QueryListItem;
-  public caseField: CaseField;
-
-  public ngOnInit(): void {
-    // Mock object
-    this.caseField = caseFieldMockData;
-  }
 }

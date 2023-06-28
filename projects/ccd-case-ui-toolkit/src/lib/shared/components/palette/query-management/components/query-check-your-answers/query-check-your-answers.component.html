@@ -1,7 +1,11 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
+    <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY">
+      <div class="govuk-caption-l">{{ 'Raise a query' | rpxTranslate }}</div>
+    </ng-container>
+
     <h1 class="govuk-heading-l">
-      <ng-container *ngIf="queryCreateContext === queryItemTypeEnum.RESPOND; else defaultCheckYourAnswersTitle">
+      <ng-container *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND; else defaultCheckYourAnswersTitle">
         {{ 'Review query response details' | rpxTranslate }}
       </ng-container>
 
@@ -13,7 +17,7 @@
       <ccd-query-case-details-header></ccd-query-case-details-header>
     </div>
 
-    <dl *ngIf="queryCreateContext === queryItemTypeEnum.RESPOND" class="govuk-summary-list govuk-!-margin-bottom-0">
+    <dl *ngIf="queryCreateContext === queryCreateContextEnum.RESPOND" class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ 'Submitted query' | rpxTranslate }}
@@ -23,13 +27,14 @@
         </dd>
       </div>
     </dl>
+
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ queryCreateContext === queryItemTypeEnum.RESPOND ? 'Response message' : 'Query body' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
-          {{ formGroup.controls['body'].value }}
+          {{ formGroup.get('body')?.value }}
         </dd>
         <dd class="govuk-summary-list__actions">
           <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
@@ -38,13 +43,53 @@
         </dd>
       </div>
     </dl>
+
+    <dl *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY" class="govuk-summary-list govuk-!-margin-bottom-0">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ 'Is the query hearing related?' | rpxTranslate }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <ng-container *ngIf="formGroup.get('isHearingRelated')?.value === true; else isHearingRelatedFalse">
+            {{ 'Is the query hearing related?' | rpxTranslate: null : 'Yes' }}
+          </ng-container>
+          <ng-template #isHearingRelatedFalse>
+            {{ 'Is the query hearing related?' | rpxTranslate: null : 'No' }}
+          </ng-template>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
+      </div>
+
+      <div *ngIf="formGroup.get('isHearingRelated')?.value" class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ 'What is the date of the hearing your query is related to?' | rpxTranslate }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ formGroup.get('hearingDate')?.value | date: 'dd MMM yyyy' }}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
+      </div>
+    </dl>
+
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           {{ 'Document attached' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value govuk-summary-list__value--documentAttached">
-          <ccd-read-collection-field *ngIf="caseField" [caseField]="caseField"></ccd-read-collection-field>
+          <ccd-query-attachments-read
+            *ngIf="this.formGroup.get('attachments').value"
+            [attachments]="this.formGroup.get('attachments').value"
+          >
+          </ccd-query-attachments-read>
         </dd>
         <dd class="govuk-summary-list__actions">
           <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
@@ -53,7 +98,9 @@
         </dd>
       </div>
     </dl>
+
     <br>
+
     <div>
       <button class="govuk-button govuk-button--secondary govuk-!-margin-right-3" data-module="govuk-button"
         (click)="goBack()">

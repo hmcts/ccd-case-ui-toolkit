@@ -1,7 +1,71 @@
 <ng-container *ngIf="query">
-    <p>
-        <br><a class="govuk-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back to queries' | rpxTranslate }}</a>
-    </p>
-    <div class="query_details_caption">{{ 'Query details' | rpxTranslate }}</div>
-    <ccd-query-details-table [queryItem]="query"></ccd-query-details-table>
+  <br>
+  <p>
+    <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back to queries' | rpxTranslate }}</a>
+  </p>
+
+  <div class="query_details_caption">{{ 'Query details' | rpxTranslate }}</div>
+  <ccd-query-details-table [queryItem]="query"></ccd-query-details-table>
+
+  <ng-container *ngIf="query.children?.length > 0; else queryIsInReview">
+    <ng-container *ngFor="let child of query.children; let i = index;">
+      <ng-container *ngIf="i % 2 === 0; else followUpMessage">
+        <div class="query_details_caption">{{ 'Response' | rpxTranslate }}</div>
+        <table class="govuk-table query-details-table" [attr.aria-describedby]="'Response of the query' | rpxTranslate">
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Last response date' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">{{ child.createdOn | date: 'dd MMM yyyy' }}</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Response detail' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">{{ child.body }}</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">
+                <ccd-query-attachments-read
+                  *ngIf="child.attachments"
+                  [attachments]="child.attachments"
+                >
+                </ccd-query-attachments-read>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+
+      <ng-template #followUpMessage>
+        <div class="query_details_caption">{{ 'Follow up query' | rpxTranslate }}</div>
+        <table class="govuk-table query-details-table"
+               [attr.aria-describedby]="'Follow-up of the response' | rpxTranslate">
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Last submission date' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">{{ child.createdOn | date: 'dd MMM yyyy' }}</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Last submitted by' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">{{ child.name }}</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Query detail' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">{{ child.body }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #queryIsInReview>
+    <div>
+      <p class="govuk-!-font-weight-bold">{{ 'Your query is under review' | rpxTranslate }}</p>
+      <p>{{ 'Our team will read your query and will respond. Do not submit the same query more than once.' | rpxTranslate }}</p>
+    </div>
+  </ng-template>
 </ng-container>

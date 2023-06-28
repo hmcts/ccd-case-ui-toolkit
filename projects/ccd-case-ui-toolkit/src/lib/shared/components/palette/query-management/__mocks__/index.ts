@@ -1,5 +1,4 @@
-import { CaseField, FieldType, FormDocument } from '../../../../domain';
-import { PartyMessagesGroup, QualifyingQuestion } from '../models';
+import { PartyMessagesGroup } from '../models';
 
 export const partyMessagesMockData: PartyMessagesGroup[] = [
   {
@@ -14,37 +13,81 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         attachments: [
           {
             _links: {
-              self: { href: '/' },
-              binary: { href: '/' },
+              self: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f' },
+              binary: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f/binary' },
             },
-            originalDocumentName: 'documentName.pdf',
+            originalDocumentName: 'Screenshot 2023-06-01 at 16.07.06.png',
+          },
+          {
+            _links: {
+              self: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506' },
+              binary: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506/binary' },
+            },
+            originalDocumentName: 'dummy.pdf',
           }
         ],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
         createdBy: '1111-1111-1111-1111'
-
       },
       {
         id: 'case-message-002',
         subject: 'Games',
         name: 'Maggie Conroy',
         body: 'Can I play games in my phone when my solicitor is talking?',
-        attachments: [],
+        attachments: [
+          {
+            _links: {
+              self: { href: '/' },
+              binary: { href: '/' },
+            },
+            originalDocumentName: 'talking-document.pdf',
+          }
+        ],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
         createdBy: '1111-1111-1111-1111'
       },
       {
-        id: 'case-message-003',
-        name: 'Maggie Conroy',
+        id: 'case-message-011',
+        name: 'John Smith',
         body: 'Using mobile phone is strictly prohibited in the court room.',
+        attachments: [
+          {
+            _links: {
+              self: { href: '/' },
+              binary: { href: '/' },
+            },
+            originalDocumentName: 'games-document.pdf',
+          }
+        ],
+        isHearingRelated: true,
+        hearingDate: '10 Jan 2023',
+        createdOn: new Date(2023, 2, 4),
+        createdBy: '2222-2222-2222-2222',
+        parentId: 'case-message-002'
+      },
+      {
+        id: 'case-message-012',
+        name: 'Maggie Conroy',
+        body: 'Can I use a tablet instead?',
         attachments: [],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
-        createdOn: new Date(2023, 0, 4),
+        createdOn: new Date(2023, 3, 8),
+        createdBy: '2222-2222-2222-2222',
+        parentId: 'case-message-002'
+      },
+      {
+        id: 'case-message-013',
+        name: 'John Smith',
+        body: 'No, you cannot use a tablet either.',
+        attachments: [],
+        isHearingRelated: true,
+        hearingDate: '10 Jan 2023',
+        createdOn: new Date(2023, 4, 24),
         createdBy: '2222-2222-2222-2222',
         parentId: 'case-message-002'
       }
@@ -121,47 +164,3 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
     ]
   }
 ];
-
-export const caseFieldMockData: CaseField = Object.assign(new CaseField(), {
-  id: '',
-  label: '',
-  hint_text: '',
-  field_type: Object.assign(new FieldType(), {
-    id: 'QueryDocuments',
-    type: 'QueryDocuments',
-    min: null,
-    max: null,
-    regular_expression: null,
-    fixed_list_items: [],
-    complex_fields: [],
-    collection_field_type: Object.assign(new FieldType(), {
-      id: 'Document',
-      type: 'Document',
-      min: null,
-      max: null,
-      regular_expression: null,
-      fixed_list_items: [],
-      complex_fields: [],
-      collection_field_type: null
-    })
-  }),
-  display_context_parameter: '#COLLECTION(allowInsert,allowUpdate)',
-  value: [
-    {
-      id: '725bf4a7-9e4c-4132-b5c1-f8028cb83459',
-      value: {
-        document_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f',
-        document_filename: 'Screenshot 2023-06-01 at 16.07.06.png',
-        document_binary_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f/binary'
-      } as FormDocument
-    },
-    {
-      id: '725bf4a7-9e4c-4132-b5c1-f8028cb83459',
-      value: {
-        document_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506',
-        document_filename: 'dummy.pdf',
-        document_binary_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506/binary'
-      } as FormDocument
-    }
-  ]
-});
