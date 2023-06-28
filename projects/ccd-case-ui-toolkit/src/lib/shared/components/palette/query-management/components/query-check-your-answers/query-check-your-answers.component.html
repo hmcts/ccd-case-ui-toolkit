@@ -118,7 +118,11 @@
           {{ 'Document attached' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value govuk-summary-list__value--documentAttached">
-          <ccd-read-collection-field *ngIf="caseField" [caseField]="caseField"></ccd-read-collection-field>
+          <ccd-query-attachments-read
+            *ngIf="this.formGroup.get('attachments').value"
+            [attachments]="this.formGroup.get('attachments').value"
+          >
+          </ccd-query-attachments-read>
         </dd>
         <dd class="govuk-summary-list__actions">
           <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">

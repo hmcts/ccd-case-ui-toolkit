@@ -6,7 +6,7 @@ export class QueryListItem implements PartyMessage {
   public subject?: string;
   public name: string;
   public body: string;
-  public attachments?: Document[];
+  public attachments?: Document[] = [];
   public isHearingRelated: boolean;
   public hearingDate?: string;
   public createdOn: Date;
