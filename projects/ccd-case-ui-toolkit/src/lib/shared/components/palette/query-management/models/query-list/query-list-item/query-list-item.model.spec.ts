@@ -1,5 +1,5 @@
 import { QueryListItem } from './query-list-item.model';
-import { CaseField, FieldType } from '../../../../../../domain';
+import { QueryItemResponseStatus } from '../../../enums';
 
 describe('QueryListItem', () => {
   let queryListItem: QueryListItem;
