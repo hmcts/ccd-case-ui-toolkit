@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.16.0-query-details-ui-changes
+**EUI-8604** Query details UI changes on the Query tab
+
 ### Version 6.16.0-create-qualifying-questions-component-step-2
 **EUI-8524** Create qualifying questions component step 2
 

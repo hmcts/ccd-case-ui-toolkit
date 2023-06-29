@@ -2,19 +2,19 @@
   <table class="govuk-table query-details-table" [attr.aria-describedby]="'Details of the query' | rpxTranslate">
     <tbody class="govuk-table__body">
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">{{ 'Last submitted by' | rpxTranslate }}</th>
-        <td class="govuk-table__cell">{{ queryItem.lastSubmittedBy }}</td>
-      </tr>
-      <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Submission date' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.createdOn | date: 'dd MMM yyyy' }}</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">{{ 'Submitted by' | rpxTranslate }}</th>
+        <td class="govuk-table__cell">{{ queryItem.lastSubmittedBy }}</td>
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Query subject' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.subject }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">{{ 'Query body' | rpxTranslate }}</th>
+        <th scope="row" class="govuk-table__header">{{ 'Query detail' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.body }}</td>
       </tr>
       <tr class="govuk-table__row">
@@ -22,8 +22,7 @@
         <td class="govuk-table__cell">{{ queryItem.isHearingRelated ? 'Yes' : 'No' }}</td>
       </tr>
       <tr class="govuk-table__row" *ngIf="queryItem.isHearingRelated">
-        <th scope="row" class="govuk-table__header">{{ 'What is the date of the hearing your query related to?' |
-          rpxTranslate }}</th>
+        <th scope="row" class="govuk-table__header">{{ 'What is the date of the hearing?' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.hearingDate | date: 'dd MMM yyyy' }}</td>
       </tr>
       <tr class="govuk-table__row">
