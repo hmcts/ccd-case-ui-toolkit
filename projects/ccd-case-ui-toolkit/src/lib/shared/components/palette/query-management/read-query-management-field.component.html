@@ -1,9 +1,35 @@
-<ng-container>
+<ng-container *ngIf="showQueryList; else singleQueryDetails">
   <ng-container *ngFor="let singlePartyMessageGroup of partyMessagesGroups">
     <div *ngIf="showQueryList" class="govuk-!-margin-top-8 govuk-!-margin-bottom-8">
       <ccd-query-list (selectedQuery)="setQuery($event)" [partyMessageGroup]="singlePartyMessageGroup"></ccd-query-list>
     </div>
   </ng-container>
-
-  <ccd-query-details [query]="query" (backClicked)="showQueryList = true" *ngIf="!showQueryList"></ccd-query-details>
 </ng-container>
+
+<ng-template #singleQueryDetails>
+  <br>
+  <p>
+    <a class="govuk-link" href="javascript:void(0)">{{ 'Back to queries' | rpxTranslate }}</a>
+  </p>
+
+  <ccd-query-details
+    [query]="query"
+    (backClicked)="showQueryList = true"
+    [caseId]="caseId"
+  ></ccd-query-details>
+
+  <ng-container *ngIf="query?.children?.length > 0; else queryIsInReview">
+    <button id="ask-follow-up-question" class="govuk-button" data-module="govuk-button"
+            [routerLink]="['/query-management', 'query', caseId, '4']"
+    >
+      {{ 'Ask a follow-up question' }}
+    </button>
+  </ng-container>
+
+  <ng-template #queryIsInReview>
+    <div>
+      <p class="govuk-!-font-weight-bold">{{ 'Your query is under review' | rpxTranslate }}</p>
+      <p>{{ 'Our team will read your query and will respond. Do not submit the same query more than once.' | rpxTranslate }}</p>
+    </div>
+  </ng-template>
+</ng-template>
