@@ -9,6 +9,7 @@ import { QueryListItem } from '../../models';
 export class QueryDetailsComponent {
   @Input() public query: QueryListItem;
   @Output() public backClicked: EventEmitter<boolean> = new EventEmitter();
+  @Input() public caseId: string;
 
   public onBack(): void {
     this.backClicked.emit(true);
