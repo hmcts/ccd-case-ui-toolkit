@@ -1,5 +1,5 @@
 import { Document } from '../../../../../../domain';
-import { QueryItemResponseStatus } from '../../../enums';
+import { QueryItemResponseStatus } from '../../../enums/query-item-response-status.enum';
 import { PartyMessage } from '../../party-messages/party-message.model';
 
 export class QueryListItem implements PartyMessage {

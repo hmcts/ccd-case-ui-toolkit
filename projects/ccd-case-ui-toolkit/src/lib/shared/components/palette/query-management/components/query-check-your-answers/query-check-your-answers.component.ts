@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { QueryItemType, QueryListItem } from '../../models';
+import { QueryCreateContext, QueryListItem } from '../../models';
 
 @Component({
   selector: 'ccd-query-check-your-answers',
@@ -10,9 +10,9 @@ import { QueryItemType, QueryListItem } from '../../models';
 export class QueryCheckYourAnswersComponent {
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
-  @Input() public queryCreateContext: QueryItemType;
+  @Input() public queryCreateContext: QueryCreateContext;
   @Output() public backClicked = new EventEmitter<boolean>();
-  public queryItemTypeEnum = QueryItemType;
+  public queryCreateContextEnum = QueryCreateContext;
 
   public goBack(): void {
     this.backClicked.emit(true);
