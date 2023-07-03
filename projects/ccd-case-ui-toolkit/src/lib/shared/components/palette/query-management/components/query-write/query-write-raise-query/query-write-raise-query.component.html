@@ -37,7 +37,7 @@
              [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('body').hasError('required')}">
           <div class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
-              {{ 'Query body' | rpxTranslate }}
+              {{ 'Query detail' | rpxTranslate }}
             </label>
           </div>
           <div id="body-hint" class="govuk-hint">
@@ -100,7 +100,7 @@
             <fieldset class="govuk-fieldset" role="group">
               <legend>
                 <label class="govuk-label govuk-label--s">
-                  {{ 'Hearing date' | rpxTranslate }}
+                  {{ 'What is the date of the hearing?' | rpxTranslate }}
                 </label>
               </legend>
               <p id="hearingDate-error" class="govuk-error-message"

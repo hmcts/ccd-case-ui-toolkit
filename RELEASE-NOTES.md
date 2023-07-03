@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+## Version 6.16.0-query-management-raise-a-query-page-changes
+**EUI-8602** Query management raise a query page changes
+
 ### Version 6.16.0-create-qualifying-questions-component-step-2
 **EUI-8524** Create qualifying questions component step 2
 
