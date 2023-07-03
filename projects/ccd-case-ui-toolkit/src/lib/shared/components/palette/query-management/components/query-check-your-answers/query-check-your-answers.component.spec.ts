@@ -153,7 +153,6 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
     fixture.detectChanges();
     const caption = nativeElement.querySelector('.govuk-caption-l');
-    console.log('CAPTION', caption.textContent, caption.innerText, caption.innerHTML);
     expect(caption.innerText).toEqual('Raise a query');
     const heading = nativeElement.querySelector('.govuk-heading-l');
     expect(heading.textContent.trim()).toEqual('Review query details');

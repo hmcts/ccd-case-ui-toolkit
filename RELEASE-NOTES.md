@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.16.0-follow-up-query-check-your-answers
+### Version 6.16.0-follow-up-query-check-your-answers-v2
 **EUI-8607** Query management follow up query check your answers page changes
 
 ### Version 6.16.0-create-qualifying-questions-component-step-2
