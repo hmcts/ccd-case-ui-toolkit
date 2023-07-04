@@ -25,13 +25,18 @@
         <dd class="govuk-summary-list__value">
           {{ formGroup.get('subject')?.value }}
         </dd>
+        <dd class="govuk-summary-list__actions">
+          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+            {{ 'Change' | rpxTranslate }}
+          </a>
+        </dd>
       </div>
     </dl>
 
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response message' : 'Query body' | rpxTranslate }}
+          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response message' : 'Query detail' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
           {{ formGroup.get('body')?.value }}
@@ -66,7 +71,9 @@
 
       <div *ngIf="formGroup.get('isHearingRelated')?.value" class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ 'What is the date of the hearing your query is related to?' | rpxTranslate }}
+          {{ queryCreateContext === queryCreateContextEnum.NEW_QUERY
+            ? 'What is the date of the hearing?'
+            : 'What is the date of the hearing your query is related to?' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
           {{ formGroup.get('hearingDate')?.value | date: 'dd MMM yyyy' }}
@@ -82,7 +89,7 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ 'Document attached' | rpxTranslate }}
+          {{ queryCreateContext === queryCreateContextEnum.NEW_QUERY ? 'Upload a file to the query' : 'Document attached' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value govuk-summary-list__value--documentAttached">
           <ccd-query-attachments-read
