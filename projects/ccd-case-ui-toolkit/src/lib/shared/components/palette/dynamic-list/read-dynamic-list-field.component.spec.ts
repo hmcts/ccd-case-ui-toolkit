@@ -5,7 +5,6 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { DynamicListPipe } from './dynamic-list.pipe';
 import { ReadDynamicListFieldComponent } from './read-dynamic-list-field.component';
-import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 
 describe('ReadDynamicListFieldComponent', () => {
 

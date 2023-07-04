@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { PaletteContext } from '../base-field';
 import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus } from './enums';
