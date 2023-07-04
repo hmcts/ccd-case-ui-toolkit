@@ -31,7 +31,7 @@ export class CaseFlagRefdataService {
         url += `?flag-type=${flagType}`;
       }
       if (typeof welshRequired === 'boolean') {
-        // Check if anything has been added to the query string; if so, append welsh-required with '&'
+        // Check if flag-type has been added to the query string; if so, append welsh-required with '&'
         url.indexOf('?') > -1 ? url += '&' : url += '?';
         welshRequired ? url += 'welsh-required=Y' : url += 'welsh-required=N';
       }

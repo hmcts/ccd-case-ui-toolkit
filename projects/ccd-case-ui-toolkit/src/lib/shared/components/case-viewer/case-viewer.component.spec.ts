@@ -11,7 +11,7 @@ import {
 } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CaseNotifier } from '..';
-import { CaseField, CaseView } from '../..';
+import { CaseField, CaseView, OrderService } from '../..';
 import { AbstractAppConfig } from '../../../app.config';
 import { CaseViewerComponent } from './case-viewer.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -143,7 +143,7 @@ describe('CaseViewerComponent', () => {
   mockActivatedRoute.snapshot.data = {} as Data;
 
   mockAppConfig.getAccessManagementMode.and.returnValue(false);
-  mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({active: false});
+  mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({ active: false });
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -153,6 +153,7 @@ describe('CaseViewerComponent', () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: CaseNotifier, useValue: mockCaseNotifier },
         { provide: AbstractAppConfig, useValue: mockAppConfig },
+        { provide: OrderService, useValue: new OrderService() }
       ],
     }).compileComponents();
 
@@ -191,6 +192,27 @@ describe('CaseViewerComponent', () => {
       fixture.detectChanges();
       component.loadCaseDetails();
       expect(component.caseDetails.case_type.id).toEqual('case_view_2_type_id');
+    });
+
+    it('should append _ to duplicate tab', () => {
+      mockActivatedRoute.snapshot.data = { case: CASE_VIEW_FROM_ROUTE } as Data;
+      mockActivatedRoute.snapshot.data.case.tabs = [
+        { id: '4', label: 'Application', fields: [] },
+        { id: '2', label: 'Payment', fields: [] },
+        { id: '3', label: 'Application', fields: [] },
+        { id: '4', label: 'Payment', fields: [] },
+        { id: '1', label: 'AOS', fields: [] }
+      ];
+      fixture.detectChanges();
+      component.loadCaseDetails();
+      const expected = [
+        { id: '4', label: 'Application', fields: [] },
+        { id: '2', label: 'Payment', fields: [] },
+        { id: '3', label: 'Application_', fields: [] },
+        { id: '4', label: 'Payment_', fields: [] },
+        { id: '1', label: 'AOS', fields: [] }
+      ]
+      expect(component.caseDetails.tabs).toEqual(expected);
     });
   });
 
