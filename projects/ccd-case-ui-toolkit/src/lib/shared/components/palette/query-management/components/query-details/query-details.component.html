@@ -18,6 +18,11 @@
               <td class="govuk-table__cell">{{ child.createdOn | date: 'dd MMM yyyy' }}</td>
             </tr>
 
+            <tr *ngIf="isCaseworker()" class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Caseworker name' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">{{ child.name }}</td>
+            </tr>
+
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header">{{ 'Response detail' | rpxTranslate }}</th>
               <td class="govuk-table__cell">{{ child.body }}</td>
