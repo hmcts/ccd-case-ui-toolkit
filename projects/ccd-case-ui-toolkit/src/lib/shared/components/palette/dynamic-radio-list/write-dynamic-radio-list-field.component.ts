@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import {Component, OnInit} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {AbstractFieldWriteComponent} from '../base-field/abstract-field-write.component';
 
 @Component({
   selector: 'ccd-write-dynamic-radio-list-field',
@@ -12,7 +12,6 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
 
   public ngOnInit(): void {
     /**
-     *
      * Reassigning list_items from formatted_list when list_items is empty
      */
     if (!this.caseField.list_items && this.caseField.formatted_value && this.caseField.formatted_value.list_items) {

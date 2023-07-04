@@ -378,6 +378,34 @@ describe('ConditionParser', () => {
   });
 
   describe('evaluate', () => {
+    describe('should evaluate complex type field, in formula fomulas', () => {
+      const conditions = [
+        { fieldReference: 'a.b.TextField', comparator: '=', value: 'hello' }
+      ];
+
+      const testCases = [
+        {
+          input: { TextField: 'hello' },
+          expected: true
+        },
+        {
+          input: { TextField: 'hellos' },
+          expected: false
+        },
+        {
+          input: { TextField: 'hell' },
+          expected: false
+        },
+      ];
+
+      testCases.forEach(test => {
+        it(`should evaluate evaluate complex type field conditions correctly`, () => {
+          const result = ConditionParser.evaluate(test.input, conditions);
+          expect(result).toEqual(test.expected);
+        });
+      });
+    });
+
     describe('should evaluate simple, single fomulas', () => {
       const conditions = [
         { fieldReference: 'TextField', comparator: '=', value: 'hello' }

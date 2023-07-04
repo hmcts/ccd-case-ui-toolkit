@@ -1,5 +1,5 @@
-import { QueryListItem } from './query-list-item.model';
 import { QueryItemResponseStatus } from '../../../enums';
+import { QueryListItem } from './query-list-item.model';
 
 describe('QueryListItem', () => {
   let queryListItem: QueryListItem;
