@@ -514,8 +514,7 @@ export class FormValueService {
    * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
    */
   public repopulateFormDataFromCaseFieldValues(data: object, caseFields: CaseField[]): void {
-    if (data && caseFields && caseFields.length > 0 &&
-      caseFields.findIndex(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])) > -1) {
+    if (data && caseFields && caseFields.length > 0 && caseFields.findIndex(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])) > -1) {
       // Ignore the FlagLauncher CaseField because it does not hold any values
       caseFields.filter(caseField => !FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))
         .forEach(caseField => {
@@ -538,6 +537,91 @@ export class FormValueService {
           }
         });
     }
+  }
+
+  /**
+   * Populate the judicial users from the data held in its corresponding CaseField.
+   *
+   * @param data The object tree of form values on which to perform the data population
+   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   */
+  public populateJudicialUserDetailsFromCaseFields(data:object, caseFields: CaseField[]): void {
+    console.log('DATA', data);
+    if (data && caseFields && caseFields.length > 0) {
+      caseFields.forEach(caseField => {
+        if (data.hasOwnProperty(caseField.id) && caseField.value) {
+          // Create new object for the CaseField ID within the data object, if necessary (i.e. if the current value
+          // is falsy)
+          if (!data[caseField.id]) {
+            data[caseField.id] = {};
+          }
+          // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+          // Flags field within a Complex field or a collection of Complex fields) is copied across
+          Object.keys(data[caseField.id]).forEach(key => {
+            if (!caseField.value.hasOwnProperty(key)) {
+              if (Array.isArray(data[caseField.id][key])) {
+                const judicialUsers = [];
+                data[caseField.id][key].forEach(element => {
+                  const judicialUserComplexBaseType = {
+                    idamId: element.value[0].JudicialUser.idamId,
+                    personalCode: element.value[0].JudicialUser.personalCode
+                  };
+                  judicialUsers.push(judicialUserComplexBaseType);
+                });
+                data[caseField.id][key] = judicialUsers;
+              }
+            } else {
+              data[caseField.id][key] = caseField.value[key];
+            }
+          });
+        }
+
+          // if (data.hasOwnProperty(caseField.id) && caseField.value) {
+          //   if (!data[caseField.id]) {
+          //     data[caseField.id] = {};
+          //   }
+          //   Object.keys(data[caseField.id]).forEach(key => {
+          //     if (caseField.value.hasOwnProperty(key)) {
+          //       const field = caseField.field_type.complex_fields?.filter(x => x.id === key)[0];
+          //       if (field.field_type.collection_field_type?.id === 'JudicialUser') {
+          //         data[caseField.id].forEach(c => {
+          //           c.key = { 'idamId': c.key[0].idamId, 'personalCode': c.key[0].personalCode }
+          //         });
+          //       }
+          //     }
+          //   });
+          // }
+        });
+    }
+    console.log('DATA', data);
+    // caseFields.reduce((arr, caseField) => {
+    //   console.log('CASE FIELD POPULATE', caseField);
+    //   if (caseField.field_type.type === 'Collection' && caseField.field_type.collection_field_type?.id === 'JudicialUser') {
+    //     console.log('CASE FIELD NESTED', caseField);
+    //     // console.log('COLLECTION COMPLEX FIELDS', caseField.field_type.collection_field_type.complex_fields);
+    //     caseField.field_type.collection_field_type.complex_fields.forEach(complexCaseField => {
+    //       if (data.hasOwnProperty(complexCaseField.id) && complexCaseField.value) {
+    //         // Create new object for the CaseField ID within the data object, if necessary (i.e. if the current value
+    //         // is falsy)
+    //         if (!data[complexCaseField.id]) {
+    //           data[complexCaseField.id] = {};
+    //         }
+    //         // Copy all values from the corresponding CaseField
+    //         Object.keys(data[complexCaseField.id]).forEach(key => {
+    //           if (complexCaseField.value.hasOwnProperty(key)) {
+    //             data[complexCaseField.id][key] = complexCaseField.value[key];
+    //           }
+    //         });
+    //       }
+    //     });
+    //     // this.populateJudicialUserDetailsFromCaseFields(data, caseField.field_type.collection_field_type.complex_fields)
+    //   }
+    //   if (caseField.field_type.complex_fields?.length) {
+    //     console.log('COMPLEX FIELDS', caseField.field_type.complex_fields);
+    //     this.populateJudicialUserDetailsFromCaseFields(data, caseField.field_type.complex_fields)
+    //   }
+    //   return arr;
+    // }, []);
   }
 
   /**

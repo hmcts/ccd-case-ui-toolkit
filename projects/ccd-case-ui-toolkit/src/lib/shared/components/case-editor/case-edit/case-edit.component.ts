@@ -285,6 +285,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   this.formValueService.repopulateFormDataFromCaseFieldValues(caseEventData.data, eventTrigger.case_fields);
   // Data population step required for Linked Cases
   this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
+  // Data population step required for JudicialUser
+  this.formValueService.populateJudicialUserDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
   // Remove "Launcher"-type fields (these have no values and are not intended to be persisted)
   this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
   caseEventData.event_token = eventTrigger.event_token;

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { catchError, debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
@@ -14,12 +14,9 @@ import { AbstractFieldWriteComponent } from '../base-field';
 export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
 
   private readonly MINIMUM_SEARCH_CHARACTERS = 2;
-  private readonly IDAM_ID = 'idamId';
-  private readonly PERSONAL_CODE = 'personalCode';
 
+  public judicialUserControl: AbstractControl;
   public judicialUserFormGroup: FormGroup;
-  public idamIdFormControl: FormControl;
-  public personalCodeFormControl: FormControl;
   public jurisdiction: string;
   public caseType: string;
   public filteredJudicialUsers: JudicialUserModel[] = [];
@@ -33,15 +30,21 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
   }
 
   public ngOnInit(): void {
-    this.judicialUserFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
-    this.idamIdFormControl = new FormControl('');
-    this.judicialUserFormGroup.addControl(this.IDAM_ID, this.idamIdFormControl);
-    this.personalCodeFormControl = new FormControl('');
-    this.judicialUserFormGroup.addControl(this.PERSONAL_CODE, this.personalCodeFormControl);
+    console.log('CASE FIELD', this.caseField);
+    if (this.caseField.value) {
+      this.judicialUserFormGroup = this.registerControl(new FormGroup({
+        JudicialUser: new FormControl(this.caseField.value.JudicialUser)
+      }), true) as FormGroup;
+    } else {
+      this.judicialUserFormGroup = this.registerControl(new FormGroup({
+        JudicialUser: new FormControl(null)
+      }), true) as FormGroup;
+    }
+    this.judicialUserControl = this.judicialUserFormGroup.controls['JudicialUser'];
 
     this.setJurisdictionAndCaseType();
 
-    this.sub = this.idamIdFormControl.valueChanges.pipe(
+    this.sub = this.judicialUserControl.valueChanges.pipe(
       tap(() => this.showAutocomplete = false),
       tap(() => this.filteredJudicialUsers = []),
       debounceTime(300),
@@ -72,9 +75,7 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
   public loadJudicialUser(personalCode: string): void {
     if (personalCode) {
       this.jurisdictionService.searchJudicialUsersByPersonalCodes([personalCode]).subscribe(judicialUsers => {
-        const judicialUser = judicialUsers[0];
-        this.idamIdFormControl.setValue(`${judicialUser.fullName} (${judicialUser.emailId})`);
-        this.personalCodeFormControl.setValue(judicialUser.personalCode);
+        this.judicialUserControl.setValue(judicialUsers[0]);
       });
     }
   }
@@ -88,10 +89,10 @@ export class WriteJudicialUserFieldComponent extends AbstractFieldWriteComponent
     }
   }
 
-  public onSelectionChange(judicialUser: JudicialUserModel): void {
-    this.idamIdFormControl.setValue(`${judicialUser.fullName} (${judicialUser.emailId})`);
-    this.personalCodeFormControl.setValue(judicialUser.personalCode);
-  }
+  // public onSelectionChange(judicialUser: JudicialUserModel): void {
+  //   this.idamIdFormControl.setValue(`${judicialUser.fullName} (${judicialUser.emailId})`);
+  //   this.personalCodeFormControl.setValue(judicialUser.personalCode);
+  // }
 
   public ngOnDestroy(): void {
     if (this.sub) {
