@@ -11,7 +11,7 @@
     <div [id]="createElementId('radio')">
   	  <div class="multiple-choice" *ngFor="let value of yesNoValues" [ngClass]="{selected: yesNoControl.value === value}">
   	    <input class="form-control" [id]="createElementId(value)" [attr.name]="id()" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
-  	    <label class="form-label" [for]="createElementId(value)">{{value | rpxTranslate}}</label>
+  	    <label class="form-label" [for]="createElementId(value)">{{caseField.label | rpxTranslate : null : value}}</label>
   	  </div>
     </div>
 	</fieldset>
