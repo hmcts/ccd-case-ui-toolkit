@@ -91,16 +91,22 @@ describe('CaseEditConfirmComponent', () => {
   beforeEach(() => {
   });
 
-  it('should render a confirmation-header', () => {
-    de = fixture.debugElement.query(By.css('#confirmation-header'));
-    expect(de.nativeElement.textContent).toBeDefined();
-    expect(de.nativeElement.textContent.trim()).toEqual('Header');
+  it('should pass the right text to the ccd-markdown content ' +
+    'input property inside #confirmation-header', () => {
+    de = fixture.debugElement.query(By.css('#confirmation-header ccd-markdown'));
+    const contentInputValue = de.componentInstance.content;
+
+    expect(contentInputValue).toBeDefined();
+    expect(contentInputValue.trim()).toEqual('Header');
   });
 
-  it('should render an confirmation-body', () => {
-    de = fixture.debugElement.query(By.css('#confirmation-body'));
-    expect(de.nativeElement.textContent).toBeDefined();
-    expect(de.nativeElement.textContent.trim()).toEqual('A body with mark down');
+  it('should pass the right text to the ccd-markdown content ' +
+    'input property inside #confirmation-body', () => {
+    de = fixture.debugElement.query(By.css('#confirmation-body ccd-markdown'));
+    const contentInputValue = de.componentInstance.content;
+
+    expect(contentInputValue).toBeDefined();
+    expect(contentInputValue).toEqual('A body with mark down');
   });
 
   it('should show valid title on the page', () => {
@@ -154,9 +160,6 @@ describe('CaseEditConfirmComponent', () => {
     fixture = TestBed.createComponent(CaseEditConfirmComponent);
     component = fixture.componentInstance;
   }));
-
-  beforeEach(() => {
-  });
 
   it('should call route when no confirmation provided', () => {
     expect(routerStub.navigate).toHaveBeenCalled();
