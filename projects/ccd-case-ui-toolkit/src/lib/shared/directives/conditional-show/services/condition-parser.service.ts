@@ -168,6 +168,8 @@ export class ConditionParser {
     if (path) {
       const [_, ...pathTail] = path.split(/[_]+/g);
       return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), pathTail.join('_'));
+    } else if (!fields[head]) {
+      return this.findValueForComplexCondition(fields, tail[0], tail.slice(1), path);
     } else {
       return this.findValueForComplexCondition(fields[head], tail[0], tail.slice(1), path);
     }

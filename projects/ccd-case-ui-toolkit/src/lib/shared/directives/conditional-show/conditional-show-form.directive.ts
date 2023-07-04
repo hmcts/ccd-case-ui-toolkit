@@ -100,7 +100,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
         if (control.validator) {
           if (cf.hidden === true && !control.disabled) {
             control.disable({ emitEvent: false });
-          } else if (cf.hidden !== true && control.disabled) {
+          } else if (cf.hidden !== true) {
             control.enable({ emitEvent: false });
           }
         }

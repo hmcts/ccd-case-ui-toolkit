@@ -1,4 +1,4 @@
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,8 +20,7 @@ import { WizardFactoryService } from '../services/wizard-factory.service';
 import { CaseEditComponent } from './case-edit.component';
 import createSpyObj = jasmine.createSpyObj;
 
-// this suite is breaking the test runner, needs addressing
-xdescribe('CaseEditComponent', () => {
+describe('CaseEditComponent', () => {
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
     'TEST_TRIGGER',
     'Test Trigger',
@@ -263,9 +262,8 @@ xdescribe('CaseEditComponent', () => {
         'clearNonCaseFields',
         'removeNullLabels',
         'removeEmptyDocuments',
-        'populateFlagDetailsFromCaseFields',
-        'removeFlagLauncherField',
-        'removeComponentLauncherField',
+        'repopulateFormDataFromCaseFieldValues',
+        'removeCaseFieldsOfType',
         'removeEmptyCollectionsWithMinValidation',
         'populateLinkedCasesDetailsFromCaseFields'
       ]);
@@ -796,6 +794,64 @@ xdescribe('CaseEditComponent', () => {
           expect(fieldsPurger.deleteFieldValue).not.toHaveBeenCalled();
         });
 
+        describe('next submitForm call', ()=> {
+          beforeEach(() => {
+            spyOn(fieldsPurger, 'deleteFieldValue');
+            component.wizard = wizard;
+            const currentPage = new WizardPage();
+            currentPage.wizard_page_fields = [WIZARD_PAGE_1];
+            currentPage.case_fields = [CASE_FIELD_1];
+            wizard.getPage.and.returnValue(currentPage);
+            const nextPage = new WizardPage();
+            nextPage.show_condition = 'PersonFirstName=\"John\"';
+            CASE_FIELD_3_COLLECTION.retain_hidden_value = true;
+            nextPage.case_fields = [CASE_FIELD_3_COLLECTION];
+            nextPage.wizard_page_fields = [WIZARD_PAGE_3_COLLECTION];
+            wizard.nextPage.and.returnValue(undefined);
+            component.form = new FormGroup({
+              data: new FormGroup({
+                PersonFirstName: new FormControl('Other'),
+                AddressList: new FormArray([new FormGroup({
+                  value: new FormGroup({AddressLine1: new FormControl('Street')})
+                })])
+              })
+            });
+          });
+
+          it('should call submit form if next page is undefined, show event note is false, show summary is false', () => {
+            const spyObj = jasmine.createSpyObj(['getNextPage']);
+            spyObj.getNextPage.and.returnValue(undefined);
+            component.eventTrigger.show_event_notes = false;
+            component.eventTrigger.show_event_notes = false;
+            spyOn(component, 'submitForm').and.callFake(()=>{});
+            fixture.detectChanges();
+            component.next('somePage');
+            expect(component.submitForm).toHaveBeenCalled();
+          });
+
+          it('should call submit form if next page is undefined, show event note is true, show summary is true', () => {
+            const spyObj = jasmine.createSpyObj(['getNextPage']);
+            spyObj.getNextPage.and.returnValue(undefined);
+            component.eventTrigger.show_event_notes = true;
+            component.eventTrigger.show_event_notes = true;
+            spyOn(component, 'submitForm').and.callFake(()=>{});
+            fixture.detectChanges();
+            component.next('somePage');
+            expect(component.submitForm).not.toHaveBeenCalled();
+          });
+
+          it('should call submit form if next page is something, show event note is null, show summary is null', () => {
+            const spyObj = jasmine.createSpyObj(['getNextPage']);
+            spyObj.getNextPage.and.returnValue({something:'something'});
+            component.eventTrigger.show_event_notes = null;
+            component.eventTrigger.show_event_notes = null;
+            spyOn(component, 'submitForm').and.callFake(()=>{});
+            fixture.detectChanges();
+            component.next('somePage');
+            expect(component.submitForm).toHaveBeenCalled();
+          });
+        });
+
         it('should check page is not refreshed', () => {
           mockSessionStorageService.getItem.and.returnValue(component.initialUrl = null);
           mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = false);
@@ -1036,7 +1092,7 @@ xdescribe('CaseEditComponent', () => {
     });
 
     describe('getStatus', () => {
-      it('should get callback_response_status as vallback has failed', () => {
+      it('should get callback_response_status as callback has failed', () => {
         const response = {
           /* tslint:disable:object-literal-key-quotes */
           'delete_draft_response_status': 'delete_draft_response_status',
@@ -1147,8 +1203,6 @@ xdescribe('CaseEditComponent', () => {
 
         spyOn(component, 'confirm')
 
-        component.isCaseFlagSubmission = true;
-        component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
         formValueService.sanitise.and.returnValue({name: 'sweet'})
@@ -1162,9 +1216,9 @@ xdescribe('CaseEditComponent', () => {
 
         expect(component.confirm).toHaveBeenCalled();
         expect(formValueService.populateLinkedCasesDetailsFromCaseFields).toHaveBeenCalled();
-        expect(formValueService.removeComponentLauncherField).toHaveBeenCalled();
-        expect(formValueService.removeFlagLauncherField).toHaveBeenCalled();
-        expect(formValueService.populateFlagDetailsFromCaseFields).toHaveBeenCalled();
+        expect(formValueService.removeCaseFieldsOfType)
+          .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
+        expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
       });
 
       it('should NOT submit the case due to error', () => {
