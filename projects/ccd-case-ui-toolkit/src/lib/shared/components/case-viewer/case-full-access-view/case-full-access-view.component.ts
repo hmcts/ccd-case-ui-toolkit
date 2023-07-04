@@ -16,6 +16,7 @@ import {
 } from '../../../../components/banners/notification-banner';
 import { ShowCondition } from '../../../directives';
 import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
+import { CaseViewEventIds } from '../../../domain/case-view/case-view-event-ids.enum';
 import {
   ActivityPollingService,
   AlertService,
@@ -69,6 +70,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public notificationBannerConfig: NotificationBannerConfig;
   public selectedTabIndex = 0;
   public activeCaseFlags = false;
+  public caseFlagsExternalUser = false;
+  private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
@@ -120,7 +123,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       });
     }
 
-    this.checkRouteAndSetCaseViewTab ();
+    this.checkRouteAndSetCaseViewTab();
 
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
@@ -182,7 +185,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
   }
 
-  public applyTrigger(trigger: CaseViewTrigger): void {
+  public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
     this.error = null;
 
     const theQueryParams: Params = {};
@@ -192,7 +195,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
 
     // we may need to take care of different triggers in the future
-    if (trigger.id === CaseViewTrigger.DELETE) {
+    if (trigger.id === CaseViewEventIds.QueryManagementRaiseQuery) {
+      await this.router.navigate([`/query-management/query/${this.caseDetails.case_id}`]);
+    } else if (trigger.id === CaseViewEventIds.DELETE) {
       const dialogRef = this.dialog.open(DeleteOrCancelDialogComponent, this.dialogConfig);
       dialogRef.afterClosed().subscribe(result => {
         if (result === 'Delete') {
@@ -204,7 +209,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
             });
         }
       });
-    } else if (this.isDraft() && trigger.id !== CaseViewTrigger.DELETE) {
+    } else if (this.isDraft() && trigger.id !== CaseViewEventIds.DELETE) {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseFullAccessViewComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
       this.navigationNotifierService.announceNavigation(
@@ -337,6 +342,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       : null;
 
     if (caseFlagsTab) {
+      // Check whether the FlagLauncher CaseField is in external mode or not; the notification banner should not be
+      // displayed for external users
+      this.caseFlagsExternalUser = caseFlagsTab.fields.find(
+        caseField => FieldsUtils.isFlagLauncherCaseField(caseField)).display_context_parameter === this.caseFlagsReadExternalMode;
+
       // Get the active case flags count
       // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
       // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
@@ -386,7 +396,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
-
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
     }

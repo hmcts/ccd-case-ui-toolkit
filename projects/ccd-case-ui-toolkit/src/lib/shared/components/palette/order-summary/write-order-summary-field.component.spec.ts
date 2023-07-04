@@ -86,11 +86,10 @@ describe('WriteOrderSummaryFieldComponent', () => {
             MoneyGbpInputComponent,
             WriteOrderSummaryFieldComponent,
             ReadMoneyGbpFieldComponent,
-
-            // Mocks
             ReadOrderSummaryFieldComponent,
-            MockRpxTranslatePipe,
-            ReadOrderSummaryRowComponent
+            ReadOrderSummaryRowComponent,
+            // Mocks
+            MockRpxTranslatePipe
           ]
         })
         .compileComponents();

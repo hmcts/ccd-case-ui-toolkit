@@ -1,22 +1,33 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteContext } from '../base-field';
 import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagStatus, CaseFlagSummaryListDisplayMode } from './enums';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;
   let fixture: ComponentFixture<ReadCaseFlagFieldComponent>;
+  let router: Router;
+  let route: ActivatedRoute;
+
   const flaglauncherId = 'FlagLauncher';
-  const flagLauncherCaseField: CaseField = {
+  const flagLauncher1CaseField: CaseField = {
     id: 'FlagLauncher1',
+    field_type: {
+      id: flaglauncherId,
+      type: flaglauncherId
+    }
+  } as CaseField;
+  const flagLauncher2CaseField: CaseField = {
+    id: 'FlagLauncher2',
     field_type: {
       id: flaglauncherId,
       type: flaglauncherId
@@ -107,6 +118,22 @@ describe('ReadCaseFlagFieldComponent', () => {
       details: witnessComplexFieldFlagDetailsArray
     }
   };
+  const caseFlag3FieldId = 'CaseFlag3';
+  const caseFlag3PartyName = 'Jack Daniels';
+  const caseFlag3RoleOnCase = 'Applicant';
+  const caseFlag3DetailsValue1 = {
+    name: 'Wheelchair access',
+    dateTimeModified: '2022-02-13T00:00:00.000',
+    dateTimeCreated: '2022-02-11T00:00:00.000',
+    path: [
+      { id: null, value: 'Party' },
+      { id: null, value: 'Reasonable adjustment' },
+      { id: null, value: 'Mobility support' }
+    ],
+    hearingRelevant: 'No',
+    flagCode: 'WCA',
+    status: CaseFlagStatus.ACTIVE
+  };
   const mockRoute = {
     snapshot: {
       data: {
@@ -123,7 +150,7 @@ describe('ReadCaseFlagFieldComponent', () => {
             {
               id: 'Case flags',
               fields: [
-                flagLauncherCaseField,
+                flagLauncher1CaseField,
                 {
                   id: caseFlag1FieldId,
                   field_type: {
@@ -213,6 +240,29 @@ describe('ReadCaseFlagFieldComponent', () => {
                   value: witnessComplexFieldValue
                 }
               ]
+            },
+            {
+              id: 'Support',
+              fields: [
+                flagLauncher2CaseField,
+                {
+                  id: caseFlag3FieldId,
+                  field_type: {
+                    id: 'Flags',
+                    type: 'Complex'
+                  },
+                  value: {
+                    partyName: caseFlag3PartyName,
+                    roleOnCase: caseFlag3RoleOnCase,
+                    details: [
+                      {
+                        id: '6e8784ca-d679-4f36-a986-edc6ad255dfa',
+                        value: caseFlag3DetailsValue1
+                      }
+                    ]
+                  }
+                }
+              ]
             }
           ]
         }
@@ -292,10 +342,10 @@ describe('ReadCaseFlagFieldComponent', () => {
           }
         }
       },
-      [flagLauncherCaseField.id]: {
+      [flagLauncher1CaseField.id]: {
         controls: {},
-        caseField: flagLauncherCaseField,
-        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService())
+        caseField: flagLauncher1CaseField,
+        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), new CaseFlagStateService(), null)
       }
     },
     get: (controlName: string) => {
@@ -314,13 +364,22 @@ describe('ReadCaseFlagFieldComponent', () => {
   } as FlagsWithFormGroupPath;
   const createMode = '#ARGUMENT(CREATE)';
   const updateMode = '#ARGUMENT(UPDATE)';
+  const updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
+  let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
 
   beforeEach(waitForAsync(() => {
+    caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
+    caseFlagStateServiceSpy.formGroup = formGroup;
+    caseFlagStateServiceSpy.pageLocation = '../createCaseFlag/createCaseFlagCaseFlagFormPage';
+    caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
+
     TestBed.configureTestingModule({
+      imports: [ RouterTestingModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ ReadCaseFlagFieldComponent, MockRpxTranslatePipe ],
       providers: [
-        { provide: ActivatedRoute, useValue: mockRoute }
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy }
       ]
     })
     .compileComponents();
@@ -329,6 +388,11 @@ describe('ReadCaseFlagFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ReadCaseFlagFieldComponent);
     component = fixture.componentInstance;
+    component.caseField = flagLauncher1CaseField;
+    component.formGroup = new FormGroup({});
+    router = TestBed.inject(Router);
+    route = TestBed.inject(ActivatedRoute);
+
     fixture.detectChanges();
   });
 
@@ -341,8 +405,6 @@ describe('ReadCaseFlagFieldComponent', () => {
   });
 
   it('should extract all flags-related data from the CaseView object in the snapshot data', () => {
-    component.caseField = flagLauncherCaseField;
-    component.ngOnInit();
     expect(component.flagsData).toBeTruthy();
     expect(component.flagsData.length).toBe(4);
     expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
@@ -382,6 +444,25 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.caseLevelCaseFlagData).toEqual(component.flagsData[2]);
   });
 
+  it('should extract the correct flags-related data for a given FlagLauncher field instance', () => {
+    expect(component.flagsData).toBeTruthy();
+    expect(component.flagsData.length).toBe(4);
+    expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
+    expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
+    expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag1RoleOnCase);
+    expect(component.flagsData[0].flags.details.length).toBe(2);
+    expect(component.flagsData[0].flags.details[0].name).toEqual(caseFlag1DetailsValue1.name);
+    component.caseField = flagLauncher2CaseField;
+    component.ngOnInit();
+    expect(component.flagsData).toBeTruthy();
+    expect(component.flagsData.length).toBe(1);
+    expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag3FieldId);
+    expect(component.flagsData[0].flags.partyName).toEqual(caseFlag3PartyName);
+    expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag3RoleOnCase);
+    expect(component.flagsData[0].flags.details.length).toBe(1);
+    expect(component.flagsData[0].flags.details[0].name).toEqual(caseFlag3DetailsValue1.name);
+  });
+
   it('should not map a Flags case field to a Flags object when the case field value is falsy', () => {
     // Clear caseField.value for both party-level case flags
     TestBed.inject(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value = null;
@@ -394,10 +475,12 @@ describe('ReadCaseFlagFieldComponent', () => {
     TestBed.inject(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value.details = null;
     TestBed.inject(ActivatedRoute).snapshot.data.case.tabs[2].fields[2].value.details = undefined;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
-    formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocation)
+    });
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
@@ -410,56 +493,62 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   it('should select the correct (i.e. new) flag to display on the summary page, as part of the Create Case Flag journey', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
-    formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocation)
+    });
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
     expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
-    // Check the correct display mode for the "Review flag details" summary page has been set
-    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
   });
 
   it('should select the correct (i.e. new) flag to display on the summary page, when the flag is contained in a Complex field', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
-    formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocationInComplexField;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocationInComplexField)
+    });
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(witnessCaseFlagPartyName);
     expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag in Witness field'} as FlagDetail);
-    // Check the correct display mode for the "Review flag details" summary page has been set
-    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
   });
 
   it('should show nothing on the summary page if the flag\'s CaseField object has no value', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: createMode
     };
     selectedFlagsLocation.caseField.value = null;
-    formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocation)
+    });
     component.formGroup = formGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeNull();
-    // Check the correct display mode for the "Review flag details" summary page has been set
-    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
   });
 
   it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Case Flags journey', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
-    formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: updateMode
     };
     component.formGroup = formGroup;
     // Simulate presence of selected flag
-    formGroup.controls[flagLauncherCaseField.id]['component'].selectedFlag = {
+    formGroup.controls[flagLauncher1CaseField.id]['component'].selectedFlag = {
       flagDetailDisplay: {
         partyName: caseFlag2PartyName,
         flagDetail: caseFlag2DetailsValue1,
@@ -471,7 +560,41 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
     expect(component.flagForSummaryDisplay.flagDetail).toEqual(caseFlag2DetailsValue1 as FlagDetail);
     expect(component.flagForSummaryDisplay.flagsCaseFieldId).toEqual(caseFlag2FieldId);
-    // Check the correct display mode for the "Review flag details" summary page has been set
-    expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.MANAGE);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.UPDATE);
   });
+
+  it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage support journey for Legal Ops', () => {
+    component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
+      display_context_parameter: updateExternalMode
+    };
+    component.formGroup = formGroup;
+    // Simulate presence of selected flag
+    formGroup.controls[flagLauncher1CaseField.id]['component'].selectedFlag = {
+      flagDetailDisplay: {
+        partyName: caseFlag2PartyName,
+        flagDetail: caseFlag2DetailsValue1,
+        flagsCaseFieldId: caseFlag2FieldId
+      } as FlagDetailDisplay
+    };
+    component.ngOnInit();
+    expect(component.flagForSummaryDisplay).toBeTruthy();
+    expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual(caseFlag2DetailsValue1 as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagsCaseFieldId).toEqual(caseFlag2FieldId);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.UPDATE_EXTERNAL);
+  });
+
+  it('should navigate back to form with field state', fakeAsync(() => {
+    spyOn(router, 'navigate').and.callThrough();
+
+    const fieldState = 123;
+    caseFlagStateServiceSpy.pageLocation = '../createCaseFlag/createCaseFlagCaseFlagFormPage';
+    component.navigateBackToForm(fieldState);
+    tick();
+
+    expect(router.navigate).toHaveBeenCalledWith([`../${caseFlagStateServiceSpy.pageLocation}`], { relativeTo: route });
+  }));
 });

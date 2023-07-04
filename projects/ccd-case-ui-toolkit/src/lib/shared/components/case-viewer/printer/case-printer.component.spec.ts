@@ -87,11 +87,9 @@ describe('CasePrinterComponent', () => {
         declarations: [
           CasePrinterComponent,
           PrintUrlPipe,
-
-          // Mock
-          MockRpxTranslatePipe,
           // Mocks
-          caseHeaderComponentMock
+          caseHeaderComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: CaseNotifier, useValue: caseService },

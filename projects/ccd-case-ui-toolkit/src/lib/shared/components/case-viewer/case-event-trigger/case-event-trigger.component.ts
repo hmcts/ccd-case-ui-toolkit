@@ -75,22 +75,18 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       // Bypass validation if the CaseEventData data object contains a FlagLauncher field; this field type cannot be
       // validated like regular fields. Need to match this field id against that of the defined FlagLauncher CaseField
       // (if it exists on any CaseTab)
-      let flagLauncherCaseField: CaseField;
+      const flagLauncherCaseFields: CaseField[] = [];
       if (this.caseDetails.tabs) {
         for (const tab of this.caseDetails.tabs) {
           if (tab.fields) {
-            flagLauncherCaseField = tab.fields.find(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
-            // Stop searching for a FlagLauncher field as soon as it is found
-            if (flagLauncherCaseField) {
-              break;
-            }
+            flagLauncherCaseFields.push(...tab.fields.filter(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)));
           }
         }
       }
 
-      return flagLauncherCaseField && sanitizedEditForm.data.hasOwnProperty(flagLauncherCaseField.id)
-        ? of(null)
-        : this.casesService.validateCase(this.caseDetails.case_type.id, sanitizedEditForm, pageId);
+      const isThereAnyFlagLauncherField = flagLauncherCaseFields.length > 0;
+
+      return isThereAnyFlagLauncherField ? of(null) : this.casesService.validateCase(this.caseDetails.case_type.id, sanitizedEditForm, pageId);
     };
   }
 
