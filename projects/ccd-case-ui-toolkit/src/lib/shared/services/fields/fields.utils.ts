@@ -341,6 +341,9 @@ export class FieldsUtils {
     return this.isFlagsFieldType(caseField.field_type);
   }
 
+  /**
+   * @deprecated Use {@link isCaseFieldOfType} instead, passing 'FlagLauncher' as the single type in the `types` array
+   */
   public static isFlagLauncherCaseField(caseField: CaseField): boolean {
     if (!caseField) {
       return false;
@@ -349,12 +352,32 @@ export class FieldsUtils {
     return caseField.field_type.type === 'FlagLauncher';
   }
 
+  /**
+   * @deprecated Use {@link isCaseFieldOfType} instead, passing 'ComponentLauncher' as the single type in the `types`
+   * array
+   */
   public static isComponentLauncherCaseField(caseField: CaseField): boolean {
     if (!caseField) {
       return false;
     }
 
     return caseField.field_type.type === 'ComponentLauncher';
+  }
+
+  /**
+   * Checks if a {@link CaseField} is of one of the given field types.
+   *
+   * @param caseField The `CaseField` to check
+   * @param types An array of one or more field types
+   * @returns `true` if the `CaseField` type is one of those in the array of types to check against; `false`
+   * otherwise or if `caseField` or `types` are falsy
+   */
+  public static isCaseFieldOfType(caseField: CaseField, types: FieldTypeEnum[]): boolean {
+    if (!caseField || !types) {
+      return false;
+    }
+
+    return types.some(type => type === caseField.field_type.type);
   }
 
   public static isLinkedCasesCaseField(caseField: CaseField): boolean {
