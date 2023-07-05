@@ -88,7 +88,6 @@ describe('WriteOrderSummaryFieldComponent', () => {
             ReadMoneyGbpFieldComponent,
             ReadOrderSummaryFieldComponent,
             ReadOrderSummaryRowComponent,
-            ReadOrderSummaryRowComponent,
             // Mocks
             MockRpxTranslatePipe
           ]

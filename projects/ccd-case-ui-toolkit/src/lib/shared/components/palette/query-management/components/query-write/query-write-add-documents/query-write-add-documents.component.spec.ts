@@ -36,6 +36,20 @@ describe('QueryWriteAddDocumentsComponent', () => {
     expect(component.mockDocumentCaseField.id).toEqual(QueryWriteAddDocumentsComponent.DOCUMENTS_FORM_CONTROL_NAME);
   });
 
+  it('should validate label', () => {
+    expect(component.mockDocumentCaseField.label).toEqual('Add document');
+    component.label = 'Document label';
+    component.ngOnInit();
+    expect(component.mockDocumentCaseField.label).toEqual('Document label');
+  });
+
+  it('should validate the hint text', () => {
+    expect(component.mockDocumentCaseField.hint_text).toEqual('Attach a document to this message');
+    component.hintText = 'Attach document hint text';
+    component.ngOnInit();
+    expect(component.mockDocumentCaseField.hint_text).toEqual('Attach document hint text');
+  });
+
   describe('ngOnInit', () => {
     it('should set the mockDocumentCaseField value (type FormDocument) off the formGroup\'s attachments value (type Document)', () => {
       const documents: Document[] = [

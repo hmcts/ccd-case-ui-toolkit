@@ -70,7 +70,7 @@ describe('FormValueService', () => {
     } as object);
   });
 
-  it('should fiter current page fields and process DynamicList values back to Json', () => {
+  it('should filter current page fields and process DynamicList values back to JSON', () => {
     const formFields = { data: { dynamicList: 'L2', thatTimeOfTheDay: {} } };
     const caseField = new CaseField();
     const fieldType = new FieldType();
@@ -124,7 +124,11 @@ describe('FormValueService', () => {
         },
         pathToFlagsFormGroup: '',
         caseField: {
-          id: 'CaseFlag1'
+          id: 'CaseFlag1',
+          field_type: {
+            id: 'Flags',
+            type: 'Flags'
+          }
         } as CaseField
       },
       {
@@ -146,7 +150,11 @@ describe('FormValueService', () => {
         },
         pathToFlagsFormGroup: '',
         caseField: {
-          id: 'CaseFlag2'
+          id: 'CaseFlag2',
+          field_type: {
+            id: 'Flags',
+            type: 'Flags'
+          }
         } as CaseField
       },
       {
@@ -171,7 +179,11 @@ describe('FormValueService', () => {
         },
         pathToFlagsFormGroup: 'caseFlags',
         caseField: {
-          id: 'CaseFlag3'
+          id: 'CaseFlag3',
+          field_type: {
+            id: 'Flags',
+            type: 'Flags'
+          }
         } as CaseField
       },
       {
@@ -197,22 +209,34 @@ describe('FormValueService', () => {
         },
         pathToFlagsFormGroup: 'caseFlags',
         caseField: {
-          id: 'CaseFlag3'
+          id: 'CaseFlag3',
+          field_type: {
+            id: 'Flags',
+            type: 'Flags'
+          }
         } as CaseField
       }
     ] as FlagsWithFormGroupPath[];
     const caseField = [
       {
         id: 'CaseFlag1',
+        field_type: {
+          id: 'Flags',
+          type: 'Flags'
+        },
         value: []
       },
       {
         id: 'CaseFlag2',
+        field_type: {
+          id: 'Flags',
+          type: 'Flags'
+        },
         value: []
       }
     ] as CaseField[];
     spyOn(FieldsUtils, 'isFlagLauncherCaseField').and.returnValue(true);
-    expect(formValueService.populateFlagDetailsFromCaseFields(flagsData, caseField)).not.toBeDefined();
+    expect(formValueService.repopulateFormDataFromCaseFieldValues(flagsData, caseField)).not.toBeDefined();
   });
 
   describe('component launcher linked cases', () => {
@@ -227,17 +251,25 @@ describe('FormValueService', () => {
     const caseFields = [
       {
         id: 'caseLinks',
+        field_type: {
+          id: 'Text',
+          type: 'Text'
+        },
         value: []
       },
       {
         id: 'ComponentLauncher',
+        field_type: {
+          id: 'ComponentLauncher',
+          type: 'ComponentLauncher'
+        },
         value: []
       }
     ] as CaseField[];
 
     it('should remove component launcher field', () => {
       spyOn(FieldsUtils, 'isComponentLauncherCaseField').and.returnValue(true);
-      expect(formValueService.removeComponentLauncherField(data, caseFields)).not.toBeDefined();
+      expect(formValueService.removeCaseFieldsOfType(data, caseFields, ['ComponentLauncher'])).not.toBeDefined();
     });
 
     it('should populate linked cases details from case fields', () => {
@@ -874,6 +906,138 @@ describe('FormValueService', () => {
       expect(DATA.array[1].data.b.c[0].id).toEqual('3');
       expect(DATA.array[1].data.b.c[0].data.cUnrelated).toEqual('C Unrelated');
       expect(DATA.array[1].data.b.c[0].data[`cc${FieldsUtils.LABEL_SUFFIX}`]).toBeUndefined();
+    });
+  });
+
+  describe('removeCaseFieldsOfType', () => {
+    it('should remove case fields from the data', () => {
+      const data = {
+        flagLauncher1: {},
+        flagLauncher2: {},
+        componentLauncher1: {},
+        componentLauncher2: {},
+        textField1: {}
+      };
+      const caseFields = [
+        {
+          id: 'flagLauncher1',
+          field_type: {
+            id: 'FlagLauncher',
+            type: 'FlagLauncher'
+          } as FieldType
+        },
+        {
+          id: 'flagLauncher2',
+          field_type: {
+            id: 'FlagLauncher',
+            type: 'FlagLauncher'
+          } as FieldType
+        },
+        {
+          id: 'componentLauncher1',
+          field_type: {
+            id: 'ComponentLauncher',
+            type: 'ComponentLauncher'
+          } as FieldType
+        },
+        {
+          id: 'componentLauncher2',
+          field_type: {
+            id: 'ComponentLauncher',
+            type: 'ComponentLauncher'
+          } as FieldType
+        },
+        {
+          id: 'textField1',
+          field_type: {
+            id: 'Text',
+            type: 'Text'
+          } as FieldType
+        },
+      ] as CaseField[];
+      formValueService.removeCaseFieldsOfType(data, caseFields, ['ComponentLauncher', 'FlagLauncher']);
+      expect(Object.keys(data)).toEqual(['textField1']);
+    });
+  });
+
+  describe('repopulateFormDataFromCaseFieldValues', () => {
+    it('should re-populate the data object containing the form data correctly', () => {
+      const data = {
+        letters: {
+          a: 'A',
+          b: 'B',
+          c: 'C'
+        },
+        numbers: {
+          one: '1',
+          two: '2',
+          three: '3'
+        },
+        currency: null
+      };
+      const caseFields = [
+        {
+          id: 'letters',
+          field_type: {
+            id: 'Flags',
+            type: 'Flags'
+          } as FieldType,
+          value: {
+            a: 'Aa',
+            b: 'Bb'
+          }
+        } as CaseField,
+        {
+          id: 'numbers',
+          field_type: {
+            id: 'Flags',
+            type: 'Flags'
+          } as FieldType,
+          value: null
+        } as CaseField,
+        {
+          id: 'punctuation',
+          field_type: {
+            id: 'Flags',
+            type: 'Flags'
+          } as FieldType,
+          value: {
+            comma: ',',
+            hyphen: '-'
+          }
+        } as CaseField,
+        {
+          id: 'currency',
+          field_type: {
+            id: 'Flags',
+            type: 'Flags'
+          } as FieldType,
+          value: {
+            dollar: '$'
+          }
+        } as CaseField,
+        {
+          id: 'flagLauncher1',
+          field_type: {
+            id: 'FlagLauncher',
+            type: 'FlagLauncher'
+          } as FieldType,
+          value: null
+        } as CaseField
+      ];
+      formValueService.repopulateFormDataFromCaseFieldValues(data, caseFields);
+      expect(data.letters).toEqual({
+        a: 'Aa',
+        b: 'Bb',
+        c: 'C'
+      });
+      expect(data.numbers).toEqual({
+        one: '1',
+        two: '2',
+        three: '3'
+      });
+      expect(data.hasOwnProperty('punctuation')).toBe(false);
+      expect(data.currency).toEqual({});
     });
   });
 });
