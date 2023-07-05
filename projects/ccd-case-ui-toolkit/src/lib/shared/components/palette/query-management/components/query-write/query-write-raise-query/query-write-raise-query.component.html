@@ -93,7 +93,7 @@
         </fieldset>
 
         <ng-container *ngIf="formGroup.get('isHearingRelated').value">
-          <div class="govuk-!-margin-top-1"
+          <div class="govuk-radios__conditional govuk-!-margin-top-1"
                [ngClass]="{'govuk-form-group--error': submitted &&
                formGroup.get('isHearingRelated').value === true &&
                formGroup.get('hearingDate').value === null}">
