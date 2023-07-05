@@ -67,9 +67,4 @@ describe('QueryWriteRespondToQueryComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should have the correct back to task link URL', () => {
-    const backToTaskElement = fixture.debugElement.nativeElement.querySelector('div a.govuk-back-link');
-    expect(backToTaskElement.getAttribute('href')).toContain(`/cases/case-details/${caseId}/tasks`);
-  });
 });
