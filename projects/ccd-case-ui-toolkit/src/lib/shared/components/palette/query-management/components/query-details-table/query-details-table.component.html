@@ -1,5 +1,8 @@
 <ng-container *ngIf="queryItem">
   <table class="govuk-table query-details-table" [attr.aria-describedby]="'Details of the query' | rpxTranslate">
+    <caption class="govuk-table__caption govuk-table__caption--l">
+      <div>{{ 'Query details' | rpxTranslate }}</div>
+    </caption>
     <tbody class="govuk-table__body">
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">{{ 'Last submitted by' | rpxTranslate }}</th>
