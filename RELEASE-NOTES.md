@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+## Version 6.16.0-query-management-raise-a-query-page-changes
+**EUI-8602** Query management raise a query page changes
+
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
 **EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
 **EUI-8550** Fix incorrect behaviour of showEventNotes() function on Case Event submission, introduced in error by EUI-6693
