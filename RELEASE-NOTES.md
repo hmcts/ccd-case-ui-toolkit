@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.16.0-query-details-ui-changes-v3
+**EUI-8604** Query details UI changes on the Query tab
+
 ## Version 6.16.0-query-management-raise-a-query-page-changes
 **EUI-8602** Query management raise a query page changes
 
