@@ -56,6 +56,17 @@
               <th scope="row" class="govuk-table__header">{{ 'Query detail' | rpxTranslate }}</th>
               <td class="govuk-table__cell">{{ child.body }}</td>
             </tr>
+
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">
+                <ccd-query-attachments-read
+                  *ngIf="child.attachments"
+                  [attachments]="child.attachments"
+                >
+                </ccd-query-attachments-read>
+              </td>
+            </tr>
           </tbody>
         </table>
       </ng-template>

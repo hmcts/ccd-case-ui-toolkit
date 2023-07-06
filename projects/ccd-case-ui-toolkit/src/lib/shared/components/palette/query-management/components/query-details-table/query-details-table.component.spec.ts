@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { QueryDetailsTableComponent } from './query-details-table.component';
-import { QueryListItem } from '../../models';
 import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
+import { QueryListItem } from '../../models';
+import { QueryDetailsTableComponent } from './query-details-table.component';
 
 describe('QueryDetailsTableComponent', () => {
   let component: QueryDetailsTableComponent;

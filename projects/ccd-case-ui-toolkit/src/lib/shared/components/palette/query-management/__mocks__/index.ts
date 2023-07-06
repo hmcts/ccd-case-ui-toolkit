@@ -73,7 +73,15 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         id: 'case-message-012',
         name: 'Maggie Conroy',
         body: 'Can I use a tablet instead?',
-        attachments: [],
+        attachments: [
+          {
+            _links: {
+              self: { href: '/' },
+              binary: { href: '/' },
+            },
+            originalDocumentName: 'tablet-document.pdf',
+          }
+        ],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 3, 8),

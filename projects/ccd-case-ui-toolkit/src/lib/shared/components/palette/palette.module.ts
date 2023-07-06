@@ -119,6 +119,8 @@ import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
 import {
+  QualifyingQuestionDetailComponent,
+  QualifyingQuestionOptionsComponent,
   QueryAttachmentsReadComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
@@ -129,9 +131,7 @@ import {
   QueryWriteDateInputComponent,
   QueryWriteRaiseQueryComponent,
   QueryWriteRespondToQueryComponent,
-  ReadQueryManagementFieldComponent,
-  QualifyingQuestionOptionsComponent,
-  QualifyingQuestionDetailComponent
+  ReadQueryManagementFieldComponent
 } from './query-management';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
