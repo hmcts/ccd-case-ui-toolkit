@@ -127,12 +127,12 @@ describe('QueryDetailsTableComponent', () => {
 
   it('should verify table column names', () => {
     const columnHeaders = fixture.debugElement.queryAll(By.css('.govuk-table__header'));
-    expect(columnHeaders[0].nativeElement.textContent).toEqual('Submission date');
-    expect(columnHeaders[1].nativeElement.textContent).toEqual('Submitted by');
-    expect(columnHeaders[2].nativeElement.textContent).toEqual('Query subject');
-    expect(columnHeaders[3].nativeElement.textContent).toEqual('Query detail');
-    expect(columnHeaders[4].nativeElement.textContent).toEqual('Is the query hearing related?');
-    expect(columnHeaders[5].nativeElement.textContent).toEqual('What is the date of the hearing?');
-    expect(columnHeaders[6].nativeElement.textContent).toEqual('Attachments');
+    expect(columnHeaders[0].nativeElement.textContent.trim()).toEqual('Last submitted by');
+    expect(columnHeaders[1].nativeElement.textContent.trim()).toEqual('Submission date');
+    expect(columnHeaders[2].nativeElement.textContent.trim()).toEqual('Query subject');
+    expect(columnHeaders[3].nativeElement.textContent.trim()).toEqual('Query detail');
+    expect(columnHeaders[4].nativeElement.textContent.trim()).toEqual('Is the query hearing related?');
+    expect(columnHeaders[5].nativeElement.textContent.trim()).toEqual('What is the date of the hearing?');
+    expect(columnHeaders[6].nativeElement.textContent.trim()).toEqual('Attachments');
   });
 });
