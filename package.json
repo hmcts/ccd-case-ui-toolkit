@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.16.0-query-management-raise-a-query-page-changes",
+  "version": "6.16.0-follow-up-query-check-your-answers-v3",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
