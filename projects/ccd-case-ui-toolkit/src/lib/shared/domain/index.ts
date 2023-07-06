@@ -1,6 +1,7 @@
 export * from './activity';
 export * from './addresses';
 export * from './alert';
+export * from './case-edit';
 export * from './case-view';
 export * from './definition';
 export * from './document';

@@ -160,8 +160,8 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(columnHeadings[0].nativeElement.textContent.trim()).toEqual('Query subject');
     expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Query detail');
     expect(columnHeadings[2].nativeElement.textContent.trim()).toEqual('Is the query hearing related?');
-    expect(columnHeadings[3].nativeElement.textContent.trim()).toEqual('What is the date of the hearing your query is related to?');
-    expect(columnHeadings[4].nativeElement.textContent.trim()).toEqual('Document attached');
+    expect(columnHeadings[3].nativeElement.textContent.trim()).toEqual('What is the date of the hearing?');
+    expect(columnHeadings[4].nativeElement.textContent.trim()).toEqual('Upload a file to the query');
   });
 
   it('should display correct columns for respond to a query', () => {
