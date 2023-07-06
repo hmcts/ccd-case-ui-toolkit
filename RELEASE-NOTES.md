@@ -1,6 +1,6 @@
 ## RELEASE NOTES
-### Version 6.16.0-follow-up-query-check-your-answers-v3
-**EUI-8607** Query management follow up query check your answers page changes
+### Version 6.16.0-query-details-ui-changes-v3
+**EUI-8604** Query details UI changes on the Query tab
 
 ## Version 6.16.0-query-management-raise-a-query-page-changes
 **EUI-8602** Query management raise a query page changes
@@ -11,6 +11,9 @@
 
 ### Version 6.16.0-raise-a-query-check-your-answers-v2
 **EUI-8603** Query management raise a query check your answers page changes
+
+### Version 6.16.0-follow-up-query-check-your-answers
+**EUI-8607** Query management follow up query check your answers page changes
 
 ### Version 6.16.0-create-qualifying-questions-component-step-2
 **EUI-8524** Create qualifying questions component step 2
