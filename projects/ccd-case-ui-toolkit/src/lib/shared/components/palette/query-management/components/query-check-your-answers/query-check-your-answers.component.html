@@ -17,16 +17,17 @@
       <ccd-query-case-details-header></ccd-query-case-details-header>
     </div>
 
-    <dl *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY" class="govuk-summary-list govuk-!-margin-bottom-0">
+    <dl *ngIf="queryCreateContext !== queryCreateContextEnum.FOLLOWUP" class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ 'Query subject' | rpxTranslate }}
+          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Submitted query' : 'Query subject' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
           {{ formGroup.get('subject')?.value }}
         </dd>
         <dd class="govuk-summary-list__actions">
-          <a href="javascript:void(0)" class="govuk-link" (click)="goBack()">
+          <a  *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY" 
+            href="javascript:void(0)" class="govuk-link" (click)="goBack()">
             {{ 'Change' | rpxTranslate }}
           </a>
         </dd>
@@ -36,7 +37,7 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-0">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response message' : 'Query detail' | rpxTranslate }}
+          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response detail' : 'Query detail' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
           {{ formGroup.get('body')?.value }}
