@@ -239,13 +239,16 @@ describe('QueryListComponent', () => {
       expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
     });
 
-    it('sortWidget - should return correct code', () => {
-      const col: QueryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING };
-      expect(component.sortWidget(col)).toEqual('&#9660;');
-      col.sortOrder = SortOrder.ASCENDING;
-      expect(component.sortWidget(col)).toEqual('&#9650;');
-      col.sortOrder = SortOrder.UNSORTED;
-      expect(component.sortWidget(col)).toEqual('&#9660;');
+    describe('getAriaSortHeaderValue' , () => {
+      it('should return correct value', () => {
+        const col: QueryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.UNSORTED };
+        expect(component.getAriaSortHeaderValue(col)).toEqual('none');
+
+        col.sortOrder = SortOrder.ASCENDING;
+        expect(component.getAriaSortHeaderValue(col)).toEqual('ascending');
+        col.sortOrder = SortOrder.DESCENDING;
+        expect(component.getAriaSortHeaderValue(col)).toEqual('descending');
+      });
     });
   });
 });
