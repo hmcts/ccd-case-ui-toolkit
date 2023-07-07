@@ -6,7 +6,7 @@
         <td class="govuk-table__cell">{{ queryItem.createdOn | date: 'dd MMM yyyy' }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">{{ 'Last submitted by' | rpxTranslate }}</th>
+        <th scope="row" class="govuk-table__header">{{ 'Submitted by' | rpxTranslate }}</th>
         <td class="govuk-table__cell">{{ queryItem.lastSubmittedBy }}</td>
       </tr>
       <tr class="govuk-table__row">
@@ -18,10 +18,10 @@
         <td class="govuk-table__cell">{{ queryItem.body }}</td>
       </tr>
       <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header" [class.govuk-table__header--no-border]="queryItem.isHearingRelated">
+        <th scope="row" class="govuk-table__header">
           {{ 'Is the query hearing related?' | rpxTranslate }}
         </th>
-        <td class="govuk-table__cell" [class.govuk-table__cell--no-border]="queryItem.isHearingRelated">
+        <td class="govuk-table__cell">
           {{ 'Is the query hearing related?' | rpxTranslate: null : (queryItem.isHearingRelated ? 'Yes' : 'No') }}</td>
       </tr>
       <tr class="govuk-table__row govuk-table__row--isHearingRelated" *ngIf="queryItem.isHearingRelated">
