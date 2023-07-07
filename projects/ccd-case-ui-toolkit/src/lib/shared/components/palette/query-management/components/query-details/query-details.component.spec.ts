@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { QueryDetailsComponent } from './query-details.component';
-import { QueryListItem } from '../../models';
 import { By } from '@angular/platform-browser';
-import { MockRpxTranslatePipe } from 'projects/ccd-case-ui-toolkit/src/lib/shared/test/mock-rpx-translate.pipe';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
+import { QueryListItem } from '../../models';
+import { QueryDetailsComponent } from './query-details.component';
 
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;

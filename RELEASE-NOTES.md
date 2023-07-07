@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.16.0-follow-up-on-query-tab
+### Version 6.16.0-follow-up-on-query-tab-v2
 **EUI-8608** Query management follow up on the query tab
 
 ### Version 6.16.0-follow-up-query-check-your-answers-v4
