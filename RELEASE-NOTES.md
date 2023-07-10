@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.16.0-query-management-remove-grey-bar-styling
+### Version 6.16.0-query-management-remove-grey-bar-styling-v2
 **EUI-8623** Query management remove grey bar styling from tab and details page
 
 ### Version 6.16.0-follow-up-query-check-your-answers-v4
