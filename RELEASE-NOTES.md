@@ -54,9 +54,15 @@
 
 ### Version 6.10.7-case-flags-confirm-flag-status-step
 **EUI-7350** Add "confirm flag status" step of Create Case Flag journey
+### Version 6.16-hotfix-EUI-8515-case-flags-submission
+**EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
+**EUI-8550** Fix incorrect behaviour of showEventNotes() function on Case Event submission, introduced in error by EUI-6693
 
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
+
+### Version 6.13.11-judicial-user-typeahead-fix
+**EUI-7733** Judicial user typeahead fix
 
 ### Version 6.13.10-linked-cases-continue-button-validation-v6
 **EUI-8025** Linked cases continue button validation
@@ -74,6 +80,10 @@
 **EUI-7246** Linked cases other description
 
 ### Version 6.10.10-linked-cases-and-case-file-view
+### Version 6.10.11-judicial-user-typeahead-fix
+**EUI-7733** Judicial user typeahead fix
+
+### Version 6.10.10-configure-linked-cases
 **EUI-7676** Configure linked cases
 **EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
 
@@ -102,6 +112,9 @@
 
 ### Version 5.0.46-case-flags-not-approved-status
 **EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
+
+### Version 5.0.46-fix-case-link
+**EUI-7521** Fix case link hyperlink on applications tab
 
 ### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
 **EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary

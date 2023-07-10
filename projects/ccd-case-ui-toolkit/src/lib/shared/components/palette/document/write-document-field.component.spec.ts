@@ -138,9 +138,6 @@ describe('WriteDocumentFieldComponent', () => {
           WriteDocumentFieldComponent,
           FieldLabelPipe,
           DocumentDialogComponent,
-          // Mock
-          MockRpxTranslatePipe,
-
           // Mocks
           readDocumentComponentMock,
           MockRpxTranslatePipe

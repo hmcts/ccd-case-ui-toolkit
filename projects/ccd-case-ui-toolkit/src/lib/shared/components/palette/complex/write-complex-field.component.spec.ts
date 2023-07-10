@@ -61,9 +61,6 @@ describe('WriteComplexFieldComponent', () => {
         declarations: [
           WriteComplexFieldComponent,
           FieldsFilterPipe,
-
-          // Mock
-          MockRpxTranslatePipe,
           // Mocks
           fieldWriteComponentMock,
           fieldReadComponentMock,

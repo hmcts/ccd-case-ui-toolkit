@@ -235,7 +235,7 @@ describe('CaseEventTriggerComponent', () => {
     routerWithModifiedUrl.url = 'linkCases';
     component.caseDetails.case_id = '1111-2222-3333-4444';
     component.cancel();
-    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444']);
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444'], { fragment: 'Linked cases' });
   });
 
   it('should bypass validation if the CaseEventData data object contains a FlagLauncher field', (done) => {
@@ -270,6 +270,6 @@ describe('CaseEventTriggerComponent', () => {
     routerWithModifiedUrl.url = 'linkCases';
     component.caseDetails.case_id = '1111-2222-3333-4444';
     component.cancel();
-    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444']);
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444'], { fragment: 'Linked cases' });
   });
 });

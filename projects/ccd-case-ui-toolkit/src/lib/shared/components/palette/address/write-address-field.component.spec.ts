@@ -133,7 +133,6 @@ xdescribe('WriteAddressFieldComponent', () => {
           WriteAddressFieldComponent,
           TestHostComponent,
           FieldLabelPipe,
-
           // Mocks
           MockWriteComplexFieldComponent,
           MockRpxTranslatePipe
