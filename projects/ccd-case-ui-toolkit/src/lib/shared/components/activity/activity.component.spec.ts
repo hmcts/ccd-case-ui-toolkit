@@ -106,7 +106,8 @@ describe('CcdActivityComponent', () => {
 					MockRpxTranslatePipe,
           // Mocks
           activityIconComponentMock,
-          activityBannerComponentMock
+          activityBannerComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: ActivityPollingService, useValue: activityPollingService}

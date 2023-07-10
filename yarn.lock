@@ -2493,6 +2493,7 @@ __metadata:
     jasmine-spec-reporter: ~5.0.0
     json-loader: ^0.5.4
     json-server: ^0.15.1
+    just-clone: ^6.2.0
     karma: ~6.4.0
     karma-chrome-launcher: ~3.1.0
     karma-coverage: ~2.0.3
@@ -2525,7 +2526,7 @@ __metadata:
     rollup-plugin-commonjs: ^9.1.8
     rollup-plugin-node-resolve: ^3.0.0
     rollup-plugin-typescript: ^1.0.0
-    rpx-xui-translation: ^0.1.6
+    rpx-xui-translation: 0.2.3-yesno-translations-fix-v2
     rx-polling: 1.1.0
     rxjs: ^6.6.7
     rxjs-compat: ^6.6.7
@@ -14772,6 +14773,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"just-clone@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "just-clone@npm:6.2.0"
+  checksum: 2c3353e3524aba8adae499973d9b8663eed3a647c73fd60149ac8a10031353e82ff1941820b56c96d12263424f50e564c7dd1fd330cf6de630455909810e13a6
+  languageName: node
+  linkType: hard
+
 "just-debounce@npm:^1.0.0":
   version: 1.1.0
   resolution: "just-debounce@npm:1.1.0"
@@ -20592,9 +20600,9 @@ proxy-middleware@latest:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:^0.1.6":
-  version: 0.1.8
-  resolution: "rpx-xui-translation@npm:0.1.8"
+"rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2":
+  version: 0.2.3-yesno-translations-fix-v2
+  resolution: "rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
@@ -20602,7 +20610,7 @@ proxy-middleware@latest:
   peerDependencies:
     "@angular/common": ^9.1.13
     "@angular/core": ^9.1.13
-  checksum: 24893242255be711e7a67dcf18b79f28d2f34598eaa9116bcb0495134a7a87c15cb604a4665c1b995927ca3203884ed89c8e74b86ee89e61939d8ef8467436b6
+  checksum: 5669fed9f095abfb90e69fb2d2c3eb927542d774e33da5f262948516814b6b4f1a55064e55135c0ffa8302a843789bcf79bb624aef747f6f858b081547fbd392
   languageName: node
   linkType: hard
 

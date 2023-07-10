@@ -31,7 +31,7 @@ describe('ReadYesNoFieldComponent', () => {
     let component: ReadYesNoFieldComponent;
     let de: DebugElement;
 
-    let yesNoService: any;
+    let yesNoService: jasmine.SpyObj<YesNoService>;
 
     beforeEach(waitForAsync(() => {
       yesNoService = createSpyObj<YesNoService>('yesNoService', ['format']);
@@ -59,10 +59,10 @@ describe('ReadYesNoFieldComponent', () => {
       fixture.detectChanges();
     }));
 
-    it('should render output of YesNoService::format method', () => {
+    it('should set formattedValue based on YesNoService::format method', () => {
       expect(yesNoService.format).toHaveBeenCalledWith(VALUE);
       expect(yesNoService.format).toHaveBeenCalledTimes(1);
-      expect(de.nativeElement.textContent).toEqual(FORMATTED_VALUE);
+      expect(component.formattedValue).toEqual(yesNoService.format(VALUE));
     });
   });
 

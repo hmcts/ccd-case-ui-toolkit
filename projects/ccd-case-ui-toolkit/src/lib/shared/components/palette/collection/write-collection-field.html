@@ -8,12 +8,14 @@
     <button class="button write-collection-add-item__top" type="button" (click)="addItem(true)" [disabled]="isNotAuthorisedToCreate() || isSearchFilter()">{{'Add new' | rpxTranslate}}</button>
     <h2 class="heading-h2 error-spacing" *ngIf="caseField.hint_text || formArray.errors">
       <span *ngIf="caseField.hint_text" class="form-hint">{{caseField.hint_text | rpxTranslate }}</span>
-      <span *ngIf="formArray.errors" class="error-message">{{(formArray.errors | ccdFirstError:caseField.label) | rpxTranslate}}</span>
+      <span *ngIf="formArray.errors" class="error-message">
+        {{(formArray.errors | ccdFirstError:caseField.label ) | rpxTranslate}}
+      </span>
     </h2>
 
     <div class="form-group" [hidden]="caseField.hidden" *ngIf="caseField.value && caseField.value.length">
-
-      <div class="form-group" *ngFor="let item of collItems; let i = index" #collectionItem>
+      <div *ngFor="let item of collItems; let i = index" #collectionItem
+           [id]="this.buildIdPrefix(i) + i" class="form-group">
         <div class="collection-title">
           <div class="float-left">
             <label [for]="item.prefix + i"><h3 class="heading-h3">{{itemLabel(i) | rpxTranslate}}</h3></label>
@@ -21,7 +23,7 @@
           <div class="float-right">
             <button class="button button-secondary" type="button" (click)="openModal(i)"
                     [disabled]="isNotAuthorisedToDelete(i)"
-                    attr.aria-label="Remove {{ itemLabel(i) }}">{{'Remove' | rpxTranslate }}</button>
+                    attr.aria-label="Remove {{ itemLabel(i) }}">{{'Remove' | rpxTranslate}}</button>
           </div>
         </div>
         <ccd-field-write [caseField]="item.caseField"

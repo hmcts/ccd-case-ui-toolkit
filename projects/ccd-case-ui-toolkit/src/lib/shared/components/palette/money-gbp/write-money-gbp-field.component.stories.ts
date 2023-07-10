@@ -5,7 +5,6 @@ import { StorybookComponent } from '../../../../../../../../storybook/storybook.
 import { createCaseField, createFieldType } from '../../../../shared/fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
-import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { MoneyGbpInputComponent } from './money-gbp-input.component';
 import { WriteMoneyGbpFieldComponent } from './write-money-gbp-field.component';

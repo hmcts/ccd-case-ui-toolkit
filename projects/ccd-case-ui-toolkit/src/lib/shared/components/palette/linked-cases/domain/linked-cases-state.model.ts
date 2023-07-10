@@ -6,3 +6,8 @@ export interface LinkedCasesState {
   navigateToNextPage: boolean;
   navigateToPreviousPage?: boolean;
 }
+
+export interface LinkedCasesError {
+  componentId: string;
+  errorMessage: string;
+}

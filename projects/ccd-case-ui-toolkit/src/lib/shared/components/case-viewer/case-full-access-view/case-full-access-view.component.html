@@ -45,7 +45,7 @@
                         (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
   </div>
 </div>
-<div class="grid-row" *ngIf="activeCaseFlags">
+<div class="grid-row" *ngIf="activeCaseFlags && !caseFlagsExternalUser">
   <div class="column-full">
     <ccd-notification-banner [notificationBannerConfig]="notificationBannerConfig" (linkClicked)="onLinkClicked($event)">
     </ccd-notification-banner>

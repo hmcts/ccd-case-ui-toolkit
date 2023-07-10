@@ -91,7 +91,7 @@ describe('CaseEditConfirmComponent', () => {
   beforeEach(() => {
   });
 
-  it('hould pass the right text to the ccd-markdown content ' +
+  it('should pass the right text to the ccd-markdown content ' +
     'input property inside #confirmation-header', () => {
     de = fixture.debugElement.query(By.css('#confirmation-header ccd-markdown'));
     const contentInputValue = de.componentInstance.content;

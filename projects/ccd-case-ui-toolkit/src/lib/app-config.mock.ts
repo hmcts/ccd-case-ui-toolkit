@@ -159,7 +159,7 @@ export class AppMockConfig implements AbstractAppConfig {
     return '';
   }
 
-  getNotificationUrl(): string {
+  public getNotificationUrl(): string {
     return '';
   }
 

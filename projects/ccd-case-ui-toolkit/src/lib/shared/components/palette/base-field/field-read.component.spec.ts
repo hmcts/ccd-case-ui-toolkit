@@ -136,10 +136,9 @@ describe('FieldReadComponent', () => {
         ],
         declarations: [
           FieldReadComponent,
-
-          // Mocks
           FieldTestComponent,
           FieldReadLabelComponent,
+          // Mocks
           MockRpxTranslatePipe
         ],
         providers: [

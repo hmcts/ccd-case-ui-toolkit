@@ -36,7 +36,7 @@ describe('AlertService', () => {
   let firstMockUrlAlertService: AlertService;
   let secondMockUrlAlertService: AlertService;
 
-  const rpxTranslationServiceSpy = jasmine.createSpyObj('RpxTranslationService', ['getTranslation', 'getTranslationWithReplacements']);
+  const rpxTranslationServiceSpy = jasmine.createSpyObj('RpxTranslationService', ['getTranslation$', 'getTranslationWithReplacements$']);
 
   beforeEach(() => {
     router = {
@@ -55,7 +55,7 @@ describe('AlertService', () => {
   });
 
   it('should publish alert to observable when errors method used', done => {
-    rpxTranslationServiceSpy.getTranslation.and.returnValue(of(ERROR_MESSAGE));
+    rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(ERROR_MESSAGE));
 
     alertService
       .errors
@@ -68,7 +68,7 @@ describe('AlertService', () => {
   });
 
   it('should publish alert to observable when successes method used', done => {
-    rpxTranslationServiceSpy.getTranslation.and.returnValue(of(SUCCESS_MESSAGE));
+    rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(SUCCESS_MESSAGE));
 
     alertService
       .successes
@@ -81,7 +81,7 @@ describe('AlertService', () => {
   });
 
   it('should publish alert to observable when warnings method used', done => {
-    rpxTranslationServiceSpy.getTranslation.and.returnValue(of(WARNING_MESSAGE));
+    rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(WARNING_MESSAGE));
 
     alertService
       .warnings
@@ -166,7 +166,7 @@ describe('AlertService', () => {
 
   describe('error', () => {
     it('should be a hot alert errors observable', done => {
-      rpxTranslationServiceSpy.getTranslation.and.returnValue(of(ERROR_MESSAGE));
+      rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(ERROR_MESSAGE));
       // set an original message
       alertService.error({ phrase: WARNING_MESSAGE });
 
@@ -182,7 +182,7 @@ describe('AlertService', () => {
     });
 
     it('should be a hot alert errors observable with replacements params', done => {
-      rpxTranslationServiceSpy.getTranslationWithReplacements.and.returnValue(of(WARNING_MESSAGE));
+      rpxTranslationServiceSpy.getTranslationWithReplacements$.and.returnValue(of(WARNING_MESSAGE));
       // set an original message
       alertService.error({ phrase: WARNING_MESSAGE, replacements: { CASEID: '1234' } });
 
@@ -200,7 +200,7 @@ describe('AlertService', () => {
 
   describe('warning', () => {
     it('should be a hot alert warnings observable', done => {
-      rpxTranslationServiceSpy.getTranslation.and.returnValue(of(WARNING_MESSAGE));
+      rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(WARNING_MESSAGE));
       // set an original message
       alertService.warning({ phrase: A_MESSAGE });
 
@@ -216,7 +216,7 @@ describe('AlertService', () => {
     });
 
     it('should be a hot alert warnings observable with replacements params', done => {
-      rpxTranslationServiceSpy.getTranslationWithReplacements.and.returnValue(of(A_MESSAGE));
+      rpxTranslationServiceSpy.getTranslationWithReplacements$.and.returnValue(of(A_MESSAGE));
       // set an original message
       alertService.warning({ phrase: WARNING_MESSAGE, replacements: { CASEID: '1234' } });
 
@@ -234,7 +234,7 @@ describe('AlertService', () => {
 
   describe('success', () => {
     it('should be a hot alert successs observable', done => {
-      rpxTranslationServiceSpy.getTranslation.and.returnValue(of(SUCCESS_MESSAGE));
+      rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(SUCCESS_MESSAGE));
       // set an original message
       alertService.success({ phrase: A_MESSAGE });
 
@@ -250,7 +250,7 @@ describe('AlertService', () => {
     });
 
     it('should be a hot alert successs observable with replacements params', done => {
-      rpxTranslationServiceSpy.getTranslationWithReplacements.and.returnValue(of(SUCCESS_MESSAGE));
+      rpxTranslationServiceSpy.getTranslationWithReplacements$.and.returnValue(of(SUCCESS_MESSAGE));
       // set an original message
       alertService.success({ phrase: WARNING_MESSAGE, replacements: { CASEID: '1234' } });
 

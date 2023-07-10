@@ -215,7 +215,7 @@ describe('WriteCollectionFieldComponent', () => {
     addButton.nativeElement.dispatchEvent(new Event('click'));
 
     const writeFields = de.queryAll($WRITE_FIELDS);
-    const lastIndex = writeFields.length;
+    const lastIndex = writeFields.length - 1;
 
     fixture.detectChanges();
 
@@ -684,6 +684,7 @@ describe('WriteCollectionFieldComponent', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent,
           MockRpxTranslatePipe,
@@ -786,6 +787,7 @@ describe('WriteCollectionFieldComponent', () => {
         ],
         declarations: [
           WriteCollectionFieldComponent,
+          MockRpxTranslatePipe,
           fieldWriteComponent,
           fieldReadComponent,
           MockRpxTranslatePipe,
@@ -818,8 +820,8 @@ describe('WriteCollectionFieldComponent', () => {
 
   it('should add dynamic item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
-    component.caseField = ({ ...component.caseField, field_type: null } as unknown as CaseField);
-    component.caseFields = [({...component.caseField, field_type: null } as unknown as CaseField)];
+    component.caseField = ({ ...component.caseField, field_type: { id: 'TextField', type: 'Text' } as FieldType } as CaseField);
+    component.caseFields = [{...component.caseField } as CaseField];
     addButton.nativeElement.click();
     fixture.detectChanges();
 

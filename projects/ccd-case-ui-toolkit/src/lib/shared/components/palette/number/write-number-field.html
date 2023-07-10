@@ -3,7 +3,9 @@
     <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel | rpxTranslate}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
-  <span class="error-message" *ngIf="numberControl.errors && numberControl.dirty">{{numberControl.errors | ccdFirstError:caseField.label | rpxTranslate}}</span>
+  <span class="error-message" *ngIf="numberControl.errors && numberControl.dirty">
+    {{ numberControl.errors | ccdFirstError:caseField.label | rpxTranslate}}
+  </span>
 
   <input class="form-control bottom-30" [ngClass]="{'govuk-input--error': numberControl.errors && numberControl.dirty}"
    [id]="id()" type="number" [formControl]="numberControl">

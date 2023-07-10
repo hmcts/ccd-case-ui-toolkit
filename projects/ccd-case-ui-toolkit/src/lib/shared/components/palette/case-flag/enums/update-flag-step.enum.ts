@@ -1,4 +1,5 @@
 export enum UpdateFlagStep {
-  HINT_TEXT = 'Explain why you are updating this flag. Do not include any sensitive information such as personal details.',
-  CHARACTER_LIMIT_INFO = 'You can enter up to 200 characters'
+  COMMENT_HINT_TEXT = 'Update the comments describing the user\'s support needs or flag description. Do not include any sensitive information such as personal details.',
+  CHARACTER_LIMIT_INFO = 'You can enter up to 200 characters',
+  STATUS_HINT_TEXT = 'Describe reason for status change; if choosing \'Not approved\' provide name of person approving decision.'
 }

@@ -4,10 +4,9 @@ import { YesNoService } from './yes-no.service';
 
 @Component({
   selector: 'ccd-read-yes-no-field',
-  template: `<span class="text-16">{{formattedValue | rpxTranslate}}</span>`
+  template: `<span class="text-16">{{caseField.label | rpxTranslate : null : formattedValue}}</span>`
 })
 export class ReadYesNoFieldComponent extends AbstractFieldReadComponent implements OnInit {
-
   public formattedValue: string;
 
   constructor(private readonly yesNoService: YesNoService) {
@@ -18,5 +17,4 @@ export class ReadYesNoFieldComponent extends AbstractFieldReadComponent implemen
     super.ngOnInit();
     this.formattedValue = this.yesNoService.format(this.caseField.value);
   }
-
 }
