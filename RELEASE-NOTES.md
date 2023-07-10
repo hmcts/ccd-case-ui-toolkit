@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.18.0-welsh-release
+**EUI-5497** Welsh release part 1
+
 ### Version 6.16.0-query-management-remove-grey-bar-styling-v2
 **EUI-8623** Query management remove grey bar styling from tab and details page
 
@@ -32,9 +35,6 @@
 
 ### Version 6.16.0-query-management-orchestrator-v3
 **EUI-8303** Query management orchestrator to get the mock data
-
-### Version 6.13.11-welsh-release-v4
-**EUI-5497** Welsh release part 1
 
 ### Version 6.10.7-case-flags-v2-welsh-language-support-additional-rework-2
 **EUI-8116** Additional rework of Welsh language support
