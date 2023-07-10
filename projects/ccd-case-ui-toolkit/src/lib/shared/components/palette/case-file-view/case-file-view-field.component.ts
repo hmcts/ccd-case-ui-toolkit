@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { fromEvent, Observable, Subscription } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { fromEvent, Observable, of, Subscription } from 'rxjs';
+import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CaseField } from '../../../domain';
-import { CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
+import { CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
 
@@ -18,7 +18,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public categoriesAndDocuments$: Observable<CategoriesAndDocuments>;
   public categoriesAndDocumentsSubscription: Subscription;
   public getCategoriesAndDocumentsError = false;
-  public currentDocument: { document_binary_url: string, document_filename: string, content_type: string } | undefined;
+  public currentDocument: CaseFileViewDocument | undefined;
+  public errorMessages = [] as string[];
   private caseVersion: number;
   public caseField: CaseField;
 
@@ -86,13 +87,33 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     this.currentDocument = JSON.parse(mediaViewerInfo);
   }
 
-  public moveDocument(data:any) {
+  public moveDocument(data: { document: DocumentTreeNode, newCategory: string }): void {
     const cid = this.route.snapshot.paramMap.get(CaseFileViewFieldComponent.PARAM_CASE_ID);
     const loadingToken = this.loadingService.register();
-    this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory).subscribe(_ => {
-      location.reload();
-      this.loadingService.unregister(loadingToken);
+    this.caseFileViewService.updateDocumentCategory(cid, this.caseVersion, data.document.attribute_path, data.newCategory)
+      .pipe(
+        finalize(() => {
+          this.loadingService.unregister(loadingToken);
+        }),
+        catchError(() => {
+          this.errorMessages = ['You do not have permission to move this document to the selected folder.'];
+          return of(null);
+        }),
+      )
+      .subscribe(res => {
+        if (res) {
+          this.resetErrorMessages();
+          this.reloadPage();
+        }
     });
+  }
+
+  public reloadPage(): void {
+    location.reload();
+  }
+
+  public resetErrorMessages(): void {
+    this.errorMessages = [];
   }
 
   public ngOnDestroy(): void {

@@ -13,37 +13,81 @@ export const partyMessagesMockData: PartyMessagesGroup[] = [
         attachments: [
           {
             _links: {
-              self: { href: '/' },
-              binary: { href: '/' },
+              self: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f' },
+              binary: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f/binary' },
             },
-            originalDocumentName: 'documentName.pdf',
+            originalDocumentName: 'Screenshot 2023-06-01 at 16.07.06.png',
+          },
+          {
+            _links: {
+              self: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506' },
+              binary: { href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506/binary' },
+            },
+            originalDocumentName: 'dummy.pdf',
           }
         ],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
         createdBy: '1111-1111-1111-1111'
-
       },
       {
         id: 'case-message-002',
         subject: 'Games',
         name: 'Maggie Conroy',
         body: 'Can I play games in my phone when my solicitor is talking?',
-        attachments: [],
+        attachments: [
+          {
+            _links: {
+              self: { href: '/' },
+              binary: { href: '/' },
+            },
+            originalDocumentName: 'talking-document.pdf',
+          }
+        ],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
         createdOn: new Date(2023, 0, 3),
         createdBy: '1111-1111-1111-1111'
       },
       {
-        id: 'case-message-003',
-        name: 'Maggie Conroy',
+        id: 'case-message-011',
+        name: 'John Smith',
         body: 'Using mobile phone is strictly prohibited in the court room.',
+        attachments: [
+          {
+            _links: {
+              self: { href: '/' },
+              binary: { href: '/' },
+            },
+            originalDocumentName: 'games-document.pdf',
+          }
+        ],
+        isHearingRelated: true,
+        hearingDate: '10 Jan 2023',
+        createdOn: new Date(2023, 2, 4),
+        createdBy: '2222-2222-2222-2222',
+        parentId: 'case-message-002'
+      },
+      {
+        id: 'case-message-012',
+        name: 'Maggie Conroy',
+        body: 'Can I use a tablet instead?',
         attachments: [],
         isHearingRelated: true,
         hearingDate: '10 Jan 2023',
-        createdOn: new Date(2023, 0, 4),
+        createdOn: new Date(2023, 3, 8),
+        createdBy: '2222-2222-2222-2222',
+        parentId: 'case-message-002'
+      },
+      {
+        id: 'case-message-013',
+        name: 'John Smith',
+        body: 'No, you cannot use a tablet either.',
+        attachments: [],
+        isHearingRelated: true,
+        hearingDate: '10 Jan 2023',
+        createdOn: new Date(2023, 4, 24),
         createdBy: '2222-2222-2222-2222',
         parentId: 'case-message-002'
       }

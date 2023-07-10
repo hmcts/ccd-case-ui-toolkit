@@ -12,11 +12,11 @@ export class QueryListComponent implements OnChanges {
   @Output() public selectedQuery: EventEmitter<QueryListItem> = new EventEmitter();
   public queryListData: QueryListData | undefined;
   public displayedColumns: QueryListColumn[] = [
-    { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.UNSORTED },
+    { name: 'subject', displayName: 'Query subject', sortOrder: SortOrder.UNSORTED },
     { name: 'lastSubmittedBy', displayName: 'Last submitted by', sortOrder: SortOrder.UNSORTED },
     { name: 'lastSubmittedDate', displayName: 'Last submission date', sortOrder: SortOrder.UNSORTED },
     { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED },
-    { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.UNSORTED }
+    { name: 'responseStatus', displayName: 'Response status', sortOrder: SortOrder.UNSORTED }
   ];
 
   public ngOnChanges(simpleChanges: SimpleChanges) {
@@ -40,13 +40,16 @@ export class QueryListComponent implements OnChanges {
     }
   }
 
-  public sortWidget(col: QueryListColumn): string {
+  public getAriaSortHeaderValue(col: QueryListColumn): 'ascending' | 'descending' | 'none' {
     switch (col.sortOrder) {
       case SortOrder.ASCENDING: {
-        return '&#9650;';
+        return 'ascending';
+      }
+      case SortOrder.DESCENDING: {
+        return 'descending';
       }
       default: {
-        return '&#9660;';
+        return 'none';
       }
     }
   }

@@ -46,6 +46,6 @@ describe('NoLinkedCasesComponent', () => {
 
   it('should back button navigate to linked cases tab', () => {
     component.onBack();
-    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseId]);
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', caseId], { fragment: 'Linked cases' });
   });
 });

@@ -1,11 +1,11 @@
-➤ YN0001: TypeError [ERR_INVALID_URL]: Invalid URL: /-/npm/v1/security/audits/quick
-    at new NodeError (internal/errors.js:322:7)
-    at onParseError (internal/url.js:270:9)
-    at new URL (internal/url.js:346:5)
+➤ YN0001: TypeError [ERR_INVALID_URL]: Invalid URL
+    at new NodeError (node:internal/errors:399:5)
+    at URL.onParseError (node:internal/url:566:9)
+    at new URL (node:internal/url:646:5)
     at $De (/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:9738)
     at a (/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:8836)
     at bC (/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:9052)
-    at processTicksAndRejections (internal/process/task_queues.js:95:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async pB (/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:7061)
     at async Object.kR (/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:9461)
     at async Object.Gze (/Users/mateibaciu/WebstormProjects/HMCTS/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:709:18949)

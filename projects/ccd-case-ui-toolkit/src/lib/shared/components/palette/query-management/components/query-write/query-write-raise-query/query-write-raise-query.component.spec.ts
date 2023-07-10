@@ -26,7 +26,7 @@ describe('QueryWriteRaiseQueryComponent', () => {
     fixture = TestBed.createComponent(QueryWriteRaiseQueryComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({
-      fullName: new FormControl('', Validators.required),
+      name: new FormControl('', Validators.required),
       subject: new FormControl('', Validators.required),
       body: new FormControl('', Validators.required),
       isHearingRelated: new FormControl(null, Validators.required),

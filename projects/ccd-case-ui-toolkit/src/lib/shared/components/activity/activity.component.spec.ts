@@ -103,7 +103,6 @@ describe('CcdActivityComponent', () => {
         imports: [],
         declarations: [
           ActivityComponent,
-					MockRpxTranslatePipe,
           // Mocks
           activityIconComponentMock,
           activityBannerComponentMock,

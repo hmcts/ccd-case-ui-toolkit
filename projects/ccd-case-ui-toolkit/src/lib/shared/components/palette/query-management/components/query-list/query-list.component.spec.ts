@@ -130,7 +130,7 @@ describe('QueryListComponent', () => {
       expect(tableCells[1].innerText).toEqual(firstRowItem.lastSubmittedBy);
       expect(new Date(tableCells[2].innerText)).toEqual(firstRowItem.lastSubmittedDate);
       expect(new Date(tableCells[3].innerText)).toEqual(firstRowItem.lastResponseDate);
-      expect(tableCells[4].innerText).toEqual(firstRowItem.lastResponseBy);
+      expect(tableCells[4].innerText).toEqual(firstRowItem.responseStatus);
     });
   });
 
@@ -239,14 +239,16 @@ describe('QueryListComponent', () => {
       expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
     });
 
-    it('sortWidget - should return correct code', () => {
-      const col: QueryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING };
-      expect(component.sortWidget(col)).toEqual('&#9660;');
-      col.sortOrder = SortOrder.ASCENDING;
-      expect(component.sortWidget(col)).toEqual('&#9650;');
-      col.sortOrder = SortOrder.UNSORTED;
-      expect(component.sortWidget(col)).toEqual('&#9660;');
+    describe('getAriaSortHeaderValue' , () => {
+      it('should return correct value', () => {
+        const col: QueryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.UNSORTED };
+        expect(component.getAriaSortHeaderValue(col)).toEqual('none');
+
+        col.sortOrder = SortOrder.ASCENDING;
+        expect(component.getAriaSortHeaderValue(col)).toEqual('ascending');
+        col.sortOrder = SortOrder.DESCENDING;
+        expect(component.getAriaSortHeaderValue(col)).toEqual('descending');
+      });
     });
   });
-
 });

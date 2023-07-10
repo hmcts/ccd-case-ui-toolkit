@@ -2,4 +2,16 @@
   .govuk-table__header {
     width: 330px;
   }
+  .collection-field-table {
+    tr>td {
+      border-bottom: none;
+    }
+  }
+
+  .govuk-table__header,
+  .govuk-table__cell {
+    &--no-border {
+      border-bottom: 0;
+    }
+  }
 }

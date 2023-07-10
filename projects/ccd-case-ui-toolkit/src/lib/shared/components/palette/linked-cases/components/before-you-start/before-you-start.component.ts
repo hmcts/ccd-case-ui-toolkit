@@ -38,8 +38,6 @@ export class BeforeYouStartComponent {
   }
 
   public onBack(): void {
-    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseId]).then(() => {
-      window.location.hash = 'Linked cases';
-    });
+    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseId], { fragment: 'Linked cases' });
   }
 }
