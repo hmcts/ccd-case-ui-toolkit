@@ -1,13 +1,6 @@
-<div class="govuk-!-margin-bottom-2">
-  <a href="javascript:void(0)" class="govuk-back-link govuk-!-margin-top-0"
-    [routerLink]="['/', 'cases', 'case-details', caseId, 'tasks']">
-    {{ 'Cancel and return to tasks' | rpxTranslate }}
-  </a>
-</div>
-
 <div class="govuk-!-margin-bottom-6">
   <div class="govuk-!-margin-bottom-6">
-    <div class="govuk-caption-l">{{ 'Respond to query' | rpxTranslate }}</div>
+    <div class="govuk-caption-l">{{ 'Respond to a query' | rpxTranslate }}</div>
     <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ 'Query details' | rpxTranslate }}</h1>
   </div>
 
@@ -31,7 +24,7 @@
            [class.govuk-form-group--error]="submitted && formGroup.get('body')?.hasError('required')">
         <div class="govuk-label-wrapper">
           <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
-            {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response message' : 'Query Body' | rpxTranslate }}
+            {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response detail' : 'Query Body' | rpxTranslate }}
           </label>
         </div>
         <p id="body-error" class="govuk-error-message"
