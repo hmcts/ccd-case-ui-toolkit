@@ -23,7 +23,7 @@
           {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Submitted query' : 'Query subject' | rpxTranslate }}
         </dt>
         <dd class="govuk-summary-list__value">
-          {{ formGroup.get('subject')?.value }}
+          {{ queryCreateContext === queryCreateContextEnum.RESPOND ? queryItem.subject : formGroup.get('subject')?.value }}
         </dd>
         <dd class="govuk-summary-list__actions">
           <a  *ngIf="queryCreateContext === queryCreateContextEnum.NEW_QUERY" 
