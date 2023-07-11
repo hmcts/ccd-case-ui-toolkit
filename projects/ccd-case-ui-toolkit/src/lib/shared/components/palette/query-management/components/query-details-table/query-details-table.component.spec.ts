@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { QueryDetailsTableComponent } from './query-details-table.component';
-import { QueryListItem } from '../../models';
 import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
+import { QueryListItem } from '../../models';
+import { QueryDetailsTableComponent } from './query-details-table.component';
 
 describe('QueryDetailsTableComponent', () => {
   let component: QueryDetailsTableComponent;
@@ -127,8 +127,8 @@ describe('QueryDetailsTableComponent', () => {
 
   it('should verify table column names', () => {
     const columnHeaders = fixture.debugElement.queryAll(By.css('.govuk-table__header'));
-    expect(columnHeaders[0].nativeElement.textContent.trim()).toEqual('Last submitted by');
-    expect(columnHeaders[1].nativeElement.textContent.trim()).toEqual('Submission date');
+    expect(columnHeaders[0].nativeElement.textContent.trim()).toEqual('Submission date');
+    expect(columnHeaders[1].nativeElement.textContent.trim()).toEqual('Submitted by');
     expect(columnHeaders[2].nativeElement.textContent.trim()).toEqual('Query subject');
     expect(columnHeaders[3].nativeElement.textContent.trim()).toEqual('Query detail');
     expect(columnHeaders[4].nativeElement.textContent.trim()).toEqual('Is the query hearing related?');
