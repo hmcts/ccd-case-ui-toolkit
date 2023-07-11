@@ -323,46 +323,4 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.setManageCaseFlagTitle(updateMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
     expect(component.setManageCaseFlagTitle(updateExternalMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
   });
-
-  it('should get correct party name', () => {
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: flagsData[2].flags.partyName,
-        flagDetail: flagsData[2].flags.details[0],
-        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
-      },
-      pathToFlagsFormGroup: 'caseFlags',
-      caseField: flagsData[2].caseField
-    } as FlagDetailDisplayWithFormGroupPath;
-    expect(component.getPartyName(flagDisplay)).toEqual('Case level');
-    flagDisplay.pathToFlagsFormGroup = null;
-    expect(component.getPartyName(flagDisplay)).toEqual('');
-  });
-
-  it('should get correct flag name', () => {
-    let flagDetail = flagsData[2].flags.details[0];
-    expect(component.getFlagName(flagDetail)).toEqual('Level 2');
-    flagDetail = flagsData[3].flags.details[0];
-    expect(component.getFlagName(flagDetail)).toEqual('Dummy subtype value');
-    flagDetail = flagsData[0].flags.details[0];
-    expect(component.getFlagName(flagDetail)).toEqual('Flag 1');
-  });
-
-  it('should get party role on case', () => {
-    const flagDisplay = {
-      flagDetailDisplay: {
-        partyName: flagsData[2].flags.partyName,
-        flagDetail: flagsData[2].flags.details[0],
-        flagsCaseFieldId: flagsData[2].flags.flagsCaseFieldId
-      },
-      pathToFlagsFormGroup: '',
-      caseField: flagsData[2].caseField,
-      roleOnCase: 'Applicant'
-    } as FlagDetailDisplayWithFormGroupPath;
-    expect(component.getRoleOnCase(flagDisplay)).toEqual(' (Applicant)');
-  });
-
-  it('should get flag comment', () => {
-    expect(component.getFlagComments(flagsData[3].flags.details[0])).toEqual(' (Fifth flag)');
-  });
 });

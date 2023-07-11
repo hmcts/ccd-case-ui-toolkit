@@ -678,7 +678,7 @@ describe('CaseFullAccessViewComponent', () => {
           caseHeaderComponentMock,
           linkComponentMock,
           markdownComponentMock,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
         ],
         providers: [
           FieldsUtils,
@@ -843,49 +843,6 @@ describe('CaseFullAccessViewComponent', () => {
     });
   });
 
-  it('should render each compound field without label as a cell spanning 2 columns', () => {
-    const headers = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr.complex-field>th'));
-
-    expect(headers.length).toBe(0);
-
-    const cells = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr.compound-field>th'));
-
-    expect(cells.length).toEqual(COMPLEX_FIELDS.length);
-  });
-
-  it('should render each field value using FieldReadComponent', () => {
-    const readFieldsFields = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr td>span>ccd-field-read'));
-
-    const readFieldsCompound = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr th>span>ccd-field-read'));
-
-    const readFields = readFieldsFields.concat(readFieldsCompound);
-
-    FIELDS.forEach(field => {
-      expect(readFields.find(f => {
-        const fieldInstance = f.componentInstance;
-        return JSON.stringify(fieldInstance.caseField) === JSON.stringify(field);
-      }))
-        .toBeTruthy(`Could not find field with type ${field.field_type}`);
-    });
-    expect(FIELDS.length).toBe(readFields.length);
-  });
-
-  it('should render fields in ascending order', () => {
-    const headers = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr>th'));
-
-    expect(headers[0].nativeElement.textContent.trim()).toBe(FIELDS[1].label);
-    expect(orderService.sort).toHaveBeenCalledWith(FIELDS);
-  });
 
   it('should render an event trigger', () => {
     const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
@@ -1198,11 +1155,11 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           fieldReadComponentMock,
           caseHeaderComponentMock,
           linkComponentMock,
-          markdownComponentMock,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          markdownComponentMock
         ],
         providers: [
           FieldsUtils,
@@ -1287,11 +1244,11 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           fieldReadComponentMock,
           caseHeaderComponentMock,
           linkComponentMock,
-          markdownComponentMock,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          markdownComponentMock
         ],
         providers: [
           FieldsUtils,

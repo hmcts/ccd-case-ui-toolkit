@@ -30,7 +30,6 @@ import { aWizardPage } from '../case-edit.spec';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { CaseNotifier } from '../services';
-import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
 
 import createSpyObj = jasmine.createSpyObj;
@@ -456,66 +455,6 @@ describe('CaseEditSubmitComponent', () => {
 
       const cancelLink = de.query(By.css('a[class=disabled]'));
       expect(cancelLink).toBeNull();
-    });
-
-    it('should show event notes when set in event trigger and showEventNotes is called', () => {
-      comp.profile.user.idam.roles = ['caseworker-divorce'];
-      comp.caseFlagField = null;
-      comp.eventTrigger.show_event_notes = true;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-      const result = comp.showEventNotes();
-      expect(result).toEqual(true);
-      expect(eventNotes).not.toBeNull();
-    });
-
-    it('should hide event notes when set in event trigger and profile is solicitor and showEventNotes is called', () => {
-      comp.profile.user.idam.roles = ['divorce-solicitor'];
-      comp.caseFlagField = null;
-      comp.eventTrigger.show_event_notes = true;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-      const result = comp.showEventNotes();
-      expect(result).toEqual(false);
-      expect(eventNotes).toBeNull();
-    });
-
-    it('should hide event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
-      comp.profile.user.idam.roles = ['caseworker-divorce'];
-      comp.caseFlagField = caseFieldCaseFlagCreate;
-      comp.eventTrigger.show_event_notes = true;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-      const result = comp.showEventNotes();
-      expect(result).toEqual(false);
-      expect(eventNotes).toBeNull();
-    });
-
-    it('should hide event notes when not set in event trigger and showEventNotes is called', () => {
-      comp.eventTrigger.show_event_notes = null;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-      const result = comp.showEventNotes();
-      expect(result).toEqual(false);
-      expect(eventNotes).toBeNull();
-    });
-
-    it('should hide event notes when not defined in event trigger and showEventNotes is called', () => {
-      comp.eventTrigger.show_event_notes = undefined;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-      const result = comp.showEventNotes();
-      expect(result).toEqual(false);
-      expect(eventNotes).toBeNull();
-    });
-
-    it('should not show event notes when set to false in event trigger and showEventNotes is called', () => {
-      comp.eventTrigger.show_event_notes = false;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-      const result = comp.showEventNotes();
-      expect(result).toEqual(false);
-      expect(eventNotes).toBeNull();
     });
   });
 

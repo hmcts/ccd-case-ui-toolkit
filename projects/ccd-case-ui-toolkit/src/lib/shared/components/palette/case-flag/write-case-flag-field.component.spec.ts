@@ -577,10 +577,12 @@ describe('WriteCaseFlagFieldComponent', () => {
     spyOn(component, 'populateNewFlagDetailInstance');
     const newFlag = {
       flags: null,
-      pathToFlagsFormGroup: '',
-      caseField: component.flagsData[2].caseField
+      pathToFlagsFormGroup: component.flagsData[2].pathToFlagsFormGroup,
+      caseField: { ...component.flagsData[2].caseField }
     } as FlagsWithFormGroupPath;
-    component.selectedFlagsLocation = newFlag;
+    component.caseFlagParentFormGroup = new FormGroup({
+      selectedLocation: new FormControl(newFlag)
+    });
     component.addFlagToCollection();
     expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
     // Check that the caseFlags object has a value containing a details array, containing an object with a value property
