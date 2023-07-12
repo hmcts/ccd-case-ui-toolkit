@@ -172,8 +172,9 @@ describe('QueryCheckYourAnswersComponent', () => {
     const heading = nativeElement.querySelector('.govuk-heading-l');
     expect(heading.textContent.trim()).toEqual('Review query response details');
     const columnHeadings = fixture.debugElement.queryAll(By.css('.govuk-summary-list__key'));
-    expect(columnHeadings[0].nativeElement.textContent.trim()).toEqual('Response message');
-    expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Document attached');
+    expect(columnHeadings[0].nativeElement.textContent.trim()).toEqual('Submitted query');
+    expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Response detail');
+    expect(columnHeadings[2].nativeElement.textContent.trim()).toEqual('Document attached');
   });
 
   it('should display correct columns for following up a query', () => {

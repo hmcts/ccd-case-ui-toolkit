@@ -15,12 +15,14 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
   public partyMessagesGroups: PartyMessagesGroup[];
   public query: QueryListItem;
   public showQueryList: boolean = true;
+  public caseId: string;
 
   constructor(private readonly route: ActivatedRoute) {
     super();
   }
 
   public ngOnInit(): void {
+    this.caseId = this.route.snapshot.params.cid;
     if (this.context === PaletteContext.DEFAULT) {
       // EUI-8303 Using mock data until CCD is ready with the API and data contract
       this.partyMessagesGroups = partyMessagesMockData;
