@@ -41,6 +41,7 @@ import {
 } from '../../../services';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
@@ -402,6 +403,7 @@ xdescribe('CaseEditPageComponent', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -731,6 +733,7 @@ xdescribe('CaseEditPageComponent', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -874,6 +877,7 @@ xdescribe('CaseEditPageComponent', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -1032,6 +1036,7 @@ xdescribe('CaseEditPageComponent', () => {
             CcdCYAPageLabelFilterPipe,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -1288,6 +1293,7 @@ xdescribe('CaseEditPageComponent', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -1456,6 +1462,7 @@ xdescribe('CaseEditPageComponent', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
