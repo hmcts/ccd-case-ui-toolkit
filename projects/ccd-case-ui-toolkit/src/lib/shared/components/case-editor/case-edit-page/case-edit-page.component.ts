@@ -1,8 +1,8 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { CaseEditDataService, CaseEditValidationError } from '../../../commons/case-edit-data';
 import { CaseEventData } from '../../../domain/case-event-data.model';
@@ -27,7 +27,7 @@ import { PageValidationService } from '../services/page-validation.service';
   templateUrl: 'case-edit-page.html',
   styleUrls: ['./case-edit-page.scss'],
 })
-export class CaseEditPageComponent implements OnInit, AfterViewChecked {
+export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestroy {
   public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
   public static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
   public static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
@@ -52,6 +52,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public callbackErrorsSubject: Subject<any> = new Subject();
   public isLinkedCasesJourneyAtFinalStep: boolean;
+  public routeParamsSub: Subscription;
+  public caseEditFormSub: Subscription;
+  public caseIsLinkedCasesJourneyAtFinalStepSub: Subscription;
+  public caseTriggerSubmitEventSub: Subscription;
+  public validateSub: Subscription;
+  public dialogRefAfterClosedSub: Subscription;
+  public saveDraftSub: Subscription;
+  public caseFormValidationErrorsSub: Subscription;
 
   private static scrollToTop(): void {
     window.scrollTo(0, 0);
@@ -87,7 +95,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
     this.syncCaseEditDataService();
 
-    this.route.params
+    this.routeParamsSub = this.route.params
       .subscribe(params => {
         const pageId = params['page'];
         /* istanbul ignore else */
@@ -106,13 +114,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
         }
       });
     CaseEditPageComponent.setFocusToTop();
-    this.caseEditDataService.caseEditForm$.subscribe({
+    this.caseEditFormSub = this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.editForm = editForm
     });
+    this.caseIsLinkedCasesJourneyAtFinalStepSub =
     this.caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$.subscribe({
       next: isLinkedCasesJourneyAtFinalStep => this.isLinkedCasesJourneyAtFinalStep = isLinkedCasesJourneyAtFinalStep
     });
-    this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
+    this.caseTriggerSubmitEventSub = this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
       next: state => {
         if (state) {
           this.caseEditDataService.setTriggerSubmitEvent(false);
@@ -125,6 +134,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   public ngAfterViewChecked(): void {
     this.cdRef.detectChanges();
+  }
+
+  public ngOnDestroy(): void {
+    this.routeParamsSub?.unsubscribe();
+    this.caseEditFormSub?.unsubscribe();
+    this.caseIsLinkedCasesJourneyAtFinalStepSub?.unsubscribe();
+    this.caseTriggerSubmitEventSub?.unsubscribe();
+    this.validateSub?.unsubscribe();
+    this.dialogRefAfterClosedSub?.unsubscribe();
+    this.saveDraftSub?.unsubscribe();
+    this.caseFormValidationErrorsSub?.unsubscribe();
   }
 
   public applyValuesChanged(valuesChanged: boolean): void {
@@ -199,7 +219,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
               fieldArray.controls.forEach((c: AbstractControl) => {
                 this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
               });
-            } else if (FieldsUtils.isFlagLauncherCaseField(casefield)) {
+            } else if (FieldsUtils.isCaseFieldOfType(casefield, ['FlagLauncher'])) {
               // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
               // (expected always to be one of the two), to set the correct error message
               let action = '';
@@ -254,7 +274,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       this.caseEdit.error = null;
       const caseEventData: CaseEventData = this.buildCaseEventData();
       const loadingSpinnerToken = this.loadingService.register();
-      this.caseEdit.validate(caseEventData, this.currentPage.id)
+      this.validateSub = this.caseEdit.validate(caseEventData, this.currentPage.id)
         .pipe(
           finalize(() => {
             this.loadingService.unregister(loadingSpinnerToken);
@@ -373,7 +393,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (this.eventTrigger.can_save_draft) {
       if (this.formValuesChanged) {
         const dialogRef = this.dialog.open(SaveOrDiscardDialogComponent, this.dialogConfig);
-        dialogRef.afterClosed().subscribe(result => {
+        this.dialogRefAfterClosedSub = dialogRef.afterClosed().subscribe(result => {
           if (result === 'Discard') {
             this.discard();
           } else if (result === 'Save') {
@@ -465,7 +485,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
       const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
       draftCaseEventData.event_token = this.eventTrigger.event_token;
       draftCaseEventData.ignore_warning = this.caseEdit.ignoreWarning;
-      this.caseEdit.saveDraft(draftCaseEventData).subscribe(
+      this.saveDraftSub = this.caseEdit.saveDraft(draftCaseEventData).subscribe(
         (draft) => this.eventTrigger.case_id = DRAFT_PREFIX + draft.id, error => this.handleError(error)
       );
     }
@@ -548,7 +568,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     this.caseEditDataService.setCaseEventTriggerName(this.eventTrigger.name);
     this.caseEditDataService.setCaseTitle(this.getCaseTitle());
     this.caseEditDataService.setCaseEditForm(this.editForm);
-    this.caseEditDataService.caseFormValidationErrors$.subscribe({
+    this.caseFormValidationErrorsSub = this.caseEditDataService.caseFormValidationErrors$.subscribe({
       next: (validationErrors) => this.validationErrors = validationErrors
     });
   }
