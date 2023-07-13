@@ -1,5 +1,5 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
@@ -25,7 +25,7 @@ describe('CaseFileViewFolderComponent', () => {
   let fixture: ComponentFixture<CaseFileViewFolderComponent>;
   let nativeElement: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
 
     TestBed.configureTestingModule({
@@ -224,7 +224,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should filter documents no match', () => {
-    const filteredTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
+    component.documentTreeData = plainToClass(DocumentTreeNode, [
       {
         name: 'Spirits',
         type: DocumentTreeNodeType.FOLDER,
@@ -268,7 +268,6 @@ describe('CaseFileViewFolderComponent', () => {
         ]
       }
     ]);
-    component.documentTreeData = filteredTreeData;
     component.documentSearchFormControl.setValue('some random text');
     component.filter('some random text').subscribe(result => {
       expect(result.length).toEqual(0);

@@ -52,10 +52,10 @@
   <div class="column-full">
     <ng-container *ngIf="hasTabsPresent()">
       <mat-tab-group #tabGroup animationDuration="0ms" (selectedIndexChange)="tabChanged($event)" [disableRipple]="true"
-                     [selectedIndex]="selectedTabIndex">
+        [selectedIndex]="selectedTabIndex">
         <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label">
         </mat-tab>
-        <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label">
+        <mat-tab *ngFor="let tab of sortedTabs" [id]="tab.id" [label]="tab.label">
           <ng-template matTabContent>
             <table [class]="tab.id" aria-describedby="case viewer table">
               <tbody>

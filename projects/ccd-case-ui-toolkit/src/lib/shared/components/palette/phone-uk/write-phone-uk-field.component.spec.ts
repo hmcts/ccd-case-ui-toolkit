@@ -25,11 +25,10 @@ const CASE_FIELD: CaseField = ({
 const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WritePhoneUKFieldComponent', () => {
-
   const $INPUT = By.css('.form-group input');
 
   // Input is mocked so that one-way bound inputs can be tested
-  const Input: any = MockComponent({ selector: 'input', inputs: [
+  const inputComponentMock: any = MockComponent({ selector: 'input', inputs: [
     'type',
     'formControl'
   ]});
@@ -48,8 +47,8 @@ describe('WritePhoneUKFieldComponent', () => {
         declarations: [
           WritePhoneUKFieldComponent,
 
-          // Mock
-          Input,
+          // Mocks
+          inputComponentMock
         ],
         providers: []
       })

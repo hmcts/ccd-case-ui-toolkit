@@ -12,7 +12,6 @@ export const MULTIPLE_TASKS_FOUND = 'More than one task found!';
 
 @Injectable()
 export class WorkAllocationService {
-
   public static iACCaseOfficer = 'caseworker-ia-caseofficer';
   public static iACAdmOfficer = 'caseworker-ia-admofficer';
 
@@ -67,7 +66,7 @@ export class WorkAllocationService {
       if (serviceConfig.serviceName === jurisdiction && (serviceConfig.caseTypes.indexOf(caseType) !== -1)) {
           enabled = true;
       }
-    })
+    });
     return enabled;
   }
 
@@ -213,7 +212,7 @@ export class WorkAllocationService {
     const defaultPayload: TaskPayload = {
       task_required_for_event: false,
       tasks: []
-    }
+    };
     if (!this.isWAEnabled()) {
       return of(defaultPayload);
     }

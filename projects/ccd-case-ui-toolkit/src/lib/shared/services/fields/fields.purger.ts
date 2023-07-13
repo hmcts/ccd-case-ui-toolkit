@@ -33,19 +33,21 @@ export class FieldsPurger {
     });
   }
 
-  private clearHiddenFieldForFieldShowCondition(currentPageId: string, form: FormGroup, wizard: Wizard,
-    eventTrigger: CaseEventTrigger): void {
+  private clearHiddenFieldForFieldShowCondition(currentPageId: string,
+                                                form: FormGroup,
+                                                wizard: Wizard,
+                                                eventTrigger: CaseEventTrigger): void {
     const formFields = form.getRawValue();
     const currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
     currentPage.wizard_page_fields.forEach(wpf => {
-      const case_field = this.findCaseFieldByWizardPageFieldId(currentPage, wpf);
-      if (this.hasShowConditionField(case_field, formFields)) {
-        const condition = new ShowCondition(case_field.show_condition);
-        if (this.isHidden(condition, formFields.data) && !(this.isReadonly(case_field))) {
-          this.resetField(form, case_field);
+      const caseField = this.findCaseFieldByWizardPageFieldId(currentPage, wpf);
+      if (this.hasShowConditionField(caseField, formFields)) {
+        const condition = new ShowCondition(caseField.show_condition);
+        if (this.isHidden(condition, formFields.data) && !(this.isReadonly(caseField))) {
+          this.resetField(form, caseField);
         }
       }
-      this.retainHiddenValueByFieldType(case_field, form);
+      this.retainHiddenValueByFieldType(caseField, form);
     });
   }
 
@@ -81,14 +83,14 @@ export class FieldsPurger {
     return wizardPage.show_condition && formFields[this.getShowConditionKey(wizardPage.show_condition)];
   }
 
-  private hasShowConditionField(case_field: CaseField, formFields: any): boolean {
-    return case_field.show_condition && formFields.data[this.getShowConditionKey(case_field.show_condition)];
+  private hasShowConditionField(caseField: CaseField, formFields: any): boolean {
+    return caseField.show_condition && formFields.data[this.getShowConditionKey(caseField.show_condition)];
   }
 
-  private getShowConditionKey(show_condition: string): string {
+  private getShowConditionKey(showCondition: string): string {
     // Need to allow for negated conditions, i.e. !=, as well as regular ones (=)
     // Also need to allow for conditions specified using the "CONTAINS" keyword
-    return show_condition.split(/!=|=|CONTAINS/)[0];
+    return showCondition.split(/!=|=|CONTAINS/)[0];
   }
 
   private resetField(form: FormGroup, field: CaseField): void {
@@ -164,8 +166,8 @@ export class FieldsPurger {
 
   private resetPage(form: FormGroup, wizardPage: WizardPage): void {
     wizardPage.wizard_page_fields.forEach(wpf => {
-      const case_field = this.findCaseFieldByWizardPageFieldId(wizardPage, wpf);
-      this.resetField(form, case_field);
+      const caseField = this.findCaseFieldByWizardPageFieldId(wizardPage, wpf);
+      this.resetField(form, caseField);
     });
   }
 
@@ -178,8 +180,8 @@ export class FieldsPurger {
   }
 
   // TODO: call isReadOnly on CaseFields once we make it available
-  private isReadonly(case_field: CaseField): boolean {
-    return case_field.display_context.toUpperCase() === 'READONLY'
+  private isReadonly(caseField: CaseField): boolean {
+    return caseField.display_context.toUpperCase() === 'READONLY';
   }
 
   /**

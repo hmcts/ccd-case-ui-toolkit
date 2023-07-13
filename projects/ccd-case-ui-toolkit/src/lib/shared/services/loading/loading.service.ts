@@ -2,13 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-export abstract class HasLoadingState {
-  public get isLoading(): Observable<boolean> {
-    return;
-  }
-}
 @Injectable()
-export class LoadingService implements HasLoadingState {
+export class LoadingService {
   private readonly registered = new Map<string, string>();
   private readonly loading = new BehaviorSubject<boolean>(false);
 
@@ -30,6 +25,6 @@ export class LoadingService implements HasLoadingState {
 
   private generateToken(): string {
     const timestamp = window.performance.now();
-    return 'toolkit-loading-' + timestamp; // format: [source-library]-[unique incrementing number]
+    return `toolkit-loading-${timestamp}`; // format: [source-library]-[unique incrementing number]
   }
 }

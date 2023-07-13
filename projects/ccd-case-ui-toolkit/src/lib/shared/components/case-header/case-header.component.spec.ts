@@ -11,8 +11,7 @@ import { LabelFieldComponent } from '../palette';
 import { CaseHeaderComponent } from './case-header.component';
 
 describe('CaseHeaderComponent', () => {
-
-  const MarkdownComponent: any = MockComponent({
+  const markdownComponentMock: any = MockComponent({
     selector: 'ccd-markdown',
     inputs: ['content', 'markdownUseHrefAsRouterLink']
   });
@@ -33,8 +32,9 @@ describe('CaseHeaderComponent', () => {
           CaseReferencePipe,
           LabelSubstitutorDirective,
           LabelFieldComponent,
-          // Mock
-          MarkdownComponent
+
+          // Mocks
+          markdownComponentMock
         ],
         providers: [
           FieldsUtils,
@@ -72,5 +72,4 @@ describe('CaseHeaderComponent', () => {
     expect(header).toBeTruthy();
     expect(header.nativeElement.getAttribute('ng-reflect-content')).toEqual('Title');
   });
-
 });

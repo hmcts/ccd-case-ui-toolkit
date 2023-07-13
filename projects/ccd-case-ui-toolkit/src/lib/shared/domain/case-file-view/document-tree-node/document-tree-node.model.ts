@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { Expose, Type } from 'class-transformer';
 import { DocumentTreeNodeType } from './document-tree-node-type.model';
 

@@ -8,23 +8,17 @@ import { HttpService } from '../http/http.service';
 
 @Injectable()
 export class DefinitionsService {
-
   constructor(private readonly http: HttpService, private readonly appConfig: AppConfig) {}
 
   public getCaseTypes(jurisdictionId: string, access: string): Observable<CaseTypeLite[]> {
-    const url = this.appConfig.getApiUrl()
-      + `/caseworkers/:uid`
-      + `/jurisdictions/${jurisdictionId}`
-      + `/case-types?access=${access}`;
+    const url = `${this.appConfig.getApiUrl()}/caseworkers/:uid/jurisdictions/${jurisdictionId}/case-types?access=${access}`;
 
     return this.http
       .get(url).pipe(map(response => response));
   }
 
   public getJurisdictions(access: string): Observable<Jurisdiction[]> {
-    const url = this.appConfig.getApiUrl()
-      + `/caseworkers/:uid`
-      + `/jurisdictions?access=${access}`;
+    const url = `${this.appConfig.getApiUrl()}/caseworkers/:uid/jurisdictions?access=${access}`;
 
     return this.http
       .get(url)

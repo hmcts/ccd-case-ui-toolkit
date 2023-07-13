@@ -13,21 +13,24 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
           document_filename: 'Lager encyclopedia',
           document_binary_url: '/test/binary',
           attribute_path: '',
-          upload_timestamp: ''
+          upload_timestamp: '',
+          content_type: ''
         },
         {
           document_url: '/test',
           document_filename: 'Beers encyclopedia',
           document_binary_url: '/test/binary',
           attribute_path: '',
-          upload_timestamp: ''
+          upload_timestamp: '',
+          content_type: ''
         },
         {
           document_url: '/test',
           document_filename: 'Ale encyclopedia',
           document_binary_url: '/test/binary',
           attribute_path: '',
-          upload_timestamp: ''
+          upload_timestamp: '',
+          content_type: ''
         }
       ],
       sub_categories: [
@@ -119,7 +122,8 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
                       document_filename: 'Details about Whisky Lowland 1',
                       document_binary_url: '/test/binary',
                       attribute_path: '',
-                      upload_timestamp: ''
+                      upload_timestamp: '',
+                      content_type: ''
                     }
                   ],
                   sub_categories: []
@@ -143,14 +147,16 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
                   document_filename: 'Details about Whisky Islay',
                   document_binary_url: '/test/binary',
                   attribute_path: '',
-                  upload_timestamp: ''
+                  upload_timestamp: '',
+                  content_type: ''
                 },
                 {
                   document_url: '/test',
                   document_filename: 'More information about Whisky Islay',
                   document_binary_url: '/test/binary',
                   attribute_path: '',
-                  upload_timestamp: ''
+                  upload_timestamp: '',
+                  content_type: ''
                 }
               ],
               sub_categories: []
@@ -180,14 +186,16 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
       document_filename: 'Uncategorised document 1',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: ''
+      upload_timestamp: '',
+      content_type: ''
     },
     {
       document_url: '/uncategorised-document-2',
       document_filename: 'Uncategorised document 2',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: ''
+      upload_timestamp: '',
+      content_type: ''
     }
   ]
 };

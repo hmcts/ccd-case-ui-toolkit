@@ -3,39 +3,37 @@ import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 describe('FieldTypeSanitiser', () => {
 
-  const VALUE_DYNAMIC_LIST = JSON.parse('{\n' +
-    '            "value": {\n' +
-    '              "code": "F",\n' +
-    '              "label": "Female"\n' +
-    '            },\n' +
-    '            "list_items": [\n' +
-    '              {\n' +
-    '                "code": "F",\n' +
-    '                "label": "Female"\n' +
-    '              },\n' +
-    '              {\n' +
-    '                "code": "M",\n' +
-    '                "label": "Male"\n' +
-    '              }' +
-    '            ]\n' +
-    '          }');
+  const VALUE_DYNAMIC_LIST = JSON.parse(`{
+            "value": {
+              "code": "F",
+              "label": "Female"
+            },
+            "list_items": [
+              {
+                "code": "F",
+                "label": "Female"
+              },
+              {
+                "code": "M",
+                "label": "Male"
+              }            ]
+          }`);
 
-  const EXPECTED_VALUE_DYNAMIC_LIST = JSON.parse('{\n' +
-    '            "value": {\n' +
-    '              "code": "M",\n' +
-    '              "label": "Male"\n' +
-    '            },\n' +
-    '            "list_items": [\n' +
-    '              {\n' +
-    '                "code": "F",\n' +
-    '                "label": "Female"\n' +
-    '              },\n' +
-    '              {\n' +
-    '                "code": "M",\n' +
-    '                "label": "Male"\n' +
-    '              }' +
-    '            ]\n' +
-    '          }');
+  const EXPECTED_VALUE_DYNAMIC_LIST = JSON.parse(`{
+            "value": {
+              "code": "M",
+              "label": "Male"
+            },
+            "list_items": [
+              {
+                "code": "F",
+                "label": "Female"
+              },
+              {
+                "code": "M",
+                "label": "Male"
+              }            ]
+          }`);
 
   const editForm = {
     data: {

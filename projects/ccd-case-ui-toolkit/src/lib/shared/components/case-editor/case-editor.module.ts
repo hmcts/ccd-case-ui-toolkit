@@ -32,6 +32,7 @@ import { PaletteModule } from '../palette/palette.module';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
 import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component';
+import { CaseEditGenericErrorsComponent } from './case-edit-generic-errors/case-edit-generic-errors.component';
 import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
 import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
 import { CaseEditComponent } from './case-edit/case-edit.component';
@@ -78,7 +79,8 @@ import { CaseworkerService } from './services/case-worker.service';
     CaseEventCompletionTaskCancelledComponent,
     CaseEventCompletionTaskReassignedComponent,
     CaseCreateComponent,
-    CaseProgressComponent
+    CaseProgressComponent,
+    CaseEditGenericErrorsComponent
   ],
   exports: [
     CaseEditConfirmComponent,

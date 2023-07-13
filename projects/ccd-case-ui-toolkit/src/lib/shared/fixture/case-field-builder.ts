@@ -18,18 +18,18 @@ export class CaseFieldBuilder {
     return this;
   }
 
-  public withFieldType(field_type: FieldType): CaseFieldBuilder {
-    this.caseField.field_type = field_type;
+  public withFieldType(fieldType: FieldType): CaseFieldBuilder {
+    this.caseField.field_type = fieldType;
     return this;
   }
 
-  public withDisplayContext(display_context: string): CaseFieldBuilder {
-    this.caseField.display_context = display_context;
+  public withDisplayContext(displayContext: string): CaseFieldBuilder {
+    this.caseField.display_context = displayContext;
     return this;
   }
 
-  public withDisplayContextParameter(display_context_parameter: string): CaseFieldBuilder {
-    this.caseField.display_context_parameter = display_context_parameter;
+  public withDisplayContextParameter(displayContextParameter: string): CaseFieldBuilder {
+    this.caseField.display_context_parameter = displayContextParameter;
     return this;
   }
 
@@ -38,8 +38,8 @@ export class CaseFieldBuilder {
     return this;
   }
 
-  public withHintText(hint_text: string): CaseFieldBuilder {
-    this.caseField.hint_text = hint_text;
+  public withHintText(hintText: string): CaseFieldBuilder {
+    this.caseField.hint_text = hintText;
     return this;
   }
 
@@ -53,13 +53,13 @@ export class CaseFieldBuilder {
     return this;
   }
 
-  public withSecurityLabel(security_label: string): CaseFieldBuilder {
-    this.caseField.security_label = security_label;
+  public withSecurityLabel(securityLabel: string): CaseFieldBuilder {
+    this.caseField.security_label = securityLabel;
     return this;
   }
 
-  public withShowCondition(show_condition: string): CaseFieldBuilder {
-    this.caseField.show_condition = show_condition;
+  public withShowCondition(showCondition: string): CaseFieldBuilder {
+    this.caseField.show_condition = showCondition;
     return this;
   }
 

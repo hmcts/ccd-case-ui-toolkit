@@ -5,11 +5,11 @@ import { CaseSpecificAccessSuccessComponent } from './case-specific-access-succe
 describe('CaseSpecificAccessSuccessComponent', () => {
   let component: CaseSpecificAccessSuccessComponent;
   let fixture: ComponentFixture<CaseSpecificAccessSuccessComponent>;
-  const case_id = '1234123412341234';
+  const caseId = '1234123412341234';
   const mockRoute = {
     snapshot: {
       params: {
-        cid: case_id
+        cid: caseId
       }
     }
   };
@@ -33,7 +33,7 @@ describe('CaseSpecificAccessSuccessComponent', () => {
   it('should create component and show the correct Case Reference', () => {
     expect(component).toBeDefined();
     const confirmationMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-panel__body');
-    expect(confirmationMessageElement.textContent).toContain(case_id);
+    expect(confirmationMessageElement.textContent).toContain(caseId);
   });
 
   it('should have the correct Case Reference in the \"View case file\" link URL', () => {

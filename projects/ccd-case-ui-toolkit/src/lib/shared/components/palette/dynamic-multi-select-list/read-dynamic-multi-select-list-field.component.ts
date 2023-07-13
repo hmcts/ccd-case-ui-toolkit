@@ -7,8 +7,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
   styleUrls: ['./read-dynamic-multi-select-list-field.component.scss']
 })
 export class ReadDynamicMultiSelectListFieldComponent extends AbstractFieldReadComponent implements OnInit {
-
-  ngOnInit() {
+  public ngOnInit() {
     /**
      *
      * Reassigning list_items from formatted_list when list_items is empty

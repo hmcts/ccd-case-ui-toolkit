@@ -12,15 +12,14 @@ import { SearchService } from './search.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('SearchService', () => {
-
   const JID = 'TEST';
   const CTID = 'TestAddressBookCase';
   const API_URL = 'http://aggregated.ccd.reform';
   const DATA_URL = 'http://data.ccd.reform';
-  const SEARCH_URL = API_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases`;
+  const SEARCH_URL = `${API_URL}/caseworkers/:uid/jurisdictions/${JID}/case-types/${CTID}/cases`;
   const VIEW = `WORKBASKET`;
-  const SEARCH_CASES_URL = DATA_URL + `/internal/searchCases?ctid=${CTID}&use_case=${VIEW}`;
-  const SEARCH_INPUT_URL = DATA_URL + '/internal/case-types/0/search-inputs';
+  const SEARCH_CASES_URL = `${DATA_URL}/internal/searchCases?ctid=${CTID}&use_case=${VIEW}`;
+  const SEARCH_INPUT_URL = `${DATA_URL}/internal/case-types/0/search-inputs`;
 
   const SEARCH_VIEW = {
     columns: [],
@@ -51,12 +50,11 @@ describe('SearchService', () => {
   let loadingService: any;
 
   describe('get()', () => {
-
     beforeEach(() => {
       function matchCall(value: any, expected: any): boolean {
         return expected === value ||
-            JSON.stringify(expected) === JSON.stringify(value) ||
-            expected[0] === value[0] && JSON.stringify(expected[1]).trim() === JSON.stringify(value[1]).trim();
+          JSON.stringify(expected) === JSON.stringify(value) ||
+          expected[0] === value[0] && JSON.stringify(expected[1]).trim() === JSON.stringify(value[1]).trim();
       }
 
       jasmine.addCustomEqualityTester(matchCall);
@@ -248,19 +246,17 @@ describe('SearchService', () => {
         .search(JID, CTID, {}, {})
         .subscribe()
         .add(() => {
-          expect(loadingService.unregister).toHaveBeenCalled()
+          expect(loadingService.unregister).toHaveBeenCalled();
         });
     }));
-
   });
 
   describe('post()', () => {
-
     beforeEach(waitForAsync(() => {
       function matchCall(value: any, expected: any): boolean {
         return expected === value ||
-            JSON.stringify(expected) === JSON.stringify(value) ||
-            expected[0] === value[0] && JSON.stringify(expected[1]).trim() === JSON.stringify(value[1]).trim();
+          JSON.stringify(expected) === JSON.stringify(value) ||
+          expected[0] === value[0] && JSON.stringify(expected[1]).trim() === JSON.stringify(value[1]).trim();
       }
 
       jasmine.addCustomEqualityTester(matchCall);
@@ -350,7 +346,7 @@ describe('SearchService', () => {
         .searchCases(CTID, {}, {}, SearchService.VIEW_WORKBASKET)
         .subscribe()
         .add(() => {
-          expect(loadingService.unregister).toHaveBeenCalled()
+          expect(loadingService.unregister).toHaveBeenCalled();
         });
     }));
   });

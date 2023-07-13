@@ -4,7 +4,6 @@ import { Profile } from '../../../domain/profile';
 
 @Injectable()
 export class CollectionCreateCheckerService {
-
   public setDisplayContextForChildren(caseField: CaseField, profile: Profile) {
     const children = this.getCaseFieldChildren(caseField);
 
@@ -30,12 +29,12 @@ export class CollectionCreateCheckerService {
     return childrenCaseFields;
   }
 
-  private isComplex(case_field: CaseField) {
-    return case_field.field_type.type === 'Complex';
+  private isComplex(caseField: CaseField) {
+    return caseField.field_type.type === 'Complex';
   }
 
-  private isCollection(case_field: CaseField) {
-    return case_field.field_type.type === 'Collection';
+  private isCollection(caseField: CaseField) {
+    return caseField.field_type.type === 'Collection';
   }
 
   private hasCreateAccess(caseField: CaseField, role: any) {

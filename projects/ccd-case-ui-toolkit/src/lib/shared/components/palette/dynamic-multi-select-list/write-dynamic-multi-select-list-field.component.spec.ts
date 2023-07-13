@@ -1,11 +1,11 @@
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
-import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
 import { By } from '@angular/platform-browser';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
 import { attr } from '../../../test/helpers';
+import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDynamicMultiSelectListFieldComponent } from './write-dynamic-multi-select-list-field.component';
 import { NgxMdModule } from 'ngx-md';
 import { PipesModule } from '../../../pipes';
@@ -58,7 +58,7 @@ const FIELD_TYPE: FieldType = {
   type: 'DynamicMultiSelectList',
 };
 
-let CASE_FIELD: CaseField;
+let caseField: CaseField;
 
 const moduleDef = {
   imports: [
@@ -90,7 +90,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
 
   describe('List Value Dynamic Case Field', () => {
     beforeEach(waitForAsync(() => {
-      CASE_FIELD = ({
+      caseField = ({
         id: FIELD_ID,
         label: 'X',
         display_context: 'OPTIONAL',
@@ -106,7 +106,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
       fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
       component = fixture.componentInstance;
 
-      component.caseField = CASE_FIELD;
+      component.caseField = caseField;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -153,7 +153,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
 
   describe('Null Value Dynamic Case Field', () => {
     beforeEach(waitForAsync(() => {
-      CASE_FIELD = ({
+      caseField = ({
         id: FIELD_ID,
         label: 'X',
         display_context: 'OPTIONAL',
@@ -169,7 +169,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
       fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
       component = fixture.componentInstance;
 
-      component.caseField = CASE_FIELD;
+      component.caseField = caseField;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -191,7 +191,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
 
   describe('Object Value Dynamic Case Field', () => {
     beforeEach(waitForAsync(() => {
-      CASE_FIELD = ({
+      caseField = ({
         id: FIELD_ID,
         label: 'X',
         display_context: 'OPTIONAL',
@@ -207,7 +207,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
       fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
       component = fixture.componentInstance;
 
-      component.caseField = CASE_FIELD;
+      component.caseField = caseField;
 
       de = fixture.debugElement;
       fixture.detectChanges();

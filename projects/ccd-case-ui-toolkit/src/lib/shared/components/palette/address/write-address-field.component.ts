@@ -14,7 +14,6 @@ import { AddressOption } from './address-option.model';
   styleUrls: ['write-address-field.scss']
 })
 export class WriteAddressFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
-
   @ViewChild('writeComplexFieldComponent', { static: false })
   public writeComplexFieldComponent: WriteComplexFieldComponent;
 
@@ -55,7 +54,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
       this.missingPostcode = false;
       const postcode = this.postcode.value;
       this.caseField.value = null;
-      this.addressOptions = new Array();
+      this.addressOptions = [];
       this.addressesService.getAddressesForPostcode(postcode.replace(' ', '').toUpperCase()).subscribe(
         result => {
           result.forEach(
@@ -109,7 +108,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     let hasAddress = false;
     if (address) {
       Object.keys(address).forEach((key) => {
-        if (address[key] != null) {
+        if (address[key] !== null) {
           hasAddress = true;
         }
       });
@@ -136,7 +135,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   private defaultLabel(numberOfAddresses) {
     return numberOfAddresses === 0 ? 'No address found'
-      : numberOfAddresses + (numberOfAddresses === 1 ? ' address ' : ' addresses ') + 'found';
+      : `${numberOfAddresses}${numberOfAddresses === 1 ? ' address ' : ' addresses '}found`;
   }
 
   private setFormValue() {

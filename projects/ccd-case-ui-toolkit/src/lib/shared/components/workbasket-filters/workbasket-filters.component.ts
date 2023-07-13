@@ -24,7 +24,6 @@ const REGION_LIST_AND_FRC_FILTER = 'regionList';
   styleUrls: ['./workbasket-filters.component.scss']
 })
 export class WorkbasketFiltersComponent implements OnInit {
-
   public static readonly PARAM_JURISDICTION = 'jurisdiction';
   public static readonly PARAM_CASE_TYPE = 'case-type';
   public static readonly PARAM_CASE_STATE = 'case-state';
@@ -180,7 +179,7 @@ export class WorkbasketFiltersComponent implements OnInit {
 
             workbasketInputs.forEach(item => {
               if (item.field.elementPath) {
-                item.field.id = item.field.id + '.' + item.field.elementPath;
+                item.field.id = `${item.field.id}.${item.field.elementPath}`;
               }
               item.field.label = item.label;
               if (formValue) {
@@ -237,7 +236,7 @@ export class WorkbasketFiltersComponent implements OnInit {
               const value = formGroupLS[key];
               // Clear the filter form group control values if it has a value in local storage
               // The regionList form group control value should be ignored as it always contain the latest value
-              if (key !== REGION_LIST_AND_FRC_FILTER && value != null) {
+              if (key !== REGION_LIST_AND_FRC_FILTER && value !== null) {
                 this.formGroup.get(key).setValue(null);
               }
             }

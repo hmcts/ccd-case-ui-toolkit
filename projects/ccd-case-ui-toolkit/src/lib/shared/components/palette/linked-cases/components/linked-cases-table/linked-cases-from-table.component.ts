@@ -15,7 +15,6 @@ import { LinkedCasesService } from '../../services';
 })
 
 export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
-
   private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
 
   @Input()

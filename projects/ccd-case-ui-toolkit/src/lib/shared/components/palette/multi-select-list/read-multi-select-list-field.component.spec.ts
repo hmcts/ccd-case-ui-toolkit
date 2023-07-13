@@ -10,7 +10,6 @@ import { FixedListPipe } from '../fixed-list/fixed-list.pipe';
 import { ReadMultiSelectListFieldComponent } from './read-multi-select-list-field.component';
 
 describe('ReadMultiSelectListFieldComponent', () => {
-
   const $VALUES = By.css('table>tbody>tr>td');
 
   const FIELD_ID = 'ReadOnlyFieldId';
@@ -44,7 +43,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
     CASE_FIELD.field_type = FIELD_TYPE;
     CASE_FIELD.value = VALUES;
 
-    const FieldReadComponent = MockComponent({
+    const fieldReadComponentMock = MockComponent({
       selector: 'ccd-field-read',
       inputs: ['caseField']
     });
@@ -61,8 +60,8 @@ describe('ReadMultiSelectListFieldComponent', () => {
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
 
-            // Mock
-            FieldReadComponent
+            // Mocks
+            fieldReadComponentMock
           ],
           providers: []
         })
@@ -86,9 +85,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
       expect(cells.length).toEqual(VALUES.length);
 
       for (let i = 0; i < VALUES.length; i++) {
-
         expect(FIELD_TYPE.fixed_list_items[i].label).toEqual(text(cells[i]));
-
       }
     });
 
@@ -122,7 +119,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
     CASE_FIELD.field_type = FIELD_TYPE;
     CASE_FIELD.value = VALUES;
 
-    const FieldReadComponent = MockComponent({
+    const fieldReadComponentMock = MockComponent({
       selector: 'ccd-field-read',
       inputs: ['caseField']
     });
@@ -139,8 +136,8 @@ describe('ReadMultiSelectListFieldComponent', () => {
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
 
-            // Mock
-            FieldReadComponent
+            // Mocks
+            fieldReadComponentMock
           ],
           providers: []
         })
@@ -152,7 +149,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
       component.caseField = CASE_FIELD;
       component.formGroup = FORM_GROUP;
 
-        de = fixture.debugElement;
+      de = fixture.debugElement;
       fixture.detectChanges();
     }));
 
@@ -160,7 +157,5 @@ describe('ReadMultiSelectListFieldComponent', () => {
       expect(FORM_GROUP.controls[CASE_FIELD.id]).toBeTruthy();
       expect(FORM_GROUP.controls[CASE_FIELD.id].value).toBe(VALUES);
     });
-
   });
-
 });

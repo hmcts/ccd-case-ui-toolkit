@@ -8,7 +8,6 @@ import { BannersService } from './banners.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('Banner service', () => {
-
   const MOCK_BANNER: Banner[] = [{
     bannerDescription: 'test Banner',
     bannerUrlText: 'test',
@@ -19,7 +18,7 @@ describe('Banner service', () => {
   const JID = ['DIVORCE', 'PROBATE'];
   let params: HttpParams;
   const API_URL = 'http://aggregated.ccd.reform';
-  const BANNER_URL = API_URL + '/data/internal/banners/';
+  const BANNER_URL = `${API_URL}/data/internal/banners/`;
 
   let appConfig: any;
   let httpService: any;
@@ -39,7 +38,6 @@ describe('Banner service', () => {
     }));
 
     describe('getBanners()', () => {
-
       beforeEach(() => {
         httpService.get.and.returnValue(of(MOCK_BANNER1));
       });
@@ -54,9 +52,6 @@ describe('Banner service', () => {
           .getBanners(JID)
           .subscribe((bannerData) => expect(bannerData).toBe(MOCK_BANNER1.banners));
       }));
-
     });
-
   });
-
 });

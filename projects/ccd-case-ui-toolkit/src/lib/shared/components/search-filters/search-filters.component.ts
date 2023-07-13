@@ -168,7 +168,7 @@ export class SearchFiltersComponent implements OnInit {
         }
         searchInputs.forEach(item => {
           if (item.field.elementPath) {
-            item.field.id = item.field.id + '.' + item.field.elementPath;
+            item.field.id = `${item.field.id}.${item.field.elementPath}`;
           }
           item.field.label = item.label;
           if (formValueObject) {

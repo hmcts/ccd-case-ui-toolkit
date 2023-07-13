@@ -87,7 +87,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     hearingRelevant: 'Yes',
     flagCode: 'OT0001',
     status: CaseFlagStatus.ACTIVE
-  }
+  };
   const witnessComplexFieldId = 'witness1';
   const witnessCaseFlagPartyName = 'Sawit All';
   const witnessCaseFlagRoleOnCase = 'Witness';

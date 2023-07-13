@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpError } from '../../domain/http';
 import { CallbackErrorsContext } from './domain/error-context';
@@ -7,7 +7,7 @@ import { CallbackErrorsContext } from './domain/error-context';
   selector: 'ccd-callback-errors',
   templateUrl: './callback-errors.html'
 })
-export class CallbackErrorsComponent implements OnInit, OnDestroy {
+export class CallbackErrorsComponent implements OnInit {
 
   public static readonly TRIGGER_TEXT_SUBMIT = 'Submit';
   public static readonly TRIGGER_TEXT_START = 'Start';
@@ -36,12 +36,6 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnDestroy(): void {
-    if (this.callbackErrorsSubject) {
-      this.callbackErrorsSubject.unsubscribe();
-    }
-  }
-
   public hasErrors(): boolean {
     return this.error
       && this.error.callbackErrors
@@ -57,11 +51,11 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
   private buildCallbackErrorsContext(): CallbackErrorsContext {
     const errorContext: CallbackErrorsContext = new CallbackErrorsContext();
     if (this.hasWarnings() && !this.hasErrors() && !this.hasInvalidData()) {
-      errorContext.ignore_warning = true;
-      errorContext.trigger_text = this.triggerTextIgnore;
+      errorContext.ignoreWarning = true;
+      errorContext.triggerText = this.triggerTextIgnore;
     } else {
-      errorContext.ignore_warning = false;
-      errorContext.trigger_text = this.triggerTextContinue;
+      errorContext.ignoreWarning = false;
+      errorContext.triggerText = this.triggerTextContinue;
     }
     return errorContext;
   }

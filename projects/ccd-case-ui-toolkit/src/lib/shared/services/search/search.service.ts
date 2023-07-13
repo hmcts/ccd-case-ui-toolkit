@@ -13,9 +13,9 @@ import { RequestOptionsBuilder, SearchView } from '../request/request.options.bu
 export class SearchService {
   public static readonly V2_MEDIATYPE_SEARCH_INPUTS =
     'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-search-input-details.v2+json;charset=UTF-8';
-  public static readonly VIEW_SEARCH = 'SEARCH';
+  // public static readonly VIEW_SEARCH = 'SEARCH';
   public static readonly VIEW_WORKBASKET = 'WORKBASKET';
-  public static readonly FIELD_PREFIX = 'case.';
+  // public static readonly FIELD_PREFIX = 'case.';
   private currentJurisdiction: string;
   private currentCaseType: string;
 
@@ -24,12 +24,12 @@ export class SearchService {
               private readonly requestOptionsBuilder: RequestOptionsBuilder,
               private readonly loadingService: LoadingService) { }
 
-  public search(jurisdictionId: string, caseTypeId: string,
-                metaCriteria: object, caseCriteria: object, view?: SearchView): Observable<SearchResultView> {
-    const url = this.appConfig.getApiUrl() + `/caseworkers/:uid`
-                                           + `/jurisdictions/${jurisdictionId}`
-                                           + `/case-types/${caseTypeId}`
-                                           + `/cases`;
+  public search(jurisdictionId: string,
+                caseTypeId: string,
+                metaCriteria: object,
+                caseCriteria: object,
+                view?: SearchView): Observable<SearchResultView> {
+    const url = `${this.appConfig.getApiUrl()}/caseworkers/:uid/jurisdictions/${jurisdictionId}/case-types/${caseTypeId}/cases`;
 
     const options: OptionsType  = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     const loadingToken = this.loadingService.register();
@@ -41,15 +41,12 @@ export class SearchService {
       );
   }
 
-  public searchCasesByIds(
-    caseTypeId: string,
-    filter: any,
-    view?: SearchView,
-    sort?: { column: string; order: number }
-  ): Observable<{}> {
+  public searchCasesByIds(caseTypeId: string,
+                          filter: any,
+                          view?: SearchView,
+                          sort?: { column: string; order: number }): Observable<{}> {
     const url =
-      this.appConfig.getCaseDataUrl() +
-      `/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;
+      `${this.appConfig.getCaseDataUrl()}/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;
 
     const body: {} = {
       sort,
@@ -64,8 +61,11 @@ export class SearchService {
   }
 
   public searchCases(caseTypeId: string,
-                metaCriteria: object, caseCriteria: object, view?: SearchView, sort?: {column: string, order: number}): Observable<{}> {
-    const url = this.appConfig.getCaseDataUrl() + `/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;
+                     metaCriteria: object,
+                     caseCriteria: object,
+                     view?: SearchView,
+                     sort?: {column: string, order: number}): Observable<{}> {
+    const url = `${this.appConfig.getCaseDataUrl()}/internal/searchCases?ctid=${caseTypeId}&use_case=${view}`;
 
     const options: OptionsType = this.requestOptionsBuilder.buildOptions(metaCriteria, caseCriteria, view);
     const body: {} = {

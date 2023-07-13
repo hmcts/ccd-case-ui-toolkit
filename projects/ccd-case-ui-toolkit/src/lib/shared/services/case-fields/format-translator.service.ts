@@ -158,7 +158,7 @@ export class FormatTranslatorService {
           break;
         case 'n':
         case 'N':
-          maybePush(result, '***' + c + '***', inQuote); // No way to support A - millisec of day, n - nano of second, N - nano of Day
+          maybePush(result, `***${c}***`, inQuote); // No way to support A - millisec of day, n - nano of second, N - nano of Day
           break;
         case 'V':
         case 'O':

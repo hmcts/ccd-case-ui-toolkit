@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -77,7 +77,7 @@ describe('ReadJudicialUserFieldComponent', () => {
   let jurisdictionService: any;
   let nativeElement: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     httpService = createSpyObj<HttpService>('HttpService', ['get', 'post']);
     jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['searchJudicialUsersByPersonalCodes']);
     jurisdictionService.searchJudicialUsersByPersonalCodes.and.returnValue(of(JUDICIAL_USERS));

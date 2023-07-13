@@ -41,10 +41,10 @@ describe('DocumentManagementService', () => {
           originalDocumentName: 'something.pdf',
           _links: {
             self: {
-              href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+              href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123`
             },
             binary: {
-              href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+              href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123/binary`
             }
           }
         }]
@@ -53,10 +53,10 @@ describe('DocumentManagementService', () => {
         originalDocumentName: 'something.pdf',
         _links: {
           self: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123'
+            href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123`
           },
           binary: {
-            href: DOCUMENT_MANAGEMENT_URL + '/abcd0123/binary'
+            href: `${DOCUMENT_MANAGEMENT_URL}/abcd0123/binary`
           }
         }
       }]

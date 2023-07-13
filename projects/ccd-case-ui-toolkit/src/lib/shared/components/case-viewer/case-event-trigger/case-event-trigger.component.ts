@@ -42,7 +42,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
     if (this.activityPollingService.isEnabled) {
       this.ngZone.runOutsideAngular( () => {
-        this.activitySubscription = this.postEditActivity().subscribe((_resolved) => {
+        this.activitySubscription = this.postEditActivity().subscribe(() => {
           // console.log('Posted EDIT activity and result is: ' + JSON.stringify(_resolved));
         });
       });
@@ -91,7 +91,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       return flagLauncherCaseField && sanitizedEditForm.data.hasOwnProperty(flagLauncherCaseField.id)
         ? of(null)
         : this.casesService.validateCase(this.caseDetails.case_type.id, sanitizedEditForm, pageId);
-    }
+    };
   }
 
   public submitted(event: any): void {
@@ -111,9 +111,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
 
   public cancel(): Promise<boolean> {
     if (this.router.url && this.router.url.includes('linkCases')) {
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-        window.location.hash = 'Linked cases';
-      });
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: 'Linked cases' });
     } else {
       return this.router.navigate([this.parentUrl]);
     }

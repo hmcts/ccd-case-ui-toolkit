@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 export class CaseDetails {
   public id: string;
   public jurisdiction: string;

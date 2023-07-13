@@ -7,7 +7,6 @@ import { FormatTranslatorService } from '../../../services/case-fields/format-tr
   name: 'ccdDate'
 })
 export class DatePipe implements PipeTransform {
-
   private static readonly DATE_FORMAT_REGEXP =
     new RegExp('^(\\d{4})-?(\\d\\d)-?(\\d\\d)(?:T(\\d\\d)(?::?(\\d\\d)(?::?(\\d\\d)(?:\\.(\\d+))?)?)?(Z|([+-])(\\d\\d):?(\\d\\d))?|Z)?$');
            //    1        2       3         4          5          6          7          8  9     10      11
@@ -51,9 +50,9 @@ export class DatePipe implements PipeTransform {
           resultDate = `${offsetDate.getDate()} ${DatePipe.MONTHS[offsetDate.getMonth()]} ${offsetDate.getFullYear()}`;
           if (match[4] && match[5] && match[6] && format !== 'short') {
             resultDate += ', ';
-            resultDate += this.getHour(offsetDate.getHours().toString()) + ':';
-            resultDate += this.pad(offsetDate.getMinutes()) + ':';
-            resultDate += this.pad(offsetDate.getSeconds()) + ' ';
+            resultDate += `${this.getHour(offsetDate.getHours().toString())}:`;
+            resultDate += `${this.pad(offsetDate.getMinutes())}:`;
+            resultDate += `${this.pad(offsetDate.getSeconds())} `;
             resultDate += (this.toInt(offsetDate.getHours().toString()) >= 12) ? 'PM' : 'AM';
           }
         }

@@ -131,7 +131,7 @@ describe('LinkCasesComponent', () => {
         name: 'SSCS type',
         jurisdiction: { name: '' }
       }, state: { name: 'With FTA' }
-    }
+    };
     casesService.getCaseViewV2.and.returnValue(of(caseInfo));
     spyOn(linkedCasesService, 'getCaseName').and.returnValue(of('Case name missing'));
     component.linkCaseForm.get('caseNumber').setValue('1231231231231231');
