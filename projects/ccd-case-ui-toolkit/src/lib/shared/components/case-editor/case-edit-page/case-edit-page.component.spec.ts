@@ -1672,7 +1672,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(3);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`${error.id} is required`);
+        expect(error.message).toEqual(`%FIELDLABEL% is required`);
       });
     });
 
@@ -1703,7 +1703,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
-          `${error.id} is below the minimum length`
+          `%FIELDLABEL% is below the minimum length`
         );
       });
     });
@@ -1734,7 +1734,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`${error.id} exceeds the maximum length`);
+        expect(error.message).toEqual(`%FIELDLABEL% exceeds the maximum length`);
       });
     });
 
@@ -1781,7 +1781,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`${error.id} is required`);
+        expect(error.message).toEqual(`%FIELDLABEL% is required`);
       });
     });
 
