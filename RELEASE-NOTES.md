@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.18.0.restricted-case-access
+### Version 6.18.0-restricted-case-access
 **EUI-6645** Restricted case access
 
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
