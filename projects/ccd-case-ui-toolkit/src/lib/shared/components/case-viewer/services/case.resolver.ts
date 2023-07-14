@@ -69,7 +69,7 @@ export class CaseResolver implements Resolve<CaseView> {
         return this.getAndCacheDraft(cid);
       } else {
         return this.caseNotifier.fetchAndRefresh(cid)
-          .pipe(catchError(error => this.checkAuthorizationError(error)))
+          .pipe(catchError(error => this.checkAuthorizationError(error, cid)))
           .toPromise();
       }
     }
@@ -84,22 +84,26 @@ export class CaseResolver implements Resolve<CaseView> {
           this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
           return this.caseNotifier.cachedCaseView;
         }),
-        catchError(error => this.checkAuthorizationError(error))
+        catchError(error => this.checkAuthorizationError(error, cid))
       ).toPromise();
   }
 
-  private checkAuthorizationError(error: any) {
+  private checkAuthorizationError(error: any, caseReference: string) {
     // TODO Should be logged to remote logging infrastructure
     if (error.status === 400) {
       this.router.navigate(['/search/noresults']);
       return of(null);
     }
-    console.error(error);
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case']);
       return of(null);
     }
-    if (error.status !== 401 && error.status !== 403) {
+    // Error 403, navigate to restricted case access page
+    if (error.status === 403) {
+      this.router.navigate([`/cases/restricted-case-access/${caseReference}`]);
+      return of(null);
+    }
+    if (error.status !== 401) {
       this.router.navigate(['/error']);
     }
     this.goToDefaultPage();
