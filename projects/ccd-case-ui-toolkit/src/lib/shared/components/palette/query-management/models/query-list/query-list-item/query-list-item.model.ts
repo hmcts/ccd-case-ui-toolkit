@@ -1,14 +1,13 @@
-import { Document } from '../../../../../../domain';
 import { QueryItemResponseStatus } from '../../../enums/query-item-response-status.enum';
-import { PartyMessage } from '../../party-messages/party-message.model';
+import { CaseMessage, QueryMessageDocument } from '../../case-queries-collection.model';
 
-export class QueryListItem implements PartyMessage {
+export class QueryListItem implements CaseMessage {
   public id: string;
   public subject?: string;
   public name: string;
   public body: string;
-  public attachments?: Document[] = [];
-  public isHearingRelated: boolean;
+  public attachments?: QueryMessageDocument[] = [];
+  public isHearingRelated: string;
   public hearingDate?: string;
   public createdOn: Date;
   public createdBy: string;

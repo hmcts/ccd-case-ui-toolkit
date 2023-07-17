@@ -1,7 +1,7 @@
 <ng-container *ngIf="showQueryList; else singleQueryDetails">
-  <ng-container *ngFor="let singlePartyMessageGroup of partyMessagesGroups">
+  <ng-container *ngFor="let caseQueriesCollection of caseQueriesCollections">
     <div *ngIf="showQueryList" class="govuk-!-margin-top-8 govuk-!-margin-bottom-8">
-      <ccd-query-list (selectedQuery)="setQuery($event)" [partyMessageGroup]="singlePartyMessageGroup"></ccd-query-list>
+      <ccd-query-list (selectedQuery)="setQuery($event)" [caseQueriesCollection]="caseQueriesCollection"></ccd-query-list>
     </div>
   </ng-container>
 </ng-container>

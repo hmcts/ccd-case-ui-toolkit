@@ -3,16 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 import { CaseTab } from '../../../domain';
 import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.component';
 import { PaletteContext } from '../base-field/palette-context.enum';
-import { PartyMessagesGroup, QueryListItem } from './models';
+import { CaseQueriesCollection, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
-import { partyMessagesMockData } from './__mocks__';
+import { caseMessagesMockData } from './__mocks__';
 
 @Component({
   selector: 'ccd-read-query-management-field',
   templateUrl: './read-query-management-field.component.html',
 })
 export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit {
-  public partyMessagesGroups: PartyMessagesGroup[];
+  public caseQueriesCollections: CaseQueriesCollection[];
   public query: QueryListItem;
   public showQueryList: boolean = true;
   public caseId: string;
@@ -25,7 +25,7 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     this.caseId = this.route.snapshot.params.cid;
     if (this.context === PaletteContext.DEFAULT) {
       // EUI-8303 Using mock data until CCD is ready with the API and data contract
-      this.partyMessagesGroups = partyMessagesMockData;
+      this.caseQueriesCollections = caseMessagesMockData;
 
       // TODO: Actual implementation once the CCD API and data contract is available
       // Each parties will have a separate collection of party messages

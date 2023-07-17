@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SortOrder } from '../../../complex/sort-order';
-import { PartyMessage, PartyMessagesGroup, QueryListColumn, QueryListData, QueryListItem } from '../../models';
+import { CaseMessage, CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem, QueryMessage } from '../../models';
 import { QueryListComponent } from './query-list.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -14,53 +14,62 @@ class RpxTranslateMockPipe implements PipeTransform {
 describe('QueryListComponent', () => {
   let component: QueryListComponent;
   let fixture: ComponentFixture<QueryListComponent>;
-  let dummyPartyMessageGroup: PartyMessagesGroup;
-  let partyMessages: PartyMessage[];
+  let dummyCaseQueriesCollection: CaseQueriesCollection;
+  let caseMessages: QueryMessage[];
 
   beforeEach(waitForAsync(() => {
     // First one is parent, rest are children
-    partyMessages = [
+    caseMessages = [
       {
-        id: '111-111',
-        subject: 'Subject 1',
-        name: 'Name 1',
-        body: 'Body 1',
-        attachments: [],
-        isHearingRelated: false,
-        hearingDate: '',
-        createdOn: new Date('2021-01-01'),
-        createdBy: 'Person A',
+        id: 'ccd-case-message-id-001',
+        value: {
+          id: '111-111',
+          subject: 'Subject 1',
+          name: 'Name 1',
+          body: 'Body 1',
+          attachments: [],
+          isHearingRelated: 'No',
+          hearingDate: '',
+          createdOn: new Date('2021-01-01'),
+          createdBy: 'Person A'
+        }
       },
       {
-        id: '222-222',
-        subject: '',
-        name: 'Name 2',
-        body: 'Body 2',
-        attachments: [],
-        isHearingRelated: false,
-        hearingDate: '',
-        createdOn: new Date('2021-02-01'),
-        createdBy: 'Person B',
-        parentId: '111-111',
+        id: 'ccd-case-message-id-002',
+        value: {
+          id: '222-222',
+          subject: '',
+          name: 'Name 2',
+          body: 'Body 2',
+          attachments: [],
+          isHearingRelated: 'No',
+          hearingDate: '',
+          createdOn: new Date('2021-02-01'),
+          createdBy: 'Person B',
+          parentId: '111-111'
+        }
       },
       {
-        id: '333-333',
-        subject: '',
-        name: 'Name 3',
-        body: 'Body 2',
-        attachments: [],
-        isHearingRelated: false,
-        hearingDate: '',
-        createdOn: new Date('2021-03-01'),
-        createdBy: 'Person B',
-        parentId: '111-111',
-      },
+        id: 'ccd-case-message-id-003',
+        value: {
+          id: '333-333',
+          subject: '',
+          name: 'Name 3',
+          body: 'Body 2',
+          attachments: [],
+          isHearingRelated: 'No',
+          hearingDate: '',
+          createdOn: new Date('2021-03-01'),
+          createdBy: 'Person B',
+          parentId: '111-111'
+        }
+      }
     ];
 
-    dummyPartyMessageGroup = {
+    dummyCaseQueriesCollection = {
       partyName: 'Party Name',
       roleOnCase: 'Role on Case',
-      partyMessages
+      caseMessages
     };
 
     TestBed.configureTestingModule({
@@ -86,7 +95,7 @@ describe('QueryListComponent', () => {
 
   it('should emit event on clcking the query link', () => {
     spyOn(component.selectedQuery, 'emit');
-    component.showDetails(partyMessages[0]);
+    component.showDetails(caseMessages[0]);
     expect(component.selectedQuery.emit).toHaveBeenCalled();
   });
 
@@ -94,14 +103,14 @@ describe('QueryListComponent', () => {
     it('should set queryListData on ngChanges', () => {
       expect(component.queryListData).toBeUndefined();
       component.ngOnChanges({
-        partyMessageGroup: new SimpleChange(undefined, dummyPartyMessageGroup, false)
+        caseQueriesCollection: new SimpleChange(undefined, dummyCaseQueriesCollection, false)
       });
       expect(component.queryListData).toBeDefined();
       expect(component.queryListData).toEqual(jasmine.any(QueryListData));
     });
 
-    it('should set queryListData to undefined on ngChanges when partyMessageGroup is undefined', () => {
-      component.partyMessageGroup = undefined;
+    it('should set queryListData to undefined on ngChanges when CaseQueriesCollection is undefined', () => {
+      component.caseQueriesCollection = undefined;
       fixture.detectChanges();
       expect(component.queryListData).toBeUndefined();
     });
@@ -111,7 +120,7 @@ describe('QueryListComponent', () => {
     beforeEach(() => {
       // Required to set queryListData
       component.ngOnChanges({
-        partyMessageGroup: new SimpleChange(undefined, dummyPartyMessageGroup, false)
+        caseQueriesCollection: new SimpleChange(undefined, dummyCaseQueriesCollection, false)
       });
       fixture.detectChanges();
     });
@@ -124,7 +133,7 @@ describe('QueryListComponent', () => {
     it('should render the right values in the table', () => {
       const tableRows = fixture.nativeElement.querySelectorAll('tbody tr');
       const tableCells = tableRows[0].querySelectorAll('td');
-      const firstRowItem = component.queryListData.partyMessages[0];
+      const firstRowItem = component.queryListData.queries[0];
 
       expect(tableCells[0].innerText).toEqual(firstRowItem.subject);
       expect(tableCells[1].innerText).toEqual(firstRowItem.lastSubmittedBy);
@@ -162,81 +171,81 @@ describe('QueryListComponent', () => {
     beforeEach(() => {
       // Required to set queryListData
       component.ngOnChanges({
-        partyMessageGroup: new SimpleChange(undefined, dummyPartyMessageGroup, false)
+        caseQueriesCollection: new SimpleChange(undefined, dummyCaseQueriesCollection, false)
       });
       fixture.detectChanges();
     });
 
     it('should sort the query list by subject in Ascending order if sortorder is unsorted', () => {
       const col: QueryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.UNSORTED };
-      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.queryListData.queries = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
-      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+      expect(component.queryListData.queries).toEqual(sorted as QueryListItem[]);
     });
 
     it('should sort the query list by subject in Descending order if sortorder is Ascending', () => {
       const col: QueryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.ASCENDING };
-      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.queryListData.queries = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => (a[col.name] > b[col.name]) ? 1 : -1);
-      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+      expect(component.queryListData.queries).toEqual(sorted as QueryListItem[]);
     });
 
     it('should sort the query list by subject in Ascending order if sortorder is Descending', () => {
       const col: QueryListColumn = { name: 'subject', displayName: 'Queries', sortOrder: SortOrder.DESCENDING };
-      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.queryListData.queries = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
-      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+      expect(component.queryListData.queries).toEqual(sorted as QueryListItem[]);
     });
 
     it('should sort the query list by response date in Ascending order if sortorder is unsorted', () => {
       const col: QueryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.UNSORTED };
-      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.queryListData.queries = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
-      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+      expect(component.queryListData.queries).toEqual(sorted as QueryListItem[]);
     });
 
     it('should sort the query list by response date in Descending order if sortorder is Ascending', () => {
       const col: QueryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.ASCENDING };
-      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.queryListData.queries = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
-      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+      expect(component.queryListData.queries).toEqual(sorted as QueryListItem[]);
     });
 
     it('should sort the query list by response date in Ascending order if sortorder is Descending', () => {
       const col: QueryListColumn = { name: 'lastResponseDate', displayName: 'Last response date', sortOrder: SortOrder.DESCENDING };
-      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.queryListData.queries = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => b[col.name] - a[col.name]);
-      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+      expect(component.queryListData.queries).toEqual(sorted as QueryListItem[]);
     });
 
     it('should sort the query list by lastSubmittedBy in Ascending order if sortorder is unsorted', () => {
       const col: QueryListColumn = { name: 'lastSubmittedBy', displayName: 'Last submitted by', sortOrder: SortOrder.UNSORTED };
-      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.queryListData.queries = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
-      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+      expect(component.queryListData.queries).toEqual(sorted as QueryListItem[]);
     });
 
     it('should sort the query list by lastSubmittedDate in Descending order if sortorder is Ascending', () => {
       const col: QueryListColumn = { name: 'lastSubmittedDate', displayName: 'Last submission date', sortOrder: SortOrder.ASCENDING };
-      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.queryListData.queries = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => a[col.name] - b[col.name]);
-      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+      expect(component.queryListData.queries).toEqual(sorted as QueryListItem[]);
     });
 
     it('should sort the query list by lastResponseBy in Ascending order if sortorder is Descending', () => {
       const col: QueryListColumn = { name: 'lastResponseBy', displayName: 'Response by', sortOrder: SortOrder.DESCENDING };
-      component.queryListData.partyMessages = partyMes as QueryListItem[];
+      component.queryListData.queries = partyMes as QueryListItem[];
       component.sortTable(col);
       const sorted = partyMes.sort((a, b) => b[col.name] - a[col.name]);
-      expect(component.queryListData.partyMessages).toEqual(sorted as QueryListItem[]);
+      expect(component.queryListData.queries).toEqual(sorted as QueryListItem[]);
     });
 
     describe('getAriaSortHeaderValue' , () => {

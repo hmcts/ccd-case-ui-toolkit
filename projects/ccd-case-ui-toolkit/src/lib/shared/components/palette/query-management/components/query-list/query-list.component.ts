@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { SortOrder } from '../../../complex/sort-order';
-import { PartyMessagesGroup, QueryListColumn, QueryListData, QueryListItem } from '../../models';
+import { CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem } from '../../models';
 
 @Component({
   selector: 'ccd-query-list',
@@ -8,7 +8,7 @@ import { PartyMessagesGroup, QueryListColumn, QueryListData, QueryListItem } fro
   styleUrls: ['./query-list.component.scss']
 })
 export class QueryListComponent implements OnChanges {
-  @Input() public partyMessageGroup: PartyMessagesGroup;
+  @Input() public caseQueriesCollection: CaseQueriesCollection;
   @Output() public selectedQuery: EventEmitter<QueryListItem> = new EventEmitter();
   public queryListData: QueryListData | undefined;
   public displayedColumns: QueryListColumn[] = [
@@ -20,9 +20,9 @@ export class QueryListComponent implements OnChanges {
   ];
 
   public ngOnChanges(simpleChanges: SimpleChanges) {
-    const currentPartyMessageGroup = simpleChanges.partyMessageGroup?.currentValue as PartyMessagesGroup;
-    if (currentPartyMessageGroup) {
-      this.queryListData = new QueryListData(currentPartyMessageGroup);
+    const currentCaseQueriesCollection = simpleChanges.caseQueriesCollection?.currentValue as CaseQueriesCollection;
+    if (currentCaseQueriesCollection) {
+      this.queryListData = new QueryListData(currentCaseQueriesCollection);
     }
   }
 
@@ -60,11 +60,11 @@ export class QueryListComponent implements OnChanges {
 
   private sort(col: QueryListColumn): void {
     if (col.sortOrder === SortOrder.ASCENDING) {
-      this.queryListData.partyMessages.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
+      this.queryListData.queries.sort((a, b) => (a[col.name] < b[col.name]) ? 1 : -1);
       this.displayedColumns.forEach((c) => c.sortOrder = SortOrder.UNSORTED);
       col.sortOrder = SortOrder.DESCENDING;
     } else {
-      this.queryListData.partyMessages.sort((a, b) => (a[col.name] > b[col.name]) ? 1 : -1);
+      this.queryListData.queries.sort((a, b) => (a[col.name] > b[col.name]) ? 1 : -1);
       this.displayedColumns.forEach((c) => c.sortOrder = SortOrder.UNSORTED);
       col.sortOrder = SortOrder.ASCENDING;
     }
@@ -72,11 +72,11 @@ export class QueryListComponent implements OnChanges {
 
   private sortDate(col: QueryListColumn): void {
     if (col.sortOrder === SortOrder.ASCENDING) {
-      this.queryListData.partyMessages.sort((a, b) => b[col.name] - a[col.name]);
+      this.queryListData.queries.sort((a, b) => b[col.name] - a[col.name]);
       this.displayedColumns.forEach((c) => c.sortOrder = SortOrder.UNSORTED);
       col.sortOrder = SortOrder.DESCENDING;
     } else {
-      this.queryListData.partyMessages.sort((a, b) => a[col.name] - b[col.name]);
+      this.queryListData.queries.sort((a, b) => a[col.name] - b[col.name]);
       this.displayedColumns.forEach((c) => c.sortOrder = SortOrder.UNSORTED);
       col.sortOrder = SortOrder.ASCENDING;
     }
