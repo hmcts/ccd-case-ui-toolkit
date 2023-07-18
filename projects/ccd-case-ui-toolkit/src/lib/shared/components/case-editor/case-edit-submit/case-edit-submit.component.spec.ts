@@ -454,6 +454,11 @@ describe('CaseEditSubmitComponent', () => {
       const cancelLink = de.query(By.css('a[class=disabled]'));
       expect(cancelLink).toBeNull();
     });
+
+    it('check for all fields values', () => {
+      fixture.detectChanges();
+      expect(comp.allFieldsValues.PersonLastName).toEqual('Khaleesi');
+    })
   });
 
   describe('CaseEditSubmitComponent without custom end button label and with Save and Resume enabled', () => {
