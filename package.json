@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.16.1-st-cdam-docstore-3",
+  "version": "6.16.3-st-cdam-docstore-3",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -18,6 +18,7 @@
     "access": "public"
   },
   "scripts": {
+    "clean": "rimraf node_modules",
     "build": "npm run build:library",
     "build:library": "ng build ccd-case-ui-toolkit-lib",
     "build:library:watch": "npm run build:library -- --watch",
@@ -62,7 +63,7 @@
     "@angular/router": "~11.2.14",
     "@angular/upgrade": "~11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "5.2.3",
+    "@hmcts/ccpay-web-component": "5.2.8",
     "@hmcts/frontend": "^0.0.50-alpha",
     "@hmcts/media-viewer": "2.9.3",
     "@ngrx/effects": "^7.4.0",

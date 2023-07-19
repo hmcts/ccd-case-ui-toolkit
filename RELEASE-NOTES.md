@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.16.1-st-cdam-docstore
+### Version 6.16.3-st-cdam-docstore
 **EXUI-331** Fix issue with secure document store
 
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
@@ -7,6 +7,7 @@
 
 ### Version 6.13.11-judicial-user-typeahead-fix
 **EUI-7733** Judicial user typeahead fix
+
 ### Version 6.13.10-linked-cases-continue-button-validation-v6
 **EUI-8025** Linked cases continue button validation
 
