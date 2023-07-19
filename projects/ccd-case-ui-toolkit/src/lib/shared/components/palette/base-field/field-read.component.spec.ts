@@ -20,7 +20,6 @@ import { PaletteService } from '../palette.service';
 import { FieldReadComponent } from './field-read.component';
 import { PaletteContext } from './palette-context.enum';
 
-
 import createSpyObj = jasmine.createSpyObj;
 
 const $FIELD_READ_LABEL = By.css('ccd-field-read-label');
