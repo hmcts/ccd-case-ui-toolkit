@@ -3,10 +3,7 @@
 ### Version 6.18.2-rc2
 **EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button
 **EXUI-229** DynamicMultiSelectList Updates Required
-**EXUI-313** To enable Secure Doc route on XUI for sptribs-case-api - Preview Env
-
-### Version 6.16.3-st-cdam-docstore
-**EXUI-331** Fix issue with secure document store
+**EXUI-313** Fix issue with secure document store
 
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
 **EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
