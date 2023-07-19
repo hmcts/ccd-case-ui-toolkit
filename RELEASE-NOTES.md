@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.18.0-welsh-release
+### Version 6.18.0-welsh-release-v2
 **EUI-5497** Welsh release part 1
 
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
