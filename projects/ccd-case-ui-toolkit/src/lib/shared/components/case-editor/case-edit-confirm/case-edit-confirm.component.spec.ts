@@ -11,6 +11,7 @@ import { CaseField } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { PipesModule } from '../../../pipes';
 import { FieldsUtils } from '../../../services/fields';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { ConvertHrefToRouterService } from '../services';
@@ -71,7 +72,8 @@ describe('CaseEditConfirmComponent', () => {
         ],
         declarations: [
           CaseEditConfirmComponent,
-          MarkdownComponent
+          MarkdownComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: CaseEditComponent, useValue: caseEditComponentStub },
@@ -155,7 +157,9 @@ describe('CaseEditConfirmComponent', () => {
         ],
         declarations: [
           CaseEditConfirmComponent,
-          MarkdownComponent
+          MarkdownComponent,
+          // Mock
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditCompStub},
@@ -168,9 +172,6 @@ describe('CaseEditConfirmComponent', () => {
     fixture = TestBed.createComponent(CaseEditConfirmComponent);
     component = fixture.componentInstance;
   }));
-
-  beforeEach(() => {
-  });
 
   it('should call route when no confirmation provided', () => {
     expect(routerStub.navigate).toHaveBeenCalled();

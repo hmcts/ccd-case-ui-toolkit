@@ -141,13 +141,13 @@ export class LinkedCasesToTableComponent implements OnInit, AfterViewInit {
     searchCasesResponse.forEach((item: any) => {
       if (item?.reasons?.length) {
         item.reasons.forEach((reason) => {
-          reason.sortOrder = this.getReasonSortOrder(reason.value.Reason)
+          reason.sortOrder = this.getReasonSortOrder(reason.value.Reason);
         });
         item.reasons = item.reasons.sort((a, b) => a.sortOrder - b.sortOrder);
         item.sortOrder = item.reasons[0].sortOrder;
       }
     });
-    searchCasesResponse = searchCasesResponse?.sort((a, b) => a.sortOrder - b.sortOrder)
+    searchCasesResponse = searchCasesResponse?.sort((a, b) => a.sortOrder - b.sortOrder);
     return searchCasesResponse;
   }
 

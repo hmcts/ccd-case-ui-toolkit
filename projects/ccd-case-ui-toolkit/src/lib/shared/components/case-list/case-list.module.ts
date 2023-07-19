@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BrowserService } from '../../services';
 import { PaginationModule } from '../pagination/pagination.module';
 import { CaseListComponent } from './case-list.component';
@@ -13,7 +14,8 @@ import { CaseListComponent } from './case-list.component';
     FormsModule,
     RouterModule,
     NgxPaginationModule,
-    PaginationModule
+    PaginationModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [CaseListComponent],
   exports: [CaseListComponent],

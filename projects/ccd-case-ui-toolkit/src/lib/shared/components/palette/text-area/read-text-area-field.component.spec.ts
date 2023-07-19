@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ReadTextAreaFieldComponent } from './read-text-area-field.component';
 
 describe('ReadTextAreaFieldComponent', () => {
@@ -36,7 +37,8 @@ describe('ReadTextAreaFieldComponent', () => {
         .configureTestingModule({
           imports: [],
           declarations: [
-            ReadTextAreaFieldComponent
+            ReadTextAreaFieldComponent,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -108,9 +110,9 @@ describe('ReadTextAreaFieldComponent', () => {
         .configureTestingModule({
           imports: [],
           declarations: [
-            ReadTextAreaFieldComponent
-          ],
-          providers: []
+            ReadTextAreaFieldComponent,
+            MockRpxTranslatePipe
+          ]
         })
         .compileComponents();
 

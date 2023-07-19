@@ -11,6 +11,7 @@ import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.se
 import { OrderService } from '../../services/order/order.service';
 import { SearchService } from '../../services/search/search.service';
 import { WindowService } from '../../services/window/window.service';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { AbstractFieldWriteComponent } from '../palette/base-field/abstract-field-write.component';
 import { SearchInput } from './domain/search-input.model';
 import { createSearchInputs } from './domain/search-input.test.fixture';
@@ -176,7 +177,8 @@ describe('SearchFiltersComponent', () => {
         ],
         declarations: [
           SearchFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ], providers: [
           { provide: SearchService, useValue: mockSearchService },
           { provide: OrderService, useValue: orderService },
@@ -569,7 +571,8 @@ describe('Clear localStorage', () => {
         ],
         declarations: [
           SearchFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ], providers: [
           { provide: SearchService, useValue: mockSearchService },
           { provide: OrderService, useValue: orderService },

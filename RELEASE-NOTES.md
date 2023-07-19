@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.18.0-welsh-release
+**EUI-5497** Welsh release part 1
+
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
 **EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
 **EUI-8550** Fix incorrect behaviour of showEventNotes() function on Case Event submission, introduced in error by EUI-6693
@@ -39,6 +42,12 @@
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
+### Version 6.10.6-r3.5-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs (re-release following update to Release 3.5)
+
+### Version 5.0.50-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs
+
 ### Version 6.14.1--fee-pay-props
 **EUI-7489** Added additional props to nested ccpay instance
 
@@ -47,6 +56,9 @@
 
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
+
+### Version 5.0.46-case-flags-not-approved-status
+**EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
