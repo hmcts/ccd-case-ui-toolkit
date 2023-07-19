@@ -111,6 +111,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           }
           this.hasPreviousPage$.next(this.caseEdit.hasPrevious(this.currentPage?.id));
         }
+        this.triggerText = this.getTriggerText();
       });
     CaseEditPageComponent.setFocusToTop();
     this.caseEditFormSub = this.caseEditDataService.caseEditForm$.subscribe({
@@ -128,7 +129,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         }
       }
     });
-    this.triggerText = this.getTriggerText();
   }
 
   public ngAfterViewChecked(): void {
