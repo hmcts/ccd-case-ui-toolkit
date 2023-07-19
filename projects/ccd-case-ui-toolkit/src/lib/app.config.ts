@@ -28,12 +28,8 @@ export abstract class AbstractAppConfig {
   public abstract getApiUrl(): string;
   public abstract getCaseDataUrl(): string;
   public abstract getDocumentManagementUrl(): string;
-  public getDocumentManagementUrlV2(): string {
-    return undefined;
-  }
-  public getDocumentSecureMode(): boolean {
-    return undefined;
-  }
+  public abstract getDocumentManagementUrlV2(): string;
+  public abstract getDocumentSecureMode(): boolean;
   public abstract getRemoteDocumentManagementUrl(): string;
   public abstract getHrsUrl(): string;
   public abstract getRemoteHrsUrl(): string;
