@@ -1,4 +1,5 @@
 import { CaseField } from '../../domain/definition/case-field.model';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
 function buildCaseField(id: string, properties: object, value?: any): CaseField {
@@ -28,7 +29,8 @@ describe('ReadFieldsFilterPipe', () => {
   const value = {
     type: 'INDIVIDUAL',
     individualFirstName: 'Aamir',
-    individualLastName: 'Khan'
+    individualLastName: 'Khan',
+    individualContactNo:'09878768923'
   };
 
   const complexCaseField: CaseField = buildCaseField('ViewApplicationTab', {
@@ -77,6 +79,19 @@ describe('ReadFieldsFilterPipe', () => {
           id: 'individualLastName',
           label: 'Last Name',
           show_condition: 'applicant1.type=\"INDIVIDUAL\"',
+          value: null,
+        },
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            id: 'Text',
+            type: 'Text',
+          },
+          hidden: false,
+          id: 'individualContactNo',
+          label: 'Contact Number',
+          show_condition: 'individualPhoneNo=\"09878768923\"',
           value: null,
         }
       ],
@@ -223,19 +238,53 @@ describe('ReadFieldsFilterPipe', () => {
 
   it('it shoulld evaluate showcondition and set the hidden property of field to false when value doesnt match within complex field', () => {
     const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true);
-    expect(RESULT.length).toEqual(3);
+    expect(RESULT.length).toEqual(4);
     expect(RESULT[1].hidden).toEqual(false);
     expect(RESULT[2].hidden).toEqual(false);
+  });
+  it('it shoulld evaluate form group and check the value ', () => {
+    const form_Group = new FormGroup({
+      data: new FormGroup({
+        type: new FormControl('INDIVIDUAL'),
+        individualFirstName: new FormControl('Aamir'),
+        individualLastName: new FormControl('Khan'),
+        individualPhoneNo: new FormControl('09878768923'),
+        individualContactNo: new FormControl('09777777777'),
+        individualAddess: new FormControl('High Street')
+      })
+    });
+    const allFieldsValues = form_Group.getRawValue().data;
+    const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true, allFieldsValues);
+    expect(RESULT.length).toEqual(4);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(false);
+    expect(RESULT[2].hidden).toEqual(false);
+    expect(RESULT[3].hidden).toEqual(false);
   });
   it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field', () => {
     complexCaseField.value = {
       type: 'ORGANISATION',
       individualFirstName: 'Aamir',
-      individualLastName: 'Khan'
+      individualLastName: 'Khan',
+      individualContactNo: '09777777777'
     };
-    const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true);
-    expect(RESULT.length).toEqual(3);
+
+    const form_Group = new FormGroup({
+      data: new FormGroup({
+        type: new FormControl('test'),
+        individualFirstName: new FormControl('Aamir'),
+        individualLastName: new FormControl('Khan'),
+        individualPhoneNo: new FormControl('0888888888'),
+        individualContactNo: new FormControl('09777777777'),
+        individualAddess: new FormControl('High Street')
+      })
+    });
+
+    const allFieldsValues = form_Group.getRawValue().data;
+    const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true, allFieldsValues);
+    expect(RESULT.length).toEqual(4);
     expect(RESULT[1].hidden).toEqual(true);
     expect(RESULT[2].hidden).toEqual(true);
+    expect(RESULT[3].hidden).toEqual(true);
   });
 });
