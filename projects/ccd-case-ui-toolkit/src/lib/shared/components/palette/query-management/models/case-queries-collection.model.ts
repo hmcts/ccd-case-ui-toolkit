@@ -20,7 +20,7 @@ export interface CaseMessage {
 
 export interface QueryMessage {
   id: string;
-  value: CaseMessage
+  value: CaseMessage;
 }
 
 export interface CaseQueriesCollection {

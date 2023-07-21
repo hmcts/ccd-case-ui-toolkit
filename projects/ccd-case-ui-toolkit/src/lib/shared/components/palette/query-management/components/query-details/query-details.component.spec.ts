@@ -58,5 +58,5 @@ describe('QueryDetailsComponent', () => {
       fixture.detectChanges();
       expect(component.isCaseworker()).toBeFalsy();
     });
-  })
+  });
 });

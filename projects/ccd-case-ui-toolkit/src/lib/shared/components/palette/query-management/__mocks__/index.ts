@@ -1,5 +1,13 @@
 import { CaseQueriesCollection } from '../models';
 
+/**
+ * This mock file should be deleted after integrating with CCD
+ * CCD development ticket: https://tools.hmcts.net/jira/browse/CCD-4590
+ * ExUI tickets:
+ *   https://tools.hmcts.net/jira/browse/EUI-8460
+ *   https://tools.hmcts.net/jira/browse/EUI-8388
+ *   https://tools.hmcts.net/jira/browse/EUI-8389
+ */
 export const caseMessagesMockData: CaseQueriesCollection[] = [
   {
     partyName: 'John Smith - Appellant',
