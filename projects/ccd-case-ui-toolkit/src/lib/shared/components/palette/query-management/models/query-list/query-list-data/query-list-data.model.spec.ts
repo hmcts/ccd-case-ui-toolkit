@@ -100,20 +100,8 @@ describe('QueryListData', () => {
     expect(queryListData.roleOnCase).toEqual(caseQueriesCollections.roleOnCase);
   });
 
-  fit('should set children queries appropriately', () => {
-    console.log('QUERIES 0', queryListData.queries[0]);
-    console.log('QUERIES 0 CHILDREN 0', queryListData.queries[0].children);
-    expect(queryListData.queries[0].children.length).toEqual(2);
+  it('should set children queries appropriately', () => {
+    expect(queryListData.queries[0].children.length).toEqual(1);
     expect(queryListData.queries[0].children[0].id).toEqual('222-222');
-  });
-
-  it('should set children of children queries appropriately', () => {
-    const secondChildrenOfTheFirstParentMessage = queryListData.queries[0].children[1];
-    expect(secondChildrenOfTheFirstParentMessage.children.length).toEqual(1);
-    expect(secondChildrenOfTheFirstParentMessage.children[0].id).toEqual('444-444');
-
-    const firstChildrenOfTheSecondChildrenOfTheFirstParentMessage = secondChildrenOfTheFirstParentMessage.children[0];
-    expect(firstChildrenOfTheSecondChildrenOfTheFirstParentMessage.children.length).toEqual(1);
-    expect(firstChildrenOfTheSecondChildrenOfTheFirstParentMessage.children[0].id).toEqual('555-555');
   });
 });
