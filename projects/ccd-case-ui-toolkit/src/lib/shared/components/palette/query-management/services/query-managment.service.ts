@@ -26,7 +26,6 @@ export class QueryManagmentService {
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
-          // this will subscribe to get the user details and decide whether to display an error message
           this.http.get(this.appConfig.getUserInfoApiUrl()).pipe(map(response => response)).subscribe((response) => {
             this.alertService.warning({ phrase:'A task could not be completed successfully. Please complete the task associated with the case manually.'});
           });
@@ -40,7 +39,6 @@ export class QueryManagmentService {
    * @param searchRequest The search parameters that specify which tasks to match.
    */
    public searchTasks(searchRequest: TaskSearchParameter): Observable<object> {
-    // Do not need to check if WA enabled as parent method will do that
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/searchForCompletable`;
     return this.http
       .post(url, {searchRequest}, null, false)
@@ -48,11 +46,7 @@ export class QueryManagmentService {
         map(response => response),
         catchError(error => {
           this.errorService.setError(error);
-          // explicitly eat away 401 error and 400 error
-          if (error && error.status && (error.status === 401 || error.status === 400)) {
-            // do nothing
-            console.log('error status 401 or 400', error);
-          } else {
+          if (error?.status ) {
             return throwError(error);
           }
         })

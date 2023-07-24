@@ -67,7 +67,6 @@ export class QueryCheckYourAnswersComponent implements OnInit{
               throw new Error(MULTIPLE_TASKS_FOUND);
             }
           }
-          return true;
         }),
         catchError(error => {
           return throwError(error);
