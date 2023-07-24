@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.16.0-query-management-update-mock-data
+**EUI-8636** Query management update mock data to support CCD
+
 ### Version 6.16.0-query-management-remove-grey-bar-styling-v2
 **EUI-8623** Query management remove grey bar styling from tab and details page
 
