@@ -2,7 +2,13 @@ import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { AbstractAppConfig } from '../../../../../../../public-api';
+import { SessionStorageService } from '../../../../../services';
+import { CaseNotifier } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
+import { QueryManagmentService } from '../../services/query-managment.service';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
 
 @Pipe({ name: 'rpxTranslate' })
@@ -15,7 +21,60 @@ class RpxTranslateMockPipe implements PipeTransform {
 describe('QueryCheckYourAnswersComponent', () => {
   let component: QueryCheckYourAnswersComponent;
   let fixture: ComponentFixture<QueryCheckYourAnswersComponent>;
+  let appConfig: any;
   let nativeElement: any;
+  let sessionStorageService: any;
+
+  const response = {
+    tasks: [{
+      additional_properties: {
+          additionalProp1: '1234'
+      },
+      assignee: '1234-1234-1234-1234',
+      auto_assigned: false,
+      case_category: 'asylum',
+      case_id: '2345678901',
+      case_management_category: null,
+      case_name: 'Alan Jonson',
+      case_type_id: null,
+      created_date: '2021-04-19T14:00:00.000+0000',
+      due_date: '2021-05-20T16:00:00.000+0000',
+      execution_type: null,
+      id: 'Task_2',
+      jurisdiction: 'Immigration and Asylum',
+      location: null,
+      location_name: null,
+      name: 'Task name',
+      permissions: null,
+      region: null,
+      security_classification: null,
+      task_state: null,
+      task_system: null,
+      task_title: 'Some lovely task name',
+      type: null,
+      warning_list: null,
+      warnings: true,
+      work_type_id: null
+    }]
+  };
+
+  const userDetails = {
+    id: 1,
+    forename: 'Firstname',
+    surname: 'Surname',
+    roles: ['caseworker-role1', 'caseworker-role3'],
+    email: 'test@mail.com',
+    token: null
+  };
+
+  appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl', 'getWAServiceConfig']);
+  appConfig.getWorkAllocationApiUrl.and.returnValue('');
+  sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+  sessionStorageService.getItem.and.returnValue(userDetails);
+  const casesService = jasmine.createSpyObj('casesService', ['caseView', 'cachedCaseView']);
+  const mockCaseNotifier = new CaseNotifier(casesService);
+  const queryManagmentService = jasmine.createSpyObj('QueryManagmentService', ['searchTasks' , 'completeTask']);
+  queryManagmentService.searchTasks.and.returnValue(of(response));
 
   const items = [
     {
@@ -119,7 +178,19 @@ describe('QueryCheckYourAnswersComponent', () => {
       declarations: [
         QueryCheckYourAnswersComponent,
         RpxTranslateMockPipe
-      ]
+      ],
+      providers: [
+        { provide: QueryManagmentService, useValue: queryManagmentService },
+        { provide: CaseNotifier, useValue: mockCaseNotifier },
+        { provide: SessionStorageService, useValue: sessionStorageService },
+        { provide: ActivatedRoute, useValue: {
+          snapshot: {
+            params: {
+              cid: '123'
+            }
+          }
+        }
+      }]
     })
       .compileComponents();
   });
@@ -188,4 +259,19 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(columnHeadings[0].nativeElement.textContent.trim()).toEqual('Query detail');
     expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Document attached');
   });
+
+  describe('submit', () => {
+    it('should call searchAndCompleteTask', ()=> {
+      spyOn(component, 'searchAndCompleteTask').and.callFake(()=>{});
+      component.submit();
+      fixture.detectChanges();
+      expect(component.searchAndCompleteTask).toHaveBeenCalled();
+    });
+
+    it('searchAndCompleteTask - should search task to be called',  () => {
+      component.searchAndCompleteTask();
+      fixture.detectChanges();
+      expect(queryManagmentService.searchTasks).toHaveBeenCalled();
+    });
+  })
 });
