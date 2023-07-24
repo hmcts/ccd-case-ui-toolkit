@@ -4,13 +4,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { AbstractAppConfig } from '../../../../../../../public-api';
 import { SessionStorageService } from '../../../../../services';
 import { CaseNotifier } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagmentService } from '../../services/query-managment.service';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
-
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string, args?: any): string {
@@ -21,7 +19,6 @@ class RpxTranslateMockPipe implements PipeTransform {
 describe('QueryCheckYourAnswersComponent', () => {
   let component: QueryCheckYourAnswersComponent;
   let fixture: ComponentFixture<QueryCheckYourAnswersComponent>;
-  let appConfig: any;
   let nativeElement: any;
   let sessionStorageService: any;
 
@@ -67,8 +64,6 @@ describe('QueryCheckYourAnswersComponent', () => {
     token: null
   };
 
-  appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl', 'getWAServiceConfig']);
-  appConfig.getWorkAllocationApiUrl.and.returnValue('');
   sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
   sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
   const casesService = jasmine.createSpyObj('casesService', ['caseView', 'cachedCaseView']);
@@ -273,5 +268,5 @@ describe('QueryCheckYourAnswersComponent', () => {
       fixture.detectChanges();
       expect(queryManagmentService.searchTasks).toHaveBeenCalled();
     });
-  })
+  });
 });
