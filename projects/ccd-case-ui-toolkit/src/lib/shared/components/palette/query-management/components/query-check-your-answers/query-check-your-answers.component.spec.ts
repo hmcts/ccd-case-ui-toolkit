@@ -70,7 +70,7 @@ describe('QueryCheckYourAnswersComponent', () => {
   appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getUserInfoApiUrl', 'getWAServiceConfig']);
   appConfig.getWorkAllocationApiUrl.and.returnValue('');
   sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-  sessionStorageService.getItem.and.returnValue(userDetails);
+  sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
   const casesService = jasmine.createSpyObj('casesService', ['caseView', 'cachedCaseView']);
   const mockCaseNotifier = new CaseNotifier(casesService);
   const queryManagmentService = jasmine.createSpyObj('QueryManagmentService', ['searchTasks' , 'completeTask']);
