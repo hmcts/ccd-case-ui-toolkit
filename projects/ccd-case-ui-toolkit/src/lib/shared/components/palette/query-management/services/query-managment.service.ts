@@ -26,9 +26,6 @@ export class QueryManagmentService {
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
-          this.http.get(this.appConfig.getUserInfoApiUrl()).pipe(map(response => response)).subscribe((response) => {
-            this.alertService.warning({ phrase:'A task could not be completed successfully. Please complete the task associated with the case manually.'});
-          });
           return throwError(error);
         })
       );
@@ -46,9 +43,7 @@ export class QueryManagmentService {
         map(response => response),
         catchError(error => {
           this.errorService.setError(error);
-          if (error?.status ) {
-            return throwError(error);
-          }
+          return throwError(error);
         })
       );
   }

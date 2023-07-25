@@ -52,12 +52,12 @@ describe('QueryManagmentService', () => {
     expect(httpService.post).toHaveBeenCalledWith(`${API_URL}/task/${MOCK_TASK_1.id}/complete`, {});
   });
 
-  it('should set error service error when the search fails', (done) => {
+
+  it('should set error service error when the complete fails', (done) => {
     httpService.post.and.returnValue(throwError(ERROR));
-    const searchRequest: TaskSearchParameter = { ccdId: '1234567890' };
-    service.searchTasks(searchRequest)
+    service.completeTask(MOCK_TASK_1.id)
       .subscribe(() => {
-        done.fail('Got back tasks instead of erroring');
+        done.fail('Completed task instead of erroring');
       }, err => {
         expect(err).toEqual(ERROR);
         expect(errorService.setError).toHaveBeenCalledWith(ERROR);
