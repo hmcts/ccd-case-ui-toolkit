@@ -514,7 +514,8 @@ export class FormValueService {
    * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
    */
   public repopulateFormDataFromCaseFieldValues(data: object, caseFields: CaseField[]): void {
-    if (data && caseFields && caseFields.length > 0 && caseFields.findIndex(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])) > -1) {
+    if (data && caseFields && caseFields.length > 0 &&
+      caseFields.findIndex(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])) > -1) {
       // Ignore the FlagLauncher CaseField because it does not hold any values
       caseFields.filter(caseField => !FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))
         .forEach(caseField => {
