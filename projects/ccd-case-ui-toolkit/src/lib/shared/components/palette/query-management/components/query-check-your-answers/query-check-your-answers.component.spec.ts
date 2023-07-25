@@ -21,13 +21,14 @@ describe('QueryCheckYourAnswersComponent', () => {
   let fixture: ComponentFixture<QueryCheckYourAnswersComponent>;
   let nativeElement: any;
   let sessionStorageService: any;
+  let queryManagmentService:any;
 
   const response = {
     tasks: [{
       additional_properties: {
-          additionalProp1: '1234'
+          additionalProp1: '123'
       },
-      assignee: '1234-1234-1234-1234',
+      assignee: '12345',
       auto_assigned: false,
       case_category: 'asylum',
       case_id: '2345678901',
@@ -56,20 +57,13 @@ describe('QueryCheckYourAnswersComponent', () => {
   };
 
   const userDetails = {
-    id: 1,
+    id: '12345',
     forename: 'Firstname',
     surname: 'Surname',
     roles: ['caseworker-role1', 'caseworker-role3'],
     email: 'test@mail.com',
     token: null
   };
-
-  sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-  sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
-  const casesService = jasmine.createSpyObj('casesService', ['caseView', 'cachedCaseView']);
-  const mockCaseNotifier = new CaseNotifier(casesService);
-  const queryManagmentService = jasmine.createSpyObj('QueryManagmentService', ['searchTasks' , 'completeTask']);
-  queryManagmentService.searchTasks.and.returnValue(of(response));
 
   const items = [
     {
@@ -168,6 +162,13 @@ describe('QueryCheckYourAnswersComponent', () => {
   });
 
   beforeEach(async () => {
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+    const casesService = jasmine.createSpyObj('casesService', ['caseView', 'cachedCaseView']);
+    const mockCaseNotifier = new CaseNotifier(casesService);
+    queryManagmentService = jasmine.createSpyObj('QueryManagmentService', ['searchTasks' , 'completeTask']);
+    queryManagmentService.searchTasks.and.returnValue(of(response));
+
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
@@ -203,6 +204,10 @@ describe('QueryCheckYourAnswersComponent', () => {
     component.formGroup.get('isHearingRelated').setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   it('should create', () => {

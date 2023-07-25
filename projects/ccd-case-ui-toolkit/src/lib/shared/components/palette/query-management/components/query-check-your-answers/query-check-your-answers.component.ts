@@ -48,7 +48,7 @@ export class QueryCheckYourAnswersComponent implements OnInit{
   public searchAndCompleteTask(): void {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
-
+    console.log('dave ',  JSON.stringify(userInfo))
     // Search task
     const searchParameter = { ccdId: this.caseId } as TaskSearchParameter;
     this.queryManagementService.searchTasks(searchParameter)
@@ -58,7 +58,7 @@ export class QueryCheckYourAnswersComponent implements OnInit{
 
           // Filter task by queryId
           const filteredtask = tasks.find((task) => task.additional_properties.some((property) => property === this.queryId) &&
-            task.assignee === userInfo.uid)
+            task.assignee === userInfo.id)
 
           if (filteredtask && filteredtask.length > 0) {
             if (tasks.length === 1) {
