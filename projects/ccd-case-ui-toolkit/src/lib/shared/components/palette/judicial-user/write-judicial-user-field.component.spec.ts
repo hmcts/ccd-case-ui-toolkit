@@ -211,8 +211,8 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(component.complexGroup.get('personalCode').value).toEqual('p1000001');
   });
 
-  it('should use the judicial user\'s full name for display', () => {
-    const displayName = component.displayJudicialUser(JUDICIAL_USERS[0]);
-    expect(displayName).toEqual('Jacky Collins');
+  it('should use the judicial user\'s full name and email address for display', () => {
+    const displayNameAndEmail = component.displayJudicialUser(JUDICIAL_USERS[0]);
+    expect(displayNameAndEmail).toEqual('Jacky Collins (jacky.collins@judicial.com)');
   });
 });

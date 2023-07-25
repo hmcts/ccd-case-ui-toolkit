@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.18.2-hotfix-EUI-8601
+### Version 6.18.2-hotfix-EUI-8601-2
 **EUI-8601** Re-implement `WriteJudicialUserField` component to extend `WriteComplexFieldComponent`, to ensure correct working when used in a collection
 
 ### Version 6.18.2-rc2

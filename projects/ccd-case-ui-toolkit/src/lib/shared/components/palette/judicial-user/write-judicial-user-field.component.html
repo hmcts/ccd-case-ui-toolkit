@@ -13,7 +13,7 @@
     <mat-option *ngFor="let judicialUser of filteredJudicialUsers$ | async"
       class="select-option" [ngClass]="{'hide-autocomplete': !showAutocomplete}"
       [value]="judicialUser" (onSelectionChange)="onSelectionChange($event)">
-      {{ judicialUser.fullName }}
+      {{ judicialUser.fullName }} ({{ judicialUser.emailId }})
     </mat-option>
     <mat-option *ngIf="noResults && searchTerm && searchTerm.length > minSearchCharacters && showAutocomplete" class="select-option" disabled>
       No results found

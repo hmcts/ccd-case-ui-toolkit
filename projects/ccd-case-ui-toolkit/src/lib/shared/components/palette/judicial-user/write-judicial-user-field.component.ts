@@ -91,7 +91,7 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
   }
 
   public displayJudicialUser(judicialUser?: JudicialUserModel): string | undefined {
-    return judicialUser ? judicialUser.fullName : undefined;
+    return judicialUser ? `${judicialUser.fullName} (${judicialUser.emailId})` : undefined;
   }
 
   public onSelectionChange(event: any): void {
