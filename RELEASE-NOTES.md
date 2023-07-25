@@ -1,4 +1,6 @@
 ## RELEASE NOTES
+### Version 6.18.2-hotfix-EUI-8601
+**EUI-8601** Re-implement `WriteJudicialUserField` component to extend `WriteComplexFieldComponent`, to ensure correct working when used in a collection
 
 ### Version 6.18.2-rc2
 **EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button

@@ -1,19 +1,14 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { HmctsServiceDetail } from '../../../domain/case-flag';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
-import { CaseFlagRefdataService } from '../../../services/case-flag/case-flag-refdata.service';
-import { HttpService } from '../../../services/http/http.service';
-import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
-import { SessionStorageService } from '../../../services/session/session-storage.service';
-import { PaletteUtilsModule } from '../utils';
+import { CaseFlagRefdataService, FormValidatorsService, JurisdictionService, SessionStorageService } from '../../../services';
+import { IsCompoundPipe, PaletteUtilsModule } from '../utils';
 import { WriteJudicialUserFieldComponent } from './write-judicial-user-field.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -89,15 +84,16 @@ const SERVICE_DETAILS = [
 describe('WriteJudicialUserFieldComponent', () => {
   let fixture: ComponentFixture<WriteJudicialUserFieldComponent>;
   let component: WriteJudicialUserFieldComponent;
-  let httpService: HttpService;
-  let jurisdictionService: any;
-  let sessionStorageService: any;
-  let caseFlagRefdataService: any;
+  let jurisdictionService: jasmine.SpyObj<JurisdictionService>;
+  let sessionStorageService: jasmine.SpyObj<SessionStorageService>;
+  let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
+  let compoundPipe: jasmine.SpyObj<IsCompoundPipe>;
+  let validatorsService: jasmine.SpyObj<FormValidatorsService>;
+  let loadJudicialUserSpy: jasmine.Spy;
   let nativeElement: any;
 
   beforeEach(waitForAsync(() => {
-    httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
-    jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['searchJudicialUsers', 'searchJudicialUsersByPersonalCodes']);
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['searchJudicialUsers', 'searchJudicialUsersByPersonalCodes']);
     jurisdictionService.searchJudicialUsers.and.returnValue(of(JUDICIAL_USERS));
     jurisdictionService.searchJudicialUsersByPersonalCodes.and.returnValue(of([JUDICIAL_USERS[1]]));
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
@@ -105,11 +101,13 @@ describe('WriteJudicialUserFieldComponent', () => {
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('caseFlagRefdataService', ['getHmctsServiceDetailsByCaseType', 'getHmctsServiceDetailsByServiceName']);
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
     caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of(SERVICE_DETAILS));
+    compoundPipe = createSpyObj<IsCompoundPipe>('compoundPipe', ['transform']);
+    compoundPipe.transform.and.returnValue(false);
+    validatorsService = createSpyObj<FormValidatorsService>('validatorsService', ['addValidators']);
 
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        RouterTestingModule,
         MatAutocompleteModule,
         PaletteUtilsModule
       ],
@@ -118,7 +116,9 @@ describe('WriteJudicialUserFieldComponent', () => {
       providers: [
         { provide: JurisdictionService, useValue: jurisdictionService },
         { provide: SessionStorageService, useValue: sessionStorageService },
-        { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService }
+        { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService },
+        { provide: IsCompoundPipe, useValue: compoundPipe },
+        { provide: FormValidatorsService, useValue: validatorsService }
       ]
     })
     .compileComponents();
@@ -126,13 +126,14 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture = TestBed.createComponent(WriteJudicialUserFieldComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
+    component.formGroup = new FormGroup({});
+    loadJudicialUserSpy = spyOn(component, 'loadJudicialUser').and.callThrough();
+    spyOn(component, 'filterJudicialUsers').and.callThrough();
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   }));
 
-  it('should create', async() => {
-    component.filteredJudicialUsers = JUDICIAL_USERS;
-    fixture.detectChanges();
+  it('should create component', async() => {
     const selectedJudicial = nativeElement.querySelector('#JudicialUserField');
     selectedJudicial.dispatchEvent(new Event('focusin'));
     selectedJudicial.value = 'col';
@@ -148,10 +149,34 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(component.caseType).toEqual('Benefit');
   });
 
+  it('should display "No results found" if there are no matches for the search term', async() => {
+    jurisdictionService.searchJudicialUsers.and.returnValue(of([]));
+    const selectedJudicial = nativeElement.querySelector('#JudicialUserField');
+    selectedJudicial.dispatchEvent(new Event('focusin'));
+    selectedJudicial.value = 'abc';
+    selectedJudicial.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const autocompleteOptions = fixture.debugElement.query(
+      By.css('.mat-autocomplete-panel')
+    ).nativeElement;
+    expect(autocompleteOptions.children[0].textContent).toContain('No results found');
+  });
+
   it('should load judicial user', () => {
-    component.loadJudicialUser('p1000001');
-    expect(component.idamIdFormControl.value).toEqual('Jasmine Chiswell (jasmine.chiswell@judicial.com)');
-    expect(component.personalCodeFormControl.value).toEqual('p1000001');
+    // The caseField.value.personalCode property is present, so loadJudicialUser() should be called
+    expect(component.loadJudicialUser).toHaveBeenCalledWith('1234567');
+    expect(jurisdictionService.searchJudicialUsersByPersonalCodes).toHaveBeenCalledWith(['1234567']);
+    expect(component.judicialUserControl.value).toEqual(JUDICIAL_USERS[1]);
+  });
+
+  it('should not load judicial user', () => {
+    // The caseField.value.personalCode property is not present, so loadJudicialUser() should not be called
+    component.caseField.value.personalCode = null;
+    loadJudicialUserSpy.calls.reset();
+    component.ngOnInit();
+    expect(component.loadJudicialUser).not.toHaveBeenCalled();
   });
 
   it('should set jurisdiction and case type', () => {
@@ -163,21 +188,31 @@ describe('WriteJudicialUserFieldComponent', () => {
   it('should search for judicial users', () => {
     component.jurisdiction = 'BBA3';
     component.caseType = 'Benefit';
-    fixture.detectChanges();
+    jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[0]]));
+    // Subscribe to the observable to execute it and trigger calls to services
+    let filteredJudicialUsers: JudicialUserModel[];
+    component.filterJudicialUsers('jas').subscribe(judicialUsers => filteredJudicialUsers = judicialUsers);
     expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith('Benefit');
     expect(jurisdictionService.searchJudicialUsers).toHaveBeenCalled();
-    expect(component.idamIdFormControl.value).toEqual('Jasmine Chiswell (jasmine.chiswell@judicial.com)');
+    expect(filteredJudicialUsers).toEqual([JUDICIAL_USERS[0]]);
   });
 
-  it('should set the form control values when a judicial user is selected', () => {
-    component.onSelectionChange(JUDICIAL_USERS[1]);
-    expect(component.idamIdFormControl.value).toEqual('Jasmine Chiswell (jasmine.chiswell@judicial.com)');
-    expect(component.personalCodeFormControl.value).toEqual('p1000001');
+  it('should set the caseField value and FormControl values when a judicial user is selected', () => {
+    component.onSelectionChange({
+      source: {
+        value: JUDICIAL_USERS[1]
+      }
+    });
+    expect(component.caseField.value).toEqual({
+      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2',
+      personalCode: 'p1000001'
+    });
+    expect(component.complexGroup.get('idamId').value).toEqual('38eb0c5e-29c7-453e-b92d-f2029aaed6c2');
+    expect(component.complexGroup.get('personalCode').value).toEqual('p1000001');
   });
 
-  it('should unsubscribe', () => {
-    spyOn(component.sub, 'unsubscribe').and.callThrough();
-    component.ngOnDestroy();
-    expect(component.sub.unsubscribe).toHaveBeenCalled();
+  it('should use the judicial user\'s full name for display', () => {
+    const displayName = component.displayJudicialUser(JUDICIAL_USERS[0]);
+    expect(displayName).toEqual('Jacky Collins');
   });
 });

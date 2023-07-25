@@ -1,4 +1,4 @@
-<div class="form-group" [formGroup]="judicialUserFormGroup">
+<div class="form-group" [formGroup]="formGroup">
   <label [for]="id()">
     <span *ngIf="caseField.label" class="form-label">
       {{caseField | ccdFieldLabel}}
@@ -9,13 +9,13 @@
   </span>
   <input class="form-control bottom-30" [id]="id()"
     [formControl]="judicialUserControl" [matAutocomplete]="autoComplete">
-  <mat-autocomplete autoActiveFirstOption #autoComplete="matAutocomplete">
-    <mat-option *ngFor="let judicialUser of filteredJudicialUsers"
+  <mat-autocomplete autoActiveFirstOption #autoComplete="matAutocomplete" [displayWith]="displayJudicialUser">
+    <mat-option *ngFor="let judicialUser of filteredJudicialUsers$ | async"
       class="select-option" [ngClass]="{'hide-autocomplete': !showAutocomplete}"
-      [value]="judicialUser">
+      [value]="judicialUser" (onSelectionChange)="onSelectionChange($event)">
       {{ judicialUser.fullName }}
     </mat-option>
-    <mat-option *ngIf="!filteredJudicialUsers?.length && showAutocomplete" class="select-option">
+    <mat-option *ngIf="noResults && searchTerm && searchTerm.length > minSearchCharacters && showAutocomplete" class="select-option" disabled>
       No results found
     </mat-option>
   </mat-autocomplete>
