@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { throwError } from 'rxjs';
-import { catchError, map, take } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 import { TaskSearchParameter } from '../../../../../../shared/domain';
 import { SessionStorageService } from '../../../../../../shared/services';
-import { CaseNotifier, MULTIPLE_TASKS_FOUND } from '../../../../case-editor/services';
+import { CaseNotifier } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagmentService } from '../../services/query-managment.service';
 
@@ -14,7 +14,7 @@ import { QueryManagmentService } from '../../services/query-managment.service';
   templateUrl: './query-check-your-answers.component.html',
   styleUrls: ['./query-check-your-answers.component.scss']
 })
-export class QueryCheckYourAnswersComponent implements OnInit{
+export class QueryCheckYourAnswersComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
@@ -48,29 +48,25 @@ export class QueryCheckYourAnswersComponent implements OnInit{
   public searchAndCompleteTask(): void {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
-    console.log('dave ',  JSON.stringify(userInfo))
     // Search task
     const searchParameter = { ccdId: this.caseId } as TaskSearchParameter;
     this.queryManagementService.searchTasks(searchParameter)
-      .pipe(
-        map((response: any) => {
-          const tasks: any[] = response.tasks;
-
-          // Filter task by queryId
-          const filteredtask = tasks.find((task) => task.additional_properties.some((property) => property === this.queryId) &&
-            task.assignee === userInfo.id)
-
-          if (filteredtask && filteredtask.length > 0) {
-            if (tasks.length === 1) {
-              this.queryManagementService.completeTask(filteredtask[0].id).subscribe();
-            } else {
-              throw new Error(MULTIPLE_TASKS_FOUND);
+      .subscribe((response: any) => {
+        const tasks: any[] = response.tasks;
+        // Filter task by queryId
+        const filteredtask = tasks.find((task) => {
+          return Object.values(task.additional_properties).some((value) => {
+            if (value === this.queryId && task.assignee === userInfo.id) {
+              return task;
             }
-          }
-        }),
-        catchError(error => {
-          return throwError(error);
+          })
         })
-      );
+        if (!!filteredtask) {
+          this.queryManagementService.completeTask(filteredtask.id).subscribe();
+        }
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
   }
 }

@@ -3,7 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
+import { CaseView } from '../../../../../domain';
 import { SessionStorageService } from '../../../../../services';
 import { CaseNotifier } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
@@ -21,12 +22,12 @@ describe('QueryCheckYourAnswersComponent', () => {
   let fixture: ComponentFixture<QueryCheckYourAnswersComponent>;
   let nativeElement: any;
   let sessionStorageService: any;
-  let queryManagmentService:any;
+  let queryManagmentService: any;
 
   const response = {
     tasks: [{
       additional_properties: {
-          additionalProp1: '123'
+        additionalProp1: '123'
       },
       assignee: '12345',
       auto_assigned: false,
@@ -161,13 +162,35 @@ describe('QueryCheckYourAnswersComponent', () => {
     ]
   });
 
+  const CASE_VIEW: CaseView = {
+    case_id: '1234',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test',
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: []
+  };
+
   beforeEach(async () => {
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
-    const casesService = jasmine.createSpyObj('casesService', ['caseView', 'cachedCaseView']);
+    const casesService = jasmine.createSpyObj('casesService', ['caseView']);
     const mockCaseNotifier = new CaseNotifier(casesService);
-    queryManagmentService = jasmine.createSpyObj('QueryManagmentService', ['searchTasks' , 'completeTask']);
+    mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+    queryManagmentService = jasmine.createSpyObj<QueryManagmentService>('queryManagmentService', ['searchTasks', 'completeTask']);
     queryManagmentService.searchTasks.and.returnValue(of(response));
+    queryManagmentService.completeTask.and.returnValue(of(true));
 
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -180,13 +203,13 @@ describe('QueryCheckYourAnswersComponent', () => {
         { provide: CaseNotifier, useValue: mockCaseNotifier },
         { provide: SessionStorageService, useValue: sessionStorageService },
         { provide: ActivatedRoute, useValue: {
-          snapshot: {
-            params: {
-              cid: '123'
+            snapshot: {
+              params: {
+                qid: '123'
+              }
             }
           }
-        }
-      }]
+        }]
     })
       .compileComponents();
   });
@@ -217,6 +240,7 @@ describe('QueryCheckYourAnswersComponent', () => {
   it('should emit back clicked event', () => {
     spyOn(component.backClicked, 'emit');
     component.goBack();
+    fixture.detectChanges();
     expect(component.backClicked.emit).toHaveBeenCalled();
   });
 
@@ -268,10 +292,11 @@ describe('QueryCheckYourAnswersComponent', () => {
       expect(component.searchAndCompleteTask).toHaveBeenCalled();
     });
 
-    it('searchAndCompleteTask - should search task to be called',  () => {
+    it('searchAndCompleteTask - should search task to be called', () => {
       component.searchAndCompleteTask();
       fixture.detectChanges();
       expect(queryManagmentService.searchTasks).toHaveBeenCalled();
+      expect(queryManagmentService.completeTask).toHaveBeenCalledWith('Task_2');
     });
   });
 });
