@@ -4,7 +4,6 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
-import { CaseView } from '../../../domain/case-view/case-view.model';
 import { DocumentData, FormDocument } from '../../../domain/document/document-data.model';
 import { HttpError } from '../../../domain/http/http-error.model';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
@@ -13,6 +12,7 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import { initDialog } from '../../helpers';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
+import { EventTriggerService, JurisdictionService } from 'projects/ccd-case-ui-toolkit/src';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -39,17 +39,21 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public dialogSubscription: Subscription;
   public caseEventSubscription: Subscription;
 
-  private caseDetails: CaseView;
+  public jurisdictionId: string;
+  public caseTypeId: string;
+
+  // private caseDetails: CaseView;
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
   private secureModeOn: boolean;
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
-    private readonly caseNotifier: CaseNotifier,
     private readonly documentManagement: DocumentManagementService,
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
+    private readonly eventTriggerService: EventTriggerService,
+    private readonly jurisdictionService: JurisdictionService 
   ) {
     super();
   }
@@ -189,10 +193,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private subscribeToCaseDetails(): void {
-    this.caseEventSubscription = this.caseNotifier.caseView.subscribe({
-      next: (caseDetails) => {
-        this.caseDetails = caseDetails;
+    this.jurisdictionService.getJurisdictions().subscribe({
+      next: (jurisdictions) => {
+       this.jurisdictionId = jurisdictions[0].id;;
       }
+    });
+
+    this.eventTriggerService.eventTriggerSource.subscribe((e) => { 
+       this.caseTypeId = e.case_id;
     });
   }
 
@@ -277,13 +285,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     documentUpload.append('classification', 'PUBLIC');
 
     if (this.appConfig.getDocumentSecureMode()) {
-      const caseTypeId = this.caseDetails &&
-                          this.caseDetails.case_type &&
-                          this.caseDetails.case_type.id ? this.caseDetails.case_type.id : null;
-      const caseTypeJurisdictionId = this.caseDetails &&
-                                      this.caseDetails.case_type &&
-                                      this.caseDetails.case_type.jurisdiction &&
-                                      this.caseDetails.case_type.jurisdiction.id ? this.caseDetails.case_type.jurisdiction.id : null;
+      const caseTypeId:string = this.caseEventSubscription ? this.caseTypeId : null;
+      const caseTypeJurisdictionId:string = this.jurisdictionId ? this.jurisdictionId : null;
+      
       documentUpload.append('caseTypeId', caseTypeId);
       documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
     }

@@ -9,13 +9,14 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { DocumentData } from '../../../domain/document';
 import { DocumentManagementService } from '../../../services/document-management';
-import { CaseNotifier, CasesService } from '../../case-editor';
+import { CaseNotifier, CasesService, EventTriggerService } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import { FieldLabelPipe } from '../utils';
 import { FileUploadStateService } from './file-upload-state.service';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { JurisdictionService } from '../../../services';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -112,6 +113,8 @@ describe('WriteDocumentFieldComponent', () => {
   let mockMatDialogRef: any;
   let appConfig: any;
   let casesService: any;
+  let jurisdictionService: any;
+  let eventTriggerService: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -142,15 +145,16 @@ describe('WriteDocumentFieldComponent', () => {
           readDocumentComponentMock
         ],
         providers: [
-          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
-          {provide: MatDialog, useValue: mockDialog},
-          {provide: MatDialogRef, useValue: mockMatDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
-          {provide: AbstractAppConfig, useValue: appConfig },
+          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+          { provide: MatDialog, useValue: mockDialog },
+          { provide: MatDialogRef, useValue: mockMatDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: FileUploadStateService, useValue: mockFileUploadStateService },
+          { provide: AbstractAppConfig, useValue: appConfig },
           { provide: CasesService, useValue: casesService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
+          { provide: JurisdictionService, useValue: jurisdictionService },
           DocumentDialogComponent,
-          CaseNotifier
         ]
       })
       .compileComponents();
