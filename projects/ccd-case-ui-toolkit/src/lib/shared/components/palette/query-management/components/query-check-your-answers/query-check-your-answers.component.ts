@@ -52,13 +52,13 @@ export class QueryCheckYourAnswersComponent implements OnInit {
     const searchParameter = { ccdId: this.caseId } as TaskSearchParameter;
     this.queryManagementService.searchTasks(searchParameter)
       .subscribe((response: any) => {
-        const tasks: any[] = response.tasks;
         // Filter task by queryId
-        const filteredtask = tasks.find((task) => {
+        const filteredtask = response.tasks.find((task) => {
           return Object.values(task.additional_properties).some((value) => {
             if (value === this.queryId && task.assignee === userInfo.id) {
               return task;
             }
+            return;
           })
         })
         if (!!filteredtask) {
