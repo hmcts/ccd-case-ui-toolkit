@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.16.0-query-management-navigate-back-to-query-list
+**EUI-8693** Query management navigate back to query list from query details
+
 ### Version 6.16.0-query-management-update-mock-data
 **EUI-8636** Query management update mock data to support CCD
 

@@ -25,7 +25,7 @@ describe('QueryDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit event on clcking back to queries', () => {
+  it('should emit event on clcking back to query list', () => {
     spyOn(component.backClicked, 'emit');
     component.onBack();
     expect(component.backClicked.emit).toHaveBeenCalled();

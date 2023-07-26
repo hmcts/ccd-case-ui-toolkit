@@ -22,6 +22,6 @@ export class QueryDetailsComponent {
     const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails'));
     return userDetails && userDetails.roles
       && !(userDetails.roles.includes('pui-case-manager')
-        || userDetails.roles.some((role) => role.toLowerCase().includes('judge')))
+        || userDetails.roles.some((role) => role.toLowerCase().includes('judge')));
   }
 }

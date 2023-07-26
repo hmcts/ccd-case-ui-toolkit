@@ -8,10 +8,6 @@
 
 <ng-template #singleQueryDetails>
   <br>
-  <p>
-    <a class="govuk-link" href="javascript:void(0)">{{ 'Back to queries' | rpxTranslate }}</a>
-  </p>
-
   <ccd-query-details
     [query]="query"
     (backClicked)="showQueryList = true"
