@@ -58,12 +58,12 @@ export class QueryCheckYourAnswersComponent implements OnInit {
             if (value === this.queryId && task.assignee === userInfo.id) {
               return task;
             }
-            return;
           })
         })
         if (!!filteredtask) {
           this.queryManagementService.completeTask(filteredtask.id).subscribe();
         }
+        return;
       }),
       catchError(error => {
         return throwError(error);
