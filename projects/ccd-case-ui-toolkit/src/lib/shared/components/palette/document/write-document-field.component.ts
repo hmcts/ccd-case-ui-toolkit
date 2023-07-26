@@ -7,12 +7,12 @@ import { Constants } from '../../../commons/constants';
 import { DocumentData, FormDocument } from '../../../domain/document/document-data.model';
 import { HttpError } from '../../../domain/http/http-error.model';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 import { initDialog } from '../../helpers';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
-import { EventTriggerService, JurisdictionService } from 'projects/ccd-case-ui-toolkit/src';
+import { EventTriggerService } from '../../case-editor';
+import { JurisdictionService } from '../../../services';
 
 @Component({
   selector: 'ccd-write-document-field',

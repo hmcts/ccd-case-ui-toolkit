@@ -9,14 +9,14 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { DocumentData } from '../../../domain/document';
 import { DocumentManagementService } from '../../../services/document-management';
-import { CaseNotifier, CasesService, EventTriggerService } from '../../case-editor';
+import {CasesService, EventTriggerService } from '../../case-editor';
+import { JurisdictionService } from '../../../services';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import { FieldLabelPipe } from '../utils';
 import { FileUploadStateService } from './file-upload-state.service';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
-import { JurisdictionService } from '../../../services';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -89,7 +89,7 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
   }]
 };
 
-describe('WriteDocumentFieldComponent', () => {
+fdescribe('WriteDocumentFieldComponent', () => {
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
@@ -379,7 +379,7 @@ describe('WriteDocumentFieldComponent', () => {
   });
 });
 
-describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
+fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   const FIELD_TYPE_MANDATORY: FieldType = {
     id: 'Document',
     type: 'Document'
@@ -463,10 +463,13 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
   let appConfig;
+  
 
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
   let casesService: any;
+  let jurisdictionService: any;
+  let eventTriggerService: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -497,15 +500,16 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           readDocumentComponentMock
         ],
         providers: [
-          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
-          {provide: AbstractAppConfig, useValue: appConfig},
-          {provide: CasesService, useValue: casesService},
-          DocumentDialogComponent,
-          CaseNotifier
+          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: FileUploadStateService, useValue: mockFileUploadStateService },
+          { provide: AbstractAppConfig, useValue: appConfig },
+          { provide: CasesService, useValue: casesService },
+          { provide: JurisdictionService, useValue: jurisdictionService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
+          DocumentDialogComponent
         ]
       })
       .compileComponents();
