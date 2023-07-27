@@ -90,6 +90,7 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
 };
 
 fdescribe('WriteDocumentFieldComponent', () => {
+
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
@@ -114,7 +115,7 @@ fdescribe('WriteDocumentFieldComponent', () => {
   let appConfig: any;
   let casesService: any;
   let jurisdictionService: any;
-  let eventTriggerService: any;
+  let eventTriggerService: EventTriggerService;  
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -152,9 +153,9 @@ fdescribe('WriteDocumentFieldComponent', () => {
           { provide: FileUploadStateService, useValue: mockFileUploadStateService },
           { provide: AbstractAppConfig, useValue: appConfig },
           { provide: CasesService, useValue: casesService },
-          { provide: EventTriggerService, useValue: eventTriggerService },
           { provide: JurisdictionService, useValue: jurisdictionService },
           DocumentDialogComponent,
+          EventTriggerService
         ]
       })
       .compileComponents();
@@ -380,6 +381,8 @@ fdescribe('WriteDocumentFieldComponent', () => {
 });
 
 fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
+  let eventTriggerService: EventTriggerService;
+
   const FIELD_TYPE_MANDATORY: FieldType = {
     id: 'Document',
     type: 'Document'
@@ -469,7 +472,6 @@ fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
   let casesService: any;
   let jurisdictionService: any;
-  let eventTriggerService: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -496,7 +498,7 @@ fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           FieldLabelPipe,
           DocumentDialogComponent,
 
-          // Mocks
+          //Mocks
           readDocumentComponentMock
         ],
         providers: [
@@ -508,7 +510,7 @@ fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           { provide: AbstractAppConfig, useValue: appConfig },
           { provide: CasesService, useValue: casesService },
           { provide: JurisdictionService, useValue: jurisdictionService },
-          { provide: EventTriggerService, useValue: eventTriggerService },
+          EventTriggerService,
           DocumentDialogComponent
         ]
       })
@@ -538,7 +540,7 @@ fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   });
 
   it('should be valid if no document specified for upload for not read only. Empty file.', () => {
-    // Initialization.
+  //  Initialization
     component.valid = true;
     component.caseField = CASE_FIELD;
     component.ngOnInit();
