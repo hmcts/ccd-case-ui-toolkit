@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.18.2-rc2",
+  "version": "6.18.2-exui-424-add-logs",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
