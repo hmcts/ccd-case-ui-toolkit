@@ -98,6 +98,7 @@ export class WorkAllocationService {
     if (!this.isWAEnabled()) {
       return of(null);
     }
+    console.log('completeTask step', taskId);
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {})
@@ -121,6 +122,7 @@ export class WorkAllocationService {
     if (!this.isWAEnabled()) {
       return of(null);
     }
+    console.log('assignAndCompleteTask step', taskId);
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {

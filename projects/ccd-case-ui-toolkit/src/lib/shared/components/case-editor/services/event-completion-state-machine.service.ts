@@ -26,6 +26,7 @@ export class EventCompletionStateMachineService {
   }
 
   public startStateMachine(stateMachine: StateMachine): void {
+    console.log('In startStateMachine step');
     stateMachine.start(this.stateCheckTasksCanBeCompleted);
   }
 
@@ -79,9 +80,11 @@ export class EventCompletionStateMachineService {
   }
 
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
+    console.log('entryActionForStateCheckTasksCanBeCompleted step', context.task.id);
     context.workAllocationService.getTask(context.task.id).subscribe(
       taskResponse => {
         if (taskResponse && taskResponse.task && taskResponse.task.task_state) {
+          console.log('task state is ', taskResponse.task.id + taskResponse.task.task_state);
           switch (taskResponse.task.task_state.toUpperCase()) {
             case TaskState.Unassigned:
               // Task unassigned
@@ -129,6 +132,7 @@ export class EventCompletionStateMachineService {
     state.trigger(EventCompletionStates.Final);
 
     const taskStr = context.sessionStorageService.getItem('taskToComplete');
+    console.log('entryActionForStateCompleteEventAndTask step ' + !!taskStr);
     if (taskStr) {
       // Task is in session storage
       const task: Task = JSON.parse(taskStr);
@@ -164,6 +168,7 @@ export class EventCompletionStateMachineService {
 
     // Get task details
     const taskStr = context.sessionStorageService.getItem('taskToComplete');
+    console.log('entryActionForStateTaskUnassigned step ' + !!taskStr);
     if (taskStr) {
       // Task is in session storage
       const task: Task = JSON.parse(taskStr);

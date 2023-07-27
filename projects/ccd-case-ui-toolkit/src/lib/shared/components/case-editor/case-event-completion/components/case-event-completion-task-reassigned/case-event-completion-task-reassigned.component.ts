@@ -78,6 +78,7 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
   public onContinue(): void {
     // Get task details
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    console.log('CaseEventCompletionTaskReassignedComponent step ' + !!taskStr);
     if (taskStr) {
       // Task is in session storage
       const task: Task = JSON.parse(taskStr);

@@ -60,6 +60,7 @@ export class CaseEventCompletionComponent implements OnChanges, EventCompletionC
       // Add transitions for the states
       this.service.addTransitions();
       // Start state machine
+      console.log('In ccd-case-event-completion step', this.context.caseId, this.context.task.id);
       this.service.startStateMachine(this.stateMachine);
     }
   }
