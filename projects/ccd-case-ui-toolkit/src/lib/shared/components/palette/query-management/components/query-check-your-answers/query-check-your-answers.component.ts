@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { throwError } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { Subscription, throwError } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { TaskSearchParameter } from '../../../../../../shared/domain';
 import { SessionStorageService } from '../../../../../../shared/services';
 import { CaseNotifier } from '../../../../case-editor/services';
@@ -14,7 +14,7 @@ import { QueryManagmentService } from '../../services/query-managment.service';
   templateUrl: './query-check-your-answers.component.html',
   styleUrls: ['./query-check-your-answers.component.scss']
 })
-export class QueryCheckYourAnswersComponent implements OnInit {
+export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
@@ -22,6 +22,8 @@ export class QueryCheckYourAnswersComponent implements OnInit {
   public queryCreateContextEnum = QueryCreateContext;
   private caseId: string;
   private queryId: string;
+  public searchTasksSubsciption: Subscription;
+  public completeTaskSubsciption: Subscription;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -37,6 +39,11 @@ export class QueryCheckYourAnswersComponent implements OnInit {
     });
   }
 
+  public ngOnDestroy(): void {
+    this.completeTaskSubsciption?.unsubscribe();
+     this.searchTasksSubsciption?.unsubscribe();
+ }
+
   public goBack(): void {
     this.backClicked.emit(true);
   }
@@ -50,8 +57,8 @@ export class QueryCheckYourAnswersComponent implements OnInit {
     const userInfo = JSON.parse(userInfoStr);
     // Search task
     const searchParameter = { ccdId: this.caseId } as TaskSearchParameter;
-    this.queryManagementService.searchTasks(searchParameter)
-      .subscribe((response: any) => {
+    this.searchTasksSubsciption = this.queryManagementService.searchTasks(searchParameter).subscribe(
+      (response: any) => {
         // Filter task by queryId
         const filteredtask = response.tasks.find((task) => {
           return Object.values(task.additional_properties).some((value) => {
@@ -63,10 +70,9 @@ export class QueryCheckYourAnswersComponent implements OnInit {
         if (!!filteredtask) {
           this.queryManagementService.completeTask(filteredtask.id).subscribe();
         }
-        return;
-      }),
-      catchError(error => {
+      },
+      error => {
         return throwError(error);
-      })
+      });
   }
 }
