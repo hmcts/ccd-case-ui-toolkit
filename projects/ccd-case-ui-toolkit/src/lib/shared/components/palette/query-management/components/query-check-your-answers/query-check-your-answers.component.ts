@@ -41,7 +41,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.completeTaskSubsciption?.unsubscribe();
-     this.searchTasksSubsciption?.unsubscribe();
+    this.searchTasksSubsciption?.unsubscribe();
  }
 
   public goBack(): void {
@@ -67,7 +67,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             }
           })
         })
-        if (!!filteredtask) {
+        if (filteredtask) {
           this.queryManagementService.completeTask(filteredtask.id).subscribe();
         }
       },
