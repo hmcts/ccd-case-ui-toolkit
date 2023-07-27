@@ -3,7 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../../app.config';
 import { TaskSearchParameter } from '../../../../domain';
-import { AlertService, HttpErrorService, HttpService } from '../../../../services';
+import { HttpErrorService, HttpService } from '../../../../services';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +12,7 @@ export class QueryManagmentService {
 
   constructor(private readonly http: HttpService,
     private readonly appConfig: AbstractAppConfig,
-    private readonly errorService: HttpErrorService,
-    private readonly alertService: AlertService,) { }
+    private readonly errorService: HttpErrorService) { }
 
   /**
    * Call the API to complete a task.

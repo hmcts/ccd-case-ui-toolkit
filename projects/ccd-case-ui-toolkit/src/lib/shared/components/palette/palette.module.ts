@@ -24,6 +24,7 @@ import { FormModule } from '../../../components/form/form.module';
 import { CaseEditDataModule } from '../../commons/case-edit-data';
 import { LabelSubstitutorModule } from '../../directives/substitutor';
 import { PipesModule } from '../../pipes/pipes.module';
+import { HttpService } from '../../services';
 import { CaseFlagRefdataService } from '../../services/case-flag/case-flag-refdata.service';
 import { CommonDataService } from '../../services/common-data-service/common-data-service';
 import { FormValidatorsService } from '../../services/form/form-validators.service';
@@ -132,6 +133,7 @@ import {
   QueryWriteRespondToQueryComponent,
   ReadQueryManagementFieldComponent
 } from './query-management';
+import { QueryManagmentService } from './query-management/services/query-managment.service';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
@@ -335,6 +337,8 @@ const PALETTE_COMPONENTS = [
     CommonDataService,
     JurisdictionService,
     LinkedCasesService,
+    HttpService,
+    QueryManagmentService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
   entryComponents: [CaseFileViewFolderSelectorComponent]
