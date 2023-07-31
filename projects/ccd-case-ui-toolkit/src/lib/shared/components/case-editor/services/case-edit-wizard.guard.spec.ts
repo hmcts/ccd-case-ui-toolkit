@@ -175,7 +175,7 @@ describe('CaseEditWizardGuard', () => {
     it('should alert error', fakeAsync(() => {
       wizardGuard.resolve(route);
       tick();
-      expect(alertService.error).toHaveBeenCalledWith(`No page could be found for 'unknown'`);
+      expect(alertService.error).toHaveBeenCalledWith({ phrase: 'No page could be found for %PAGEID%', replacements: { PAGEID: 'unknown' }});
     }));
 
   });

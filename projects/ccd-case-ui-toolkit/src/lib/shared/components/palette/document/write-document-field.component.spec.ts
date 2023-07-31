@@ -4,13 +4,13 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { of, Subscription, throwError } from 'rxjs';
+import { Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { DocumentData } from '../../../domain/document';
 import { DocumentManagementService } from '../../../services/document-management';
-import {CasesService, EventTriggerService } from '../../case-editor';
-import { JurisdictionService } from '../../../services';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
+import { CaseNotifier, CasesService } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import { FieldLabelPipe } from '../utils';
 import { FileUploadStateService } from './file-upload-state.service';
@@ -89,8 +89,7 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
   }]
 };
 
-fdescribe('WriteDocumentFieldComponent', () => {
-
+describe('WriteDocumentFieldComponent', () => {
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
@@ -114,8 +113,6 @@ fdescribe('WriteDocumentFieldComponent', () => {
   let mockMatDialogRef: any;
   let appConfig: any;
   let casesService: any;
-  let jurisdictionService: any;
-  let eventTriggerService: EventTriggerService;  
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -143,19 +140,19 @@ fdescribe('WriteDocumentFieldComponent', () => {
           DocumentDialogComponent,
 
           // Mocks
-          readDocumentComponentMock
+          readDocumentComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
-          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
-          { provide: MatDialog, useValue: mockDialog },
-          { provide: MatDialogRef, useValue: mockMatDialogRef },
-          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
-          { provide: FileUploadStateService, useValue: mockFileUploadStateService },
-          { provide: AbstractAppConfig, useValue: appConfig },
+          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
+          {provide: MatDialog, useValue: mockDialog},
+          {provide: MatDialogRef, useValue: mockMatDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
+          {provide: AbstractAppConfig, useValue: appConfig },
           { provide: CasesService, useValue: casesService },
-          { provide: JurisdictionService, useValue: jurisdictionService },
           DocumentDialogComponent,
-          EventTriggerService
+          CaseNotifier
         ]
       })
       .compileComponents();
@@ -380,9 +377,7 @@ fdescribe('WriteDocumentFieldComponent', () => {
   });
 });
 
-fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
-  let eventTriggerService: EventTriggerService;
-
+describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   const FIELD_TYPE_MANDATORY: FieldType = {
     id: 'Document',
     type: 'Document'
@@ -466,12 +461,10 @@ fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let mockDocumentManagementService: any;
   let mockFileUploadStateService: any;
   let appConfig;
-  
 
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
   let casesService: any;
-  let jurisdictionService: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -498,20 +491,20 @@ fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           FieldLabelPipe,
           DocumentDialogComponent,
 
-          //Mocks
-          readDocumentComponentMock
+          // Mocks
+          readDocumentComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
-          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: MatDialogRef, useValue: matDialogRef },
-          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
-          { provide: FileUploadStateService, useValue: mockFileUploadStateService },
-          { provide: AbstractAppConfig, useValue: appConfig },
-          { provide: CasesService, useValue: casesService },
-          { provide: JurisdictionService, useValue: jurisdictionService },
-          EventTriggerService,
-          DocumentDialogComponent
+          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
+          {provide: AbstractAppConfig, useValue: appConfig},
+          {provide: CasesService, useValue: casesService},
+          DocumentDialogComponent,
+          CaseNotifier
         ]
       })
       .compileComponents();
@@ -540,7 +533,7 @@ fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   });
 
   it('should be valid if no document specified for upload for not read only. Empty file.', () => {
-  //  Initialization
+    // Initialization.
     component.valid = true;
     component.caseField = CASE_FIELD;
     component.ngOnInit();

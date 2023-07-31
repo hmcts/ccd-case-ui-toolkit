@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { CaseEditDataModule, CaseEditDataService } from '../../commons/case-edit-data';
 import { CallbackErrorsComponent } from '../../components/error';
@@ -67,7 +68,8 @@ import { CaseworkerService } from './services/case-worker.service';
     ErrorsModule,
     PortalModule,
     LoadingSpinnerModule,
-    BannersModule
+    BannersModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     CaseEditConfirmComponent,
