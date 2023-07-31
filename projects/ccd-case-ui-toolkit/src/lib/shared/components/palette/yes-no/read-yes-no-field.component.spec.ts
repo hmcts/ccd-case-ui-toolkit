@@ -3,9 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import createSpyObj = jasmine.createSpyObj;
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ReadYesNoFieldComponent } from './read-yes-no-field.component';
 import { YesNoService } from './yes-no.service';
-import createSpyObj = jasmine.createSpyObj;
 
 describe('ReadYesNoFieldComponent', () => {
 
@@ -30,7 +31,7 @@ describe('ReadYesNoFieldComponent', () => {
     let component: ReadYesNoFieldComponent;
     let de: DebugElement;
 
-    let yesNoService: any;
+    let yesNoService: jasmine.SpyObj<YesNoService>;
 
     beforeEach(waitForAsync(() => {
       yesNoService = createSpyObj<YesNoService>('yesNoService', ['format']);
@@ -40,7 +41,8 @@ describe('ReadYesNoFieldComponent', () => {
         .configureTestingModule({
           imports: [],
           declarations: [
-            ReadYesNoFieldComponent
+            ReadYesNoFieldComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             {provide: YesNoService, useValue: yesNoService}
@@ -57,10 +59,10 @@ describe('ReadYesNoFieldComponent', () => {
       fixture.detectChanges();
     }));
 
-    it('should render output of YesNoService::format method', () => {
+    it('should set formattedValue based on YesNoService::format method', () => {
       expect(yesNoService.format).toHaveBeenCalledWith(VALUE);
       expect(yesNoService.format).toHaveBeenCalledTimes(1);
-      expect(de.nativeElement.textContent).toEqual(FORMATTED_VALUE);
+      expect(component.formattedValue).toEqual(yesNoService.format(VALUE));
     });
   });
 
@@ -86,7 +88,8 @@ describe('ReadYesNoFieldComponent', () => {
         .configureTestingModule({
           imports: [],
           declarations: [
-            ReadYesNoFieldComponent
+            ReadYesNoFieldComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             {provide: YesNoService, useValue: yesNoService}

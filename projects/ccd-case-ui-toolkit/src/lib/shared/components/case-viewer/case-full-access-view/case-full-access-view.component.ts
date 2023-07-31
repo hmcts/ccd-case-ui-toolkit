@@ -175,7 +175,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           }
         }
       }));
-  };
+  }
 
   public postViewActivity(): Observable<Activity[]> {
     return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
@@ -323,7 +323,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     } else {
       // Routing here is based on tab label, not ideal
       // cases/case-details/:caseId#tabLabel
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel })
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel });
     }
   }
 

@@ -5,6 +5,7 @@ import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { CaseView, CaseViewEvent, HttpError } from '../../domain';
 import { AlertService } from '../../services';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { CaseNotifier, CasesService } from '../case-editor';
 import { CaseTimelineComponent, CaseTimelineDisplayMode } from './case-timeline.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -109,7 +110,8 @@ describe('CaseTimelineComponent', () => {
 
             // Mocks
             eventLogComponentMock,
-            caseHistoryComponentMock
+            caseHistoryComponentMock,
+            MockRpxTranslatePipe
           ],
           providers: [
             { provide: CaseNotifier, useValue: caseNotifier },
@@ -152,7 +154,7 @@ describe('CaseTimelineComponent', () => {
       fixture.detectChanges();
 
       const link = de.query($BACK_TO_TIMELINE_LINK);
-      expect(link.nativeElement.textContent).toBe('Back to case timeline');
+      expect(link.nativeElement.textContent).toBe(' Back to case timeline ');
 
       const caseHistoryDe = de.query(By.directive(caseHistoryComponentMock));
       expect(caseHistoryDe).toBeDefined();
@@ -205,8 +207,8 @@ describe('CaseTimelineComponent', () => {
           imports: [],
           declarations: [
             CaseTimelineComponent,
-
             // Mocks
+            MockRpxTranslatePipe,
             eventLogComponentMock,
             caseHistoryComponentMock
           ],
@@ -231,7 +233,7 @@ describe('CaseTimelineComponent', () => {
       const eventLogDe = de.query(By.directive(eventLogComponentMock));
 
       expect(eventLogDe).toBeNull();
-      expect(alertService.error).toHaveBeenCalledWith(ERROR_MSG);
+      expect(alertService.error).toHaveBeenCalledWith({ phrase: ERROR_MSG });
       expect(component.events).toBeUndefined();
     });
   });
