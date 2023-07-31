@@ -4,17 +4,15 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
-import { CaseView } from '../../../domain/case-view/case-view.model';
 import { DocumentData, FormDocument } from '../../../domain/document/document-data.model';
 import { HttpError } from '../../../domain/http/http-error.model';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 import { initDialog } from '../../helpers';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
-import { EventTriggerService } from '../../case-editor';
 import { JurisdictionService } from '../../../services';
+import { EventTriggerService } from '../../case-editor/services/event-trigger.service';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -41,7 +39,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public dialogSubscription: Subscription;
   public caseEventSubscription: Subscription;
 
-  private caseDetails: CaseView;
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
   private secureModeOn: boolean;
@@ -51,12 +48,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
-    private readonly caseNotifier: CaseNotifier,
     private readonly documentManagement: DocumentManagementService,
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
     private readonly eventTriggerService: EventTriggerService,
-    private readonly jurisdictionService: JurisdictionService 
+    private readonly jurisdictionService: JurisdictionService
   ) {
     super();
   }
@@ -196,19 +192,13 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private subscribeToCaseDetails(): void {
-    // this.caseEventSubscription = this.caseNotifier.caseView.subscribe({
-    //   next: (caseDetails) => {
-    //     this.caseDetails = caseDetails;
-    //   }
-    // });
+    this.eventTriggerService.eventTriggerSource.subscribe((e) => {
+      this.caseTypeId = e.case_id;
+    });
     this.jurisdictionService.getJurisdictions().subscribe({
       next: (jurisdictions) => {
-       this.jurisdictionId = jurisdictions[0].id;;
+       this.jurisdictionId = jurisdictions[0].id;
       }
-    });
-
-    this.eventTriggerService.eventTriggerSource.subscribe((e) => { 
-       this.caseTypeId = e.case_id;
     });
   }
 
@@ -295,7 +285,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (this.appConfig.getDocumentSecureMode()) {
       const caseTypeId = this.caseTypeId ? this.caseTypeId : null;
       const caseTypeJurisdictionId = this.jurisdictionId? this.jurisdictionId  : null;
-      
       documentUpload.append('caseTypeId', caseTypeId);
       documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
     }
