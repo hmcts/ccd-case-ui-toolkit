@@ -13,6 +13,8 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-
 import { initDialog } from '../../helpers';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
+import { EventTriggerService } from '../../case-editor';
+import { JurisdictionService } from '../../../services';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -44,12 +46,17 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private dialogConfig: MatDialogConfig;
   private secureModeOn: boolean;
 
+  public jurisdictionId: string;
+  public caseTypeId: string;
+
   constructor(
     private readonly appConfig: AbstractAppConfig,
     private readonly caseNotifier: CaseNotifier,
     private readonly documentManagement: DocumentManagementService,
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
+    private readonly eventTriggerService: EventTriggerService,
+    private readonly jurisdictionService: JurisdictionService 
   ) {
     super();
   }
@@ -189,10 +196,19 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private subscribeToCaseDetails(): void {
-    this.caseEventSubscription = this.caseNotifier.caseView.subscribe({
-      next: (caseDetails) => {
-        this.caseDetails = caseDetails;
+    // this.caseEventSubscription = this.caseNotifier.caseView.subscribe({
+    //   next: (caseDetails) => {
+    //     this.caseDetails = caseDetails;
+    //   }
+    // });
+    this.jurisdictionService.getJurisdictions().subscribe({
+      next: (jurisdictions) => {
+       this.jurisdictionId = jurisdictions[0].id;;
       }
+    });
+
+    this.eventTriggerService.eventTriggerSource.subscribe((e) => { 
+       this.caseTypeId = e.case_id;
     });
   }
 
@@ -277,13 +293,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     documentUpload.append('classification', 'PUBLIC');
 
     if (this.appConfig.getDocumentSecureMode()) {
-      const caseTypeId = this.caseDetails &&
-                          this.caseDetails.case_type &&
-                          this.caseDetails.case_type.id ? this.caseDetails.case_type.id : null;
-      const caseTypeJurisdictionId = this.caseDetails &&
-                                      this.caseDetails.case_type &&
-                                      this.caseDetails.case_type.jurisdiction &&
-                                      this.caseDetails.case_type.jurisdiction.id ? this.caseDetails.case_type.jurisdiction.id : null;
+      const caseTypeId = this.caseTypeId ? this.caseTypeId : null;
+      const caseTypeJurisdictionId = this.jurisdictionId? this.jurisdictionId  : null;
+      
       documentUpload.append('caseTypeId', caseTypeId);
       documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
     }

@@ -15,8 +15,10 @@ import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import { FieldLabelPipe } from '../utils';
 import { FileUploadStateService } from './file-upload-state.service';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
+import { EventTriggerService } from '../../case-editor';
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { JurisdictionService } from 'ccd-case-ui-toolkit/public-api';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -113,6 +115,7 @@ describe('WriteDocumentFieldComponent', () => {
   let mockMatDialogRef: any;
   let appConfig: any;
   let casesService: any;
+  let jurisdictionService: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -151,6 +154,7 @@ describe('WriteDocumentFieldComponent', () => {
           {provide: FileUploadStateService, useValue: mockFileUploadStateService},
           {provide: AbstractAppConfig, useValue: appConfig },
           { provide: CasesService, useValue: casesService },
+          { provide: JurisdictionService, useValue: jurisdictionService },
           DocumentDialogComponent,
           CaseNotifier
         ]
@@ -465,6 +469,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
   let casesService: any;
+  let jurisdictionService: any;
 
   beforeEach(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -503,6 +508,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           {provide: FileUploadStateService, useValue: mockFileUploadStateService},
           {provide: AbstractAppConfig, useValue: appConfig},
           {provide: CasesService, useValue: casesService},
+          { provide: JurisdictionService, useValue: jurisdictionService },
           DocumentDialogComponent,
           CaseNotifier
         ]
