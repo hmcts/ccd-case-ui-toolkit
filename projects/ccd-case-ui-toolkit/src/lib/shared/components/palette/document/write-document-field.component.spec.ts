@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { of, Subscription, throwError } from 'rxjs';
+import { Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { DocumentData } from '../../../domain/document';

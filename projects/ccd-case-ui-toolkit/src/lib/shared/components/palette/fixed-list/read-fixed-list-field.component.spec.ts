@@ -1,8 +1,8 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
-
 import { CaseField, FieldType } from '../../../domain/definition';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FixedListPipe } from './fixed-list.pipe';
 import { ReadFixedListFieldComponent } from './read-fixed-list-field.component';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';

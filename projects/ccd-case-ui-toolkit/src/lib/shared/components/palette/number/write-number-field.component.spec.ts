@@ -50,6 +50,7 @@ describe('WriteNumberFieldComponent', () => {
           MockRpxTranslatePipe,
 
           // Mocks
+          MockRpxTranslatePipe,
           inputComponentMock
         ],
         providers: []

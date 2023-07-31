@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { ConditionalShowModule } from '../../directives/conditional-show/conditional-show.module';
 import { AlertService } from '../../services/alert/alert.service';
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';

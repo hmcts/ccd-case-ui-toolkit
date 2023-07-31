@@ -1332,7 +1332,6 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           DeleteOrCancelDialogComponent,
           EventTriggerComponent,
           CallbackErrorsComponent,
-          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
           caseHeaderComponentMock,

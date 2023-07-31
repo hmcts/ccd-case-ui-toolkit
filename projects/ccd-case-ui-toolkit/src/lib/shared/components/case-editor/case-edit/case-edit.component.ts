@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-
 import { finalize } from 'rxjs/operators';
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import {
