@@ -2727,7 +2727,6 @@ __metadata:
     jasmine-spec-reporter: ~5.0.0
     json-loader: ^0.5.4
     json-server: ^0.15.1
-    just-clone: ^6.2.0
     karma: ~6.4.0
     karma-chrome-launcher: ~3.1.0
     karma-coverage: ~2.0.3
@@ -2760,7 +2759,6 @@ __metadata:
     rollup-plugin-commonjs: ^9.1.8
     rollup-plugin-node-resolve: ^3.0.0
     rollup-plugin-typescript: ^1.0.0
-    rpx-xui-translation: 0.2.3-yesno-translations-fix-v2
     rx-polling: 1.1.0
     rxjs: ^6.6.7
     rxjs-compat: ^6.6.7
@@ -9749,13 +9747,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dexie@npm:^3.2.2":
-  version: 3.2.4
-  resolution: "dexie@npm:3.2.4"
-  checksum: 4e5294a954118b6862c864b8c3970904a1733daebcd919488624520696411e2e81ed1bceeac3634c5c15a21e37ce4b8502ed41c4edfbc5ba3f5925c34d56497b
-  languageName: node
-  linkType: hard
-
 "dfa@npm:^1.2.0":
   version: 1.2.0
   resolution: "dfa@npm:1.2.0"
@@ -15152,13 +15143,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"just-clone@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "just-clone@npm:6.2.0"
-  checksum: 2c3353e3524aba8adae499973d9b8663eed3a647c73fd60149ac8a10031353e82ff1941820b56c96d12263424f50e564c7dd1fd330cf6de630455909810e13a6
-  languageName: node
-  linkType: hard
-
 "just-debounce@npm:^1.0.0":
   version: 1.1.0
   resolution: "just-debounce@npm:1.1.0"
@@ -15885,13 +15869,6 @@ __metadata:
   version: 2.3.9
   resolution: "lunr@npm:2.3.9"
   checksum: 176719e24fcce7d3cf1baccce9dd5633cd8bdc1f41ebe6a180112e5ee99d80373fe2454f5d4624d437e5a8319698ca6837b9950566e15d2cae5f2a543a3db4b8
-  languageName: node
-  linkType: hard
-
-"luxon@npm:^2.4.0":
-  version: 2.5.2
-  resolution: "luxon@npm:2.5.2"
-  checksum: d8b671ffd2ff0b438af862ac11082a81b3aedd9f8b6a4ca636f944224f8dd381125cd4d274ca0a8aedcaf2cfca0fc2ca96fe4cc1b16a28b7af701afb95c0bff8
   languageName: node
   linkType: hard
 
@@ -21001,20 +20978,6 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: 6a2bf167b3587d4df709b37d149ad0300692cc5deb510f89ac7bdc77c8738c9546ae3de9322b0968e1ed2b0e984571f5f55aae28fa7de4cfcb1bc5402a4e2be6
-  languageName: node
-  linkType: hard
-
-"rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2":
-  version: 0.2.3-yesno-translations-fix-v2
-  resolution: "rpx-xui-translation@npm:0.2.3-yesno-translations-fix-v2"
-  dependencies:
-    dexie: ^3.2.2
-    luxon: ^2.4.0
-    tslib: ^1.10.0
-  peerDependencies:
-    "@angular/common": ^9.1.13
-    "@angular/core": ^9.1.13
-  checksum: 5669fed9f095abfb90e69fb2d2c3eb927542d774e33da5f262948516814b6b4f1a55064e55135c0ffa8302a843789bcf79bb624aef747f6f858b081547fbd392
   languageName: node
   linkType: hard
 
