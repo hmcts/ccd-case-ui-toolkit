@@ -31,6 +31,7 @@ export class TabsComponent implements AfterContentInit {
 
     id = id || panels[0].id;
 
+    /* istanbul ignore else */
     if (0 > this.panelIds.indexOf(id)) {
       id = panels[0].id;
     }

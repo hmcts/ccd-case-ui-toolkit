@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import {
   AbstractAppConfig,
   AccessManagementBasicViewMockModel,
@@ -157,7 +159,7 @@ export class AppMockConfig implements AbstractAppConfig {
     return '';
   }
 
-  getNotificationUrl(): string {
+  public getNotificationUrl(): string {
     return '';
   }
 

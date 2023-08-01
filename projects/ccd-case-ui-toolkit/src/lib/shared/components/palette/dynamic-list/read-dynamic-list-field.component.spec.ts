@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { DynamicListPipe } from './dynamic-list.pipe';
 import { ReadDynamicListFieldComponent } from './read-dynamic-list-field.component';
 
@@ -71,7 +72,8 @@ describe('ReadDynamicListFieldComponent', () => {
           imports: [],
           declarations: [
             ReadDynamicListFieldComponent,
-            DynamicListPipe
+            DynamicListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -167,7 +169,8 @@ describe('ReadDynamicListFieldComponent', () => {
           imports: [],
           declarations: [
             ReadDynamicListFieldComponent,
-            DynamicListPipe
+            DynamicListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })

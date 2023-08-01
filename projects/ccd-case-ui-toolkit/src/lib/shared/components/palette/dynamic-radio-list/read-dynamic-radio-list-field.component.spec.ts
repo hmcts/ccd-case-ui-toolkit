@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { DynamicRadioListPipe } from './dynamic-radio-list.pipe';
 import { ReadDynamicRadioListFieldComponent } from './read-dynamic-radio-list-field.component';
 
@@ -75,7 +76,8 @@ describe('ReadDynamicRadioListFieldComponent', () => {
           imports: [],
           declarations: [
             ReadDynamicRadioListFieldComponent,
-            DynamicRadioListPipe
+            DynamicRadioListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })

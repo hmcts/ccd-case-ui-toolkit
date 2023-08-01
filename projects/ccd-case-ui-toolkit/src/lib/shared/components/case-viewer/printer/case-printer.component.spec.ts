@@ -7,6 +7,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CasePrintDocument, CaseView } from '../../../domain';
 import { AlertService } from '../../../services';
 import { attr, text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { PaletteUtilsModule } from '../../palette';
 import { CasePrinterComponent } from './case-printer.component';
@@ -86,9 +87,9 @@ describe('CasePrinterComponent', () => {
         declarations: [
           CasePrinterComponent,
           PrintUrlPipe,
-
           // Mocks
-          caseHeaderComponentMock
+          caseHeaderComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: CaseNotifier, useValue: caseService },
