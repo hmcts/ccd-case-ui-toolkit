@@ -11,6 +11,7 @@ import { OrganisationConverter } from '../../../domain/organisation';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { OrganisationService } from '../../../services/organisation';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
 import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteService } from '../palette.service';
@@ -115,6 +116,7 @@ describe('ReadOrganisationFieldRawComponent', () => {
         MarkdownComponent,
         ReadOrganisationFieldRawComponent,
         FieldsFilterPipe,
+        MockRpxTranslatePipe,
         fieldReadComponentMock
       ],
       providers: [

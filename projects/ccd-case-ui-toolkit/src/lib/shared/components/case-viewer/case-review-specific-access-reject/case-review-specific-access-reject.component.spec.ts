@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseReviewSpecificAccessRejectComponent } from './case-review-specific-access-reject.component';
 
 describe('CaseReviewSpecificAccessRejectComponent', () => {
@@ -21,7 +22,7 @@ describe('CaseReviewSpecificAccessRejectComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [ CaseReviewSpecificAccessRejectComponent ],
+      declarations: [ CaseReviewSpecificAccessRejectComponent, MockRpxTranslatePipe ],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
       ]

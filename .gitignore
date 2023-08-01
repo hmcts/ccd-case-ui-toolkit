@@ -45,6 +45,9 @@ tmp/*
 # Visual Studio Code
 .history/
 
+# Yarn
+.yarn
+
 # docs
 docs/
 

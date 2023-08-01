@@ -9,6 +9,7 @@ import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { createACL } from '../../fixture/shared.test.fixture';
 import { AlertService, DefinitionsService, OrderService, SessionStorageService } from '../../services';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { CreateCaseFiltersComponent } from './create-case-filters.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -304,7 +305,8 @@ describe('CreateCaseFiltersComponent', () => {
           ReactiveFormsModule
         ],
         declarations: [
-          CreateCaseFiltersComponent
+          CreateCaseFiltersComponent,
+          MockRpxTranslatePipe
         ], providers: [
           { provide: OrderService, useValue: mockOrderService },
           { provide: AlertService, useValue: mockAlertService },

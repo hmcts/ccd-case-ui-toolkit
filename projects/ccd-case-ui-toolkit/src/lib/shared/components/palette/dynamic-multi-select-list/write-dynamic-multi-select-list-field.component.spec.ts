@@ -1,16 +1,16 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { NgxMdModule } from 'ngx-md';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { PipesModule } from '../../../pipes';
 import { attr } from '../../../test/helpers';
+import { MarkdownComponent } from '../markdown';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDynamicMultiSelectListFieldComponent } from './write-dynamic-multi-select-list-field.component';
-import { NgxMdModule } from 'ngx-md';
-import { PipesModule } from '../../../pipes';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MarkdownComponent } from '../markdown';
 
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
