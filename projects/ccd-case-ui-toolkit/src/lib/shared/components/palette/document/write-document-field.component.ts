@@ -13,6 +13,8 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 import { FileUploadStateService } from './file-upload-state.service';
 import { JurisdictionService } from '../../../services';
 import { EventTriggerService } from '../../case-editor/services/event-trigger.service';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { CaseNotifier } from '../../case-editor/services/case.notifier';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -44,7 +46,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private secureModeOn: boolean;
 
   public jurisdictionId: string;
-  public caseTypeId: string;
+  public caseTypeId: string = "SSCS_ExceptionRecord";
+  private caseDetails: CaseView
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
@@ -52,7 +55,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
     private readonly eventTriggerService: EventTriggerService,
-    private readonly jurisdictionService: JurisdictionService
+    private readonly jurisdictionService: JurisdictionService,
+    private readonly caseNotifier: CaseNotifier
   ) {
     super();
   }
@@ -192,12 +196,22 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private subscribeToCaseDetails(): void {
+    this.caseEventSubscription = this.caseNotifier.caseView.subscribe({
+      next: (caseDetails) => {
+        this.caseDetails = caseDetails;
+        console.log("Case Details :", this.caseDetails);
+      }
+    });
+
     this.eventTriggerService.eventTriggerSource.subscribe((e) => {
       this.caseTypeId = e.case_id;
+      console.log("this.caseTypeId :", this.caseTypeId);
     });
+
     this.jurisdictionService.getJurisdictions().subscribe({
       next: (jurisdictions) => {
        this.jurisdictionId = jurisdictions[0].id;
+       console.log("this.jurisdictionId :", this.jurisdictionId);
       }
     });
   }
