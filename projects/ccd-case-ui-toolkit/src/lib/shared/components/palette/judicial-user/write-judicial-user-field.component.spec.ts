@@ -1,16 +1,15 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { By } from '@angular/platform-browser';
-import { RpxTranslationService } from 'rpx-xui-translation';
 import { of, throwError } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { HmctsServiceDetail } from '../../../domain/case-flag';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
 import { CaseFlagRefdataService, FieldsUtils, FormValidatorsService, JurisdictionService, SessionStorageService } from '../../../services';
-import { IsCompoundPipe, PaletteUtilsModule } from '../utils';
+import { FirstErrorPipe, IsCompoundPipe, PaletteUtilsModule } from '../utils';
 import { WriteJudicialUserFieldComponent } from './write-judicial-user-field.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -119,6 +118,17 @@ const SERVICE_DETAILS = [
   }
 ] as HmctsServiceDetail[];
 
+@Pipe({
+  name: 'ccdFirstError',
+  pure: false
+})
+class MockFirstErrorPipe implements PipeTransform {
+  transform(value: ValidationErrors, args?: string): string {
+    const keys = Object.keys(value);
+    return keys[0] === 'required' ? `${args || 'Field'} is required` : value[keys[0]];
+  }
+}
+
 describe('WriteJudicialUserFieldComponent', () => {
   let fixture: ComponentFixture<WriteJudicialUserFieldComponent>;
   let component: WriteJudicialUserFieldComponent;
@@ -150,7 +160,7 @@ describe('WriteJudicialUserFieldComponent', () => {
         MatAutocompleteModule,
         PaletteUtilsModule
       ],
-      declarations: [WriteJudicialUserFieldComponent],
+      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: JurisdictionService, useValue: jurisdictionService },
@@ -158,8 +168,7 @@ describe('WriteJudicialUserFieldComponent', () => {
         { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService },
         { provide: IsCompoundPipe, useValue: compoundPipe },
         { provide: FormValidatorsService, useValue: validatorsService },
-        { provide: RpxTranslationService, useValue: jasmine.createSpyObj(
-          'RpxTranslationService', ['getTranslation$', 'translate', 'getTranslationWithReplacements$']) }
+        { provide: FirstErrorPipe, useValue: MockFirstErrorPipe }
       ]
     })
     .compileComponents();
