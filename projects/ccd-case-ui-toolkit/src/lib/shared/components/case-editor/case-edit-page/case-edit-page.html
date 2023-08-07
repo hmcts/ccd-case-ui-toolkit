@@ -1,8 +1,8 @@
 <ng-container *ngIf="currentPage">
-  <h1 *ngIf="!currentPage.label" class="govuk-heading-l">{{eventTrigger.name}}</h1>
+  <h1 *ngIf="!currentPage.label" class="govuk-heading-l">{{eventTrigger.name | rpxTranslate}}</h1>
   <ng-container *ngIf="currentPage.label">
-    <span class="govuk-caption-l">{{ eventTrigger.name}}</span>
-    <h1 class="govuk-heading-l">{{currentPage.label}}</h1>
+    <span class="govuk-caption-l">{{ eventTrigger.name | rpxTranslate}}</span>
+    <h1 class="govuk-heading-l">{{currentPage.label | rpxTranslate}}</h1>
   </ng-container>
 </ng-container>
 
@@ -18,12 +18,14 @@
 <!-- Error message summary -->
 <div *ngIf="validationErrors.length > 0" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
   <h2 class="govuk-error-summary__title" id="error-summary-title">
-    There is a problem
+    {{'There is a problem' | rpxTranslate}}
   </h2>
   <div *ngFor="let validationError of validationErrors" class="govuk-error-summary__body">
     <ul class="govuk-list govuk-error-summary__list">
       <li>
-        <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">{{validationError.message}}</a>
+        <a (click)="navigateToErrorElement(validationError.id)" class="validation-error">
+          {{ validationError.message | rpxTranslate: getRpxTranslatePipeArgs(validationError.label | rpxTranslate): null }}
+        </a>
       </li>
     </ul>
   </div>
@@ -61,13 +63,12 @@
 
     <div class="form-group form-group-related">
       <button class="button button-secondary" type="button" [disabled]="!(hasPreviousPage$ | async)" (click)="toPreviousPage()">
-        Previous
+        {{'Previous' | rpxTranslate}}
       </button>
-      <button class="button" type="submit" [disabled]="submitting()">{{triggerText}}</button>
+      <button class="button" type="submit" [disabled]="submitting()">{{triggerText | rpxTranslate}}</button>
     </div>
 
-    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText()}}</a></p>
-
+    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)">{{getCancelText() | rpxTranslate}}</a></p>
   </form>
 </div>
 

@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MockRpxTranslatePipe } from '../../../utils/first-error.pipe.spec';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
 import { SelectFlagLocationComponent } from './select-flag-location.component';
@@ -79,7 +80,7 @@ describe('SelectFlagLocationComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ SelectFlagLocationComponent ]
+      declarations: [ SelectFlagLocationComponent, MockRpxTranslatePipe ]
     })
     .compileComponents();
   }));

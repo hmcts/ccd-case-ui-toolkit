@@ -4,11 +4,12 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { of, Subscription, throwError } from 'rxjs';
+import { Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { DocumentData } from '../../../domain/document';
 import { DocumentManagementService } from '../../../services/document-management';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog';
 import { FieldLabelPipe } from '../utils';
@@ -139,7 +140,8 @@ describe('WriteDocumentFieldComponent', () => {
           DocumentDialogComponent,
 
           // Mocks
-          readDocumentComponentMock
+          readDocumentComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: DocumentManagementService, useValue: mockDocumentManagementService},
@@ -490,7 +492,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           DocumentDialogComponent,
 
           // Mocks
-          readDocumentComponentMock
+          readDocumentComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: DocumentManagementService, useValue: mockDocumentManagementService},

@@ -9,9 +9,8 @@ export * from './date';
 export * from './datetime-picker';
 export * from './document';
 export * from './dynamic-list';
-export * from './dynamic-radio-list';
 export * from './dynamic-multi-select-list';
-
+export * from './dynamic-radio-list';
 export * from './email';
 export * from './fixed-list';
 export * from './fixed-radio-list';
@@ -35,3 +34,4 @@ export * from './unsupported-field.component';
 export * from './utils';
 export * from './waystopay';
 export * from './yes-no';
+

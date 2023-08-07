@@ -712,15 +712,15 @@ describe('CaseEditSubmitComponent', () => {
       it('should call caseEdits submitForm', () => {
         comp.submit();
         expect(caseEditComponent.submitForm).toHaveBeenCalled();
-      })
-    })
+      });
+    });
 
     describe('onEventCanBeCompleted', () => {
       it('should call caseEdits onEventCanBeCompleted', () => {
         comp.onEventCanBeCompleted(true);
         expect(caseEditComponent.onEventCanBeCompleted).toHaveBeenCalled();
-      })
-    })
+      });
+    });
 
     describe('isLabel', () => {
       it('should call caseFieldServices isLabel', () => {
@@ -728,8 +728,8 @@ describe('CaseEditSubmitComponent', () => {
         const fieldSample = { id: 'sample' } as unknown as CaseField;
         comp.isLabel(fieldSample);
         expect(caseFieldService.isLabel).toHaveBeenCalled();
-      })
-    })
+      });
+    });
 
     describe('callbackErrorsNotify', () => {
       it('should update triggerText and caseEdits ignoreWarning', () => {
@@ -740,7 +740,7 @@ describe('CaseEditSubmitComponent', () => {
         comp.callbackErrorsNotify(sampleCallbackErrorsContext);
         expect(caseEditComponent.ignoreWarning).toEqual(sampleCallbackErrorsContext.ignoreWarning);
         expect(comp.triggerText).toEqual(sampleCallbackErrorsContext.triggerText);
-      })
-    })
+      });
+    });
   });
 });

@@ -2,6 +2,9 @@
 ### Version 6.18.2-hotfix-EUI-8601-2
 **EUI-8601** Re-implement `WriteJudicialUserField` component to extend `WriteComplexFieldComponent`, to ensure correct working when used in a collection
 
+### Version 6.18.0-welsh-release-v6
+**EUI-5497** Welsh release part 1
+
 ### Version 6.18.2-rc2
 **EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button
 **EXUI-229** DynamicMultiSelectList Updates Required
@@ -48,6 +51,12 @@
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
+### Version 6.10.6-r3.5-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs (re-release following update to Release 3.5)
+
+### Version 5.0.50-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs
+
 ### Version 6.14.1--fee-pay-props
 **EUI-7489** Added additional props to nested ccpay instance
 
@@ -56,6 +65,9 @@
 
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
+
+### Version 5.0.46-case-flags-not-approved-status
+**EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab
