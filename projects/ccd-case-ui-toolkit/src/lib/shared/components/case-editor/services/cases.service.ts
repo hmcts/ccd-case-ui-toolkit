@@ -110,8 +110,14 @@ export class CasesService {
           this.errorService.setError(error);
           return throwError(error);
         }),
-        finalize(() => this.loadingService.unregister(loadingToken))
+        finalize(() => this.finalizeGetCaseViewWith(caseId, loadingToken))
       );
+  }
+
+  private finalizeGetCaseViewWith(caseId:string, loadingToken) {
+    console.info('finalizeGetCaseViewWith started.');
+    this.loadingService.unregister(loadingToken);
+    console.info('finalizeGetCaseViewWith finished.');
   }
 
   public getEventTrigger(caseTypeId: string,
