@@ -114,10 +114,10 @@ export class CasesService {
       );
   }
 
-  private finalizeGetCaseViewWith(caseId:string, loadingToken) {
-    console.info('finalizeGetCaseViewWith started.');
+  private finalizeGetCaseViewWith(caseId: string, loadingToken: string) {
+    console.info(`finalizeGetCaseViewWith started for ${caseId}.`);
     this.loadingService.unregister(loadingToken);
-    console.info('finalizeGetCaseViewWith finished.');
+    console.info(`finalizeGetCaseViewWith finished for ${caseId}.`);
   }
 
   public getEventTrigger(caseTypeId: string,
