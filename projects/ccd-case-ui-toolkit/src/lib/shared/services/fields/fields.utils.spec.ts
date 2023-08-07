@@ -786,5 +786,11 @@ describe('FieldsUtils', () => {
       const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
       expect(FieldsUtils.isCaseFieldOfType(caseField, [])).toBe(false);
     });
+
+    it('should return true if case field is of the specified type but type ID and name are different (e.g. "Flags" type)', () => {
+      const caseField = aCaseField('flags', 'flags', 'Flags', 'OPTIONAL', null, null, false, true);
+      caseField.field_type.type = 'Complex';
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['Flags'])).toBe(true);
+    });
   });
 });

@@ -1,6 +1,8 @@
 ## RELEASE NOTES
-### Version 6.18.2-hotfix-EUI-8601-2
+### Version 6.18.2-hotfix-EUI-8601-8687-8732
 **EUI-8601** Re-implement `WriteJudicialUserField` component to extend `WriteComplexFieldComponent`, to ensure correct working when used in a collection
+**EUI-8687** Fix validation logic for `WriteJudicialUserField` component
+**EUI-8732** Fix `WriteJudicialUserField` error handling to allow user to continue searching if an error occurs on calling `getJudicialUsersSearch` API endpoint
 
 ### Version 6.18.0-welsh-release-v6
 **EUI-5497** Welsh release part 1

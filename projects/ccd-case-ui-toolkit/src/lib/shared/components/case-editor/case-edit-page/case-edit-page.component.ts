@@ -184,7 +184,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
       .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path))
       .forEach(casefield => {
-        const fieldElement = group.get(casefield.id);
+        const fieldElement = FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])
+          ? group.get(`${casefield.id}_judicialUserControl`)
+          : group.get(casefield.id);
         if (fieldElement) {
           const label = casefield.label || 'Field';
           let id = casefield.id;
@@ -198,6 +200,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           if (fieldElement.hasError('required')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
             fieldElement.markAsDirty();
+            // For the JudicialUser field type, an error needs to be set on the component so that an error message
+            // can be displayed at field level
+            if (FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])) {
+              fieldElement['component'].errors = { required: true };
+            }
           } else if (fieldElement.hasError('pattern')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is not valid`, label });
             fieldElement.markAsDirty();
