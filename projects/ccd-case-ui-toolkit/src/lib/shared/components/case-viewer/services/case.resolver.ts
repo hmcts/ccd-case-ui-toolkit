@@ -77,7 +77,6 @@ export class CaseResolver implements Resolve<CaseView> {
           .toPromise();
       }
     }
-    console.info('getAndCacheCaseView finished.');
   }
 
   private getAndCacheDraft(cid): Promise<CaseView> {
