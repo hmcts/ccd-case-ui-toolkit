@@ -9,7 +9,7 @@ import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 export class FormValidatorsService {
 
   private static readonly CUSTOM_VALIDATED_TYPES: FieldTypeEnum[] = [
-    'Date', 'MoneyGBP', 'Label'
+    'Date', 'MoneyGBP', 'Label', 'JudicialUser'
   ];
   public static addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
     if (
