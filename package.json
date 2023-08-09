@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.0-ConsoleLogs.4",
+  "version": "6.18.3-ConsoleLogs.1",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
