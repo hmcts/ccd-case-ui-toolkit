@@ -1,10 +1,10 @@
 <ng-container [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
     <fieldset class="govuk-fieldset" aria-describedby="flag-location-heading">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <h2 id="flag-location-heading" class="heading-h2">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        <h1 id="flag-location-heading" class="govuk-fieldset__heading">
           {{flagLocationTitle | rpxTranslate}}
-        </h2>
+        </h1>
       </legend>
       <div id="flag-location-not-selected-error-message" class="govuk-error-message"
         *ngIf="flagLocationNotSelectedErrorMessage">

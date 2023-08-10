@@ -1,15 +1,15 @@
 <ng-container *ngIf="flagTypes?.length" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
     <fieldset class="govuk-fieldset" aria-describedby="flag-type-heading">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <h2 id="flag-type-heading" class="heading-h2">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        <h1 id="flag-type-heading" class="govuk-fieldset__heading govuk-!-margin-bottom-1">
           <ng-container *ngIf="!cachedFlagType; else priorFlagTypeSelected">
             {{caseFlagWizardStepTitle.SELECT_CASE_FLAG | rpxTranslate}}
           </ng-container>
           <ng-template #priorFlagTypeSelected>
             {{cachedFlagType | flagFieldDisplay:'name'}}
           </ng-template>
-        </h2>
+        </h1>
       </legend>
       <div id="flag-type-not-selected-error-message" class="govuk-error-message"
         *ngIf="flagTypeNotSelectedErrorMessage.length > 0">
