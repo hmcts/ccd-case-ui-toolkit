@@ -6,7 +6,14 @@
         </label>
       </h1>
       <div id="add-comments-hint" class="govuk-hint">
-        {{addCommentsHint | rpxTranslate}}
+        {{addCommentsStepEnum.HINT_TEXT | rpxTranslate}}
+      </div>
+      <div class="govuk-warning-text" *ngIf="!isDisplayContextParameterExternal">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-warning-text__assistive">Warning</span>
+          {{addCommentsStepEnum.WARNING_TEXT | rpxTranslate}}
+        </strong>
       </div>
       <div id="flag-comments-not-entered-error-message" class="govuk-error-message"
         *ngIf="flagCommentsNotEnteredErrorMessage">
@@ -20,7 +27,7 @@
         [name]="flagCommentsControlName" [formControlName]="flagCommentsControlName" rows="5"
         aria-describedby="add-comments-hint add-comments-char-limit-info add-comments-char-limit-error"></textarea>
       <div id="add-comments-char-limit-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-        {{addCommentsCharLimitInfo | rpxTranslate}}
+        {{addCommentsStepEnum.CHARACTER_LIMIT_INFO | rpxTranslate}}
       </div>
     </div>
   </div>

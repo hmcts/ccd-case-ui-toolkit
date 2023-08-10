@@ -18,6 +18,13 @@
         <div id="update-flag-hint" class="govuk-hint">
           {{updateFlagStepEnum.COMMENT_HINT_TEXT | rpxTranslate}}
         </div>
+        <div class="govuk-warning-text" *ngIf="displayContextParameter === caseFlagDisplayContextParameter.UPDATE">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            {{updateFlagStepEnum.WARNING_TEXT | rpxTranslate}}
+          </strong>
+        </div>
         <div id="update-flag-not-entered-error-message" class="govuk-error-message"
               *ngIf="updateFlagNotEnteredErrorMessage">
           <span class="govuk-visually-hidden">{{'Error:' | rpxTranslate}}</span> {{updateFlagNotEnteredErrorMessage | rpxTranslate}}

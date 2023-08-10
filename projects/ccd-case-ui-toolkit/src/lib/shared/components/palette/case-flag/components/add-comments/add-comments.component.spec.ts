@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
-import { AddCommentsErrorMessage, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
+import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
 import { AddCommentsComponent } from './add-comments.component';
 
 describe('AddCommentsComponent', () => {
@@ -141,5 +141,19 @@ describe('AddCommentsComponent', () => {
     component.isDisplayContextParameterExternal = true;
     component.ngOnInit();
     expect(component.addCommentsTitle).toBe(CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS_EXTERNAL_MODE);
+  });
+
+  it('should display the warning text for case workers and internal staff users', () => {
+    component.isDisplayContextParameterExternal = false;
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement.textContent.trim()).toContain(AddCommentsStep.WARNING_TEXT);
+  });
+
+  it('should not display the warning text for solicitors and external users', () => {
+    component.isDisplayContextParameterExternal = true;
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
   });
 });
