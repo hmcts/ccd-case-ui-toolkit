@@ -2,9 +2,9 @@
   <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
     <fieldset class="govuk-fieldset" aria-describedby="manage-case-flag-heading">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <h1 id="manage-case-flag-heading" class="govuk-fieldset__heading">
+        <h2 id="manage-case-flag-heading" class="heading-h2">
           {{manageCaseFlagTitle | rpxTranslate}}
-        </h1>
+        </h2>
       </legend>
       <div id="manage-case-flag-not-selected-error-message" class="govuk-error-message"
         *ngIf="manageCaseFlagSelectedErrorMessage">

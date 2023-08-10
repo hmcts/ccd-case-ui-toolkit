@@ -1,11 +1,9 @@
 <ng-container [formGroup]="formGroup">
   <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
-      <h1 class="govuk-label-wrapper govuk-!-margin-bottom-4">
-        <label class="govuk-label govuk-label--l">
-          {{updateFlagTitle | rpxTranslate}}
-        </label>
-      </h1>
+      <h2 class="heading-h2">
+        {{updateFlagTitle | rpxTranslate}}
+      </h2>
       <div id="update-flag-hint" class="govuk-hint"
         *ngIf="displayContextParameter === caseFlagDisplayContextParameter.UPDATE_EXTERNAL">
         {{selectedFlag?.flagDetailDisplay?.flagDetail | updateFlagTitleDisplay}}

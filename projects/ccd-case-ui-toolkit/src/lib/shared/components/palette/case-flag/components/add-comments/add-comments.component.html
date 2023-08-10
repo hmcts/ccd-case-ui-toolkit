@@ -1,10 +1,10 @@
 <ng-container [formGroup]="formGroup">
   <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
-      <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" [for]="flagCommentsControlName">
+      <h2 class="heading-h2"><label [for]="flagCommentsControlName">
           {{addCommentsTitle | rpxTranslate}}<span *ngIf="optional"> ({{'optional' | rpxTranslate}})</span>
         </label>
-      </h1>
+      </h2>
       <div id="add-comments-hint" class="govuk-hint">
         {{addCommentsStepEnum.HINT_TEXT | rpxTranslate}}
       </div>
