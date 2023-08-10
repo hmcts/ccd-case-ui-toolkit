@@ -10,7 +10,7 @@ import { FieldsUtils } from '../../../services/fields';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
+import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus } from './enums';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
@@ -22,7 +22,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];
-  public createFlagCaption: CaseFlagText;
   public flagsData: FlagsWithFormGroupPath[];
   public selectedFlag: FlagDetailDisplayWithFormGroupPath;
   public caseFlagParentFormGroup: FormGroup;
@@ -128,9 +127,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         if (!this.fieldState) {
           this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
         }
-
-        // Set Create Case Flag component title caption text (appearing above child component <h1> title)
-        this.createFlagCaption = this.setCreateFlagCaption(this.displayContextParameter);
 
         // Get case title, to be used by child components
         this.caseTitleSubscription = this.caseEditDataService.caseTitle$.subscribe({
@@ -430,16 +426,5 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public setDisplayContextParameter(caseFields: CaseField[]): string {
     return caseFields.find(caseField => FieldsUtils.isFlagLauncherCaseField(caseField))?.display_context_parameter;
-  }
-
-  public setCreateFlagCaption(displayContextParameter: string): CaseFlagText {
-    switch (displayContextParameter) {
-      case CaseFlagDisplayContextParameter.CREATE:
-        return CaseFlagText.CAPTION_INTERNAL;
-      case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
-        return CaseFlagText.CAPTION_EXTERNAL;
-      default:
-        return CaseFlagText.CAPTION_NONE;
-    }
   }
 }

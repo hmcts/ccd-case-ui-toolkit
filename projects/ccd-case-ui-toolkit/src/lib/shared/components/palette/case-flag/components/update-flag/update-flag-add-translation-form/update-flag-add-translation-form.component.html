@@ -1,11 +1,9 @@
 <ng-container [formGroup]="formGroup">
   <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
-      <h1 class="govuk-label-wrapper govuk-!-margin-bottom-6">
-        <label class="govuk-label govuk-label--l">
+      <h2 class="heading-h2">
           {{ updateFlagAddTranslationTitle | rpxTranslate}}
-        </label>
-      </h1>
+      </h2>
       <div id="add-translation-form-hint" class="govuk-hint">
         {{ updateFlagAddTranslationStepEnum.HINT_TEXT | rpxTranslate}}
       </div>

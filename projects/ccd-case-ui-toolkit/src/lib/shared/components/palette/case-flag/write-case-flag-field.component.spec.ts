@@ -10,7 +10,7 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
+import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 import createSpy = jasmine.createSpy;
@@ -1095,10 +1095,5 @@ describe('WriteCaseFlagFieldComponent', () => {
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_TYPE;
     component.ngOnInit();
     expect(component.fieldState).toEqual(CaseFlagFieldState.FLAG_TYPE);
-  });
-
-  it('should set Create Case Flag component title caption text correctly', () => {
-    expect(component.setCreateFlagCaption(createMode)).toEqual(CaseFlagText.CAPTION_INTERNAL);
-    expect(component.setCreateFlagCaption(createExternalMode)).toEqual(CaseFlagText.CAPTION_EXTERNAL);
   });
 });
