@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.19.0-case-flags-v2.1-warning-text-display
+### Version 6.19.0-case-flags-v2.1-warning-text-display-v2
 **EUI-8709** Case flags v2.1 add warning text to create case flag journey
 **EUI-8710** Case flags v2.1 add warning text to update case flag journey
 
