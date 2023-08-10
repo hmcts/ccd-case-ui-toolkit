@@ -10,8 +10,7 @@ module.exports = function (config) {
         require('karma-chrome-launcher'),
         require('karma-jasmine-html-reporter'),
         require('karma-coverage'),
-        require('@angular-devkit/build-angular/plugins/karma'),
-        require('karma-spec-reporter')
+        require('@angular-devkit/build-angular/plugins/karma')
       ],
       client: {
         jasmine:{
@@ -34,7 +33,7 @@ module.exports = function (config) {
       defaultTimeoutInterval: 60000,
       browserNoActivityTimeout: 60000,
       browserDisconnectTimeout: 60000,
-      reporters: ['progress', 'coverage', 'spec'],
+      reporters: ['progress', 'coverage'],
       port: 9876,
       colors: true,
       logLevel: config.LOG_INFO,
