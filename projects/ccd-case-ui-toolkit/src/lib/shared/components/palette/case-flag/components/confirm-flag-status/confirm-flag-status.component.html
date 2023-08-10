@@ -2,10 +2,10 @@
   <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
     <div class="govuk-form-group" [ngClass]="{'form-group-error': errorMessages.length > 0}">
       <fieldset class="govuk-fieldset" aria-describedby="confirm-flag-status-heading">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-          <h2 id="confirm-flag-status-heading" class="heading-h2">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+          <h1 id="confirm-flag-status-heading" class="govuk-fieldset__heading">
             {{confirmFlagStatusTitle | rpxTranslate}}
-          </h2>
+          </h1>
         </legend>
         <div class="govuk-radios govuk-radios--conditional govuk-!-margin-bottom-4" data-module="govuk-radios" id="conditional-radios-list">
           <div class="govuk-radios__item" *ngFor="let status of flagCreationStatuses; index as i">

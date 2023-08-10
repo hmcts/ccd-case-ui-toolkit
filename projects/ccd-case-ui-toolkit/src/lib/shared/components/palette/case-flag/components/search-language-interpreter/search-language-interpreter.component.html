@@ -1,10 +1,10 @@
 <ng-container [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': languageNotSelectedErrorMessage || languageEnteredInBothFieldsErrorMessage}">
-    <h2 class="heading-h2">
-      <label [for]="SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM">
+    <h1 class="govuk-label-wrapper">
+      <label class="govuk-label govuk-label--m" [for]="SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM">
         {{flagType | flagFieldDisplay:'name'}}
       </label>
-    </h2>
+    </h1>
     <div id="language-search-box-hint" class="govuk-hint">
       {{searchLanguageInterpreterHint | rpxTranslate}}
     </div>
