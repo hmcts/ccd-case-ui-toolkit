@@ -1,10 +1,10 @@
 <table class="EventLogTable">
-  <caption><h2 class="heading-h2">History</h2></caption>
+  <caption><h2 class="heading-h2">{{'History' | rpxTranslate}}</h2></caption>
   <thead>
   <tr>
-    <th><span class="text-16">Event</span></th>
-    <th><span class="text-16">Date</span></th>
-    <th><span class="text-16">Author</span></th>
+    <th><span class="text-16">{{'Event' | rpxTranslate}}</span></th>
+    <th><span class="text-16">{{'Date' | rpxTranslate}}</span></th>
+    <th><span class="text-16">{{'Author' | rpxTranslate}}</span></th>
   </tr>
   </thead>
   <tbody>
@@ -14,7 +14,7 @@
         <div id="case-timeline" *ngSwitchCase="true">
           <a (click)="caseHistoryClicked(event.id)"
             *ngIf="event.state_id !== 'Draft'" class="text-16 event-link" attr.aria-label="{{getAriaLabelforLink(event)}}">{{event.event_name}}</a>
-        </div>
+          </div>
         <div *ngSwitchCase="false">
           <a [routerLink]="['./', 'event', event.id, 'history']"
               [target]="'_blank'"
@@ -30,7 +30,7 @@
       </div>
     </td>
     <td tabindex="0" attr.aria-label="{{getAriaLabelforColumn(event)}}" (keydown.enter)="select(event)"><div class="tooltip text-16">{{event.timestamp | ccdDate : 'local'}}
-      <span class="tooltiptext">Local: {{event.timestamp | ccdDate : 'local'}}</span>
+      <span class="tooltiptext">{{'Local:' | rpxTranslate}} {{event.timestamp | ccdDate : 'local'}}</span>
     </div></td>
     <td tabindex="0"><span class="text-16">{{event.user_first_name | titlecase}} {{event.user_last_name | uppercase}}</span></td>
   </tr>

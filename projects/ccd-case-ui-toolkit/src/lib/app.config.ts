@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 // tslint:disable:variable-name
 export interface AccessManagementBasicViewMockModel {
   active?: boolean;

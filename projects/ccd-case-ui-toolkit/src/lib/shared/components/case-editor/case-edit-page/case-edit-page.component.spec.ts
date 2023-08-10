@@ -43,6 +43,7 @@ import {
 } from '../../../services';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { SaveOrDiscardDialogComponent } from '../../dialogs/save-or-discard-dialog/save-or-discard-dialog.component';
 import { CallbackErrorsContext } from '../../error/domain/error-context';
 import { CaseEditGenericErrorsComponent } from '../case-edit-generic-errors/case-edit-generic-errors.component';
@@ -426,6 +427,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -806,6 +808,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -964,6 +967,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -1129,7 +1133,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             CcdCYAPageLabelFilterPipe,
             CaseReferencePipe,
             CcdCaseTitlePipe,
-            CaseEditGenericErrorsComponent
+            CaseEditGenericErrorsComponent,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -1420,6 +1425,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -1495,6 +1501,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             return { error: true };
           },
         }),
+        judicialUserField_judicialUserControl: new FormControl(null, Validators.required)
       }),
     });
 
@@ -1608,6 +1615,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             CaseEditPageComponent,
             CaseReferencePipe,
             CcdCaseTitlePipe,
+            MockRpxTranslatePipe
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           providers: [
@@ -1665,7 +1673,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(3);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`${error.id} is required`);
+        expect(error.message).toEqual(`%FIELDLABEL% is required`);
       });
     });
 
@@ -1686,6 +1694,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           OrganisationField: '',
           complexField1: '',
           FlagLauncherField: null,
+          judicialUserField_judicialUserControl: null
         },
       });
       comp.editForm = F_GROUP;
@@ -1696,7 +1705,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
-          `${error.id} is below the minimum length`
+          `%FIELDLABEL% is below the minimum length`
         );
       });
     });
@@ -1718,6 +1727,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           OrganisationField: '',
           complexField1: '',
           FlagLauncherField: null,
+          judicialUserField_judicialUserControl: null
         },
       });
       comp.editForm = F_GROUP;
@@ -1727,7 +1737,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`${error.id} exceeds the maximum length`);
+        expect(error.message).toEqual(`%FIELDLABEL% exceeds the maximum length`);
       });
     });
 
@@ -1774,7 +1784,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
       comp.validationErrors.forEach((error) => {
-        expect(error.message).toEqual(`${error.id} is required`);
+        expect(error.message).toEqual(`%FIELDLABEL% is required`);
       });
     });
 
@@ -1820,6 +1830,30 @@ describe('CaseEditPageComponent - all other tests', () => {
           'Please select Next to complete the update of the selected case flag'
         );
       });
+    });
+
+    it('should validate JudicialUser field and set error message on component', () => {
+      // Set up fake component reference on JudicialUser FormControl (required for setting "errors" property)
+      F_GROUP.get('data.judicialUserField_judicialUserControl')['component'] = {};
+      const judicialUserField = aCaseField(
+        'judicialUserField',
+        'judicialUser1',
+        'JudicialUser',
+        'MANDATORY',
+        1,
+        null,
+        false,
+        false
+      );
+      judicialUserField.field_type.type = 'Complex';
+      wizardPage.case_fields.push(judicialUserField);
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
     });
   });
 

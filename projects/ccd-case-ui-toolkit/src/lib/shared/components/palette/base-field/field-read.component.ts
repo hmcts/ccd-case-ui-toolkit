@@ -12,7 +12,6 @@ const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList', 'DynamicMultiSelectList'
   templateUrl: './field-read.html'
 })
 export class FieldReadComponent extends AbstractFieldReadComponent implements OnInit {
-
   @Input()
   public withLabel = false;
 
@@ -61,8 +60,13 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       component.instance['caseReference'] = this.caseReference;
       component.instance['context'] = this.context;
       component.instance['markdownUseHrefAsRouterLink'] = this.markdownUseHrefAsRouterLink;
+      component.instance['labelCanBeTranslated'] = this.labelCanBeTranslated(this.caseField);
 
       this.fieldContainer.insert(component.hostView);
     });
+  }
+
+  private labelCanBeTranslated(caseField: CaseField): boolean {
+    return !!(caseField.field_type.type === 'Label' && caseField.label);
   }
 }

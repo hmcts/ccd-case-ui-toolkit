@@ -19,8 +19,8 @@
   <form class="check-your-answers" [formGroup]="editForm" (submit)="submit()">
     <ng-container *ngIf="checkYourAnswerFieldsToDisplayExists()">
 
-      <h2 class="heading-h2">{{pageTitle}}</h2>
-      <span class="text-16" *ngIf="!caseEdit.isCaseFlagSubmission">Check the information below carefully.</span>
+      <h2 class="heading-h2">{{pageTitle | rpxTranslate }}</h2>
+      <span class="text-16" *ngIf="!caseEdit.isCaseFlagSubmission">{{'Check the information below carefully.' | rpxTranslate}}</span>
 
       <table class="form-table" aria-describedby="check your answers table">
         <tbody>

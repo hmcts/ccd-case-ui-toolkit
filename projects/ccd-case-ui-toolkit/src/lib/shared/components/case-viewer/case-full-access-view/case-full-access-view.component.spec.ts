@@ -12,7 +12,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { of, Subject, Subscription } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
 import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
@@ -48,6 +48,7 @@ import { AlertService } from '../../../services/alert';
 import { DraftService } from '../../../services/draft';
 import { OrderService } from '../../../services/order';
 import { attr, text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseEditComponent, CaseEditPageComponent, CaseNotifier, ConvertHrefToRouterService, PageValidationService, WizardFactoryService } from '../../case-editor';
 import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CaseFlagStatus, PaletteModule } from '../../palette';
@@ -646,7 +647,8 @@ xdescribe('CaseFullAccessViewComponent', () => {
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          markdownComponentMock
+          markdownComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1089,7 +1091,8 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          markdownComponentMock
+          markdownComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1175,7 +1178,8 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
-          markdownComponentMock
+          markdownComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1269,7 +1273,8 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          CallbackErrorsComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1396,7 +1401,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          CallbackErrorsComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1591,7 +1597,8 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          CallbackErrorsComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1732,7 +1739,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          CallbackErrorsComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,
@@ -1905,7 +1913,8 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent
+          CallbackErrorsComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           FieldsUtils,

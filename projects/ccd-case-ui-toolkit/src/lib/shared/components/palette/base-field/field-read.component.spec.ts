@@ -12,6 +12,7 @@ import { CaseFieldService } from '../../../services/case-fields/case-field.servi
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { FormValueService } from '../../../services/form/form-value.service';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { WizardPage } from '../../case-editor/domain/wizard-page.model';
 import { Wizard } from '../../case-editor/domain/wizard.model';
 import { PageValidationService } from '../../case-editor/services/page-validation.service';
@@ -134,10 +135,10 @@ describe('FieldReadComponent', () => {
         ],
         declarations: [
           FieldReadComponent,
-
-          // Mocks
           FieldTestComponent,
-          FieldReadLabelComponent
+          FieldReadLabelComponent,
+          // Mocks
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: PaletteService, useValue: paletteService },
