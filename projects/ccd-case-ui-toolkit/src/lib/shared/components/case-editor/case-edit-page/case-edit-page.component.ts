@@ -297,6 +297,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           this.handleError(error);
         });
       CaseEditPageComponent.scrollToTop();
+      // Remove all JudicialUser FormControls with the ID suffix "_judicialUserControl" because these are not
+      // intended to be present in the Case Event data (they are added only for value selection and validation
+      // purposes)
+      this.removeAllJudicialUserFormControls(this.currentPage, this.editForm);
     }
     CaseEditPageComponent.setFocusToTop();
   }
@@ -590,6 +594,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       caseDetails: this.caseEdit.caseDetails,
       form: this.editForm,
       submit: this.caseEdit.submit,
+    });
+  }
+
+  private removeAllJudicialUserFormControls(page: WizardPage, editForm: FormGroup): void {
+    page.case_fields.forEach(caseField => {
+      if (FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])) {
+        (editForm.controls['data'] as FormGroup).removeControl(`${caseField.id}_judicialUserControl`);
+      }
     });
   }
 }
