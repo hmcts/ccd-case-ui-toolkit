@@ -44,6 +44,7 @@ export abstract class AbstractAppConfig {
   public abstract getActivityUrl(): string;
   public abstract getActivityNexPollRequestMs(): number;
   public abstract getActivityRetry(): number;
+  public abstract getCaseRetrievalTimeouts(): number[];
   public abstract getActivityBatchCollectionDelayMs(): number;
   public abstract getActivityMaxRequestPerBatch(): number;
   public abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
@@ -79,6 +80,17 @@ export abstract class AbstractAppConfig {
   public getLocationRefApiUrl(): string {
     return undefined;
   }
+  public getEnvironment() {
+    if (this.getActivityUrl()?.includes('.aat.'))
+      return 'aat';
+    else if (this.getActivityUrl()?.includes('.preview.'))
+      return 'preview';
+    else if (this.getActivityUrl()?.includes('.demo.'))
+      return 'demo';
+    else if (this.getActivityUrl()?.includes('.ithc.'))
+      return 'ithc';
+    return 'prod';
+  }
   public abstract getRefundsUrl(): string;
   public abstract getNotificationUrl(): string;
   public abstract getPaymentReturnUrl(): string;
@@ -110,6 +122,7 @@ export class CaseEditorConfig {
   public activity_batch_collection_delay_ms: number;
   public activity_next_poll_request_ms: number;
   public activity_retry: number;
+  public timeouts_case_retrieval: number[];
   public activity_url: string;
   public activity_max_request_per_batch: number;
   public print_service_url: string;

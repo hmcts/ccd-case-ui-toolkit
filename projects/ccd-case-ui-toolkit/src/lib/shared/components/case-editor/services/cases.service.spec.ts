@@ -10,6 +10,7 @@ import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-fi
 import { WorkAllocationService } from './work-allocation.service';
 
 import createSpyObj = jasmine.createSpyObj;
+import { RxjsUtils } from '../../../services/utils/rxjs-utils.service';
 
 describe('CasesService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
@@ -63,14 +64,17 @@ describe('CasesService', () => {
   let sessionStorageService: any;
   let loadingService: any;
   let alertService: any;
+  let rxjsUtils: any;
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig',
-      ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl', 'getCaseDataStoreApiUrl']);
+      ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl', 'getCaseDataStoreApiUrl', 'getEnvironment', 'getCaseRetrievalTimeouts']);
     appConfig.getApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataStoreApiUrl.and.returnValue(API_URL);
+    appConfig.getEnvironment.and.returnValue('demo');
+    appConfig.getCaseRetrievalTimeouts.and.returnValue([20])
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
@@ -89,9 +93,10 @@ describe('CasesService', () => {
     sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
       "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com","token": null}`);
     loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+    rxjsUtils = new RxjsUtils();
     casesService = new CasesService(
       httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, loadingService,
-      sessionStorageService
+      sessionStorageService, rxjsUtils
     );
   });
 
@@ -592,18 +597,18 @@ describe('CasesService', () => {
   describe('updateChallengedAccessRequestAttributes()', () => {
     it('should update challenged access request', () => {
       const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
-      CasesService.updateChallengedAccessRequestAttributes(httpClient, 'exampleId', {attribute: true});
+      CasesService.updateChallengedAccessRequestAttributes(httpClient, 'exampleId', { attribute: true });
       expect(httpClient.post).toHaveBeenCalledWith('/api/challenged-access-request/update-attributes',
-       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
+        { caseId: 'exampleId', attributesToUpdate: { attribute: true } });
     });
   });
 
   describe('updateSpecificAccessRequestAttributes()', () => {
     it('should update specific access request', () => {
       const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
-      CasesService.updateSpecificAccessRequestAttributes(httpClient, 'exampleId', {attribute: true});
+      CasesService.updateSpecificAccessRequestAttributes(httpClient, 'exampleId', { attribute: true });
       expect(httpClient.post).toHaveBeenCalledWith('/api/specific-access-request/update-attributes',
-       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
+        { caseId: 'exampleId', attributesToUpdate: { attribute: true } });
     });
   });
 });

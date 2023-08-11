@@ -26,7 +26,7 @@ const CASE_FIELD: CaseField = ({
 const FORM_GROUP: FormGroup = new FormGroup({});
 
 const APP_CONFIG: AbstractAppConfig = {
-  load: async () => {},
+  load: async () => { },
   getLoginUrl: () => 'loginUrl',
   getApiUrl: () => 'apiUrl',
   getCaseDataUrl: () => 'caseDataUrl',
@@ -48,6 +48,8 @@ const APP_CONFIG: AbstractAppConfig = {
   getActivityNexPollRequestMs: () => 30000,
   getActivityRetry: () => 3,
   getActivityUrl: () => 'activityUrl',
+  getCaseRetrievalTimeouts: () => [20],
+  getEnvironment: () => 'demo',
   getCaseHistoryUrl: () => 'caseHistoryUrl',
   getPrintServiceUrl: () => 'printServiceUrl',
   getRemotePrintServiceUrl: () => 'remotePrintServiceUrl',
@@ -81,23 +83,25 @@ describe('Ways To Pay Component', () => {
   let de: DebugElement;
 
   beforeEach(waitForAsync(() => {
-    paymentWebComponentMock = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
-      'API_ROOT',
-      'CCD_CASE_NUMBER',
-      'BULKSCAN_API_ROOT',
-      'ISBSENABLE',
-      'SELECTED_OPTION',
-      'VIEW',
-      'REFUNDS_API_ROOT',
-      'TAKEPAYMENT',
-      'SERVICEREQUEST',
-      'PAYMENT_GROUP_REF',
-      'EXC_REFERENCE',
-      'DCN_NUMBER',
-      'LOGGEDINUSERROLES',
-      'CARDPAYMENTRETURNURL',
-      'ISPAYMENTSTATUSENABLED'
-    ]});
+    paymentWebComponentMock = MockComponent({
+      selector: 'ccpay-payment-lib', inputs: [
+        'API_ROOT',
+        'CCD_CASE_NUMBER',
+        'BULKSCAN_API_ROOT',
+        'ISBSENABLE',
+        'SELECTED_OPTION',
+        'VIEW',
+        'REFUNDS_API_ROOT',
+        'TAKEPAYMENT',
+        'SERVICEREQUEST',
+        'PAYMENT_GROUP_REF',
+        'EXC_REFERENCE',
+        'DCN_NUMBER',
+        'LOGGEDINUSERROLES',
+        'CARDPAYMENTRETURNURL',
+        'ISPAYMENTSTATUSENABLED'
+      ]
+    });
 
     TestBed
       .configureTestingModule({
@@ -112,8 +116,8 @@ describe('Ways To Pay Component', () => {
           paymentWebComponentMock
         ],
         providers: [
-            { provide: AbstractAppConfig, useValue: APP_CONFIG },
-            SessionStorageService
+          { provide: AbstractAppConfig, useValue: APP_CONFIG },
+          SessionStorageService
         ]
       })
       .compileComponents();

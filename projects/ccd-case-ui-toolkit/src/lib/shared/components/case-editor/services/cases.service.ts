@@ -21,7 +21,7 @@ import { LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-ca
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
-import { WorkAllocationService } from './work-allocation.service';
+import { RxjsUtils } from '../../../services/utils/rxjs-utils.service';
 
 @Injectable()
 export class CasesService {
@@ -73,7 +73,8 @@ export class CasesService {
     private errorService: HttpErrorService,
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
     private loadingService: LoadingService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly rxjsUtils: RxjsUtils
   ) {
   }
 
@@ -103,19 +104,26 @@ export class CasesService {
 
     const loadingToken = this.loadingService.register();
 
-    return this.http
-      .get(url, { headers, observe: 'body' })
-      .pipe(
-        catchError(error => {
-          console.error('Error while getting case view with getCaseViewV2!');
-          console.error(error);
-          this.errorService.setError(error);
-          return throwError(error);
-        }),
-        finalize(() => this.finalizeGetCaseViewWith(caseId, loadingToken))
-      );
+    let http$ = this.http.get(url, { headers, observe: 'body' });
+
+    this.rxjsUtils.pipeTimeoutMechanismOn(http$, this.appConfig.getEnvironment(), this.appConfig.getCaseRetrievalTimeouts());
+
+    http$ = this.pipeErrorProcessor(http$);
+
+    http$ = http$.pipe(finalize(() => this.finalizeGetCaseViewWith(caseId, loadingToken)));
+
+    return http$;
   }
 
+  private pipeErrorProcessor(in$: Observable<CaseView>): Observable<CaseView> {
+    const out$$ = in$.pipe(catchError(error => {
+      console.error(`Error while getting case view with getCaseViewV2! Error type: '${typeof error}, Error name: '${error?.name}'`);
+      console.error(error);
+      this.errorService.setError(error);
+      return throwError(error);
+    }));
+    return out$$;
+  }
   public syncWait(seconds) {
     const end = Date.now() + seconds * 1000;
     while (Date.now() < end) continue;
@@ -128,7 +136,6 @@ export class CasesService {
     this.loadingService.unregister(loadingToken);
     console.info(`finalizeGetCaseViewWith finished for ${caseId}.`);
   }
-
 
   public getEventTrigger(caseTypeId: string,
     eventTriggerId: string,
@@ -246,9 +253,9 @@ export class CasesService {
   }
 
   private buildEventTriggerUrl(caseTypeId: string,
-                               eventTriggerId: string,
-                               caseId?: string,
-                               ignoreWarning?: string): string {
+    eventTriggerId: string,
+    caseId?: string,
+    ignoreWarning?: string): string {
     let url = `${this.appConfig.getCaseDataUrl()}/internal`;
 
     if (Draft.isDraft(caseId)) {
@@ -293,7 +300,7 @@ export class CasesService {
   }
 
   public getCourtOrHearingCentreName(locationId: number): Observable<any> {
-    return this.http.post(`/api/locations/getLocationsById`, { locations : [{ locationId }]});
+    return this.http.post(`/api/locations/getLocationsById`, { locations: [{ locationId }] });
   }
 
   public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
@@ -314,16 +321,16 @@ export class CasesService {
     const isNew = true;
 
     const payload: RoleRequestPayload = camUtils.getAMPayload(id,
-                                                              id,
-                                                              roleName,
-                                                              roleCategory,
-                                                              'CHALLENGED',
-                                                              caseId,
-                                                              request,
-                                                              beginTime,
-                                                              endTime,
-                                                              isNew
-      );
+      id,
+      roleName,
+      roleCategory,
+      'CHALLENGED',
+      caseId,
+      request,
+      beginTime,
+      endTime,
+      isNew
+    );
 
     return this.http.post(`/api/challenged-access-request`, payload);
   }
@@ -342,7 +349,7 @@ export class CasesService {
     const roleName = camUtils.getAMRoleName('specific', roleCategory);
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const payload: RoleRequestPayload = camUtils.getAMPayload(null, id,
-                                      roleName, roleCategory, 'SPECIFIC', caseId, sar, null, null, true);
+      roleName, roleCategory, 'SPECIFIC', caseId, sar, null, null, true);
 
     payload.roleRequest = {
       ...payload.roleRequest,
@@ -383,7 +390,7 @@ export class CasesService {
   public getLinkedCases(caseId: string): Observable<LinkedCasesResponse> {
     const url = `${this.appConfig.getCaseDataStoreApiUrl()}/${caseId}`;
     return this.http
-    .get(url)
-    .pipe(catchError(error => throwError(error)));
+      .get(url)
+      .pipe(catchError(error => throwError(error)));
   }
 }
