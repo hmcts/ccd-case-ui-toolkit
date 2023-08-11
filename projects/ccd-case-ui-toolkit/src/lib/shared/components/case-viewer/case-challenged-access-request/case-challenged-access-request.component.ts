@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ChallengedAccessRequest, ErrorMessage } from '../../../domain';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { AccessReason, ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'ccd-case-challenged-access-request',
@@ -125,12 +125,12 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
       this.$roleAssignmentResponseSubscription = this.casesService.createChallengedAccessRequest(caseId, challengedAccessRequest)
         .pipe(switchMap(() => this.caseNotifier.fetchAndRefresh(caseId)))
         .subscribe(
-          _response => {
+          () => {
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
             // Angular 7.2!
             this.router.navigate(['success'], {relativeTo: this.route});
           },
-          _error => {
+          () => {
             // Navigate to error page
           }
         );
@@ -148,7 +148,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   }
 
   private inputEmpty(input: AbstractControl): boolean {
-    return input.value == null || input.value.trim().length === 0;
+    return input.value === null || input.value.trim().length === 0;
   }
 }
 

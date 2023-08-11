@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { ConnectableObservable, Observable, Observer } from 'rxjs';
 import { publish, refCount } from 'rxjs/operators';
 import { AlertLevel } from '../../domain/alert/alert-level.model';
+import { AlertStatusParams } from '../../domain/alert/alert-status-params.model';
 import { Alert } from '../../domain/alert/alert.model';
 
 @Injectable()
@@ -30,7 +32,7 @@ export class AlertService {
 
   private preserveAlerts = false;
 
-  constructor(private readonly router: Router) {
+  constructor(private readonly router: Router, private readonly rpxTranslationService: RpxTranslationService) {
 
     this.successes = Observable
       .create(observer => this.successObserver = observer).pipe(
@@ -88,7 +90,9 @@ export class AlertService {
     this.message = '';
   }
 
-  public error(message: string): void {
+  public error({ phrase, replacements}: Omit<AlertStatusParams, 'preserve'>): void {
+    const message = this.getTranslationWithReplacements(phrase, replacements);
+
     this.preservedError = this.preserveMessages(message);
     const alert: Alert = { level: 'error', message };
     this.errorObserver.next(alert);
@@ -97,7 +101,9 @@ export class AlertService {
     this.push(alert);
   }
 
-  public warning(message: string): void {
+  public warning({ phrase, replacements}: Omit<AlertStatusParams, 'preserve'>): void {
+    const message = this.getTranslationWithReplacements(phrase, replacements);
+
     this.preservedWarning = this.preserveMessages(message);
     const alert: Alert = { level: 'warning', message };
     this.warningObserver.next(alert);
@@ -106,14 +112,31 @@ export class AlertService {
     this.push(alert);
   }
 
-  public success(message: string, preserve = false): void {
-    this.preservedSuccess = this.preserveMessages(message);
+  public success({ preserve, phrase, replacements}: AlertStatusParams): void {
+    const message = this.getTranslationWithReplacements(phrase, replacements);
+
     this.preserveAlerts = preserve || this.preserveAlerts;
     const alert: Alert = { level: 'success', message };
+    this.preservedSuccess = this.preserveMessages(message);
     this.successObserver.next(alert);
 
     // EUI-3381.
     this.push(alert);
+  }
+
+  private getTranslationWithReplacements(phrase: string, replacements: AlertStatusParams['replacements']): string {
+    let message: string;
+    if (replacements) {
+      this.rpxTranslationService.getTranslationWithReplacements$(phrase, replacements).subscribe(translation => {
+        message = translation;
+      });
+    } else {
+      this.rpxTranslationService.getTranslation$(phrase).subscribe(translation => {
+        message = translation;
+      });
+    }
+
+    return message;
   }
 
   public setPreserveAlerts(preserve: boolean, urlInfo?: string[]) {

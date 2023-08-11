@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { Type } from 'class-transformer';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -6,7 +7,6 @@ import { WizardPageField } from './wizard-page-field.model';
 
 // @dynamic
 export class WizardPage implements Orderable {
-
   public id: string;
   public label: string;
   public order?: number;

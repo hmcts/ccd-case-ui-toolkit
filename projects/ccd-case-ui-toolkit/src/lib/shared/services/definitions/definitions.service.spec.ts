@@ -6,12 +6,11 @@ import { DefinitionsService } from './definitions.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('DefinitionsService', () => {
-
   const API_DATA_URL = 'http://data.ccd.reform/aggregated';
   const JID = 'PROBATE';
   const CTID = 'TestAddressBookCase';
   const CTID_2 = 'TestAddressBookCase2';
-  const CASE_TYPES_URL = API_DATA_URL + `/caseworkers/:uid/jurisdictions/${JID}/case-types?access=create`;
+  const CASE_TYPES_URL = `${API_DATA_URL}/caseworkers/:uid/jurisdictions/${JID}/case-types?access=create`;
 
   let appConfig: any;
   let httpService: any;

@@ -5,6 +5,32 @@
 ### Version 6.13.10-case-file-view-display-document-upload-date-v3
 **EUI-7819** Case file view display document upload date
 
+### Version 6.18.2-hotfix-EUI-8601-8687-8732
+**EUI-8601** Re-implement `WriteJudicialUserField` component to extend `WriteComplexFieldComponent`, to ensure correct working when used in a collection
+**EUI-8687** Fix validation logic for `WriteJudicialUserField` component
+**EUI-8732** Fix `WriteJudicialUserField` error handling to allow user to continue searching if an error occurs on calling `getJudicialUsersSearch` API endpoint
+
+### Version 6.18.0-welsh-release-v6
+**EUI-5497** Welsh release part 1
+
+### Version 6.18.2-rc2
+**EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button
+**EXUI-229** DynamicMultiSelectList Updates Required
+**EXUI-313** Fix issue with secure document store
+
+### Version 6.16-hotfix-EUI-8515-case-flags-submission
+**EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
+**EUI-8550** Fix incorrect behaviour of showEventNotes() function on Case Event submission, introduced in error by EUI-6693
+
+### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
+**EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
+
+### Version 6.13.11-judicial-user-typeahead-fix
+**EUI-7733** Judicial user typeahead fix
+
+### Version 6.13.10-linked-cases-continue-button-validation-v6
+**EUI-8025** Linked cases continue button validation
+
 ### Version 6.13.10-rc1
 **EUI-5298** Release 6.13.10 including 6.13.0, linked cases (EUI-7676) and case file view fix (EUI-7417)
 
@@ -18,6 +44,10 @@
 **EUI-7246** Linked cases other description
 
 ### Version 6.10.10-linked-cases-and-case-file-view
+### Version 6.10.11-judicial-user-typeahead-fix
+**EUI-7733** Judicial user typeahead fix
+
+### Version 6.10.10-configure-linked-cases
 **EUI-7676** Configure linked cases
 **EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
 
@@ -29,6 +59,12 @@
 ### Version 6.10.7-rollback-case-link
 **EUI-7675** Rollback case link
 
+### Version 6.10.6-r3.5-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs (re-release following update to Release 3.5)
+
+### Version 5.0.50-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs
+
 ### Version 6.14.1--fee-pay-props
 **EUI-7489** Added additional props to nested ccpay instance
 
@@ -38,8 +74,8 @@
 ### Version 5.0.50-sscs-sit-release
 **EUI-7564** SSCS SIT release
 
-### Version 5.0.46-fix-case-link
-**EUI-7521** Fix case link hyperlink on applications tab
+### Version 5.0.46-case-flags-not-approved-status
+**EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
 
 ### Version 5.0.46-fix-case-link
 **EUI-7521** Fix case link hyperlink on applications tab

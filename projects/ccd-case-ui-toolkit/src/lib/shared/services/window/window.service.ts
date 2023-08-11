@@ -38,7 +38,7 @@ export class WindowService {
     return window.confirm(message);
   }
 
-  alert(message: string): void {
+  public alert(message: string): void {
     return window.alert(message);
   }
 }

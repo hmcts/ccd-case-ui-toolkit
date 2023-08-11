@@ -11,7 +11,6 @@ import { LinkedCasesService } from './services';
   styleUrls: ['./read-linked-cases-field.component.scss']
 })
 export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
-
   public caseField: CaseField;
   public reasonListLoaded = false;
   public reload = false;
@@ -37,7 +36,7 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
       this.caseField = tab?.fields?.find(field => field.id === 'caseLinks');
     }
     this.isServerJurisdictionError = this.linkedCasesService.serverJurisdictionError || false;
-    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+    const reasonCodeAPIurl = `${this.appConfig.getRDCommonDataApiUrl()}/lov/categories/CaseLinkingReasonCode`;
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
       next: reasons => {
         this.reasonListLoaded = true;
@@ -73,9 +72,7 @@ export class ReadLinkedCasesFieldComponent implements OnInit, AfterViewInit {
   }
 
   public reloadCurrentRoute(): void {
-    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseDetails.case_id]).then(() => {
-      window.location.hash = 'Linked cases';
-    });
+    this.router.navigate(['cases', 'case-details', this.linkedCasesService.caseDetails.case_id], { fragment: 'Linked cases' });
   }
 
   public getFailureLinkedToNotification(evt): void {

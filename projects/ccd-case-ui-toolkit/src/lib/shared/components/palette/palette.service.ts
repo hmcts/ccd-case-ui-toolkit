@@ -17,6 +17,7 @@ import { ReadDocumentFieldComponent } from './document/read-document-field.compo
 import { WriteDocumentFieldComponent } from './document/write-document-field.component';
 import { ReadDynamicListFieldComponent } from './dynamic-list/read-dynamic-list-field.component';
 import { WriteDynamicListFieldComponent } from './dynamic-list/write-dynamic-list-field.component';
+import { ReadDynamicMultiSelectListFieldComponent, WriteDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { ReadDynamicRadioListFieldComponent } from './dynamic-radio-list/read-dynamic-radio-list-field.component';
 import { WriteDynamicRadioListFieldComponent } from './dynamic-radio-list/write-dynamic-radio-list-field.component';
 import { ReadEmailFieldComponent } from './email/read-email-field.component';
@@ -41,7 +42,6 @@ import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-sum
 import { ReadOrganisationFieldComponent } from './organisation/read-organisation-field.component';
 import { WriteOrganisationFieldComponent } from './organisation/write-organisation-field.component';
 import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
-import { WriteDynamicMultiSelectListFieldComponent, ReadDynamicMultiSelectListFieldComponent } from './dynamic-multi-select-list';
 import { ReadPhoneUKFieldComponent } from './phone-uk/read-phone-uk-field.component';
 import { WritePhoneUKFieldComponent } from './phone-uk/write-phone-uk-field.component';
 import { ReadTextAreaFieldComponent } from './text-area/read-text-area-field.component';

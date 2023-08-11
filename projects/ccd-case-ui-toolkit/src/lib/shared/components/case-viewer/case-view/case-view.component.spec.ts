@@ -11,7 +11,6 @@ import { CaseViewComponent } from './case-view.component';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseViewComponent', () => {
-
   const CASE_REFERENCE = '1234123412341234';
   const DRAFT_REFERENCE = 'DRAFT1234';
   const CASE_VIEW: CaseView = plainToClassFromExist(new CaseView(), {
@@ -45,7 +44,7 @@ describe('CaseViewComponent', () => {
   let component: CaseViewComponent;
   let de: DebugElement;
 
-  const CaseViewerComponent: any = MockComponent({
+  const caseViewerComponentMock: any = MockComponent({
     selector: 'ccd-case-viewer',
     inputs: ['hasPrint', 'hasEventSelector']
   });
@@ -53,7 +52,6 @@ describe('CaseViewComponent', () => {
   describe('Case', () => {
     describe('CaseViewComponent successfully resolves case view', () => {
       beforeEach(waitForAsync(() => {
-
         caseNotifier = createSpyObj('caseService', ['announceCase']);
         navigationNotifierService = new NavigationNotifierService();
         draftService = createSpyObj('draftService', ['getDraft']);
@@ -70,8 +68,8 @@ describe('CaseViewComponent', () => {
             declarations: [
               CaseViewComponent,
 
-              // mock
-              CaseViewerComponent,
+              // Mocks
+              caseViewerComponentMock
             ],
             providers: [
               {provide: NavigationNotifierService, useValue: navigationNotifierService},
@@ -99,11 +97,9 @@ describe('CaseViewComponent', () => {
     });
 
     describe('CaseViewComponent fails to resolve case view', () => {
-
       const ERROR_MSG = 'Critical error!';
 
       beforeEach(waitForAsync(() => {
-
         const ERROR: HttpError = new HttpError();
         ERROR.message = ERROR_MSG;
         const ERROR_OBS: Observable<HttpError> = throwError(ERROR);
@@ -118,8 +114,8 @@ describe('CaseViewComponent', () => {
             declarations: [
               CaseViewComponent,
 
-              // mock
-              CaseViewerComponent,
+              // Mocks
+              caseViewerComponentMock
             ],
             providers: [
               {provide: NavigationNotifierService, useValue: navigationNotifierService},
@@ -149,7 +145,6 @@ describe('CaseViewComponent', () => {
   describe('Draft', () => {
     describe('CaseViewComponent successfully resolves case view from draft', () => {
       beforeEach(waitForAsync(() => {
-
         caseNotifier = createSpyObj('caseService', ['announceCase']);
         casesService = createSpyObj('casesService', ['getCaseViewV2']);
 
@@ -165,8 +160,8 @@ describe('CaseViewComponent', () => {
             declarations: [
               CaseViewComponent,
 
-              // mock
-              CaseViewerComponent,
+              // Mocks
+              caseViewerComponentMock
             ],
             providers: [
               {provide: NavigationNotifierService, useValue: navigationNotifierService},
@@ -193,11 +188,9 @@ describe('CaseViewComponent', () => {
     });
 
     describe('CaseViewComponent fails to resolve case view from draft', () => {
-
       const ERROR_MSG = 'Critical error!';
 
       beforeEach(waitForAsync(() => {
-
         const ERROR: HttpError = new HttpError();
         ERROR.message = ERROR_MSG;
         const ERROR_OBS: Observable<HttpError> = throwError(ERROR);
@@ -212,15 +205,15 @@ describe('CaseViewComponent', () => {
             declarations: [
               CaseViewComponent,
 
-              // mock
-              CaseViewerComponent
+              // Mocks
+              caseViewerComponentMock
             ],
             providers: [
               {provide: NavigationNotifierService, useValue: navigationNotifierService},
               {provide: CaseNotifier, useValue: caseNotifier},
               {provide: CasesService, useValue: casesService},
               {provide: AlertService, useValue: alertService},
-              {provide: DraftService, useValue: draftService},
+              {provide: DraftService, useValue: draftService}
             ]
           })
           .compileComponents();
@@ -239,5 +232,4 @@ describe('CaseViewComponent', () => {
       });
     });
   });
-
 });

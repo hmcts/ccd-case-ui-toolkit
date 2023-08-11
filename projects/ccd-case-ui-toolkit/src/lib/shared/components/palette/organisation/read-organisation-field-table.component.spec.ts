@@ -8,19 +8,20 @@ import { of } from 'rxjs';
 import { ConditionalShowModule } from '../../../directives/conditional-show';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
+import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
+import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { OrganisationService } from '../../../services/organisation';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ConvertHrefToRouterService } from '../../case-editor/services';
+import { MarkdownComponent } from '../markdown/markdown.component';
 import { PaletteService } from '../palette.service';
 import { PaletteUtilsModule } from '../utils';
 import { ReadOrganisationFieldTableComponent } from './read-organisation-field-table.component';
-import { MarkdownComponent } from '../markdown/markdown.component';
-import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
-import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 
 describe('ReadOrganisationFieldTableComponent', () => {
   let component: ReadOrganisationFieldTableComponent;
   let fixture: ComponentFixture<ReadOrganisationFieldTableComponent>;
-  const FieldReadComponent = MockComponent({
+  const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context']
   });
@@ -115,7 +116,8 @@ describe('ReadOrganisationFieldTableComponent', () => {
         MarkdownComponent,
         ReadOrganisationFieldTableComponent,
         FieldsFilterPipe,
-        FieldReadComponent
+        MockRpxTranslatePipe,
+        fieldReadComponentMock
       ],
       providers: [
         PaletteService,

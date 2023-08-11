@@ -1,4 +1,3 @@
-
 import { NgZone } from '@angular/core';
 import { of } from 'rxjs';
 import { ActivityPollingService } from './activity.polling.service';
@@ -13,7 +12,6 @@ let activityPollingService: ActivityPollingService;
 let appConfig;
 
 describe('ActivityPollingService', () => {
-
   beforeEach(() => {
     ngZone = jasmine.createSpyObj<NgZone>('ngZone', ['run', 'runOutsideAngular']);
     ngZone.runOutsideAngular.and.callFake((fn: () => void) => fn());
@@ -32,12 +30,12 @@ describe('ActivityPollingService', () => {
     activityPollingService = new ActivityPollingService(activityService, ngZone, appConfig);
   });
 
-  it('should accesss activityService for pollActivities', () => {
+  it('should access activityService for pollActivities', () => {
     activityPollingService.pollActivities(...CASES);
     expect(activityService.getActivities).toHaveBeenCalledWith(...CASES);
   });
 
-  it('should accesss activityService for subscribe', () => {
+  it('should access activityService for subscribe', () => {
     activityPollingService.subscribeToActivity('111', () => ({}));
     activityPollingService.subscribeToActivity('222', () => ({}));
     activityPollingService.subscribeToActivity('333', () => ({}));
@@ -55,38 +53,38 @@ describe('ActivityPollingService', () => {
     expect(activityService.getActivities).toHaveBeenCalledWith('444,555');
   });
 
-  it('should accesss activityService to post view activities', () => {
+  it('should access activityService to post view activities', () => {
     activityPollingService.postViewActivity(CASE_ID);
     expect(activityService.postActivity).toHaveBeenCalledWith(CASE_ID, ActivityService.ACTIVITY_VIEW);
   });
 
-  it('should not accesss activityService to post view activities if disabled', () => {
+  it('should not access activityService to post view activities if disabled', () => {
     activityService.isEnabled = false;
     activityPollingService.postViewActivity(CASE_ID);
 
     expect(activityService.postActivity).not.toHaveBeenCalled();
   });
 
-  it('should accesss activityService to post edit activities', () => {
+  it('should access activityService to post edit activities', () => {
     activityPollingService.postEditActivity(CASE_ID);
     expect(activityService.postActivity).toHaveBeenCalledWith(CASE_ID, ActivityService.ACTIVITY_EDIT);
   });
 
-  it('should not accesss activityService to post edit activities if disabled', () => {
+  it('should not access activityService to post edit activities if disabled', () => {
     activityService.isEnabled = false;
     activityPollingService.postEditActivity(CASE_ID);
 
     expect(activityService.postActivity).not.toHaveBeenCalled();
   });
 
-  it('should not accesss activityService for pollActivities when disabled', () => {
+  it('should not access activityService for pollActivities when disabled', () => {
     activityService.isEnabled = false;
     activityPollingService.pollActivities('');
 
     expect(activityService.getActivities).not.toHaveBeenCalled();
   });
 
-  it('should not accesss activityService for pollActivities when disabled', () => {
+  it('should not access activityService for pollActivities when disabled', () => {
     activityService.isEnabled = false;
     activityPollingService.subscribeToActivity('222', () => ({}));
 

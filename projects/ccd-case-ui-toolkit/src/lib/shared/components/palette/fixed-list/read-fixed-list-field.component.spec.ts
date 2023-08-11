@@ -1,13 +1,12 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
-
 import { CaseField, FieldType } from '../../../domain/definition';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FixedListPipe } from './fixed-list.pipe';
 import { ReadFixedListFieldComponent } from './read-fixed-list-field.component';
 
 describe('ReadFixedListFieldComponent', () => {
-
   const VALUE = 'F';
   const EXPECTED_LABEL = 'Female';
   const FIELD_ID = 'ReadOnlyFieldId';
@@ -34,23 +33,23 @@ describe('ReadFixedListFieldComponent', () => {
   };
 
   describe('Non-persistable readonly fixed list field', () => {
-    const ITEMS = [
-      {
-        code: 'M',
-        label: 'Male',
-        order: 1
-      },
-      {
-        code: VALUE,
-        label: EXPECTED_LABEL,
-        order: 2
-      },
-      {
-        code: 'O',
-        label: 'Other',
-        order: 3
-      }
-    ];
+    // const ITEMS = [
+    //   {
+    //     code: 'M',
+    //     label: 'Male',
+    //     order: 1
+    //   },
+    //   {
+    //     code: VALUE,
+    //     label: EXPECTED_LABEL,
+    //     order: 2
+    //   },
+    //   {
+    //     code: 'O',
+    //     label: 'Other',
+    //     order: 3
+    //   }
+    // ];
 
     const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
       id: 'x',
@@ -72,7 +71,8 @@ describe('ReadFixedListFieldComponent', () => {
           imports: [],
           declarations: [
             ReadFixedListFieldComponent,
-            FixedListPipe
+            FixedListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -110,45 +110,44 @@ describe('ReadFixedListFieldComponent', () => {
   });
 
   describe('ReadFixedListFieldComponent for dynamiclist type', () => {
-    const VALUE_DYNAMIC_LIST = '{\n' +
-      '            "value": {\n' +
-      '              "code": "F",\n' +
-      '              "label": "Female"\n' +
-      '            },\n' +
-      '            "list_items": [\n' +
-      '              {\n' +
-      '                "code": "F",\n' +
-      '                "label": "Female"\n' +
-      '              },\n' +
-      '              {\n' +
-      '                "code": "M",\n' +
-      '                "label": "Male"\n' +
-      '              }' +
-      '            ]\n' +
-      '          }';
+    const VALUE_DYNAMIC_LIST = `{
+            "value": {
+              "code": "F",
+              "label": "Female"
+            },
+            "list_items": [
+              {
+                "code": "F",
+                "label": "Female"
+              },
+              {
+                "code": "M",
+                "label": "Male"
+              }            ]
+          }`;
 
     const FIELD_TYPE_DYNAMIC_LIST: FieldType = {
       id: 'Gender',
       type: 'DynamicList',
       fixed_list_items: []
     };
-    const ITEMS = [
-      {
-        code: 'M',
-        label: 'Male',
-        order: 1
-      },
-      {
-        code: 'F',
-        label: 'Female',
-        order: 2
-      },
-      {
-        code: 'O',
-        label: 'Other',
-        order: 3
-      }
-    ];
+    // const ITEMS = [
+    //   {
+    //     code: 'M',
+    //     label: 'Male',
+    //     order: 1
+    //   },
+    //   {
+    //     code: 'F',
+    //     label: 'Female',
+    //     order: 2
+    //   },
+    //   {
+    //     code: 'O',
+    //     label: 'Other',
+    //     order: 3
+    //   }
+    // ];
     const CASE_FIELD_DYNAMIC_LIST: CaseField = Object.assign(new CaseField(), {
       id: 'x',
       label: 'X',
@@ -156,7 +155,7 @@ describe('ReadFixedListFieldComponent', () => {
       field_type: FIELD_TYPE_DYNAMIC_LIST,
       value: JSON.parse(VALUE_DYNAMIC_LIST),
     });
-    const EMPTY = '';
+    // const EMPTY = '';
 
     let fixture: ComponentFixture<ReadFixedListFieldComponent>;
     let component: ReadFixedListFieldComponent;
@@ -168,7 +167,8 @@ describe('ReadFixedListFieldComponent', () => {
           imports: [],
           declarations: [
             ReadFixedListFieldComponent,
-            FixedListPipe
+            FixedListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -209,7 +209,8 @@ describe('ReadFixedListFieldComponent', () => {
           imports: [],
           declarations: [
             ReadFixedListFieldComponent,
-            FixedListPipe
+            FixedListPipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -229,6 +230,5 @@ describe('ReadFixedListFieldComponent', () => {
       expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
       expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
     });
-
   });
 });

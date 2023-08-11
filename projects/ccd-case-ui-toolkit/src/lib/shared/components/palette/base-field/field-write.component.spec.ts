@@ -25,7 +25,6 @@ const CLASS = 'person-first-name-cls';
 class FieldTestComponent {}
 
 describe('FieldWriteComponent', () => {
-
   const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
     id: 'PersonFirstName',
     field_type: {
@@ -61,12 +60,12 @@ describe('FieldWriteComponent', () => {
   const caseField2 = new CaseField();
   let route: any;
   const fieldTypeSanitiser = new FieldTypeSanitiser();
-  const formValueService = new FormValueService(fieldTypeSanitiser);
-  const formErrorService = new FormErrorService();
+  // const formValueService = new FormValueService(fieldTypeSanitiser);
+  // const formErrorService = new FormErrorService();
   const caseFieldService = new CaseFieldService();
-  const caseEditDataService = new CaseEditDataService();
-  const pageValidationService = new PageValidationService(caseFieldService);
-  const dialog: any = '';
+  // const caseEditDataService = new CaseEditDataService();
+  // const pageValidationService = new PageValidationService(caseFieldService);
+  // const dialog: any = '';
 
   beforeEach(async() => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -146,11 +145,11 @@ describe('FieldWriteComponent', () => {
     expect(fieldTest.formGroup).toBe(formGroup);
   });
 
-  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+  function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {
     const cf = new CaseField();
     cf.id = id;
     cf.value = value;
-    cf.display_context = display_context;
+    cf.display_context = displayContext;
     return cf;
   }
 

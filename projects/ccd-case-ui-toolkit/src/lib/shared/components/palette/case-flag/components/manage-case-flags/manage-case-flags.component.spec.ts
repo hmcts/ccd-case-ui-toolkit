@@ -1,7 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
+import { MockRpxTranslatePipe } from '../../../utils/first-error.pipe.spec';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagErrorMessage } from '../../enums';
 import { ManageCaseFlagsComponent } from './manage-case-flags.component';
@@ -117,11 +118,11 @@ describe('ManageCaseFlagsComponent', () => {
     }
   ] as FlagsWithFormGroupPath[];
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ManageCaseFlagsComponent ]
+      declarations: [ ManageCaseFlagsComponent, MockRpxTranslatePipe ]
     })
     .compileComponents();
   }));
@@ -255,7 +256,7 @@ describe('ManageCaseFlagsComponent', () => {
         partyName: 'Wayne Sleep'
       },
       pathToFlagsFormGroup: 'CaseFlag2'
-    }
+    };
 
     const displayResult = component.mapFlagDetailForDisplay(flagDetail, flagsInstance);
     expect(displayResult.flagDetailDisplay.partyName).toEqual(flagsInstance.flags.partyName);
@@ -341,7 +342,7 @@ describe('ManageCaseFlagsComponent', () => {
       },
       pathToFlagsFormGroup: 'caseFlags',
       caseField: flagsData[2].caseField
-    } as FlagDetailDisplayWithFormGroupPath
+    } as FlagDetailDisplayWithFormGroupPath;
     expect(component.getPartyName(flagDisplay)).toEqual('Case level');
     flagDisplay.pathToFlagsFormGroup = null;
     expect(component.getPartyName(flagDisplay)).toEqual('');
@@ -366,7 +367,7 @@ describe('ManageCaseFlagsComponent', () => {
       pathToFlagsFormGroup: '',
       caseField: flagsData[2].caseField,
       roleOnCase: 'Applicant'
-    } as FlagDetailDisplayWithFormGroupPath
+    } as FlagDetailDisplayWithFormGroupPath;
     expect(component.getRoleOnCase(flagDisplay)).toEqual(' (Applicant)');
   });
 

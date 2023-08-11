@@ -1,5 +1,5 @@
-import { NavigationEnd, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular/router';
 import { plainToClassFromExist } from 'class-transformer';
 import { of, throwError } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
@@ -11,7 +11,6 @@ import { CaseNotifier } from '../../case-editor';
 
 @Injectable()
 export class CaseResolver implements Resolve<CaseView> {
-
   public static readonly EVENT_REGEX = new RegExp('\/trigger\/.*?\/submit$');
   public static readonly PARAM_CASE_ID = 'cid';
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
@@ -21,7 +20,7 @@ export class CaseResolver implements Resolve<CaseView> {
   // we need to run the CaseResolver on every child route of 'case/:jid/:ctid/:cid'
   // this is achieved with runGuardsAndResolvers: 'always' configuration
   // we cache the case view to avoid retrieving it for each child route
-  previousUrl: string;
+  public previousUrl: string;
   constructor(private caseNotifier: CaseNotifier,
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
@@ -33,10 +32,11 @@ export class CaseResolver implements Resolve<CaseView> {
       });
   }
 
-  resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
+  public resolve(route: ActivatedRouteSnapshot): Promise<CaseView> {
     const cid = route.paramMap.get(CaseResolver.PARAM_CASE_ID);
 
     if (!cid) {
+      console.info('No case ID available in the route. Will navigate to case list.');
       // when redirected to case view after a case created, and the user has no READ access,
       // the post returns no id
       this.navigateToCaseList();
@@ -62,15 +62,18 @@ export class CaseResolver implements Resolve<CaseView> {
   }
 
   private getAndCacheCaseView(cid): Promise<CaseView> {
+    console.info('getAndCacheCaseView started.');
     if (this.caseNotifier.cachedCaseView && this.caseNotifier.cachedCaseView.case_id && this.caseNotifier.cachedCaseView.case_id === cid) {
       this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
+      console.info('getAndCacheCaseView - Path A.');
       return of(this.caseNotifier.cachedCaseView).toPromise();
     } else {
       if (Draft.isDraft(cid)) {
         return this.getAndCacheDraft(cid);
       } else {
+      console.info('getAndCacheCaseView - Path B.');
         return this.caseNotifier.fetchAndRefresh(cid)
-          .pipe(catchError(error => this.checkAuthorizationError(error)))
+          .pipe(catchError(error => this.processErrorInCaseFetch(error)))
           .toPromise();
       }
     }
@@ -85,11 +88,13 @@ export class CaseResolver implements Resolve<CaseView> {
           this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
           return this.caseNotifier.cachedCaseView;
         }),
-        catchError(error => this.checkAuthorizationError(error))
+        catchError(error => this.processErrorInCaseFetch(error))
       ).toPromise();
   }
 
-  private checkAuthorizationError(error: any) {
+  private processErrorInCaseFetch(error: any) {
+    console.error('!!! processErrorInCaseFetch !!!');
+    console.error(error);
     // TODO Should be logged to remote logging infrastructure
     if (error.status === 400) {
       this.router.navigate(['/search/noresults']);
@@ -109,6 +114,7 @@ export class CaseResolver implements Resolve<CaseView> {
 
   // as discussed for EUI-5456, need functionality to go to default page
   private goToDefaultPage(): void {
+    console.info('Going to default page!');
     const userDetails = JSON.parse(this.sessionStorage.getItem('userDetails'));
     userDetails && userDetails.roles
         && !userDetails.roles.includes('pui-case-manager')

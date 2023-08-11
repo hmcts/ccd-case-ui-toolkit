@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteTextAreaFieldComponent } from './write-text-area-field.component';
 
@@ -25,11 +26,10 @@ const CASE_FIELD: CaseField = ({
 const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WriteTextAreaFieldComponent', () => {
-
   const $INPUT = By.css('.form-group textarea');
 
   // Textarea input is mocked so that one-way bound inputs can be tested
-  const Textarea: any = MockComponent({ selector: 'textarea', inputs: [
+  const textareaComponentMock: any = MockComponent({ selector: 'textarea', inputs: [
     'formControl'
   ]});
 
@@ -46,9 +46,9 @@ describe('WriteTextAreaFieldComponent', () => {
         ],
         declarations: [
           WriteTextAreaFieldComponent,
-
-          // Mock
-          Textarea,
+          // Mocks
+          MockRpxTranslatePipe,
+          textareaComponentMock
         ],
         providers: []
       })
@@ -74,7 +74,6 @@ describe('WriteTextAreaFieldComponent', () => {
 
   it('should render text input element linked to formControl', () => {
     const input = de.query($INPUT);
-
     expect(input.componentInstance.formControl).toEqual(component.textareaControl);
   });
 });

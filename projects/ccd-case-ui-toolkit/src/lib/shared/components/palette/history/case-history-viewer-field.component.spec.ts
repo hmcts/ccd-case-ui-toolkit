@@ -8,7 +8,6 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseHistoryViewerFieldComponent } from './case-history-viewer-field.component';
 
 describe('CaseHistoryViewerFieldComponent', () => {
-
   const FIELD_TYPE: FieldType = {
     id: 'CaseHistoryViewer',
     type: 'CaseHistoryViewer'
@@ -60,15 +59,14 @@ describe('CaseHistoryViewerFieldComponent', () => {
   }) as CaseField;
   const CASE_REFERENCE = '1234123412341234';
 
-  let EventLogComponent;
+  let eventLogComponentMock;
 
   let fixture: ComponentFixture<CaseHistoryViewerFieldComponent>;
   let component: CaseHistoryViewerFieldComponent;
   let de: DebugElement;
 
   beforeEach(waitForAsync(() => {
-
-    EventLogComponent = MockComponent({ selector: 'ccd-event-log', inputs: [
+    eventLogComponentMock = MockComponent({ selector: 'ccd-event-log', inputs: [
       'events'
     ]});
 
@@ -79,7 +77,7 @@ describe('CaseHistoryViewerFieldComponent', () => {
           CaseHistoryViewerFieldComponent,
 
           // Mocks
-          EventLogComponent
+          eventLogComponentMock
         ]
       })
       .compileComponents();
@@ -95,7 +93,7 @@ describe('CaseHistoryViewerFieldComponent', () => {
   }));
 
   it('should render case history component', () => {
-    const eventLogDe = de.query(By.directive(EventLogComponent));
+    const eventLogDe = de.query(By.directive(eventLogComponentMock));
 
     expect(eventLogDe).toBeDefined();
 

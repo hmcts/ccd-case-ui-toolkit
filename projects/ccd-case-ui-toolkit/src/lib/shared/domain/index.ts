@@ -2,6 +2,7 @@ export * from './activity';
 export * from './addresses';
 export * from './alert';
 export * from './case-details.model';
+export * from './case-edit';
 export * from './case-event-data.model';
 export * from './case-view';
 export * from './definition';

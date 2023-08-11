@@ -17,7 +17,7 @@ import {
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
-import { LinkCaseReason, LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
+import { LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
@@ -48,7 +48,7 @@ export class CasesService {
 
   public static readonly PUI_CASE_MANAGER = 'pui-case-manager';
 
-  get = this.getCaseView;
+  public get = this.getCaseView;
 
   public static updateChallengedAccessRequestAttributes(httpClient: HttpClient, caseId: string, attributesToUpdate: { [x: string]: any })
     : Observable<RoleAssignmentResponse> {
@@ -72,20 +72,15 @@ export class CasesService {
     private orderService: OrderService,
     private errorService: HttpErrorService,
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
-    private readonly workAllocationService: WorkAllocationService,
     private loadingService: LoadingService,
     private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
-  getCaseView(jurisdictionId: string,
+  public getCaseView(jurisdictionId: string,
     caseTypeId: string,
     caseId: string): Observable<CaseView> {
-    const url = this.appConfig.getApiUrl()
-      + `/caseworkers/:uid`
-      + `/jurisdictions/${jurisdictionId}`
-      + `/case-types/${caseTypeId}`
-      + `/cases/${caseId}`;
+    const url = `${this.appConfig.getApiUrl()}/caseworkers/:uid/jurisdictions/${jurisdictionId}/case-types/${caseTypeId}/cases/${caseId}`;
 
     const loadingToken = this.loadingService.register();
     return this.http
@@ -99,7 +94,7 @@ export class CasesService {
       );
   }
 
-  getCaseViewV2(caseId: string): Observable<CaseView> {
+  public getCaseViewV2(caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getCaseDataUrl()}/internal/cases/${caseId}`;
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -112,14 +107,30 @@ export class CasesService {
       .get(url, { headers, observe: 'body' })
       .pipe(
         catchError(error => {
+          console.error('Error while getting case view with getCaseViewV2!');
+          console.error(error);
           this.errorService.setError(error);
           return throwError(error);
         }),
-        finalize(() => this.loadingService.unregister(loadingToken))
+        finalize(() => this.finalizeGetCaseViewWith(caseId, loadingToken))
       );
   }
 
-  getEventTrigger(caseTypeId: string,
+  public syncWait(seconds) {
+    const end = Date.now() + seconds * 1000;
+    while (Date.now() < end) continue;
+  }
+
+  private finalizeGetCaseViewWith(caseId: string, loadingToken: string) {
+    console.info(`finalizeGetCaseViewWith started for ${caseId}.`);
+    // this.syncWait(15);
+    // throw new Error('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+    this.loadingService.unregister(loadingToken);
+    console.info(`finalizeGetCaseViewWith finished for ${caseId}.`);
+  }
+
+
+  public getEventTrigger(caseTypeId: string,
     eventTriggerId: string,
     caseId?: string,
     ignoreWarning?: string): Observable<CaseEventTrigger> {
@@ -127,8 +138,8 @@ export class CasesService {
 
     const url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
-    let headers = new HttpHeaders()
-    headers = headers.set('experimental', 'true')
+    let headers = new HttpHeaders();
+    headers = headers.set('experimental', 'true');
     headers = headers.set('Content-Type', 'application/json');
 
     if (Draft.isDraft(caseId)) {
@@ -156,7 +167,7 @@ export class CasesService {
 
   public createEvent(caseDetails: CaseView, eventData: CaseEventData): Observable<{}> {
     const caseId = caseDetails.case_id;
-    const url = this.appConfig.getCaseDataUrl() + `/cases/${caseId}/events`;
+    const url = `${this.appConfig.getCaseDataUrl()}/cases/${caseId}/events`;
 
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -173,10 +184,9 @@ export class CasesService {
       );
   }
 
-  validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
-    const pageIdString = pageId ? '?pageId=' + pageId : '';
-    const url = this.appConfig.getCaseDataUrl()
-      + `/case-types/${ctid}/validate${pageIdString}`;
+  public validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
+    const pageIdString = pageId ? `?pageId=${pageId}` : '';
+    const url = `${this.appConfig.getCaseDataUrl()}/case-types/${ctid}/validate${pageIdString}`;
 
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -193,14 +203,13 @@ export class CasesService {
       );
   }
 
-  createCase(ctid: string, eventData: CaseEventData): Observable<object> {
+  public createCase(ctid: string, eventData: CaseEventData): Observable<object> {
     let ignoreWarning = 'false';
 
     if (eventData.ignore_warning) {
       ignoreWarning = 'true';
     }
-    const url = this.appConfig.getCaseDataUrl()
-      + `/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
+    const url = `${this.appConfig.getCaseDataUrl()}/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
 
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -217,10 +226,8 @@ export class CasesService {
       );
   }
 
-  getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
-    const url = this.appConfig.getCaseDataUrl()
-      + `/cases/${caseId}`
-      + `/documents`;
+  public getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
+    const url = `${this.appConfig.getCaseDataUrl()}/cases/${caseId}/documents`;
 
     const headers = new HttpHeaders()
       .set('experimental', 'true')
@@ -242,7 +249,7 @@ export class CasesService {
                                eventTriggerId: string,
                                caseId?: string,
                                ignoreWarning?: string): string {
-    let url = this.appConfig.getCaseDataUrl() + `/internal`;
+    let url = `${this.appConfig.getCaseDataUrl()}/internal`;
 
     if (Draft.isDraft(caseId)) {
       url += `/drafts/${caseId}`
@@ -360,12 +367,12 @@ export class CasesService {
       ...payload.requestedRoles[0].attributes,
       requestedRole: roleName,
       specificAccessReason: sar.specificReason
-    }
+    };
 
     payload.requestedRoles[0].notes[0] = {
       ...payload.requestedRoles[0].notes[0],
       userId: payload.requestedRoles[0].actorId
-    }
+    };
 
     return this.http.post(
       `/api/specific-access-request`,
@@ -374,7 +381,7 @@ export class CasesService {
   }
 
   public getLinkedCases(caseId: string): Observable<LinkedCasesResponse> {
-    const url = `${this.appConfig.getCaseDataStoreApiUrl()}/${caseId}`
+    const url = `${this.appConfig.getCaseDataStoreApiUrl()}/${caseId}`;
     return this.http
     .get(url)
     .pipe(catchError(error => throwError(error)));

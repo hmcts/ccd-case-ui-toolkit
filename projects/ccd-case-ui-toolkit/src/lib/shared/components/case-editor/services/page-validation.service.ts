@@ -4,6 +4,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
+import { FieldsUtils } from '../../../services/fields';
 import { WizardPage } from '../domain/wizard-page.model';
 
 @Injectable()
@@ -15,7 +16,9 @@ export class PageValidationService {
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
       .filter(caseField => !this.isHidden(caseField, editForm))
       .every(caseField => {
-        const theControl = editForm.controls['data'].get(caseField.id);
+        const theControl = FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])
+          ? editForm.controls['data'].get(`${caseField.id}_judicialUserControl`)
+          : editForm.controls['data'].get(caseField.id);
         return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
       });
   }
@@ -23,7 +26,7 @@ export class PageValidationService {
   public isHidden(caseField: CaseField, editForm: FormGroup, path?: string): boolean {
     const formFields = editForm.getRawValue();
     const condition = ShowCondition.getInstance(caseField.show_condition);
-    if (path && path.indexOf('_' + caseField.id + '_') === -1) {
+    if (path && path.indexOf(`_${caseField.id}_`) === -1) {
       path = `${path}${caseField.id}`;
     }
     return !condition.match(formFields.data, path);

@@ -17,10 +17,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 14
+      - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn lint
       - run: yarn build
@@ -30,69 +31,73 @@ jobs:
       - name: Change Report Path
         run: sed -i 's+/home/runner/work/ccd-case-ui-toolkit/ccd-case-ui-toolkit+/github/workspace+g' coverage/ccd-case-ui-toolkit/lcov-report/lcov.info
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: code-coverage-report
-          path: coverage 
+          path: coverage
 
   sonarcloud:
     needs: build
     name: SonarCloud Trigger
     runs-on: ubuntu-latest
     steps:
-    - name: Clone Repo
-      uses: actions/checkout@v2
-      with:
-        # Disabling shallow clone is recommended for improving relevancy of reporting
-        fetch-depth: 0
-    - name: Download code coverage results
-      uses: actions/download-artifact@v1
-      with:
-        name: code-coverage-report
-        path: coverage
-    - name: Analyze with SonarCloud
-      uses: sonarsource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    - name: Send slack 
-      if: failure() 
-      uses: sonots/slack-notice-action@v3
-      with:
-        status: ${{ job.status }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Clone Repo
+        uses: actions/checkout@v3
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - name: Download code coverage results
+        uses: actions/download-artifact@v3
+        with:
+          name: code-coverage-report
+          path: coverage
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Send slack
+        if: failure()
+        uses: sonots/slack-notice-action@v3
+        with:
+          status: ${{ job.status }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish-npm:
+    if: startsWith(github.ref, 'refs/tags')
     needs: sonarcloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-        if: startsWith(github.ref, 'refs/tags')
-      - uses: actions/setup-node@v1
-        if: startsWith(github.ref, 'refs/tags')
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 14
           registry-url: https://registry.npmjs.org/
-      - run:  yarn install && yarn build && cd dist/ccd-case-ui-toolkit && yarn publish --ignore-scripts
-        if: startsWith(github.ref, 'refs/tags')
+      - run: corepack enable && yarn --version
+      - run: yarn install
+      - run: yarn build
+      - run: npm publish dist/ccd-case-ui-toolkit --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_API_TOKEN }}
+          NPM_PUBLISH_REGISTRY: https://registry.npmjs.org/
 
   publish-gpr:
+    if: startsWith(github.ref, 'refs/tags')
     needs: sonarcloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-        if: startsWith(github.ref, 'refs/tags')
-      - uses: actions/setup-node@v1
-        if: startsWith(github.ref, 'refs/tags')
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
           scope: '@hmcts'
-      - run: yarn install && yarn build && yarn publish
-        if: startsWith(github.ref, 'refs/tags')
+      - run: corepack enable && yarn --version
+      - run: yarn install
+      - run: yarn build
+      - run: npm publish dist/ccd-case-ui-toolkit --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com/

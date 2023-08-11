@@ -16,14 +16,12 @@ import { LinkedCasesService } from './services';
   templateUrl: './write-linked-cases-field.component.html'
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
-
   public caseEditForm: FormGroup;
   public caseDetails: CaseView;
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public linkedCases: CaseLink[] = [];
-  public errorMessages: ErrorMessage[] = [];
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
@@ -35,6 +33,9 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public ngOnInit(): void {
+    // This is required to enable Continue button validation
+    // Continue button should be enabled only at check your answers page
+    this.caseEditDataService.setLinkedCasesJourneyAtFinalStep(false);
     // Clear validation errors
     this.caseEditDataService.clearFormValidationErrors();
     // Get linked case reasons from ref data
@@ -73,12 +74,11 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
-    this.errorMessages = [];
+    // Clear validation errors
     this.caseEditDataService.clearFormValidationErrors();
 
     if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);
-      this.setContinueButtonValidationErrorMessage();
       this.proceedToNextPage();
     } else {
       if (linkedCasesState.errorMessages && linkedCasesState.errorMessages.length) {
@@ -90,7 +90,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   public getLinkedCaseReasons(): void {
-    const reasonCodeAPIurl = this.appConfig.getRDCommonDataApiUrl() + '/lov/categories/CaseLinkingReasonCode';
+    const reasonCodeAPIurl = `${this.appConfig.getRDCommonDataApiUrl()}/lov/categories/CaseLinkingReasonCode`;
       this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
         next: reasons => {
           // Sort in ascending order
@@ -102,29 +102,17 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     });
   }
 
-  public setContinueButtonValidationErrorMessage(): void {
-    const errorMessage = this.linkedCasesService.isLinkedCasesEventTrigger
-        ? LinkedCasesErrorMessages.LinkCasesNavigationError
-        : LinkedCasesErrorMessages.UnlinkCasesNavigationError;
-
-    const buttonId = this.linkedCasesService.linkedCases.length === 0
-      ? 'back-button'
-      : 'next-button';
-
-    this.caseEditDataService.setCaseLinkError({
-        componentId: buttonId,
-        errorMessage
-    });
-  }
-
   public proceedToNextPage(): void {
     if (this.isAtFinalPage()) {
       // Continue button event must be allowed in final page
-      this.caseEditDataService.clearCaseLinkError();
+      this.caseEditDataService.setLinkedCasesJourneyAtFinalStep(true);
       // Trigger validation to clear the "notAtFinalPage" error if now at the final state
       this.formGroup.updateValueAndValidity();
       // update form value
       this.submitLinkedCases();
+    } else {
+      // Continue button event must not be allowed if not in final page
+      this.caseEditDataService.setLinkedCasesJourneyAtFinalStep(false);
     }
   }
 
@@ -156,10 +144,9 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public getLinkedCases(): void {
     this.casesService.getCaseViewV2(this.linkedCasesService.caseId).subscribe((caseView: CaseView) => {
       const caseViewFiltered = caseView.tabs.filter(tab => {
-        const linkField = tab.fields.some(
+        return tab.fields.some(
           ({field_type}) => field_type && field_type.collection_field_type && field_type.collection_field_type.id === 'CaseLink'
         );
-        return linkField;
       });
       if (caseViewFiltered) {
         const caseLinkFieldValue = caseViewFiltered.map(filtered =>
@@ -174,18 +161,6 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
                           && !this.linkedCasesService.serverLinkedApiError)
         ? LinkedCasesPages.BEFORE_YOU_START
         : LinkedCasesPages.NO_LINKED_CASES;
-      // Initialise the error to be displayed when clicked on Continue button
-      this.setContinueButtonValidationErrorMessage();
     });
-  }
-
-  public navigateToErrorElement(elementId: string): void {
-    if (elementId) {
-      const htmlElement = document.getElementById(elementId);
-      if (htmlElement) {
-        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        htmlElement.focus();
-      }
-    }
   }
 }

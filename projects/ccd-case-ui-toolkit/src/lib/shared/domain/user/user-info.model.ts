@@ -8,6 +8,6 @@ export interface UserInfo {
   email: string;
   active: boolean;
   roles: string[];
-  roleCategories: string[],
-  roleCategory?: RoleCategory
+  roleCategories: string[];
+  roleCategory?: RoleCategory;
 }

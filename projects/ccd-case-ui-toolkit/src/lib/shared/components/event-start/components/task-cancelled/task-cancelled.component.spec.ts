@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MockRpxTranslatePipe } from '../../../../test/mock-rpx-translate.pipe';
 import { TaskCancelledComponent } from './task-cancelled.component';
 
 describe('TaskCancelledComponent', () => {
@@ -11,7 +12,7 @@ describe('TaskCancelledComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [TaskCancelledComponent]
+      declarations: [TaskCancelledComponent, MockRpxTranslatePipe]
     })
       .compileComponents();
   }));

@@ -6,11 +6,11 @@
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group">
     <fieldset class="govuk-fieldset" aria-describedby="reason-hint">
-      <div class="govuk-grid-column-two-thirds" >
+      <div class="govuk-grid-column-two-thirds">
         <p></p>
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 class="govuk-fieldset__heading">
-            {{ title }}
+            {{ title | rpxTranslate }}
           </h1>
         </legend>
         <p></p>
@@ -19,33 +19,33 @@
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
-                Case name
+                {{'Case name' | rpxTranslate}}
               </th>
               <td class="govuk-table__cell">{{ requestAccessDetails.caseName }}</td>
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
-                Case reference
+                {{'Case reference' | rpxTranslate}}
               </th>
               <td class="govuk-table__cell">{{ requestAccessDetails.caseReference }}</td>
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
-                Date submitted
+                {{'Date submitted' | rpxTranslate}}
               </th>
               <td class="govuk-table__cell">{{ requestAccessDetails.dateSubmitted }}</td>
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
-                Request from
+                {{'Request from' | rpxTranslate}}
               </th>
               <td class="govuk-table__cell">{{ requestAccessDetails.requestFrom }}<br /></td>
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header leftLabel" >
-                Reason for case access
+                {{'Reason for case access' | rpxTranslate}}
               </th>
-              <td class="govuk-table__cell">{{ requestAccessDetails.reasonForCaseAccess }}</td>
+              <td class="govuk-table__cell">{{ requestAccessDetails.reasonForCaseAccess | rpxTranslate }}</td>
             </tr>
           </tbody>
         </table>
@@ -56,14 +56,14 @@
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
               <h1 class="govuk-fieldset__heading">
-                {{ hint }}
+                {{ hint | rpxTranslate }}
               </h1>
             </legend>
             <div
               id="error-message"
               class="govuk-error-message"
               *ngIf="formGroup.get('radioSelected').invalid && submitted">
-              {{ errorMessage.description }}
+              {{ errorMessage.description | rpxTranslate }}
             </div>
             <div class="govuk-radios__item">
               <input
@@ -76,7 +76,7 @@
                 [checked]="accessReasons[0].checked"
                 (change)="onChange()"/>
               <label class="govuk-label govuk-radios__label" for="reason-0">
-                {{ accessReasons[0].reason }}
+                {{ accessReasons[0].reason | rpxTranslate }}
               </label>
             </div>
             <div class="govuk-radios__item">
@@ -90,7 +90,7 @@
                 [checked]="accessReasons[1].checked"
                 (change)="onChange()"/>
               <label class="govuk-label govuk-radios__label" for="reason-1">
-                {{ accessReasons[1].reason }}
+                {{ accessReasons[1].reason | rpxTranslate }}
               </label>
             </div>
             <div class="govuk-radios__item">
@@ -104,7 +104,7 @@
                 [checked]="accessReasons[2].checked"
                 (change)="onChange()"/>
               <label class="govuk-label govuk-radios__label" for="reason-2">
-                {{ accessReasons[2].reason }}
+                {{ accessReasons[2].reason | rpxTranslate }}
               </label>
             </div>
           </fieldset>
@@ -115,12 +115,12 @@
 
   <div class="govuk-button-group">
     <button class="govuk-button govuk-!-margin-right-3" type="submit">
-      Continue
+      {{'Continue' | rpxTranslate}}
     </button>
     <div class="govuk-grid-column-full govuk-!-padding-left-0">
       <p>
         <a class="govuk-body" (click)="onCancel()" href="javascript:void(0)">
-          Cancel
+          {{'Cancel' | rpxTranslate}}
         </a>
       </p>
     </div>

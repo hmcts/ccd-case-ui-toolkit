@@ -8,14 +8,13 @@ import { DraftService } from './draft.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('Drafts Service', () => {
-
   const DATA_URL = 'http://aggregated.ccd.reform';
   const JID = 'TEST';
   const CT_ID = 'TestAddressBookCase';
   const DRAFT_ID = 'Draft1';
   const EVENT_TRIGGER_ID = 'createCase';
-  const CREATE_OR_UPDATE_DRAFT_URL = DATA_URL + `/internal/case-types/${CT_ID}/drafts/`;
-  const GET_OR_DELETE_DRAFT_URL = DATA_URL + `/internal/drafts/1`;
+  const CREATE_OR_UPDATE_DRAFT_URL = `${DATA_URL}/internal/case-types/${CT_ID}/drafts/`;
+  const GET_OR_DELETE_DRAFT_URL = `${DATA_URL}/internal/drafts/1`;
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
 
@@ -121,7 +120,6 @@ describe('Drafts Service', () => {
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);
         });
     });
-
   });
 
   describe('getDraft()', () => {
@@ -176,7 +174,6 @@ describe('Drafts Service', () => {
   });
 
   describe('deleteDraft()', () => {
-
     beforeEach(() => {
       httpService.delete.and.returnValue(of());
     });

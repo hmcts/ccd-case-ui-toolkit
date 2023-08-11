@@ -5,7 +5,7 @@ import { PrintUrlPipe } from './print-url.pipe';
 describe('PrintUrlPipe', () => {
   const LOCAL_PRINT_SERVICE_URL = '/print';
   const REMOTE_PRINT_SERVICE_URL_PATHNAME = '/jurisdictions/TEST/case-types/Test1/cases/1111222233334444';
-  const REMOTE_PRINT_SERVICE_URL = 'https://return-case-doc.ccd.reform' + REMOTE_PRINT_SERVICE_URL_PATHNAME;
+  const REMOTE_PRINT_SERVICE_URL = `https://return-case-doc.ccd.reform${REMOTE_PRINT_SERVICE_URL_PATHNAME}`;
   let printUrlPipe: PrintUrlPipe;
   let appConfig: jasmine.SpyObj<AbstractAppConfig>;
 

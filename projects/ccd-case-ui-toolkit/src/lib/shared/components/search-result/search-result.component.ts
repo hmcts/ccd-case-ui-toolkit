@@ -150,7 +150,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public get resultTotal(): number {
-    const total = this.paginationMetadata.total_results_count;
+    const total = this.paginationMetadata.totalResultsCount;
     const maximumResultReached = total >= this.PAGINATION_MAX_ITEM_RESULT;
     this.paginationLimitEnforced = maximumResultReached;
 
@@ -313,7 +313,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public hasResults(): any {
-    return this.resultView.results.length && this.paginationMetadata.total_pages_count;
+    return this.resultView.results.length && this.paginationMetadata.totalPagesCount;
   }
 
   public hasDrafts(): boolean {
@@ -420,7 +420,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public getTotalResults(): number {
-    const total = this.paginationMetadata.total_results_count + this.draftsCount;
+    const total = this.paginationMetadata.totalResultsCount + this.draftsCount;
 
     return total >= this.PAGINATION_MAX_ITEM_RESULT ? this.PAGINATION_MAX_ITEM_RESULT : total;
   }

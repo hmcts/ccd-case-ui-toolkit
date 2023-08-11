@@ -8,20 +8,18 @@ import { MoneyGbpInputComponent } from './money-gbp-input.component';
 import createSpy = jasmine.createSpy;
 
 describe('MoneyGbpInputComponent', () => {
-
   const $INPUT = By.css('input');
 
   let fixture: ComponentFixture<MoneyGbpInputComponent>;
   let component: MoneyGbpInputComponent;
   let de: DebugElement;
 
-  let Input: any;
+  let inputMockComponent: any;
   let onChange;
 
   beforeEach(waitForAsync(() => {
-
     // Input is mocked so that one-way bound inputs can be tested
-    Input = MockComponent({ selector: 'input', inputs: [
+    inputMockComponent = MockComponent({ selector: 'input', inputs: [
       'type',
       'value',
       'change',
@@ -38,8 +36,8 @@ describe('MoneyGbpInputComponent', () => {
         declarations: [
           MoneyGbpInputComponent,
 
-          // Mock
-          Input
+          // Mocks
+          inputMockComponent
         ],
         providers: []
       })

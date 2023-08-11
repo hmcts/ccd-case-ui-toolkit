@@ -3,6 +3,6 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 
 @Component({
   selector: 'ccd-read-fixed-radio-list-field',
-  template: '<span class="text-16">{{caseField.value | ccdFixedRadioList:caseField.field_type.fixed_list_items}}</span>',
+  template: '<span class="text-16">{{caseField.value | ccdFixedRadioList:caseField.field_type.fixed_list_items | rpxTranslate}}</span>',
 })
 export class ReadFixedRadioListFieldComponent extends AbstractFieldReadComponent { }

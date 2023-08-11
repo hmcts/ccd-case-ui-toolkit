@@ -1,10 +1,10 @@
+// tslint:disable:variable-name
 import { Type } from 'class-transformer';
 import { WizardPage } from '../../components/case-editor/domain/wizard-page.model';
 import { CaseField } from '../definition/case-field.model';
 
 // @dynamic
 export class CaseEventTrigger {
-
   public id: string;
   public name: string;
   public description?: string;

@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl } from '@angular/forms';
-
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
   selector: 'ccd-write-dynamic-multi-select-list-field',
-  templateUrl: './write-dynamic-multi-select-list-field.html'
+  templateUrl: './write-dynamic-multi-select-list-field.html',
+  styleUrls: ['./write-dynamic-multi-select-list-field.component.scss']
 })
 export class WriteDynamicMultiSelectListFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-
   public checkboxes: FormArray;
   public dynamicListFormControl: FormControl;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.checkboxes = new FormArray([]);
 
     this.setInitialCaseList();

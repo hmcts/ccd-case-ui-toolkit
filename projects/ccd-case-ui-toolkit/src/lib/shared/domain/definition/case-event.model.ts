@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { Orderable } from '../order';
 import { AccessControlList } from './access-control-list.model';
 import { EventCaseField } from './event-case-field.model';

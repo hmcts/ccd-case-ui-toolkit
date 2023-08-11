@@ -1,5 +1,7 @@
 .form :host::ng-deep .grey-bar {
-  > * > .form-group, > * > dl.case-field {
+  > * > .form-group,
+  > * > * > .form-group,
+  > * > dl.case-field {
     margin-left: 15px;
     padding-left: 15px;
 

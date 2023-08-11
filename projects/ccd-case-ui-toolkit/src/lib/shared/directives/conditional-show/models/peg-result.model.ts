@@ -1,9 +1,9 @@
 export class PegCondition {
-  fieldReference: string;
-  comparator: string;
-  value: string;
+  public fieldReference: string;
+  public comparator: string;
+  public value: string;
 }
 
 export class PegConditionResult {
-  conditions: PegCondition[];
+  public conditions: PegCondition[];
 }

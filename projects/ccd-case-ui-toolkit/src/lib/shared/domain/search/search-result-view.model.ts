@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { Type } from 'class-transformer';
 import { Draft } from '../draft.model';
 import { SearchResultViewColumn } from './search-result-view-column.model';

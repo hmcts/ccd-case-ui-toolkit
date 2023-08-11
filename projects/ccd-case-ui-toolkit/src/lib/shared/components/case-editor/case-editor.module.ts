@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { CaseEditDataModule, CaseEditDataService } from '../../commons/case-edit-data';
 import { CallbackErrorsComponent } from '../../components/error';
@@ -32,6 +33,7 @@ import { PaletteModule } from '../palette/palette.module';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
 import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component';
+import { CaseEditGenericErrorsComponent } from './case-edit-generic-errors/case-edit-generic-errors.component';
 import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
 import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
 import { CaseEditComponent } from './case-edit/case-edit.component';
@@ -66,7 +68,8 @@ import { CaseworkerService } from './services/case-worker.service';
     ErrorsModule,
     PortalModule,
     LoadingSpinnerModule,
-    BannersModule
+    BannersModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     CaseEditConfirmComponent,
@@ -78,7 +81,8 @@ import { CaseworkerService } from './services/case-worker.service';
     CaseEventCompletionTaskCancelledComponent,
     CaseEventCompletionTaskReassignedComponent,
     CaseCreateComponent,
-    CaseProgressComponent
+    CaseProgressComponent,
+    CaseEditGenericErrorsComponent
   ],
   exports: [
     CaseEditConfirmComponent,

@@ -79,18 +79,18 @@ export class ActivityComponent implements OnInit, OnDestroy {
 
   public generateDescription(prefix: string, suffix: string, namesArray: ActivityInfo[], unknownCount) {
     let resultText = prefix;
-    resultText += namesArray.map(activityInfo => activityInfo.forename + ' ' + activityInfo.surname).join(', ');
+    resultText += namesArray.map(activityInfo => `${activityInfo.forename} ${activityInfo.surname}`).join(', ');
     if (unknownCount > 0) {
-      resultText += (namesArray.length > 0 ? ' and ' + unknownCount + ' other' : unknownCount + ' user');
+      resultText += (namesArray.length > 0 ? ` and ${unknownCount} other` : `${unknownCount} user`);
       resultText += ( unknownCount > 1 ? 's' : '');
     } else {
       resultText = this.replaceLastCommaWithAnd(resultText);
     }
     if (suffix.length > 0) {
       if (namesArray.length + unknownCount > 1) {
-        resultText += ' are ' + suffix;
+        resultText += ` are ${suffix}`;
       } else {
-        resultText += ' is ' + suffix;
+        resultText += ` is ${suffix}`;
       }
     }
     return resultText;

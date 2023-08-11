@@ -1,8 +1,7 @@
 import { Component, DebugElement, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
@@ -13,6 +12,7 @@ import { CaseFieldService } from '../../../services/case-fields/case-field.servi
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
 import { FormErrorService } from '../../../services/form/form-error.service';
 import { FormValueService } from '../../../services/form/form-value.service';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { WizardPage } from '../../case-editor/domain/wizard-page.model';
 import { Wizard } from '../../case-editor/domain/wizard.model';
 import { PageValidationService } from '../../case-editor/services/page-validation.service';
@@ -67,7 +67,6 @@ class FieldReadLabelComponent {
 }
 
 describe('FieldReadComponent', () => {
-
   let fixture: ComponentFixture<FieldReadComponent>;
   let component: FieldReadComponent;
   let de: DebugElement;
@@ -136,10 +135,10 @@ describe('FieldReadComponent', () => {
         ],
         declarations: [
           FieldReadComponent,
-
-          // Mock
           FieldTestComponent,
           FieldReadLabelComponent,
+          // Mocks
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: PaletteService, useValue: paletteService },
@@ -205,11 +204,11 @@ describe('FieldReadComponent', () => {
     expect(fieldReadLabel.withLabel).toBe(true);
   });
 
-  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+  function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {
     const cf = new CaseField();
     cf.id = id;
     cf.value = value;
-    cf.display_context = display_context;
+    cf.display_context = displayContext;
     return cf;
   }
 

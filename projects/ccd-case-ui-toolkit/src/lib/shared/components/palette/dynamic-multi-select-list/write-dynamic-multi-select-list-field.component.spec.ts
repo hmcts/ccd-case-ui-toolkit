@@ -1,23 +1,31 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormArray, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
-import { FieldType } from '../../../domain/definition/field-type.model';
-import { CaseField } from '../../../domain/definition/case-field.model';
-import { PaletteUtilsModule } from '../utils/utils.module';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { NgxMdModule } from 'ngx-md';
+import { CaseField } from '../../../domain/definition/case-field.model';
+import { FieldType } from '../../../domain/definition/field-type.model';
+import { PipesModule } from '../../../pipes';
 import { attr } from '../../../test/helpers';
+import { MarkdownComponent } from '../markdown';
+import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDynamicMultiSelectListFieldComponent } from './write-dynamic-multi-select-list-field.component';
 
-const VALUES = [{
-  code: 'Option1',
-  label: 'Option 1',
-  order: 1
-},
-{
-  code: 'Option2',
-  label: 'Option 2',
-  order: 2
-}];
+const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+
+const VALUES = [
+  {
+    code: 'Option1',
+    label: 'Option 1',
+    order: 1
+  },
+  {
+    code: 'Option2',
+    label: 'Option 2',
+    order: 2
+  }
+];
 const FIELD_ID = 'DynamicMultiSelectList';
 const LIST_ITEMS = [
   {
@@ -32,17 +40,48 @@ const LIST_ITEMS = [
   }
 ];
 
+const MD_LIST_ITEMS = [
+  {
+    code: 'Option1',
+    label: '[Option 1](https://www.google.com/search?q=option+1)',
+    order: 1
+  },
+  {
+    code: 'Option2',
+    label: '[Option 2](https://www.google.com/search?q=option+2)',
+    order: 2
+  }
+];
+
 const FIELD_TYPE: FieldType = {
   id: 'DynamicMultiSelectList',
   type: 'DynamicMultiSelectList',
 };
 
-let CASE_FIELD: CaseField;
+let caseField: CaseField;
+
+const moduleDef = {
+  imports: [
+    ReactiveFormsModule,
+    PaletteUtilsModule,
+    PipesModule,
+    HttpClientTestingModule,
+    NgxMdModule.forRoot(),
+  ],
+  declarations: [
+    WriteDynamicMultiSelectListFieldComponent,
+    MarkdownComponent
+  ],
+  providers: [
+    NgxMdModule
+  ]
+};
 
 const $CHECKBOXES = By.css('input[type="checkbox"]');
 const $SELECTED_CHECKBOXES = By.css('input[type="checkbox"]:checked');
 const $UNSELECTED_CHECKBOXES = By.css('input[type="checkbox"]:not(:checked)');
 const $OPTION_1 = By.css('input[value="Option1"]');
+const $LABELS = By.css('input[type="checkbox"] + label');
 
 describe('WriteDynamicMultiSelectListFieldComponent', () => {
   let fixture: ComponentFixture<WriteDynamicMultiSelectListFieldComponent>;
@@ -50,34 +89,24 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
   let de: DebugElement;
 
   describe('List Value Dynamic Case Field', () => {
-    beforeEach(async(() => {
-
-      CASE_FIELD = ({
+    beforeEach(waitForAsync(() => {
+      caseField = ({
         id: FIELD_ID,
         label: 'X',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE,
         value: VALUES,
-        list_items: LIST_ITEMS
+        list_items: MD_LIST_ITEMS
       }) as CaseField;
 
       TestBed
-        .configureTestingModule({
-          imports: [
-            ReactiveFormsModule,
-            PaletteUtilsModule
-          ],
-          declarations: [
-            WriteDynamicMultiSelectListFieldComponent,
-          ],
-          providers: []
-        })
+        .configureTestingModule(moduleDef)
         .compileComponents();
 
       fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
       component = fixture.componentInstance;
 
-      component.caseField = CASE_FIELD;
+      component.caseField = caseField;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -96,9 +125,9 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     it('should render a checkbox for each available option', () => {
       const checkboxes = de.queryAll($CHECKBOXES);
 
-      expect(checkboxes.length).toEqual(LIST_ITEMS.length);
+      expect(checkboxes.length).toEqual(MD_LIST_ITEMS.length);
 
-      LIST_ITEMS.forEach(item => {
+      MD_LIST_ITEMS.forEach(item => {
         expect(checkboxes.find(checkbox => attr(checkbox, 'value') === item.code)).toBeTruthy();
       });
     });
@@ -112,37 +141,35 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
         expect(checkboxes.find(checkbox => attr(checkbox, 'value') === value.code)).toBeTruthy();
       });
     });
+
+    it('should show a link in the checkbox label', () => {
+      const labels = de.queryAll($LABELS);
+      labels.forEach((lb, i) => {
+        const mockUrl = MD_LIST_ITEMS[i].label.match(URL_REGEX)[0];
+        expect(lb.nativeElement.innerHTML).toContain(`<a href="${mockUrl}">`);
+      });
+    });
   });
 
   describe('Null Value Dynamic Case Field', () => {
-    beforeEach(async(() => {
-
-      CASE_FIELD = ({
+    beforeEach(waitForAsync(() => {
+      caseField = ({
         id: FIELD_ID,
         label: 'X',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE,
         value: null,
-        list_items: LIST_ITEMS
+        list_items: MD_LIST_ITEMS
       }) as CaseField;
 
       TestBed
-        .configureTestingModule({
-          imports: [
-            ReactiveFormsModule,
-            PaletteUtilsModule
-          ],
-          declarations: [
-            WriteDynamicMultiSelectListFieldComponent,
-          ],
-          providers: []
-        })
+        .configureTestingModule(moduleDef)
         .compileComponents();
 
       fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
       component = fixture.componentInstance;
 
-      component.caseField = CASE_FIELD;
+      component.caseField = caseField;
 
       de = fixture.debugElement;
       fixture.detectChanges();
@@ -163,34 +190,24 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
   });
 
   describe('Object Value Dynamic Case Field', () => {
-    beforeEach(async(() => {
-
-      CASE_FIELD = ({
+    beforeEach(waitForAsync(() => {
+      caseField = ({
         id: FIELD_ID,
         label: 'X',
         display_context: 'OPTIONAL',
         field_type: FIELD_TYPE,
-        value: LIST_ITEMS[0],
-        list_items: LIST_ITEMS
+        value: MD_LIST_ITEMS[0],
+        list_items: MD_LIST_ITEMS
       }) as CaseField;
 
       TestBed
-        .configureTestingModule({
-          imports: [
-            ReactiveFormsModule,
-            PaletteUtilsModule
-          ],
-          declarations: [
-            WriteDynamicMultiSelectListFieldComponent,
-          ],
-          providers: []
-        })
+        .configureTestingModule(moduleDef)
         .compileComponents();
 
       fixture = TestBed.createComponent(WriteDynamicMultiSelectListFieldComponent);
       component = fixture.componentInstance;
 
-      component.caseField = CASE_FIELD;
+      component.caseField = caseField;
 
       de = fixture.debugElement;
       fixture.detectChanges();

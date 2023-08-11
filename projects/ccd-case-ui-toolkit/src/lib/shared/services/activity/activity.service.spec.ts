@@ -1,4 +1,3 @@
-
 import { waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
@@ -16,7 +15,6 @@ const response = {
 };
 
 describe('ActivityService', () => {
-
   beforeEach(waitForAsync(() => {
     appConfig = jasmine.createSpyObj<AbstractAppConfig>('appConfig', ['getActivityUrl']);
     appConfig.getActivityUrl.and.returnValue('someUrl');
@@ -35,7 +33,16 @@ describe('ActivityService', () => {
     expect(appConfig.getActivityUrl).toHaveBeenCalled();
   });
 
-  it('should accesss AppConfig and HttpService for postActivity', () => {
+  it('should access AppConfig and HttpService for getActivities', () => {
+    httpService = jasmine.createSpyObj<HttpService>('httpService', ['get', 'post']);
+    httpService.get.and.throwError('Error');
+
+    activityService.getActivities('1111');
+    expect(httpService.get).not.toHaveBeenCalled();
+    expect(appConfig.getActivityUrl).toHaveBeenCalled();
+  });
+
+  it('should access AppConfig and HttpService for postActivity', () => {
     activityService.postActivity('1111', 'edit');
     expect(httpService.post).toHaveBeenCalled();
     expect(appConfig.getActivityUrl).toHaveBeenCalled();

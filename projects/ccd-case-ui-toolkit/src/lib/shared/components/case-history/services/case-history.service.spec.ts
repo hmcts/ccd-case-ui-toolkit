@@ -10,11 +10,10 @@ import { CaseHistory } from '../domain';
 import { CaseHistoryService } from './case-history.service';
 
 describe('CaseHistoryService', () => {
-
   const DATA_URL = 'http://data.ccd.reform';
   const CASE_ID = '1';
   const EVENT_ID = '10';
-  const CASE_HISTORY_URL = DATA_URL + `/internal/cases/${CASE_ID}/events/${EVENT_ID}`;
+  const CASE_HISTORY_URL = `${DATA_URL}/internal/cases/${CASE_ID}/events/${EVENT_ID}`;
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
 
@@ -74,6 +73,5 @@ describe('CaseHistoryService', () => {
           expect(httpErrorService.setError).toHaveBeenCalledWith(ERROR);
         });
     });
-
   });
 });

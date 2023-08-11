@@ -26,7 +26,7 @@ export const mockSearchByCaseIdsResponse = [
       '[LAST_MODIFIED_DATE]': '2022-05-09T15:46:31.153',
     },
   },
-]
+];
 export const mocklinkedCases: CaseLink[] = [
   {
     caseReference: '1682374819203471',

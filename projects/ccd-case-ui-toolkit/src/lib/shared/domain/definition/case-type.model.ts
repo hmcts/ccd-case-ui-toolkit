@@ -1,3 +1,4 @@
+// tslint:disable:variable-name
 import { Type } from 'class-transformer';
 import { CaseEvent } from './case-event.model';
 import { CaseField } from './case-field.model';

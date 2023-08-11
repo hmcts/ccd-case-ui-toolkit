@@ -9,6 +9,7 @@ import { FocusElementModule } from '../../../directives/focus-element';
 import { AddressModel, CaseField } from '../../../domain';
 import { createFieldType } from '../../../fixture';
 import { AddressesService } from '../../../services/addresses/addresses.service';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FieldLabelPipe, IsCompoundPipe } from '../utils';
 import { WriteAddressFieldComponent } from './write-address-field.component';
 
@@ -99,13 +100,13 @@ xdescribe('WriteAddressFieldComponent', () => {
 
   function buildAddress(entryNo: number): AddressModel {
     const address = new AddressModel();
-    address.AddressLine1 = 'AddressLine1-' + entryNo;
-    address.AddressLine2 = 'AddressLine2-' + entryNo;
-    address.AddressLine3 = 'AddressLine3-' + entryNo;
-    address.PostTown = 'PostTown-' + entryNo;
-    address.County = 'County-' + entryNo;
-    address.PostCode = 'PostCode-' + entryNo;
-    address.Country = 'Country-' + entryNo;
+    address.AddressLine1 = `AddressLine1-${entryNo}`;
+    address.AddressLine2 = `AddressLine2-${entryNo}`;
+    address.AddressLine3 = `AddressLine3-${entryNo}`;
+    address.PostTown = `PostTown-${entryNo}`;
+    address.County = `County-${entryNo}`;
+    address.PostCode = `PostCode-${entryNo}`;
+    address.Country = `Country-${entryNo}`;
     return address;
   }
 
@@ -132,8 +133,10 @@ xdescribe('WriteAddressFieldComponent', () => {
           WriteAddressFieldComponent,
           TestHostComponent,
           FieldLabelPipe,
+
           // Mocks
           MockWriteComplexFieldComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           IsCompoundPipe,

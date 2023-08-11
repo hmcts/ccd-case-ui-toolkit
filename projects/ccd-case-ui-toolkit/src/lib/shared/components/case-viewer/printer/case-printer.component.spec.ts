@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -7,6 +7,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CasePrintDocument, CaseView } from '../../../domain';
 import { AlertService } from '../../../services';
 import { attr, text } from '../../../test/helpers';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { PaletteUtilsModule } from '../../palette';
 import { CasePrinterComponent } from './case-printer.component';
@@ -14,12 +15,11 @@ import { PrintUrlPipe } from './pipes/print-url.pipe';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CasePrinterComponent', () => {
-
   const $DOCUMENTS = By.css('table tbody tr');
   const $DOCUMENT_NAME = By.css('td.document-name a');
   const $DOCUMENT_TYPE = By.css('td.document-type');
 
-  const CaseHeaderComponent: any = MockComponent({
+  const caseHeaderComponentMock: any = MockComponent({
     selector: 'ccd-case-header',
     inputs: ['caseDetails']
   });
@@ -87,9 +87,9 @@ describe('CasePrinterComponent', () => {
         declarations: [
           CasePrinterComponent,
           PrintUrlPipe,
-
-          // Mock
-          CaseHeaderComponent
+          // Mocks
+          caseHeaderComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: CaseNotifier, useValue: caseService },
@@ -108,7 +108,7 @@ describe('CasePrinterComponent', () => {
 
   it('should render a case header', () => {
     caseService.announceCase(CASE_VIEW);
-    const header = de.query(By.directive(CaseHeaderComponent));
+    const header = de.query(By.directive(caseHeaderComponentMock));
     expect(header).toBeTruthy();
     expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
   });

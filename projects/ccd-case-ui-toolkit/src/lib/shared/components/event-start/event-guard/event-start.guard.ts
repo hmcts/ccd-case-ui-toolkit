@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { WorkAllocationService } from '../../case-editor';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { SessionStorageService } from '../../../services';
+import { WorkAllocationService } from '../../case-editor';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
-
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService) {

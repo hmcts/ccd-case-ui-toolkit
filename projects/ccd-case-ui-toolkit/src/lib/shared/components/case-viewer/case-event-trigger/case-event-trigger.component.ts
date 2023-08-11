@@ -42,7 +42,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
     if (this.activityPollingService.isEnabled) {
       this.ngZone.runOutsideAngular( () => {
-        this.activitySubscription = this.postEditActivity().subscribe((_resolved) => {
+        this.activitySubscription = this.postEditActivity().subscribe(() => {
           // console.log('Posted EDIT activity and result is: ' + JSON.stringify(_resolved));
         });
       });
@@ -91,7 +91,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       return flagLauncherCaseField && sanitizedEditForm.data.hasOwnProperty(flagLauncherCaseField.id)
         ? of(null)
         : this.casesService.validateCase(this.caseDetails.case_type.id, sanitizedEditForm, pageId);
-    }
+    };
   }
 
   public submitted(event: any): void {
@@ -100,20 +100,26 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
       .navigate([this.parentUrl])
       .then(() => {
         const caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
+        const replacements = { CASEREFERENCE: caseReference, NAME: this.eventTrigger.name };
         if (EventStatusService.isIncomplete(eventStatus)) {
-          this.alertService.warning(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name} `
-            + `but the callback service cannot be completed`);
+          this.alertService.warning({
+            phrase: `Case #%CASEREFERENCE% has been updated with event: %NAME%
+            but the callback service cannot be completed`,
+            replacements
+          });
         } else {
-          this.alertService.success(`Case #${caseReference} has been updated with event: ${this.eventTrigger.name}`, true);
+          this.alertService.success({
+            phrase: 'Case #%CASEREFERENCE% has been updated with event: %NAME%',
+            replacements,
+            preserve: true
+          });
         }
     });
   }
 
   public cancel(): Promise<boolean> {
     if (this.router.url && this.router.url.includes('linkCases')) {
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-        window.location.hash = 'Linked cases';
-      });
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: 'Linked cases' });
     } else {
       return this.router.navigate([this.parentUrl]);
     }

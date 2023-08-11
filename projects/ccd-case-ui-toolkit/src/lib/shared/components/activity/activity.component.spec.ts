@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { Activity, DisplayMode } from '../../domain/activity/activity.model';
 import { ActivityPollingService } from '../../services/activity/activity.polling.service';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { ActivityComponent } from './activity.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -81,12 +82,12 @@ describe('CcdActivityComponent', () => {
     unknownViewers: 1
   };
 
-  const ActivityIconComponent: any = MockComponent({
+  const activityIconComponentMock: any = MockComponent({
     selector: 'ccd-activity-icon',
     inputs: ['description', 'imageLink']
   });
 
-  const ActivityBannerComponent: any = MockComponent({
+  const activityBannerComponentMock: any = MockComponent({
     selector: 'ccd-activity-banner',
     inputs: ['description', 'imageLink', 'bannerType']
   });
@@ -103,8 +104,9 @@ describe('CcdActivityComponent', () => {
         declarations: [
           ActivityComponent,
           // Mocks
-          ActivityIconComponent,
-          ActivityBannerComponent
+          activityIconComponentMock,
+          activityBannerComponentMock,
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: ActivityPollingService, useValue: activityPollingService}
@@ -133,13 +135,13 @@ describe('CcdActivityComponent', () => {
   });
 
   it('should render a case activity banner', () => {
-    const banner = de.query(By.directive(ActivityBannerComponent));
+    const banner = de.query(By.directive(activityBannerComponentMock));
     expect(activityPollingService.subscribeToActivity.toHaveBeenCalled);
     expect(banner).toBeTruthy();
   });
 
   it('should render single viewer banner', () => {
-    const banner = de.queryAll(By.directive(ActivityBannerComponent));
+    const banner = de.queryAll(By.directive(activityBannerComponentMock));
     expect(banner).toBeTruthy();
     expect(banner.length).toEqual(1);
     expect(banner[0].componentInstance.bannerType).toBe('viewer');
@@ -148,7 +150,7 @@ describe('CcdActivityComponent', () => {
   it('should render single editor banner', () => {
     component.onActivityChange(ACTIVITY_W_EDITOR);
     fixture.detectChanges();
-    const banner = de.queryAll(By.directive(ActivityBannerComponent));
+    const banner = de.queryAll(By.directive(activityBannerComponentMock));
     expect(banner).toBeTruthy();
     expect(banner.length).toEqual(1);
     expect(banner[0].componentInstance.bannerType).toBe('editor');
@@ -157,7 +159,7 @@ describe('CcdActivityComponent', () => {
   it('should render single editor banner FOR Unknown Editors', () => {
     component.onActivityChange(ACTIVITY_W_UNKNOWN_EDITOR);
     fixture.detectChanges();
-    const banner = de.queryAll(By.directive(ActivityBannerComponent));
+    const banner = de.queryAll(By.directive(activityBannerComponentMock));
     expect(banner).toBeTruthy();
     expect(banner.length).toEqual(1);
     expect(banner[0].componentInstance.bannerType).toBe('editor');
@@ -166,7 +168,7 @@ describe('CcdActivityComponent', () => {
   it('should render single editor banner FOR Unknown Viewers', () => {
     component.onActivityChange(ACTIVITY_W_UNKNOWN_VIEWER);
     fixture.detectChanges();
-    const banner = de.queryAll(By.directive(ActivityBannerComponent));
+    const banner = de.queryAll(By.directive(activityBannerComponentMock));
     expect(banner).toBeTruthy();
     expect(banner.length).toEqual(1);
     expect(banner[0].componentInstance.bannerType).toBe('viewer');
@@ -175,7 +177,7 @@ describe('CcdActivityComponent', () => {
   it('should render both banners', () => {
     component.onActivityChange(ACTIVITY_W_BOTH);
     fixture.detectChanges();
-    const banner = de.queryAll(By.directive(ActivityBannerComponent));
+    const banner = de.queryAll(By.directive(activityBannerComponentMock));
     expect(banner).toBeTruthy();
     expect(banner.length).toEqual(2);
     expect(banner[0].componentInstance.bannerType).toBe('editor');
@@ -185,7 +187,7 @@ describe('CcdActivityComponent', () => {
   it('should render single case VIEWER icon with the proper description', () => {
     component.displayMode = ICON;
     fixture.detectChanges();
-    const icon = de.queryAll(By.directive(ActivityIconComponent));
+    const icon = de.queryAll(By.directive(activityIconComponentMock));
     expect(icon).toBeTruthy();
     expect(icon[0].componentInstance.imageLink).toContain('viewer.png');
     expect(icon[0].componentInstance.description).toBe('Jamie Olivier is viewing this case');
@@ -195,7 +197,7 @@ describe('CcdActivityComponent', () => {
     component.displayMode = ICON;
     component.onActivityChange(ACTIVITY_W_MULTIPLE_VIEWER);
     fixture.detectChanges();
-    const icon = de.queryAll(By.directive(ActivityIconComponent));
+    const icon = de.queryAll(By.directive(activityIconComponentMock));
     expect(icon).toBeTruthy();
     expect(icon[0].componentInstance.imageLink).toContain('viewer.png');
     expect(icon[0].componentInstance.description).toBe('Jamie Olivier, William Orange and Jon Doe are viewing this case');
@@ -205,7 +207,7 @@ describe('CcdActivityComponent', () => {
     component.displayMode = ICON;
     component.onActivityChange(ACTIVITY_W_MULTIPLE_EDITOR);
     fixture.detectChanges();
-    const icon = de.queryAll(By.directive(ActivityIconComponent));
+    const icon = de.queryAll(By.directive(activityIconComponentMock));
     expect(icon).toBeTruthy();
     expect(icon[0].componentInstance.imageLink).toContain('editor.png');
     expect(icon[0].componentInstance.description).toBe('This case is being updated by Bob Ross and William Orange');
@@ -215,7 +217,7 @@ describe('CcdActivityComponent', () => {
     component.displayMode = ICON;
     component.onActivityChange(ACTIVITY_W_EDITOR);
     fixture.detectChanges();
-    const icon = de.queryAll(By.directive(ActivityIconComponent));
+    const icon = de.queryAll(By.directive(activityIconComponentMock));
     expect(icon).toBeTruthy();
     expect(icon[0].componentInstance.imageLink).toContain('editor.png');
     expect(icon[0].componentInstance.description).toBe('This case is being updated by Bob Ross');
@@ -225,7 +227,7 @@ describe('CcdActivityComponent', () => {
     component.displayMode = ICON;
     component.onActivityChange(ACTIVITY_W_BOTH);
     fixture.detectChanges();
-    const icon = de.queryAll(By.directive(ActivityIconComponent));
+    const icon = de.queryAll(By.directive(activityIconComponentMock));
     expect(icon).toBeTruthy();
     expect(icon[0].componentInstance.imageLink).toContain('editor.png');
     expect(icon[1].componentInstance.imageLink).toContain('viewer.png');

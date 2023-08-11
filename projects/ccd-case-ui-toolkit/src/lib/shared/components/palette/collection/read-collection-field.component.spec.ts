@@ -8,7 +8,6 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 import { ReadCollectionFieldComponent } from './read-collection-field.component';
 
 describe('ReadCollectionFieldComponent', () => {
-
   const $CHILD_FIELDS = By.css('table>tbody>tr>td>ccd-field-read');
 
   const NESTED_FIELD_TYPE: FieldType = {
@@ -39,7 +38,7 @@ describe('ReadCollectionFieldComponent', () => {
     value: VALUES,
     hidden: false
   }) as CaseField;
-  const FieldReadComponent = MockComponent({
+  const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
   });
@@ -55,8 +54,8 @@ describe('ReadCollectionFieldComponent', () => {
         declarations: [
           ReadCollectionFieldComponent,
 
-          // Mock
-          FieldReadComponent
+          // Mocks
+          fieldReadComponentMock
         ],
         providers: []
       })
@@ -79,12 +78,11 @@ describe('ReadCollectionFieldComponent', () => {
     const cells = de.queryAll($CHILD_FIELDS);
 
     for (let i = 0; i < VALUES.length; i++) {
-
       const field = cells[i].componentInstance;
 
       expect(field.caseField).toEqual({
         id: i,
-        label: 'X ' + (i + 1),
+        label: `X ${i + 1}`,
         field_type: {
           id: 'Text',
           type: 'Text'
@@ -123,16 +121,13 @@ describe('ReadCollectionFieldComponent', () => {
     const cells = de.queryAll($CHILD_FIELDS);
 
     for (let i = 0; i < VALUES.length; i++) {
-
       const field = cells[i].componentInstance;
-
       expect(field.context).toEqual(PaletteContext.CHECK_YOUR_ANSWER);
     }
   });
 });
 
 describe('ReadCollectionFieldComponent with display_context_parameter', () => {
-
   const $CHILD_FIELDS = By.css('table>tbody>tr>td>ccd-field-read');
 
   const NESTED_FIELD_TYPE: FieldType = {
@@ -164,7 +159,7 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
     display_context_parameter: '#TABLE(Title,FIRSTNAME)',
     value: VALUES
   }) as CaseField;
-  const FieldReadComponent = MockComponent({
+  const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
     inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
   });
@@ -179,8 +174,9 @@ describe('ReadCollectionFieldComponent with display_context_parameter', () => {
         imports: [],
         declarations: [
           ReadCollectionFieldComponent,
-          // Mock
-          FieldReadComponent
+
+          // Mocks
+          fieldReadComponentMock
         ],
         providers: []
       })

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, FieldType } from '../../../domain/definition';
@@ -493,7 +493,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
       flags: null,
       pathToFlagsFormGroup: '',
       caseField: component.flagsData[2].caseField
-    } as FlagsWithFormGroupPath
+    } as FlagsWithFormGroupPath;
     component.selectedFlagsLocation = newFlag;
     component.addFlagToCollection();
     expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();

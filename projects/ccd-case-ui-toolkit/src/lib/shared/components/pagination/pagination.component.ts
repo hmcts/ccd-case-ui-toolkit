@@ -22,34 +22,34 @@ export class PaginationComponent {
   @Output() public pageChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() public pageBoundsCorrection: EventEmitter<number> = new EventEmitter<number>();
 
-  private _directionLinks = true;
-  private _autoHide = false;
-  private _responsive = false;
+  private pDirectionLinks = true;
+  private pAutoHide = false;
+  private pResponsive = false;
 
   @Input()
   public get directionLinks(): boolean {
-    return this._directionLinks;
+    return this.pDirectionLinks;
   }
 
   public set directionLinks(value: boolean) {
-    this._directionLinks = coerceToBoolean(value);
+    this.pDirectionLinks = coerceToBoolean(value);
   }
 
   @Input()
   public get autoHide(): boolean {
-    return this._autoHide;
+    return this.pAutoHide;
   }
 
   public set autoHide(value: boolean) {
-    this._autoHide = coerceToBoolean(value);
+    this.pAutoHide = coerceToBoolean(value);
   }
 
   @Input()
   public get responsive(): boolean {
-    return this._responsive;
+    return this.pResponsive;
   }
 
   public set responsive(value: boolean) {
-    this._responsive = coerceToBoolean(value);
+    this.pResponsive = coerceToBoolean(value);
   }
 }

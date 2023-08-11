@@ -6,8 +6,8 @@ import { ShowCondition } from './conditional-show.model';
 
 describe('conditional-show', () => {
   // Shortened the call to create a new case field as it was getting unwieldy.
-  const ncf = (id: string, label: string, fieldType: FieldType, display_context: string): CaseField => {
-    return newCaseField(id, label, null, fieldType, display_context).build();
+  const ncf = (id: string, label: string, fieldType: FieldType, displayContext: string): CaseField => {
+    return newCaseField(id, label, null, fieldType, displayContext).build();
   };
 
   const caseField1: CaseField = ncf('field1', 'field1', null, 'OPTIONAL');

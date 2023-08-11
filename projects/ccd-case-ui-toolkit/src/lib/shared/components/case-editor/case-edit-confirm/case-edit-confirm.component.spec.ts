@@ -11,6 +11,7 @@ import { CaseField } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { PipesModule } from '../../../pipes';
 import { FieldsUtils } from '../../../services/fields';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { ConvertHrefToRouterService } from '../services';
@@ -54,6 +55,9 @@ describe('CaseEditConfirmComponent', () => {
         getHeader: () => 'Header',
         getBody: () => 'A body with mark down'
       },
+      submitted: {
+        emit: () => {}
+      },
       caseDetails: {case_id: '1234567812345678', tabs: [{id: 'tab1', label: 'tabLabel1',
         fields: [caseField1, caseField2, caseField3]}], metadataFields: [],
         state: {id: '1', name: 'Incomplete Application', title_display: '# 1234567812345678: test'}},
@@ -68,7 +72,8 @@ describe('CaseEditConfirmComponent', () => {
         ],
         declarations: [
           CaseEditConfirmComponent,
-          MarkdownComponent
+          MarkdownComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: CaseEditComponent, useValue: caseEditComponentStub },
@@ -110,6 +115,21 @@ describe('CaseEditConfirmComponent', () => {
     const caseFields: CaseField[] = component.caseFields;
     expect(caseFields.length).toBe(3);
   });
+
+  it('should call NOT route when confirmation provided', () => {
+    expect(routerStub.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should get case id', () => {
+    const actual = component.getCaseId();
+    expect(actual).toEqual(caseEditComponentStub.caseDetails.case_id);
+  });
+
+  it('should emit submit', () => {
+    spyOn(caseEditComponentStub.submitted, 'emit');
+    component.submit();
+    expect(caseEditComponentStub.submitted.emit).toHaveBeenCalled();
+  });
 });
 
 describe('CaseEditConfirmComponent', () => {
@@ -137,8 +157,9 @@ describe('CaseEditConfirmComponent', () => {
         ],
         declarations: [
           CaseEditConfirmComponent,
-          MarkdownComponent
+          MarkdownComponent,
           // Mock
+          MockRpxTranslatePipe
         ],
         providers: [
           {provide: CaseEditComponent, useValue: caseEditCompStub},
@@ -152,10 +173,12 @@ describe('CaseEditConfirmComponent', () => {
     component = fixture.componentInstance;
   }));
 
-  beforeEach(() => {
-  });
-
   it('should call route when no confirmation provided', () => {
     expect(routerStub.navigate).toHaveBeenCalled();
+  });
+
+  it('should NOT get case id', () => {
+    const actual = component.getCaseId();
+    expect(actual).toEqual('');
   });
 });
