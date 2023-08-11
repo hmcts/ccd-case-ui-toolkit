@@ -19,16 +19,13 @@ export class AddCommentsComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public flagCommentsNotEnteredErrorMessage: AddCommentsErrorMessage = null;
   public flagCommentsCharLimitErrorMessage: AddCommentsErrorMessage = null;
-  public addCommentsHint: AddCommentsStep;
-  public addCommentsCharLimitInfo: AddCommentsStep;
+  public addCommentsStepEnum = AddCommentsStep;
   public readonly flagCommentsControlName = 'flagComments';
   private readonly commentsMaxCharLimit = 200;
 
   public ngOnInit(): void {
     this.addCommentsTitle = !this.isDisplayContextParameterExternal ?
       CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS : CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS_EXTERNAL_MODE;
-    this.addCommentsHint = AddCommentsStep.HINT_TEXT;
-    this.addCommentsCharLimitInfo = AddCommentsStep.CHARACTER_LIMIT_INFO;
 
     if (!this.formGroup.get(this.flagCommentsControlName)) {
       this.formGroup.addControl(this.flagCommentsControlName, new FormControl(''));

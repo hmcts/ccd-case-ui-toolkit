@@ -6,7 +6,7 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage } from '../../enums';
+import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
 import { UpdateFlagTitleDisplayPipe } from '../../pipes';
 import { UpdateFlagComponent } from './update-flag.component';
 
@@ -473,5 +473,19 @@ describe('UpdateFlagComponent', () => {
     expect(radioButtons).toBeNull();
     const checkboxWelshTranslation = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED}`));
     expect(checkboxWelshTranslation).toBeNull();
+  });
+
+  it('should display the warning text for case workers and internal staff users', () => {
+    component.displayContextParameter = '#ARGUMENT(UPDATE)';
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement.textContent.trim()).toContain(UpdateFlagStep.WARNING_TEXT);
+  });
+
+  it('should not display the warning text for solicitors and external users', () => {
+    component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
   });
 });
