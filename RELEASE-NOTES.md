@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.0-case-flags-v2.1-flag-visibility-checkbox
+**EUI-8705** Case flags v2.1 flag visibility checkbox
+
 ### Version 6.16.0-query-management-update-mock-data
 **EUI-8636** Query management update mock data to support CCD
 

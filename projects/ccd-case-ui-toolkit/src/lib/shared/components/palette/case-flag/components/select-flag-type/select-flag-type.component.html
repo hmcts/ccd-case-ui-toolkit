@@ -34,6 +34,14 @@
               [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
               id="other-flag-type-description" [name]="caseFlagFormField.OTHER_FLAG_DESCRIPTION" type="text"
               [formControlName]="caseFlagFormField.OTHER_FLAG_DESCRIPTION"/>
+            <div class="govuk-checkboxes__item govuk-!-margin-top-4"
+              *ngIf="!isDisplayContextParameterExternal && !isCaseLevelFlag">
+              <input class="govuk-checkboxes__input" id="is-visible-externally" type="checkbox"
+                [name]="caseFlagFormField.IS_VISIBLE_EXTERNALLY" [formControlName]="caseFlagFormField.IS_VISIBLE_EXTERNALLY">
+              <label class="govuk-label govuk-checkboxes__label" for="is-visible-externally">
+                {{'This flag should only be visible to HMCTS Staff' | rpxTranslate}}
+              </label>
+            </div>
           </div>
         </div>
       </div>
