@@ -13,12 +13,14 @@ import { SearchLanguageInterpreterControlNames } from '../search-language-interp
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { FlagsWithFormGroupPath } from '../../domain';
 
 describe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;
   let fixture: ComponentFixture<SelectFlagTypeComponent>;
   let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
   let flagTypes: FlagType[];
+  let selectedFlagsLocation: FlagsWithFormGroupPath;
   let mockRpxTranslationService: any;
 
   const serviceDetails = [
@@ -162,6 +164,14 @@ describe('SelectFlagTypeComponent', () => {
       }
     ] as FlagType[];
 
+    selectedFlagsLocation = {
+      flags: {
+        flagsCaseFieldId: 'caseFlags'
+      },
+      pathToFlagsFormGroup: null,
+      caseField: null
+    };
+
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService',
       ['getCaseFlagsRefdata', 'getHmctsServiceDetailsByServiceName', 'getHmctsServiceDetailsByCaseType']);
     caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(of(flagTypes));
@@ -198,6 +208,7 @@ describe('SelectFlagTypeComponent', () => {
     component.caseTypeId = caseTypeId;
     component.formGroup = new FormGroup({});
     component.isDisplayContextParameterExternal = false;
+    component.selectedFlagsLocation = selectedFlagsLocation;
     // Deliberately omitted fixture.detectChanges() here to allow for setting isDisplayContextParameterExternal to
     // "true" for one test that needs to run as if the user is external
   });
@@ -562,5 +573,26 @@ describe('SelectFlagTypeComponent', () => {
     mockRpxTranslationService.language = 'cy';
     fixture.detectChanges();
     expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(flagTypes[0].childFlags[0].name_cy);
+  });
+
+  it('should not display flag visibility checkbox for support request', () => {
+    component.isDisplayContextParameterExternal = true;
+    fixture.detectChanges();
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(flagVisibilityCheckboxEl).toBeNull();
+  });
+
+  it('should not display flag visibility checkbox for case level flag', () => {
+    component.isDisplayContextParameterExternal = false;
+    component.isCaseLevelFlag = true;
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(flagVisibilityCheckboxEl).toBeNull();
+  });
+
+  it('should display flag visibility checkbox for party level flag', () => {
+    component.isDisplayContextParameterExternal = false;
+    component.isCaseLevelFlag = false;
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(flagVisibilityCheckboxEl).toBeDefined();
   });
 });

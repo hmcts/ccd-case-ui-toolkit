@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.19.0-case-flags-v2.1-flag-visibility-checkbox
+### Version 6.19.0-case-flags-v2.1-flag-visibility-checkbox-v2
 **EUI-8705** Case flags v2.1 flag visibility checkbox
 
 ### Version 6.19.0-case-flags-v2.1-warning-text-display-v2
