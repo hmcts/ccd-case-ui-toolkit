@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.0-consume-jrd-e-links-api-new-version
+**EUI-8736** Consume new version of JRD e-Links API
+
 ### Version 6.19.0-case-flags-v2.1-warning-text-display-v2
 **EUI-8709** Case flags v2.1 add warning text to create case flag journey
 **EUI-8710** Case flags v2.1 add warning text to update case flag journey

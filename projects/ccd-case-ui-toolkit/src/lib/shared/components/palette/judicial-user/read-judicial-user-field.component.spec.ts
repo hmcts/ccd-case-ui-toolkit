@@ -45,28 +45,26 @@ const CASE_FIELD: CaseField = {
 
 const JUDICIAL_USERS: JudicialUserModel[] = [
   {
-    emailId: 'jacky.collins@judicial.com',
-    fullName: 'Jacky Collins',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    title: 'Mr',
     knownAs: 'Hearing Judge',
-    personalCode: 'p1000000',
     surname: 'Collins',
-    title: 'Mr'
+    fullName: 'Jacky Collins',
+    initials: 'JC',
+    postNominals: 'JP',
+    emailId: 'jacky.collins@judicial.com',
+    personalCode: 'p1000000',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1'
   },
   {
-    emailId: 'jasmine.chiswell@judicial.com',
-    fullName: 'Jasmine Chiswell',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    title: 'Mr',
     knownAs: 'Lead Judge',
-    personalCode: 'p1000001',
     surname: 'Chiswell',
-    title: 'Mr'
+    fullName: 'Jasmine Chiswell',
+    initials: 'JC',
+    postNominals: 'JP',
+    emailId: 'jasmine.chiswell@judicial.com',
+    personalCode: 'p1000001',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2'
   }
 ];
 

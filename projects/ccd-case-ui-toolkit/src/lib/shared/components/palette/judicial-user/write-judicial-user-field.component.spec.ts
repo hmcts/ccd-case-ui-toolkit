@@ -48,64 +48,59 @@ const CASE_FIELD: CaseField = {
 
 const JUDICIAL_USERS: JudicialUserModel[] = [
   {
-    emailId: 'jacky.collins@judicial.com',
-    fullName: 'Jacky Collins',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    title: 'Mrs',
     knownAs: 'Hearing Judge',
-    personalCode: 'p1000000',
     surname: 'Collins',
-    title: 'Mrs'
+    fullName: 'Jacky Collins',
+    initials: 'JC',
+    postNominals: 'JP',
+    emailId: 'jacky.collins@judicial.com',
+    personalCode: 'p1000000',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1'
   },
   {
-    emailId: 'jasmine.chiswell@judicial.com',
-    fullName: 'Jasmine Chiswell',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    title: 'Mrs',
     knownAs: 'Lead Judge',
-    personalCode: 'p1000001',
     surname: 'Chiswell',
-    title: 'Mrs'
+    fullName: 'Jasmine Chiswell',
+    initials: 'JC',
+    postNominals: 'JP',
+    emailId: 'jasmine.chiswell@judicial.com',
+    personalCode: 'p1000001',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2'
   },
   {
-    emailId: null,
-    fullName: 'No Email',
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    title: 'Mr',
     knownAs: 'Lead Judge',
-    personalCode: 'p1000002',
     surname: 'Email',
-    title: 'Mr'
-  },
-  {
-    emailId: 'no.name@judicial.com',
-    fullName: null,
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
-    knownAs: 'Lead Judge',
-    personalCode: 'p1000003',
-    surname: 'Name',
-    title: 'Mr'
-  },
-  {
+    fullName: 'No Email',
+    initials: 'NE',
+    postNominals: 'JP',
     emailId: null,
-    fullName: null,
-    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4',
-    isJudge: 'Y',
-    isMagistrate: 'Y',
-    isPanelMember: 'Y',
+    personalCode: 'p1000002',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3'
+  },
+  {
+    title: 'Mr',
     knownAs: 'Lead Judge',
-    personalCode: 'p1000004',
+    surname: 'Name',
+    fullName: null,
+    initials: null,
+    postNominals: 'JP',
+    emailId: 'no.name@judicial.com',
+    personalCode: 'p1000003',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4'
+  },
+  {
+    title: 'Mr',
+    knownAs: 'Lead Judge',
     surname: 'Nothing',
-    title: 'Mr'
+    fullName: null,
+    initials: null,
+    postNominals: 'JP',
+    emailId: null,
+    personalCode: 'p1000004',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4'
   }
 ];
 
