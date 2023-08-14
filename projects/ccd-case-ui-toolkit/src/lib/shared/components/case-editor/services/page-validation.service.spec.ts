@@ -1,5 +1,5 @@
 import { waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
@@ -14,7 +14,10 @@ describe('PageValidationService', () => {
   const readOnly = new CaseField();
   const firstPage = new WizardPage();
   const FORM_GROUP = new FormGroup({
-    data: new FormGroup({ field1: new FormControl('SOME_VALUE') })
+    data: new FormGroup({
+      field1: new FormControl('SOME_VALUE'),
+      judicialUserField_judicialUserControl: new FormControl()
+    })
   });
 
   beforeEach(waitForAsync(() => {
@@ -82,6 +85,27 @@ describe('PageValidationService', () => {
   it('should not allow empty document fields when MANDATORY', () => {
     wizardPage.case_fields.push(aCaseField('fieldX', 'fieldX', 'Document', 'MANDATORY', null));
     wizardPage.isMultiColumn = () => false;
+    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeFalsy();
+  });
+
+  it('should allow empty JudicialUser field when OPTIONAL', () => {
+    const judicialUserCaseField = aCaseField('judicialUserField', 'judicialUser1', 'JudicialUser', 'OPTIONAL', null);
+    judicialUserCaseField.field_type.type = 'Complex';
+    wizardPage.case_fields.push(judicialUserCaseField);
+    wizardPage.isMultiColumn = () => false;
+    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeTruthy();
+  });
+
+  it('should not allow empty JudicialUser field when MANDATORY', () => {
+    const judicialUserCaseField = aCaseField('judicialUserField', 'judicialUser1', 'JudicialUser', 'MANDATORY', null);
+    judicialUserCaseField.field_type.type = 'Complex';
+    wizardPage.case_fields.push(judicialUserCaseField);
+    wizardPage.isMultiColumn = () => false;
+    // The JudicialUser field component sets Validators.required as a FormControl validator if the case field is
+    // mandatory, so this is replicated here
+    const judicialUserFormControl = FORM_GROUP.get('data.judicialUserField_judicialUserControl');
+    judicialUserFormControl.setValidators(Validators.required);
+    judicialUserFormControl.updateValueAndValidity();
     expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeFalsy();
   });
 });

@@ -107,12 +107,28 @@ export class CasesService {
       .get(url, { headers, observe: 'body' })
       .pipe(
         catchError(error => {
+          console.error('Error while getting case view with getCaseViewV2!');
+          console.error(error);
           this.errorService.setError(error);
           return throwError(error);
         }),
-        finalize(() => this.loadingService.unregister(loadingToken))
+        finalize(() => this.finalizeGetCaseViewWith(caseId, loadingToken))
       );
   }
+
+  public syncWait(seconds) {
+    const end = Date.now() + seconds * 1000;
+    while (Date.now() < end) continue;
+  }
+
+  private finalizeGetCaseViewWith(caseId: string, loadingToken: string) {
+    console.info(`finalizeGetCaseViewWith started for ${caseId}.`);
+    // this.syncWait(15);
+    // throw new Error('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+    this.loadingService.unregister(loadingToken);
+    console.info(`finalizeGetCaseViewWith finished for ${caseId}.`);
+  }
+
 
   public getEventTrigger(caseTypeId: string,
     eventTriggerId: string,
