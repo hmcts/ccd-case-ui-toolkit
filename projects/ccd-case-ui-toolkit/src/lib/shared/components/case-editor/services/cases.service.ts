@@ -105,7 +105,8 @@ export class CasesService {
 
     let http$ = this.http.get(url, { headers, observe: 'body' });
 
-    this.retryUtil.pipeTimeoutMechanismOn(http$, this.appConfig.getEnvironment() === 'aat', this.appConfig.getCaseRetrievalTimeouts());
+    const artificialDelay: number = this.appConfig.getTimeoutsCaseRetrievalArtificialDelay();
+    http$ = this.retryUtil.pipeTimeoutMechanismOn(http$, artificialDelay, this.appConfig.getTimeoutsForCaseRetrieval());
 
     http$ = this.pipeErrorProcessor(http$);
 
@@ -115,23 +116,17 @@ export class CasesService {
   }
 
   private pipeErrorProcessor(in$: Observable<CaseView>): Observable<CaseView> {
-    const out$$ = in$.pipe(catchError(error => {
+    const out$ = in$.pipe(catchError(error => {
       console.error(`Error while getting case view with getCaseViewV2! Error type: '${typeof error}, Error name: '${error?.name}'`);
       console.error(error);
       this.errorService.setError(error);
       return throwError(error);
     }));
-    return out$$;
-  }
-  public syncWait(seconds) {
-    const end = Date.now() + seconds * 1000;
-    while (Date.now() < end) continue;
+    return out$;
   }
 
   private finalizeGetCaseViewWith(caseId: string, loadingToken: string) {
     console.info(`finalizeGetCaseViewWith started for ${caseId}.`);
-    // this.syncWait(15);
-    // throw new Error('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
     this.loadingService.unregister(loadingToken);
     console.info(`finalizeGetCaseViewWith finished for ${caseId}.`);
   }

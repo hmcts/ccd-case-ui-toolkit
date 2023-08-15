@@ -2,38 +2,51 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError, timer } from 'rxjs';
 import { delayWhen, finalize, mergeMap, retryWhen, tap, timeout } from 'rxjs/operators';
 
-@Injectable()
-export class RetryUtil {
-
+class ArtificialDelayContext {
     private artificialDelayOn = true;
-    private artificialDelayPeriod = this.pickARandomValue();
-
+    private selectedDelay = this.selectActualDelayTime();;
+    constructor(
+        private preferredDelay: number
+    ) {
+    }
     public switchArtificialDelays(status: boolean) {
         this.artificialDelayOn = status;
-        this.artificialDelayPeriod = this.pickARandomValue();
+        this.selectedDelay = this.selectActualDelayTime();
     }
-
-    public switchOnArtificialDelays() {
+    public turnOnArtificialDelays() {
         this.switchArtificialDelays(true);
     }
 
-    public switchOffArtificialDelays() {
+    public turnOffArtificialDelays() {
         this.switchArtificialDelays(false);
     }
-
-    public getArtificialDelayTime() {
-        return this.artificialDelayOn ? this.artificialDelayPeriod : 0;
+    public getActualDelay() {
+        return this.artificialDelayOn ? this.selectedDelay : 0;
     }
 
-    public pipeTimeoutMechanismOn<T>(in$: Observable<T>, artificialDelayOn: boolean, timeoutPeriods: number[]): Observable<T> {
-        console.info(`Piping a retry mechanism with timeouts {${timeoutPeriods}}. Artificial delays added: ${artificialDelayOn}.`);
-        this.switchOnArtificialDelays();
+    public shouldApplyArtificialDelay() {
+        return this.preferredDelay > 0;
+    }
+
+    private selectActualDelayTime() {
+        return Date.now() % 2 == 0 ? this.preferredDelay : 1;
+    }
+}
+
+@Injectable()
+export class RetryUtil {
+    public pipeTimeoutMechanismOn<T>(in$: Observable<T>, preferredArtificialDelay: number, timeoutPeriods: number[]): Observable<T> {
+        const artificialDelayContext = new ArtificialDelayContext(preferredArtificialDelay);
+        console.info(`Piping a retry mechanism with timeouts {${timeoutPeriods}}.`);
+        console.info(`Artificial delay will be applied: ${artificialDelayContext.shouldApplyArtificialDelay()}.`);
+
         let out$ = in$;
-        if (artificialDelayOn) {
-            out$ = this.pipeArtificialDelayOn(out$);
+        if (artificialDelayContext.shouldApplyArtificialDelay()) {
+            console.info(`Preferred artificial delay: ${preferredArtificialDelay} seconds. Actual delay selected: ${artificialDelayContext.getActualDelay()}`);
+            out$ = this.pipeArtificialDelayOn(out$, artificialDelayContext);
         }
         out$ = this.pipeTimeOutControlOn(out$, timeoutPeriods);
-        out$ = this.pipeRetryMechanismOn(out$);
+        out$ = this.pipeRetryMechanismOn(out$, artificialDelayContext);
         return out$;
     }
 
@@ -43,14 +56,14 @@ export class RetryUtil {
         return out$;
     }
 
-    private pipeRetryMechanismOn<T>(in$: Observable<T>): Observable<T> {
+    private pipeRetryMechanismOn<T>(in$: Observable<T>, artificialDelayContext: ArtificialDelayContext): Observable<T> {
         const retryStrategy = (errors) => {
             return errors.pipe(
                 mergeMap((error: Error, i) => {
                     console.error(`Mapping error ${error?.name}, ${i}`);
                     console.error(error);
                     if (error?.name === 'TimeoutError' && i === 0) {
-                        this.switchOffArtificialDelays();
+                        artificialDelayContext.turnOffArtificialDelays();
                         console.info('Will retry, after a timeout error.');
                     }
                     else {
@@ -65,18 +78,14 @@ export class RetryUtil {
         return out$;
     }
 
-    private pipeArtificialDelayOn<T>(in$: Observable<T>): Observable<T> {
+    private pipeArtificialDelayOn<T>(in$: Observable<T>, artificialDelayContext: ArtificialDelayContext): Observable<T> {
         let out$ = in$.pipe(tap(() => {
-            console.log(`Artificially delaying for ${this.getArtificialDelayTime()} seconds..`);
+            console.log(`Artificially delaying for ${artificialDelayContext.getActualDelay()} seconds..`);
         }));
-        out$ = out$.pipe(delayWhen(() => timer(this.getArtificialDelayTime() * 1000)));
+        out$ = out$.pipe(delayWhen(() => timer(artificialDelayContext.getActualDelay() * 1000)));
         out$ = out$.pipe(tap(() => {
-            console.log(`Artificially delayed for ${this.getArtificialDelayTime()} seconds..`);
+            console.log(`Artificially delayed for ${artificialDelayContext.getActualDelay()} seconds..`);
         }));
         return out$;
-    }
-
-    private pickARandomValue() {
-        return Date.now() % 2 == 0 ? 60 : 3;
     }
 }

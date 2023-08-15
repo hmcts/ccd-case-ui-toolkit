@@ -42,7 +42,8 @@ export abstract class AbstractAppConfig {
   abstract getActivityUrl(): string;
   abstract getActivityNexPollRequestMs(): number;
   abstract getActivityRetry(): number;
-  abstract getCaseRetrievalTimeouts(): number;
+  abstract getTimeoutsForCaseRetrieval(): number[];
+  abstract getTimeoutsCaseRetrievalArtificialDelay(): number;
   abstract getActivityBatchCollectionDelayMs(): number;
   abstract getActivityMaxRequestPerBatch(): number;
   abstract getCaseHistoryUrl(caseId: string, eventId: string): string;

@@ -23,8 +23,12 @@ export class AppMockConfig implements AbstractAppConfig {
     return 0;
   }
 
-  public getCaseRetrievalTimeouts(): number[] {
+  public getTimeoutsForCaseRetrieval(): number[] {
     return [0];
+  }
+
+  public getTimeoutsCaseRetrievalArtificialDelay(): number {
+    return 0;
   }
 
   public getActivityUrl(): string {

@@ -44,7 +44,8 @@ export abstract class AbstractAppConfig {
   public abstract getActivityUrl(): string;
   public abstract getActivityNexPollRequestMs(): number;
   public abstract getActivityRetry(): number;
-  public abstract getCaseRetrievalTimeouts(): number[];
+  public abstract getTimeoutsForCaseRetrieval(): number[];
+  public abstract getTimeoutsCaseRetrievalArtificialDelay(): number;
   public abstract getActivityBatchCollectionDelayMs(): number;
   public abstract getActivityMaxRequestPerBatch(): number;
   public abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
@@ -123,6 +124,7 @@ export class CaseEditorConfig {
   public activity_next_poll_request_ms: number;
   public activity_retry: number;
   public timeouts_case_retrieval: number[];
+  public timeouts_case_retrieval_artificial_delay: number;
   public activity_url: string;
   public activity_max_request_per_batch: number;
   public print_service_url: string;
