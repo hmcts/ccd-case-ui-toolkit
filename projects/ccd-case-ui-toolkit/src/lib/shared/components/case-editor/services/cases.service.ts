@@ -106,7 +106,10 @@ export class CasesService {
     let http$ = this.http.get(url, { headers, observe: 'body' });
 
     const artificialDelay: number = this.appConfig.getTimeoutsCaseRetrievalArtificialDelay();
-    http$ = this.retryUtil.pipeTimeoutMechanismOn(http$, artificialDelay, this.appConfig.getTimeoutsForCaseRetrieval());
+    let timeoutPeriods = this.appConfig.getTimeoutsForCaseRetrieval();
+    if (timeoutPeriods && timeoutPeriods.length > 0) {
+      http$ = this.retryUtil.pipeTimeoutMechanismOn(http$, artificialDelay, timeoutPeriods);
+    }
 
     http$ = this.pipeErrorProcessor(http$);
 
