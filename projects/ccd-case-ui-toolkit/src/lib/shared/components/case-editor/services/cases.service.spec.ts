@@ -68,11 +68,12 @@ describe('CasesService', () => {
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig',
-      ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl', 'getCaseDataStoreApiUrl']);
+      ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl', 'getCaseDataStoreApiUrl', 'getEnvironment']);
     appConfig.getApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataStoreApiUrl.and.returnValue(API_URL);
+    appConfig.getEnvironment.and.returnValue('demo');
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
