@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.18.3-hotfix-EUI-8737
+**EUI-8737** Reimplement `FirstErrorPipe` to use the `RpxTranslationService` directly instead of `RpxTranslatePipe`; remove incorrect use of `RpxTranslatePipe` from palette components where `FirstErrorPipe` is used in the component's HTML template
+
 ### Version 6.18.3-hotfix-EUI-8738
 **EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
 

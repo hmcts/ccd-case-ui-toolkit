@@ -5,7 +5,7 @@
     </legend>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
     <span class="error-message" *ngIf="yesNoControl.errors && (yesNoControl.dirty || yesNoControl.touched)">
-      {{yesNoControl.errors | ccdFirstError:caseField.label | rpxTranslate}}
+      {{yesNoControl.errors | ccdFirstError:caseField.label}}
     </span>
 
     <div [id]="createElementId('radio')">
