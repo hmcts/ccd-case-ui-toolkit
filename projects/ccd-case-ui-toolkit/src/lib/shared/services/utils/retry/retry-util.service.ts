@@ -6,11 +6,11 @@ import { delayWhen, finalize, mergeMap, retryWhen, tap, timeout } from 'rxjs/ope
 export class RetryUtil {
 
     private artificialDelayOn = true;
-    private artificialDelayPeriod = Math.random() > 0.5 ? 60 : 3;
+    private artificialDelayPeriod = this.pickARandomValue();
 
     public switchArtificialDelays(status: boolean) {
         this.artificialDelayOn = status;
-        this.artificialDelayPeriod = Math.random() > 0.5 ? 60 : 2;
+        this.artificialDelayPeriod = this.pickARandomValue();
     }
 
     public switchOnArtificialDelays() {
@@ -75,5 +75,7 @@ export class RetryUtil {
         return out$;
     }
 
-
+    private pickARandomValue() {
+        return Date.now() % 2 == 0 ? 60 : 3;
+    }
 }
