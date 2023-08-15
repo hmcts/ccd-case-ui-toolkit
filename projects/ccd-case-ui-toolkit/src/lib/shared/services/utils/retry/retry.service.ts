@@ -3,14 +3,14 @@ import { Observable, throwError, timer } from 'rxjs';
 import { delayWhen, finalize, mergeMap, retryWhen, tap, timeout } from 'rxjs/operators';
 
 @Injectable()
-export class RxjsUtils {
+export class RetryUtil {
 
     private artificialDelayOn = true;
-    private artificialDelayPeriod = Math.random() > 0.5 ? 60 : 3;
+    private artificialDelayPeriod = this.pickARandomValue();
 
     public switchArtificialDelays(status: boolean) {
         this.artificialDelayOn = status;
-        this.artificialDelayPeriod = Math.random() > 0.5 ? 60 : 2;
+        this.artificialDelayPeriod = this.pickARandomValue();
     }
 
     public switchOnArtificialDelays() {
@@ -25,10 +25,11 @@ export class RxjsUtils {
         return this.artificialDelayOn ? this.artificialDelayPeriod : 0;
     }
 
-    public pipeTimeoutMechanismOn<T>(in$: Observable<T>, environment: string, timeoutPeriods: number[]): Observable<T> {
+    public pipeTimeoutMechanismOn<T>(in$: Observable<T>, artificialDelayOn: boolean, timeoutPeriods: number[]): Observable<T> {
+        console.info(`Piping a retry mechanism with timeouts {${timeoutPeriods}}. Artificial delays added: ${artificialDelayOn}.`);
         this.switchOnArtificialDelays();
         let out$ = in$;
-        if (environment === 'aat') {
+        if (artificialDelayOn) {
             out$ = this.pipeArtificialDelayOn(out$);
         }
         out$ = this.pipeTimeOutControlOn(out$, timeoutPeriods);
@@ -75,5 +76,7 @@ export class RxjsUtils {
         return out$;
     }
 
-
+    private pickARandomValue() {
+        return Date.now() % 2 == 0 ? 60 : 3;
+    }
 }

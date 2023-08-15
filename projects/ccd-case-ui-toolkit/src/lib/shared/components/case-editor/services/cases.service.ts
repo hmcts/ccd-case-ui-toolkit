@@ -16,12 +16,11 @@ import {
   RoleRequestPayload, SpecificAccessRequest
 } from '../../../domain';
 import { UserInfo } from '../../../domain/user/user-info.model';
-import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, SessionStorageService } from '../../../services';
+import { FieldsUtils, HttpErrorService, HttpService, LoadingService, OrderService, RetryUtil, SessionStorageService } from '../../../services';
 import { LinkedCasesResponse } from '../../palette/linked-cases/domain/linked-cases.model';
 import { CaseAccessUtils } from '../case-access-utils';
 import { WizardPage } from '../domain';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
-import { RxjsUtils } from '../../../services/utils/rxjs-utils.service';
 
 @Injectable()
 export class CasesService {
@@ -74,7 +73,7 @@ export class CasesService {
     private wizardPageFieldToCaseFieldMapper: WizardPageFieldToCaseFieldMapper,
     private loadingService: LoadingService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly rxjsUtils: RxjsUtils
+    private readonly retryUtil: RetryUtil
   ) {
   }
 
@@ -106,7 +105,7 @@ export class CasesService {
 
     let http$ = this.http.get(url, { headers, observe: 'body' });
 
-    this.rxjsUtils.pipeTimeoutMechanismOn(http$, this.appConfig.getEnvironment(), this.appConfig.getCaseRetrievalTimeouts());
+    this.retryUtil.pipeTimeoutMechanismOn(http$, this.appConfig.getEnvironment() === 'aat', this.appConfig.getCaseRetrievalTimeouts());
 
     http$ = this.pipeErrorProcessor(http$);
 
