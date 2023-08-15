@@ -4,13 +4,12 @@ import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, ChallengedAccessRequest, HttpError, SpecificAccessRequest } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { HttpErrorService, HttpService, LoadingService, SessionStorageService } from '../../../services';
+import { HttpErrorService, HttpService, LoadingService, RetryUtil, SessionStorageService } from '../../../services';
 import { CasesService } from './cases.service';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
 
 import createSpyObj = jasmine.createSpyObj;
-import { RxjsUtils } from '../../../services/utils/rxjs-utils.service';
 
 describe('CasesService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
@@ -64,7 +63,7 @@ describe('CasesService', () => {
   let sessionStorageService: any;
   let loadingService: any;
   let alertService: any;
-  let rxjsUtils: any;
+  let retryUtil: any;
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig',
@@ -93,10 +92,10 @@ describe('CasesService', () => {
     sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
       "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com","token": null}`);
     loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
-    rxjsUtils = new RxjsUtils();
+    retryUtil = new RetryUtil();
     casesService = new CasesService(
       httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, loadingService,
-      sessionStorageService, rxjsUtils
+      sessionStorageService, retryUtil
     );
   });
 

@@ -3,7 +3,7 @@ import { Observable, throwError, timer } from 'rxjs';
 import { delayWhen, finalize, mergeMap, retryWhen, tap, timeout } from 'rxjs/operators';
 
 @Injectable()
-export class RxjsUtils {
+export class RetryUtil {
 
     private artificialDelayOn = true;
     private artificialDelayPeriod = Math.random() > 0.5 ? 60 : 3;
