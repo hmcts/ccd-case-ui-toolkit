@@ -5,6 +5,9 @@
 ### Version 6.13.10-case-file-view-display-document-upload-date-v3
 **EUI-7819** Case file view display document upload date
 
+### Version 6.18.3-hotfix-EUI-8738
+**EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
+
 ### Version 6.18.2-hotfix-EUI-8601-8687-8732
 **EUI-8601** Re-implement `WriteJudicialUserField` component to extend `WriteComplexFieldComponent`, to ensure correct working when used in a collection
 **EUI-8687** Fix validation logic for `WriteJudicialUserField` component
