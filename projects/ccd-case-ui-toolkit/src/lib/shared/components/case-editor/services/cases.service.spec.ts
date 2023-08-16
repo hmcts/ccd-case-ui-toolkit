@@ -74,7 +74,7 @@ describe('CasesService', () => {
     appConfig.getCaseDataStoreApiUrl.and.returnValue(API_URL);
     appConfig.getEnvironment.and.returnValue('demo');
     appConfig.getTimeoutsForCaseRetrieval.and.returnValue([20])
-    appConfig.getTimeoutsCaseRetrievalArtificialDelay.and.returnValue(2)
+    appConfig.getTimeoutsCaseRetrievalArtificialDelay.and.returnValue(0)
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
