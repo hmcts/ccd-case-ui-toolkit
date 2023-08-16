@@ -107,8 +107,11 @@ export class CasesService {
 
     const artificialDelay: number = this.appConfig.getTimeoutsCaseRetrievalArtificialDelay();
     const timeoutPeriods = this.appConfig.getTimeoutsForCaseRetrieval();
-    if (timeoutPeriods && timeoutPeriods.length > 0 && timeoutPeriods[1] > 0) {
+    console.log(`Timeout periods: ${timeoutPeriods} seconds.`);
+    if (timeoutPeriods && timeoutPeriods.length > 0 && timeoutPeriods[0] > 0) {
       http$ = this.retryUtil.pipeTimeoutMechanismOn(http$, artificialDelay, timeoutPeriods);
+    } else {
+      console.warn('Skipping to pipe a retry mechanism!');
     }
 
     http$ = this.pipeErrorProcessor(http$);
