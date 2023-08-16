@@ -54,6 +54,8 @@ export class HttpErrorService {
   }
 
   public handle(error: HttpErrorResponse | any, redirectIfNotAuthorised = true): Observable<never> {
+    console.error('Handling error in http error service.');
+    console.error(error);
     const httpError: HttpError = HttpErrorService.convertToHttpError(error);
     if (redirectIfNotAuthorised && (httpError.status === 401 || httpError.status === 403)) {
       this.authService.signIn();

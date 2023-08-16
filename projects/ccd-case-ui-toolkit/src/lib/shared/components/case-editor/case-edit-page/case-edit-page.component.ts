@@ -184,7 +184,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
       .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path))
       .forEach(casefield => {
-        const fieldElement = group.get(casefield.id);
+        const fieldElement = FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])
+          ? group.get(`${casefield.id}_judicialUserControl`)
+          : group.get(casefield.id);
         if (fieldElement) {
           const label = casefield.label || 'Field';
           let id = casefield.id;
@@ -198,6 +200,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           if (fieldElement.hasError('required')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
             fieldElement.markAsDirty();
+            // For the JudicialUser field type, an error needs to be set on the component so that an error message
+            // can be displayed at field level
+            if (FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])) {
+              fieldElement['component'].errors = { required: true };
+            }
           } else if (fieldElement.hasError('pattern')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is not valid`, label });
             fieldElement.markAsDirty();
@@ -290,6 +297,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           this.handleError(error);
         });
       CaseEditPageComponent.scrollToTop();
+      // Remove all JudicialUser FormControls with the ID suffix "_judicialUserControl" because these are not
+      // intended to be present in the Case Event data (they are added only for value selection and validation
+      // purposes)
+      this.removeAllJudicialUserFormControls(this.currentPage, this.editForm);
     }
     CaseEditPageComponent.setFocusToTop();
   }
@@ -583,6 +594,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       caseDetails: this.caseEdit.caseDetails,
       form: this.editForm,
       submit: this.caseEdit.submit,
+    });
+  }
+
+  private removeAllJudicialUserFormControls(page: WizardPage, editForm: FormGroup): void {
+    page.case_fields.forEach(caseField => {
+      if (FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])) {
+        (editForm.controls['data'] as FormGroup).removeControl(`${caseField.id}_judicialUserControl`);
+      }
     });
   }
 }

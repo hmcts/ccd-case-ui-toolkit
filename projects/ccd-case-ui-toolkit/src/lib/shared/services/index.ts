@@ -21,6 +21,7 @@ export * from './request';
 export * from './search';
 export * from './session';
 export * from './router';
+export * from './utils/retry';
 export * from './window';
 export * from './workbasket';
 export * from './definitions';
