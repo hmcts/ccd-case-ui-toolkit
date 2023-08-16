@@ -1,7 +1,14 @@
 ## RELEASE NOTES
-
-### Version 6.18.0-restricted-case-access
+### Version 6.18.0-restricted-case-access-v3
 **EUI-6645** Restricted case access
+
+### Version 6.18.3-hotfix-EUI-8738
+**EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
+
+### Version 6.18.2-hotfix-EUI-8601-8687-8732
+**EUI-8601** Re-implement `WriteJudicialUserField` component to extend `WriteComplexFieldComponent`, to ensure correct working when used in a collection
+**EUI-8687** Fix validation logic for `WriteJudicialUserField` component
+**EUI-8732** Fix `WriteJudicialUserField` error handling to allow user to continue searching if an error occurs on calling `getJudicialUsersSearch` API endpoint
 
 ### Version 6.18.0-welsh-release-v6
 **EUI-5497** Welsh release part 1

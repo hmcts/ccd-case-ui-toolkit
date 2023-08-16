@@ -305,8 +305,15 @@ describe('CaseEditPageComponent - all other tests', () => {
   const pageValidationService = new PageValidationService(caseFieldService);
   let route: any;
   let snapshot: any;
-  const FORM_GROUP = new FormGroup({
+  const FORM_GROUP_NO_JUDICIAL_USERS = new FormGroup({
     data: new FormGroup({ field1: new FormControl('SOME_VALUE') }),
+  });
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({
+      field1: new FormControl('SOME_VALUE'),
+      judicialUserField1_judicialUserControl: new FormControl('Judicial User'),
+      judicialUserField2_judicialUserControl: new FormControl('Judicial User 2'),
+    }),
   });
   const WIZARD = new Wizard([wizardPage]);
   const draft = new Draft();
@@ -323,6 +330,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   const caseEventDataPrevious: CaseEventData = {
     data: {
       field1: 'Updated value',
+      judicialUserField1_judicialUserControl: 'Judicial User',
+      judicialUserField2_judicialUserControl: 'Judicial User 2',
     },
     event: { id: '', summary: '', description: '' },
     event_token: '',
@@ -610,7 +619,13 @@ describe('CaseEditPageComponent - all other tests', () => {
 
       expect(cancelled.emit).toHaveBeenCalledWith({
         status: CaseEditPageText.RESUMED_FORM_SAVE,
-        data: { data: { field1: 'SOME_VALUE' } },
+        data: {
+          data: {
+            field1: 'SOME_VALUE',
+            judicialUserField1_judicialUserControl: 'Judicial User',
+            judicialUserField2_judicialUserControl: 'Judicial User 2',
+          },
+        },
       });
     });
 
@@ -625,7 +640,13 @@ describe('CaseEditPageComponent - all other tests', () => {
 
       expect(cancelled.emit).toHaveBeenCalledWith({
         status: CaseEditPageText.NEW_FORM_SAVE,
-        data: { data: { field1: 'SOME_VALUE' } },
+        data: {
+          data: {
+            field1: 'SOME_VALUE',
+            judicialUserField1_judicialUserControl: 'Judicial User',
+            judicialUserField2_judicialUserControl: 'Judicial User 2',
+          },
+        },
       });
     });
 
@@ -1096,7 +1117,6 @@ describe('CaseEditPageComponent - all other tests', () => {
         spyOn(caseEditComponentStub, 'first');
         spyOn(caseEditComponentStub, 'next');
         spyOn(caseEditComponentStub, 'previous');
-        spyOn(caseEditComponentStub, 'form');
         spyOn(caseEditComponentStub, 'validate').and.returnValue(
           of(validateResult)
         );
@@ -1159,11 +1179,20 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp = fixture.componentInstance;
 
       wizardPage = createWizardPage(
-        [createCaseField('field1', 'field1Value')],
+        [
+          createCaseField('field1', 'field1Value'),
+          aCaseField('judicialUserField1', 'judicialUser1', 'JudicialUser', 'OPTIONAL', null),
+          aCaseField('judicialUserField2', 'judicialUser2', 'JudicialUser', 'OPTIONAL', null),
+        ],
         false,
         0
       );
       comp.wizard = new Wizard([wizardPage]);
+      // Rebuild the FORM_GROUP object before use because it gets modified by the "should call validate" test
+      (FORM_GROUP.get('data') as FormGroup).setControl(
+        'judicialUserField1_judicialUserControl', new FormControl('Judicial User'));
+      (FORM_GROUP.get('data') as FormGroup).setControl(
+        'judicialUserField2_judicialUserControl', new FormControl('Judicial User 2'));
       comp.editForm = FORM_GROUP;
       comp.currentPage = wizardPage;
 
@@ -1210,6 +1239,15 @@ describe('CaseEditPageComponent - all other tests', () => {
         expect(eventData.event_token).toEqual(comp.eventTrigger.event_token);
         expect(comp.caseEdit.error).toBeNull();
         expect(comp.caseEdit.ignoreWarning).toBe(false);
+
+        // Both JudicialUser FormControls should have been removed from the editForm FormGroup, leaving just one
+        // FormControl
+        const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
+        const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
+        expect(formControlKeys.length).toBe(1);
+        expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
+        expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(false);
+        expect(formControlKeys.includes(formControlKeysWithJudicialUsers[2])).toBe(false);
       });
     });
 
@@ -1224,6 +1262,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       } as HttpError;
 
       fixture.detectChanges();
+      expect(comp.submit).toHaveBeenCalled();
+      expect(comp.currentPageIsNotValid()).toBe(true);
       const error = de.query($SELECT_ERROR_SUMMARY);
       expect(error).toBeTruthy();
 
@@ -1232,6 +1272,15 @@ describe('CaseEditPageComponent - all other tests', () => {
 
       const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
       expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
+
+      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
+      // their removal is not triggered
+      const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
+      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
+      expect(formControlKeys.length).toBe(3);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[2])).toBe(true);
     });
 
     it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
@@ -1255,6 +1304,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       } as HttpError;
 
       fixture.detectChanges();
+      expect(comp.submit).toHaveBeenCalled();
+      expect(comp.currentPageIsNotValid()).toBe(true);
       const error = de.query($SELECT_ERROR_SUMMARY);
       expect(error).toBeTruthy();
 
@@ -1270,6 +1321,15 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(text(firstFieldError)).toBe('First field error');
       const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
       expect(text(secondFieldError)).toBe('Second field error');
+
+      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
+      // their removal is not triggered
+      const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
+      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
+      expect(formControlKeys.length).toBe(3);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
+      expect(formControlKeys.includes(formControlKeysWithJudicialUsers[2])).toBe(true);
     });
 
     it('should not display generic error heading and message when there are specific callback errors', () => {
@@ -1380,7 +1440,6 @@ describe('CaseEditPageComponent - all other tests', () => {
         dialog.open.and.returnValue(matDialogRef);
 
         spyOn(caseEditComponentStub, 'previous');
-        spyOn(caseEditComponentStub, 'form');
         spyOn(formValueService, 'sanitise').and.returnValue(
           caseEventDataPrevious
         );
@@ -1459,6 +1518,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(comp, 'buildCaseEventData').and.callThrough();
       fixture.detectChanges();
     });
 
@@ -1469,7 +1529,10 @@ describe('CaseEditPageComponent - all other tests', () => {
         expect(caseEventDataPrevious.case_reference).toEqual(
           caseEditComponentStub.caseDetails.case_id
         );
-        expect(caseEventDataPrevious.event_data).toEqual(FORM_GROUP.value.data);
+        // The call to buildCaseEventData() removes the additional JudicialUser FormControls before returning the
+        // CaseEventData to be submitted
+        expect(comp.buildCaseEventData).toHaveBeenCalled();
+        expect(caseEventDataPrevious.event_data).toEqual(FORM_GROUP_NO_JUDICIAL_USERS.value.data);
         expect(caseEventDataPrevious.ignore_warning).toEqual(
           comp.caseEdit.ignoreWarning
         );
@@ -1501,6 +1564,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             return { error: true };
           },
         }),
+        judicialUserField_judicialUserControl: new FormControl(null, Validators.required)
       }),
     });
 
@@ -1693,6 +1757,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           OrganisationField: '',
           complexField1: '',
           FlagLauncherField: null,
+          judicialUserField_judicialUserControl: null
         },
       });
       comp.editForm = F_GROUP;
@@ -1725,6 +1790,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           OrganisationField: '',
           complexField1: '',
           FlagLauncherField: null,
+          judicialUserField_judicialUserControl: null
         },
       });
       comp.editForm = F_GROUP;
@@ -1827,6 +1893,30 @@ describe('CaseEditPageComponent - all other tests', () => {
           'Please select Next to complete the update of the selected case flag'
         );
       });
+    });
+
+    it('should validate JudicialUser field and set error message on component', () => {
+      // Set up fake component reference on JudicialUser FormControl (required for setting "errors" property)
+      F_GROUP.get('data.judicialUserField_judicialUserControl')['component'] = {};
+      const judicialUserField = aCaseField(
+        'judicialUserField',
+        'judicialUser1',
+        'JudicialUser',
+        'MANDATORY',
+        1,
+        null,
+        false,
+        false
+      );
+      judicialUserField.field_type.type = 'Complex';
+      wizardPage.case_fields.push(judicialUserField);
+      wizardPage.isMultiColumn = () => false;
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
     });
   });
 
