@@ -5,7 +5,6 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { DynamicRadioListPipe } from './dynamic-radio-list.pipe';
 import { ReadDynamicRadioListFieldComponent } from './read-dynamic-radio-list-field.component';
-import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 
 describe('ReadDynamicRadioListFieldComponent', () => {
 

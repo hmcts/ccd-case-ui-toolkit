@@ -59,7 +59,7 @@ export class ManageCaseFlagsLabelDisplayPipe extends AsyncPipe implements PipeTr
   public getPartyName(flagDisplay: FlagDetailDisplayWithFormGroupPath): Observable<string> {
     if (flagDisplay.pathToFlagsFormGroup && flagDisplay.pathToFlagsFormGroup === ManageCaseFlagsLabelDisplayPipe.CASE_LEVEL_CASE_FLAGS_FIELD_ID) {
       return this.translationService.language === 'cy'
-        ? this.translationService.getTranslation('Case level')
+        ? this.translationService.getTranslation$('Case level')
         : of('Case level');
     }
     if (flagDisplay.flagDetailDisplay.partyName) {

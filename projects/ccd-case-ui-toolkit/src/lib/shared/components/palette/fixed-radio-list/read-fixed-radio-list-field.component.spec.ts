@@ -6,7 +6,6 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FixedRadioListPipe } from './fixed-radio-list.pipe';
 import { ReadFixedRadioListFieldComponent } from './read-fixed-radio-list-field.component';
-import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 
 describe('ReadFixedRadioListFieldComponent', () => {
 
