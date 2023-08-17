@@ -69,7 +69,7 @@ export class RetryUtil {
                     }
                     else {
                         console.error('Will NOT retry.');
-                        throwError(error);
+                        throw error;
                     }
                     return timer(0);
                 }),
