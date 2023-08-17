@@ -43,6 +43,9 @@
 ### Version 6.16.0-query-management-raise-a-query-page-changes
 **EUI-8602** Query management raise a query page changes
 
+### Version 6.19.0-case-flags-v2
+**EUI-7243** Case flags v2
+
 ### Version 6.18.3-hotfix-EUI-8738
 **EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
 
