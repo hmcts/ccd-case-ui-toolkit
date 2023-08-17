@@ -2,9 +2,9 @@ export interface AccessManagementBasicViewMockModel {
   active?: boolean;
   basicFields?: {
     caseNameHmctsInternal?: string,
-      caseManagementLocation?: {
-        baseLocation?: number
-      }
+    caseManagementLocation?: {
+      baseLocation?: number
+    }
   };
   accessProcess?: string;
 }
@@ -27,12 +27,8 @@ export abstract class AbstractAppConfig {
   abstract getApiUrl(): string;
   abstract getCaseDataUrl(): string;
   abstract getDocumentManagementUrl(): string;
-  getDocumentManagementUrlV2(): string {
-    return undefined;
-  }
-  getDocumentSecureMode(): boolean {
-    return undefined;
-  }
+  abstract getDocumentManagementUrlV2(): string;
+  abstract getDocumentSecureMode(): boolean;
   abstract getRemoteDocumentManagementUrl(): string;
   abstract getHrsUrl(): string;
   abstract getRemoteHrsUrl(): string;
@@ -46,6 +42,8 @@ export abstract class AbstractAppConfig {
   abstract getActivityUrl(): string;
   abstract getActivityNexPollRequestMs(): number;
   abstract getActivityRetry(): number;
+  abstract getTimeoutsForCaseRetrieval(): number[];
+  abstract getTimeoutsCaseRetrievalArtificialDelay(): number;
   abstract getActivityBatchCollectionDelayMs(): number;
   abstract getActivityMaxRequestPerBatch(): number;
   abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
@@ -132,15 +130,15 @@ export class CaseEditorConfig {
     accessProcess?: string
   };
   access_management_request_review_mock?: {
-  active?: boolean;
-  details?: {
-    caseName: string;
-    caseReference: string;
-    dateSubmitted: string;
-    requestFrom: string;
-    reasonForCaseAccess: string;
-  };
-  accessProcess?: string;
+    active?: boolean;
+    details?: {
+      caseName: string;
+      caseReference: string;
+      dateSubmitted: string;
+      requestFrom: string;
+      reasonForCaseAccess: string;
+    };
+    accessProcess?: string;
   }
   location_ref_api_url?: string;
   cam_role_assignments_api_url?: string;

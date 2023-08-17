@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { RpxTranslatePipe, RpxTranslationModule } from 'rpx-xui-translation';
 import { DashPipe } from './dash.pipe';
 import { DatePipe } from './date.pipe';
 import { FieldLabelPipe } from './field-label.pipe';
@@ -11,7 +12,8 @@ import { IsReadOnlyPipe } from './is-read-only.pipe';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    RpxTranslationModule.forChild()
   ],
   declarations: [
     DatePipe,
@@ -34,7 +36,8 @@ import { IsReadOnlyPipe } from './is-read-only.pipe';
     DashPipe
   ],
   providers:[
-    IsCompoundPipe
+    IsCompoundPipe,
+    RpxTranslatePipe
   ]
 })
 export class PaletteUtilsModule {}

@@ -34,9 +34,15 @@ import { WriteAddressFieldComponent } from './address/write-address-field.compon
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view';
 import { CaseFileViewFieldComponent } from './case-file-view/case-file-view-field.component';
-import { CaseFileViewFolderSelectorComponent } from './case-file-view/components/case-file-view-folder-selector/case-file-view-folder-selector.component';
-import { CaseFileViewFolderDocumentActionsComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
-import { CaseFileViewFolderSortComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
+import {
+  CaseFileViewFolderSelectorComponent
+} from './case-file-view/components/case-file-view-folder-selector/case-file-view-folder-selector.component';
+import {
+  CaseFileViewFolderDocumentActionsComponent
+} from './case-file-view/components/case-file-view-folder/case-file-view-folder-document-actions/case-file-view-folder-document-actions.component';
+import {
+  CaseFileViewFolderSortComponent
+} from './case-file-view/components/case-file-view-folder/case-file-view-folder-sort/case-file-view-folder-sort.component';
 import { CaseFileViewFolderComponent } from './case-file-view/components/case-file-view-folder/case-file-view-folder.component';
 import {
   AddCommentsComponent,
@@ -60,7 +66,13 @@ import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.com
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { ReadCollectionFieldComponent, WriteCollectionFieldComponent } from './collection';
 import { CollectionCreateCheckerService } from './collection/collection-create-checker.service';
-import { ReadComplexFieldCollectionTableComponent, ReadComplexFieldComponent, ReadComplexFieldRawComponent, ReadComplexFieldTableComponent, WriteComplexFieldComponent } from './complex';
+import {
+  ReadComplexFieldCollectionTableComponent,
+  ReadComplexFieldComponent,
+  ReadComplexFieldRawComponent,
+  ReadComplexFieldTableComponent,
+  WriteComplexFieldComponent
+} from './complex';
 import { ReadDateFieldComponent, WriteDateContainerFieldComponent, WriteDateFieldComponent } from './date';
 import { DatetimePickerComponent } from './datetime-picker';
 import { DocumentUrlPipe } from './document';
@@ -79,14 +91,30 @@ import { FixedRadioListPipe, ReadFixedRadioListFieldComponent, WriteFixedRadioLi
 import { CaseHistoryViewerFieldComponent, EventLogComponent, EventLogDetailsComponent, EventLogTableComponent } from './history';
 import { ReadJudicialUserFieldComponent, WriteJudicialUserFieldComponent } from './judicial-user';
 import { LabelFieldComponent } from './label';
-import { BeforeYouStartComponent, CheckYourAnswersComponent, LinkCasesComponent, LinkedCasesFromTableComponent, LinkedCasesToTableComponent, NoLinkedCasesComponent, ReadLinkedCasesFieldComponent, UnLinkCasesComponent, WriteLinkedCasesFieldComponent } from './linked-cases';
+import {
+  BeforeYouStartComponent,
+  CheckYourAnswersComponent,
+  LinkCasesComponent,
+  LinkedCasesFromTableComponent,
+  LinkedCasesToTableComponent,
+  NoLinkedCasesComponent,
+  ReadLinkedCasesFieldComponent,
+  UnLinkCasesComponent,
+  WriteLinkedCasesFieldComponent
+} from './linked-cases';
 import { LinkedCasesService } from './linked-cases/services';
 import { MarkdownComponent } from './markdown';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent, WriteMoneyGbpFieldComponent } from './money-gbp';
 import { ReadMultiSelectListFieldComponent, WriteMultiSelectListFieldComponent } from './multi-select-list';
 import { ReadNumberFieldComponent, WriteNumberFieldComponent } from './number';
 import { ReadOrderSummaryFieldComponent, ReadOrderSummaryRowComponent, WriteOrderSummaryFieldComponent } from './order-summary';
-import { ReadOrganisationFieldComponent, ReadOrganisationFieldRawComponent, ReadOrganisationFieldTableComponent, WriteOrganisationComplexFieldComponent, WriteOrganisationFieldComponent } from './organisation';
+import {
+  ReadOrganisationFieldComponent,
+  ReadOrganisationFieldRawComponent,
+  ReadOrganisationFieldTableComponent,
+  WriteOrganisationComplexFieldComponent,
+  WriteOrganisationFieldComponent
+} from './organisation';
 import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
@@ -289,7 +317,7 @@ const PALETTE_COMPONENTS = [
     LinkedCasesService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ],
-  entryComponents: [ CaseFileViewFolderSelectorComponent ]
+  entryComponents: [CaseFileViewFolderSelectorComponent]
 })
 export class PaletteModule {
 }

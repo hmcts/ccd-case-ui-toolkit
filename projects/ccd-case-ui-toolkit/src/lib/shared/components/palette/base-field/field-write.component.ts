@@ -49,7 +49,6 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     }
     component.instance['caseField'] = this.caseField;
 
-
     component.instance['caseFields'] = this.caseFields;
     component.instance['formGroup'] = this.formGroup;
     component.instance['parent'] = this.parent;

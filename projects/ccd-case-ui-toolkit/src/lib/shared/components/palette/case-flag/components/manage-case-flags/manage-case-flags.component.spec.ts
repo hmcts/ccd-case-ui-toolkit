@@ -4,7 +4,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CaseField } from '../../../../../domain';
-import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
+import { MockRpxTranslatePipe } from '../../../utils/first-error.pipe.spec';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 import { ManageCaseFlagsLabelDisplayPipe } from '../../pipes';

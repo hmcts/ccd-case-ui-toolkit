@@ -1,4 +1,24 @@
 ## RELEASE NOTES
+### Version 6.18.3-hotfix-EUI-8738
+**EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
+
+### Version 6.18.2-hotfix-EUI-8601-8687-8732
+**EUI-8601** Re-implement `WriteJudicialUserField` component to extend `WriteComplexFieldComponent`, to ensure correct working when used in a collection
+**EUI-8687** Fix validation logic for `WriteJudicialUserField` component
+**EUI-8732** Fix `WriteJudicialUserField` error handling to allow user to continue searching if an error occurs on calling `getJudicialUsersSearch` API endpoint
+
+### Version 6.18.0-welsh-release-v6
+**EUI-5497** Welsh release part 1
+
+### Version 6.18.2-rc2
+**EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button
+**EXUI-229** DynamicMultiSelectList Updates Required
+**EXUI-313** Fix issue with secure document store
+
+### Version 6.16-hotfix-EUI-8515-case-flags-submission
+**EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
+**EUI-8550** Fix incorrect behaviour of showEventNotes() function on Case Event submission, introduced in error by EUI-6693
+
 ### Version 6.16.0-query-management-orchestrator-v3
 **EUI-8303** Query management orchestrator to get the mock data
 
@@ -55,6 +75,9 @@
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
 
+### Version 6.13.11-judicial-user-typeahead-fix
+**EUI-7733** Judicial user typeahead fix
+
 ### Version 6.13.10-linked-cases-continue-button-validation-v6
 **EUI-8025** Linked cases continue button validation
 
@@ -71,6 +94,10 @@
 **EUI-7246** Linked cases other description
 
 ### Version 6.10.10-linked-cases-and-case-file-view
+### Version 6.10.11-judicial-user-typeahead-fix
+**EUI-7733** Judicial user typeahead fix
+
+### Version 6.10.10-configure-linked-cases
 **EUI-7676** Configure linked cases
 **EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
 
@@ -99,6 +126,9 @@
 
 ### Version 5.0.46-case-flags-not-approved-status
 **EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
+
+### Version 5.0.46-fix-case-link
+**EUI-7521** Fix case link hyperlink on applications tab
 
 ### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
 **EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary

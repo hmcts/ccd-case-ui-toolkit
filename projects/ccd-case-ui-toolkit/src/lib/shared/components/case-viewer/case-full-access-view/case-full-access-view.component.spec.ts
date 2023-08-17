@@ -12,7 +12,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { of, Subject, Subscription } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
 import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';

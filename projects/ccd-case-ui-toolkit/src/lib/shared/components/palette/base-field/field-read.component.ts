@@ -13,7 +13,6 @@ const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList', 'DynamicMultiSelectList'
   templateUrl: './field-read.html'
 })
 export class FieldReadComponent extends AbstractFieldReadComponent implements OnInit {
-
   @Input()
   public withLabel = false;
 

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.10.7-case-flags-v2-welsh-language-support-additional-rework-2",
+  "version": "6.19.3-RetryCaseRetrievals.1",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -63,7 +63,7 @@
     "@angular/router": "~11.2.14",
     "@angular/upgrade": "~11.2.14",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "5.2.2",
+    "@hmcts/ccpay-web-component": "5.2.8",
     "@hmcts/frontend": "^0.0.50-alpha",
     "@hmcts/media-viewer": "2.9.3",
     "@ngrx/effects": "^7.4.0",
@@ -85,7 +85,7 @@
     "ngx-pagination": "5.1.1",
     "npm-registry-fetch": "^4.0.5",
     "pegjs": "^0.10.0",
-    "rpx-xui-translation": "^0.2.1",
+    "rpx-xui-translation": "0.2.3-yesno-translations-fix-v2",
     "rx-polling": "1.1.0",
     "rxjs": "^6.6.7",
     "rxjs-compat": "^6.6.7",
@@ -139,6 +139,7 @@
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "json-loader": "^0.5.4",
+    "just-clone": "^6.2.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.0.3",
