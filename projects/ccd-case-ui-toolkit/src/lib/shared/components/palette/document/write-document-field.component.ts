@@ -4,15 +4,13 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
-import { DocumentData, FormDocument } from '../../../domain/document/document-data.model';
-import { HttpError } from '../../../domain/http/http-error.model';
-import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
+import { DocumentData, FormDocument, HttpError } from '../../../domain';
+import { DocumentManagementService, JurisdictionService } from '../../../services';
+import { CaseNotifier, EventTriggerService } from '../../case-editor';
+import { DocumentDialogComponent } from '../../dialogs';
 import { initDialog } from '../../helpers';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { AbstractFieldWriteComponent } from '../base-field';
 import { FileUploadStateService } from './file-upload-state.service';
-import { JurisdictionService } from '../../../services';
-import { EventTriggerService } from '../../case-editor/services/event-trigger.service';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -35,9 +33,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public confirmReplaceResult: string;
   public clickInsideTheDocument: boolean;
 
+  // these are public so that they can be mocked for tests
   public fileUploadSubscription: Subscription;
   public dialogSubscription: Subscription;
-  public caseEventSubscription: Subscription;
+  public caseNotifierSubscription: Subscription;
+  public jurisdictionSubs: Subscription;
+  public eventTriggerSubs: Subscription;
 
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
@@ -45,9 +46,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public jurisdictionId: string;
   public caseTypeId: string;
-  
+
   constructor(
     private readonly appConfig: AbstractAppConfig,
+    private readonly caseNotifier: CaseNotifier,
     private readonly documentManagement: DocumentManagementService,
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
@@ -59,7 +61,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   @HostListener('document:click', ['$event'])
   public clickout(event) {
-    // Capturing the event of of the associated  ElementRef <input type="file" #fileInpu
+    // Capturing the event of the associated  ElementRef <input type="file" #fileInpu
 
     if (this.fileInput.nativeElement.contains(event.target)) {
       this.clickInsideTheDocument = true;
@@ -70,6 +72,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
+    console.log('writeDocumentField.ngInit: secure mode = ' + this.secureModeOn);
+    if (this.secureModeOn) {
+      this.subscribeToCaseDetails();
+    }
     this.dialogConfig = initDialog();
     // EUI-3403. The field was not being registered when there was no value and the field
     // itself was not mandatory, which meant that show_conditions would not be evaluated.
@@ -81,10 +87,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     } else {
       this.createDocumentForm(document);
     }
-
-    if (this.appConfig.getDocumentSecureMode()) {
-      this.subscribeToCaseDetails();
-    }
   }
 
   public ngOnDestroy(): void {
@@ -94,8 +96,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (this.dialogSubscription) {
       this.dialogSubscription.unsubscribe();
     }
-    if (this.caseEventSubscription) {
-      this.caseEventSubscription.unsubscribe();
+    if (this.caseNotifierSubscription) {
+      this.caseNotifierSubscription.unsubscribe();
+    }
+    if (this.jurisdictionSubs) {
+      this.jurisdictionSubs.unsubscribe();
+    }
+    if (this.eventTriggerSubs) {
+      this.eventTriggerSubs.unsubscribe();
     }
   }
 
@@ -151,10 +159,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  public triggerReplace(): void {
+  public triggerReplace(): boolean {
     if (this.confirmReplaceResult === 'Replace') {
       this.openFileDialog();
+      return true;
     }
+    return false;
   }
 
   public getUploadedFileName(): any {
@@ -191,14 +201,29 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     });
   }
 
+  // Depending on the context, we can get the case type and jurisdiction from different sources
+  // If we are running an event, the caseNotifier will have the current case
+  // If we are creating a case, the case doesn't exist yet, so the caseNotifier can't help
+  // Instead we can use the eventTrigger to get the case type, and the jurisdiction service to
+  // get the currently selected jurisdiction
   private subscribeToCaseDetails(): void {
-    this.eventTriggerService.eventTriggerSource.subscribe((e) => {
-      this.caseTypeId = e.case_id;
+    this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe({
+      next: (caseDetails) => {
+        this.caseTypeId = caseDetails?.case_id;
+        this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
+        console.log(`caseNotifier.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
+      }
     });
-
-    this.jurisdictionService.getJurisdictions().subscribe({
-      next: (jurisdictions) => {
-       this.jurisdictionId = jurisdictions[0].id;
+    this.eventTriggerSubs = this.eventTriggerService.eventTriggerSource.subscribe( {
+      next: (e) => {
+        this.caseTypeId = e.case_id;
+        console.log(`eventTriggerSource.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
+      }
+    });
+    this.jurisdictionSubs = this.jurisdictionService.selectedJurisdiction.subscribe({
+      next: (jurisdiction) => {
+       this.jurisdictionId = jurisdiction.id;
+        console.log(`selectedJurisdiction.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
       }
     });
   }

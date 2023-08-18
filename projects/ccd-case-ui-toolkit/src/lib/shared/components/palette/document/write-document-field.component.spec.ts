@@ -4,19 +4,16 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { Subscription, of, throwError } from 'rxjs';
+import { of, Subscription, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseField, FieldType } from '../../../domain/definition';
-import { DocumentData } from '../../../domain/document';
-import { DocumentManagementService } from '../../../services/document-management';
+import { CaseField, DocumentData, FieldType } from '../../../domain';
+import { DocumentManagementService, JurisdictionService } from '../../../services';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { CaseNotifier, CasesService } from '../../case-editor';
-import { DocumentDialogComponent } from '../../dialogs/document-dialog';
+import { CaseNotifier, CasesService, EventTriggerService } from '../../case-editor';
+import { DocumentDialogComponent } from '../../dialogs';
 import { FieldLabelPipe } from '../utils';
 import { FileUploadStateService } from './file-upload-state.service';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
-import { EventTriggerService } from '../../case-editor';
-import { JurisdictionService } from '../../../services';
 
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
@@ -204,7 +201,7 @@ describe('WriteDocumentFieldComponent', () => {
     expect(component.caseField.value).toBeFalsy();
     component.fileSelectEvent();
     component.confirmReplaceResult = 'Replace';
-    expect(component.triggerReplace()).toBeFalsy();
+    expect(component.triggerReplace()).toBeTruthy();
   });
 
   it('should open replace file dialog if document exist', () => {
