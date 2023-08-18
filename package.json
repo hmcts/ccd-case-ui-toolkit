@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.19.0-case-flags-v2",
+  "version": "6.19.2-case-flags-v2-reasonable-adjustments",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -99,7 +99,7 @@
     "@angular/cli": "^11.2.19",
     "@angular/compiler-cli": "~11.2.14",
     "@babel/core": "^7.18.10",
-    "@compodoc/compodoc": "1.1.12",
+    "@compodoc/compodoc": "^1.1.12",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-essentials": "^6.5.10",
     "@storybook/addon-interactions": "^6.5.10",

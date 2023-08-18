@@ -1,6 +1,6 @@
 ## RELEASE NOTES
-### Version 6.19.0-case-flags-v2
-**EUI-7243** Case flags v2
+### Version 6.19.2-case-flags-v2-reasonable-adjustments
+**EUI-7243** Case flags v2 reasonable adjustments
 
 ### Version 6.18.3-hotfix-EUI-8738
 **EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
