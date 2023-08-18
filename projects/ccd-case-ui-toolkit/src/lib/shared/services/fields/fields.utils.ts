@@ -377,7 +377,7 @@ export class FieldsUtils {
       return false;
     }
 
-    return types.some(type => type === caseField.field_type.type);
+    return types.some(type => type === caseField.field_type.type || type === caseField.field_type.id);
   }
 
   public static isLinkedCasesCaseField(caseField: CaseField): boolean {

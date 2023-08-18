@@ -4,7 +4,7 @@ import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, ChallengedAccessRequest, HttpError, SpecificAccessRequest } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
-import { HttpErrorService, HttpService, LoadingService, SessionStorageService } from '../../../services';
+import { HttpErrorService, HttpService, LoadingService, RetryUtil, SessionStorageService } from '../../../services';
 import { CasesService } from './cases.service';
 import { WizardPageFieldToCaseFieldMapper } from './wizard-page-field-to-case-field.mapper';
 import { WorkAllocationService } from './work-allocation.service';
@@ -63,14 +63,18 @@ describe('CasesService', () => {
   let sessionStorageService: any;
   let loadingService: any;
   let alertService: any;
+  let retryUtil: any;
 
   beforeEach(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig',
-      ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl', 'getCaseDataStoreApiUrl']);
+      ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl', 'getCaseDataStoreApiUrl', 'getEnvironment', 'getTimeoutsForCaseRetrieval', 'getTimeoutsCaseRetrievalArtificialDelay']);
     appConfig.getApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataUrl.and.returnValue(API_URL);
     appConfig.getWorkAllocationApiUrl.and.returnValue(API_URL);
     appConfig.getCaseDataStoreApiUrl.and.returnValue(API_URL);
+    appConfig.getEnvironment.and.returnValue('demo');
+    appConfig.getTimeoutsForCaseRetrieval.and.returnValue([20])
+    appConfig.getTimeoutsCaseRetrievalArtificialDelay.and.returnValue(0)
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     errorService = createSpyObj<HttpErrorService>('errorService', ['setError']);
@@ -89,9 +93,10 @@ describe('CasesService', () => {
     sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
       "roles": ["caseworker-role1", "caseworker-role3"], "email": "test@mail.com","token": null}`);
     loadingService = createSpyObj<LoadingService>('loadingService', ['register', 'unregister']);
+    retryUtil = new RetryUtil();
     casesService = new CasesService(
       httpService, appConfig, orderService, errorService, wizardPageFieldToCaseFieldMapper, loadingService,
-      sessionStorageService
+      sessionStorageService, retryUtil
     );
   });
 
@@ -592,18 +597,18 @@ describe('CasesService', () => {
   describe('updateChallengedAccessRequestAttributes()', () => {
     it('should update challenged access request', () => {
       const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
-      CasesService.updateChallengedAccessRequestAttributes(httpClient, 'exampleId', {attribute: true});
+      CasesService.updateChallengedAccessRequestAttributes(httpClient, 'exampleId', { attribute: true });
       expect(httpClient.post).toHaveBeenCalledWith('/api/challenged-access-request/update-attributes',
-       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
+        { caseId: 'exampleId', attributesToUpdate: { attribute: true } });
     });
   });
 
   describe('updateSpecificAccessRequestAttributes()', () => {
     it('should update specific access request', () => {
       const httpClient = createSpyObj<HttpClient>('httpClient', ['post']);
-      CasesService.updateSpecificAccessRequestAttributes(httpClient, 'exampleId', {attribute: true});
+      CasesService.updateSpecificAccessRequestAttributes(httpClient, 'exampleId', { attribute: true });
       expect(httpClient.post).toHaveBeenCalledWith('/api/specific-access-request/update-attributes',
-       {caseId: 'exampleId', attributesToUpdate: {attribute: true}});
+        { caseId: 'exampleId', attributesToUpdate: { attribute: true } });
     });
   });
 });
