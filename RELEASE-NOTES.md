@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.19.2-case-flags-v2-reasonable-adjustments
+### Version 6.19.2-case-flags-v2-reasonable-adjustments-v2
 **EUI-7243** Case flags v2 reasonable adjustments
 
 ### Version 6.18.3-hotfix-EUI-8738
