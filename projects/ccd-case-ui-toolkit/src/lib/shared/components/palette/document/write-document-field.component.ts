@@ -6,7 +6,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
 import { DocumentData, FormDocument, HttpError } from '../../../domain';
 import { DocumentManagementService, JurisdictionService } from '../../../services';
-import { CaseNotifier, EventTriggerService } from '../../case-editor';
+import { CaseNotifier } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs';
 import { initDialog } from '../../helpers';
 import { AbstractFieldWriteComponent } from '../base-field';
@@ -38,7 +38,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public dialogSubscription: Subscription;
   public caseNotifierSubscription: Subscription;
   public jurisdictionSubs: Subscription;
-  public eventTriggerSubs: Subscription;
 
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
@@ -53,7 +52,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     private readonly documentManagement: DocumentManagementService,
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
-    private readonly eventTriggerService: EventTriggerService,
     private readonly jurisdictionService: JurisdictionService,
   ) {
     super();
@@ -72,7 +70,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
-    console.log('writeDocumentField.ngInit: secure mode = ' + this.secureModeOn);
+    console.info('writeDocumentField.ngInit: secure mode = ' + this.secureModeOn);
     if (this.secureModeOn) {
       this.subscribeToCaseDetails();
     }
@@ -101,9 +99,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
     if (this.jurisdictionSubs) {
       this.jurisdictionSubs.unsubscribe();
-    }
-    if (this.eventTriggerSubs) {
-      this.eventTriggerSubs.unsubscribe();
     }
   }
 
@@ -211,19 +206,18 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       next: (caseDetails) => {
         this.caseTypeId = caseDetails?.case_id;
         this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
-        console.log(`caseNotifier.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
+        console.info(`caseNotifier.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
       }
     });
-    this.eventTriggerSubs = this.eventTriggerService.eventTriggerSource.subscribe( {
-      next: (e) => {
-        this.caseTypeId = e.case_id;
-        console.log(`eventTriggerSource.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
-      }
-    });
-    this.jurisdictionSubs = this.jurisdictionService.selectedJurisdiction.subscribe({
+    this.jurisdictionSubs = this.jurisdictionService.selectedJurisdictionBS.subscribe({
       next: (jurisdiction) => {
-       this.jurisdictionId = jurisdiction.id;
-        console.log(`selectedJurisdiction.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
+        if (jurisdiction) {
+          this.jurisdictionId = jurisdiction.id;
+          if (jurisdiction.currentCaseType) {
+            this.caseTypeId = jurisdiction.currentCaseType.id
+          }
+        }
+        console.info(`selectedJurisdiction.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
       }
     });
   }
