@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { CaseEventCompletionComponent, COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
+import { COMPONENT_PORTAL_INJECTION_TOKEN, CaseEventCompletionComponent } from '../../../../palette';
 
 @Component({
   selector: 'app-case-event-completion-task-cancelled',

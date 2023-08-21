@@ -1,5 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { TaskSearchParameter } from '../../../../../../../lib/shared/domain';
+import { CaseNotifier, WorkAllocationService } from '../../../../case-editor';
+import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
 import { QueryCreateContext, QueryListItem } from '../../models';
 
 @Component({
@@ -14,7 +20,67 @@ export class QueryCheckYourAnswersComponent {
   @Output() public backClicked = new EventEmitter<boolean>();
   public queryCreateContextEnum = QueryCreateContext;
 
+  public eventCompletionParams: EventCompletionParams;
+  public triggerEvent: boolean;
+  private caseId: string;
+  private eventId: string;
+  private queryId: string;
+  public searchTasksSubsciption: Subscription;
+
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly workAllocationService: WorkAllocationService,
+    private readonly caseNotifier: CaseNotifier) { }
+
+  public ngOnInit(): void {
+    this.queryId = this.route.snapshot.params.qid;
+    this.caseNotifier.caseView.pipe(take(1)).subscribe(caseDetails => {
+      this.caseId = caseDetails.case_id;
+      // To be set after integration
+      this.eventId = 'respondToQuery';
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.searchTasksSubsciption?.unsubscribe();
+  }
+
   public goBack(): void {
     this.backClicked.emit(true);
+  }
+
+  public searchTask(): void {
+    // Search Task
+    const searchParameter = { ccdId: this.caseId } as TaskSearchParameter;
+    this.searchTasksSubsciption = this.workAllocationService.searchTasks(searchParameter)
+      .subscribe((response: any) => {
+        
+        // Filter task by query id
+        let filteredtask = response.tasks?.find((task) => {
+          return Object.values(task.additional_properties).some((value) => {
+            if (value === this.queryId) {
+              return task;
+            }
+          });
+        });
+
+        // To be deleted, mocking for test 
+        filteredtask = {
+          id: '06a4b717-ff09-11ed-a393-6659d66f4970'
+        };
+
+        // Trigger event completion        
+        this.eventCompletionParams = {
+          caseId: this.caseId,
+          eventId: this.eventId,
+          task: filteredtask
+        }         
+        
+        this.triggerEvent = true;
+      });
+  }
+  
+  public submit() {
+    this.searchTask();
   }
 }

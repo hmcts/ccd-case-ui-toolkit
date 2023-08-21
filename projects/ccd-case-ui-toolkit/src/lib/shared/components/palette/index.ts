@@ -1,3 +1,4 @@
+export * from './../case-editor/case-event-completion';
 export * from './address';
 export * from './base-field';
 export * from './case-file-view';
