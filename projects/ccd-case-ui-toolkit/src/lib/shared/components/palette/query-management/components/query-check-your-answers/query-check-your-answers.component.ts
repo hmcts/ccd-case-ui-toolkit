@@ -24,7 +24,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   private caseId: string;
   private eventId: string;
   private queryId: string;
-  public searchTasksSubsciption: Subscription;
+  private searchTasksSubsciption: Subscription;
 
   constructor(
     private readonly route: ActivatedRoute,
