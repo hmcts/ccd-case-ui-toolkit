@@ -48,8 +48,8 @@
     "build:storybook": "yarn docs:json && build-storybook"
   },
   "dependencies": {
-    "@angular-material-components/datetime-picker": "5.1.1",
-    "@angular-material-components/moment-adapter": "5.0.0",
+    "@angular-material-components/datetime-picker": "15.0.0",
+    "@angular-material-components/moment-adapter": "15.0.0",
     "@angular/animations": "~14.3.0",
     "@angular/cdk": "^14.2.7",
     "@angular/common": "~14.3.0",

@@ -189,32 +189,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-material-components/datetime-picker@npm:5.1.1":
-  version: 5.1.1
-  resolution: "@angular-material-components/datetime-picker@npm:5.1.1"
+"@angular-material-components/datetime-picker@npm:15.0.0":
+  version: 15.0.0
+  resolution: "@angular-material-components/datetime-picker@npm:15.0.0"
   dependencies:
-    tslib: ^2.0.0
+    tslib: ^2.3.0
   peerDependencies:
-    "@angular/cdk": ^11.1.0
-    "@angular/common": ^11.1.0
-    "@angular/core": ^11.1.0
-    "@angular/forms": ^11.1.0
-    "@angular/material": ^11.1.0
-    "@angular/platform-browser": ^11.1.0
-  checksum: d5ad744322edb4cfe867146875a3f620e2c463a7c5b24ce00149a9fe4a54a1e5bbddbdfc1cec3207ef0df133e1b99f0c3a1088ef9bc8ef599b38d6c8a4bdc412
+    "@angular/cdk": ^15.0.1
+    "@angular/common": ^15.0.1
+    "@angular/core": ^15.0.1
+    "@angular/forms": ^15.0.1
+    "@angular/material": ^15.0.1
+    "@angular/platform-browser": ^15.0.1
+  checksum: a6134558820f489cbe7140a518dd432f95b3550c79adf2fb0dac94cc171e3105ac7815d3782cee433b620842f09b1bb4cdffe525c2ebe2a53529d999cc634abd
   languageName: node
   linkType: hard
 
-"@angular-material-components/moment-adapter@npm:5.0.0":
-  version: 5.0.0
-  resolution: "@angular-material-components/moment-adapter@npm:5.0.0"
+"@angular-material-components/moment-adapter@npm:15.0.0":
+  version: 15.0.0
+  resolution: "@angular-material-components/moment-adapter@npm:15.0.0"
   dependencies:
-    tslib: ^2.0.0
+    tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": ^11.0.0
-    "@angular/core": ^11.0.0
+    "@angular/common": ^15.0.1
+    "@angular/core": ^15.0.1
     moment: ^2.18.1
-  checksum: 1ba1c5182f5bdb61144f24133cdafecc92f0b770355e2668b739c36087df90b894c29eaa8ea2f663cdd09b1b530a72d88cc56ee36bb144344ca437b1b5bfed45
+  checksum: 211f1538e0466242dc78ca23b8fa6022456a7584ecc0f484b6a72bf4971ca1311f5c3516e26a6802c6e4ab8568c59681ff8b4ec95d96eca7c54d93e46e55b958
   languageName: node
   linkType: hard
 
@@ -3070,8 +3070,8 @@ __metadata:
   resolution: "@hmcts/ccd-case-ui-toolkit@workspace:."
   dependencies:
     "@angular-devkit/build-angular": ~14.2.12
-    "@angular-material-components/datetime-picker": 5.1.1
-    "@angular-material-components/moment-adapter": 5.0.0
+    "@angular-material-components/datetime-picker": 15.0.0
+    "@angular-material-components/moment-adapter": 15.0.0
     "@angular/animations": ~14.3.0
     "@angular/cdk": ^14.2.7
     "@angular/cli": ^14.2.12
