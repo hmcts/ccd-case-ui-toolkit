@@ -4,10 +4,10 @@ import { Subscription, throwError } from 'rxjs';
 import { Task } from '../../../../../domain/work-allocation/Task';
 import { AlertService } from '../../../../../services/alert/alert.service';
 import { SessionStorageService } from '../../../../../services/session/session-storage.service';
-import { COMPONENT_PORTAL_INJECTION_TOKEN, CaseEventCompletionComponent } from '../../../../palette';
 import { CaseworkerService } from '../../../services/case-worker.service';
 import { JudicialworkerService } from '../../../services/judicial-worker.service';
 import { WorkAllocationService } from '../../../services/work-allocation.service';
+import { COMPONENT_PORTAL_INJECTION_TOKEN, CaseEventCompletionComponent } from '../../case-event-completion.component';
 
 @Component({
   selector: 'app-case-event-completion-task-reassigned',
