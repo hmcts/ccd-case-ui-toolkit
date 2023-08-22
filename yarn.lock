@@ -390,20 +390,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:^13.3.9":
-  version: 13.3.9
-  resolution: "@angular/material@npm:13.3.9"
+"@angular/material@npm:^14.2.7":
+  version: 14.2.7
+  resolution: "@angular/material@npm:14.2.7"
   dependencies:
     tslib: ^2.3.0
   peerDependencies:
-    "@angular/animations": ^13.0.0 || ^14.0.0-0
-    "@angular/cdk": 13.3.9
-    "@angular/common": ^13.0.0 || ^14.0.0-0
-    "@angular/core": ^13.0.0 || ^14.0.0-0
-    "@angular/forms": ^13.0.0 || ^14.0.0-0
-    "@angular/platform-browser": ^13.0.0 || ^14.0.0-0
+    "@angular/animations": ^14.0.0 || ^15.0.0
+    "@angular/cdk": 14.2.7
+    "@angular/common": ^14.0.0 || ^15.0.0
+    "@angular/core": ^14.0.0 || ^15.0.0
+    "@angular/forms": ^14.0.0 || ^15.0.0
+    "@angular/platform-browser": ^14.0.0 || ^15.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 97ea30065767288b525d5902691535f98c8aba2808f421f65683090cc16776d8f2ba858d1a1a95323d73c0aef05668df634f7b1537dbc2524bce2e6c6282d25c
+  checksum: 078e944fb852b7d727a879c7fb5a9914f12447dbb4686444405565ea4aa40b076a60624c9bf2b3d9bc568ac6a50026b8a5ca614494253328421f8d14adb4afde
   languageName: node
   linkType: hard
 
@@ -3222,7 +3222,7 @@ __metadata:
     "@angular/core": ~14.3.0
     "@angular/forms": ~14.3.0
     "@angular/localize": 14.3.0
-    "@angular/material": ^13.3.9
+    "@angular/material": ^14.2.7
     "@angular/platform-browser": ~14.3.0
     "@angular/platform-browser-dynamic": ~14.3.0
     "@angular/router": ~14.3.0
