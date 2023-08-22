@@ -53,28 +53,20 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     const searchParameter = { ccdId: this.caseId } as TaskSearchParameter;
     this.searchTasksSubsciption = this.workAllocationService.searchTasks(searchParameter)
       .subscribe((response: any) => {
-
         // Filter task by query id
-        let filteredtask = response.tasks?.find((task) => {
+        const filteredtask = response.tasks?.find((task) => {
           return Object.values(task.additional_properties).some((value) => {
             if (value === this.queryId) {
               return task;
             }
           });
         });
-
-        // To be deleted, mocking for test
-        filteredtask = {
-          id: '06a4b717-ff09-11ed-a393-6659d66f4970'
-        };
-
         // Trigger event completion
         this.eventCompletionParams = {
           caseId: this.caseId,
           eventId: this.eventId,
           task: filteredtask
         };
-
       });
   }
 }
