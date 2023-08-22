@@ -1,0 +1,46 @@
+import { OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { IPaymentGroup } from '../../interfaces/IPaymentGroup';
+import { BulkScaningPaymentService } from '../../services/bulk-scaning-payment/bulk-scaning-payment.service';
+import { ErrorHandlerService } from '../../services/shared/error-handler.service';
+import { PaymentViewService } from '../../services/payment-view/payment-view.service';
+import { XlFileService } from '../../services/xl-file/xl-file.service';
+import * as i0 from "@angular/core";
+export declare class ReportsComponent implements OnInit {
+    private xlFileService;
+    private errorHandlerService;
+    private formBuilder;
+    private bulkScaningPaymentService;
+    private paymentViewService;
+    ISPAYMENTSTATUSENABLED: string;
+    fmt: string;
+    loc: string;
+    reportsForm: FormGroup;
+    startDate: string;
+    endDate: string;
+    errorMeaagse: string;
+    ccdCaseNumber: string;
+    isDownLoadButtondisabled: Boolean;
+    isStartDateLesthanEndDate: Boolean;
+    isDateBetwnMonth: Boolean;
+    isDateRangeBetnWeek: Boolean;
+    errorMessage: any;
+    paymentGroups: IPaymentGroup[];
+    constructor(xlFileService: XlFileService, errorHandlerService: ErrorHandlerService, formBuilder: FormBuilder, bulkScaningPaymentService: BulkScaningPaymentService, paymentViewService: PaymentViewService);
+    ngOnInit(): void;
+    getToday(): string;
+    getSelectedFromDate(): void;
+    validateDates(reportName: any): void;
+    fromValidation(): void;
+    downloadReport(): void;
+    getFileName(selectedOption: string, startDate: string, endDate: string): string;
+    tranformDate(strDate: string): string;
+    getTwodigit(input: number): string;
+    getCamelCaseString(selectedOption: any): any;
+    applyDateFormat(res: any): any;
+    multiDateFormater(dateStr: any): any;
+    convertToFloatValue(amt: any): string;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ReportsComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ReportsComponent, "ccpay-reports", never, { "ISPAYMENTSTATUSENABLED": { "alias": "ISPAYMENTSTATUSENABLED"; "required": false; }; }, {}, never, never, false, never>;
+}
+//# sourceMappingURL=reports.component.d.ts.map

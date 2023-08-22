@@ -3254,7 +3254,7 @@ __metadata:
     "@babel/core": ^7.18.10
     "@compodoc/compodoc": 1.1.12
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccpay-web-component": "link:../ccpay-web-component/dist/payment-lib"
+    "@hmcts/ccpay-web-component": "link:./temp-dist/payment-lib"
     "@hmcts/frontend": ^0.0.50-alpha
     "@hmcts/media-viewer": 2.9.3
     "@ngrx/effects": ^7.4.0
@@ -3369,9 +3369,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hmcts/ccpay-web-component@link:../ccpay-web-component/dist/payment-lib::locator=%40hmcts%2Fccd-case-ui-toolkit%40workspace%3A.":
+"@hmcts/ccpay-web-component@link:./temp-dist/payment-lib::locator=%40hmcts%2Fccd-case-ui-toolkit%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@hmcts/ccpay-web-component@link:../ccpay-web-component/dist/payment-lib::locator=%40hmcts%2Fccd-case-ui-toolkit%40workspace%3A."
+  resolution: "@hmcts/ccpay-web-component@link:./temp-dist/payment-lib::locator=%40hmcts%2Fccd-case-ui-toolkit%40workspace%3A."
   languageName: node
   linkType: soft
 
