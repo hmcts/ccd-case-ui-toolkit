@@ -331,7 +331,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
 
   it('should have called ngOnInit, created a UntypedFormGroup with a validator, and set the correct Case Flag field starting state', () => {
     expect(component.ngOnInit).toBeTruthy();
-    expect(component.UntypedFormGroup).toBeTruthy();
+    expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
     if (!component.isDisplayContextParameterUpdate) {
       expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_LOCATION);
@@ -368,7 +368,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
 
   // TODO: Need to re-visit later as the next button has been moved to the child components
   xit('should move the Case Flag field to the next state, and update the validity if it is at the final state (FLAG_SUMMARY)', () => {
-    spyOn(component.UntypedFormGroup, 'updateValueAndValidity').and.callThrough();
+    spyOn(component.formGroup, 'updateValueAndValidity').and.callThrough();
     const nextButton = fixture.debugElement.nativeElement.querySelector('button[type=button]');
     nextButton.click();
     fixture.detectChanges();
@@ -716,7 +716,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     spyOn(component, 'setFlagsCaseFieldValue').and.callThrough();
     spyOn(component, 'addFlagToCollection');
     spyOn(component, 'updateFlagInCollection');
-    spyOn(component.UntypedFormGroup, 'updateValueAndValidity');
+    spyOn(component.formGroup, 'updateValueAndValidity');
     component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
     component.moveToFinalReviewStage();
     expect(component.setFlagsCaseFieldValue).toHaveBeenCalled();
@@ -729,7 +729,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     spyOn(component, 'setFlagsCaseFieldValue').and.callThrough();
     spyOn(component, 'addFlagToCollection');
     spyOn(component, 'updateFlagInCollection');
-    spyOn(component.UntypedFormGroup, 'updateValueAndValidity');
+    spyOn(component.formGroup, 'updateValueAndValidity');
     component.fieldState = CaseFlagFieldState.FLAG_UPDATE;
     component.moveToFinalReviewStage();
     expect(component.setFlagsCaseFieldValue).toHaveBeenCalled();

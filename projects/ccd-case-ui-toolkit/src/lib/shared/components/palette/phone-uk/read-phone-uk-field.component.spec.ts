@@ -71,7 +71,7 @@ describe('ReadPhoneUKFieldComponent', () => {
   });
 
   describe('Persistable readonly phone-uk field', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',

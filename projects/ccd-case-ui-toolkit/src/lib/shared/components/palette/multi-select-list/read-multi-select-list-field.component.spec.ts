@@ -114,7 +114,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
   });
 
   describe('Persistable readonly multi-select-list field', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
     const CASE_FIELD = new CaseField();
     CASE_FIELD.id = FIELD_ID;
     CASE_FIELD.label = 'X';

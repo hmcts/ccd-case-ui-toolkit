@@ -74,7 +74,7 @@ describe('WriteOrderSummaryFieldComponent', () => {
     let component: WriteOrderSummaryFieldComponent;
     let de: DebugElement;
 
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     beforeEach(waitForAsync(() => {
       TestBed
@@ -133,7 +133,7 @@ describe('WriteOrderSummaryFieldComponent', () => {
   });
 
   describe('Undefined value', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     let fixture: ComponentFixture<ReadOrderSummaryFieldComponent>;
     let component: ReadOrderSummaryFieldComponent;
@@ -183,7 +183,7 @@ describe('WriteOrderSummaryFieldComponent', () => {
   });
 
   describe('Null value', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     let fixture: ComponentFixture<ReadOrderSummaryFieldComponent>;
     let component: ReadOrderSummaryFieldComponent;

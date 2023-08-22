@@ -25,7 +25,7 @@ describe('WriteMoneyGbpFieldComponent', () => {
     value: VALUE
   }) as CaseField;
 
-  const FORM_GROUP: formGroup = new UntypedFormGroup({});
+  const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;
@@ -91,7 +91,7 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
     value: VALUE
   }) as CaseField;
 
-  const FORM_GROUP: formGroup = new UntypedFormGroup({});
+  const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;

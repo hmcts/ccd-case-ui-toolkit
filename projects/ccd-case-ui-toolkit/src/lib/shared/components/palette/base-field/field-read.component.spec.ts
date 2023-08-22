@@ -151,7 +151,7 @@ describe('FieldReadComponent', () => {
 
     component.caseField = CASE_FIELD;
     component.caseFields = caseFields;
-    component.formGroup = UntypedFormGroup;
+    component.formGroup = formGroup;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
 
     de = fixture.debugElement;
@@ -177,7 +177,7 @@ describe('FieldReadComponent', () => {
     const fieldTest = fieldTestComponent.componentInstance;
     expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
-    expect(fieldTest.UntypedFormGroup).toBe(formGroup);
+    expect(fieldTest.formGroup).toBe(formGroup);
   });
 
   it('should pass context to field instance', () => {

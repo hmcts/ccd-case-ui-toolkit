@@ -450,7 +450,7 @@ describe('with defaults', () => {
         caseState: DEFAULT_CASE_STATE,
         init: false,
         page: 1,
-        formGroup null,
+        formGroup: null,
         metadataFields: METADATA_FIELDS
       },
       queryParams: { jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id }
@@ -477,7 +477,7 @@ describe('with defaults', () => {
           caseState: DEFAULT_CASE_STATE,
           init: true,
           page: 1,
-          formGroup null,
+          formGroup: null,
           metadataFields: METADATA_FIELDS
         },
         queryParams: { jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id }
@@ -518,7 +518,7 @@ describe('with defaults', () => {
       selected: component.selected,
       queryParams: { jurisdiction: JURISDICTION_2.id, 'case-type': DEFAULT_CASE_TYPE.id, 'case-state': DEFAULT_CASE_STATE.id }
     });
-    expect(component.selected.UntypedFormGroup).toEqual(null);
+    expect(component.selected.formGroup).toEqual(null);
   });
 
   it('should have metadata fields added when apply button is clicked', () => {
@@ -589,7 +589,7 @@ describe('with defaults', () => {
 
     expect(writeFieldInstance.caseField.id).toEqual(expectedInput.field.id);
     expect(writeFieldInstance.caseField.label).toEqual(expectedInput.field.label);
-    expect(writeFieldInstance.UntypedFormGroup).toBeTruthy();
+    expect(writeFieldInstance.formGroup).toBeTruthy();
   });
 
   it('should render a valid search input field component when path is defined', () => {
@@ -609,7 +609,7 @@ describe('with defaults', () => {
     const writeFieldInstance = writeField.componentInstance;
 
     expect(writeFieldInstance.caseField.id).toEqual(expectedFieldId);
-    expect(writeFieldInstance.UntypedFormGroup).toBeTruthy();
+    expect(writeFieldInstance.formGroup).toBeTruthy();
   });
 
   it('should submit filters when apply button is clicked', () => {
@@ -619,7 +619,7 @@ describe('with defaults', () => {
       name: control
     };
     const formGroup = new UntypedFormGroup(formControls);
-    component.formGroup = UntypedFormGroup;
+    component.formGroup = formGroup;
     component.selected.jurisdiction = JURISDICTION_2;
     component.selected.caseType = CASE_TYPES_2[2];
     component.selected.caseState = DEFAULT_CASE_STATE;

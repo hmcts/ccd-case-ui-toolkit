@@ -81,7 +81,7 @@ describe('ReadDateFieldComponent', () => {
   });
 
   describe('Persistable readonly date field', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
     const REGISTER_CONTROL = (control) => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;

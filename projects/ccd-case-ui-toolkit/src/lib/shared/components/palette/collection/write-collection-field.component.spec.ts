@@ -143,7 +143,7 @@ describe('WriteCollectionFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = UntypedFormGroup;
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -392,7 +392,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = UntypedFormGroup;
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -508,7 +508,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = UntypedFormGroup;
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -597,7 +597,7 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = UntypedFormGroup;
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -703,7 +703,7 @@ describe('WriteCollectionFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = UntypedFormGroup;
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -805,7 +805,7 @@ describe('WriteCollectionFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = UntypedFormGroup;
+    component.formGroup = formGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();

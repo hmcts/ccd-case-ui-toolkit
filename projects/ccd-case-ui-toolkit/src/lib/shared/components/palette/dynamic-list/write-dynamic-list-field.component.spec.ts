@@ -68,7 +68,7 @@ describe('WriteDynamicListFieldComponent', () => {
     fixture = TestBed.createComponent(WriteDynamicListFieldComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
     component.formGroup = FORM_GROUP;
 
     de = fixture.debugElement;

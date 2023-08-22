@@ -190,7 +190,7 @@ describe('ReadFixedListFieldComponent', () => {
   });
 
   describe('Persistable readonly fixed list field', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
       id: FIELD_ID,
       label: 'X',

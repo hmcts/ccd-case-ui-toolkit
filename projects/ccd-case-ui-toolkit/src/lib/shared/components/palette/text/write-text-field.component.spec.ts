@@ -23,7 +23,7 @@ const CASE_FIELD: CaseField = ({
   display_context: 'OPTIONAL'
 }) as CaseField;
 
-const FORM_GROUP: formGroup = new UntypedFormGroup({});
+const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
 describe('WriteTextFieldComponent', () => {
   const $INPUT = By.css('.form-group input');

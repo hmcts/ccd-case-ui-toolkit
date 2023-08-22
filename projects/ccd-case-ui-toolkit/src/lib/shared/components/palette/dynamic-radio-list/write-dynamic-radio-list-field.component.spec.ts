@@ -44,7 +44,7 @@ const CASE_FIELD: CaseField = ({
   list_items: FIELD_LIST_ITEMS
 }) as CaseField;
 
-const FORM_GROUP: formGroup = new UntypedFormGroup({});
+const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
 describe('WriteDynamicRadioListFieldComponent', () => {
 

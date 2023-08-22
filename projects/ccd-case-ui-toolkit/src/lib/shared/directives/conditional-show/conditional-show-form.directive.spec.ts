@@ -111,7 +111,7 @@ describe('ConditionalShowFormDirective', () => {
       carMake: new FormControl(comp.caseFields[1].value),
       carModel: new FormControl(comp.caseFields[2].value)
     });
-    bindCaseFields(comp.UntypedFormGroup, comp.caseFields);
+    bindCaseFields(comp.formGroup, comp.caseFields);
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(comp.caseFields[1].hidden).toBeFalsy();
@@ -131,7 +131,7 @@ describe('ConditionalShowFormDirective', () => {
       carMake: new FormControl(comp.caseFields[1].value),
       carModel: new FormControl(comp.caseFields[2].value)
     });
-    bindCaseFields(comp.UntypedFormGroup, comp.caseFields);
+    bindCaseFields(comp.formGroup, comp.caseFields);
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(comp.caseFields[1].hidden).toBeTruthy();
@@ -149,7 +149,7 @@ describe('ConditionalShowFormDirective', () => {
       carMake: new FormControl(comp.caseFields[1].value),
       carModel: new FormControl(comp.caseFields[2].value)
     });
-    bindCaseFields(comp.UntypedFormGroup, comp.caseFields);
+    bindCaseFields(comp.formGroup, comp.caseFields);
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(comp.caseFields[1].hidden).toBe(false);
@@ -166,7 +166,7 @@ describe('ConditionalShowFormDirective', () => {
       carMake: new FormControl(comp.caseFields[1].value),
       carModel: new FormControl(comp.caseFields[2].value)
     });
-    bindCaseFields(comp.UntypedFormGroup, comp.caseFields);
+    bindCaseFields(comp.formGroup, comp.caseFields);
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(comp.caseFields[1].hidden).toBe(false);

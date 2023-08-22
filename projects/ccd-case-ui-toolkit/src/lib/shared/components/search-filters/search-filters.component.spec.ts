@@ -230,7 +230,7 @@ describe('SearchFiltersComponent', () => {
       .whenStable()
       .then(() => {
         expect(searchHandler.applyFilters).toHaveBeenCalledWith({
-          selected: { formGroup TEST_FORM_GROUP, page: 1, metadataFields: undefined },
+          selected: { formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined },
           queryParams: {}
         });
       });
@@ -492,7 +492,7 @@ describe('SearchFiltersComponent', () => {
     const writeFieldInstance = writeField.componentInstance;
     expect(writeFieldInstance.caseField.id).toEqual(firstInput.field.id);
     expect(writeFieldInstance.caseField.label).toEqual(firstInput.field.label);
-    expect(writeFieldInstance.UntypedFormGroup).toBeTruthy();
+    expect(writeFieldInstance.formGroup).toBeTruthy();
   });
 
   it('should render a valid search input complex field component with a path defined', () => {
@@ -511,7 +511,7 @@ describe('SearchFiltersComponent', () => {
     const writeFieldInstance = writeField.componentInstance;
 
     expect(writeFieldInstance.caseField.id).toEqual(expectedFieldId);
-    expect(writeFieldInstance.UntypedFormGroup).toBeTruthy();
+    expect(writeFieldInstance.formGroup).toBeTruthy();
   });
 
   it('should submit filters when apply button is clicked', waitForAsync(() => {
@@ -534,7 +534,7 @@ describe('SearchFiltersComponent', () => {
       .whenStable()
       .then(() => {
         const button = de.query(By.css('button'));
-        component.formGroup = UntypedFormGroup;
+        component.formGroup = formGroup;
         button.nativeElement.click();
         const arg: any = searchHandler.applyFilters.calls.mostRecent().args[0].selected;
         expect(arg['jurisdiction']).toEqual(JURISDICTION_3);
@@ -626,7 +626,7 @@ describe('Clear localStorage', () => {
       .whenStable()
       .then(() => {
         const button = de.query(By.css('#reset'));
-        component.formGroup = UntypedFormGroup;
+        component.formGroup = formGroup;
         button.nativeElement.click();
         expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(4);
 

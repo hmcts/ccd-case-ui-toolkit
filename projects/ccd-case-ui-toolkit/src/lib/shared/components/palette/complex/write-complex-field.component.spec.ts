@@ -175,7 +175,7 @@ describe('WriteComplexFieldComponent', () => {
     const LINE_2 = 1;
     const POSTCODE = 2;
 
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -345,7 +345,7 @@ describe('WriteComplexFieldComponent', () => {
         }
       }
     }) as CaseField;
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     const LINE_1 = 0;
     const LINE_2 = 1;
@@ -477,7 +477,7 @@ describe('WriteComplexFieldComponent', () => {
       field_type: FIELD_TYPE_WITH_VALUES
     }) as CaseField;
 
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -511,7 +511,7 @@ describe('WriteComplexFieldComponent', () => {
 
       // Should have been called for the group overall, but not for either of the complex_fields.
       expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
-      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(formGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FORM_GROUP));
     });
 
     it('should add validators when case field is AddressLine1 and TextMax150', () => {
@@ -531,7 +531,7 @@ describe('WriteComplexFieldComponent', () => {
 
       // Should have been called for the group overall, but not for either of the complex_fields.
       // expect(formValidatorService.addValidators).toHaveBeenCalledTimes(2);
-      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(formGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FORM_GROUP));
       expect(formValidatorService.addValidators).toHaveBeenCalledWith(ADDRESS_LINE_1, jasmine.any(FormControl));
     });
 
@@ -560,7 +560,7 @@ describe('WriteComplexFieldComponent', () => {
 
       // Should have been called for the group overall, but not for either of the complex_fields.
       expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
-      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(formGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FORM_GROUP));
     });
 
     it('should not add validators when case field is NOT AddressLine1', () => {
@@ -588,7 +588,7 @@ describe('WriteComplexFieldComponent', () => {
 
       // Should have been called for the group overall, but not for either of the complex_fields.
       expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
-      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(formGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FORM_GROUP));
     });
   });
 
@@ -621,7 +621,7 @@ describe('WriteComplexFieldComponent', () => {
       retain_hidden_value: true
     }) as CaseField;
 
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -676,7 +676,7 @@ describe('WriteComplexFieldComponent', () => {
       retain_hidden_value: true
     }) as CaseField;
 
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -731,7 +731,7 @@ describe('WriteComplexFieldComponent', () => {
       display_context: 'COMPLEX'
     }) as CaseField;
 
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -787,7 +787,7 @@ describe('WriteComplexFieldComponent', () => {
       display_context: 'COMPLEX'
     }) as CaseField;
 
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);

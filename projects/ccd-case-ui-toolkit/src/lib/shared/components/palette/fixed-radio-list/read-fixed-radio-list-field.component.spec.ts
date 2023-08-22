@@ -93,7 +93,7 @@ describe('ReadFixedRadioListFieldComponent', () => {
   });
 
   describe('Persistable readonly fixed radio list field', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',

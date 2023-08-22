@@ -329,7 +329,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
 
   it('should navigate to correct page', () => {
     spyOn(caseEditDataService, 'setLinkedCasesJourneyAtFinalStep');
-    spyOn(component.UntypedFormGroup, 'updateValueAndValidity');
+    spyOn(component.formGroup, 'updateValueAndValidity');
     spyOn(component, 'submitLinkedCases');
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     component.proceedToNextPage();

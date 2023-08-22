@@ -16,7 +16,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
     id: 'PersonOrderSummary',
     type: 'Complex'
   };
-  const FORM_GROUP: formGroup = new UntypedFormGroup({});
+  const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
   const VALUE: OrderSummary = {
     PaymentReference: 'RC-1521-1095-0964-3143',
     Fees: [

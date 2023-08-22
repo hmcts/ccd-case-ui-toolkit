@@ -110,7 +110,7 @@ describe('deleteFieldValue() tests', () => {
       })
     });
 
-    fieldsPurger.deleteFieldValue(UntypedFormGroup, ADDRESS_FIELD_COMPLEX);
+    fieldsPurger.deleteFieldValue(formGroup, ADDRESS_FIELD_COMPLEX);
     expect(formGroup.get('Address.AddressLine1').value).toBeNull();
     // Postcode expected to be null - even though retain_hidden_value is true - because retain_hidden_value is false
     // on the parent Complex field
@@ -125,7 +125,7 @@ describe('deleteFieldValue() tests', () => {
       })
     });
 
-    fieldsPurger.deleteFieldValue(UntypedFormGroup, ADDRESS_FIELD_COMPLEX_RETAIN_HIDDEN);
+    fieldsPurger.deleteFieldValue(formGroup, ADDRESS_FIELD_COMPLEX_RETAIN_HIDDEN);
     expect(formGroup.get('Address.AddressLine1').value).toBeNull();
     // Postcode expected not to be null because retain_hidden_value is also true on the parent Complex field
     expect(formGroup.get('Address.Postcode').value).not.toBeNull();
@@ -149,7 +149,7 @@ describe('deleteFieldValue() tests', () => {
       ])
     });
 
-    fieldsPurger.deleteFieldValue(UntypedFormGroup, ADDRESS_FIELD_COLLECTION);
+    fieldsPurger.deleteFieldValue(formGroup, ADDRESS_FIELD_COLLECTION);
     expect((formGroup.get('AddressCollection') as FormArray).at(0).get('value.AddressLine1').value).toBeNull();
     expect((formGroup.get('AddressCollection') as FormArray).at(0).get('value.Postcode').value).toBeNull();
     expect((formGroup.get('AddressCollection') as FormArray).at(1).get('value.AddressLine1').value).toBeNull();
@@ -176,7 +176,7 @@ describe('deleteFieldValue() tests', () => {
       ])
     });
 
-    fieldsPurger.deleteFieldValue(UntypedFormGroup, DUMMY_DOCUMENT_FIELD_COLLECTION);
+    fieldsPurger.deleteFieldValue(formGroup, DUMMY_DOCUMENT_FIELD_COLLECTION);
     expect((formGroup.get('DocumentCollection') as FormArray).at(0).get('value.document_binary_url').value).toBeNull();
     expect((formGroup.get('DocumentCollection') as FormArray).at(0).get('value.document_filename').value).toBeNull();
     expect((formGroup.get('DocumentCollection') as FormArray).at(0).get('value.document_url').value).toBeNull();
@@ -193,7 +193,7 @@ describe('deleteFieldValue() tests', () => {
       ])
     });
 
-    fieldsPurger.deleteFieldValue(UntypedFormGroup, COUNTRY_MULTI_SELECT_FIELD);
+    fieldsPurger.deleteFieldValue(formGroup, COUNTRY_MULTI_SELECT_FIELD);
     expect((formGroup.get('CountrySelection') as FormArray).at(0).value).toBeNull();
     expect((formGroup.get('CountrySelection') as FormArray).at(1).value).toBeNull();
   });
@@ -207,7 +207,7 @@ describe('deleteFieldValue() tests', () => {
       })
     });
 
-    fieldsPurger.deleteFieldValue(UntypedFormGroup, DOCUMENT_FIELD);
+    fieldsPurger.deleteFieldValue(formGroup, DOCUMENT_FIELD);
     expect(formGroup.get('Document.document_binary_url').value).toBeNull();
     expect(formGroup.get('Document.document_filename').value).toBeNull();
     expect(formGroup.get('Document.document_url').value).toBeNull();
@@ -218,7 +218,7 @@ describe('deleteFieldValue() tests', () => {
       Colour: new FormControl('Red')
     });
 
-    fieldsPurger.deleteFieldValue(UntypedFormGroup, TEXT_FIELD);
+    fieldsPurger.deleteFieldValue(formGroup, TEXT_FIELD);
     expect(formGroup.get('Colour').value).toBeNull();
   });
 
@@ -228,11 +228,12 @@ describe('deleteFieldValue() tests', () => {
         value: {
           list_items: COURT_LIST,
           value: { code: '305', label: 'Reading County Court' }
-        }
+        },
+        disabled: false,
       })
     });
 
-    fieldsPurger.deleteFieldValue(UntypedFormGroup, COURT_SELECTION_FIELD);
+    fieldsPurger.deleteFieldValue(formGroup, COURT_SELECTION_FIELD);
     expect(formGroup.get('CourtSelection').value).toBeNull();
   });
 

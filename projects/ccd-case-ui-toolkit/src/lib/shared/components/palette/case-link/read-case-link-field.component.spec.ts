@@ -22,7 +22,7 @@ describe('ReadCaseLinkFieldComponent', () => {
   };
 
   describe('Non-persistable readonly case-link field', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = {
       id: 'aCaseLink',
       label: 'A case link',
@@ -84,7 +84,7 @@ describe('ReadCaseLinkFieldComponent', () => {
   });
 
   describe('Persistable readonly case-link field', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = {
       id: FIELD_ID,
       label: 'A case link',

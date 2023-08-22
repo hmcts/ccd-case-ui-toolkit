@@ -42,7 +42,7 @@ describe('ReadComplexFieldComponent', () => {
       const $COMPLEX_AS_RAW = By.css('ccd-read-complex-field-raw');
 
       const caseField: CaseField = new CaseField();
-      const FORM_GROUP: formGroup = new UntypedFormGroup({});
+      const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
       let fixture: ComponentFixture<ReadComplexFieldComponent>;
       let component: ReadComplexFieldComponent;
@@ -141,7 +141,7 @@ describe('ReadComplexFieldComponent', () => {
       let component: ReadComplexFieldComponent;
       let de: DebugElement;
       const caseFieldDsp: CaseField = new CaseField();
-      const FORM_GROUP: formGroup = new UntypedFormGroup({});
+      const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
       const expectCollectionTable = () => {
         expect(de.queryAll($COMPLEX_AS_RAW).length).toEqual(0);
@@ -195,7 +195,7 @@ describe('ReadComplexFieldComponent', () => {
   });
 
   describe('Persistable readonly complex field', () => {
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
     const FIELD_TYPE_WITH_VALUES: FieldType = {
       id: 'Complex',
       type: 'Complex',

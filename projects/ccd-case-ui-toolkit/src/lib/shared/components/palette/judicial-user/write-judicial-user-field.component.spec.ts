@@ -180,7 +180,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     loadJudicialUserSpy = spyOn(component, 'loadJudicialUser').and.callThrough();
     filterJudicialUsersSpy = spyOn(component, 'filterJudicialUsers').and.callThrough();
     spyOn(FieldsUtils, 'addCaseFieldAndComponentReferences').and.callThrough();
-    spyOn(component.UntypedFormGroup, 'setControl').and.callThrough();
+    spyOn(component.formGroup, 'setControl').and.callThrough();
     spyOn(component, 'setupValidation').and.callThrough();
     spyOn(component, 'setJurisdictionAndCaseType').and.callThrough();
     nativeElement = fixture.debugElement.nativeElement;

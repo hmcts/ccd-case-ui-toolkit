@@ -68,7 +68,7 @@ describe('WriteFixedListFieldComponent', () => {
     fixture = TestBed.createComponent(WriteFixedListFieldComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
-    const FORM_GROUP: formGroup = new UntypedFormGroup({});
+    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
     de = fixture.debugElement;
     fixture.detectChanges();

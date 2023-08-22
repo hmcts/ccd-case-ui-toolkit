@@ -32,7 +32,7 @@ const CASE_FIELD: CaseField = ({
   value: VALUE
 }) as CaseField;
 
-const FORM_GROUP: formGroup = new UntypedFormGroup({});
+const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
 
 describe('WriteDateContainerFieldComponent', () => {
 
