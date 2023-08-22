@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -50,8 +50,8 @@ describe('WriteLinkedCasesFieldComponent', () => {
   };
   const caseField2 = new CaseField();
   const cancelled = createSpyObj('cancelled', ['emit']);
-  const FORM_GROUP = new FormGroup({
-    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
+  const FORM_GROUP = new UntypedFormGroup({
+    data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') })
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);
@@ -61,7 +61,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     form: FORM_GROUP,
     wizard: WIZARD,
     data: '',
-    eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+    eventTrigger: { case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true },
     hasPrevious: () => true,
     getPage: () => firstPage,
     first: () => true,
@@ -71,10 +71,10 @@ describe('WriteLinkedCasesFieldComponent', () => {
     cancelled,
     validate: (caseEventData: CaseEventData) => of(caseEventData),
     saveDraft: (_: CaseEventData) => of(someObservable),
-    caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
+    caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] },
   };
   route = {
-    params: of({id: 123}),
+    params: of({ id: 123 }),
     snapshot: {
       queryParamMap: createSpyObj('queryParamMap', ['get'])
     }
@@ -180,55 +180,56 @@ describe('WriteLinkedCasesFieldComponent', () => {
     isLinkedCasesEventTrigger: true,
     linkedCases,
     caseFieldValue: linkedCases,
-    getAllLinkedCaseInformation() {},
-    getCaseName() {}
+    getAllLinkedCaseInformation() { },
+    getCaseName() { }
   };
 
   const linkCaseReasons: LovRefDataByServiceModel = {
     list_of_values: [
-    {
-      key: 'progressed',
-      value_en: 'Progressed as part of this lead case',
-      value_cy: '',
-      hint_text_en: 'Progressed as part of this lead case',
-      hint_text_cy: '',
-      lov_order: 1,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-    {
-      key: 'bail',
-      value_en: 'Bail',
-      value_cy: '',
-      hint_text_en: 'Bail',
-      hint_text_cy: '',
-      lov_order: 2,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-    {
-      key: 'other',
-      value_en: 'Other',
-      value_cy: '',
-      hint_text_en: 'Other',
-      hint_text_cy: '',
-      lov_order: 3,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-  ]};
+      {
+        key: 'progressed',
+        value_en: 'Progressed as part of this lead case',
+        value_cy: '',
+        hint_text_en: 'Progressed as part of this lead case',
+        hint_text_cy: '',
+        lov_order: 1,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+      {
+        key: 'bail',
+        value_en: 'Bail',
+        value_cy: '',
+        hint_text_en: 'Bail',
+        hint_text_cy: '',
+        lov_order: 2,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+      {
+        key: 'other',
+        value_en: 'Other',
+        value_cy: '',
+        hint_text_en: 'Other',
+        hint_text_cy: '',
+        lov_order: 3,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+    ]
+  };
 
   beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
@@ -254,7 +255,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
         { provide: AbstractAppConfig, useValue: appConfig }
       ]
     })
-    .compileComponents();
+      .compileComponents();
     commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
   }));
 
@@ -318,7 +319,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     const linkedCasesState: LinkedCasesState = {
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
-      errorMessages: [{title: 'Error title', description: 'Error descriptiom'}],
+      errorMessages: [{ title: 'Error title', description: 'Error descriptiom' }],
       navigateToNextPage: false
     };
     component.onLinkedCasesStateEmitted(linkedCasesState);
@@ -328,7 +329,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
 
   it('should navigate to correct page', () => {
     spyOn(caseEditDataService, 'setLinkedCasesJourneyAtFinalStep');
-    spyOn(component.formGroup, 'updateValueAndValidity');
+    spyOn(component.UntypedFormGroup, 'updateValueAndValidity');
     spyOn(component, 'submitLinkedCases');
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     component.proceedToNextPage();

@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -76,7 +76,7 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: ActivatedRoute, useValue: {snapshot: {params: {cid: '123'}}}},
+            { provide: ActivatedRoute, useValue: { snapshot: { params: { cid: '123' } } } },
             { provide: CasesService, useValue: mockCasesService }
           ]
         })
@@ -128,7 +128,7 @@ describe('ReadDocumentFieldComponent', () => {
   });
 
   describe('Persistable readonly document field', () => {
-    const FORM_GROUP: FormGroup = new FormGroup({});
+    const FORM_GROUP: formGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',
@@ -171,7 +171,7 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: ActivatedRoute, useValue: {snapshot: {params: {cid: '123'}}}},
+            { provide: ActivatedRoute, useValue: { snapshot: { params: { cid: '123' } } } },
             { provide: CasesService, useValue: mockCasesService }
           ]
         })

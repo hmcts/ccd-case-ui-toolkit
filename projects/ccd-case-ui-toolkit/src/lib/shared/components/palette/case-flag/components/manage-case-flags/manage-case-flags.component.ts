@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
@@ -14,7 +14,7 @@ export class ManageCaseFlagsComponent implements OnInit {
 
   private static readonly CASE_LEVEL_CASE_FLAGS_FIELD_ID = 'caseFlags';
 
-  @Input() public formGroup: FormGroup;
+  @Input() public formGroup: UntypedFormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
   @Input() public caseTitle: string;
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
@@ -162,7 +162,7 @@ export class ManageCaseFlagsComponent implements OnInit {
     // Set error flag on component to remove the "Next" button (user cannot proceed with flag creation)
     this.noFlagsError = true;
     this.errorMessages = [];
-    this.errorMessages.push({title: '', description: SelectFlagErrorMessage.NO_FLAGS, fieldId: 'conditional-radios-list'});
+    this.errorMessages.push({ title: '', description: SelectFlagErrorMessage.NO_FLAGS, fieldId: 'conditional-radios-list' });
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,

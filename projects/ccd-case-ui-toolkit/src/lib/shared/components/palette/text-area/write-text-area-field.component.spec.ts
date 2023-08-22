@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -23,15 +23,17 @@ const CASE_FIELD: CaseField = ({
   value: VALUE
 }) as CaseField;
 
-const FORM_GROUP: FormGroup = new FormGroup({});
+const FORM_GROUP: formGroup = new UntypedFormGroup({});
 
 describe('WriteTextAreaFieldComponent', () => {
   const $INPUT = By.css('.form-group textarea');
 
   // Textarea input is mocked so that one-way bound inputs can be tested
-  const textareaComponentMock: any = MockComponent({ selector: 'textarea', inputs: [
-    'formControl'
-  ]});
+  const textareaComponentMock: any = MockComponent({
+    selector: 'textarea', inputs: [
+      'formControl'
+    ]
+  });
 
   let fixture: ComponentFixture<WriteTextAreaFieldComponent>;
   let component: WriteTextAreaFieldComponent;
@@ -64,7 +66,7 @@ describe('WriteTextAreaFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the formGroup', () => {
+  it('should add a formControl linked to the field ID to the UntypedFormGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
   });
 

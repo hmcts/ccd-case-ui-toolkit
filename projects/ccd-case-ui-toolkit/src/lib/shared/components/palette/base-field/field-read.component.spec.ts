@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
@@ -44,7 +44,7 @@ const CLASS = 'text-cls';
     <span class="${CLASS}"></span>
   `
 })
-class FieldTestComponent {}
+class FieldTestComponent { }
 
 @Component({
   selector: 'ccd-field-read-label',
@@ -60,7 +60,7 @@ class FieldReadLabelComponent {
   public withLabel: boolean;
 
   @Input()
-  public topLevelFormGroup: FormGroup;
+  public topLevelFormGroup: UntypedFormGroup;
 
   @Input()
   public markdownUseHrefAsRouterLink?: boolean;
@@ -73,11 +73,11 @@ describe('FieldReadComponent', () => {
 
   let paletteService: any;
 
-  const formGroup: FormGroup = new FormGroup({});
+  const formGroup: UntypedFormGroup = new UntypedFormGroup({});
   const caseFields: CaseField[] = [CASE_FIELD];
   let caseEditComponentStub: any;
-  const FORM_GROUP = new FormGroup({
-    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
+  const FORM_GROUP = new UntypedFormGroup({
+    data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') })
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);
@@ -108,7 +108,7 @@ describe('FieldReadComponent', () => {
       form: FORM_GROUP,
       wizard: WIZARD,
       data: '',
-      eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+      eventTrigger: { case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true },
       hasPrevious: () => true,
       getPage: () => firstPage,
       first: () => true,
@@ -118,10 +118,10 @@ describe('FieldReadComponent', () => {
       cancelled,
       validate: (caseEventData: CaseEventData) => of(caseEventData),
       saveDraft: (_: CaseEventData) => of(someObservable),
-      caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
+      caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] },
     };
     route = {
-      params: of({id: 123}),
+      params: of({ id: 123 }),
       snapshot: {
         queryParamMap: createSpyObj('queryParamMap', ['get'])
       }
@@ -151,7 +151,7 @@ describe('FieldReadComponent', () => {
 
     component.caseField = CASE_FIELD;
     component.caseFields = caseFields;
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
 
     de = fixture.debugElement;
@@ -177,7 +177,7 @@ describe('FieldReadComponent', () => {
     const fieldTest = fieldTestComponent.componentInstance;
     expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
-    expect(fieldTest.formGroup).toBe(formGroup);
+    expect(fieldTest.UntypedFormGroup).toBe(formGroup);
   });
 
   it('should pass context to field instance', () => {

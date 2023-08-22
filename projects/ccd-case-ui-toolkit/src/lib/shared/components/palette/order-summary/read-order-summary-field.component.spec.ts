@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -16,7 +16,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
     id: 'PersonOrderSummary',
     type: 'Complex'
   };
-  const FORM_GROUP: FormGroup = new FormGroup( {} );
+  const FORM_GROUP: formGroup = new UntypedFormGroup({});
   const VALUE: OrderSummary = {
     PaymentReference: 'RC-1521-1095-0964-3143',
     Fees: [
@@ -103,29 +103,29 @@ describe('ReadOrderSummaryFieldComponent', () => {
       expect(headRow.children.length).toBe(4);
       expect(text(headRow.children[1])).toBe('Code');
       expect(text(headRow.children[2])).toBe('Description');
-        expect(text(headRow.children[3])).toBe('Amount');
+      expect(text(headRow.children[3])).toBe('Amount');
 
-        const body = de.query($BODY);
-        expect(body.children.length).toEqual(VALUE.Fees.length + 1);
+      const body = de.query($BODY);
+      expect(body.children.length).toEqual(VALUE.Fees.length + 1);
 
-        for (let i = 1; i <= VALUE.Fees.length; i++) {
+      for (let i = 1; i <= VALUE.Fees.length; i++) {
 
-          const feeCode = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(1)`)));
-          const feeDescription = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(2)`)));
-          const feeAmount = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(3)`)));
+        const feeCode = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(1)`)));
+        const feeDescription = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(2)`)));
+        const feeAmount = text(de.query(By.css(`table>tbody tr:nth-child(${i}) td:nth-child(3)`)));
 
-          expect(feeCode).toBe(VALUE.Fees[i - 1].value.FeeCode);
-          expect(feeDescription).toBe(VALUE.Fees[i - 1].value.FeeDescription);
-          expect(feeAmount).toBe(EXPECTED_FEE_AMOUNTS[i - 1]);
-        }
+        expect(feeCode).toBe(VALUE.Fees[i - 1].value.FeeCode);
+        expect(feeDescription).toBe(VALUE.Fees[i - 1].value.FeeDescription);
+        expect(feeAmount).toBe(EXPECTED_FEE_AMOUNTS[i - 1]);
+      }
 
-        const paymentTotalLabel = text(de.query(By.css('table>tbody tr:last-child td:nth-child(2)')));
-        expect(paymentTotalLabel).toBe('Total');
+      const paymentTotalLabel = text(de.query(By.css('table>tbody tr:last-child td:nth-child(2)')));
+      expect(paymentTotalLabel).toBe('Total');
 
-        const paymentTotalValue = text(de.query(By.css('table>tbody tr:last-child td:nth-child(3)')));
-        expect(paymentTotalValue).toBe(EXPECTED_PAYMENT_TOTAL);
+      const paymentTotalValue = text(de.query(By.css('table>tbody tr:last-child td:nth-child(3)')));
+      expect(paymentTotalValue).toBe(EXPECTED_PAYMENT_TOTAL);
 
-      });
+    });
   });
 
   describe('Undefined value', () => {

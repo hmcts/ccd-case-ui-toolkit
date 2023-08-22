@@ -3,7 +3,7 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  FormGroup
+  UntypedFormGroup
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -25,7 +25,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   public title: string;
   public hint: string;
   public caseRefLabel: string;
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
   public $roleAssignmentResponseSubscription: Subscription;
@@ -39,7 +39,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
     private readonly casesService: CasesService,
     private readonly route: ActivatedRoute,
     private readonly caseNotifier: CaseNotifier
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
     this.title = SpecificAccessRequestPageText.TITLE;
@@ -97,7 +97,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
           () => {
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
             // Angular 7.2
-            this.router.navigate(['success'], {relativeTo: this.route});
+            this.router.navigate(['success'], { relativeTo: this.route });
           },
           () => {
             // Navigate to error page

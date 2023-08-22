@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
 
 import { WizardPageField } from '../../components/case-editor/domain/wizard-page-field.model';
 import { WizardPage } from '../../components/case-editor/domain/wizard-page.model';
@@ -16,12 +16,12 @@ export class FieldsPurger {
 
   constructor(private readonly fieldsUtils: FieldsUtils) { }
 
-  public clearHiddenFields(form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger, currentPageId: string): void {
+  public clearHiddenFields(form: UntypedFormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger, currentPageId: string): void {
     this.clearHiddenFieldForFieldShowCondition(currentPageId, form, wizard, eventTrigger);
     this.clearHiddenFieldForPageShowCondition(form, wizard, eventTrigger);
   }
 
-  private clearHiddenFieldForPageShowCondition(form: FormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger): void {
+  private clearHiddenFieldForPageShowCondition(form: UntypedFormGroup, wizard: Wizard, eventTrigger: CaseEventTrigger): void {
     const currentEventState = this.fieldsUtils.getCurrentEventState(eventTrigger, form);
     wizard.pages.forEach(wp => {
       if (this.hasShowConditionPage(wp, currentEventState)) {
@@ -34,9 +34,9 @@ export class FieldsPurger {
   }
 
   private clearHiddenFieldForFieldShowCondition(currentPageId: string,
-                                                form: FormGroup,
-                                                wizard: Wizard,
-                                                eventTrigger: CaseEventTrigger): void {
+    form: UntypedFormGroup,
+    wizard: Wizard,
+    eventTrigger: CaseEventTrigger): void {
     const formFields = form.getRawValue();
     const currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
     currentPage.wizard_page_fields.forEach(wpf => {
@@ -57,9 +57,9 @@ export class FieldsPurger {
     if (field && field.field_type && field.field_type.id === 'OrganisationPolicy') {
       // <bubble_wrap>
       // Doing some null checking to stop it from falling over.
-      const data: FormGroup = form.get('data') as FormGroup;
+      const data: UntypedFormGroup = form.get('data') as UntypedFormGroup;
       if (data) {
-        const fieldGroup: FormGroup = data.controls[field.id] as FormGroup;
+        const fieldGroup: UntypedFormGroup = data.controls[field.id] as UntypedFormGroup;
         if (fieldGroup) {
           const caseRoleFormControl: FormControl = fieldGroup.get('OrgPolicyCaseAssignedRole') as FormControl;
           if (caseRoleFormControl) {
@@ -93,7 +93,7 @@ export class FieldsPurger {
     return showCondition.split(/!=|=|CONTAINS/)[0];
   }
 
-  private resetField(form: FormGroup, field: CaseField): void {
+  private resetField(form: UntypedFormGroup, field: CaseField): void {
     /**
      * If the hidden field's value is to be retained, do nothing (except if it is a Complex type or collection of
      * Complex types). This is a change to the previous behaviour (which used to clear the field value but remove it
@@ -112,9 +112,9 @@ export class FieldsPurger {
         for (const complexSubField of field.field_type.complex_fields) {
           if ((complexSubField.field_type.type === 'Complex' && complexSubField.field_type.complex_fields.length > 0) ||
             !complexSubField.retain_hidden_value) {
-            // Check for the existence of the parent FormGroup corresponding to the Complex field; if it exists, call
+            // Check for the existence of the parent UntypedFormGroup corresponding to the Complex field; if it exists, call
             // deleteFieldValue() to delete the sub-field
-            const parentFormGroup = (form.get('data') as FormGroup).controls[field.id] as FormGroup;
+            const parentFormGroup = (form.get('data') as UntypedFormGroup).controls[field.id] as UntypedFormGroup;
             if (parentFormGroup) {
               this.deleteFieldValue(parentFormGroup, complexSubField);
             }
@@ -127,7 +127,7 @@ export class FieldsPurger {
         // retain_hidden_value* (in order to inspect the sub-fields of a Complex type within another Complex type)
 
         // Get the array of field controls corresponding to the Complex field values
-        const fieldControls = (form.get('data') as FormGroup).controls[field.id] as FormArray;
+        const fieldControls = (form.get('data') as UntypedFormGroup).controls[field.id] as FormArray;
 
         if (fieldControls) {
           // Get the array of Complex field values
@@ -147,11 +147,11 @@ export class FieldsPurger {
               }
 
               // Recursively delete the sub-field value if retain_hidden_value is false, OR if the sub-field type is
-              // Complex and regardless of retain_hidden_value, passing in the parent FormGroup
+              // Complex and regardless of retain_hidden_value, passing in the parent UntypedFormGroup
               if (subCaseField &&
                 ((subCaseField.field_type.type === 'Complex' && subCaseField.field_type.complex_fields.length > 0) ||
                   !subCaseField.retain_hidden_value)) {
-                const parentFormGroup: FormGroup = fieldControls.at(index).get('value') as FormGroup;
+                const parentFormGroup: UntypedFormGroup = fieldControls.at(index).get('value') as UntypedFormGroup;
                 this.deleteFieldValue(parentFormGroup, subCaseField);
               }
             }));
@@ -160,11 +160,11 @@ export class FieldsPurger {
       }
     } else {
       // Delete the field value
-      this.deleteFieldValue(form.get('data') as FormGroup, field);
+      this.deleteFieldValue(form.get('data') as UntypedFormGroup, field);
     }
   }
 
-  private resetPage(form: FormGroup, wizardPage: WizardPage): void {
+  private resetPage(form: UntypedFormGroup, wizardPage: WizardPage): void {
     wizardPage.wizard_page_fields.forEach(wpf => {
       const caseField = this.findCaseFieldByWizardPageFieldId(wizardPage, wpf);
       this.resetField(form, caseField);
@@ -190,12 +190,12 @@ export class FieldsPurger {
    * types, this recursive method is called until simple or "base" field types are reached. For `Document` field
    * types, its _sub-field_ `FormControl` values are set to null.
    *
-   * @param formGroup The `FormGroup` instance containing the `FormControl` for the specified field
+   * @param UntypedFormGroup The `UntypedFormGroup` instance containing the `FormControl` for the specified field
    * @param field The `CaseField` whose value is to be deleted in the backend
    * @param parentField Reference to the parent `CaseField`. Used for checking specifically where a Complex field and
    * its sub-fields have `retain_hidden_value` set to `true`, but the field's parent has it set to `false` or undefined
    */
-  public deleteFieldValue(formGroup: FormGroup, field: CaseField, parentField?: CaseField): void {
+  public deleteFieldValue(formGroup: UntypedFormGroup, field: CaseField, parentField?: CaseField): void {
     const fieldType: FieldTypeEnum = field.field_type.type;
     const fieldControl = formGroup.get(field.id);
 
@@ -220,9 +220,9 @@ export class FieldsPurger {
                   (field.retain_hidden_value
                     ? !complexSubField.retain_hidden_value || (parentField && !parentField.retain_hidden_value)
                     : true))) {
-                // The fieldControl is cast to a FormGroup because a Complex field type uses this as its underlying
+                // The fieldControl is cast to a UntypedFormGroup because a Complex field type uses this as its underlying
                 // implementation
-                this.deleteFieldValue(fieldControl as FormGroup, complexSubField, field);
+                this.deleteFieldValue(fieldControl as UntypedFormGroup, complexSubField, field);
               }
             }
           }
@@ -249,8 +249,8 @@ export class FieldsPurger {
                   }
                 }
 
-                // Recursively delete the sub-field value, passing in the parent FormGroup
-                const parentFormGroup: FormGroup = (fieldControl as FormArray).at(index).get('value') as FormGroup;
+                // Recursively delete the sub-field value, passing in the parent UntypedFormGroup
+                const parentFormGroup: UntypedFormGroup = (fieldControl as FormArray).at(index).get('value') as UntypedFormGroup;
                 this.deleteFieldValue(parentFormGroup, subCaseField);
               }));
             }
@@ -264,7 +264,7 @@ export class FieldsPurger {
             // the single Document case)
             if (documentFieldValues) {
               documentFieldValues.forEach((fieldValue, index) => Object.keys(fieldValue.value).forEach(subFieldId => {
-                // Get the FormGroup containing the FormControl for the sub-field and set its value to null
+                // Get the UntypedFormGroup containing the FormControl for the sub-field and set its value to null
                 (fieldControl as FormArray).at(index).get(`value.${subFieldId}`).setValue(null);
               }));
             }
@@ -283,8 +283,8 @@ export class FieldsPurger {
           }
           break;
         case 'Document':
-          // NOTE: The field control (a FormGroup in this case) cannot just be set to null because Angular checks that
-          // all existing values of a FormGroup are present; setting the control's value to null causes a runtime error
+          // NOTE: The field control (a UntypedFormGroup in this case) cannot just be set to null because Angular checks that
+          // all existing values of a UntypedFormGroup are present; setting the control's value to null causes a runtime error
           const documentFieldValue = fieldControl.value;
           for (const key in documentFieldValue) {
             if (fieldControl.get(key)) {

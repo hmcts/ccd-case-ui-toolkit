@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { text } from '../../../test/helpers';
@@ -72,7 +72,7 @@ describe('ReadEmailFieldComponent', () => {
   });
 
   describe('Persistable readonly email field', () => {
-    const FORM_GROUP: FormGroup = new FormGroup({});
+    const FORM_GROUP: formGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',

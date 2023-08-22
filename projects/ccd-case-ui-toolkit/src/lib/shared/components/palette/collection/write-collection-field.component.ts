@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
@@ -20,7 +20,7 @@ type CollectionItem = {
   item: any;
   prefix: string;
   index: number;
-  container: FormGroup;
+  container: UntypedFormGroup;
 };
 
 @Component({
@@ -33,7 +33,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   public caseFields: CaseField[] = [];
 
   @Input()
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
 
   public formArray: FormArray;
 
@@ -82,18 +82,18 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
      * this is what appears to be happening:
      *   1. this.formArray contains no controls at all.
      *      this.formArray.value = [];
-     *   2. this.formArray contains a FormGroup, which contains a single
+     *   2. this.formArray contains a UntypedFormGroup, which contains a single
      *      FormControl with the id 'code'.
      *      this.formArray.value = [{ code: null }]
      *   3. this.formArray contains what is being set up below.
      *      this.formArray.value = [{ code: null, id: null, value: { code: null } }]
      *   4, 5, 6, etc - the same as 3.
      */
-    let group: FormGroup;
+    let group: UntypedFormGroup;
     if (this.formArray && (index < this.formArray.length)) {
-      group = this.formArray.at(index) as FormGroup;
+      group = this.formArray.at(index) as UntypedFormGroup;
     } else {
-      group = new FormGroup({});
+      group = new UntypedFormGroup({});
     }
 
     let value;
@@ -105,16 +105,16 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         group.addControl('value', value);
       }
     } else {
-      value = group.get('value') as FormGroup;
+      value = group.get('value') as UntypedFormGroup;
       if (!value) {
-        value = new FormGroup({});
+        value = new UntypedFormGroup({});
         for (const key of Object.keys(group.controls)) {
           value.addControl(key, group.get(key));
           // DON'T remove the control for this key from the outer group or it
           // goes awry. So DON'T uncomment the below line!
           // group.removeControl(key);
         }
-        // Now add the value FormGroup to the outer group.
+        // Now add the value UntypedFormGroup to the outer group.
         group.addControl('value', value);
       }
     }
@@ -171,10 +171,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.formArray.setErrors(null);
     let item = { value: null };
 
-    if ( this.isCollectionDynamic() ) {
-      item  = {...this.caseField.value[this.caseField.value.length - 1]};
+    if (this.isCollectionDynamic()) {
+      item = { ...this.caseField.value[this.caseField.value.length - 1] };
       const key: number = Number(item['id'][item['id'].length - 1]) + 1;
-      (item as any).id = item['id'].replace(/.$/, key.toString() );
+      (item as any).id = item['id'].replace(/.$/, key.toString());
     }
     this.caseField.value.push(item);
     const index = this.caseField.value.length - 1;
@@ -228,12 +228,12 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     });
   }
 
-  private getContainer(index: number): FormGroup {
+  private getContainer(index: number): UntypedFormGroup {
     const value = this.formArray.at(index).get('value');
-    if (value instanceof FormGroup) {
+    if (value instanceof UntypedFormGroup) {
       return value;
     } else {
-      return this.formArray.at(index) as FormGroup;
+      return this.formArray.at(index) as UntypedFormGroup;
     }
   }
 
@@ -359,9 +359,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
    */
   private getControlIdAt(index: number): string {
 
-    // this.formArray contains [ FormGroup( id: FormControl, value: FormGroup ), ... ].
+    // this.formArray contains [ UntypedFormGroup( id: FormControl, value: UntypedFormGroup ), ... ].
     // Here, we need to get the value of the id FormControl.
-    const group: FormGroup = this.formArray.at(index) as FormGroup;
+    const group: UntypedFormGroup = this.formArray.at(index) as UntypedFormGroup;
     const control: FormControl = group.get('id') as FormControl;
     return control ? control.value : undefined;
   }

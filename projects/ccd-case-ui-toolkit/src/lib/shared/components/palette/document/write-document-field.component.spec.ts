@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
@@ -90,7 +90,7 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
 };
 
 describe('WriteDocumentFieldComponent', () => {
-  const FORM_GROUP = new FormGroup({});
+  const FORM_GROUP = new UntypedFormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
   const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
@@ -144,12 +144,12 @@ describe('WriteDocumentFieldComponent', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
-          {provide: MatDialog, useValue: mockDialog},
-          {provide: MatDialogRef, useValue: mockMatDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
-          {provide: AbstractAppConfig, useValue: appConfig },
+          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+          { provide: MatDialog, useValue: mockDialog },
+          { provide: MatDialogRef, useValue: mockMatDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: FileUploadStateService, useValue: mockFileUploadStateService },
+          { provide: AbstractAppConfig, useValue: appConfig },
           { provide: CasesService, useValue: casesService },
           DocumentDialogComponent,
           CaseNotifier
@@ -496,13 +496,13 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
-          {provide: AbstractAppConfig, useValue: appConfig},
-          {provide: CasesService, useValue: casesService},
+          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: FileUploadStateService, useValue: mockFileUploadStateService },
+          { provide: AbstractAppConfig, useValue: appConfig },
+          { provide: CasesService, useValue: casesService },
           DocumentDialogComponent,
           CaseNotifier
         ]

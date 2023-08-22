@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -18,7 +18,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   public hint: string;
   public caseRefLabel: string;
   public readonly accessReasons: DisplayedAccessReason[];
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
   public $roleAssignmentResponseSubscription: Subscription;
@@ -35,13 +35,13 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
     private readonly route: ActivatedRoute,
     private readonly caseNotifier: CaseNotifier
   ) {
-      this.accessReasons = [
-        {reason: AccessReason.LINKED_TO_CURRENT_CASE, checked: false},
-        {reason: AccessReason.CONSOLIDATE_CASE, checked: false},
-        {reason: AccessReason.ORDER_FOR_TRANSFER, checked: false},
-        {reason: AccessReason.OTHER, checked: false}
-      ];
-    }
+    this.accessReasons = [
+      { reason: AccessReason.LINKED_TO_CURRENT_CASE, checked: false },
+      { reason: AccessReason.CONSOLIDATE_CASE, checked: false },
+      { reason: AccessReason.ORDER_FOR_TRANSFER, checked: false },
+      { reason: AccessReason.OTHER, checked: false }
+    ];
+  }
 
   public ngOnInit(): void {
     this.title = ChallengedAccessRequestPageText.TITLE;
@@ -52,9 +52,9 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
     });
     this.formGroup.addControl(this.caseReferenceControlName,
       new FormControl('', {
-        validators: [(control: AbstractControl): {[key: string]: boolean} | null => {
+        validators: [(control: AbstractControl): { [key: string]: boolean } | null => {
           if (this.formGroup.get(this.radioSelectedControlName).value === AccessReason.LINKED_TO_CURRENT_CASE && this.inputEmpty(control)) {
-            return {invalid: true};
+            return { invalid: true };
           }
           return null;
         }],
@@ -63,9 +63,9 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
     );
     this.formGroup.addControl(this.otherReasonControlName,
       new FormControl('', {
-        validators: [(control: AbstractControl): {[key: string]: boolean} | null => {
+        validators: [(control: AbstractControl): { [key: string]: boolean } | null => {
           if (this.formGroup.get(this.radioSelectedControlName).value === AccessReason.OTHER && this.inputEmpty(control)) {
-            return {invalid: true};
+            return { invalid: true };
           }
           return null;
         }],
@@ -128,7 +128,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
           () => {
             // Would have been nice to pass the caseId within state.data, but this isn't part of NavigationExtras until
             // Angular 7.2!
-            this.router.navigate(['success'], {relativeTo: this.route});
+            this.router.navigate(['success'], { relativeTo: this.route });
           },
           () => {
             // Navigate to error page

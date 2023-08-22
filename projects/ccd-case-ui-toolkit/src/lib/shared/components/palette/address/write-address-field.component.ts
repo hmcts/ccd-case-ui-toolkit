@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { FocusElementDirective } from '../../../directives/focus-element';
 import { AddressModel } from '../../../domain/addresses/address.model';
 import { AddressesService } from '../../../services/addresses/addresses.service';
@@ -23,9 +23,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   public addressesService: AddressesService;
 
   @Input()
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
 
-  public addressFormGroup = new FormGroup({});
+  public addressFormGroup = new UntypedFormGroup({});
   public postcode: FormControl;
   public addressList: FormControl;
 

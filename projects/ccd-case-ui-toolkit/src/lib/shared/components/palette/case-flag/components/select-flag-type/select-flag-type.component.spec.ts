@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../services/case-flag';
@@ -169,13 +169,13 @@ describe('SelectFlagTypeComponent', () => {
         { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectFlagTypeComponent);
     component = fixture.componentInstance;
-    component.formGroup = new FormGroup({
+    component.formGroup = new UntypedFormGroup({
       flagType: new FormControl(''),
       otherFlagTypeDescription: new FormControl('')
     });

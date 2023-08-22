@@ -23,6 +23,7 @@ export class TestRouteSnapshotBuilder {
   public build(): ActivatedRouteSnapshot {
     return {
       url: [],
+      title: '',
       params: this.params,
       queryParams: [],
       fragment: '',

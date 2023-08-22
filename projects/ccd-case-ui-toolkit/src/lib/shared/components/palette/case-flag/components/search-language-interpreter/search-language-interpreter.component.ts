@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
@@ -19,7 +19,7 @@ import {
 export class SearchLanguageInterpreterComponent implements OnInit {
 
   @Input()
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
 
   @Input()
   public languages: Language[];

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { PlaceholderService } from '../../directives/substitutor/services/placeholder.service';
 import { CaseField } from '../../domain';
 import { FieldsUtils } from '../../services/fields/fields.utils';
@@ -43,8 +43,8 @@ describe('CcdCaseTitlePipe', () => {
     }) as CaseField,
   ];
 
-  const FORM_GROUP = new FormGroup({
-    data: new FormGroup({
+  const FORM_GROUP = new UntypedFormGroup({
+    data: new UntypedFormGroup({
       FirstNameId: new FormControl(),
       LastNameId: new FormControl(),
       Case_ReferenceId: new FormControl()
@@ -53,8 +53,8 @@ describe('CcdCaseTitlePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{provide: PlaceholderService, useValue: placeholderService},
-                  {provide: FieldsUtils, useValue: fieldsUtils}]
+      providers: [{ provide: PlaceholderService, useValue: placeholderService },
+      { provide: FieldsUtils, useValue: fieldsUtils }]
     });
     ccdCaseTitle = new CcdCaseTitlePipe(placeholderService, fieldsUtils);
   });

@@ -2,7 +2,7 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
+import { ChangeDetectorRef, NgModule, Provider, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
@@ -298,8 +298,9 @@ const PALETTE_COMPONENTS = [
     CommonDataService,
     JurisdictionService,
     LinkedCasesService,
-    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
   ],
+  schemas: [NO_ERRORS_SCHEMA],
   entryComponents: [CaseFileViewFolderSelectorComponent]
 })
 export class PaletteModule {

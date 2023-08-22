@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
   SimpleChanges, ViewChild, ViewContainerRef
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
@@ -56,7 +56,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public BANNER = DisplayMode.BANNER;
   public sortedTabs: CaseTab[];
   public caseFields: CaseField[];
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public error: any;
   public triggerTextStart = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
   public triggerTextIgnoreWarnings = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
@@ -203,9 +203,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
             .subscribe(_ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.DRAFT_DELETED});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.DRAFT_DELETED });
             }, _ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.ERROR_DELETING_DRAFT});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.ERROR_DELETING_DRAFT });
             });
         }
       });
@@ -246,8 +246,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public isTriggerButtonDisabled(): boolean {
     return (this.error
-        && this.error.callbackErrors
-        && this.error.callbackErrors.length)
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length)
       || (this.error
         && this.error.details
         && this.error.details.field_errors
@@ -268,7 +268,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
-        foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
+        foundTab = additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
       }
       // found tasks or hearing tab
       if (foundTab) {
@@ -401,7 +401,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
-      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
+      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
       .filter(tab => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
@@ -415,11 +415,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   /**
    * For EUI-3825:
-   * Builds a FormGroup from all the CaseFields contained within the view.
-   * This FormGroup is necessary for evaluation the show/hide conditions of
+   * Builds a UntypedFormGroup from all the CaseFields contained within the view.
+   * This UntypedFormGroup is necessary for evaluation the show/hide conditions of
    * fields that are dependent on a field only available on a DIFFERENT tab.
    */
-  private buildFormGroup(caseFields: CaseField[]): FormGroup {
+  private buildFormGroup(caseFields: CaseField[]): UntypedFormGroup {
     let value: object = {};
     if (caseFields) {
       caseFields.forEach(caseField => {
@@ -429,7 +429,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         };
       });
     }
-    return new FormGroup({data: new FormControl(value)});
+    return new UntypedFormGroup({ data: new FormControl(value) });
   }
 
   private resetErrors(): void {

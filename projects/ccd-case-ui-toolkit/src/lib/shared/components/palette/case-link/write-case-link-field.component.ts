@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
@@ -11,20 +11,20 @@ import { WriteComplexFieldComponent } from '../complex/write-complex-field.compo
 export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
   public caseReferenceControl: AbstractControl;
-  public caseLinkGroup: FormGroup;
+  public caseLinkGroup: UntypedFormGroup;
 
   @ViewChild('writeComplexFieldComponent')
   public writeComplexFieldComponent: WriteComplexFieldComponent;
 
   public ngOnInit(): void {
     if (this.caseField.value) {
-      this.caseLinkGroup = this.registerControl(new FormGroup({
+      this.caseLinkGroup = this.registerControl(new UntypedFormGroup({
         CaseReference: new FormControl(this.caseField.value.CaseReference, Validators.required),
-      }), true) as FormGroup;
+      }), true) as UntypedFormGroup;
     } else {
-      this.caseLinkGroup = this.registerControl(new FormGroup({
+      this.caseLinkGroup = this.registerControl(new UntypedFormGroup({
         CaseReference: new FormControl(null, Validators.required),
-      }), true) as FormGroup;
+      }), true) as UntypedFormGroup;
     }
     this.caseReferenceControl = this.caseLinkGroup.controls['CaseReference'];
     this.caseReferenceControl.setValidators(this.caseReferenceValidator());
@@ -41,13 +41,13 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   private caseReferenceValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
       if (control.value) {
-        if ( this.validCaseReference(control.value) ) {
+        if (this.validCaseReference(control.value)) {
           return null;
         }
-        return {error: 'Please use a valid 16 Digit Case Reference'};
+        return { error: 'Please use a valid 16 Digit Case Reference' };
       } else {
         if (control.touched) {
-          return {error: 'Please use a valid 16 Digit Case Reference'};
+          return { error: 'Please use a valid 16 Digit Case Reference' };
         }
       }
       return null;
@@ -55,7 +55,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private validCaseReference(valueString: string): boolean {
-    if (!valueString )  {
+    if (!valueString) {
       return false;
     }
     return new RegExp('^\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b$').test(valueString.trim());

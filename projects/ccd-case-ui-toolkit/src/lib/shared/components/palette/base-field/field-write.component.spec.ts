@@ -1,6 +1,6 @@
 import { Component, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
@@ -22,7 +22,7 @@ const CLASS = 'person-first-name-cls';
     <div class="${CLASS}"></div>
   `
 })
-class FieldTestComponent {}
+class FieldTestComponent { }
 
 describe('FieldWriteComponent', () => {
   const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
@@ -42,12 +42,12 @@ describe('FieldWriteComponent', () => {
   let paletteService: any;
   let formValidatorService: any;
 
-  let formGroup: FormGroup;
+  let formGroup: UntypedFormGroup;
   const caseFields: CaseField[] = [CASE_FIELD];
 
   let caseEditComponentStub: any;
-  const FORM_GROUP = new FormGroup({
-    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
+  const FORM_GROUP = new UntypedFormGroup({
+    data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') })
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);
@@ -67,21 +67,21 @@ describe('FieldWriteComponent', () => {
   // const pageValidationService = new PageValidationService(caseFieldService);
   // const dialog: any = '';
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     paletteService = createSpyObj<PaletteService>('paletteService', [
       'getFieldComponentClass'
     ]);
     paletteService.getFieldComponentClass.and.returnValue(FieldTestComponent);
 
-    formGroup = new FormGroup({});
+    formGroup = new UntypedFormGroup({});
 
     cancelled = createSpyObj('cancelled', ['emit']);
     caseEditComponentStub = {
       form: FORM_GROUP,
       wizard: WIZARD,
       data: '',
-      eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+      eventTrigger: { case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true },
       hasPrevious: () => true,
       getPage: () => firstPage,
       first: () => true,
@@ -91,10 +91,10 @@ describe('FieldWriteComponent', () => {
       cancelled,
       validate: (caseEventData: CaseEventData) => of(caseEventData),
       saveDraft: (_: CaseEventData) => of(someObservable),
-      caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
+      caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] },
     };
     route = {
-      params: of({id: 123}),
+      params: of({ id: 123 }),
       snapshot: {
         queryParamMap: createSpyObj('queryParamMap', ['get'])
       }
@@ -121,7 +121,7 @@ describe('FieldWriteComponent', () => {
 
     component.caseField = CASE_FIELD;
     component.caseFields = caseFields;
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
 
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -142,7 +142,7 @@ describe('FieldWriteComponent', () => {
     const fieldTest = fieldTestComponent.componentInstance;
     expect(fieldTest.caseField).toEqual(CASE_FIELD);
     expect(fieldTest.caseFields).toBe(caseFields);
-    expect(fieldTest.formGroup).toBe(formGroup);
+    expect(fieldTest.UntypedFormGroup).toBe(formGroup);
   });
 
   function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {

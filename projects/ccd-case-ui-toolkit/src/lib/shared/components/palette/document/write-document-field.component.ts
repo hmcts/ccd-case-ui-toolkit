@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -40,7 +40,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public caseEventSubscription: Subscription;
 
   private caseDetails: CaseView;
-  private uploadedDocument: FormGroup;
+  private uploadedDocument: UntypedFormGroup;
   private dialogConfig: MatDialogConfig;
   private secureModeOn: boolean;
 
@@ -242,10 +242,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     documentFormGroup = this.secureModeOn ? {
       ...documentFormGroup,
-      ...{ document_hash:  new FormControl(document.document_hash) }
+      ...{ document_hash: new FormControl(document.document_hash) }
     } : documentFormGroup;
 
-    this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
+    this.uploadedDocument = this.registerControl(new UntypedFormGroup(documentFormGroup), true) as UntypedFormGroup;
   }
 
   private createDocumentForm(document: FormDocument): void {
@@ -260,7 +260,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       ...{ document_hash: new FormControl(document.document_hash) }
     } : documentFormGroup;
 
-    this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
+    this.uploadedDocument = this.registerControl(new UntypedFormGroup(documentFormGroup), true) as UntypedFormGroup;
   }
 
   private getErrorMessage(error: HttpError): string {
@@ -278,12 +278,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     if (this.appConfig.getDocumentSecureMode()) {
       const caseTypeId = this.caseDetails &&
-                          this.caseDetails.case_type &&
-                          this.caseDetails.case_type.id ? this.caseDetails.case_type.id : null;
+        this.caseDetails.case_type &&
+        this.caseDetails.case_type.id ? this.caseDetails.case_type.id : null;
       const caseTypeJurisdictionId = this.caseDetails &&
-                                      this.caseDetails.case_type &&
-                                      this.caseDetails.case_type.jurisdiction &&
-                                      this.caseDetails.case_type.jurisdiction.id ? this.caseDetails.case_type.jurisdiction.id : null;
+        this.caseDetails.case_type &&
+        this.caseDetails.case_type.jurisdiction &&
+        this.caseDetails.case_type.jurisdiction.id ? this.caseDetails.case_type.jurisdiction.id : null;
       documentUpload.append('caseTypeId', caseTypeId);
       documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
     }
@@ -294,9 +294,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private handleDocumentUploadResult(result: DocumentData): void {
     if (!this.uploadedDocument) {
       if (this.secureModeOn) {
-        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null, document_hash: null});
+        this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null, document_hash: null });
       } else {
-        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null});
+        this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null });
       }
     }
 

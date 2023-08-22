@@ -1,6 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
@@ -29,7 +29,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
   @Input() public allowMoving: boolean;
   @Output() public clickedDocument = new EventEmitter<DocumentTreeNode>();
-  @Output() public moveDocument = new EventEmitter<{newCategory: string, document: DocumentTreeNode}>();
+  @Output() public moveDocument = new EventEmitter<{ newCategory: string, document: DocumentTreeNode }>();
 
   public nestedTreeControl: NestedTreeControl<DocumentTreeNode>;
   public nestedDataSource: DocumentTreeNode[];
@@ -37,7 +37,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public categoriesAndDocumentsSubscription: Subscription;
   public selectedNodeItem: DocumentTreeNode | undefined;
 
-  public documentFilterFormGroup: FormGroup;
+  public documentFilterFormGroup: UntypedFormGroup;
   public documentSearchFormControl: FormControl;
   public documentTreeData: DocumentTreeNode[];
   public documentFilterSubscription: Subscription;
@@ -65,7 +65,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.documentFilterFormGroup = new FormGroup({});
+    this.documentFilterFormGroup = new UntypedFormGroup({});
     this.documentSearchFormControl = new FormControl('');
     this.documentFilterFormGroup.addControl(CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME, this.documentSearchFormControl);
 
@@ -103,7 +103,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return categories.reduce((tree, node) => {
       const newDocumentTreeNode = new DocumentTreeNode();
       newDocumentTreeNode.name = node.category_name;
-      newDocumentTreeNode.type =  DocumentTreeNodeType.FOLDER;
+      newDocumentTreeNode.type = DocumentTreeNodeType.FOLDER;
       newDocumentTreeNode.children = [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)];
 
       return [
@@ -176,11 +176,11 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print',
     documentTreeNode: DocumentTreeNode
   ): void {
-    switch(actionType) {
-      case('changeFolder'):
+    switch (actionType) {
+      case ('changeFolder'):
         this.openMoveDialog(documentTreeNode);
         break;
-      case('openInANewTab'):
+      case ('openInANewTab'):
         this.windowService.setLocalStorage(MEDIA_VIEWER_LOCALSTORAGE_KEY,
           this.documentManagementService.getMediaViewerInfo({
             document_binary_url: documentTreeNode.document_binary_url,
@@ -191,13 +191,13 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
           this.router.createUrlTree(['/media-viewer'])?.toString()
         );
         break;
-      case('download'):
+      case ('download'):
         // Create a URL from the document_binary_url property (absolute URL) and use the path portion (relative URL).
         // This is necessary because the Manage Cases application will automatically apply a proxy to the request, with
         // the correct remote endpoint
         this.downloadFile(new URL(documentTreeNode.document_binary_url).pathname, documentTreeNode.document_filename);
         break;
-      case('print'):
+      case ('print'):
         this.printDocument(new URL(documentTreeNode.document_binary_url).pathname);
         break;
       default:
@@ -260,7 +260,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(newCatId => {
       if (newCatId) {
-        this.moveDocument.emit({newCategory: newCatId, document: node});
+        this.moveDocument.emit({ newCategory: newCatId, document: node });
       }
     });
   }

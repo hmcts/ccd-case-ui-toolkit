@@ -38,7 +38,7 @@ export interface FlagDetailDisplay {
 }
 
 /**
- * Wrapper interface for Flags that adds the path to the corresponding FormGroup, and the CaseField
+ * Wrapper interface for Flags that adds the path to the corresponding UntypedFormGroup, and the CaseField
  */
 export interface FlagsWithFormGroupPath {
   flags: Flags;
@@ -47,7 +47,7 @@ export interface FlagsWithFormGroupPath {
 }
 
 /**
- * Wrapper interface for FlagDetailDisplay that adds the path to the corresponding FormGroup, and the CaseField
+ * Wrapper interface for FlagDetailDisplay that adds the path to the corresponding UntypedFormGroup, and the CaseField
  */
 export interface FlagDetailDisplayWithFormGroupPath {
   flagDetailDisplay: FlagDetailDisplay;

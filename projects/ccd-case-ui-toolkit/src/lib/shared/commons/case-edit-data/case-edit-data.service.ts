@@ -1,4 +1,4 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { CaseView } from '../../domain';
 import { CaseEditValidationError } from './case-edit-validation.model';
@@ -7,7 +7,7 @@ export class CaseEditDataService {
   private details$ = new BehaviorSubject<CaseView>(null);
   private title$ = new BehaviorSubject<string>(null);
   private formValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
-  private editForm$ = new BehaviorSubject<FormGroup>(null);
+  private editForm$ = new BehaviorSubject<UntypedFormGroup>(null);
   private isLinkedCasesJourneyAtFinalStep$ = new BehaviorSubject<boolean>(null);
   private eventTriggerName$ = new BehaviorSubject<string>(null);
   private triggerSubmitEvent$ = new BehaviorSubject<boolean>(null);
@@ -20,7 +20,7 @@ export class CaseEditDataService {
   public caseEventTriggerName$ = this.eventTriggerName$.asObservable();
   public caseTriggerSubmitEvent$ = this.triggerSubmitEvent$.asObservable();
 
-  constructor() {}
+  constructor() { }
 
   public setCaseDetails(caseDetails: CaseView): void {
     this.details$.next(caseDetails);
@@ -38,7 +38,7 @@ export class CaseEditDataService {
     this.formValidationErrors$.next(validationErrors);
   }
 
-  public setCaseEditForm(editForm: FormGroup): void {
+  public setCaseEditForm(editForm: UntypedFormGroup): void {
     this.editForm$.next(editForm);
   }
 

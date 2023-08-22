@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { FormModule } from '../../../../components/form/form.module';
 import { CaseField, FieldType } from '../../../domain';
@@ -23,7 +23,7 @@ const CASE_FIELD: CaseField = ({
   value: VALUE
 }) as CaseField;
 
-const FORM_GROUP: FormGroup = new FormGroup({});
+const FORM_GROUP: formGroup = new UntypedFormGroup({});
 
 describe('WriteDateFieldComponent', () => {
 
@@ -45,9 +45,11 @@ describe('WriteDateFieldComponent', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: CaseFieldService, useValue: caseFieldService},
-          { provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
-        ['getTranslation$', 'translate']) },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          {
+            provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
+              ['getTranslation$', 'translate'])
+          },
         ]
       })
       .compileComponents();
@@ -62,7 +64,7 @@ describe('WriteDateFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the formGroup', () => {
+  it('should add a formControl linked to the field ID to the UntypedFormGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
   });
 

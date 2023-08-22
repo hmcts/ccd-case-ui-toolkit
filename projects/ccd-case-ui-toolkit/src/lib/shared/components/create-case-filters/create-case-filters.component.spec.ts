@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { AccessControlList } from '../../domain/definition/access-control-list.model';
@@ -264,7 +264,7 @@ let mockDefinitionsService: any;
 let mockOrderService: any;
 let mockAlertService: any;
 
-const TEST_FORM_GROUP = new FormGroup({});
+const TEST_FORM_GROUP = new UntypedFormGroup({});
 
 const changeDummy = (jurisdictions) => {
   return {
@@ -311,7 +311,7 @@ describe('CreateCaseFiltersComponent', () => {
           { provide: OrderService, useValue: mockOrderService },
           { provide: AlertService, useValue: mockAlertService },
           { provide: DefinitionsService, useValue: mockDefinitionsService },
-          { provide: SessionStorageService, useValue: sessionStorageService}
+          { provide: SessionStorageService, useValue: sessionStorageService }
         ]
       })
       .compileComponents();

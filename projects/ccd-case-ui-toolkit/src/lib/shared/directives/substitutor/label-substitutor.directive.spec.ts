@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
@@ -11,7 +11,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   template: `
-    <tr ccdLabelSubstitutor [caseField]="caseField" [formGroup]="formGroup" [contextFields]="caseFields"
+    <tr ccdLabelSubstitutor [caseField]="caseField" [UntypedFormGroup]="UntypedFormGroup" [contextFields]="caseFields"
         [elementsToSubstitute]="elementsToSubstitute">
       <td>{{caseField.label}}</td>
       <td>{{caseField.hint_text}}</td>
@@ -22,7 +22,7 @@ class TestHostComponent {
 
   @Input() public caseField: CaseField;
   @Input() public caseFields: CaseField[];
-  @Input() public formGroup: FormGroup = new FormGroup({});
+  @Input() public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   @Input() public elementsToSubstitute: string[] = ['label', 'hint_text', 'value'];
 }
 
@@ -68,7 +68,7 @@ describe('LabelSubstitutorDirective', () => {
       providers: [
         FieldsUtils,
         FormatTranslatorService,
-        {provide: PlaceholderService, useValue: placeholderService}]
+        { provide: PlaceholderService, useValue: placeholderService }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
@@ -151,33 +151,33 @@ describe('LabelSubstitutorDirective', () => {
       comp.caseFields = [comp.caseField, field('LabelA', 'ValueA', '')];
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: undefined, LabelA: 'ValueA'}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: undefined, LabelA: 'ValueA' }, label);
     });
 
     it('should pass form value to substitute label if both case field and form values exist for same field', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, field('LabelA', 'ValueA1', '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl('ValueA2'),
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'ValueA2'}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: 'ValueA2' }, label);
     });
 
     it('should pass correct values when both form field and case field values present for different fields', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, textField('LabelD', 'ValueD', '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl('ValueA'),
         LabelC: new FormControl('ValueC')
       });
       fixture.detectChanges();
 
       expect(placeholderService.resolvePlaceholders)
-        .toHaveBeenCalledWith({LabelB: '', LabelA: 'ValueA', LabelC: 'ValueC', LabelD: 'ValueD'}, label);
+        .toHaveBeenCalledWith({ LabelB: '', LabelA: 'ValueA', LabelC: 'ValueC', LabelD: 'ValueD' }, label);
     });
   });
 
@@ -193,7 +193,7 @@ describe('LabelSubstitutorDirective', () => {
         })
       }, '')];
       if (labelAValue) {
-        comp.formGroup = new FormGroup({
+        comp.formGroup = new UntypedFormGroup({
           LabelA: new FormControl(labelAValue)
         });
       }
@@ -205,17 +205,17 @@ describe('LabelSubstitutorDirective', () => {
         const ITEMS = ['A', 'C'];
         it('should pass form field value when field is not read only and no case field value but form field value present', () => {
           init(listType, '', ITEMS, 'ValueA');
-          expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'Option A'}, LABEL);
+          expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: 'Option A' }, LABEL);
         });
 
         it('should pass case field value when field is read only and no form field but case field value present', () => {
           init(listType, 'ValueC', ITEMS);
-          expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'Option C'}, LABEL);
+          expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: 'Option C' }, LABEL);
         });
 
         it('should pass field form value when field is not read only and both form and case field values present', () => {
           init(listType, 'ValueC', ITEMS, 'ValueA');
-          expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: 'Option A'}, LABEL);
+          expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: 'Option A' }, LABEL);
         });
       });
     });
@@ -224,7 +224,7 @@ describe('LabelSubstitutorDirective', () => {
       const FIELD_TYPE = 'MultiSelectList';
       const ITEMS = ['A', 'C', 'D'];
       const expectedValue = (items: string[]): object => {
-        return  {
+        return {
           LabelB: '',
           LabelA: items.map(item => `Value${item}`),
           [`LabelA${FieldsUtils.LABEL_SUFFIX}`]: items.map(item => `Option ${item}`)
@@ -266,7 +266,7 @@ describe('LabelSubstitutorDirective', () => {
         type: 'MoneyGBP'
       }, '')];
       if (labelAValue) {
-        comp.formGroup = new FormGroup({
+        comp.formGroup = new UntypedFormGroup({
           LabelA: new FormControl(labelAValue)
         });
       }
@@ -275,17 +275,17 @@ describe('LabelSubstitutorDirective', () => {
 
     it('should pass empty value for null MoneyGBP', () => {
       init(null);
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: null}, LABEL);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: null }, LABEL);
     });
 
     it('should pass case field value with MoneyGBP when case field value but no form field value present', () => {
       init('20055');
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, LABEL);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: '£200.55' }, LABEL);
     });
 
     it('should pass form field value with MoneyGBP when form field value but no case field value present', () => {
       init('', '20055');
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, LABEL);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: '£200.55' }, LABEL);
     });
 
     it('should pass form field value with MoneyGBP when both form and case field values present', () => {
@@ -295,12 +295,12 @@ describe('LabelSubstitutorDirective', () => {
         id: 'LabelA',
         type: 'MoneyGBP'
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl('20055')
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '£200.55'}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: '£200.55' }, label);
     });
   });
 
@@ -315,7 +315,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '7 Mar 2018'}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: '7 Mar 2018' }, label);
     });
 
     it('should pass form field value with Date when form field value but no case field value present', () => {
@@ -325,12 +325,12 @@ describe('LabelSubstitutorDirective', () => {
         id: 'LabelA',
         type: 'Date'
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl('2018-03-07')
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '7 Mar 2018'}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: '7 Mar 2018' }, label);
     });
 
     it('should pass form field value with Date when both form and case field values present', () => {
@@ -340,12 +340,12 @@ describe('LabelSubstitutorDirective', () => {
         id: 'LabelA',
         type: 'Date'
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl('2018-03-07')
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: '7 Mar 2018'}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: '7 Mar 2018' }, label);
     });
 
     it('should pass form field value with invalid date when both form and case field values present', () => {
@@ -355,7 +355,7 @@ describe('LabelSubstitutorDirective', () => {
         id: 'LabelA',
         type: 'Date'
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl('bob')
       });
       fixture.detectChanges();
@@ -364,7 +364,7 @@ describe('LabelSubstitutorDirective', () => {
       // longer simply throw an exception for an invalid date and will
       // attempt to parse what's passed in as a date. This is to overcome
       // collections of dates being passed through twice.
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: null}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: null }, label);
     });
   });
 
@@ -394,7 +394,7 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: VALUES }, label);
     });
 
     it('should pass form field value with comma delimited text items when form field value but no case field value present', () => {
@@ -419,12 +419,12 @@ describe('LabelSubstitutorDirective', () => {
           type: 'Text'
         }
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl(VALUES)
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: VALUES }, label);
     });
 
     it('should pass form field value with comma delimited text items when both form and case field values present', () => {
@@ -459,12 +459,12 @@ describe('LabelSubstitutorDirective', () => {
           type: 'Text'
         }
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl(VALUES)
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: VALUES }, label);
     });
   });
 
@@ -473,7 +473,7 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value with comma delimited label items when case field value but no form field value present', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      const VALUES = [{value: 'ValueA'}, {value: 'ValueC'}, {value: 'ValueD'}];
+      const VALUES = [{ value: 'ValueA' }, { value: 'ValueC' }, { value: 'ValueD' }];
       comp.caseFields = [comp.caseField, field('LabelA', VALUES, {
         id: 'LabelA',
         type: 'Collection',
@@ -498,13 +498,13 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: VALUES }, label);
     });
 
     it('should pass form field value with comma delimited label items when form field value but no case field value present', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      const VALUES = [{value: 'ValueA'}, {value: 'ValueC'}, {value: 'ValueD'}];
+      const VALUES = [{ value: 'ValueA' }, { value: 'ValueC' }, { value: 'ValueD' }];
       comp.caseFields = [comp.caseField, field('LabelA', [], {
         id: 'LabelA',
         type: 'Collection',
@@ -527,19 +527,19 @@ describe('LabelSubstitutorDirective', () => {
           ]
         }
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl(VALUES)
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: VALUES }, label);
     });
 
     it('should pass form field value with comma delimited label items when both form and case field values present', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      const VALUES = [{value: 'ValueA'}, {value: 'ValueC'}, {value: 'ValueD'}];
-      comp.caseFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
+      const VALUES = [{ value: 'ValueA' }, { value: 'ValueC' }, { value: 'ValueD' }];
+      comp.caseFields = [comp.caseField, field('LabelA', [{ value: 'ValueD' }, { value: 'ValueD' }, { value: 'ValueD' }], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -561,12 +561,12 @@ describe('LabelSubstitutorDirective', () => {
           ]
         }
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl(VALUES)
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: VALUES }, label);
     });
   });
 
@@ -575,8 +575,8 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value with comma delimited label items when case field value but no form field value present', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      const RAW_VALUES = [{value: '12345'}, {value: '34888'}, {value: '9944521'}];
-      const TRANSFORMED_VALUES = [{value: '£123.45'}, {value: '£348.88'}, {value: '£99,445.21'}];
+      const RAW_VALUES = [{ value: '12345' }, { value: '34888' }, { value: '9944521' }];
+      const TRANSFORMED_VALUES = [{ value: '£123.45' }, { value: '£348.88' }, { value: '£99,445.21' }];
       comp.caseFields = [comp.caseField, field('LabelA', RAW_VALUES, {
         id: 'LabelA',
         type: 'Collection',
@@ -587,14 +587,14 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: TRANSFORMED_VALUES }, label);
     });
 
     it('should pass form field value with comma delimited label items when form field value but no case field value present', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      const RAW_VALUES = [{value: '12345'}, {value: '34888'}, {value: '9944521'}];
-      const TRANSFORMED_VALUES = [{value: '£123.45'}, {value: '£348.88'}, {value: '£99,445.21'}];
+      const RAW_VALUES = [{ value: '12345' }, { value: '34888' }, { value: '9944521' }];
+      const TRANSFORMED_VALUES = [{ value: '£123.45' }, { value: '£348.88' }, { value: '£99,445.21' }];
       comp.caseFields = [comp.caseField, field('LabelA', [], {
         id: 'LabelA',
         type: 'Collection',
@@ -603,20 +603,20 @@ describe('LabelSubstitutorDirective', () => {
           type: 'MoneyGBP'
         }
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl(RAW_VALUES)
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: TRANSFORMED_VALUES }, label);
     });
 
     it('should pass form field value with comma delimited label items when both form and case field values present', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      const RAW_VALUES = [{value: '12345'}, {value: '34888'}, {value: '9944521'}];
-      const TRANSFORMED_VALUES = [{value: '£123.45'}, {value: '£348.88'}, {value: '£99,445.21'}];
-      comp.caseFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
+      const RAW_VALUES = [{ value: '12345' }, { value: '34888' }, { value: '9944521' }];
+      const TRANSFORMED_VALUES = [{ value: '£123.45' }, { value: '£348.88' }, { value: '£99,445.21' }];
+      comp.caseFields = [comp.caseField, field('LabelA', [{ value: 'ValueD' }, { value: 'ValueD' }, { value: 'ValueD' }], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -624,12 +624,12 @@ describe('LabelSubstitutorDirective', () => {
           type: 'MoneyGBP'
         }
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl(RAW_VALUES)
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: TRANSFORMED_VALUES }, label);
     });
   });
 
@@ -638,8 +638,8 @@ describe('LabelSubstitutorDirective', () => {
     it('should pass form field value with comma delimited label items when case field value but no form field value present', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      const RAW_VALUES = [{value: '2018-03-07'}, {value: '2015-02-22'}, {value: '2017-12-12'}];
-      const TRANSFORMED_VALUES = [{value: '7 Mar 2018'}, {value: '22 Feb 2015'}, {value: '12 Dec 2017'}];
+      const RAW_VALUES = [{ value: '2018-03-07' }, { value: '2015-02-22' }, { value: '2017-12-12' }];
+      const TRANSFORMED_VALUES = [{ value: '7 Mar 2018' }, { value: '22 Feb 2015' }, { value: '12 Dec 2017' }];
       comp.caseFields = [comp.caseField, field('LabelA', RAW_VALUES, {
         id: 'LabelA',
         type: 'Collection',
@@ -650,14 +650,14 @@ describe('LabelSubstitutorDirective', () => {
       }, '')];
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: TRANSFORMED_VALUES }, label);
     });
 
     it('should pass form field value with comma delimited label items when form field value but no case field value present', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      const RAW_VALUES = [{value: '2018-03-07'}, {value: '2015-02-22'}, {value: '2017-12-12'}];
-      const TRANSFORMED_VALUES = [{value: '7 Mar 2018'}, {value: '22 Feb 2015'}, {value: '12 Dec 2017'}];
+      const RAW_VALUES = [{ value: '2018-03-07' }, { value: '2015-02-22' }, { value: '2017-12-12' }];
+      const TRANSFORMED_VALUES = [{ value: '7 Mar 2018' }, { value: '22 Feb 2015' }, { value: '12 Dec 2017' }];
       comp.caseFields = [comp.caseField, field('LabelA', [], {
         id: 'LabelA',
         type: 'Collection',
@@ -666,20 +666,20 @@ describe('LabelSubstitutorDirective', () => {
           type: 'Date'
         }
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl(RAW_VALUES)
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: TRANSFORMED_VALUES }, label);
     });
 
     it('should pass form field value with comma delimited label items when both form and case field values present', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
-      const RAW_VALUES = [{value: '2018-03-07'}, {value: '2015-02-22'}, {value: '2017-12-12'}];
-      const TRANSFORMED_VALUES = [{value: '7 Mar 2018'}, {value: '22 Feb 2015'}, {value: '12 Dec 2017'}];
-      comp.caseFields = [comp.caseField, field('LabelA', [{value: 'ValueD'}, {value: 'ValueD'}, {value: 'ValueD'}], {
+      const RAW_VALUES = [{ value: '2018-03-07' }, { value: '2015-02-22' }, { value: '2017-12-12' }];
+      const TRANSFORMED_VALUES = [{ value: '7 Mar 2018' }, { value: '22 Feb 2015' }, { value: '12 Dec 2017' }];
+      comp.caseFields = [comp.caseField, field('LabelA', [{ value: 'ValueD' }, { value: 'ValueD' }, { value: 'ValueD' }], {
         id: 'LabelA',
         type: 'Collection',
         collection_field_type: {
@@ -687,12 +687,12 @@ describe('LabelSubstitutorDirective', () => {
           type: 'Date'
         }
       }, '')];
-      comp.formGroup = new FormGroup({
+      comp.formGroup = new UntypedFormGroup({
         LabelA: new FormControl(RAW_VALUES)
       });
       fixture.detectChanges();
 
-      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({LabelB: '', LabelA: TRANSFORMED_VALUES}, label);
+      expect(placeholderService.resolvePlaceholders).toHaveBeenCalledWith({ LabelB: '', LabelA: TRANSFORMED_VALUES }, label);
     });
   });
 });

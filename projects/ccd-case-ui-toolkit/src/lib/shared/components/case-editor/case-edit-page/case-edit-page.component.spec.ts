@@ -7,7 +7,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   AbstractControl,
   FormControl,
-  FormGroup,
+  UntypedFormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -77,18 +77,18 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseEditDataService = {},
     loadingService = {},
   }) =>
-  new CaseEditPageComponent(
-    caseEdit as CaseEditComponent,
-    route as ActivatedRoute,
-    formValueService as FormValueService,
-    formErrorService as FormErrorService,
-    cdRef as ChangeDetectorRef,
-    pageValidationService as PageValidationService,
-    dialog as MatDialog,
-    caseFieldService as CaseFieldService,
-    caseEditDataService as CaseEditDataService,
-    loadingService as LoadingService
-  );
+    new CaseEditPageComponent(
+      caseEdit as CaseEditComponent,
+      route as ActivatedRoute,
+      formValueService as FormValueService,
+      formErrorService as FormErrorService,
+      cdRef as ChangeDetectorRef,
+      pageValidationService as PageValidationService,
+      dialog as MatDialog,
+      caseFieldService as CaseFieldService,
+      caseEditDataService as CaseEditDataService,
+      loadingService as LoadingService
+    );
 
   it('should create', () => {
     component = initializeComponent({});
@@ -213,7 +213,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
         data: {
           bothDefendants: {
             people: {
-            list: ['sample', 'sample']
+              list: ['sample', 'sample']
             }
           }
         }
@@ -236,9 +236,9 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
-          people: {
-            value: true
-          }
+        people: {
+          value: true
+        }
       };
       const jsonDataMock = {
         data: {
@@ -253,7 +253,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
             value: {
               people: {
                 value: true
-                }
+              }
             }
           }
         ],
@@ -305,11 +305,11 @@ describe('CaseEditPageComponent - all other tests', () => {
   const pageValidationService = new PageValidationService(caseFieldService);
   let route: any;
   let snapshot: any;
-  const FORM_GROUP_NO_JUDICIAL_USERS = new FormGroup({
-    data: new FormGroup({ field1: new FormControl('SOME_VALUE') }),
+  const FORM_GROUP_NO_JUDICIAL_USERS = new UntypedFormGroup({
+    data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') }),
   });
-  const FORM_GROUP = new FormGroup({
-    data: new FormGroup({
+  const FORM_GROUP = new UntypedFormGroup({
+    data: new UntypedFormGroup({
       field1: new FormControl('SOME_VALUE'),
       judicialUserField1_judicialUserControl: new FormControl('Judicial User'),
       judicialUserField2_judicialUserControl: new FormControl('Judicial User 2'),
@@ -454,13 +454,13 @@ describe('CaseEditPageComponent - all other tests', () => {
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
-        spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+        spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
         spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-        spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => {});
+        spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
         spyOn(pageValidationService, 'isPageValid').and.returnValue(true);
         comp = fixture.componentInstance;
         readOnly.display_context = 'READONLY';
@@ -851,12 +851,12 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage(
@@ -909,8 +909,8 @@ describe('CaseEditPageComponent - all other tests', () => {
     };
     let loadingServiceMock: jasmine.SpyObj<LoadingService>;
 
-    const formGroup: FormGroup = new FormGroup({
-      data: new FormGroup({ field1: new FormControl('SOME_VALUE') }),
+    const formGroup: UntypedFormGroup = new UntypedFormGroup({
+      data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') }),
     });
 
     beforeEach(
@@ -918,7 +918,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         firstPage.id = 'first page';
 
         caseEditComponentStub = {
-          form: formGroup,
+          form: UntypedFormGroup,
           wizard: WIZARD,
           data: '',
           eventTrigger,
@@ -1016,12 +1016,12 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
       comp.wizard = new Wizard([wizardPage]);
       comp.editForm = FORM_GROUP;
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
       fixture.detectChanges();
     });
 
@@ -1189,9 +1189,9 @@ describe('CaseEditPageComponent - all other tests', () => {
       );
       comp.wizard = new Wizard([wizardPage]);
       // Rebuild the FORM_GROUP object before use because it gets modified by the "should call validate" test
-      (FORM_GROUP.get('data') as FormGroup).setControl(
+      (FORM_GROUP.get('data') as UntypedFormGroup).setControl(
         'judicialUserField1_judicialUserControl', new FormControl('Judicial User'));
-      (FORM_GROUP.get('data') as FormGroup).setControl(
+      (FORM_GROUP.get('data') as UntypedFormGroup).setControl(
         'judicialUserField2_judicialUserControl', new FormControl('Judicial User 2'));
       comp.editForm = FORM_GROUP;
       comp.currentPage = wizardPage;
@@ -1240,10 +1240,10 @@ describe('CaseEditPageComponent - all other tests', () => {
         expect(comp.caseEdit.error).toBeNull();
         expect(comp.caseEdit.ignoreWarning).toBe(false);
 
-        // Both JudicialUser FormControls should have been removed from the editForm FormGroup, leaving just one
+        // Both JudicialUser FormControls should have been removed from the editForm UntypedFormGroup, leaving just one
         // FormControl
-        const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
-        const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
+        const formControlKeys = Object.keys((comp.editForm.get('data') as UntypedFormGroup).controls);
+        const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as UntypedFormGroup).controls);
         expect(formControlKeys.length).toBe(1);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(false);
@@ -1273,10 +1273,10 @@ describe('CaseEditPageComponent - all other tests', () => {
       const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
       expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
 
-      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
+      // The page is not valid, so the editForm UntypedFormGroup should still have the two JudicialUser FormControls because
       // their removal is not triggered
-      const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
-      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
+      const formControlKeys = Object.keys((comp.editForm.get('data') as UntypedFormGroup).controls);
+      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as UntypedFormGroup).controls);
       expect(formControlKeys.length).toBe(3);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
@@ -1322,10 +1322,10 @@ describe('CaseEditPageComponent - all other tests', () => {
       const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
       expect(text(secondFieldError)).toBe('Second field error');
 
-      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
+      // The page is not valid, so the editForm UntypedFormGroup should still have the two JudicialUser FormControls because
       // their removal is not triggered
-      const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
-      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
+      const formControlKeys = Object.keys((comp.editForm.get('data') as UntypedFormGroup).controls);
+      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as UntypedFormGroup).controls);
       expect(formControlKeys.length).toBe(3);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
@@ -1512,12 +1512,12 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
 
       de = fixture.debugElement;
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
       spyOn(comp, 'buildCaseEventData').and.callThrough();
       fixture.detectChanges();
     });
@@ -1546,8 +1546,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   });
 
   describe('Check for Validation Error', () => {
-    const F_GROUP = new FormGroup({
-      data: new FormGroup({
+    const F_GROUP = new UntypedFormGroup({
+      data: new UntypedFormGroup({
         Invalidfield1: new FormControl(null, Validators.required),
         Invalidfield2: new FormControl(null, [
           Validators.required,
@@ -1700,10 +1700,10 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       spyOn(caseEditDataService, 'addFormValidationError').and.callFake((validationError: CaseEditValidationError) => {
         caseEditDataService.caseFormValidationErrors$.next(

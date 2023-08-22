@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, UntypedFormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -11,7 +11,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 
-const ADDRESS_FIELD_TYPES = [ 'AddressUK', 'AddressGlobalUK', 'AddressGlobal' ];
+const ADDRESS_FIELD_TYPES = ['AddressUK', 'AddressGlobalUK', 'AddressGlobal'];
 
 @Component({
   selector: 'ccd-write-complex-type-field',
@@ -23,9 +23,9 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   public caseFields: CaseField[] = [];
 
   @Input()
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
 
-  public complexGroup: FormGroup;
+  public complexGroup: UntypedFormGroup;
 
   @Input()
   public renderLabel = true;
@@ -37,16 +37,16 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   constructor(private readonly isCompoundPipe: IsCompoundPipe, private readonly formValidatorsService: FormValidatorsService) {
     super();
-    this.complexGroup = new FormGroup({});
+    this.complexGroup = new UntypedFormGroup({});
   }
 
   public ngOnInit(): void {
     // Are we inside of a collection? If so, the parent is the complexGroup we want.
     if (this.isTopLevelWithinCollection()) {
-      this.complexGroup = this.parent as FormGroup;
+      this.complexGroup = this.parent as UntypedFormGroup;
       FieldsUtils.addCaseFieldAndComponentReferences(this.complexGroup, this.caseField, this);
     } else {
-      this.complexGroup = this.registerControl(this.complexGroup, true) as FormGroup;
+      this.complexGroup = this.registerControl(this.complexGroup, true) as UntypedFormGroup;
     }
     // Add validators for the complex field.
     this.formValidatorsService.addValidators(this.caseField, this.complexGroup);

@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -18,7 +18,7 @@ const FIELD_TYPE: FieldType = {
 const CASE_REFERENCE: CaseField = {
   id: 'CaseReference',
   label: 'Case Reference',
-  field_type: {id: 'TextCaseReference', type: 'Text'}
+  field_type: { id: 'TextCaseReference', type: 'Text' }
 } as CaseField;
 
 const CASE_FIELD: CaseField = {
@@ -52,12 +52,12 @@ describe('WriteCaseLinkFieldComponent', () => {
         { provide: RpxTranslatePipe, useClass: MockRpxTranslatePipe }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(WriteCaseLinkFieldComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
-    component.caseLinkGroup = new FormGroup({
+    component.caseLinkGroup = new UntypedFormGroup({
       CaseReference: new FormControl(CASE_FIELD.value.CaseReference)
     });
     de = fixture.debugElement;
@@ -73,7 +73,7 @@ describe('WriteCaseLinkFieldComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     component.caseLinkGroup.controls['CaseReference'].setValue(null);
-    component.caseLinkGroup.controls['CaseReference'].markAsTouched({onlySelf: true});
+    component.caseLinkGroup.controls['CaseReference'].markAsTouched({ onlySelf: true });
     component.caseLinkGroup.controls['CaseReference'].updateValueAndValidity();
     fixture.detectChanges();
     expect(component).toBeTruthy();

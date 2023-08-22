@@ -6,12 +6,12 @@ import { FormValidatorsService } from '../../../services/form';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldWriteComponent } from './abstract-field-write.component';
 
-const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList', 'DynamicMultiSelectList' ];
+const FIX_CASEFIELD_FOR = ['FixedList', 'DynamicList', 'DynamicMultiSelectList'];
 
 @Component({
   selector: 'ccd-field-write',
   templateUrl: './field-write.component.html',
-  styleUrls: [ './field-write.component.scss' ]
+  styleUrls: ['./field-write.component.scss']
 })
 export class FieldWriteComponent extends AbstractFieldWriteComponent implements OnInit {
 
@@ -25,7 +25,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
   public fieldContainer: ViewContainerRef;
 
   constructor(private readonly resolver: ComponentFactoryResolver,
-              private readonly paletteService: PaletteService) {
+    private readonly paletteService: PaletteService) {
     super();
   }
 
@@ -50,7 +50,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     component.instance['caseField'] = this.caseField;
 
     component.instance['caseFields'] = this.caseFields;
-    component.instance['formGroup'] = this.formGroup;
+    component.instance['UntypedFormGroup'] = this.formGroup;
     component.instance['parent'] = this.parent;
     component.instance['idPrefix'] = this.idPrefix;
     if (this.caseField.field_type.id === 'AddressGlobal') {

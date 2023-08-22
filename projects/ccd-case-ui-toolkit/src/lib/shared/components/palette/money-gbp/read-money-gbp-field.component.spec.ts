@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { CaseField, FieldType } from '../../../domain';
 import { ReadMoneyGbpFieldComponent } from './read-money-gbp-field.component';
 
@@ -201,7 +201,7 @@ describe('ReadMoneyGBPFieldComponent', () => {
   });
 
   describe('Persistable readonly textarea field', () => {
-    const FORM_GROUP: FormGroup = new FormGroup({});
+    const FORM_GROUP: formGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',

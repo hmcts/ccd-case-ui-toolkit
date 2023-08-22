@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, UntypedFormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -17,7 +17,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  private static readonly EMPTY_SIMPLE_ORG: SimpleOrganisationModel = {organisationIdentifier: '', name: '', address: ''};
+  private static readonly EMPTY_SIMPLE_ORG: SimpleOrganisationModel = { organisationIdentifier: '', name: '', address: '' };
   private static readonly MAX_RESULT_COUNT: number = 100;
   private static readonly ORGANISATION_ID: string = 'OrganisationID';
   private static readonly ORGANISATION_NAME: string = 'OrganisationName';
@@ -27,7 +27,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   private static readonly MANDATORY: string = 'MANDATORY';
   public defaultOrg: any;
 
-  public organisationFormGroup: FormGroup;
+  public organisationFormGroup: UntypedFormGroup;
   public searchOrgTextFormControl: FormControl;
   public organisationIDFormControl: FormControl;
   public organisationNameFormControl: FormControl;
@@ -38,8 +38,8 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   public selectedOrg$: Observable<SimpleOrganisationModel>;
 
   constructor(private readonly organisationService: OrganisationService,
-              private readonly organisationConverter: OrganisationConverter,
-              private readonly windowService: WindowService) {
+    private readonly organisationConverter: OrganisationConverter,
+    private readonly windowService: WindowService) {
     super();
     this.defaultOrg = JSON.parse(this.windowService.getSessionStorage(WriteOrganisationFieldComponent.ORGANISATION_DETAILS));
   }
@@ -51,7 +51,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.searchOrgValue$ = this.searchOrgTextFormControl.valueChanges;
     this.searchOrgValue$.subscribe(value => this.onSearchOrg(value));
 
-    this.organisationFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
+    this.organisationFormGroup = this.registerControl(new UntypedFormGroup({}), true) as UntypedFormGroup;
     if (this.parent && this.parent.controls && this.parent.controls.hasOwnProperty(WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION)
       && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value
       && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value.toUpperCase()
@@ -86,7 +86,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
       this.simpleOrganisations$ = this.organisations$.pipe(
         switchMap(organisations => of(
           this.searchOrg(organisations, lowerOrgSearchText)
-          )
+        )
         )
       );
     } else {
@@ -103,7 +103,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     const withSpaceMatchingResultSet = [];
     const MAX_RESULT_COUNT = WriteOrganisationFieldComponent.MAX_RESULT_COUNT;
     organisations.forEach((organisation) => {
-      if ( partMatchingResultSet.length < MAX_RESULT_COUNT && this.searchCriteria(organisation, lowerOrgSearchText)) {
+      if (partMatchingResultSet.length < MAX_RESULT_COUNT && this.searchCriteria(organisation, lowerOrgSearchText)) {
         partMatchingResultSet.push(organisation);
       }
     });
@@ -148,7 +148,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.simpleOrganisations$ = of([]);
     this.searchOrgTextFormControl.setValue('');
     this.searchOrgTextFormControl.enable();
-    this.caseField.value = {OrganisationID: null, OrganisationName: null};
+    this.caseField.value = { OrganisationID: null, OrganisationName: null };
     this.organisationFormGroup.setValue(this.caseField.value);
   }
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
@@ -18,7 +18,7 @@ export class CaseEditConfirmComponent {
   public formGroup = new FormControl();
   public confirmation: Confirmation;
   public caseFields: CaseField[];
-  public editForm: FormGroup;
+  public editForm: UntypedFormGroup;
 
   constructor(private readonly caseEdit: CaseEditComponent, private readonly router: Router) {
     this.eventTrigger = this.caseEdit.eventTrigger;
@@ -32,7 +32,7 @@ export class CaseEditConfirmComponent {
   }
 
   public submit(): void {
-    this.caseEdit.submitted.emit({caseId: this.confirmation.getCaseId(), status: this.confirmation.getStatus()});
+    this.caseEdit.submitted.emit({ caseId: this.confirmation.getCaseId(), status: this.confirmation.getStatus() });
   }
 
   public getCaseId(): string {

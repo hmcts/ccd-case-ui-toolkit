@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { throwError } from 'rxjs';
 import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
@@ -26,7 +26,7 @@ export class LinkCasesComponent implements OnInit {
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
   public errorMessages: ErrorMessage[] = [];
-  public linkCaseForm: FormGroup;
+  public linkCaseForm: UntypedFormGroup;
   public selectedCases: CaseLink[] = [];
   public caseNumberError: string;
   public caseReasonError: string;
@@ -145,7 +145,7 @@ export class LinkCasesComponent implements OnInit {
       });
     }
     if (this.linkCaseForm.controls.reasonType.valid
-        && this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected) {
+      && this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected) {
       if (this.linkCaseForm.controls.otherDescription.value.trim().length === 0) {
         this.caseReasonCommentsError = LinkedCasesErrorMessages.otherDescriptionError;
         this.errorMessages.push({

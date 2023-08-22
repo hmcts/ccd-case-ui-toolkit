@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -44,7 +44,7 @@ const CASE_FIELD: CaseField = ({
   list_items: FIELD_LIST_ITEMS
 }) as CaseField;
 
-const FORM_GROUP: FormGroup = new FormGroup({});
+const FORM_GROUP: formGroup = new UntypedFormGroup({});
 
 describe('WriteDynamicRadioListFieldComponent', () => {
 
@@ -79,7 +79,7 @@ describe('WriteDynamicRadioListFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the formGroup', () => {
+  it('should add a formControl linked to the field ID to the UntypedFormGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
   });
 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -18,7 +18,7 @@ export class CaseReviewSpecificAccessRequestComponent
   public title: string;
   public hint: string;
   public caseRefLabel: string;
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
   public readonly accessReasons: DisplayedAccessReason[];
@@ -91,8 +91,8 @@ export class CaseReviewSpecificAccessRequestComponent
         reason: reasonNumber,
         caseId,
       } as ReviewSpecificAccessRequest;
-      if ( AccessReason.REJECT_REQUEST === radioSelectedValue ) {
-        this.router.navigate(['rejected'], {relativeTo: this.route});
+      if (AccessReason.REJECT_REQUEST === radioSelectedValue) {
+        this.router.navigate(['rejected'], { relativeTo: this.route });
       }
     }
   }

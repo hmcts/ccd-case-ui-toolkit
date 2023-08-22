@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { CaseViewTrigger } from '../../domain/case-view/case-view-trigger.model';
 import { OrderService } from '../../services/order/order.service';
 
@@ -25,9 +25,9 @@ export class EventTriggerComponent implements OnChanges {
   @Output()
   public onTriggerChange: EventEmitter<any> = new EventEmitter();
 
-  public triggerForm: FormGroup;
+  public triggerForm: UntypedFormGroup;
 
-  constructor(private readonly fb: FormBuilder, private readonly orderService: OrderService) {}
+  constructor(private readonly fb: FormBuilder, private readonly orderService: OrderService) { }
 
   public ngOnChanges(changes?: SimpleChanges): void {
     if (changes.triggers && changes.triggers.currentValue) {

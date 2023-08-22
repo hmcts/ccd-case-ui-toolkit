@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField } from '../../../domain/definition';
@@ -300,7 +300,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     get: (controlName: string) => {
       return formGroup.controls[controlName];
     }
-  } as unknown as FormGroup;
+  } as unknown as UntypedFormGroup;
   const selectedFlagsLocation = {
     flags: null,
     pathToFlagsFormGroup: caseFlag2FieldId,
@@ -316,13 +316,13 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ReadCaseFlagFieldComponent ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ReadCaseFlagFieldComponent],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -397,7 +397,7 @@ describe('ReadCaseFlagFieldComponent', () => {
       display_context_parameter: createMode
     };
     formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
     expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag1RoleOnCase);
@@ -413,11 +413,11 @@ describe('ReadCaseFlagFieldComponent', () => {
       display_context_parameter: createMode
     };
     formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
-    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({ name: 'New flag' } as FlagDetail);
     // Check the correct display mode for the "Review flag details" summary page has been set
     expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
   });
@@ -428,11 +428,11 @@ describe('ReadCaseFlagFieldComponent', () => {
       display_context_parameter: createMode
     };
     formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocationInComplexField;
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(witnessCaseFlagPartyName);
-    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag in Witness field'} as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({ name: 'New flag in Witness field' } as FlagDetail);
     // Check the correct display mode for the "Review flag details" summary page has been set
     expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
   });
@@ -444,7 +444,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     };
     selectedFlagsLocation.caseField.value = null;
     formGroup.controls[flagLauncherCaseField.id]['component']['selectedFlagsLocation'] = selectedFlagsLocation;
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeNull();
     // Check the correct display mode for the "Review flag details" summary page has been set
@@ -456,7 +456,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     formGroup.controls[flagLauncherCaseField.id]['component']['caseField'] = {
       display_context_parameter: updateMode
     };
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     // Simulate presence of selected flag
     formGroup.controls[flagLauncherCaseField.id]['component'].selectedFlag = {
       flagDetailDisplay: {

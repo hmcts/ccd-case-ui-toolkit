@@ -1,4 +1,4 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { FormErrorService } from './form-error.service';
 
 describe('FormErrorService', () => {
@@ -27,7 +27,7 @@ describe('FormErrorService', () => {
         }
       ];
 
-      const form = new FormGroup({
+      const form = new UntypedFormGroup({
         [FIELD_1]: new FormControl()
       });
 
@@ -48,7 +48,7 @@ describe('FormErrorService', () => {
         }
       ];
 
-      const form = new FormGroup({
+      const form = new UntypedFormGroup({
         [FIELD_1]: new FormControl(),
         [FIELD_2]: new FormControl()
       });
@@ -67,9 +67,9 @@ describe('FormErrorService', () => {
         }
       ];
 
-      const form = new FormGroup({
-        [FIELD_1]: new FormGroup({
-          [FIELD_2]: new FormGroup({
+      const form = new UntypedFormGroup({
+        [FIELD_1]: new UntypedFormGroup({
+          [FIELD_2]: new UntypedFormGroup({
             [FIELD_3]: new FormControl()
           })
         })
@@ -78,8 +78,8 @@ describe('FormErrorService', () => {
       formErrorService.mapFieldErrors(errors, form, ERROR_KEY);
 
       expect(((form
-        .controls[FIELD_1] as FormGroup)
-        .controls[FIELD_2] as FormGroup)
+        .controls[FIELD_1] as UntypedFormGroup)
+        .controls[FIELD_2] as UntypedFormGroup)
         .controls[FIELD_3].errors[ERROR_KEY]).toBe(MESSAGE_1);
     });
 
@@ -91,7 +91,7 @@ describe('FormErrorService', () => {
         }
       ];
 
-      const form = new FormGroup({
+      const form = new UntypedFormGroup({
         [FIELD_1]: new FormControl()
       });
 
@@ -103,7 +103,7 @@ describe('FormErrorService', () => {
     it('should ignore empty errors', () => {
       const errors = [];
 
-      const form = new FormGroup({
+      const form = new UntypedFormGroup({
         [FIELD_1]: new FormControl()
       });
 
@@ -120,8 +120,8 @@ describe('FormErrorService', () => {
         }
       ];
 
-      const form = new FormGroup({
-        [FIELD_1]: new FormGroup({
+      const form = new UntypedFormGroup({
+        [FIELD_1]: new UntypedFormGroup({
           [FIELD_2]: new FormControl()
         })
       });
@@ -130,7 +130,7 @@ describe('FormErrorService', () => {
 
       expect(form.controls[FIELD_1].errors).toBeNull();
       expect((form
-        .controls[FIELD_1] as FormGroup)
+        .controls[FIELD_1] as UntypedFormGroup)
         .controls[FIELD_2].errors).toBeNull();
     });
 
@@ -142,9 +142,9 @@ describe('FormErrorService', () => {
         }
       ];
 
-      const form = new FormGroup({
-        [FIELD_1]: new FormGroup({
-          [FIELD_2]: new FormGroup({
+      const form = new UntypedFormGroup({
+        [FIELD_1]: new UntypedFormGroup({
+          [FIELD_2]: new UntypedFormGroup({
             [FIELD_3]: new FormControl()
           })
         })
@@ -154,20 +154,20 @@ describe('FormErrorService', () => {
 
       expect(form.controls[FIELD_1].errors).toBeNull();
       expect((form
-        .controls[FIELD_1] as FormGroup)
+        .controls[FIELD_1] as UntypedFormGroup)
         .controls[FIELD_2].errors).toBeNull();
       expect(((form
-        .controls[FIELD_1] as FormGroup)
-        .controls[FIELD_2] as FormGroup)
+        .controls[FIELD_1] as UntypedFormGroup)
+        .controls[FIELD_2] as UntypedFormGroup)
         .controls[FIELD_3].errors).toBeNull();
     });
 
     it('should reset all errors', () => {
       const field3 = new FormControl();
 
-      const form = new FormGroup({
-        [FIELD_1]: new FormGroup({
-          [FIELD_2]: new FormGroup({
+      const form = new UntypedFormGroup({
+        [FIELD_1]: new UntypedFormGroup({
+          [FIELD_2]: new UntypedFormGroup({
             [FIELD_3]: field3
           })
         })

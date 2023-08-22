@@ -68,8 +68,8 @@ class MockActivatedRoute implements ActivatedRoute {
   }
 }
 
-@Component({template: ``})
-class StubComponent {}
+@Component({ template: `` })
+class StubComponent { }
 
 describe('CaseSpecificAccessRequestComponent', () => {
   let de: DebugElement;
@@ -207,6 +207,6 @@ describe('CaseSpecificAccessRequestComponent', () => {
     submitButton.click();
     fixture.detectChanges();
     expect(component.formGroup.valid).toBe(true);
-    expect(router.navigate).toHaveBeenCalledWith(['rejected'], {relativeTo: mockRoute});
+    expect(router.navigate).toHaveBeenCalledWith(['rejected'], { relativeTo: mockRoute });
   });
 });

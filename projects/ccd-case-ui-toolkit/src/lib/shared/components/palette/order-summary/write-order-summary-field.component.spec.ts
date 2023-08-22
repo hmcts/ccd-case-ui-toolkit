@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -74,7 +74,7 @@ describe('WriteOrderSummaryFieldComponent', () => {
     let component: WriteOrderSummaryFieldComponent;
     let de: DebugElement;
 
-    const FORM_GROUP: FormGroup = new FormGroup({});
+    const FORM_GROUP: formGroup = new UntypedFormGroup({});
 
     beforeEach(waitForAsync(() => {
       TestBed
@@ -133,7 +133,7 @@ describe('WriteOrderSummaryFieldComponent', () => {
   });
 
   describe('Undefined value', () => {
-    const FORM_GROUP: FormGroup = new FormGroup({});
+    const FORM_GROUP: formGroup = new UntypedFormGroup({});
 
     let fixture: ComponentFixture<ReadOrderSummaryFieldComponent>;
     let component: ReadOrderSummaryFieldComponent;
@@ -183,7 +183,7 @@ describe('WriteOrderSummaryFieldComponent', () => {
   });
 
   describe('Null value', () => {
-    const FORM_GROUP: FormGroup = new FormGroup({});
+    const FORM_GROUP: formGroup = new UntypedFormGroup({});
 
     let fixture: ComponentFixture<ReadOrderSummaryFieldComponent>;
     let component: ReadOrderSummaryFieldComponent;

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField, ErrorMessage } from '../../../domain';
@@ -15,7 +15,7 @@ import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
 })
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];
@@ -23,7 +23,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagsData: FlagsWithFormGroupPath[];
   public selectedFlag: FlagDetailDisplayWithFormGroupPath;
   public selectedFlagsLocation: FlagsWithFormGroupPath;
-  public caseFlagParentFormGroup = new FormGroup({});
+  public caseFlagParentFormGroup = new UntypedFormGroup({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public caseTypeId: string;
@@ -32,7 +32,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagPath: FlagPath[];
   public hearingRelevantFlag: boolean;
   public flagCode: string;
-  public listOfValues: {key: string, value: string}[] = null;
+  public listOfValues: { key: string, value: string }[] = null;
   public isDisplayContextParameterUpdate: boolean;
   public caseTitle: string;
   private allCaseFlagStagesCompleted = false;
@@ -56,16 +56,16 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     if (this.formGroup && this.formGroup.get(this.caseField.id)) {
       this.formGroup.removeControl(this.caseField.id);
     }
-    // From this point, this.formGroup refers to the FormGroup for the FlagLauncher field, not the parent FormGroup
-    this.formGroup = this.registerControl(new FormGroup({}, {
-      validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+    // From this point, this.formGroup refers to the UntypedFormGroup for the FlagLauncher field, not the parent UntypedFormGroup
+    this.formGroup = this.registerControl(new UntypedFormGroup({}, {
+      validators: (_: AbstractControl): { [key: string]: boolean } | null => {
         if (!this.allCaseFlagStagesCompleted) {
-          // Return an error to mark the FormGroup as invalid if not all Case Flag stages have been completed
-          return {notAllCaseFlagStagesCompleted: true};
+          // Return an error to mark the UntypedFormGroup as invalid if not all Case Flag stages have been completed
+          return { notAllCaseFlagStagesCompleted: true };
         }
         return null;
       }
-    }), true) as FormGroup;
+    }), true) as UntypedFormGroup;
 
     this.createFlagCaption = CaseFlagText.CAPTION;
     // Get the case type ID from the CaseView object in the snapshot data (required for retrieving the available flag
@@ -88,9 +88,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
       if (this.route.snapshot.data.eventTrigger.case_fields) {
         this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
-        .reduce((flags, caseField) => {
-          return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
-        }, []);
+          .reduce((flags, caseField) => {
+            return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
+          }, []);
 
         // Set boolean indicating the display_context_parameter is "update"
         this.isDisplayContextParameterUpdate =
@@ -116,7 +116,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
     this.caseEditDataService.clearFormValidationErrors();
     // If the current state is CaseFlagFieldState.FLAG_LOCATION and a flag location (a Flags instance) has been selected,
-    // set the parent Case Flag FormGroup for this component's children by using the provided pathToFlagsFormGroup, and
+    // set the parent Case Flag UntypedFormGroup for this component's children by using the provided pathToFlagsFormGroup, and
     // set the selected flag location on this component
     if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_LOCATION
       && caseFlagState.selectedFlagsLocation
@@ -134,7 +134,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       this.listOfValues = caseFlagState.listOfValues;
     }
     // If the current state is CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS and a flag has been selected, set the parent
-    // Case Flag FormGroup for this component's children by using the provided pathToFlagsFormGroup
+    // Case Flag UntypedFormGroup for this component's children by using the provided pathToFlagsFormGroup
     if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS
       && caseFlagState.selectedFlag
       && caseFlagState.selectedFlag.pathToFlagsFormGroup) {
@@ -148,7 +148,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       // If the current state is CaseFlagFieldState.FLAG_COMMENTS or CaseFlagFieldState.FLAG_UPDATE, move to final
       // review stage
       if (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
-          caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
+        caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE) {
         this.moveToFinalReviewStage();
         // Don't move to next state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type is a parent - this
         // means the user needs to select from the next set of flag types before they can move on
@@ -225,7 +225,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
     // Populate new FlagDetail instance and add to the Flags data within the CaseField instance of the selected flag
     // location
-    flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+    flagsCaseFieldValue.details.push({ value: this.populateNewFlagDetailInstance() });
   }
 
   public updateFlagInCollection(): void {
@@ -305,15 +305,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   /**
-   * Set the parent {@link FormGroup} for this component's children, depending on the `Flags` {@link CaseField} instance
-   * to which data should be attached. **Note:** The parent is not _this_ component's `FormGroup` (as might otherwise be
+   * Set the parent {@link UntypedFormGroup} for this component's children, depending on the `Flags` {@link CaseField} instance
+   * to which data should be attached. **Note:** The parent is not _this_ component's `UntypedFormGroup` (as might otherwise be
    * expected) because this component is not expected to have a value, given it is used for the empty `FlagLauncher` base
    * field type.
    *
-   * @param pathToFlagsFormGroup The dot-delimited string that is the path to the `FormGroup` for a `Flags` instance
+   * @param pathToFlagsFormGroup The dot-delimited string that is the path to the `UntypedFormGroup` for a `Flags` instance
    */
   public setCaseFlagParentFormGroup(pathToFlagsFormGroup: string): void {
-    this.caseFlagParentFormGroup = this.formGroup.parent.get(pathToFlagsFormGroup) as FormGroup;
+    this.caseFlagParentFormGroup = this.formGroup.parent.get(pathToFlagsFormGroup) as UntypedFormGroup;
   }
 
   public populateNewFlagDetailInstance(): FlagDetail {

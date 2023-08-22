@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 
 import { CaseField } from '../../domain/definition/case-field.model';
@@ -49,7 +49,7 @@ export class SearchFiltersComponent implements OnInit {
   public selected: {
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,
-    formGroup?: FormGroup,
+    formGroup?: UntypedFormGroup,
     caseState?: CaseState,
     page?: number,
     metadataFields?: string[]
@@ -57,7 +57,7 @@ export class SearchFiltersComponent implements OnInit {
 
   public selectedJurisdictionCaseTypes?: CaseTypeLite[];
 
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
 
   constructor(private readonly searchService: SearchService,
     private readonly orderService: OrderService,
@@ -150,7 +150,7 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   public onCaseTypeIdChange(): void {
-    this.formGroup = new FormGroup({});
+    this.formGroup = new UntypedFormGroup({});
     this.searchInputsReady = false;
     this.searchInputs = [];
     this.searchService.getSearchInputs(
@@ -159,26 +159,26 @@ export class SearchFiltersComponent implements OnInit {
     ).pipe(
       tap(() => this.searchInputsReady = true)
     ).subscribe(searchInputs => {
-        this.searchInputs = searchInputs.sort(this.orderService.sortAsc);
+      this.searchInputs = searchInputs.sort(this.orderService.sortAsc);
 
-        const formValue = this.windowService.getLocalStorage(FORM_GROUP_VALUE_LOC_STORAGE);
-        let formValueObject = null;
-        if (formValue) {
-          formValueObject = JSON.parse(formValue);
+      const formValue = this.windowService.getLocalStorage(FORM_GROUP_VALUE_LOC_STORAGE);
+      let formValueObject = null;
+      if (formValue) {
+        formValueObject = JSON.parse(formValue);
+      }
+      searchInputs.forEach(item => {
+        if (item.field.elementPath) {
+          item.field.id = `${item.field.id}.${item.field.elementPath}`;
         }
-        searchInputs.forEach(item => {
-          if (item.field.elementPath) {
-            item.field.id = `${item.field.id}.${item.field.elementPath}`;
-          }
-          item.field.label = item.label;
-          if (formValueObject) {
-            item.field.value = formValueObject[item.field.id];
-          }
-        });
-        this.getCaseFields();
-      }, error => {
-        console.log('Search input fields request will be discarded reason: ', error.message);
+        item.field.label = item.label;
+        if (formValueObject) {
+          item.field.value = formValueObject[item.field.id];
+        }
       });
+      this.getCaseFields();
+    }, error => {
+      console.log('Search input fields request will be discarded reason: ', error.message);
+    });
   }
 
   public isJurisdictionSelected(): boolean {

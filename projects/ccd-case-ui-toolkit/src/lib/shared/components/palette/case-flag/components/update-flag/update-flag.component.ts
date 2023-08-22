@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
@@ -10,7 +10,7 @@ import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlag
 })
 export class UpdateFlagComponent implements OnInit {
 
-  @Input() public formGroup: FormGroup;
+  @Input() public formGroup: UntypedFormGroup;
   @Input() public selectedFlag: FlagDetailDisplayWithFormGroupPath;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
@@ -25,7 +25,7 @@ export class UpdateFlagComponent implements OnInit {
   private readonly commentsMaxCharLimit = 200;
 
   public ngOnInit(): void {
-    this.updateFlagHint = UpdateFlagStep.HINT_TEXT ;
+    this.updateFlagHint = UpdateFlagStep.HINT_TEXT;
     this.updateFlagCharLimitInfo = UpdateFlagStep.CHARACTER_LIMIT_INFO;
     this.formGroup.addControl(this.updateFlagControlName, new FormControl(''));
 

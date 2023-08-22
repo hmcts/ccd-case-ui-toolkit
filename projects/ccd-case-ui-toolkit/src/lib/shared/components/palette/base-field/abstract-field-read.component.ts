@@ -1,5 +1,5 @@
 import { Directive, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, UntypedFormGroup } from '@angular/forms';
 
 import { AbstractFormFieldComponent } from './abstract-form-field.component';
 import { PaletteContext } from './palette-context.enum';
@@ -11,7 +11,7 @@ export abstract class AbstractFieldReadComponent extends AbstractFormFieldCompon
   public caseReference: string;
 
   @Input()
-  public topLevelFormGroup: FormGroup | AbstractControl;
+  public topLevelFormGroup: UntypedFormGroup | AbstractControl;
 
   /**
    * Optional. Enable context-aware rendering of fields.

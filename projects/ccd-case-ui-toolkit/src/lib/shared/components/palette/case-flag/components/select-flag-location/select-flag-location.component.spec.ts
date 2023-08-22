@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockRpxTranslatePipe } from '../../../utils/first-error.pipe.spec';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
@@ -78,17 +78,17 @@ describe('SelectFlagLocationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ SelectFlagLocationComponent, MockRpxTranslatePipe ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [SelectFlagLocationComponent, MockRpxTranslatePipe]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectFlagLocationComponent);
     component = fixture.componentInstance;
-    component.formGroup = new FormGroup({});
+    component.formGroup = new UntypedFormGroup({});
     component.flagsData = flagsData;
     fixture.detectChanges();
   });

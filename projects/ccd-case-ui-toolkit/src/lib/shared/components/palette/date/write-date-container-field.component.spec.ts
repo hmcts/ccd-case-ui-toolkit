@@ -1,7 +1,7 @@
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -32,7 +32,7 @@ const CASE_FIELD: CaseField = ({
   value: VALUE
 }) as CaseField;
 
-const FORM_GROUP: FormGroup = new FormGroup({});
+const FORM_GROUP: formGroup = new UntypedFormGroup({});
 
 describe('WriteDateContainerFieldComponent', () => {
 
@@ -61,9 +61,11 @@ describe('WriteDateContainerFieldComponent', () => {
         ],
         providers: [
           FormatTranslatorService,
-          {provide: CaseFieldService, useValue: caseFieldService},
-          { provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
-              ['getTranslation$', 'translate']) },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          {
+            provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
+              ['getTranslation$', 'translate'])
+          },
         ]
       })
       .compileComponents();

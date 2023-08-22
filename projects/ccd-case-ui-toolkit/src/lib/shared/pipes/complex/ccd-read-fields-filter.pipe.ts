@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 
 import { plainToClassFromExist } from 'class-transformer';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
@@ -72,7 +72,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
 
   private static isValidCompound(field: CaseField, value?: object): boolean {
     return ReadFieldsFilterPipe.isCompound(field)
-            && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value);
+      && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value);
   }
 
   private static keepField(field: CaseField, value?: object, ignoreLabels = false): boolean {
@@ -92,13 +92,13 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     }
 
     return !ReadFieldsFilterPipe.isEmpty(field.value)
-              || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
+      || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
   }
 
   private static getValue(field: CaseField, values: any, index?: number): any {
     if (ReadFieldsFilterPipe.isEmpty(field.value)) {
       let value: any;
-      if (index >= 0 ) {
+      if (index >= 0) {
         value = values[index].value[field.id];
       } else {
         value = values[field.id];
@@ -135,7 +135,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
    */
   public transform(
     complexField: CaseField, keepEmpty?: boolean, index?: number,
-    setupHidden = false, formGroup?: FormGroup | AbstractControl, path?: string): CaseField[] {
+    setupHidden = false, formGroup?: UntypedFormGroup | AbstractControl, path?: string): CaseField[] {
     if (!complexField || !complexField.field_type) {
       return [];
     }

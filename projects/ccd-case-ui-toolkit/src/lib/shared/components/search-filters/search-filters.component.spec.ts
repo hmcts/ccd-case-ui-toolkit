@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Observable, of, throwError } from 'rxjs';
 import { ConditionalShowModule } from '../../directives/conditional-show/conditional-show.module';
@@ -131,7 +131,7 @@ const TEST_SEARCH_INPUTS: SearchInput[] = createSearchInputs();
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
   @Input()
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
 }
 
 function createObservableFrom<T>(param: T): Observable<T> {
@@ -143,7 +143,7 @@ let mockSearchService;
 let orderService;
 let onJurisdictionHandler: any;
 
-const TEST_FORM_GROUP = new FormGroup({});
+const TEST_FORM_GROUP = new UntypedFormGroup({});
 const METADATA_FIELDS = ['PersonLastName'];
 const searchfiltervalue = `{\"PersonLastName\":null,\"PersonFirstName\":\"CaseFirstName\",`
   + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\":null,\"AddressLine3\":null,`
@@ -230,7 +230,7 @@ describe('SearchFiltersComponent', () => {
       .whenStable()
       .then(() => {
         expect(searchHandler.applyFilters).toHaveBeenCalledWith({
-          selected: {formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined},
+          selected: { formGroup TEST_FORM_GROUP, page: 1, metadataFields: undefined },
           queryParams: {}
         });
       });
@@ -431,7 +431,7 @@ describe('SearchFiltersComponent', () => {
     component.apply();
     expect(searchHandler.applyFilters).toHaveBeenCalledWith({
       selected: component.selected,
-      queryParams: {jurisdiction: component.selected.jurisdiction.id}
+      queryParams: { jurisdiction: component.selected.jurisdiction.id }
     });
     expect(component.selected.formGroup.value).toEqual(TEST_FORM_GROUP.value);
   }));
@@ -492,7 +492,7 @@ describe('SearchFiltersComponent', () => {
     const writeFieldInstance = writeField.componentInstance;
     expect(writeFieldInstance.caseField.id).toEqual(firstInput.field.id);
     expect(writeFieldInstance.caseField.label).toEqual(firstInput.field.label);
-    expect(writeFieldInstance.formGroup).toBeTruthy();
+    expect(writeFieldInstance.UntypedFormGroup).toBeTruthy();
   });
 
   it('should render a valid search input complex field component with a path defined', () => {
@@ -511,7 +511,7 @@ describe('SearchFiltersComponent', () => {
     const writeFieldInstance = writeField.componentInstance;
 
     expect(writeFieldInstance.caseField.id).toEqual(expectedFieldId);
-    expect(writeFieldInstance.formGroup).toBeTruthy();
+    expect(writeFieldInstance.UntypedFormGroup).toBeTruthy();
   });
 
   it('should submit filters when apply button is clicked', waitForAsync(() => {
@@ -526,7 +526,7 @@ describe('SearchFiltersComponent', () => {
       name: control
     };
 
-    const formGroup = new FormGroup(formControls);
+    const formGroup = new UntypedFormGroup(formControls);
 
     component.onCaseTypeIdChange();
     fixture.detectChanges();
@@ -534,12 +534,12 @@ describe('SearchFiltersComponent', () => {
       .whenStable()
       .then(() => {
         const button = de.query(By.css('button'));
-        component.formGroup = formGroup;
+        component.formGroup = UntypedFormGroup;
         button.nativeElement.click();
         const arg: any = searchHandler.applyFilters.calls.mostRecent().args[0].selected;
         expect(arg['jurisdiction']).toEqual(JURISDICTION_3);
         expect(arg['caseType']).toEqual(CASE_TYPES_2[3]);
-        expect(arg['formGroup'].value).toEqual(formGroup.value);
+        expect(arg['UntypedFormGroup'].value).toEqual(formGroup.value);
         expect(searchHandler.applyFilters).toHaveBeenCalledTimes(1);
 
       });
@@ -618,7 +618,7 @@ describe('Clear localStorage', () => {
       name: control
     };
 
-    const formGroup = new FormGroup(formControls);
+    const formGroup = new UntypedFormGroup(formControls);
 
     component.onCaseTypeIdChange();
     fixture.detectChanges();
@@ -626,7 +626,7 @@ describe('Clear localStorage', () => {
       .whenStable()
       .then(() => {
         const button = de.query(By.css('#reset'));
-        component.formGroup = formGroup;
+        component.formGroup = UntypedFormGroup;
         button.nativeElement.click();
         expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(4);
 

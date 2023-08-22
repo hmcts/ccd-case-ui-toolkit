@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { ReadPhoneUKFieldComponent } from './read-phone-uk-field.component';
@@ -16,13 +16,13 @@ describe('ReadPhoneUKFieldComponent', () => {
   const EMPTY = '';
 
   describe('Non-persistable readonly phone-uk field', () => {
-  const CASE_FIELD: CaseField = ({
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  }) as CaseField;
+    const CASE_FIELD: CaseField = ({
+      id: 'x',
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE,
+      value: VALUE
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadPhoneUKFieldComponent>;
     let component: ReadPhoneUKFieldComponent;
@@ -71,7 +71,7 @@ describe('ReadPhoneUKFieldComponent', () => {
   });
 
   describe('Persistable readonly phone-uk field', () => {
-    const FORM_GROUP: FormGroup = new FormGroup({});
+    const FORM_GROUP: formGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',

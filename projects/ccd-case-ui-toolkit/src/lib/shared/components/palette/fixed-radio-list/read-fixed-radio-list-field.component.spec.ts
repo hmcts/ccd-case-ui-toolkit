@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -93,7 +93,7 @@ describe('ReadFixedRadioListFieldComponent', () => {
   });
 
   describe('Persistable readonly fixed radio list field', () => {
-    const FORM_GROUP: FormGroup = new FormGroup({});
+    const FORM_GROUP: formGroup = new UntypedFormGroup({});
     const CASE_FIELD: CaseField = ({
       id: 'x',
       label: 'X',

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -9,9 +9,9 @@ import { WizardPage } from '../domain/wizard-page.model';
 
 @Injectable()
 export class PageValidationService {
-  constructor(private readonly caseFieldService: CaseFieldService) {}
+  constructor(private readonly caseFieldService: CaseFieldService) { }
 
-  public isPageValid(page: WizardPage, editForm: FormGroup): boolean {
+  public isPageValid(page: WizardPage, editForm: UntypedFormGroup): boolean {
     return page.case_fields
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
       .filter(caseField => !this.isHidden(caseField, editForm))
@@ -23,7 +23,7 @@ export class PageValidationService {
       });
   }
 
-  public isHidden(caseField: CaseField, editForm: FormGroup, path?: string): boolean {
+  public isHidden(caseField: CaseField, editForm: UntypedFormGroup, path?: string): boolean {
     const formFields = editForm.getRawValue();
     const condition = ShowCondition.getInstance(caseField.show_condition);
     if (path && path.indexOf(`_${caseField.id}_`) === -1) {

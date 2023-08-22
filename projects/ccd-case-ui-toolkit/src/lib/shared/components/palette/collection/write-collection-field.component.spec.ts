@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -62,11 +62,11 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 const fieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
+  inputs: ['caseField', 'caseFields', 'UntypedFormGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
 });
 const fieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
-  inputs: ['caseField', 'caseFields', 'formGroup', 'context']
+  inputs: ['caseField', 'caseFields', 'UntypedFormGroup', 'context']
 });
 
 describe('WriteCollectionFieldComponent', () => {
@@ -79,7 +79,7 @@ describe('WriteCollectionFieldComponent', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: FormGroup;
+  let formGroup: UntypedFormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -107,7 +107,7 @@ describe('WriteCollectionFieldComponent', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new FormGroup({
+    formGroup = new UntypedFormGroup({
       field1: new FormControl()
     });
 
@@ -143,7 +143,7 @@ describe('WriteCollectionFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -329,7 +329,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: FormGroup;
+  let formGroup: UntypedFormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -356,7 +356,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new FormGroup({
+    formGroup = new UntypedFormGroup({
       field1: new FormControl()
     });
 
@@ -392,7 +392,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -445,7 +445,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: FormGroup;
+  let formGroup: UntypedFormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -472,7 +472,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new FormGroup({
+    formGroup = new UntypedFormGroup({
       field1: new FormControl()
     });
 
@@ -508,7 +508,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -533,7 +533,7 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: FormGroup;
+  let formGroup: UntypedFormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -561,7 +561,7 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
         }
       ]
     }) as CaseField);
-    formGroup = new FormGroup({
+    formGroup = new UntypedFormGroup({
       field1: new FormControl()
     });
 
@@ -597,7 +597,7 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -639,7 +639,7 @@ describe('WriteCollectionFieldComponent', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: FormGroup;
+  let formGroup: UntypedFormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -667,7 +667,7 @@ describe('WriteCollectionFieldComponent', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new FormGroup({
+    formGroup = new UntypedFormGroup({
       field1: new FormControl()
     });
 
@@ -703,7 +703,7 @@ describe('WriteCollectionFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -741,7 +741,7 @@ describe('WriteCollectionFieldComponent', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: FormGroup;
+  let formGroup: UntypedFormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -769,7 +769,7 @@ describe('WriteCollectionFieldComponent', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new FormGroup({
+    formGroup = new UntypedFormGroup({
       field1: new FormControl()
     });
 
@@ -805,7 +805,7 @@ describe('WriteCollectionFieldComponent', () => {
     component = fixture.componentInstance;
     component.caseField = caseField;
     component.caseFields = [caseField];
-    component.formGroup = formGroup;
+    component.formGroup = UntypedFormGroup;
     component.ngOnInit();
     de = fixture.debugElement;
     fixture.detectChanges();
@@ -819,7 +819,7 @@ describe('WriteCollectionFieldComponent', () => {
   it('should add dynamic item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
     component.caseField = ({ ...component.caseField, field_type: null } as unknown as CaseField);
-    component.caseFields = [({...component.caseField, field_type: null } as unknown as CaseField)];
+    component.caseFields = [({ ...component.caseField, field_type: null } as unknown as CaseField)];
     addButton.nativeElement.click();
     fixture.detectChanges();
 

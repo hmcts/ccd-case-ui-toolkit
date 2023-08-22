@@ -1,11 +1,11 @@
 import { inject, TestBed } from '@angular/core/testing';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
 import { ValidatorsUtils } from './validators.utils';
 
 describe('ValidatorsUtils', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ ValidatorsUtils ]
+      providers: [ValidatorsUtils]
     });
   });
 
@@ -21,9 +21,9 @@ describe('ValidatorsUtils', () => {
   }));
 
   it('should check formArraySelectedValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
-    const form = new FormGroup({
-      arrayControl: new FormArray([new FormGroup({
-        selection: new FormGroup({})
+    const form = new UntypedFormGroup({
+      arrayControl: new FormArray([new UntypedFormGroup({
+        selection: new UntypedFormGroup({})
       })]
       ),
     });

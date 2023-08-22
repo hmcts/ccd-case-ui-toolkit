@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
-import { CaseField, CaseState, CaseType, DisplayMode,
+import {
+  CaseField, CaseState, CaseType, DisplayMode,
   DRAFT_PREFIX, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewColumn,
-  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters } from '../../domain';
+  SearchResultViewItem, SearchResultViewItemComparator, SortOrder, SortParameters
+} from '../../domain';
 import { CaseReferencePipe } from '../../pipes';
 import { ActivityService, BrowserService, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
 
@@ -36,7 +38,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public caseState: CaseState;
 
   @Input()
-  public caseFilterFG: FormGroup;
+  public caseFilterFG: UntypedFormGroup;
 
   @Input()
   public resultView: SearchResultView;
@@ -85,7 +87,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     jurisdiction?: Jurisdiction,
     caseType?: CaseType,
     caseState?: CaseState,
-    formGroup?: FormGroup,
+    formGroup?: UntypedFormGroup,
     metadataFields?: string[],
     page?: number
   } = {};
@@ -224,7 +226,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     for (let i = 0, l = this.resultView.results.length; i < l; i++) {
       const r = this.resultView.results[i];
       if (this.canBeShared(r)) {
-        canBeSharedCount ++;
+        canBeSharedCount++;
       }
       if (!this.isSelected(r) && this.canBeShared(r)) {
         return false;
@@ -330,8 +332,8 @@ export class SearchResultComponent implements OnChanges, OnInit {
         this.consumerSortParameters.order = SortOrder.DESCENDING;
       } else {
         this.consumerSortParameters.order = this.consumerSortParameters.order === SortOrder.DESCENDING ?
-                                            SortOrder.ASCENDING :
-                                            SortOrder.DESCENDING;
+          SortOrder.ASCENDING :
+          SortOrder.DESCENDING;
       }
       this.consumerSortParameters.column = column.case_field_id;
       this.consumerSortParameters.type = column.case_field_type.type;

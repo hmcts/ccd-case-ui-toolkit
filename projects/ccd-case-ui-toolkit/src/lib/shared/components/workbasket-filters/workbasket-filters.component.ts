@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { CaseField } from '../../domain/definition/case-field.model';
@@ -51,12 +51,12 @@ export class WorkbasketFiltersComponent implements OnInit {
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,
     caseState?: CaseState,
-    formGroup?: FormGroup,
+    formGroup?: UntypedFormGroup,
     page?: number,
     metadataFields?: string[]
   };
 
-  public formGroup: FormGroup = new FormGroup({});
+  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
 
   public selectedJurisdictionCaseTypes?: CaseTypeLite[];
   public selectedCaseTypeStates?: CaseState[];
@@ -118,14 +118,14 @@ export class WorkbasketFiltersComponent implements OnInit {
       }
     }
     // Apply filters
-    this.onApply.emit({selected: this.selected, queryParams});
+    this.onApply.emit({ selected: this.selected, queryParams });
     this.setFocusToTop();
   }
 
   public reset(): void {
     this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
     this.windowService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
-    setTimeout (() => {
+    setTimeout(() => {
       this.resetFieldsWhenNoDefaults();
       this.onReset.emit(true);
     }, 500);
@@ -166,31 +166,31 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.caseType) {
       this.selectedCaseTypeStates = this.sortStates(this.selected.caseType.states);
       this.selected.caseState = null;
-      this.formGroup = new FormGroup({});
+      this.formGroup = new UntypedFormGroup({});
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
         this.workbasketInputFilterService.getWorkbasketInputs(this.selected.jurisdiction.id, this.selected.caseType.id).pipe(
           take(1)
         ).subscribe(workbasketInputs => {
-            this.workbasketInputsReady = true;
-            this.workbasketInputs = workbasketInputs
-              .sort(this.orderService.sortAsc);
-            const formValue = this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
+          this.workbasketInputsReady = true;
+          this.workbasketInputs = workbasketInputs
+            .sort(this.orderService.sortAsc);
+          const formValue = this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
 
-            workbasketInputs.forEach(item => {
-              if (item.field.elementPath) {
-                item.field.id = `${item.field.id}.${item.field.elementPath}`;
-              }
-              item.field.label = item.label;
-              if (formValue) {
-                const searchFormValueObject = JSON.parse(formValue);
-                item.field.value = searchFormValueObject[item.field.id];
-              }
-            });
-            this.getCaseFields();
-          }, error => {
-            console.log('Workbasket input fields request will be discarded reason: ', error.message);
+          workbasketInputs.forEach(item => {
+            if (item.field.elementPath) {
+              item.field.id = `${item.field.id}.${item.field.elementPath}`;
+            }
+            item.field.label = item.label;
+            if (formValue) {
+              const searchFormValueObject = JSON.parse(formValue);
+              item.field.value = searchFormValueObject[item.field.id];
+            }
           });
+          this.getCaseFields();
+        }, error => {
+          console.log('Workbasket input fields request will be discarded reason: ', error.message);
+        });
       }
     } else {
       this.resetCaseState();
@@ -221,7 +221,7 @@ export class WorkbasketFiltersComponent implements OnInit {
    * Has been implemented for 'Region and FRC filters' and can be extended
    * in future to incorporate other dynamic filters.
    */
-   public updateFormGroupFilters(): void {
+  public updateFormGroupFilters(): void {
     // Read the form group local storage
     const formGroupLS = JSON.parse(this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE));
 
