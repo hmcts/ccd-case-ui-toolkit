@@ -2,6 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { CaseView } from '../../../../../../shared/domain';
+import { CaseNotifier, WorkAllocationService } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
 
@@ -16,6 +20,9 @@ describe('QueryCheckYourAnswersComponent', () => {
   let component: QueryCheckYourAnswersComponent;
   let fixture: ComponentFixture<QueryCheckYourAnswersComponent>;
   let nativeElement: any;
+  let casesService: any;
+  let caseNotifier: any;
+  let mockWorkAllocationService: any;
 
   const items = [
     {
@@ -113,12 +120,50 @@ describe('QueryCheckYourAnswersComponent', () => {
     ]
   });
 
+  const snapshotActivatedRoute = {
+    snapshot: {
+      params: {
+        qid: 1
+      }
+    }
+  };
+
+  const CASE_VIEW: CaseView = {
+    case_id: '1',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test',
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: []
+  };
+
   beforeEach(async () => {
+    mockWorkAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
+    casesService = jasmine.createSpyObj('casesService', ['getCaseViewV2']);
+    caseNotifier = new CaseNotifier(casesService);
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         QueryCheckYourAnswersComponent,
         RpxTranslateMockPipe
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: snapshotActivatedRoute },
+        { provide: WorkAllocationService, useValue: mockWorkAllocationService },
+        { provide: CaseNotifier, useValue: caseNotifier }
       ]
     })
       .compileComponents();

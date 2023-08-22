@@ -7,7 +7,7 @@ import { EventCompletionParams } from '../../../../case-editor/domain/event-comp
 })
 export class QueryEventCompletionComponent {
   @Input() public eventCompletionParams: EventCompletionParams;
-  
+
   public onEventCanBeCompleted(value: boolean) {
     if (value) {
       // Submit the query response

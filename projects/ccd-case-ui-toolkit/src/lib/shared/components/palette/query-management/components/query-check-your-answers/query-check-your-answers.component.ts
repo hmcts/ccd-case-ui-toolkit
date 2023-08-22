@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { TaskSearchParameter } from '../../../../../../../lib/shared/domain';
-import { CaseNotifier, WorkAllocationService } from '../../../../case-editor';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
+import { CaseNotifier, WorkAllocationService } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 
 @Component({
@@ -13,7 +13,7 @@ import { QueryCreateContext, QueryListItem } from '../../models';
   templateUrl: './query-check-your-answers.component.html',
   styleUrls: ['./query-check-your-answers.component.scss']
 })
-export class QueryCheckYourAnswersComponent {
+export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public formGroup: FormGroup;
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
@@ -21,7 +21,6 @@ export class QueryCheckYourAnswersComponent {
   public queryCreateContextEnum = QueryCreateContext;
 
   public eventCompletionParams: EventCompletionParams;
-  public triggerEvent: boolean;
   private caseId: string;
   private eventId: string;
   private queryId: string;
@@ -49,12 +48,12 @@ export class QueryCheckYourAnswersComponent {
     this.backClicked.emit(true);
   }
 
-  public searchTask(): void {
+  public submit(): void {
     // Search Task
     const searchParameter = { ccdId: this.caseId } as TaskSearchParameter;
     this.searchTasksSubsciption = this.workAllocationService.searchTasks(searchParameter)
       .subscribe((response: any) => {
-        
+
         // Filter task by query id
         let filteredtask = response.tasks?.find((task) => {
           return Object.values(task.additional_properties).some((value) => {
@@ -64,23 +63,18 @@ export class QueryCheckYourAnswersComponent {
           });
         });
 
-        // To be deleted, mocking for test 
+        // To be deleted, mocking for test
         filteredtask = {
           id: '06a4b717-ff09-11ed-a393-6659d66f4970'
         };
 
-        // Trigger event completion        
+        // Trigger event completion
         this.eventCompletionParams = {
           caseId: this.caseId,
           eventId: this.eventId,
           task: filteredtask
-        }         
-        
-        this.triggerEvent = true;
+        };
+
       });
-  }
-  
-  public submit() {
-    this.searchTask();
   }
 }
