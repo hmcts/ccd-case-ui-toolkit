@@ -2639,7 +2639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@circlon/angular-tree-component@npm:^11.0.0":
+"@circlon/angular-tree-component@npm:^11.0.4":
   version: 11.0.4
   resolution: "@circlon/angular-tree-component@npm:11.0.4"
   dependencies:
@@ -3256,9 +3256,9 @@ __metadata:
     "@edium/fsm": ^2.1.2
     "@hmcts/ccpay-web-component": "link:./temp-dist/payment-lib"
     "@hmcts/frontend": ^0.0.50-alpha
-    "@hmcts/media-viewer": 2.9.3
-    "@ngrx/effects": ^7.4.0
-    "@ngrx/store": ^7.4.0
+    "@hmcts/media-viewer": 2.10.0
+    "@ngrx/effects": ^11.1.1
+    "@ngrx/store": ^15.2.1
     "@nicky-lenaers/ngx-scroll-to": ^9.0.0
     "@storybook/addon-actions": ^6.5.10
     "@storybook/addon-essentials": ^6.5.10
@@ -3382,30 +3382,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:2.9.3":
-  version: 2.9.3
-  resolution: "@hmcts/media-viewer@npm:2.9.3"
+"@hmcts/media-viewer@npm:2.10.0":
+  version: 2.10.0
+  resolution: "@hmcts/media-viewer@npm:2.10.0"
   dependencies:
-    "@circlon/angular-tree-component": ^11.0.0
-    "@swimlane/ngx-datatable": ^19.0.0
+    "@circlon/angular-tree-component": ^11.0.4
+    "@swimlane/ngx-datatable": ^20.0.0
     hammerjs: ^2.0.8
-    mutable-div: 0.0.11
+    mutable-div: ^1.0.0
     pdfjs-dist: 2.5.207
     socket.io-client: ^3.1.1
-    tslib: ^2.0.0
+    tslib: ^2.3.0
     uuid: ^3.4.0
   peerDependencies:
-    "@angular/animations": ^11.2.14
-    "@angular/common": ^11.2.14
-    "@angular/core": ^11.2.14
-    "@angular/forms": ^11.2.14
-    "@angular/material": ^11.2.14
-    "@angular/platform-browser": ^11.2.14
-    "@ngrx/effects": ^11.0.0
-    "@ngrx/router-store": ^11.0.0
-    "@ngrx/store": ^11.0.0
-    "@ngrx/store-devtools": ^11.0.0
-  checksum: d6702c0141da24cd7ebaecb5764f5f6eae825cdcd4633c06cfb5d613b314dac4ba899292be9543a8b359f48091f78d36e5ea58bfc050afc5f0947bdedc06a628
+    "@angular/animations": ^15.2.9
+    "@angular/common": ^15.2.9
+    "@angular/core": ^15.2.9
+    "@angular/forms": ^15.2.9
+    "@angular/material": ^15.2.9
+    "@angular/platform-browser": ^15.2.9
+    "@ngrx/effects": ^15.0.0
+    "@ngrx/router-store": ^15.0.0
+    "@ngrx/store": ^15.0.0
+    "@ngrx/store-devtools": ^15.0.0
+  checksum: b401939f6d96a4732836cab5748bb18573f863661d57b0710f02015f6db23b4f87d0b5dcc24cd6240a231514865cbe71a72e8d0d1354d92b4f6e0655af8340fd
   languageName: node
   linkType: hard
 
@@ -4432,24 +4432,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/effects@npm:^7.4.0":
-  version: 7.4.0
-  resolution: "@ngrx/effects@npm:7.4.0"
+"@ngrx/effects@npm:^11.1.1":
+  version: 11.1.1
+  resolution: "@ngrx/effects@npm:11.1.1"
+  dependencies:
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/core": ^7.0.0
-    "@ngrx/store": 7.4.0
-    rxjs: ^6.0.0
-  checksum: c2b05a8b824ebf9d6e80dffadd2b9d9d16808e4c477b548cb5cd470bd718193809576196af5686d2a4e35ed9cd96e83e55dae6fdc09d0cb9a26dc6a2ecf79699
+    "@angular/core": ^11.0.0
+    "@ngrx/store": 11.1.1
+    rxjs: ^6.5.3
+  checksum: ec66a6e6b3ca6c07fb2f38a9e847025007d83bed168b9ac77d34eec5aa15a0a09f3fec83094dd7bffb8105708ac735619e4e5c9772c0f733562f1d379e8274e8
   languageName: node
   linkType: hard
 
-"@ngrx/store@npm:^7.4.0":
-  version: 7.4.0
-  resolution: "@ngrx/store@npm:7.4.0"
+"@ngrx/store@npm:^15.2.1":
+  version: 15.4.0
+  resolution: "@ngrx/store@npm:15.4.0"
+  dependencies:
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/core": ^7.0.0
-    rxjs: ^6.0.0
-  checksum: e5da97748f3cbf7661892fde1afbfc367e62471e7ee167e966daa02a5cea95297833635067981ad05db53eb9452fe68abf969827f370e6c59d2eb19f335c5bbb
+    "@angular/core": ^15.0.0
+    rxjs: ^6.5.3 || ^7.5.0
+  checksum: 444ab9c3da0f69fda6c09a92d50de5b828b3dce221abb4167aecbac3a120102ccbd64d3060c173b0db21b29632b850646a4d9d977a15c65d45a244f2352b3c5e
   languageName: node
   linkType: hard
 
@@ -5903,17 +5907,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swimlane/ngx-datatable@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "@swimlane/ngx-datatable@npm:19.0.0"
+"@swimlane/ngx-datatable@npm:^20.0.0":
+  version: 20.1.0
+  resolution: "@swimlane/ngx-datatable@npm:20.1.0"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": ^11.0.2
-    "@angular/core": ^11.0.2
-    "@angular/platform-browser": ^11.0.2
-    rxjs: ^6.6.3
-  checksum: 34a3a7568b0c82caed1fd226ba37344c4cf6897244bf03dfcb9e94cd08e3838977fdba48464fdc89e0336d94d6ec4d5c3f281eb192dffde468f935df187ae858
+    "@angular/common": ">=11.0.2"
+    "@angular/core": ">=11.0.2"
+    "@angular/platform-browser": ">=11.0.2"
+    rxjs: ^6.6.3 || ^7.4.0
+  checksum: ecc6ddab9e68ca07a100183357a6c8d1335d066d1676e0156202ca33f7008b6c7debe1b31bc4404cf3f25fe874a04a7ae39c6430c2340c6831dfafc282a38e66
   languageName: node
   linkType: hard
 
@@ -18381,16 +18385,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mutable-div@npm:0.0.11":
-  version: 0.0.11
-  resolution: "mutable-div@npm:0.0.11"
+"mutable-div@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "mutable-div@npm:1.0.0"
   dependencies:
     tslib: ^1.9.0
   peerDependencies:
     "@angular/common": ^8.2.13
     "@angular/core": ^8.2.13
     hammerjs: ^2.0.8
-  checksum: b47f171e5d8ba9ecfcb32347c21ebd6553b472a07ff0985e3a852e8705cebe1f8b1a065038b00015f01a01df10eabc1b800441e3a3d1474b6bdf03a156bfb664
+  checksum: 162d3c33dd18abb22b6554fbb272f95cacc9fdb939e030436e9d7a13a87addacd93bcdb80646586e4ff19d94119b7d3205ab782e3243e0cad17b437b153cd17e
   languageName: node
   linkType: hard
 
