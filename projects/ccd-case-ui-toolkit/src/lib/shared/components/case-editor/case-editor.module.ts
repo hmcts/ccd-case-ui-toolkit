@@ -37,11 +37,6 @@ import { CaseEditGenericErrorsComponent } from './case-edit-generic-errors/case-
 import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
 import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
 import { CaseEditComponent } from './case-edit/case-edit.component';
-import {
-  CaseEventCompletionComponent,
-  CaseEventCompletionTaskCancelledComponent,
-  CaseEventCompletionTaskReassignedComponent
-} from './case-event-completion';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import {
   CaseNotifier,
@@ -78,9 +73,6 @@ import { CaseworkerService } from './services/case-worker.service';
     CaseEditPageComponent,
     CaseEditFormComponent,
     CaseEditSubmitComponent,
-    CaseEventCompletionComponent,
-    CaseEventCompletionTaskCancelledComponent,
-    CaseEventCompletionTaskReassignedComponent,
     CaseCreateComponent,
     CaseProgressComponent,
     CaseEditGenericErrorsComponent
