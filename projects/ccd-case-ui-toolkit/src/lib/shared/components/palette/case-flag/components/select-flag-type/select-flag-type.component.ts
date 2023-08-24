@@ -163,17 +163,24 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     if (!this.selectedFlagType) {
       // If there is any prior flag type selection then the message will differ
-      const errorMessage = !this.cachedFlagType
-        ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED
-        : SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
+      let errorMessage = '';
+      if (this.cachedFlagType) {
+        errorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
+      } else {
+        errorMessage  = this.isDisplayContextParameterExternal
+        ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED_EXTERNAL
+        : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
+      }
       this.flagTypeNotSelectedErrorMessage = errorMessage;
       this.errorMessages.push({title: '', description: errorMessage, fieldId: 'conditional-radios-list'});
     }
     if (this.otherFlagTypeSelected) {
       const otherFlagTypeDescription = this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
       if (!otherFlagTypeDescription) {
-        this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
-        this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description'});
+        this.flagTypeErrorMessage = this.isDisplayContextParameterExternal
+          ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED_EXTERNAL
+          : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
+        this.errorMessages.push({title: '', description: `${this.flagTypeErrorMessage}`, fieldId: 'other-flag-type-description'});
       }
       if (otherFlagTypeDescription.length > this.maxCharactersForOtherFlagType) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED;

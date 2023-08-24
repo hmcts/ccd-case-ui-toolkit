@@ -609,6 +609,21 @@ export class FieldsUtils {
       return activeCount;
   }
 
+  public static getValidationErrorMessageForFlagLauncherCaseField(caseField: CaseField): string {
+    switch(caseField.display_context_parameter) {
+      case '#ARGUMENT(CREATE)':
+        return 'Please select Next to complete the creation of the case flag';
+      case '#ARGUMENT(CREATE,EXTERNAL)':
+        return 'Please select Next to complete the creation of the support request';
+      case '#ARGUMENT(UPDATE)':
+        return 'Please select Next to complete the update of the selected case flag';
+      case '#ARGUMENT(UPDATE,EXTERNAL)':
+        return 'Please select Next to complete the update of the selected support request';
+      default:
+        return '';
+    }
+  }
+
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {
     const currentState = this.getCurrentEventState(eventTrigger, form);
     return (page: WizardPage): boolean => {
