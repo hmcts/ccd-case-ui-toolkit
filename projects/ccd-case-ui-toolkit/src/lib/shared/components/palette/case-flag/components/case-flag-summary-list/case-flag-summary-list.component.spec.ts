@@ -5,7 +5,7 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
-import { CaseFlagDisplayContextParameter } from '../../enums';
+import { CaseFlagCheckYourAnswersPageStep, CaseFlagDisplayContextParameter } from '../../enums';
 import { CaseFlagSummaryListComponent } from './case-flag-summary-list.component';
 
 describe('CaseFlagSummaryListComponent', () => {
