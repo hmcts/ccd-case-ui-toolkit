@@ -43,8 +43,13 @@
 ### Version 6.16.0-query-management-raise-a-query-page-changes
 **EUI-8602** Query management raise a query page changes
 
-### Version 6.19.0-case-flags-v2
-**EUI-7243** Case flags v2
+### Version 6.19.2-case-flags-v2-reasonable-adjustments-text-amendments
+**EUI-8283** Reasonable adjustments amend the term flag and flag type
+**EUI-8284** Reasonable adjustments amend screen caption text on the tell us more about the request screen
+**EUI-8287** Reasonable adjustments amend the update screen caption text to remove for not approved
+
+### Version 6.19.2-case-flags-v2-reasonable-adjustments-v2
+**EUI-7243** Case flags v2 reasonable adjustments
 
 ### Version 6.18.3-hotfix-EUI-8738
 **EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page

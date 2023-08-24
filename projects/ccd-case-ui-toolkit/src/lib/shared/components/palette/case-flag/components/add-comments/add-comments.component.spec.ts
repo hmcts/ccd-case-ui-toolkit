@@ -39,6 +39,7 @@ describe('AddCommentsComponent', () => {
   it('should show an error message on clicking "Next" if comments are mandatory but none have been entered', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
+    component.isDisplayContextParameterExternal = false;
     nextButton.click();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
@@ -53,6 +54,26 @@ describe('AddCommentsComponent', () => {
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
+  });
+
+  it('should show an error message on clicking "Next" if comments are mandatory but none have been entered for support request', () => {
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    component.isDisplayContextParameterExternal = true;
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_COMMENTS,
+      errorMessages: component.errorMessages
+    });
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL,
+      fieldId: component.flagCommentsControlName
+    });
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement.textContent).toContain(AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL);
   });
 
   it('should not show an error message on clicking "Next" if comments are not mandatory and none have been entered', () => {
