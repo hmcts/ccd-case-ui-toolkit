@@ -83,9 +83,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']));
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
-    this.pageTitle = this.caseEdit.isCaseFlagSubmission
-      ? CaseEditSubmitTitles.REVIEW_FLAG_DETAILS
-      : CaseEditSubmitTitles.CHECK_YOUR_ANSWERS;
+    this.pageTitle = this.getPageTitle();
   }
 
   public ngOnDestroy(): void {
@@ -112,6 +110,18 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       form: this.editForm,
       submit: this.caseEdit.submit,
     });
+  }
+
+  private getPageTitle(): string {
+    const caseFlagField = this.eventTrigger.case_fields.find(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']));
+    if (caseFlagField) {
+      const isCaseFlagExternalMode = caseFlagField.display_context_parameter === '#ARGUMENT(UPDATE,EXTERNAL)' ||
+        caseFlagField.display_context_parameter === '#ARGUMENT(CREATE,EXTERNAL)';
+      return isCaseFlagExternalMode
+        ? CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST
+        : CaseEditSubmitTitles.REVIEW_FLAG_DETAILS;
+    }
+    return CaseEditSubmitTitles.CHECK_YOUR_ANSWERS;
   }
 
   private get hasErrors(): boolean {
