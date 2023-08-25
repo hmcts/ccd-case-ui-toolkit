@@ -4,12 +4,15 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
-import { DocumentData, FormDocument, HttpError } from '../../../domain';
-import { DocumentManagementService, JurisdictionService } from '../../../services';
-import { CaseNotifier } from '../../case-editor';
-import { DocumentDialogComponent } from '../../dialogs';
-import { initDialog } from '../../helpers';
-import { AbstractFieldWriteComponent } from '../base-field';
+import { CaseView } from '../../../domain/case-view/case-view.model';
+import { DocumentData, FormDocument } from '../../../domain/document/document-data.model'
+import { HttpError } from '../../../domain/http/http-error.model';
+import { DocumentManagementService } from '../../../services/document-management/document-management.service'
+import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
+import { CaseNotifier } from '../../case-editor/services/case.notifier';
+import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
+import { initDialog } from '../../helpers/init-dialog-helper';
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
 
 @Component({
@@ -203,7 +206,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   // get the currently selected jurisdiction
   private subscribeToCaseDetails(): void {
     this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe({
-      next: (caseDetails) => {
+      next: (caseDetails: CaseView) => {
         this.caseTypeId = caseDetails?.case_id;
         this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
         console.info(`caseNotifier.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)

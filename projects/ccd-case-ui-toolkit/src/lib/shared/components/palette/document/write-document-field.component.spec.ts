@@ -119,6 +119,7 @@ describe('WriteDocumentFieldComponent', () => {
 
   const jurisdictionService: any = {};
   const eventTriggerService: any = {};
+  const caseNotifier: any = {};
 
   beforeEach(waitForAsync(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
@@ -158,6 +159,7 @@ describe('WriteDocumentFieldComponent', () => {
           { provide: CasesService, useValue: casesService },
           { provide: JurisdictionService, useValue: jurisdictionService },
           { provide: EventTriggerService, useValue: eventTriggerService },
+          { provide: CaseNotifier, useValue: caseNotifier },
           DocumentDialogComponent
         ]
       })
