@@ -386,6 +386,55 @@ describe('CaseEditSubmitComponent', () => {
       expect(eventNotes).toBeNull();
     });
 
+    it('should show event notes when set in event trigger and showEventNotes is called', () => {
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(true);
+      expect(eventNotes).not.toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and profile is solicitor and showEventNotes is called', () => {
+      comp.profile.user.idam.roles = ['divorce-solicitor'];
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.caseEdit.isCaseFlagSubmission = true;
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not set in event trigger and showEventNotes is called', () => {
+      comp.eventTrigger.show_event_notes = null;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not defined in event trigger and showEventNotes is called', () => {
+      comp.eventTrigger.show_event_notes = undefined;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
     it('should return false when no field exists and readOnlySummaryFieldsToDisplayExists is called', () => {
       comp.eventTrigger.case_fields = [];
       fixture.detectChanges();
