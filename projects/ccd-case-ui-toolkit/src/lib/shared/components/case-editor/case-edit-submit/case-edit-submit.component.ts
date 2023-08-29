@@ -34,7 +34,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public contextFields: CaseField[];
   public task: Task;
   public pageTitle: string;
-  public allFieldsValues: any;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -84,7 +83,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.caseEdit.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
-    this.allFieldsValues = this.editForm.getRawValue().data;
   }
 
   public ngOnDestroy(): void {
