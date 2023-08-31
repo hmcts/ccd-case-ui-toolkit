@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+### Version 6.19.2-case-flags-v2-reasonable-adjustments-text-amendments-v2
+**EUI-8283** Reasonable adjustments amend the term flag and flag type
+**EUI-8284** Reasonable adjustments amend screen caption text on the tell us more about the request screen
+**EUI-8287** Reasonable adjustments amend the update screen caption text to remove for not approved
+
 ### Version 6.19.2-case-flags-v2-reasonable-adjustments-v2
 **EUI-7243** Case flags v2 reasonable adjustments
 

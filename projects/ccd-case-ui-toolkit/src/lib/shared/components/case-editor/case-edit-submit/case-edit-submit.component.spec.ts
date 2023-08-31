@@ -31,6 +31,7 @@ import { aWizardPage } from '../case-edit.spec';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { CaseNotifier } from '../services';
+import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
 
 import createSpyObj = jasmine.createSpyObj;
@@ -384,6 +385,92 @@ describe('CaseEditSubmitComponent', () => {
 
       expect(result).toBeFalsy();
       expect(eventNotes).toBeNull();
+    });
+
+    it('should show event notes when set in event trigger and showEventNotes is called', () => {
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(true);
+      expect(eventNotes).not.toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and profile is solicitor and showEventNotes is called', () => {
+      comp.profile.user.idam.roles = ['divorce-solicitor'];
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.caseEdit.isCaseFlagSubmission = true;
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not set in event trigger and showEventNotes is called', () => {
+      comp.eventTrigger.show_event_notes = null;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not defined in event trigger and showEventNotes is called', () => {
+      comp.eventTrigger.show_event_notes = undefined;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should set correct page title', () => {
+      const caseFieldCaseFlagCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE)', 2);
+      const caseFieldCaseFlagUpdate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE)', 2);
+      const caseFieldCaseFlagExternalCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE,EXTERNAL)', 2);
+      const caseFieldCaseFlagExternalUpdate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE,EXTERNAL)', 2);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalUpdate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagUpdate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseField1
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.CHECK_YOUR_ANSWERS);
     });
 
     it('should return false when no field exists and readOnlySummaryFieldsToDisplayExists is called', () => {
