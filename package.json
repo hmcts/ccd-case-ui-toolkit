@@ -63,7 +63,7 @@
     "@angular/router": "~15.2.9",
     "@angular/upgrade": "~15.2.9",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "link:./temp-dist/payment-lib",
+    "@hmcts/ccpay-web-component": "6.0.0-beta01",
     "@hmcts/frontend": "^0.0.50-alpha",
     "@hmcts/media-viewer": "2.10.0",
     "@ngrx/effects": "^11.1.1",
