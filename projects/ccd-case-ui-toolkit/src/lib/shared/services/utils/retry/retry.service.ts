@@ -52,6 +52,7 @@ export class RetryUtil {
 
     private pipeTimeOutControlOn<T>(in$: Observable<T>, timeoutPeriods: number[]): Observable<T> {
         const timeOutAfterSeconds = timeoutPeriods[0];
+        console.info(`Piping timeout control with ${timeOutAfterSeconds} seconds.`);
         const out$ = in$.pipe(timeout(timeOutAfterSeconds * 1000));
         return out$;
     }
@@ -68,7 +69,7 @@ export class RetryUtil {
                     }
                     else {
                         console.error('Will NOT retry.');
-                        throwError(error);
+                        throw error;
                     }
                     return timer(0);
                 }),
