@@ -74,6 +74,9 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": [],
             "scripts": [],
+            "include": [
+              "**/*.spec.ts"
+            ],
             "assets": [
               "src/favicon.ico"
             ]
@@ -143,7 +146,6 @@
             }
           }
         },
-
         "storybook": {
           "builder": "@storybook/angular:start-storybook",
           "options": {
@@ -169,13 +171,15 @@
             "main": "projects/ccd-case-ui-toolkit/src/test.ts",
             "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.spec.json",
             "karmaConfig": "projects/ccd-case-ui-toolkit/src/karma.conf.js",
-            "codeCoverageExclude": ["**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"],
+            "codeCoverageExclude": [
+              "**/*.stories.ts",
+              "storybook/*.ts",
+              "storybook-static/*.ts"
+            ],
+            "include": [
+              "projects/**/*.spec.ts"
+            ],
             "codeCoverage": true
-          },
-          "codeCoverage": {
-            "exclude": [
-              "**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"
-            ]
           }
         },
         "lint": {
@@ -192,6 +196,5 @@
         }
       }
     }
-  },
-  "defaultProject": "ccd-case-ui-toolkit-lib"
+  }
 }
