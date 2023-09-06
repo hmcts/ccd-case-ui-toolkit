@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.13.10-case-file-view-sort-by-document-upload-date-v8
+### Version 6.13.10-case-file-view-sort-by-document-upload-date-v9
 **EUI-7812** Case file view sort by document upload date
 
 ### Version 6.13.10-case-file-view-display-document-upload-date-v3
