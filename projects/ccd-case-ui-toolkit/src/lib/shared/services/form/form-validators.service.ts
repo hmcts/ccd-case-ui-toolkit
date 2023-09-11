@@ -5,6 +5,19 @@ import { Constants } from '../../commons/constants';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldTypeEnum } from '../../domain/definition/field-type-enum.model';
 
+// Regex to detect markdown links. Matches [foo](bar) or (bar) or <bar> handles escaped terminators
+const mdRegex: RegExp = /\[((?:(?:[^\\\]])|(?:\\.))+)\]\(((?:(?:[^\\)])|(?:\\.))+)\)|\<((?:(?:[^\\\>])|(?:\\.))+)\>/
+
+export function createNotPatternValidator(pattern: RegExp, msg: string): ValidatorFn {
+  return (control:AbstractControl) : ValidationErrors | null => {
+    const value = control.value;
+    if (!value) {
+      return null;
+    }
+    return value.matches(pattern)?{ isValid:false, message: msg } : null;
+  };
+}
+
 @Injectable()
 export class FormValidatorsService {
 
@@ -18,6 +31,8 @@ export class FormValidatorsService {
       ) {
       const validators = [Validators.required];
       if (caseField.field_type.type === 'Text') {
+        // Add Validator to detect markdown
+        validators.push(createNotPatternValidator(mdRegex, 'You cannot enter marked up URLs')
         if (caseField.field_type.regular_expression) {
           validators.push(Validators.pattern(caseField.field_type.regular_expression));
         } else {
@@ -32,6 +47,10 @@ export class FormValidatorsService {
       }
       if (control.validator) {
         validators.push(control.validator);
+      }
+      if (caseField.field_type.type === 'Text') {
+        // Add Validator to detect markdown - we do this even on non-mandatory fields
+        validators.push(createNotPatternValidator(mdRegex, 'You cannot enter marked up URLs'));
       }
       control.setValidators(validators);
     }
