@@ -5,10 +5,10 @@ import { CaseEvent } from '../../domain/definition/case-event.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { DefinitionsService } from '../../services/definitions/definitions.service';
+import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { OrderService } from '../../services/order/order.service';
 import { SessionStorageService } from '../../services/session/session-storage.service';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
-import { JurisdictionService } from '../../services';
 
 @Component({
   selector: 'ccd-create-case-filters',
