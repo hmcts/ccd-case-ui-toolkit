@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
-import { Observable, of } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { catchError, debounceTime, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Constants } from '../../../commons/constants';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
@@ -13,7 +13,7 @@ import { IsCompoundPipe } from '../utils/is-compound.pipe';
   styleUrls: ['./write-judicial-user-field.component.scss'],
   templateUrl: './write-judicial-user-field.component.html'
 })
-export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent implements OnInit {
+export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent implements OnInit, OnDestroy {
 
   public readonly minSearchCharacters = 2;
 
@@ -27,6 +27,7 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
   public errors: ValidationErrors;
   public invalidSearchTerm = false;
   public judicialUserSelected = false;
+  public jurisdictionSubscription: Subscription;
 
   constructor(private readonly jurisdictionService: JurisdictionService,
               private readonly sessionStorageService: SessionStorageService,
@@ -106,6 +107,16 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
       const caseInfo = JSON.parse(caseInfoStr);
       this.jurisdiction = caseInfo?.jurisdiction;
       this.caseType = caseInfo?.caseType;
+    } else {
+      // If there is no case info, attempt to get the current jurisdiction and case type via the JurisdictionService
+      this.jurisdictionSubscription = this.jurisdictionService.selectedJurisdictionBS.subscribe((jurisdiction) => {
+        if (jurisdiction) {
+          this.jurisdiction = jurisdiction.id;
+          if (jurisdiction.currentCaseType) {
+            this.caseType = jurisdiction.currentCaseType.id;
+          }
+        }
+      });
     }
   }
 
@@ -154,5 +165,9 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     if (this.caseField.display_context === Constants.MANDATORY) {
       this.judicialUserControl.setValidators(Validators.required);
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.jurisdictionSubscription?.unsubscribe();
   }
 }
