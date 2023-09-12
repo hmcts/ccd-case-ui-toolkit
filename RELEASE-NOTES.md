@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.2-case-flags-v2-status-text-wrapping-fix
+**EUI-8778** Prevent flag status tag text from wrapping in Case Flags table
+
 ### Version 6.19.2-case-flags-v2-reasonable-adjustments-text-amendments-v3
 **EUI-8283** Reasonable adjustments amend the term flag and flag type
 **EUI-8284** Reasonable adjustments amend screen caption text on the tell us more about the request screen
