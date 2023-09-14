@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { ServiceOrg } from '../../domain/case-view';
 
 export interface LovRefDataModel {
   category_key: string;
@@ -30,6 +31,13 @@ export class CommonDataService {
   public getRefData(url: string): Observable<LovRefDataByServiceModel> {
     if (url) {
       return this.http.get<LovRefDataByServiceModel>(url, {observe: 'body'});
+    }
+    return of(null);
+  }
+
+  public getServiceOrgData(url: string): Observable<ServiceOrg> {
+    if (url) {
+      return this.http.get<ServiceOrg>(url, {observe: 'body'});
     }
     return of(null);
   }

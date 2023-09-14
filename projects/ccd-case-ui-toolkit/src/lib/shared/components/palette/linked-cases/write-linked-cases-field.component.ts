@@ -39,11 +39,10 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     // Clear validation errors
     this.caseEditDataService.clearFormValidationErrors();
     // Get linked case reasons from ref data
-    this.getLinkedCaseReasons();
     this.linkedCasesService.editMode = false;
-    this.caseEditDataService.caseDetails$.subscribe({
-      next: caseDetails => this.initialiseCaseDetails(caseDetails)
+    this.caseEditDataService.caseDetails$.subscribe({next: caseDetails => { this.initialiseCaseDetails(caseDetails);  }
     });
+    this.getOrgService();
     this.caseEditDataService.caseEventTriggerName$.subscribe({
       next: name => this.linkedCasesService.isLinkedCasesEventTrigger = (name === LinkedCasesEventTriggers.LINK_CASES)
     });
@@ -89,8 +88,8 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     }
   }
 
-  public getLinkedCaseReasons(): void {
-    const reasonCodeAPIurl = `${this.appConfig.getRDCommonDataApiUrl()}/lov/categories/CaseLinkingReasonCode`;
+  public getLinkedCaseReasons(serviceId: number): void {
+    const reasonCodeAPIurl = `${this.appConfig.getRDCommonDataApiUrl()}/lov/categories/CaseLinkingReasonCode?serviceId=${serviceId}`;
       this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
         next: reasons => {
           // Sort in ascending order
@@ -100,6 +99,13 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
           this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find(reason => reason.value_en === 'Other'));
         }
     });
+  }
+
+  getOrgService(): void {
+    const servicesApiUrl = `refdata/location/orgServices?ccdCaseType=${this.caseDetails.case_type.id}`;
+    this.commonDataService.getServiceOrgData(servicesApiUrl).subscribe(result => {
+      this.getLinkedCaseReasons(result[0].service_id);
+    })
   }
 
   public proceedToNextPage(): void {
