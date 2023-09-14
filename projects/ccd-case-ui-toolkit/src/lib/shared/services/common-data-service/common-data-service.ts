@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { ServiceOrg } from '../../domain/case-view';
+import { ServiceOrg } from '../../domain/case-view/service-org-response.model';
 
 export interface LovRefDataModel {
   category_key: string;

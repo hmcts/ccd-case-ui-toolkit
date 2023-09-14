@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
@@ -10,18 +10,20 @@ import { AbstractFieldWriteComponent } from '../base-field';
 import { CaseLink, LinkedCasesState } from './domain';
 import { LinkedCasesErrorMessages, LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
 import { LinkedCasesService } from './services';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'ccd-write-linked-cases-field',
   templateUrl: './write-linked-cases-field.component.html'
 })
-export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
+export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit, OnDestroy {
   public caseEditForm: FormGroup;
   public caseDetails: CaseView;
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
   public linkedCasesEventTriggers = LinkedCasesEventTriggers;
   public linkedCases: CaseLink[] = [];
+  private subscriptions = new Subscription();
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
@@ -40,15 +42,16 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     this.caseEditDataService.clearFormValidationErrors();
     // Get linked case reasons from ref data
     this.linkedCasesService.editMode = false;
-    this.caseEditDataService.caseDetails$.subscribe({next: caseDetails => { this.initialiseCaseDetails(caseDetails);  }
-    });
+    this.subscriptions.add(this.caseEditDataService.caseDetails$.subscribe(
+      {next: caseDetails => { this.initialiseCaseDetails(caseDetails);  }
+    }));
     this.getOrgService();
-    this.caseEditDataService.caseEventTriggerName$.subscribe({
+    this.subscriptions.add(this.caseEditDataService.caseEventTriggerName$.subscribe({
       next: name => this.linkedCasesService.isLinkedCasesEventTrigger = (name === LinkedCasesEventTriggers.LINK_CASES)
-    });
-    this.caseEditDataService.caseEditForm$.subscribe({
+    }));
+    this.subscriptions.add(this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.caseEditForm = editForm
-    });
+    }));
   }
 
   public initialiseCaseDetails(caseDetails: CaseView): void {
@@ -168,5 +171,9 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
         ? LinkedCasesPages.BEFORE_YOU_START
         : LinkedCasesPages.NO_LINKED_CASES;
     });
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }
