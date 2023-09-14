@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.19.5-secure-doc-case-creation.1
+### Version 6.19.4
 **EXUI-623** Make secure docstore work during case creation
 
 ### Version 6.18.3-hotfix-EUI-8738
