@@ -100,8 +100,6 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
         const linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
         
         this.linkedCasesService.linkCaseReasons = linkCaseReasons?.filter(reason => reason.value_en !== 'Other');
-        // Filter duplicates from the list
-        this.linkedCasesService.linkCaseReasons = this.getUniqueListBy(this.linkedCasesService.linkCaseReasons, 'key') as [];
         // Move Other option to the end of the list
         this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find(reason => reason.value_en === 'Other'));
         console.log('linkCaseReasons from Service', this.linkedCasesService.linkCaseReasons)
@@ -117,10 +115,6 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
       })
 
     })
-  }
-
-  getUniqueListBy(arr, key) {
-    return [...new Map(arr.map(item => [item[key], item])).values()]
   }
 
   public proceedToNextPage(): void {
