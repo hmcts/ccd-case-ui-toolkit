@@ -9,7 +9,7 @@ import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.se
 import { OrderService } from '../../services/order/order.service';
 import { SessionStorageService } from '../../services/session/session-storage.service';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
-import { JurisdictionService } from '../../services';
+
 
 @Component({
   selector: 'ccd-create-case-filters',
