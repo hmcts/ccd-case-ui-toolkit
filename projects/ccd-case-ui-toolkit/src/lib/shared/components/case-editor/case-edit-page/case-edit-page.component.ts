@@ -72,7 +72,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   constructor(
-    public readonly caseEdit: CaseEditComponent,
+    public caseEdit: CaseEditComponent,
     private readonly route: ActivatedRoute,
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
@@ -276,6 +276,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     }
 
     if (!this.caseEdit.isSubmitting && !this.currentPageIsNotValid()) {
+      if (this.caseEdit.validPageList.findIndex(page=> page.id === this.currentPage.id) === -1) {
+        this.caseEdit.validPageList.push(this.currentPage);
+      }
       this.caseEdit.isSubmitting = true;
       this.caseEdit.error = null;
       const caseEventData: CaseEventData = this.buildCaseEventData();
@@ -565,12 +568,26 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     // Get hold of the CaseEventData.
     const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
-
+    this.deleteNonValidatedFields(caseEventData.data, fromPreviousPage);
     // Tidy it up before we return it.
     this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase,
       fromPreviousPage, this.currentPage.case_fields);
 
     return caseEventData;
+  }
+
+  private deleteNonValidatedFields(data: object, fromPreviousPage: boolean) {
+    const validPageListCaseFields: CaseField[] = [];
+    this.caseEdit.validPageList.forEach(page => {
+      page.case_fields.forEach(field => validPageListCaseFields.push(field));
+    });
+    if (!fromPreviousPage && validPageListCaseFields.length > 0) {
+      Object.keys(data).forEach(key => {
+        if (validPageListCaseFields.findIndex((element) => element.id === key) < 0) {
+          delete data[key];
+        }
+      });
+    }
   }
 
   private syncCaseEditDataService(): void {
