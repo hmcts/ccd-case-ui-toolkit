@@ -35,9 +35,9 @@ export class CommonDataService {
     return of(null);
   }
 
-  public getServiceOrgData(url: string): Observable<ServiceOrg> {
+  public getServiceOrgData(url: string): Observable<ServiceOrg[]> {
     if (url) {
-      return this.http.get<ServiceOrg>(url, {observe: 'body'});
+      return this.http.get<ServiceOrg[]>(url, {observe: 'body'});
     }
     return of(null);
   }
