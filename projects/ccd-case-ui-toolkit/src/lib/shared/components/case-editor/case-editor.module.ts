@@ -58,13 +58,13 @@ import { CaseworkerService } from './services/case-worker.service';
     FormsModule,
     ReactiveFormsModule,
     CaseEditDataModule,
-    PaletteModule,
     LabelSubstitutorModule,
     ConditionalShowModule,
     ErrorsModule,
     PortalModule,
     LoadingSpinnerModule,
     BannersModule,
+    PaletteModule,
     RpxTranslationModule.forChild()
   ],
   declarations: [
