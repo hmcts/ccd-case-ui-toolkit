@@ -121,7 +121,7 @@ describe('WriteDocumentFieldComponent', () => {
       of(RESPONSE_SECOND_DOCUMENT)
     );
     mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
-    mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed']);
+    mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed','close']);
     casesService = createSpyObj('casesService', ['getCaseViewV2']);
 
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
@@ -204,6 +204,8 @@ describe('WriteDocumentFieldComponent', () => {
     mockMatDialogRef = {
       beforeClosed() {
         return of('Replace');
+      },
+      close(r: any) {
       }
     };
     mockDialog.open.and.returnValue(mockMatDialogRef);
@@ -219,6 +221,8 @@ describe('WriteDocumentFieldComponent', () => {
     mockMatDialogRef = {
       beforeClosed() {
         return of('Replace');
+      },
+      close(r: any) {
       }
     };
     mockDialog.open.and.returnValue(mockMatDialogRef);

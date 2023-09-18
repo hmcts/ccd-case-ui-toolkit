@@ -5,4 +5,5 @@ export class Jurisdiction {
   public name: string;
   public description: string;
   public caseTypes: CaseTypeLite[];
+  public currentCaseType?: CaseTypeLite;
 }

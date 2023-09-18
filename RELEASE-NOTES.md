@@ -1,4 +1,14 @@
 ## RELEASE NOTES
+### Version 6.19.4-sscs-joh-fixes
+**EUI-8679/EUI-8770** Re-tag for formal release. Also includes partial reversion of EXUI-623 (`WriteDocumentFieldComponent` changes) due to deficient unit test coverage
+
+### Version 6.19.5-hotfix-EUI-8679-8770
+**EUI-8679** Remove JudicialUser FormControl values from the overall FormGroup value stored and passed as search criteria by the `WorkbasketFiltersComponent` when applying filters
+**EUI-8770** Ensure the `WorkbasketFiltersComponent` announces the selected jurisdiction and case type via the `JurisdictionService`; in the `WriteJudicialUserField` component, get the current jurisdiction and case type from the `JurisdictionService` if no case info is present
+
+### Version 6.19.5-secure-doc-case-creation.1
+**EXUI-623** Make secure docstore work during case creation
+
 ### Version 6.19.1-case-flags-v2-reasonable-adjustments
 **EUI-7243** Case flags v2 reasonable adjustments - updating latest from master
 
