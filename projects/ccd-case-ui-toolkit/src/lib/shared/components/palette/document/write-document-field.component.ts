@@ -73,7 +73,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
-    console.info('writeDocumentField.ngInit: secure mode = ' + this.secureModeOn);
     if (this.secureModeOn) {
       this.subscribeToCaseDetails();
     }
@@ -209,7 +208,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       next: (caseDetails: CaseView) => {
         this.caseTypeId = caseDetails?.case_id;
         this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
-        console.info(`caseNotifier.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
       }
     });
     this.jurisdictionSubs = this.jurisdictionService.selectedJurisdictionBS.subscribe({
@@ -220,7 +218,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
             this.caseTypeId = jurisdiction.currentCaseType.id
           }
         }
-        console.info(`selectedJurisdiction.next: caseType=${this.caseTypeId} juris=${this.jurisdictionId}`)
       }
     });
   }
