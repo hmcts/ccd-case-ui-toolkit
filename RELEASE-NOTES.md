@@ -1,9 +1,16 @@
 ## RELEASE NOTES
-### Version 6.13.10-case-file-view-sort-by-document-upload-date-v9
-**EUI-7812** Case file view sort by document upload date
+### Version 6.19.5-case-file-view-document-upload-date
+**EUI-7807** Case file view v1.1
 
-### Version 6.13.10-case-file-view-display-document-upload-date-v3
-**EUI-7819** Case file view display document upload date
+### Version 6.19.5-hotfix-EUI-8679-8770
+**EUI-8679** Remove JudicialUser FormControl values from the overall FormGroup value stored and passed as search criteria by the `WorkbasketFiltersComponent` when applying filters
+**EUI-8770** Ensure the `WorkbasketFiltersComponent` announces the selected jurisdiction and case type via the `JurisdictionService`; in the `WriteJudicialUserField` component, get the current jurisdiction and case type from the `JurisdictionService` if no case info is present
+
+### Version 6.19.5-secure-doc-case-creation.1
+**EXUI-623** Make secure docstore work during case creation
+
+### Version 6.19.4-sscs-joh-fixes
+**EUI-8679/EUI-8770** Re-tag for formal release. Also includes partial reversion of EXUI-623 (`WriteDocumentFieldComponent` changes) due to deficient unit test coverage
 
 ### Version 6.18.3-hotfix-EUI-8738
 **EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
@@ -24,6 +31,12 @@
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
 **EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
 **EUI-8550** Fix incorrect behaviour of showEventNotes() function on Case Event submission, introduced in error by EUI-6693
+
+### Version 6.13.10-case-file-view-sort-by-document-upload-date-v9
+**EUI-7812** Case file view sort by document upload date
+
+### Version 6.13.10-case-file-view-display-document-upload-date-v3
+**EUI-7819** Case file view display document upload date
 
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
