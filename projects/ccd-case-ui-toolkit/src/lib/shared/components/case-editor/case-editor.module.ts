@@ -63,13 +63,13 @@ import { ValidPageListCaseFieldsService } from './services/valid-page-list-caseF
     FormsModule,
     ReactiveFormsModule,
     CaseEditDataModule,
-    PaletteModule,
     LabelSubstitutorModule,
     ConditionalShowModule,
     ErrorsModule,
     PortalModule,
     LoadingSpinnerModule,
     BannersModule,
+    PaletteModule,
     RpxTranslationModule.forChild()
   ],
   declarations: [
