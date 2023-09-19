@@ -1,6 +1,16 @@
 ## RELEASE NOTES
-### Version 6.18.0-restricted-case-access-v6
+### Version 6.19.5-restricted-case-access
 **EUI-6645** Restricted case access
+
+### Version 6.19.5-hotfix-EUI-8679-8770
+**EUI-8679** Remove JudicialUser FormControl values from the overall FormGroup value stored and passed as search criteria by the `WorkbasketFiltersComponent` when applying filters
+**EUI-8770** Ensure the `WorkbasketFiltersComponent` announces the selected jurisdiction and case type via the `JurisdictionService`; in the `WriteJudicialUserField` component, get the current jurisdiction and case type from the `JurisdictionService` if no case info is present
+
+### Version 6.19.5-secure-doc-case-creation.1
+**EXUI-623** Make secure docstore work during case creation
+
+### Version 6.19.4-sscs-joh-fixes
+**EUI-8679/EUI-8770** Re-tag for formal release. Also includes partial reversion of EXUI-623 (`WriteDocumentFieldComponent` changes) due to deficient unit test coverage
 
 ### Version 6.18.3-hotfix-EUI-8738
 **EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
@@ -10,13 +20,16 @@
 **EUI-8687** Fix validation logic for `WriteJudicialUserField` component
 **EUI-8732** Fix `WriteJudicialUserField` error handling to allow user to continue searching if an error occurs on calling `getJudicialUsersSearch` API endpoint
 
-### Version 6.18.0-welsh-release-v6
-**EUI-5497** Welsh release part 1
-
 ### Version 6.18.2-rc2
 **EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button
 **EXUI-229** DynamicMultiSelectList Updates Required
 **EXUI-313** Fix issue with secure document store
+
+### Version 6.18.0-restricted-case-access-v6
+**EUI-6645** Restricted case access
+
+### Version 6.18.0-welsh-release-v6
+**EUI-5497** Welsh release part 1
 
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
 **EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page

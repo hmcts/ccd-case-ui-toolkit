@@ -8,7 +8,7 @@ import { CaseEvent } from '../../domain/definition/case-event.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { createACL } from '../../fixture/shared.test.fixture';
-import { AlertService, DefinitionsService, OrderService, SessionStorageService } from '../../services';
+import { AlertService, DefinitionsService, JurisdictionService, OrderService, SessionStorageService } from '../../services';
 import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { CreateCaseFiltersComponent } from './create-case-filters.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -263,6 +263,7 @@ const FILTERED_CASE_EVENTS: CaseEvent[] = [{
 let mockDefinitionsService: any;
 let mockOrderService: any;
 let mockAlertService: any;
+let jurisdictionService: any;
 
 const TEST_FORM_GROUP = new FormGroup({});
 
@@ -297,6 +298,9 @@ describe('CreateCaseFiltersComponent', () => {
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(`{"id": 1, "forename": "Firstname", "surname": "Surname",
       "roles": ["role1", "role3"], "email": "test@mail.com","token": null}`);
+    jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService',
+      ['announceSelectedJurisdiction']);
+
 
     TestBed
       .configureTestingModule({
@@ -311,7 +315,8 @@ describe('CreateCaseFiltersComponent', () => {
           { provide: OrderService, useValue: mockOrderService },
           { provide: AlertService, useValue: mockAlertService },
           { provide: DefinitionsService, useValue: mockDefinitionsService },
-          { provide: SessionStorageService, useValue: sessionStorageService}
+          { provide: SessionStorageService, useValue: sessionStorageService },
+          { provide: JurisdictionService, useValue: jurisdictionService}
         ]
       })
       .compileComponents();

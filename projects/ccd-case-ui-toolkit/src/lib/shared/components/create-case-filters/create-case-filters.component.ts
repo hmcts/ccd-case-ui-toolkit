@@ -5,6 +5,7 @@ import { CaseEvent } from '../../domain/definition/case-event.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
 import { Jurisdiction } from '../../domain/definition/jurisdiction.model';
 import { DefinitionsService } from '../../services/definitions/definitions.service';
+import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { OrderService } from '../../services/order/order.service';
 import { SessionStorageService } from '../../services/session/session-storage.service';
 import { CreateCaseFiltersSelection } from './create-case-filters-selection.model';
@@ -44,7 +45,8 @@ export class CreateCaseFiltersComponent implements OnInit {
   constructor(
     private readonly orderService: OrderService,
     private readonly definitionsService: DefinitionsService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly jurisdictionService: JurisdictionService
   ) { }
 
   public ngOnInit() {
@@ -99,6 +101,8 @@ export class CreateCaseFiltersComponent implements OnInit {
   }
 
   public apply() {
+    this.selected.jurisdiction.currentCaseType = this.selected.caseType;
+    this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     this.selectionSubmitted.emit({
       jurisdictionId: this.selected.jurisdiction.id,
       caseTypeId: this.selected.caseType.id,

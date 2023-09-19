@@ -290,17 +290,16 @@ const PALETTE_COMPONENTS = [
     CaseFlagRefdataService,
     YesNoService,
     CollectionCreateCheckerService,
+    JurisdictionService,
     PaletteService,
     FormValidatorsService,
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
     CommonDataService,
-    JurisdictionService,
     LinkedCasesService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
-  ],
-  entryComponents: [CaseFileViewFolderSelectorComponent]
+  ]
 })
 export class PaletteModule {
 }
