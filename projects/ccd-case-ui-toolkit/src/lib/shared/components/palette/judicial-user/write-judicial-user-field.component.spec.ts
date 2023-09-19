@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { By } from '@angular/platform-browser';
-import { of, throwError } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { Constants } from '../../../commons/constants';
 import { HmctsServiceDetail } from '../../../domain/case-flag';
-import { CaseField, FieldType } from '../../../domain/definition';
+import { CaseField, CaseTypeLite, FieldType, Jurisdiction } from '../../../domain/definition';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
 import { CaseFlagRefdataService, FieldsUtils, FormValidatorsService, JurisdictionService, SessionStorageService } from '../../../services';
 import { FirstErrorPipe, IsCompoundPipe, PaletteUtilsModule } from '../utils';
@@ -499,4 +499,58 @@ describe('WriteJudicialUserFieldComponent', () => {
     const errorMessageElement = fixture.debugElement.query(By.css('.error-message')).nativeElement;
     expect(errorMessageElement.textContent).toContain('Judicial User is required');
   });
+
+  it('should get the jurisdiction and case type via the JurisdictionService if there is no case info', fakeAsync(() => {
+    sessionStorageService.getItem.and.returnValue(null);
+    const dummyJurisdictionAndCaseType = {
+      id: 'J1',
+      name: 'Jurisdiction 1',
+      description: 'Dummy jurisdiction',
+      caseTypes: [],
+      currentCaseType: {
+        id: 'CT1',
+        name: 'Case Type 1'
+      } as CaseTypeLite
+    } as Jurisdiction;
+    Object.defineProperty(jurisdictionService, 'selectedJurisdictionBS', { value: new BehaviorSubject(null) });
+    jurisdictionService.selectedJurisdictionBS.next(dummyJurisdictionAndCaseType);
+    spyOn(jurisdictionService.selectedJurisdictionBS, 'subscribe').and.callThrough();
+    component.setJurisdictionAndCaseType();
+    tick();
+    expect(jurisdictionService.selectedJurisdictionBS.subscribe).toHaveBeenCalled();
+    expect(component.jurisdiction).toEqual(dummyJurisdictionAndCaseType.id);
+    expect(component.caseType).toEqual(dummyJurisdictionAndCaseType.currentCaseType.id);
+  }));
+
+  it('should not get the jurisdiction and case type via the JurisdictionService if there is case info', () => {
+    Object.defineProperty(jurisdictionService, 'selectedJurisdictionBS', { value: new BehaviorSubject(null) });
+    spyOn(jurisdictionService.selectedJurisdictionBS, 'subscribe');
+    component.setJurisdictionAndCaseType();
+    expect(jurisdictionService.selectedJurisdictionBS.subscribe).not.toHaveBeenCalled();
+    expect(component.jurisdiction).toEqual('SSCS');
+    expect(component.caseType).toEqual('Benefit');
+  });
+
+  it('should unsubscribe from any subscriptions when the component is destroyed', fakeAsync(() => {
+    sessionStorageService.getItem.and.returnValue(null);
+    const dummyJurisdictionAndCaseType = {
+      id: 'J1',
+      name: 'Jurisdiction 1',
+      description: 'Dummy jurisdiction',
+      caseTypes: [],
+      currentCaseType: {
+        id: 'CT1',
+        name: 'Case Type 1'
+      } as CaseTypeLite
+    } as Jurisdiction;
+    Object.defineProperty(jurisdictionService, 'selectedJurisdictionBS', { value: new BehaviorSubject(null) });
+    jurisdictionService.selectedJurisdictionBS.next(dummyJurisdictionAndCaseType);
+    spyOn(jurisdictionService.selectedJurisdictionBS, 'subscribe').and.callThrough();
+    component.setJurisdictionAndCaseType();
+    tick();
+    expect(jurisdictionService.selectedJurisdictionBS.subscribe).toHaveBeenCalled();
+    spyOn(component.jurisdictionSubscription, 'unsubscribe');
+    component.ngOnDestroy();
+    expect(component.jurisdictionSubscription.unsubscribe).toHaveBeenCalled();
+  }));
 });
