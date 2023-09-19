@@ -21,6 +21,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -81,7 +82,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly dialog: MatDialog,
     private readonly caseFieldService: CaseFieldService,
     private readonly caseEditDataService: CaseEditDataService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService
   ) {
   }
 
@@ -568,26 +570,15 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     // Get hold of the CaseEventData.
     const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
-    this.deleteNonValidatedFields(caseEventData.data, fromPreviousPage);
+
+    // delete fields which are not part of the case event journey wizard pages case fields
+    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.caseEdit.validPageList, caseEventData.data, true, fromPreviousPage);
+
     // Tidy it up before we return it.
     this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase,
       fromPreviousPage, this.currentPage.case_fields);
 
     return caseEventData;
-  }
-
-  private deleteNonValidatedFields(data: object, fromPreviousPage: boolean) {
-    const validPageListCaseFields: CaseField[] = [];
-    this.caseEdit.validPageList.forEach(page => {
-      page.case_fields.forEach(field => validPageListCaseFields.push(field));
-    });
-    if (!fromPreviousPage && validPageListCaseFields.length > 0) {
-      Object.keys(data).forEach(key => {
-        if (validPageListCaseFields.findIndex((element) => element.id === key) < 0) {
-          delete data[key];
-        }
-      });
-    }
   }
 
   private syncCaseEditDataService(): void {

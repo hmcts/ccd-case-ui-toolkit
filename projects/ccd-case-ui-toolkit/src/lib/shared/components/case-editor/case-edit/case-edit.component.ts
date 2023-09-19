@@ -20,6 +20,7 @@ import { ShowCondition } from '../../../directives/conditional-show/domain/condi
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService } from '../services';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -97,7 +98,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     private readonly windowsService: WindowService,
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService
   ) {}
 
   public ngOnInit(): void {
@@ -268,22 +270,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     return form.value.event.id;
  }
 
- private deleteNonValidatedFields(data: object) {
-  const validPageListCaseFields: CaseField[] = [];
-  this.validPageList.forEach(page => {
-    if (ShowCondition.getInstance(page.show_condition).match(data)) {
-      page.case_fields.forEach(field => validPageListCaseFields.push(field));
-    }
-  });
-  if (validPageListCaseFields.length > 0) {
-    Object.keys(data).forEach(key => {
-      if (validPageListCaseFields.findIndex((element) => element.id === key) < 0) {
-        delete data[key];;
-      }
-    });
-  }
-}
-
  private generateCaseEventData({ eventTrigger, form }: CaseEditGenerateCaseEventData ): CaseEventData {
   const caseEventData: CaseEventData = {
     data: this.replaceEmptyComplexFieldValues(
@@ -305,7 +291,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
   // Remove "Launcher"-type fields (these have no values and are not intended to be persisted)
   this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
-  this.deleteNonValidatedFields(caseEventData.data);
+
+  // delete fields which are not part of the case event journey wizard pages case fields
+  this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, false);
+
   caseEventData.event_token = eventTrigger.event_token;
   caseEventData.ignore_warning = this.ignoreWarning;
   if (this.confirmation) {
