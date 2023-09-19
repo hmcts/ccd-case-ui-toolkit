@@ -523,7 +523,9 @@ export class FieldsUtils {
                 }
               }));
             }) as FlagDetail[]
-            : null
+            : null,
+          visibility: value ? value['visibility'] : null,
+          groupId: value ? value['groupId'] : null
         },
         pathToFlagsFormGroup,
         caseField

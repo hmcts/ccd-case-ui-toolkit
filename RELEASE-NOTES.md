@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.5-case-flags-v2-1-internal-external-grouping
+**EUI-8711** Ensure internal and external collections of flag data are grouped by groupId into one instance of the `Flags` object per party, for internal users
+
 ### Version 6.19.4-sscs-joh-fixes
 **EUI-8679/EUI-8770** Re-tag for formal release. Also includes partial reversion of EXUI-623 (`WriteDocumentFieldComponent` changes) due to deficient unit test coverage
 
