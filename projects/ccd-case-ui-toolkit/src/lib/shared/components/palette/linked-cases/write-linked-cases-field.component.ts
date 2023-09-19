@@ -102,7 +102,6 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
         this.linkedCasesService.linkCaseReasons = linkCaseReasons?.filter(reason => reason.value_en !== 'Other');
         // Move Other option to the end of the list
         this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find(reason => reason.value_en === 'Other'));
-        console.log('linkCaseReasons from Service', this.linkedCasesService.linkCaseReasons)
       }
     });
   }
