@@ -18,31 +18,31 @@ describe('ValidPageListCaseFieldsService', () => {
   ]);
 
   const validPageList = [PAGE_1, PAGE_2];
-  let data;
+  let caseEventData;
   beforeEach(() => {
-    data = {
-      'caseField1': 'someValue1',
-      'caseField4': 'someValue4',
-      'caseField10': 'someValue4',
-      'caseField12': 'someValue12',
-      'caseField14': 'someValue14',
+    caseEventData = {
+      caseField1: 'someValue1',
+      caseField4: 'someValue4',
+      caseField10: 'someValue10',
+      caseField12: 'someValue12',
+      caseField14: 'someValue14',
     };
     validPageListCaseFieldsService = new ValidPageListCaseFieldsService();
   });
 
   it('should return valid data from case submition after deleting non-valid fields', () => {
-    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, data, true);
-    expect(Object.keys(data).length).toBe(3);
+    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, caseEventData, true);
+    expect(Object.keys(caseEventData).length).toBe(3);
   });
 
   it('should return valid data from EventJourney after deleting non-valid fields', () => {
-    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, data, false);
-    expect(Object.keys(data).length).toBe(3);
+    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, caseEventData, false);
+    expect(Object.keys(caseEventData).length).toBe(3);
   });
 
   it('should return same data if fromPrevious argument set to true', () => {
-    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, data, false, true);
-    expect(Object.keys(data).length).toBe(5);
+    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, caseEventData, false, true);
+    expect(Object.keys(caseEventData).length).toBe(5);
   });
 
   function buildPage(pageId: string, label: string, order: number, caseFields?: CaseField[]): WizardPage {
