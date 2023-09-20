@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 6.19.5
+**EXUI-623** Make secure docstore work during case creation
+
 ### Version 6.19.4-sscs-joh-fixes
 **EUI-8679/EUI-8770** Re-tag for formal release. Also includes partial reversion of EXUI-623 (`WriteDocumentFieldComponent` changes) due to deficient unit test coverage
 
