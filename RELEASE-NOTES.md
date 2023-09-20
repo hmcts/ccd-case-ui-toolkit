@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.5
+**EXUI-623** Make secure docstore work during case creation
+
 ### Version 6.19.5-case-flags-v2-1-internal-external-grouping
 **EUI-8711** Ensure internal and external collections of flag data are grouped by groupId into one instance of the `Flags` object per party, for internal users
 

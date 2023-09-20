@@ -5,12 +5,13 @@ import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
 import { CaseView } from '../../../domain/case-view/case-view.model';
-import { DocumentData, FormDocument } from '../../../domain/document/document-data.model';
+import { DocumentData, FormDocument } from '../../../domain/document/document-data.model'
 import { HttpError } from '../../../domain/http/http-error.model';
-import { DocumentManagementService } from '../../../services/document-management/document-management.service';
+import { DocumentManagementService } from '../../../services/document-management/document-management.service'
+import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
 import { CaseNotifier } from '../../case-editor/services/case.notifier';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
-import { initDialog } from '../../helpers';
+import { initDialog } from '../../helpers/init-dialog-helper';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { FileUploadStateService } from './file-upload-state.service';
 
@@ -35,14 +36,18 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public confirmReplaceResult: string;
   public clickInsideTheDocument: boolean;
 
+  // these are public so that they can be mocked for tests
   public fileUploadSubscription: Subscription;
   public dialogSubscription: Subscription;
-  public caseEventSubscription: Subscription;
+  public caseNotifierSubscription: Subscription;
+  public jurisdictionSubs: Subscription;
 
-  private caseDetails: CaseView;
   private uploadedDocument: FormGroup;
   private dialogConfig: MatDialogConfig;
   private secureModeOn: boolean;
+
+  public jurisdictionId: string;
+  public caseTypeId: string;
 
   constructor(
     private readonly appConfig: AbstractAppConfig,
@@ -50,13 +55,14 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     private readonly documentManagement: DocumentManagementService,
     public dialog: MatDialog,
     private readonly fileUploadStateService: FileUploadStateService,
+    private readonly jurisdictionService: JurisdictionService,
   ) {
     super();
   }
 
   @HostListener('document:click', ['$event'])
   public clickout(event) {
-    // Capturing the event of of the associated  ElementRef <input type="file" #fileInpu
+    // Capturing the event of the associated  ElementRef <input type="file" #fileInpu
 
     if (this.fileInput.nativeElement.contains(event.target)) {
       this.clickInsideTheDocument = true;
@@ -67,6 +73,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   public ngOnInit(): void {
     this.secureModeOn = this.appConfig.getDocumentSecureMode();
+    if (this.secureModeOn) {
+      this.subscribeToCaseDetails();
+    }
     this.dialogConfig = initDialog();
     // EUI-3403. The field was not being registered when there was no value and the field
     // itself was not mandatory, which meant that show_conditions would not be evaluated.
@@ -78,10 +87,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     } else {
       this.createDocumentForm(document);
     }
-
-    if (this.appConfig.getDocumentSecureMode()) {
-      this.subscribeToCaseDetails();
-    }
   }
 
   public ngOnDestroy(): void {
@@ -91,8 +96,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (this.dialogSubscription) {
       this.dialogSubscription.unsubscribe();
     }
-    if (this.caseEventSubscription) {
-      this.caseEventSubscription.unsubscribe();
+    if (this.caseNotifierSubscription) {
+      this.caseNotifierSubscription.unsubscribe();
+    }
+    if (this.jurisdictionSubs) {
+      this.jurisdictionSubs.unsubscribe();
     }
   }
 
@@ -148,10 +156,12 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
-  public triggerReplace(): void {
+  public triggerReplace(): boolean {
     if (this.confirmReplaceResult === 'Replace') {
       this.openFileDialog();
+      return true;
     }
+    return false;
   }
 
   public getUploadedFileName(): any {
@@ -188,10 +198,26 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     });
   }
 
+  // Depending on the context, we can get the case type and jurisdiction from different sources
+  // If we are running an event, the caseNotifier will have the current case
+  // If we are creating a case, the case doesn't exist yet, so the caseNotifier can't help
+  // Instead we can use the eventTrigger to get the case type, and the jurisdiction service to
+  // get the currently selected jurisdiction
   private subscribeToCaseDetails(): void {
-    this.caseEventSubscription = this.caseNotifier.caseView.subscribe({
-      next: (caseDetails) => {
-        this.caseDetails = caseDetails;
+    this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe({
+      next: (caseDetails: CaseView) => {
+        this.caseTypeId = caseDetails?.case_id;
+        this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
+      }
+    });
+    this.jurisdictionSubs = this.jurisdictionService.selectedJurisdictionBS.subscribe({
+      next: (jurisdiction) => {
+        if (jurisdiction) {
+          this.jurisdictionId = jurisdiction.id;
+          if (jurisdiction.currentCaseType) {
+            this.caseTypeId = jurisdiction.currentCaseType.id
+          }
+        }
       }
     });
   }
@@ -277,13 +303,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     documentUpload.append('classification', 'PUBLIC');
 
     if (this.appConfig.getDocumentSecureMode()) {
-      const caseTypeId = this.caseDetails &&
-                          this.caseDetails.case_type &&
-                          this.caseDetails.case_type.id ? this.caseDetails.case_type.id : null;
-      const caseTypeJurisdictionId = this.caseDetails &&
-                                      this.caseDetails.case_type &&
-                                      this.caseDetails.case_type.jurisdiction &&
-                                      this.caseDetails.case_type.jurisdiction.id ? this.caseDetails.case_type.jurisdiction.id : null;
+      const caseTypeId = this.caseTypeId ? this.caseTypeId : null;
+      const caseTypeJurisdictionId = this.jurisdictionId? this.jurisdictionId  : null;
       documentUpload.append('caseTypeId', caseTypeId);
       documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
     }
