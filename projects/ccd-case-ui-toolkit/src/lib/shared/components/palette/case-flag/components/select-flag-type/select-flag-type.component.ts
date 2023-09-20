@@ -6,7 +6,7 @@ import { ErrorMessage } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService } from '../../../../../services';
 import { RefdataCaseFlagType } from '../../../../../services/case-flag/refdata-case-flag-type.enum';
-import { CaseFlagState } from '../../domain';
+import { CaseFlagState, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
@@ -31,6 +31,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   @Input()
   public isDisplayContextParameterExternal = false;
 
+  @Input()
+  public selectedFlagsLocation: FlagsWithFormGroupPath;
+
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -47,6 +50,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public cachedFlagType: FlagType;
   public flagTypeControlChangesSubscription: Subscription;
   public caseFlagFormField = CaseFlagFormFields;
+  public isCaseLevelFlag: boolean;
 
   private readonly maxCharactersForOtherFlagType = 80;
   // Code for "Other" flag type as defined in Reference Data
@@ -68,6 +72,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
 
   public ngOnInit(): void {
+    this.isCaseLevelFlag = this.selectedFlagsLocation.flags.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId;
     this.flagTypes = [];
     const flagType = this.formGroup['caseField']
       && this.formGroup['caseField'].id
@@ -77,6 +82,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
+    this.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_EXTERNALLY, new FormControl(''));
 
     // Should clear descriptionControlName if flagTypeControlName is changed
     this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).valueChanges
