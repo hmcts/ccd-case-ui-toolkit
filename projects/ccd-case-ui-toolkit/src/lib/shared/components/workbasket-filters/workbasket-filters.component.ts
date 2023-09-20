@@ -82,7 +82,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     });
   }
 
-  public apply(init): void {
+  public apply(init: boolean): void {
     // Save filters as query parameters for current route
     const queryParams = {};
     if (this.selected.jurisdiction) {
@@ -114,8 +114,20 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (init) {
       this.windowService.setLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE, JSON.stringify(queryParams));
       if (Object.keys(this.formGroup.controls).length > 0) {
+        // Find all "special case" JudicialUser FormControl keys and remove the corresponding values from the
+        // FormGroup value because these values are not intended to be stored and subsequently passed as query string
+        // parameters when calling searchCases API endpoint
+        const judicialUserControlValuesToRemove =
+          Object.keys(this.formGroup.controls).filter((key) => key.endsWith('_judicialUserControl'));
+        judicialUserControlValuesToRemove.forEach((controlKey) => delete this.formGroup.value[controlKey]);
         this.windowService.setLocalStorage(FORM_GROUP_VAL_LOC_STORAGE, JSON.stringify(this.formGroup.value));
       }
+    }
+    // Announce selected jurisdiction via JurisdictionService
+    if (this.selected.jurisdiction) {
+      // Set the selected case type as the current case type of the selected jurisdiction
+      this.selected.jurisdiction.currentCaseType = this.selected.caseType;
+      this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     }
     // Apply filters
     this.onApply.emit({ selected: this.selected, queryParams });
