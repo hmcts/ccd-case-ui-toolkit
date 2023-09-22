@@ -400,7 +400,9 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
         if (parentField && parentField.formatted_value) {
           rawFormValueData[key] = parentField.formatted_value[caseField.id];
         } else {
-          rawFormValueData[key] = caseField.formatted_value;
+          if (!(caseField.hidden && caseField.retain_hidden_value)) {
+            rawFormValueData[key] = caseField.formatted_value;
+          }
         }
       }
     }
