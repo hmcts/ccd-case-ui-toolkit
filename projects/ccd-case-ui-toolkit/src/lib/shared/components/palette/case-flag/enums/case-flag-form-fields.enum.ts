@@ -7,5 +7,5 @@ export enum CaseFlagFormFields {
   STATUS = 'status',
   STATUS_CHANGE_REASON = 'flagStatusReasonChange',
   IS_WELSH_TRANSLATION_NEEDED = 'flagIsWelshTranslationNeeded',
-  IS_VISIBLE_EXTERNALLY = 'flagIsVisibleExternally'
+  IS_VISIBLE_INTERNALLY_ONLY = 'flagIsVisibleInternallyOnly'
 }

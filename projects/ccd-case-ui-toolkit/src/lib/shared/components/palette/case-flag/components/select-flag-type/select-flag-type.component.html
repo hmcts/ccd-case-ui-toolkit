@@ -37,7 +37,7 @@
             <div class="govuk-checkboxes__item govuk-!-margin-top-4"
               *ngIf="!isDisplayContextParameterExternal && !isCaseLevelFlag">
               <input class="govuk-checkboxes__input" id="is-visible-externally" type="checkbox"
-                [name]="caseFlagFormField.IS_VISIBLE_EXTERNALLY" [formControlName]="caseFlagFormField.IS_VISIBLE_EXTERNALLY">
+                [name]="caseFlagFormField.IS_VISIBLE_INTERNALLY_ONLY" [formControlName]="caseFlagFormField.IS_VISIBLE_INTERNALLY_ONLY">
               <label class="govuk-label govuk-checkboxes__label" for="is-visible-externally">
                 {{'This flag should only be visible to HMCTS Staff' | rpxTranslate}}
               </label>
