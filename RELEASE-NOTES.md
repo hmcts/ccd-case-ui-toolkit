@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.5-case-flags-v2-1-determine-correct-flag-location
+**EUI-8706** Determine the correct location for a flag to be added - either internal or external - based on whether the flag is marked as "internal only" if of type "Other", or its `externallyAvailable` attribute if not of type "Other"
+
 ### Version 6.19.5-case-flags-v2-1-internal-external-grouping
 **EUI-8711** Ensure internal and external collections of flag data are grouped by groupId into one instance of the `Flags` object per party, for internal users
 

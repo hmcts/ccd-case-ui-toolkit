@@ -82,7 +82,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
-    this.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_EXTERNALLY, new FormControl(''));
+    this.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(''));
 
     // Should clear descriptionControlName if flagTypeControlName is changed
     this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).valueChanges

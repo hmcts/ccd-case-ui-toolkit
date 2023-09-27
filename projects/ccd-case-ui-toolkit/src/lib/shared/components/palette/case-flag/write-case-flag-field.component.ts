@@ -10,7 +10,7 @@ import { FieldsUtils } from '../../../services/fields';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
+import { CaseFlagDisplayContextParameter, CaseFlagErrorMessage, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
 
 @Component({
   selector: 'ccd-write-case-flag-field',
@@ -35,6 +35,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public caseTitle: string;
   public caseTitleSubscription: Subscription;
   public displayContextParameter: string;
+  public determinedLocation: FlagsWithFormGroupPath;
   private allCaseFlagStagesCompleted = false;
   // Code for "Other" flag type as defined in Reference Data
   private readonly otherFlagTypeCode = 'OT0001';
@@ -47,6 +48,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public get selectedFlagsLocation(): FlagsWithFormGroupPath | null {
     return this.caseFlagParentFormGroup?.value.selectedLocation;
+  }
+
+  public set selectedFlagsLocation(selectedLocation: FlagsWithFormGroupPath | null) {
+    if (this.caseFlagParentFormGroup) {
+      this.caseFlagParentFormGroup.value.selectedLocation = selectedLocation;
+    }
   }
 
   constructor(
@@ -242,28 +249,111 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
     });
 
-    const path = this.selectedFlagsLocation.pathToFlagsFormGroup;
-    const flagDataRef = this.flagsData.find(item => item.pathToFlagsFormGroup === path);
-    let flagsCaseFieldValue = flagDataRef.caseField.value;
-    // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
-    // CaseField value to apply changes to
-    // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
-    if (path.indexOf('.') > -1) {
-      path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
+    const formValues = this.caseFlagParentFormGroup?.value;
+    // Determine the correct location - internal or external - for the new flag. If returned as undefined, this
+    // indicates a configuration error with the external `Flags` object instance
+    this.determinedLocation =
+      this.determineLocationForFlag(!this.isDisplayContextParameterExternal, this.selectedFlagsLocation, formValues);
+    // Do not mutate this.selectedFlagsLocation; if this.selectedFlagsLocation becomes undefined,
+    // determineLocationForFlag() will no longer do anything when called with it - and the appropriate error message will
+    // not be redisplayed if the user clicks "Next" again on the "Add comments" page, after the error is first shown
+
+    if (this.determinedLocation) {
+      const path = this.determinedLocation.pathToFlagsFormGroup;
+      const flagDataRef = this.flagsData.find(item => item.pathToFlagsFormGroup === path);
+      let flagsCaseFieldValue = flagDataRef.caseField.value;
+      // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
+      // CaseField value to apply changes to
+      // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
+      if (path.indexOf('.') > -1) {
+        path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
+      }
+      // If the CaseField for the selected flags location has no value, set it to an empty object so it can be populated
+      // with flag details
+      if (!flagsCaseFieldValue) {
+        flagDataRef.caseField.value = {};
+        flagsCaseFieldValue = flagDataRef.caseField.value;
+      }
+      // Create a details array if one does not exist
+      if (!flagsCaseFieldValue.hasOwnProperty('details')) {
+        flagsCaseFieldValue.details = [];
+      }
+      // Populate new FlagDetail instance and add to the Flags data within the CaseField instance of the selected flag
+      // location
+      flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
     }
-    // If the CaseField for the selected flags location has no value, set it to an empty object so it can be populated
-    // with flag details
-    if (!flagsCaseFieldValue) {
-      flagDataRef.caseField.value = {};
-      flagsCaseFieldValue = flagDataRef.caseField.value;
-    }
-    // Create a details array if one does not exist
-    if (!flagsCaseFieldValue.hasOwnProperty('details')) {
-      flagsCaseFieldValue.details = [];
-    }
-    // Populate new FlagDetail instance and add to the Flags data within the CaseField instance of the selected flag
-    // location
-    flagsCaseFieldValue.details.push({value: this.populateNewFlagDetailInstance()});
+  }
+
+  /**
+   * Determines the correct location (i.e. either the internal or external instance of a `Flags` object) for a new flag,
+   * according to the following:
+   *
+   * * Whether the user is internal or external (no effect for external users because they can access only the external
+   * instance)
+   * * The existence of two `Flags` objects - one internal, one external - linked by the same `groupId`;
+   * * For flags of type "Other", whether "only visible to HMCTS staff" has been selected or not ("Other" defaults to
+   * externally visible);
+   * * For all other flag types, the value of the `externallyAvailable` attribute.
+   *
+   * If the user is internal then the new flag should be assigned to the external `Flags` instance if:
+   * * Such an instance exists, AND
+   * * The flag type is "Other" and "only visible to HMCTS staff" was not selected, OR
+   * * The flag type is not "Other" and `externallyAvailable` is `true`.
+   *
+   * @param isInternalUser Whether the current user is internal or not
+   * @param selectedFlagsLocation The currently selected location for the new flag
+   * @param formValues All the values from the `caseFlagParentFormGroup`
+   * @returns The correctly determined location: either the internal or external location (if one exists) where a groupId
+   * is present; the original location otherwise. **Note:** If the external location is returned as undefined, this
+   * indicates a configuration error
+   */
+  public determineLocationForFlag(isInternalUser: boolean, selectedFlagsLocation: FlagsWithFormGroupPath,
+    formValues: any): FlagsWithFormGroupPath {
+      if (isInternalUser && selectedFlagsLocation?.flags?.groupId) {
+        if ((formValues?.flagType?.flagCode === this.otherFlagTypeCode && !formValues?.flagIsVisibleInternallyOnly) ||
+          (formValues?.flagType?.flagCode !== this.otherFlagTypeCode && formValues?.flagType?.externallyAvailable)) {
+            // If necessary, find the corresponding flags object with the same groupId and external visibility (should be
+            // only one unless misconfigured)
+            const location = selectedFlagsLocation.flags.visibility?.toLowerCase() === 'external'
+              ? selectedFlagsLocation
+              : this.flagsData.filter(
+                (f) => f.flags?.groupId === selectedFlagsLocation.flags.groupId &&
+                f.flags?.visibility?.toLowerCase() === 'external')?.[0];
+            // If location is not truthy, set an error message and make caseFlagParentFormGroup invalid to prevent
+            // navigation to the summary page (by not triggering the submit event)
+            if (!location) {
+              this.errorMessages.push({
+                title: '',
+                description: CaseFlagErrorMessage.NO_EXTERNAL_FLAGS_COLLECTION
+              });
+              this.caseFlagParentFormGroup.setErrors({
+                noExternalCollection: true
+              });
+            }
+            return location;
+        } else {
+          // If necessary, find the corresponding flags object with the same groupId and internal visibility (should be
+          // only one unless misconfigured); assumed to be internal if visibility attribute is null or undefined
+          const location = selectedFlagsLocation.flags.visibility?.toLowerCase() !== 'external'
+            ? selectedFlagsLocation
+            : this.flagsData.filter(
+              (f) => f.flags?.groupId === selectedFlagsLocation.flags.groupId &&
+              f.flags?.visibility?.toLowerCase() !== 'external')?.[0];
+          // If location is not truthy, set an error message and make caseFlagParentFormGroup invalid to prevent
+          // navigation to the summary page (by not triggering the submit event)
+          if (!location) {
+            this.errorMessages.push({
+              title: '',
+              description: CaseFlagErrorMessage.NO_INTERNAL_FLAGS_COLLECTION
+            });
+            this.caseFlagParentFormGroup.setErrors({
+              noInternalCollection: true
+            });
+          }
+          return location;
+        }
+      }
+      return selectedFlagsLocation;
   }
 
   public updateFlagInCollection(): void {
@@ -411,10 +501,17 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public moveToFinalReviewStage(): void {
     this.setFlagsCaseFieldValue();
-    // Clear the "notAllCaseFlagStagesCompleted" error
-    this.allCaseFlagStagesCompleted = true;
-    this.formGroup.updateValueAndValidity();
-    this.caseEditDataService.setTriggerSubmitEvent(true);
+    // Check that no errors have been set on caseFlagParentFormGroup (by determineLocationForFlag()); prevent moving to
+    // final review stage if errors exist
+    if (!this.caseFlagParentFormGroup.errors) {
+      // Clear the "notAllCaseFlagStagesCompleted" error
+      this.allCaseFlagStagesCompleted = true;
+      this.formGroup.updateValueAndValidity();
+      this.caseEditDataService.setTriggerSubmitEvent(true);
+      // Update this.selectedFlagsLocation with the correctly determined location, so the correct value is available to
+      // ReadCaseFlagFieldComponent when it initialises the Case Flag Summary page
+      this.selectedFlagsLocation = this.determinedLocation;
+    }
   }
 
   public ngOnDestroy(): void {
