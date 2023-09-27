@@ -33,6 +33,8 @@ export interface Flags {
   partyName?: string;
   roleOnCase?: string;
   details?: FlagDetail[];
+  visibility?: string;
+  groupId?: string;
 }
 
 export interface FlagDetailDisplay {

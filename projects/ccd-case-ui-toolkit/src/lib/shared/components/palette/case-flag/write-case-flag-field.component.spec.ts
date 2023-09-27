@@ -9,8 +9,8 @@ import { FlagType } from '../../../domain/case-flag';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
-import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
-import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagText } from './enums';
+import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from './domain';
+import { CaseFlagErrorMessage, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus } from './enums';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
 
 import createSpy = jasmine.createSpy;
@@ -531,6 +531,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[0].value).toBeTruthy();
     expect(component.flagsData[1].caseField.value.details[1].id).toBeTruthy();
     expect(component.flagsData[1].caseField.value.details[1].value).toBeTruthy();
+    spyOn(component, 'determineLocationForFlag').and.callThrough();
     const populateNewFlagDetailInstanceSpy = spyOn(component, 'populateNewFlagDetailInstance').and.callThrough();
     const newFlag1 = {
       flags: null,
@@ -541,6 +542,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       selectedLocation: new FormControl({...newFlag1})
     });
     component.addFlagToCollection();
+    expect(component.determineLocationForFlag).toHaveBeenCalled();
     expect(populateNewFlagDetailInstanceSpy).toHaveBeenCalled();
     // Check there are now three case flag values in the caseField object for caseFlag1, and two in caseFlag2
     expect(component.flagsData[0].caseField.value.details.length).toBe(3);
@@ -574,6 +576,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   it('should add flag to collection when creating a flag for a CaseField whose value is null initially', () => {
     expect(component.flagsData[2].caseField.id).toEqual(caseFlagsFieldId);
     expect(component.flagsData[2].caseField.value).toBeNull();
+    spyOn(component, 'determineLocationForFlag').and.callThrough();
     spyOn(component, 'populateNewFlagDetailInstance');
     const newFlag = {
       flags: null,
@@ -584,6 +587,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       selectedLocation: new FormControl(newFlag)
     });
     component.addFlagToCollection();
+    expect(component.determineLocationForFlag).toHaveBeenCalled();
     expect(component.populateNewFlagDetailInstance).toHaveBeenCalled();
     // Check that the caseFlags object has a value containing a details array, containing an object with a value property
     // of undefined
@@ -591,6 +595,22 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[2].caseField.value.details).toBeTruthy();
     expect(component.flagsData[2].caseField.value.details.length).toBe(1);
     expect(component.flagsData[2].caseField.value.details[0].value).toBeUndefined();
+  });
+
+  it('should not add flag to collection if the correct location for it cannot be determined', () => {
+    spyOn(component, 'determineLocationForFlag').and.returnValue(undefined);
+    spyOn(component, 'populateNewFlagDetailInstance');
+    const newFlag = {
+      flags: null,
+      pathToFlagsFormGroup: component.flagsData[2].pathToFlagsFormGroup,
+      caseField: { ...component.flagsData[2].caseField }
+    } as FlagsWithFormGroupPath;
+    component.caseFlagParentFormGroup = new FormGroup({
+      selectedLocation: new FormControl(newFlag)
+    });
+    component.addFlagToCollection();
+    expect(component.determineLocationForFlag).toHaveBeenCalled();
+    expect(component.populateNewFlagDetailInstance).not.toHaveBeenCalled();
   });
 
   it('should populate a new FlagDetail instance correctly from the form values', () => {
@@ -1097,8 +1117,253 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.fieldState).toEqual(CaseFlagFieldState.FLAG_TYPE);
   });
 
-  it('should set Create Case Flag component title caption text correctly', () => {
-    expect(component.setCreateFlagCaption(createMode)).toEqual(CaseFlagText.CAPTION_INTERNAL);
-    expect(component.setCreateFlagCaption(createExternalMode)).toEqual(CaseFlagText.CAPTION_EXTERNAL);
+  it('should set selectedFlagsLocation on the Case Flag parent FormGroup', () => {
+    component.caseFlagParentFormGroup = {
+      value: {
+        selectedLocation: {}
+      }
+    } as FormGroup;
+    const selectedFlagsLocation = {
+      caseField: {
+        id: 'FlagsExternal',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType
+      } as CaseField,
+      flags: {
+        flagsCaseFieldId: 'FlagsExternal',
+        partyName: 'Party 1',
+        roleOnCase: 'Appellant',
+        details: [],
+        visibility: 'External',
+        groupId: '4e07d5d2-ff70-4105-b46b-cd806321407c'
+      } as Flags,
+      pathToFlagsFormGroup: 'FlagsExternal'
+    } as FlagsWithFormGroupPath;
+    component.selectedFlagsLocation = selectedFlagsLocation;
+    expect(component.caseFlagParentFormGroup.value.selectedLocation).toEqual(selectedFlagsLocation);
+  });
+
+  describe('determineLocationForFlag() function tests', () => {
+    const flagsData: FlagsWithFormGroupPath[] = [
+      {
+        flags: {
+          flagsCaseFieldId: 'Party1FlagsInternal',
+          partyName: 'Party 1',
+          roleOnCase: 'Appellant',
+          details: [],
+          visibility: null,
+          groupId: '2d7a939b-e2a3-4d2c-a8f2-abc3d5bb91bd'
+        } as Flags,
+        pathToFlagsFormGroup: 'Party1FlagsInternal',
+        caseField: {
+          id: 'Party1FlagsInternal',
+          field_type: {
+            id: 'Flags',
+            type: 'Complex'
+          } as FieldType,
+          value: {
+            details: [],
+            groupId: '2d7a939b-e2a3-4d2c-a8f2-abc3d5bb91bd',
+            partyName: 'Party 1',
+            roleOnCase: 'Appellant',
+            visibility: null
+          }
+        } as CaseField
+      } as FlagsWithFormGroupPath,
+      {
+        flags: {
+          flagsCaseFieldId: 'Party1FlagsExternal',
+          partyName: 'Party 1',
+          roleOnCase: 'Appellant',
+          details: [],
+          visibility: 'External',
+          groupId: '2d7a939b-e2a3-4d2c-a8f2-abc3d5bb91bd'
+        } as Flags,
+        pathToFlagsFormGroup: 'Party1FlagsExternal',
+        caseField: {
+          id: 'Party1FlagsExternal',
+          field_type: {
+            id: 'Flags',
+            type: 'Complex'
+          } as FieldType,
+          value: {
+            details: [],
+            groupId: '2d7a939b-e2a3-4d2c-a8f2-abc3d5bb91bd',
+            partyName: 'Party 1',
+            roleOnCase: 'Appellant',
+            visibility: 'External'
+          }
+        } as CaseField
+      } as FlagsWithFormGroupPath
+    ];
+
+    beforeEach(() => {
+      component.flagsData = flagsData;
+    });
+
+    it('should determine the location when the new flag is of type "Other" and marked as visible internally only', () => {
+      const formValues = {
+        // Initial selected location is external
+        selectedLocation: flagsData[1],
+        flagType: {
+          name: 'Other',
+          externallyAvailable: true,
+          flagCode: 'OT0001'
+        },
+        flagIsVisibleInternallyOnly: true
+      };
+      const determinedLocation = component.determineLocationForFlag(true, formValues.selectedLocation, formValues);
+      // Expected location should be internal
+      expect(determinedLocation).toEqual(flagsData[0]);
+    });
+
+    it('should determine the location when the new flag is of type "Other" and not marked as visible internally only', () => {
+      const formValues = {
+        // Initial selected location is external
+        selectedLocation: flagsData[1],
+        flagType: {
+          name: 'Other',
+          externallyAvailable: true,
+          flagCode: 'OT0001'
+        },
+        flagIsVisibleInternallyOnly: ''
+      };
+      const determinedLocation = component.determineLocationForFlag(true, formValues.selectedLocation, formValues);
+      // Expected location should be external (no change from initial selection)
+      expect(determinedLocation).toEqual(flagsData[1]);
+    });
+
+    it('should determine the location when the new flag is not of type "Other" and is externally available', () => {
+      const formValues = {
+        // Initial selected location is internal
+        selectedLocation: flagsData[0],
+        flagType: {
+          name: 'Sign Language Interpreter',
+          externallyAvailable: true,
+          flagCode: 'RA0042'
+        },
+        flagIsVisibleInternallyOnly: ''
+      };
+      const determinedLocation = component.determineLocationForFlag(true, formValues.selectedLocation, formValues);
+      // Expected location should be external
+      expect(determinedLocation).toEqual(flagsData[1]);
+    });
+
+    it('should determine the location when the new flag is not of type "Other" and is not externally available', () => {
+      const formValues = {
+        // Initial selected location is internal
+        selectedLocation: flagsData[0],
+        flagType: {
+          name: 'Language Interpreter',
+          externallyAvailable: false,
+          flagCode: 'PF0015'
+        },
+        flagIsVisibleInternallyOnly: ''
+      };
+      const determinedLocation = component.determineLocationForFlag(true, formValues.selectedLocation, formValues);
+      // Expected location should be internal (no change from initial selection)
+      expect(determinedLocation).toEqual(flagsData[0]);
+    });
+
+    it('should return location undefined and set an error if no external flags collection has been defined', () => {
+      // Deliberately make the external flags collection unavailable
+      flagsData[1].flags.visibility = '';
+      flagsData[1].caseField.value.visibility = '';
+      const formValues = {
+        // Initial selected location is internal
+        selectedLocation: flagsData[0],
+        flagType: {
+          name: 'Sign Language Interpreter',
+          externallyAvailable: true,
+          flagCode: 'RA0042'
+        },
+        flagIsVisibleInternallyOnly: ''
+      };
+      const determinedLocation = component.determineLocationForFlag(true, formValues.selectedLocation, formValues);
+      // Expected location should be undefined
+      expect(determinedLocation).toBeUndefined();
+      expect(component.errorMessages.length).toBe(1);
+      expect(component.errorMessages[0]).toEqual({
+        title: '',
+        description: CaseFlagErrorMessage.NO_EXTERNAL_FLAGS_COLLECTION
+      });
+      expect(component.caseFlagParentFormGroup.errors).toEqual({
+        noExternalCollection: true
+      });
+    });
+
+    it('should return location undefined and set an error if no internal flags collection has been defined', () => {
+      // Deliberately make the internal flags collection unavailable
+      flagsData[0].flags.visibility = 'External';
+      flagsData[0].caseField.value.visibility = 'External';
+      // Restore the external flags collection visibility to ensure it's not treated as internal
+      flagsData[1].flags.visibility = 'External';
+      flagsData[1].caseField.value.visibility = 'External';
+      const formValues = {
+        // Initial selected location is external
+        selectedLocation: flagsData[1],
+        flagType: {
+          name: 'Language Interpreter',
+          externallyAvailable: false,
+          flagCode: 'PF0015'
+        },
+        flagIsVisibleInternallyOnly: ''
+      };
+      const determinedLocation = component.determineLocationForFlag(true, formValues.selectedLocation, formValues);
+      // Expected location should be undefined
+      expect(determinedLocation).toBeUndefined();
+      expect(component.errorMessages.length).toBe(1);
+      expect(component.errorMessages[0]).toEqual({
+        title: '',
+        description: CaseFlagErrorMessage.NO_INTERNAL_FLAGS_COLLECTION
+      });
+      expect(component.caseFlagParentFormGroup.errors).toEqual({
+        noInternalCollection: true
+      });
+    });
+
+    it('should return the originally selected location if the user is external', () => {
+      const determinedLocation = component.determineLocationForFlag(false, flagsData[1], null);
+      expect(determinedLocation).toEqual(flagsData[1]);
+    });
+
+    it('should return the originally selected location if no groupId is present', () => {
+      // Remove the groupId from one of the locations
+      flagsData[0].flags.groupId = '';
+      flagsData[0].caseField.value.groupId = '';
+      const determinedLocation = component.determineLocationForFlag(true, flagsData[0], null);
+      expect(determinedLocation).toEqual(flagsData[0]);
+    });
+
+    it('should not proceed to the point of submission if an error occurred determining the correct location', () => {
+      spyOn(component, 'setFlagsCaseFieldValue');
+      spyOn(component.formGroup, 'updateValueAndValidity');
+      component.selectedFlagsLocation = null;
+      // Simulate an error having occurred
+      component.caseFlagParentFormGroup.setErrors({
+        error: true
+      });
+      component.moveToFinalReviewStage();
+      expect(component.setFlagsCaseFieldValue).toHaveBeenCalled();
+      expect(component.formGroup.updateValueAndValidity).not.toHaveBeenCalled();
+      expect(caseEditDataServiceSpy.setTriggerSubmitEvent).not.toHaveBeenCalled();
+      // Selected flags location should remain un-updated
+      expect(component.selectedFlagsLocation).toBeNull();
+    });
+
+    it('should proceed to the point of submission if no error occurred determining the correct location', () => {
+      spyOn(component, 'setFlagsCaseFieldValue');
+      spyOn(component.formGroup, 'updateValueAndValidity');
+      component.selectedFlagsLocation = null;
+      component.determinedLocation = flagsData[0];
+      component.moveToFinalReviewStage();
+      expect(component.setFlagsCaseFieldValue).toHaveBeenCalled();
+      expect(component.formGroup.updateValueAndValidity).toHaveBeenCalled();
+      expect(caseEditDataServiceSpy.setTriggerSubmitEvent).toHaveBeenCalledWith(true);
+      // Selected flags location should be updated
+      expect(component.selectedFlagsLocation).toEqual(flagsData[0]);
+    });
   });
 });

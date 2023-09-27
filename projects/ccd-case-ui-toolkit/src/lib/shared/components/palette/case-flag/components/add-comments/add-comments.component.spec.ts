@@ -126,12 +126,12 @@ describe('AddCommentsComponent', () => {
     component.optional = true;
     component.ngOnInit();
     fixture.detectChanges();
-    const flagCommentsLabel = fixture.debugElement.nativeElement.querySelector('.govuk-label--l');
+    const flagCommentsLabel = fixture.debugElement.nativeElement.querySelector('.govuk-label--m');
     expect(flagCommentsLabel.textContent).toContain('(optional)');
   });
 
   it('should not show the text "(optional)" in the textarea label if comments are mandatory', () => {
-    const flagCommentsLabel = fixture.debugElement.nativeElement.querySelector('.govuk-label--l');
+    const flagCommentsLabel = fixture.debugElement.nativeElement.querySelector('.govuk-label--m');
     expect(flagCommentsLabel.textContent).not.toContain('(optional)');
   });
 

@@ -1,7 +1,7 @@
 <ng-container *ngIf="flagTypes?.length" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': flagTypeNotSelectedErrorMessage.length > 0}">
     <fieldset class="govuk-fieldset" aria-describedby="flag-type-heading">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
         <h1 id="flag-type-heading" class="govuk-fieldset__heading govuk-!-margin-bottom-1">
           <ng-container *ngIf="!cachedFlagType; else priorFlagTypeSelected">
             {{caseFlagWizardStepTitle.SELECT_CASE_FLAG | rpxTranslate}}
@@ -34,6 +34,14 @@
               [ngClass]="{'govuk-input--error': flagTypeErrorMessage.length > 0}"
               id="other-flag-type-description" [name]="caseFlagFormField.OTHER_FLAG_DESCRIPTION" type="text"
               [formControlName]="caseFlagFormField.OTHER_FLAG_DESCRIPTION"/>
+            <div class="govuk-checkboxes__item govuk-!-margin-top-4"
+              *ngIf="!isDisplayContextParameterExternal && !isCaseLevelFlag">
+              <input class="govuk-checkboxes__input" id="is-visible-externally" type="checkbox"
+                [name]="caseFlagFormField.IS_VISIBLE_INTERNALLY_ONLY" [formControlName]="caseFlagFormField.IS_VISIBLE_INTERNALLY_ONLY">
+              <label class="govuk-label govuk-checkboxes__label" for="is-visible-externally">
+                {{'This flag should only be visible to HMCTS Staff' | rpxTranslate}}
+              </label>
+            </div>
           </div>
         </div>
       </div>

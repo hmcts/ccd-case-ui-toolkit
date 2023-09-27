@@ -135,6 +135,52 @@ describe('ReadCaseFlagFieldComponent', () => {
     flagCode: 'WCA',
     status: CaseFlagStatus.ACTIVE
   };
+  const caseFlagGroup1Id = '00001111';
+  const caseFlagGroup1FieldId1 = 'GroupedCaseFlag1a';
+  const caseFlagGroup1PartyName = 'Maggie Strait';
+  const caseFlagGroup1RoleOnCase = 'Appellant';
+  const caseFlagGroup1DetailsValue1 = {
+    name: 'Other - Group 1 Flag 1',
+    dateTimeModified: '2023-09-19T01:00:00.000',
+    dateTimeCreated: '2023-09-19T00:00:00.000',
+    path: [{ id: null, value: 'Party' }],
+    hearingRelevant: 'No',
+    flagCode: 'OT0001',
+    status: CaseFlagStatus.ACTIVE
+  };
+  const caseFlagGroup1FieldId2 = 'GroupedCaseFlag1b';
+  const caseFlagGroup1DetailsValue2 = {
+    name: 'Other - Group 1 Flag 2',
+    dateTimeModified: '2023-09-19T01:00:00.000',
+    dateTimeCreated: '2023-09-19T00:00:00.000',
+    path: [{ id: null, value: 'Party' }],
+    hearingRelevant: 'No',
+    flagCode: 'OT0001',
+    status: CaseFlagStatus.ACTIVE
+  };
+  const caseFlagGroup2Id = '00002222';
+  const caseFlagGroup2FieldId1 = 'GroupedCaseFlag2a';
+  const caseFlagGroup2PartyName = 'Barry Ster';
+  const caseFlagGroup2RoleOnCase = 'Plaintiff';
+  const caseFlagGroup2DetailsValue1 = {
+    name: 'Other - Group 2 Flag 1',
+    dateTimeModified: '2023-09-19T01:00:00.000',
+    dateTimeCreated: '2023-09-19T00:00:00.000',
+    path: [{ id: null, value: 'Party' }],
+    hearingRelevant: 'No',
+    flagCode: 'OT0001',
+    status: CaseFlagStatus.ACTIVE
+  };
+  const caseFlagGroup2FieldId2 = 'GroupedCaseFlag2b';
+  const caseFlagGroup2DetailsValue2 = {
+    name: 'Other - Group 2 Flag 2',
+    dateTimeModified: '2023-09-19T01:00:00.000',
+    dateTimeCreated: '2023-09-19T00:00:00.000',
+    path: [{ id: null, value: 'Party' }],
+    hearingRelevant: 'No',
+    flagCode: 'OT0001',
+    status: CaseFlagStatus.ACTIVE
+  };
   const mockRoute = {
     snapshot: {
       data: {
@@ -239,6 +285,78 @@ describe('ReadCaseFlagFieldComponent', () => {
                     ]
                   },
                   value: witnessComplexFieldValue
+                },
+                {
+                  id: caseFlagGroup1FieldId1,
+                  field_type: {
+                    id: 'Flags',
+                    type: 'Complex'
+                  },
+                  value: {
+                    partyName: caseFlagGroup1PartyName,
+                    roleOnCase: caseFlagGroup1RoleOnCase,
+                    details: [
+                      {
+                        id: '5caf3ee8-7895-4e33-a3f2-b97e67fb35eb',
+                        value: caseFlagGroup1DetailsValue1
+                      }
+                    ],
+                    groupId: caseFlagGroup1Id
+                  }
+                },
+                {
+                  id: caseFlagGroup1FieldId2,
+                  field_type: {
+                    id: 'Flags',
+                    type: 'Complex'
+                  },
+                  value: {
+                    partyName: caseFlagGroup1PartyName,
+                    roleOnCase: caseFlagGroup1RoleOnCase,
+                    details: [
+                      {
+                        id: '6516b3e2-12f7-40d6-af7b-1c1b1f1e730a',
+                        value: caseFlagGroup1DetailsValue2
+                      }
+                    ],
+                    groupId: caseFlagGroup1Id
+                  }
+                },
+                {
+                  id: caseFlagGroup2FieldId1,
+                  field_type: {
+                    id: 'Flags',
+                    type: 'Complex'
+                  },
+                  value: {
+                    partyName: caseFlagGroup2PartyName,
+                    roleOnCase: caseFlagGroup2RoleOnCase,
+                    details: [
+                      {
+                        id: '407f09e4-84e5-47b2-8269-3fd26a54ca19',
+                        value: caseFlagGroup2DetailsValue1
+                      }
+                    ],
+                    groupId: caseFlagGroup2Id
+                  }
+                },
+                {
+                  id: caseFlagGroup2FieldId2,
+                  field_type: {
+                    id: 'Flags',
+                    type: 'Complex'
+                  },
+                  value: {
+                    partyName: caseFlagGroup2PartyName,
+                    roleOnCase: caseFlagGroup2RoleOnCase,
+                    details: [
+                      {
+                        id: '7a5e67bf-25c3-4b60-a293-541237fb2a39',
+                        value: caseFlagGroup2DetailsValue2
+                      }
+                    ],
+                    groupId: caseFlagGroup2Id
+                  }
                 }
               ]
             },
@@ -363,9 +481,6 @@ describe('ReadCaseFlagFieldComponent', () => {
     pathToFlagsFormGroup: `${[witnessComplexFieldId]}.PartyFlags`,
     caseField: formGroup.controls[witnessComplexFieldId]['caseField']
   } as FlagsWithFormGroupPath;
-  const createMode = '#ARGUMENT(CREATE)';
-  const updateMode = '#ARGUMENT(UPDATE)';
-  const updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
   let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
 
   beforeEach(waitForAsync(() => {
@@ -390,7 +505,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     fixture = TestBed.createComponent(ReadCaseFlagFieldComponent);
     component = fixture.componentInstance;
     component.caseField = flagLauncher1CaseField;
-    component.formGroup = new FormGroup({});
+    component.formGroup = formGroup;
     router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
 
@@ -405,9 +520,10 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should extract all flags-related data from the CaseView object in the snapshot data', () => {
+  it('should extract all flags-related data from the CaseView object in the snapshot data, grouping flags by groupId', () => {
+    // Flags data is grouped by groupId where present, if the user is not external (the default)
     expect(component.flagsData).toBeTruthy();
-    expect(component.flagsData.length).toBe(4);
+    expect(component.flagsData.length).toBe(8);
     expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
     expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
     expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag1RoleOnCase);
@@ -437,17 +553,113 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[3].flags.roleOnCase).toEqual(witnessCaseFlagRoleOnCase);
     expect(component.flagsData[3].flags.details.length).toBe(1);
     expect(component.flagsData[3].flags.details[0].name).toEqual(caseFlag1DetailsValue1.name);
-    // Check the party-level and case-level flags are separated correctly
-    expect(component.partyLevelCaseFlagData.length).toBe(3);
+    expect(component.flagsData[4].flags.flagsCaseFieldId).toEqual(caseFlagGroup1FieldId1);
+    expect(component.flagsData[4].flags.partyName).toEqual(caseFlagGroup1PartyName);
+    expect(component.flagsData[4].flags.roleOnCase).toEqual(caseFlagGroup1RoleOnCase);
+    expect(component.flagsData[4].flags.details[0].name).toEqual(caseFlagGroup1DetailsValue1.name);
+    expect(component.flagsData[5].flags.flagsCaseFieldId).toEqual(caseFlagGroup1FieldId2);
+    expect(component.flagsData[5].flags.partyName).toEqual(caseFlagGroup1PartyName);
+    expect(component.flagsData[5].flags.roleOnCase).toEqual(caseFlagGroup1RoleOnCase);
+    expect(component.flagsData[5].flags.details[0].name).toEqual(caseFlagGroup1DetailsValue2.name);
+    expect(component.flagsData[6].flags.flagsCaseFieldId).toEqual(caseFlagGroup2FieldId1);
+    expect(component.flagsData[6].flags.partyName).toEqual(caseFlagGroup2PartyName);
+    expect(component.flagsData[6].flags.roleOnCase).toEqual(caseFlagGroup2RoleOnCase);
+    expect(component.flagsData[6].flags.details[0].name).toEqual(caseFlagGroup2DetailsValue1.name);
+    expect(component.flagsData[7].flags.flagsCaseFieldId).toEqual(caseFlagGroup2FieldId2);
+    expect(component.flagsData[7].flags.partyName).toEqual(caseFlagGroup2PartyName);
+    expect(component.flagsData[7].flags.roleOnCase).toEqual(caseFlagGroup2RoleOnCase);
+    expect(component.flagsData[7].flags.details[0].name).toEqual(caseFlagGroup2DetailsValue2.name);
+    // Check the party-level and case-level flags are separated correctly, and the party-level flags are grouped by
+    // groupId (i.e. there are no duplicate parties). These are expected to appear before the non-grouped flags
+    expect(component.partyLevelCaseFlagData.length).toBe(5);
+    expect(component.partyLevelCaseFlagData[0].flags.flagsCaseFieldId).toEqual(caseFlagGroup1FieldId1);
+    expect(component.partyLevelCaseFlagData[0].flags.partyName).toEqual(caseFlagGroup1PartyName);
+    expect(component.partyLevelCaseFlagData[0].flags.details.length).toBe(2);
+    expect(component.partyLevelCaseFlagData[0].flags.details[0].name).toEqual(caseFlagGroup1DetailsValue1.name);
+    expect(component.partyLevelCaseFlagData[0].flags.details[1].name).toEqual(caseFlagGroup1DetailsValue2.name);
+    expect(component.partyLevelCaseFlagData[1].flags.flagsCaseFieldId).toEqual(caseFlagGroup2FieldId1);
+    expect(component.partyLevelCaseFlagData[1].flags.partyName).toEqual(caseFlagGroup2PartyName);
+    expect(component.partyLevelCaseFlagData[1].flags.details.length).toBe(2);
+    expect(component.partyLevelCaseFlagData[1].flags.details[0].name).toEqual(caseFlagGroup2DetailsValue1.name);
+    expect(component.partyLevelCaseFlagData[1].flags.details[1].name).toEqual(caseFlagGroup2DetailsValue2.name);
+    expect(component.partyLevelCaseFlagData[2].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
+    expect(component.partyLevelCaseFlagData[3].flags.flagsCaseFieldId).toEqual(caseFlag2FieldId);
+    expect(component.partyLevelCaseFlagData[4].flags.flagsCaseFieldId).toEqual('PartyFlags');
+    expect(component.caseLevelCaseFlagData).toEqual(component.flagsData[2]);
+  });
+
+  it('should extract all flags-related data from the CaseView object in the snapshot data, not grouping flags by groupId', () => {
+    // Flags data is not grouped by groupId where present, if the user is external
+    formGroup.get(flagLauncher1CaseField.id)['component'].caseField = {
+      display_context_parameter: CaseFlagDisplayContextParameter.READ_EXTERNAL
+    };
+    component.ngOnInit();
+    expect(component.flagsData).toBeTruthy();
+    expect(component.flagsData.length).toBe(8);
+    expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
+    expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
+    expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag1RoleOnCase);
+    expect(component.flagsData[0].flags.details.length).toBe(2);
+    expect(component.flagsData[0].flags.details[0].name).toEqual(caseFlag1DetailsValue1.name);
+    expect(component.flagsData[0].flags.details[0].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
+    expect(component.flagsData[0].flags.details[0].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
+    expect(component.flagsData[0].flags.details[0].hearingRelevant).toBe(false);
+    expect(component.flagsData[1].flags.flagsCaseFieldId).toEqual(caseFlag2FieldId);
+    expect(component.flagsData[1].flags.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagsData[1].flags.roleOnCase).toEqual(caseFlag2RoleOnCase);
+    expect(component.flagsData[1].flags.details.length).toBe(2);
+    expect(component.flagsData[1].flags.details[1].name).toEqual(caseFlag2DetailsValue2.name);
+    expect(component.flagsData[1].flags.details[1].dateTimeModified).toEqual(new Date(caseFlag1DetailsValue1.dateTimeModified));
+    expect(component.flagsData[1].flags.details[1].dateTimeCreated).toEqual(new Date(caseFlag1DetailsValue1.dateTimeCreated));
+    expect(component.flagsData[1].flags.details[1].hearingRelevant).toBe(true);
+    expect(component.flagsData[2].flags.flagsCaseFieldId).toEqual(caseFlagsFieldId);
+    expect(component.flagsData[2].flags.partyName).toBeUndefined();
+    expect(component.flagsData[2].flags.roleOnCase).toBeUndefined();
+    expect(component.flagsData[2].flags.details.length).toBe(1);
+    expect(component.flagsData[2].flags.details[0].name).toEqual(caseLevelFlagDetailsValue.name);
+    expect(component.flagsData[2].flags.details[0].dateTimeModified).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeModified));
+    expect(component.flagsData[2].flags.details[0].dateTimeCreated).toEqual(new Date(caseLevelFlagDetailsValue.dateTimeCreated));
+    expect(component.flagsData[2].flags.details[0].hearingRelevant).toBe(true);
+    expect(component.flagsData[3].flags.flagsCaseFieldId).toEqual('PartyFlags');
+    expect(component.flagsData[3].flags.partyName).toEqual(witnessCaseFlagPartyName);
+    expect(component.flagsData[3].flags.roleOnCase).toEqual(witnessCaseFlagRoleOnCase);
+    expect(component.flagsData[3].flags.details.length).toBe(1);
+    expect(component.flagsData[3].flags.details[0].name).toEqual(caseFlag1DetailsValue1.name);
+    expect(component.flagsData[4].flags.flagsCaseFieldId).toEqual(caseFlagGroup1FieldId1);
+    expect(component.flagsData[4].flags.partyName).toEqual(caseFlagGroup1PartyName);
+    expect(component.flagsData[4].flags.roleOnCase).toEqual(caseFlagGroup1RoleOnCase);
+    expect(component.flagsData[4].flags.details.length).toBe(1);
+    expect(component.flagsData[4].flags.details[0].name).toEqual(caseFlagGroup1DetailsValue1.name);
+    expect(component.flagsData[5].flags.flagsCaseFieldId).toEqual(caseFlagGroup1FieldId2);
+    expect(component.flagsData[5].flags.partyName).toEqual(caseFlagGroup1PartyName);
+    expect(component.flagsData[5].flags.roleOnCase).toEqual(caseFlagGroup1RoleOnCase);
+    expect(component.flagsData[5].flags.details.length).toBe(1);
+    expect(component.flagsData[5].flags.details[0].name).toEqual(caseFlagGroup1DetailsValue2.name);
+    expect(component.flagsData[6].flags.flagsCaseFieldId).toEqual(caseFlagGroup2FieldId1);
+    expect(component.flagsData[6].flags.partyName).toEqual(caseFlagGroup2PartyName);
+    expect(component.flagsData[6].flags.roleOnCase).toEqual(caseFlagGroup2RoleOnCase);
+    expect(component.flagsData[6].flags.details.length).toBe(1);
+    expect(component.flagsData[6].flags.details[0].name).toEqual(caseFlagGroup2DetailsValue1.name);
+    expect(component.flagsData[7].flags.flagsCaseFieldId).toEqual(caseFlagGroup2FieldId2);
+    expect(component.flagsData[7].flags.partyName).toEqual(caseFlagGroup2PartyName);
+    expect(component.flagsData[7].flags.roleOnCase).toEqual(caseFlagGroup2RoleOnCase);
+    expect(component.flagsData[7].flags.details.length).toBe(1);
+    expect(component.flagsData[7].flags.details[0].name).toEqual(caseFlagGroup2DetailsValue2.name);
+    // Check the party-level (non-grouped) and case-level flags are separated correctly
+    expect(component.partyLevelCaseFlagData.length).toBe(7);
     expect(component.partyLevelCaseFlagData[0].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
     expect(component.partyLevelCaseFlagData[1].flags.flagsCaseFieldId).toEqual(caseFlag2FieldId);
     expect(component.partyLevelCaseFlagData[2].flags.flagsCaseFieldId).toEqual('PartyFlags');
+    expect(component.partyLevelCaseFlagData[3].flags.flagsCaseFieldId).toEqual(caseFlagGroup1FieldId1);
+    expect(component.partyLevelCaseFlagData[4].flags.flagsCaseFieldId).toEqual(caseFlagGroup1FieldId2);
+    expect(component.partyLevelCaseFlagData[5].flags.flagsCaseFieldId).toEqual(caseFlagGroup2FieldId1);
+    expect(component.partyLevelCaseFlagData[6].flags.flagsCaseFieldId).toEqual(caseFlagGroup2FieldId2);
     expect(component.caseLevelCaseFlagData).toEqual(component.flagsData[2]);
   });
 
   it('should extract the correct flags-related data for a given FlagLauncher field instance', () => {
     expect(component.flagsData).toBeTruthy();
-    expect(component.flagsData.length).toBe(4);
+    expect(component.flagsData.length).toBe(8);
     expect(component.flagsData[0].flags.flagsCaseFieldId).toEqual(caseFlag1FieldId);
     expect(component.flagsData[0].flags.partyName).toEqual(caseFlag1PartyName);
     expect(component.flagsData[0].flags.roleOnCase).toEqual(caseFlag1RoleOnCase);
@@ -469,7 +681,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     TestBed.inject(ActivatedRoute).snapshot.data.case.tabs[2].fields[1].value = null;
     TestBed.inject(ActivatedRoute).snapshot.data.case.tabs[2].fields[2].value = undefined;
     component.ngOnInit();
-    expect(component.flagsData.length).toBe(2);
+    expect(component.flagsData.length).toBe(6);
   });
 
   xit('should map a Flags case field to a Flags object even if it has no flag details', () => {
@@ -477,7 +689,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     TestBed.inject(ActivatedRoute).snapshot.data.case.tabs[2].fields[2].value.details = undefined;
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
-      display_context_parameter: createMode
+      display_context_parameter: CaseFlagDisplayContextParameter.CREATE
     };
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
       selectedLocation: new FormControl(selectedFlagsLocation)
@@ -495,7 +707,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   it('should select the correct (i.e. new) flag to display on the summary page, as part of the Create Case Flag journey', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
-      display_context_parameter: createMode
+      display_context_parameter: CaseFlagDisplayContextParameter.CREATE
     };
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
       selectedLocation: new FormControl(selectedFlagsLocation)
@@ -512,7 +724,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   it('should select the correct (i.e. new) flag to display on the summary page, when the flag is contained in a Complex field', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
-      display_context_parameter: createMode
+      display_context_parameter: CaseFlagDisplayContextParameter.CREATE
     };
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
       selectedLocation: new FormControl(selectedFlagsLocationInComplexField)
@@ -529,7 +741,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   it('should show nothing on the summary page if the flag\'s CaseField object has no value', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
-      display_context_parameter: createMode
+      display_context_parameter: CaseFlagDisplayContextParameter.CREATE
     };
     selectedFlagsLocation.caseField.value = null;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
@@ -545,7 +757,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Case Flags journey', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
-      display_context_parameter: updateMode
+      display_context_parameter: CaseFlagDisplayContextParameter.UPDATE
     };
     component.formGroup = formGroup;
     // Simulate presence of selected flag
@@ -568,7 +780,7 @@ describe('ReadCaseFlagFieldComponent', () => {
   it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage support journey for Legal Ops', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
-      display_context_parameter: updateExternalMode
+      display_context_parameter: CaseFlagDisplayContextParameter.UPDATE_EXTERNAL
     };
     component.formGroup = formGroup;
     // Simulate presence of selected flag

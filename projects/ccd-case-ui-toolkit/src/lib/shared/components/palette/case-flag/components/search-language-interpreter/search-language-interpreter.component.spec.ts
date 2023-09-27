@@ -384,7 +384,7 @@ describe('SearchLanguageInterpreterComponent', () => {
   xit('should show the correct page title and hint text depending on whether the flag type is sign language or not', () => {
     fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
-    let titleElement = nativeElement.querySelector('.govuk-label--l');
+    let titleElement = nativeElement.querySelector('.govuk-label--m');
     let hintTextElement = nativeElement.querySelector('#language-search-box-hint');
     expect(titleElement.textContent).toContain(component.flagType.name);
     expect(hintTextElement.textContent).toContain(SearchLanguageInterpreterStep.HINT_TEXT);
@@ -392,7 +392,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     component.flagType.flagCode = signLanguageFlagCode;
     component.ngOnInit();
     fixture.detectChanges();
-    titleElement = nativeElement.querySelector('.govuk-label--l');
+    titleElement = nativeElement.querySelector('.govuk-label--m');
     hintTextElement = nativeElement.querySelector('#language-search-box-hint');
     expect(titleElement.textContent).toContain(component.flagType.name);
     expect(hintTextElement.textContent).toContain(SearchLanguageInterpreterStep.SIGN_HINT_TEXT);
@@ -402,7 +402,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     mockRpxTranslationService.language = 'cy';
     fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
-    const titleElement = nativeElement.querySelector('.govuk-label--l');
+    const titleElement = nativeElement.querySelector('.govuk-label--m');
     expect(titleElement.textContent).toContain(component.flagType.name_cy);
   });
 
@@ -411,7 +411,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     component.flagType.name_cy = null;
     fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
-    const titleElement = nativeElement.querySelector('.govuk-label--l');
+    const titleElement = nativeElement.querySelector('.govuk-label--m');
     expect(titleElement.textContent).toContain(component.flagType.name);
   });
 
@@ -419,14 +419,14 @@ describe('SearchLanguageInterpreterComponent', () => {
     component.flagType.name = null;
     fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
-    const titleElement = nativeElement.querySelector('.govuk-label--l');
+    const titleElement = nativeElement.querySelector('.govuk-label--m');
     expect(titleElement.textContent).toContain(component.flagType.name_cy);
   });
 
   it('should switch between English and Welsh displays of the page title when the page language selection is changed', () => {
     fixture.detectChanges();
     const nativeElement = fixture.debugElement.nativeElement;
-    const titleElement = nativeElement.querySelector('.govuk-label--l');
+    const titleElement = nativeElement.querySelector('.govuk-label--m');
     expect(titleElement.textContent).toContain(component.flagType.name);
     mockRpxTranslationService.language = 'cy';
     fixture.detectChanges();

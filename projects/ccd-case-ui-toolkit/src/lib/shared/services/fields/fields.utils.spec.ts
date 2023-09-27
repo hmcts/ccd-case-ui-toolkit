@@ -633,7 +633,9 @@ describe('FieldsUtils', () => {
             flagsCaseFieldId: caseField.id,
             partyName: 'Party 1',
             roleOnCase: null,
-            details: null
+            details: null,
+            visibility: undefined,
+            groupId: undefined
           }
         }
       ]);
@@ -656,7 +658,9 @@ describe('FieldsUtils', () => {
             flagsCaseFieldId: caseField.id,
             partyName: undefined,
             roleOnCase: undefined,
-            details: null
+            details: null,
+            visibility: undefined,
+            groupId: undefined
           }
         }
       ]);
@@ -679,7 +683,9 @@ describe('FieldsUtils', () => {
             flagsCaseFieldId: caseField.id,
             partyName: null,
             roleOnCase: null,
-            details: null
+            details: null,
+            visibility: null,
+            groupId: null
           }
         }
       ]);
@@ -701,7 +707,9 @@ describe('FieldsUtils', () => {
             flagsCaseFieldId: caseField.id,
             partyName: null,
             roleOnCase: null,
-            details: null
+            details: null,
+            visibility: null,
+            groupId: null
           }
         }
       ]);
