@@ -21,6 +21,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -72,7 +73,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   constructor(
-    public readonly caseEdit: CaseEditComponent,
+    public caseEdit: CaseEditComponent,
     private readonly route: ActivatedRoute,
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
@@ -81,7 +82,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly dialog: MatDialog,
     private readonly caseFieldService: CaseFieldService,
     private readonly caseEditDataService: CaseEditDataService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService
   ) {
   }
 
@@ -268,6 +270,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     }
 
     if (!this.caseEdit.isSubmitting && !this.currentPageIsNotValid()) {
+      if (this.caseEdit.validPageList.findIndex(page=> page.id === this.currentPage.id) === -1) {
+        this.caseEdit.validPageList.push(this.currentPage);
+      }
       this.caseEdit.isSubmitting = true;
       this.caseEdit.error = null;
       const caseEventData: CaseEventData = this.buildCaseEventData();
@@ -557,6 +562,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     // Get hold of the CaseEventData.
     const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
+
+    // delete fields which are not part of the case event journey wizard pages case fields
+    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.caseEdit.validPageList, caseEventData.data, true, fromPreviousPage);
 
     // Tidy it up before we return it.
     this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase,
