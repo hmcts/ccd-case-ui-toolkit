@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RpxTranslationModule } from 'rpx-xui-translation';
+import { PaletteModule } from '../palette/palette.module';
 import { BannersModule } from '../../../components/banners/banners.module';
 import { CaseEditDataModule, CaseEditDataService } from '../../commons/case-edit-data';
 import { CallbackErrorsComponent } from '../../components/error';
@@ -29,7 +30,6 @@ import { RouterHelperService } from '../../services/router';
 import { SessionStorageService } from '../../services/session/session-storage.service';
 import { ErrorsModule } from '../error/errors.module';
 import { LoadingSpinnerModule } from '../loading-spinner/loading-spinner.module';
-import { PaletteModule } from '../palette/palette.module';
 import { CaseCreateComponent } from './case-create/case-create.component';
 import { CaseEditConfirmComponent } from './case-edit-confirm/case-edit-confirm.component';
 import { CaseEditFormComponent } from './case-edit-form/case-edit-form.component';
@@ -54,6 +54,7 @@ import {
 } from './services';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 import { CaseworkerService } from './services/case-worker.service';
+import { ValidPageListCaseFieldsService } from './services/valid-page-list-caseFields.service';
 
 @NgModule({
   imports: [
@@ -121,7 +122,8 @@ import { CaseworkerService } from './services/case-worker.service';
     JudicialworkerService,
     CaseworkerService,
     SessionStorageService,
-    EventCompletionStateMachineService
+    EventCompletionStateMachineService,
+    ValidPageListCaseFieldsService
   ]
 })
 export class CaseEditorModule { }
