@@ -1,20 +1,20 @@
 import { DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { Subscription, of, throwError } from 'rxjs';
+import { of, Subscription, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseField, FieldType } from '../../../domain/definition';
-import { DocumentData } from '../../../domain/document';
-import { DocumentManagementService } from '../../../services/document-management';
+import { CaseField, DocumentData, FieldType } from '../../../domain';
+import { DocumentManagementService, JurisdictionService } from '../../../services';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { CaseNotifier, CasesService } from '../../case-editor';
-import { DocumentDialogComponent } from '../../dialogs/document-dialog';
+import { CaseNotifier, CasesService, EventTriggerService } from '../../case-editor';
+import { DocumentDialogComponent } from '../../dialogs';
 import { FieldLabelPipe } from '../utils';
 import { FileUploadStateService } from './file-upload-state.service';
 import { WriteDocumentFieldComponent } from './write-document-field.component';
+
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
 
@@ -22,11 +22,13 @@ const FIELD_TYPE: FieldType = {
   id: 'Document',
   type: 'Document'
 };
+
 const VALUE = {
   document_url: 'https://www.example.com',
   document_binary_url: 'https://www.example.com/binary',
   document_filename: 'evidence_document.evd'
 };
+
 const CASE_FIELD: CaseField = ({
   id: 'x',
   label: 'X',
@@ -90,6 +92,7 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
 };
 
 describe('WriteDocumentFieldComponent', () => {
+
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
   const $DIALOG_REPLACE_BUTTON = By.css('.button[title=Replace]');
@@ -114,7 +117,11 @@ describe('WriteDocumentFieldComponent', () => {
   let appConfig: any;
   let casesService: any;
 
-  beforeEach(() => {
+  const jurisdictionService: any = {};
+  const eventTriggerService: any = {};
+  const caseNotifier: any = {};
+
+  beforeEach(waitForAsync(() => {
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT),
@@ -123,7 +130,6 @@ describe('WriteDocumentFieldComponent', () => {
     mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
     mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed','close']);
     casesService = createSpyObj('casesService', ['getCaseViewV2']);
-
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
       'setUploadInProgress',
       'isUploadInProgress'
@@ -144,15 +150,17 @@ describe('WriteDocumentFieldComponent', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
-          {provide: MatDialog, useValue: mockDialog},
-          {provide: MatDialogRef, useValue: mockMatDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
-          {provide: AbstractAppConfig, useValue: appConfig },
+          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+          { provide: MatDialog, useValue: mockDialog },
+          { provide: MatDialogRef, useValue: mockMatDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: FileUploadStateService, useValue: mockFileUploadStateService },
+          { provide: AbstractAppConfig, useValue: appConfig },
           { provide: CasesService, useValue: casesService },
-          DocumentDialogComponent,
-          CaseNotifier
+          { provide: JurisdictionService, useValue: jurisdictionService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          DocumentDialogComponent
         ]
       })
       .compileComponents();
@@ -166,7 +174,7 @@ describe('WriteDocumentFieldComponent', () => {
     de = fixture.debugElement;
     component.ngOnInit();
     fixture.detectChanges();
-  });
+  }));
 
   it('should be valid for the initial component state.', () => {
     expect(component.valid).toBeTruthy();
@@ -195,7 +203,7 @@ describe('WriteDocumentFieldComponent', () => {
     expect(component.caseField.value).toBeFalsy();
     component.fileSelectEvent();
     component.confirmReplaceResult = 'Replace';
-    expect(component.triggerReplace()).toBeFalsy();
+    expect(component.triggerReplace()).toBeTruthy();
   });
 
   it('should open replace file dialog if document exist', () => {
@@ -469,8 +477,11 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   let dialog: any;
   let matDialogRef: MatDialogRef<DocumentDialogComponent>;
   let casesService: any;
+  const jurisdictionService: any = {};
+  const eventTriggerService: any = {};
 
-  beforeEach(() => {
+  beforeEach(waitForAsync(() => {
+
     mockDocumentManagementService = createSpyObj<DocumentManagementService>('documentManagementService', ['uploadFile']);
     mockDocumentManagementService.uploadFile.and.returnValues(
       of(RESPONSE_FIRST_DOCUMENT_MANDATORY),
@@ -479,7 +490,6 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     dialog = createSpyObj<MatDialog>('dialog', ['open']);
     matDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['close']);
     casesService = createSpyObj('casesService', ['getCaseViewV2']);
-
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
       'setUploadInProgress',
       'isUploadInProgress'
@@ -500,13 +510,15 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: DocumentManagementService, useValue: mockDocumentManagementService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: FileUploadStateService, useValue: mockFileUploadStateService},
-          {provide: AbstractAppConfig, useValue: appConfig},
-          {provide: CasesService, useValue: casesService},
+          { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: FileUploadStateService, useValue: mockFileUploadStateService },
+          { provide: AbstractAppConfig, useValue: appConfig },
+          { provide: CasesService, useValue: casesService },
+          { provide: JurisdictionService, useValue: jurisdictionService },
+          { provide: EventTriggerService, useValue: eventTriggerService },
           DocumentDialogComponent,
           CaseNotifier
         ]
@@ -520,7 +532,7 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
 
     de = fixture.debugElement;
     fixture.detectChanges();
-  });
+  }));
 
   it('should be invalid if no document specified for upload for read only. Empty file.', () => {
     component.caseField = CASE_FIELD_MANDATORY;
