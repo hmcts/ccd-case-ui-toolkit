@@ -29,6 +29,7 @@ import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.compo
 
 import createSpyObj = jasmine.createSpyObj;
 import { ValidPageListCaseFieldsService } from '../../case-editor/services/valid-page-list-caseFields.service';
+import { ServiceOrg } from '../../../domain/case-view/service-org-response.model';
 
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
@@ -231,9 +232,26 @@ describe('WriteLinkedCasesFieldComponent', () => {
     },
   ]};
 
+  const serviceOrgData: ServiceOrg[] = [
+    {
+      business_are: 'area',
+      ccd_case_types: 'case Type',
+      ccd_service_name: 'case name',
+      jurisdiction: 'Civil',
+      last_update: '22/08/1999',
+      org_unit: 'unit',
+      service_code: 'code',
+      service_description: 'description',
+      service_id: 39,
+      service_short_description: 'short descr',
+      sub_business_area: 'buss area'
+
+    }
+  ]
+
   beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
-    commonDataService = createSpyObj('commonDataService', ['getRefData']);
+    commonDataService = createSpyObj('commonDataService', ['getRefData', 'getServiceOrgData']);
     casesService = createSpyObj('CasesService', ['getCaseViewV2']);
     caseEditDataService = new CaseEditDataService();
     TestBed.configureTestingModule({
@@ -257,6 +275,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     })
     .compileComponents();
     commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
+    commonDataService.getServiceOrgData.and.returnValue(of(serviceOrgData));
   }));
 
   beforeEach(() => {
@@ -275,6 +294,12 @@ describe('WriteLinkedCasesFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should initialise get OrgService', () => {
+   spyOn(component, 'getLinkedCaseReasons').and.returnValue(of([]));
+    component.getOrgService();
+    expect(component.getLinkedCaseReasons).toHaveBeenCalled();
+  });
+
   it('should initialise case details', () => {
     spyOn(component, 'getLinkedCases');
     spyOn(linkedCasesService, 'getCaseName').and.returnValue('case name');
@@ -286,6 +311,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
 
   it('should have called pre-required data', () => {
     commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
+    commonDataService.getServiceOrgData.and.returnValue(of(serviceOrgData));
     casesService.getCaseViewV2.and.returnValue(of(caseInfo));
     expect(component.ngOnInit).toBeTruthy();
     expect(linkedCasesService.linkedCases.length).not.toBeNull();

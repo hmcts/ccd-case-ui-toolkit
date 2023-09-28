@@ -107,7 +107,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   }
 
   getOrgService(): void {
-    const servicesApiUrl = `refdata/location/orgServices?ccdCaseType=${this.caseDetails.case_type.id}`;
+    const servicesApiUrl = `refdata/location/orgServices?ccdCaseType=${this.caseDetails?.case_type?.id}`;
     this.commonDataService.getServiceOrgData(servicesApiUrl).subscribe(result => {
      result.forEach(ids => {
         this.getLinkedCaseReasons(ids.service_id);
