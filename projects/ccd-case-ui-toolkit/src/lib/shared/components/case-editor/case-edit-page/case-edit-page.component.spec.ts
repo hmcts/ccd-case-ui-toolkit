@@ -41,6 +41,7 @@ import {
   FormValueService,
   LoadingService,
 } from '../../../services';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -76,6 +77,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService = {},
     caseEditDataService = {},
     loadingService = {},
+    validPageListCaseFieldsService = {}
   }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -87,7 +89,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     dialog as MatDialog,
     caseFieldService as CaseFieldService,
     caseEditDataService as CaseEditDataService,
-    loadingService as LoadingService
+    loadingService as LoadingService,
+    validPageListCaseFieldsService as ValidPageListCaseFieldsService
   );
 
   it('should create', () => {
@@ -294,8 +297,22 @@ describe('CaseEditPageComponent - all other tests', () => {
   let wizardPage = createWizardPage(
     [createCaseField('field1', 'field1Value')],
     false,
-    0
+    0,
+    1
   );
+  const wizardPage1 = createWizardPage(
+    [createCaseField('field1', 'field1Value')],
+    false,
+    0,
+    2
+  );
+  const wizardPage2 = createWizardPage(
+    [createCaseField('field3', 'field3Value')],
+    false,
+    0,
+    3
+  );
+  const pageList = [wizardPage1, wizardPage2];
   const readOnly = new CaseField();
   const fieldTypeSanitiser = new FieldTypeSanitiser();
   const formValueService = new FormValueService(fieldTypeSanitiser);
@@ -303,6 +320,7 @@ describe('CaseEditPageComponent - all other tests', () => {
   const firstPage = new WizardPage();
   const caseFieldService = new CaseFieldService();
   const pageValidationService = new PageValidationService(caseFieldService);
+  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService();
   let route: any;
   let snapshot: any;
   const FORM_GROUP_NO_JUDICIAL_USERS = new FormGroup({
@@ -373,7 +391,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             metadataFields: [caseField2],
           },
           getNextPage: () => null,
-          callbackErrorsSubject: new Subject<any>()
+          callbackErrorsSubject: new Subject<any>(),
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -450,7 +469,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: CaseEditDataService, useValue: caseEditDataService },
             FieldsUtils,
             PlaceholderService,
-            { provide: LoadingService, useValue: loadingServiceMock }
+            { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -766,7 +786,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             metadataFields: [],
           },
           getNextPage: () => null,
-          callbackErrorsSubject: new Subject<any>()
+          callbackErrorsSubject: new Subject<any>(),
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -844,6 +865,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             FieldsUtils,
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -941,7 +963,8 @@ describe('CaseEditPageComponent - all other tests', () => {
               title_display: '# 1234567812345678: test',
             },
           },
-          getNextPage: () => null
+          getNextPage: () => null,
+          validPageList: pageList
         };
 
         route = {
@@ -1003,6 +1026,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             FieldsUtils,
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -1097,7 +1121,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           getNextPage: () => null,
           callbackErrorsSubject: new Subject<any>(),
-          ignoreWarning: true
+          ignoreWarning: true,
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1125,6 +1150,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           eventData
         );
         spyOn(formValueService, 'removeUnnecessaryFields');
+        spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
 
         caseEditDataService = createSpyObj('caseEditDataService',
           [
@@ -1169,6 +1195,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             FieldsUtils,
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -1185,7 +1212,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           aCaseField('judicialUserField2', 'judicialUser2', 'JudicialUser', 'OPTIONAL', null),
         ],
         false,
-        0
+        0,
+        2
       );
       comp.wizard = new Wizard([wizardPage]);
       // Rebuild the FORM_GROUP object before use because it gets modified by the "should call validate" test
@@ -1219,6 +1247,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(formValueService.sanitise).toHaveBeenCalled();
       expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
       expect(loadingServiceMock.register).toHaveBeenCalled();
+      expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
 
       fixture.whenStable().then(() => {
         expect(comp.caseEdit.eventTrigger.case_id).toEqual(DRAFT_PREFIX + draft.id);
@@ -1422,7 +1451,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             metadataFields: [caseField2],
           },
           getNextPage: () => null,
-          callbackErrorsSubject: new Subject<any>()
+          callbackErrorsSubject: new Subject<any>(),
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1498,7 +1528,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: CaseEditDataService, useValue: caseEditDataService },
             FieldsUtils,
             PlaceholderService,
-            { provide: LoadingService, useValue: loadingServiceMock }
+            { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -1621,7 +1652,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             tabs: [],
             metadataFields: [],
           },
-          getNextPage: () => null
+          getNextPage: () => null,
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1692,7 +1724,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: CaseEditDataService, useValue: caseEditDataService },
             FieldsUtils,
             PlaceholderService,
-            { provide: LoadingService, useValue: loadingServiceMock }
+            { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -1939,7 +1972,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   function createWizardPage(
     fields: CaseField[] = [],
     isMultiColumn = false,
-    order = 0
+    order = 0,
+    id = 1
   ): WizardPage {
     const wp: WizardPage = new WizardPage();
     wp.case_fields = fields;
@@ -1948,6 +1982,7 @@ describe('CaseEditPageComponent - all other tests', () => {
     wp.getCol2Fields = () => fields;
     wp.isMultiColumn = () => isMultiColumn;
     wp.order = order;
+    wp.id
     return wp;
   }
 });

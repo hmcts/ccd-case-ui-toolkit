@@ -20,23 +20,16 @@ export class CaseNotifier {
     }
 
     public announceCase(c: CaseView) {
-      console.info('announceCase started.');
       this.caseViewSource.next(c);
-      console.info('announceCase finished.');
     }
     public fetchAndRefresh(cid: string) {
-      console.info('fetchAndRefresh started.');
       return this.casesService
         .getCaseViewV2(cid)
         .pipe(
           map(caseView => {
-            console.info('mapping caseView started.');
-            // this.casesService.syncWait(10);
-            // throw new Error('******************************************************');
             this.cachedCaseView = plainToClassFromExist(new CaseView(), caseView);
             this.setBasicFields(this.cachedCaseView.tabs);
             this.announceCase(this.cachedCaseView);
-            console.info('mapping caseView finished. Returning it.');
             return this.cachedCaseView;
           }),
         );
