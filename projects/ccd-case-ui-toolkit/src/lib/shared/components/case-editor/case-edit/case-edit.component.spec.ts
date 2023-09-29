@@ -17,7 +17,6 @@ import { PaletteUtilsModule } from '../../palette';
 import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
 import { CaseNotifier } from '../services';
 import { WizardFactoryService } from '../services/wizard-factory.service';
-import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { CaseEditComponent } from './case-edit.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -212,7 +211,6 @@ describe('CaseEditComponent', () => {
   const registrarService = new ConditionalShowRegistrarService();
   let route: any;
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
-  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService();
 
   describe('profile available in route', () => {
     routerStub = {
@@ -270,7 +268,6 @@ describe('CaseEditComponent', () => {
         'populateLinkedCasesDetailsFromCaseFields'
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
-      spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
 
       route = {
         queryParams: of({Origin: 'viewDraft'}),
@@ -320,8 +317,7 @@ describe('CaseEditComponent', () => {
             {provide: ActivatedRoute, useValue: route},
             SessionStorageService,
             WindowService,
-            { provide: LoadingService, loadingServiceMock },
-            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: LoadingService, loadingServiceMock }
           ]
         })
         .compileComponents();
@@ -1223,7 +1219,6 @@ describe('CaseEditComponent', () => {
         expect(formValueService.removeCaseFieldsOfType)
           .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
         expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
-        expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
       });
 
       it('should NOT submit the case due to error', () => {
@@ -1400,8 +1395,7 @@ describe('CaseEditComponent', () => {
             {provide: Router, useValue: routerStub},
             {provide: ActivatedRoute, useValue: mockRouteNoProfile},
             SessionStorageService,
-            WindowService,
-            ValidPageListCaseFieldsService
+            WindowService
           ]
         })
         .compileComponents();
