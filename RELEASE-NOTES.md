@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.19.6-case-file-view-document-upload-date
+### Version 6.19.6-case-file-view-document-upload-date-v2
 **EUI-7807** Case file view v1.1
 
 ### Version 6.19.5
