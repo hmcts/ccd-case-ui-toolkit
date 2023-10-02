@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.6-case-flags-v2-external-user-flag-update-fix
+**EUI-8840** Use flagUpdateComment field for persisting flag comments on update by external users
+
 ### Version 6.19.6-case-flags-v2-reasonable-adjustments-v2
 **EUI-7243** Case flags v2 reasonable adjustments
 
