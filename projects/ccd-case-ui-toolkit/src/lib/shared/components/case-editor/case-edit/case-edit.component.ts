@@ -293,7 +293,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
 
   // delete fields which are not part of the case event journey wizard pages case fields
-  this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, false);
+  this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, eventTrigger.case_fields, false);
 
   caseEventData.event_token = eventTrigger.event_token;
   caseEventData.ignore_warning = this.ignoreWarning;
