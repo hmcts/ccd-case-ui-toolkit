@@ -212,7 +212,7 @@ describe('CaseEditComponent', () => {
   const registrarService = new ConditionalShowRegistrarService();
   let route: any;
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
-  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService();
+  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
 
   describe('profile available in route', () => {
     routerStub = {
@@ -1401,7 +1401,7 @@ describe('CaseEditComponent', () => {
             {provide: ActivatedRoute, useValue: mockRouteNoProfile},
             SessionStorageService,
             WindowService,
-            ValidPageListCaseFieldsService
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ]
         })
         .compileComponents();

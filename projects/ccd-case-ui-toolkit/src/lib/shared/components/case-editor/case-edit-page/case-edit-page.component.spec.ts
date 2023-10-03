@@ -53,7 +53,7 @@ import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
 import { CaseEditPageText } from './case-edit-page-text.enum';
 import { CaseEditPageComponent } from './case-edit-page.component';
-
+import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
@@ -312,6 +312,8 @@ describe('CaseEditPageComponent - all other tests', () => {
     0,
     3
   );
+  wizardPage1.parsedShowCondition = ShowCondition.getInstance(null);
+  wizardPage2.parsedShowCondition = ShowCondition.getInstance(null);
   const pageList = [wizardPage1, wizardPage2];
   const readOnly = new CaseField();
   const fieldTypeSanitiser = new FieldTypeSanitiser();
@@ -320,7 +322,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   const firstPage = new WizardPage();
   const caseFieldService = new CaseFieldService();
   const pageValidationService = new PageValidationService(caseFieldService);
-  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService();
+  const fieldsUtils = new FieldsUtils();
+  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
   let route: any;
   let snapshot: any;
   const FORM_GROUP_NO_JUDICIAL_USERS = new FormGroup({
@@ -370,6 +373,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         firstPage.case_fields = [
           createCaseField('field1', 'SOME_VALUE')
         ];
+        firstPage.parsedShowCondition = ShowCondition.getInstance(null);
         cancelled = createSpyObj('cancelled', ['emit']);
         caseEditComponentStub = {
           form: FORM_GROUP,
@@ -467,7 +471,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
@@ -862,7 +866,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
@@ -1023,7 +1027,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
@@ -1192,7 +1196,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
@@ -1526,7 +1530,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
@@ -1722,7 +1726,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
@@ -1982,7 +1986,6 @@ describe('CaseEditPageComponent - all other tests', () => {
     wp.getCol2Fields = () => fields;
     wp.isMultiColumn = () => isMultiColumn;
     wp.order = order;
-    wp.id
     return wp;
   }
 });
