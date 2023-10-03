@@ -19,7 +19,6 @@ describe('ValidPageListCaseFieldsService', () => {
 
   const PAGE_1: WizardPage = buildPage('page1', 'Page 1', 1, [caseField8, caseField9, caseField10]);
   const PAGE_2: WizardPage = buildPage('page2', 'Page 2', 2, [caseField1, caseField2, caseField3, caseField4, caseField5], 'caseField1=\"someValue1\"');
-  
   const validPageList = [PAGE_1, PAGE_2];
   PAGE_1.parsedShowCondition = ShowCondition.getInstance(null);
   PAGE_2.parsedShowCondition = ShowCondition.getInstance('caseField1=\"someValue1\"');
