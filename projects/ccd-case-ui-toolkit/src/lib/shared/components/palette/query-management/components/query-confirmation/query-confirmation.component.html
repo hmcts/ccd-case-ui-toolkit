@@ -1,0 +1,43 @@
+<main class="govuk-main-wrapper" *ngIf="queryCreateContext">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-panel govuk-panel--confirmation">
+        <ng-container [ngSwitch]="queryCreateContext">
+          <ng-container *ngSwitchCase="queryCreateContextEnum.NEW_QUERY">
+            <h1 class="govuk-panel__title">Query submitted</h1>
+            <div class="govuk-panel__body">Your query has been sent to HMCTS</div>
+            <h2 class="govuk-heading-m"></h2>
+            <div class="govuk-body">
+              <h3>what happens next</h3>
+              <p class="govuk-body">
+                Our team will read your query and will respond
+              </p>
+              <p class="govuk-body">
+                When the response is available it will be added to the 'Queries' section.
+              </p>
+            </div>
+            <div class="govuk-body">
+              You can <a class="govuk-link" href="javascript:void(0)">Go back to the case</a>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="queryCreateContextEnum.RESPOND">
+            <h1 class="govuk-panel__title">Query response submitted</h1>
+            <div class="govuk-panel__body">This query response has been added to the case</div>
+            <h2 class="govuk-heading-m"></h2>
+            <div class="govuk-body">
+              You can <a class="govuk-link" href="javascript:void(0)">return to tasks</a> or <a class="govuk-link" href="javascript:void(0)">Go back to the case</a>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="queryCreateContextEnum.FOLLOWUP">
+            <h1 class="govuk-panel__title">Query response submitted</h1>
+            <div class="govuk-panel__body">This query response has been added to the case</div>
+            <h2 class="govuk-heading-m"></h2>
+            <div class="govuk-body">
+              You can <a class="govuk-link" href="javascript:void(0)">return to tasks</a> or <a class="govuk-link" href="javascript:void(0)">Go back to the case</a>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</main>
