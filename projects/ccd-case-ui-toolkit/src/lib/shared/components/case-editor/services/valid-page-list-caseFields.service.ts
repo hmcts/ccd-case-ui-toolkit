@@ -15,8 +15,19 @@ export class ValidPageListCaseFieldsService {
     return page.parsedShowCondition.match(fields);
   }
 
-  public deleteNonValidatedFields(validPageList: WizardPage[], data: object, eventTriggerFields: CaseField[],
+  public deleteNonValidatedFields(validPageList: WizardPage[], caseEventDatadata: object, eventTriggerFields: CaseField[],
                                   fromPreviousPage: boolean = false): void {
+    const pageListCaseFields = this.validPageListCaseFields(validPageList, caseEventDatadata, eventTriggerFields);
+    if (!fromPreviousPage && pageListCaseFields.length > 0) {
+      Object.keys(caseEventDatadata).forEach(key => {
+        if (pageListCaseFields.findIndex((element) => element.id === key) < 0) {
+          delete caseEventDatadata[key];
+        }
+      });
+    }
+  }
+
+  public validPageListCaseFields(validPageList: WizardPage[], data: object, eventTriggerFields: CaseField[]) : CaseField[] {
     const validPageListCaseFields: CaseField[] = [];
     validPageList.forEach(page => {
       if (this.isShown(page, eventTriggerFields, data)) {
@@ -24,12 +35,6 @@ export class ValidPageListCaseFieldsService {
       }
     });
 
-    if (!fromPreviousPage && validPageListCaseFields.length > 0) {
-      Object.keys(data).forEach(key => {
-        if (validPageListCaseFields.findIndex((element) => element.id === key) < 0) {
-          delete data[key];
-        }
-      });
-    }
+    return validPageListCaseFields;
   }
 }
