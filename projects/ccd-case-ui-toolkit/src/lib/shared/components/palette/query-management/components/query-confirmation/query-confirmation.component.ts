@@ -6,7 +6,7 @@ import { QueryCreateContext } from '../../models/query-create-context.enum';
   templateUrl: './query-confirmation.component.html'
 })
 export class QueryConfirmationComponent {
-  @Input() public queryCreateContext: QueryCreateContext = null;
+  @Input() public queryCreateContext: QueryCreateContext;
 
   public queryCreateContextEnum = QueryCreateContext;
 }

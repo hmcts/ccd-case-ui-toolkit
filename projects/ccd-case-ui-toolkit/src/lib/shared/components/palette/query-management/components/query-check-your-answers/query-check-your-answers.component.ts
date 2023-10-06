@@ -18,6 +18,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   @Input() public queryItem: QueryListItem;
   @Input() public queryCreateContext: QueryCreateContext;
   @Output() public backClicked = new EventEmitter<boolean>();
+  @Output() public querySubmitted = new EventEmitter<boolean>();
   public queryCreateContextEnum = QueryCreateContext;
 
   public eventCompletionParams: EventCompletionParams;
@@ -49,6 +50,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
+    this.querySubmitted.emit(true);
     // Search Task
     const searchParameter = { ccdId: this.caseId } as TaskSearchParameter;
     this.searchTasksSubsciption = this.workAllocationService.searchTasks(searchParameter)
