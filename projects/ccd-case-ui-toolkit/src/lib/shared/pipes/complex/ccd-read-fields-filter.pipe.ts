@@ -135,7 +135,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
    */
   public transform(
     complexField: CaseField, keepEmpty?: boolean, index?: number,
-    setupHidden = false, formGroup?: FormGroup | AbstractControl, path?: string): CaseField[] {
+    setupHidden = false, formGroup?: FormGroup | AbstractControl, path?: string, idPrefix?: string): CaseField[] {
     if (!complexField || !complexField.field_type) {
       return [];
     }
@@ -145,8 +145,15 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     let checkConditionalShowAgainst: any = values;
     let formGroupAvailable = false;
     if (formGroup) {
-      checkConditionalShowAgainst = formGroup.value;
+      checkConditionalShowAgainst = formGroup.parent.getRawValue().data;
       formGroupAvailable = true;
+      if (idPrefix) {
+        const fieldId = idPrefix.substring(0, idPrefix.indexOf('_'));
+        if (checkConditionalShowAgainst[fieldId]) {
+          checkConditionalShowAgainst = values;
+          formGroupAvailable = false;
+        }
+      }
     }
 
     return fields
