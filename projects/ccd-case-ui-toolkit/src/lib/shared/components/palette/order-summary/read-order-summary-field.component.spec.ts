@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -16,7 +16,7 @@ describe('ReadOrderSummaryFieldComponent', () => {
     id: 'PersonOrderSummary',
     type: 'Complex'
   };
-  const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+  const FORM_GROUP: FormGroup = new FormGroup({});
   const VALUE: OrderSummary = {
     PaymentReference: 'RC-1521-1095-0964-3143',
     Fees: [

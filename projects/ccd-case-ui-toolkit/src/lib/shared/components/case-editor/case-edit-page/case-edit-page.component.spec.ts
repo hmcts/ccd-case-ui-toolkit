@@ -7,7 +7,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {
   AbstractControl,
   FormControl,
-  UntypedFormGroup,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -305,11 +305,11 @@ describe('CaseEditPageComponent - all other tests', () => {
   const pageValidationService = new PageValidationService(caseFieldService);
   let route: any;
   let snapshot: any;
-  const FORM_GROUP_NO_JUDICIAL_USERS = new UntypedFormGroup({
-    data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') }),
+  const FORM_GROUP_NO_JUDICIAL_USERS = new FormGroup({
+    data: new FormGroup({ field1: new FormControl('SOME_VALUE') }),
   });
-  const FORM_GROUP = new UntypedFormGroup({
-    data: new UntypedFormGroup({
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({
       field1: new FormControl('SOME_VALUE'),
       judicialUserField1_judicialUserControl: new FormControl('Judicial User'),
       judicialUserField2_judicialUserControl: new FormControl('Judicial User 2'),
@@ -909,8 +909,8 @@ describe('CaseEditPageComponent - all other tests', () => {
     };
     let loadingServiceMock: jasmine.SpyObj<LoadingService>;
 
-    const formGroup: UntypedFormGroup = new UntypedFormGroup({
-      data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') }),
+    const formGroup: FormGroup = new FormGroup({
+      data: new FormGroup({ field1: new FormControl('SOME_VALUE') }),
     });
 
     beforeEach(
@@ -918,7 +918,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         firstPage.id = 'first page';
 
         caseEditComponentStub = {
-          form: UntypedFormGroup,
+          form: FormGroup,
           wizard: WIZARD,
           data: '',
           eventTrigger,
@@ -1189,9 +1189,9 @@ describe('CaseEditPageComponent - all other tests', () => {
       );
       comp.wizard = new Wizard([wizardPage]);
       // Rebuild the FORM_GROUP object before use because it gets modified by the "should call validate" test
-      (FORM_GROUP.get('data') as UntypedFormGroup).setControl(
+      (FORM_GROUP.get('data') as FormGroup).setControl(
         'judicialUserField1_judicialUserControl', new FormControl('Judicial User'));
-      (FORM_GROUP.get('data') as UntypedFormGroup).setControl(
+      (FORM_GROUP.get('data') as FormGroup).setControl(
         'judicialUserField2_judicialUserControl', new FormControl('Judicial User 2'));
       comp.editForm = FORM_GROUP;
       comp.currentPage = wizardPage;
@@ -1240,10 +1240,10 @@ describe('CaseEditPageComponent - all other tests', () => {
         expect(comp.caseEdit.error).toBeNull();
         expect(comp.caseEdit.ignoreWarning).toBe(false);
 
-        // Both JudicialUser FormControls should have been removed from the editForm UntypedFormGroup, leaving just one
+        // Both JudicialUser FormControls should have been removed from the editForm FormGroup, leaving just one
         // FormControl
-        const formControlKeys = Object.keys((comp.editForm.get('data') as UntypedFormGroup).controls);
-        const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as UntypedFormGroup).controls);
+        const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
+        const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
         expect(formControlKeys.length).toBe(1);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
         expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(false);
@@ -1273,10 +1273,10 @@ describe('CaseEditPageComponent - all other tests', () => {
       const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
       expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
 
-      // The page is not valid, so the editForm UntypedFormGroup should still have the two JudicialUser FormControls because
+      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
       // their removal is not triggered
-      const formControlKeys = Object.keys((comp.editForm.get('data') as UntypedFormGroup).controls);
-      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as UntypedFormGroup).controls);
+      const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
+      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
       expect(formControlKeys.length).toBe(3);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
@@ -1322,10 +1322,10 @@ describe('CaseEditPageComponent - all other tests', () => {
       const secondFieldError = fieldErrorList.query($SELECT_SECOND_FIELD_ERROR);
       expect(text(secondFieldError)).toBe('Second field error');
 
-      // The page is not valid, so the editForm UntypedFormGroup should still have the two JudicialUser FormControls because
+      // The page is not valid, so the editForm FormGroup should still have the two JudicialUser FormControls because
       // their removal is not triggered
-      const formControlKeys = Object.keys((comp.editForm.get('data') as UntypedFormGroup).controls);
-      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as UntypedFormGroup).controls);
+      const formControlKeys = Object.keys((comp.editForm.get('data') as FormGroup).controls);
+      const formControlKeysWithJudicialUsers = Object.keys((FORM_GROUP.get('data') as FormGroup).controls);
       expect(formControlKeys.length).toBe(3);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[0])).toBe(true);
       expect(formControlKeys.includes(formControlKeysWithJudicialUsers[1])).toBe(true);
@@ -1546,8 +1546,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   });
 
   describe('Check for Validation Error', () => {
-    const F_GROUP = new UntypedFormGroup({
-      data: new UntypedFormGroup({
+    const F_GROUP = new FormGroup({
+      data: new FormGroup({
         Invalidfield1: new FormControl(null, Validators.required),
         Invalidfield2: new FormControl(null, [
           Validators.required,

@@ -1,5 +1,5 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
@@ -13,7 +13,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   @Input() public caseField: CaseField;
   @Input() public contextFields: CaseField[] = [];
-  @Input() public formGroup: UntypedFormGroup;
+  @Input() public formGroup: FormGroup;
   @Input() public elementsToSubstitute: string[] = ['label', 'hint_text'];
 
   private initialLabel: string;
@@ -27,7 +27,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.initialLabel = this.caseField.label;
     this.initialHintText = this.caseField.hint_text;
-    this.formGroup = this.formGroup || new UntypedFormGroup({});
+    this.formGroup = this.formGroup || new FormGroup({});
 
     const fields: object = this.getReadOnlyAndFormFields();
 

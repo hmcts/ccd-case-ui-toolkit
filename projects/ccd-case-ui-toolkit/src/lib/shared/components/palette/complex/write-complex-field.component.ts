@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { Constants } from '../../../commons/constants';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -23,9 +23,9 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   public caseFields: CaseField[] = [];
 
   @Input()
-  public formGroup: UntypedFormGroup;
+  public formGroup: FormGroup;
 
-  public complexGroup: UntypedFormGroup;
+  public complexGroup: FormGroup;
 
   @Input()
   public renderLabel = true;
@@ -37,16 +37,16 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
 
   constructor(private readonly isCompoundPipe: IsCompoundPipe, private readonly formValidatorsService: FormValidatorsService) {
     super();
-    this.complexGroup = new UntypedFormGroup({});
+    this.complexGroup = new FormGroup({});
   }
 
   public ngOnInit(): void {
     // Are we inside of a collection? If so, the parent is the complexGroup we want.
     if (this.isTopLevelWithinCollection()) {
-      this.complexGroup = this.parent as UntypedFormGroup;
+      this.complexGroup = this.parent as FormGroup;
       FieldsUtils.addCaseFieldAndComponentReferences(this.complexGroup, this.caseField, this);
     } else {
-      this.complexGroup = this.registerControl(this.complexGroup, true) as UntypedFormGroup;
+      this.complexGroup = this.registerControl(this.complexGroup, true) as FormGroup;
     }
     // Add validators for the complex field.
     this.formValidatorsService.addValidators(this.caseField, this.complexGroup);

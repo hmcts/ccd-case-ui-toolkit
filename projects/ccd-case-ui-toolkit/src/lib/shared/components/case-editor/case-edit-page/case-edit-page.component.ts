@@ -1,5 +1,5 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
@@ -37,7 +37,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
 
   public eventTrigger: CaseEventTrigger;
-  public editForm: UntypedFormGroup;
+  public editForm: FormGroup;
   public wizard: Wizard;
   public currentPage: WizardPage;
   public dialogConfig: MatDialogConfig;
@@ -358,7 +358,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     return typeof property === 'object' && !Array.isArray(property) && property !== null;
   }
 
-  public updateFormControlsValue(formGroup: UntypedFormGroup, caseFieldId: string, value: any): void {
+  public updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {
     const theControl = formGroup.controls['data'].get(caseFieldId);
     if (theControl && theControl['status'] !== 'DISABLED') {
       if (Array.isArray(theControl.value) && Array.isArray(value)
@@ -479,7 +479,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     /* istanbul ignore else */
     if (this.caseEdit.error.details) {
       this.formErrorService
-        .mapFieldErrors(this.caseEdit.error.details.field_errors, this.editForm?.controls?.['data'] as UntypedFormGroup, 'validation');
+        .mapFieldErrors(this.caseEdit.error.details.field_errors, this.editForm?.controls?.['data'] as FormGroup, 'validation');
     }
   }
 
@@ -597,10 +597,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     });
   }
 
-  private removeAllJudicialUserFormControls(page: WizardPage, editForm: UntypedFormGroup): void {
+  private removeAllJudicialUserFormControls(page: WizardPage, editForm: FormGroup): void {
     page.case_fields.forEach(caseField => {
       if (FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])) {
-        (editForm.controls['data'] as UntypedFormGroup).removeControl(`${caseField.id}_judicialUserControl`);
+        (editForm.controls['data'] as FormGroup).removeControl(`${caseField.id}_judicialUserControl`);
       }
     });
   }

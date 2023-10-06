@@ -1,5 +1,5 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteService } from '../palette.service';
@@ -16,7 +16,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
   public withLabel = false;
 
   @Input()
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
 
   @Input()
   public caseFields: CaseField[] = [];
@@ -53,7 +53,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       }
       component.instance['caseField'] = this.caseField;
       component.instance['caseFields'] = this.caseFields;
-      component.instance['UntypedFormGroup'] = this.formGroup;
+      component.instance['FormGroup'] = this.formGroup;
       component.instance['topLevelFormGroup'] = this.topLevelFormGroup;
       component.instance['idPrefix'] = this.idPrefix;
       component.instance['parent'] = this.parent;

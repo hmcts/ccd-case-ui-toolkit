@@ -50,7 +50,7 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
     component.instance['caseField'] = this.caseField;
 
     component.instance['caseFields'] = this.caseFields;
-    component.instance['UntypedFormGroup'] = this.formGroup;
+    component.instance['FormGroup'] = this.formGroup;
     component.instance['parent'] = this.parent;
     component.instance['idPrefix'] = this.idPrefix;
     if (this.caseField.field_type.id === 'AddressGlobal') {

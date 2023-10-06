@@ -33,7 +33,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
 
   public ngOnInit(): void {
     // If the context is PaletteContext.DEFAULT, the Flags fields need to be located by CaseTab (they won't be present
-    // in the UntypedFormGroup - only the FlagLauncher field is present)
+    // in the FormGroup - only the FlagLauncher field is present)
     if (this.context === PaletteContext.DEFAULT) {
       // Determine the tab this CaseField belongs to (should be only one), from the CaseView object in the snapshot
       // data, and extract all flags-related data from its Flags fields
@@ -55,7 +55,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
     } else if (this.context === PaletteContext.CHECK_YOUR_ANSWER) {
       // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the formGroup.
       // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to:
-      // i) the parent UntypedFormGroup for the Flags instance where changes have been made;
+      // i) the parent FormGroup for the Flags instance where changes have been made;
       // ii) the currently selected flag (selectedFlag) if one exists
       const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
         controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.get(controlName)['caseField']));

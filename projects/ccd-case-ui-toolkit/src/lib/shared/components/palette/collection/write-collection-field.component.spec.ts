@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -62,11 +62,11 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 const fieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'caseFields', 'UntypedFormGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
+  inputs: ['caseField', 'caseFields', 'FormGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
 });
 const fieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
-  inputs: ['caseField', 'caseFields', 'UntypedFormGroup', 'context']
+  inputs: ['caseField', 'caseFields', 'FormGroup', 'context']
 });
 
 describe('WriteCollectionFieldComponent', () => {
@@ -79,7 +79,7 @@ describe('WriteCollectionFieldComponent', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: UntypedFormGroup;
+  let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -107,7 +107,7 @@ describe('WriteCollectionFieldComponent', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new UntypedFormGroup({
+    formGroup = new FormGroup({
       field1: new FormControl()
     });
 
@@ -329,7 +329,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: UntypedFormGroup;
+  let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -356,7 +356,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new UntypedFormGroup({
+    formGroup = new FormGroup({
       field1: new FormControl()
     });
 
@@ -445,7 +445,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: UntypedFormGroup;
+  let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -472,7 +472,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new UntypedFormGroup({
+    formGroup = new FormGroup({
       field1: new FormControl()
     });
 
@@ -533,7 +533,7 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: UntypedFormGroup;
+  let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -561,7 +561,7 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
         }
       ]
     }) as CaseField);
-    formGroup = new UntypedFormGroup({
+    formGroup = new FormGroup({
       field1: new FormControl()
     });
 
@@ -639,7 +639,7 @@ describe('WriteCollectionFieldComponent', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: UntypedFormGroup;
+  let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -667,7 +667,7 @@ describe('WriteCollectionFieldComponent', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new UntypedFormGroup({
+    formGroup = new FormGroup({
       field1: new FormControl()
     });
 
@@ -741,7 +741,7 @@ describe('WriteCollectionFieldComponent', () => {
   let scrollToService: any;
   let profileNotifier: any;
   let caseField: CaseField;
-  let formGroup: UntypedFormGroup;
+  let formGroup: FormGroup;
   let collectionCreateCheckerService: CollectionCreateCheckerService;
 
   beforeEach(waitForAsync(() => {
@@ -769,7 +769,7 @@ describe('WriteCollectionFieldComponent', () => {
         }
       ]
     }) as CaseField);
-    formGroup = new UntypedFormGroup({
+    formGroup = new FormGroup({
       field1: new FormControl()
     });
 

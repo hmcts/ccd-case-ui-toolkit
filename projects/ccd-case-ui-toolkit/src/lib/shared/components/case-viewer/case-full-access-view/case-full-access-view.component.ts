@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
   SimpleChanges, ViewChild, ViewContainerRef
 } from '@angular/core';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
@@ -56,7 +56,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public BANNER = DisplayMode.BANNER;
   public sortedTabs: CaseTab[];
   public caseFields: CaseField[];
-  public formGroup: UntypedFormGroup;
+  public formGroup: FormGroup;
   public error: any;
   public triggerTextStart = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
   public triggerTextIgnoreWarnings = CaseFullAccessViewComponent.TRIGGER_TEXT_CONTINUE;
@@ -415,11 +415,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   /**
    * For EUI-3825:
-   * Builds a UntypedFormGroup from all the CaseFields contained within the view.
-   * This UntypedFormGroup is necessary for evaluation the show/hide conditions of
+   * Builds a FormGroup from all the CaseFields contained within the view.
+   * This FormGroup is necessary for evaluation the show/hide conditions of
    * fields that are dependent on a field only available on a DIFFERENT tab.
    */
-  private buildFormGroup(caseFields: CaseField[]): UntypedFormGroup {
+  private buildFormGroup(caseFields: CaseField[]): FormGroup {
     let value: object = {};
     if (caseFields) {
       caseFields.forEach(caseField => {
@@ -429,7 +429,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         };
       });
     }
-    return new UntypedFormGroup({ data: new FormControl(value) });
+    return new FormGroup({ data: new FormControl(value) });
   }
 
   private resetErrors(): void {

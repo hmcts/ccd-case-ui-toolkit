@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -50,8 +50,8 @@ describe('WriteLinkedCasesFieldComponent', () => {
   };
   const caseField2 = new CaseField();
   const cancelled = createSpyObj('cancelled', ['emit']);
-  const FORM_GROUP = new UntypedFormGroup({
-    data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') })
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({ field1: new FormControl('SOME_VALUE') })
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);

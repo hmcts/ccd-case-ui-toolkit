@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { WizardPage } from '../../components/case-editor/domain/wizard-page.model';
 import { CaseField } from '../../domain/definition';
@@ -8,9 +8,9 @@ import { CaseField } from '../../domain/definition';
   name: 'ccdPageFields'
 })
 export class CcdPageFieldsPipe implements PipeTransform {
-  public transform(page: WizardPage, dataFormGroup: UntypedFormGroup): CaseField {
-    const complexFields: CaseField[] = Object.keys((dataFormGroup.controls['data'] as UntypedFormGroup).controls).map(key => {
-      const control: AbstractControl = (dataFormGroup.controls['data'] as UntypedFormGroup).get(key);
+  public transform(page: WizardPage, dataFormGroup: FormGroup): CaseField {
+    const complexFields: CaseField[] = Object.keys((dataFormGroup.controls['data'] as FormGroup).controls).map(key => {
+      const control: AbstractControl = (dataFormGroup.controls['data'] as FormGroup).get(key);
       return control['caseField'] as CaseField;
     }).filter(field => {
       return !!page.case_fields.find(pcf => pcf.id === field.id);

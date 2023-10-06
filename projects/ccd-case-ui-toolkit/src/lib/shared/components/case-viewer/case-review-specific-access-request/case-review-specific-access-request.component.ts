@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -18,7 +18,7 @@ export class CaseReviewSpecificAccessRequestComponent
   public title: string;
   public hint: string;
   public caseRefLabel: string;
-  public formGroup: UntypedFormGroup;
+  public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
   public readonly accessReasons: DisplayedAccessReason[];

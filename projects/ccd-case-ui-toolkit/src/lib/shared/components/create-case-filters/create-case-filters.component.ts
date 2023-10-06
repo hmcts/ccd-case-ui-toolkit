@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { CREATE_ACCESS } from '../../domain/case-view/access-types.model';
 import { CaseEvent } from '../../domain/definition/case-event.model';
 import { CaseTypeLite } from '../../domain/definition/case-type-lite.model';
@@ -26,13 +26,13 @@ export class CreateCaseFiltersComponent implements OnInit {
   @Output()
   public selectionChanged: EventEmitter<any> = new EventEmitter();
 
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
 
   public selected: {
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,
     event?: CaseEvent,
-    formGroup?: UntypedFormGroup
+    formGroup?: FormGroup
   };
 
   public jurisdictions: Jurisdiction[];

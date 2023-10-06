@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -57,7 +57,7 @@ describe('WriteCaseLinkFieldComponent', () => {
     fixture = TestBed.createComponent(WriteCaseLinkFieldComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
-    component.caseLinkGroup = new UntypedFormGroup({
+    component.caseLinkGroup = new FormGroup({
       CaseReference: new FormControl(CASE_FIELD.value.CaseReference)
     });
     de = fixture.debugElement;

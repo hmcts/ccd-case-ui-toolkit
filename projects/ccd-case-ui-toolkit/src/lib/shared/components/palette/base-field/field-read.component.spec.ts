@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
@@ -60,7 +60,7 @@ class FieldReadLabelComponent {
   public withLabel: boolean;
 
   @Input()
-  public topLevelFormGroup: UntypedFormGroup;
+  public topLevelFormGroup: FormGroup;
 
   @Input()
   public markdownUseHrefAsRouterLink?: boolean;
@@ -73,11 +73,11 @@ describe('FieldReadComponent', () => {
 
   let paletteService: any;
 
-  const formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  const formGroup: FormGroup = new FormGroup({});
   const caseFields: CaseField[] = [CASE_FIELD];
   let caseEditComponentStub: any;
-  const FORM_GROUP = new UntypedFormGroup({
-    data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') })
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({ field1: new FormControl('SOME_VALUE') })
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);

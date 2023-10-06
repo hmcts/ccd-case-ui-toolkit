@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 
@@ -11,7 +11,7 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldComponent } from './read-complex-field.component';
 
-const inputs: string[] = ['caseField', 'caseFields', 'context', 'UntypedFormGroup', 'topLevelFormGroup', 'idPrefix'];
+const inputs: string[] = ['caseField', 'caseFields', 'context', 'FormGroup', 'topLevelFormGroup', 'idPrefix'];
 
 describe('ReadComplexFieldComponent', () => {
   let readComplexFieldRawComponentMock;
@@ -31,7 +31,7 @@ describe('ReadComplexFieldComponent', () => {
 
     readComplexFieldNewTableComponentMock = MockComponent({
       selector: 'ccd-read-complex-field-collection-table',
-      inputs: ['caseField', 'context', 'UntypedFormGroup', 'topLevelFormGroup', 'idPrefix']
+      inputs: ['caseField', 'context', 'FormGroup', 'topLevelFormGroup', 'idPrefix']
     });
   }
 
@@ -42,7 +42,7 @@ describe('ReadComplexFieldComponent', () => {
       const $COMPLEX_AS_RAW = By.css('ccd-read-complex-field-raw');
 
       const caseField: CaseField = new CaseField();
-      const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+      const FORM_GROUP: FormGroup = new FormGroup({});
 
       let fixture: ComponentFixture<ReadComplexFieldComponent>;
       let component: ReadComplexFieldComponent;
@@ -141,7 +141,7 @@ describe('ReadComplexFieldComponent', () => {
       let component: ReadComplexFieldComponent;
       let de: DebugElement;
       const caseFieldDsp: CaseField = new CaseField();
-      const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+      const FORM_GROUP: FormGroup = new FormGroup({});
 
       const expectCollectionTable = () => {
         expect(de.queryAll($COMPLEX_AS_RAW).length).toEqual(0);
@@ -195,7 +195,7 @@ describe('ReadComplexFieldComponent', () => {
   });
 
   describe('Persistable readonly complex field', () => {
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
     const FIELD_TYPE_WITH_VALUES: FieldType = {
       id: 'Complex',
       type: 'Complex',

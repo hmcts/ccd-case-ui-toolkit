@@ -1,6 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
 import { WizardPage } from '../../components/case-editor/domain';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
@@ -403,10 +403,10 @@ export class FieldsUtils {
    * Extract flags data from a `CaseField` instance, recursing and iterating through sub-fields of a Complex field or
    * each field in a Collection field.
    *
-   * @param flags An array for accumulating extracted flags data and derived `UntypedFormGroup` paths
+   * @param flags An array for accumulating extracted flags data and derived `FormGroup` paths
    * @param caseField A `CaseField` instance from which to extract the flags data
    * @param pathToFlagsFormGroup A (dot-delimited) string for concatenating the name of each control that forms the path
-   * to the `UntypedFormGroup` for the `Flags` instance
+   * to the `FormGroup` for the `Flags` instance
    * @param topLevelCaseField The top-level `CaseField` that contains the value property. This is required because _only
    * top-level_ `CaseField`s contain actual values and a reference needs to be maintained to such a field
    * @param currentValue The current value object of a `CaseField` that is a sub-field of a non root-level Complex field.
@@ -414,7 +414,7 @@ export class FieldsUtils {
    * only the _root-level_ `CaseField` contains a value property - all sub-fields, including any nested Complex fields,
    * do *not* contain any values themselves.)
    * @returns An array of `FlagsWithFormGroupPath`, each instance comprising a `Flags` object derived from a `CaseField`
-   * of type "Flags", and the dot-delimited path string to the corresponding `UntypedFormGroup`
+   * of type "Flags", and the dot-delimited path string to the corresponding `FormGroup`
    */
   public static extractFlagsDataFromCaseField(flags: FlagsWithFormGroupPath[], caseField: CaseField,
     pathToFlagsFormGroup: string, topLevelCaseField: CaseField, currentValue?: object): FlagsWithFormGroupPath[] {
@@ -616,7 +616,7 @@ export class FieldsUtils {
     };
   }
 
-  public getCurrentEventState(eventTrigger: { case_fields: CaseField[] }, form: UntypedFormGroup): object {
+  public getCurrentEventState(eventTrigger: { case_fields: CaseField[] }, form: FormGroup): object {
     return this.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.controls['data'].value);
   }
 
@@ -635,12 +635,12 @@ export class FieldsUtils {
   public controlIterator(
     aControl: AbstractControl,
     formArrayFn: (array: FormArray) => void,
-    formGroupFn: (group: UntypedFormGroup) => void,
+    formGroupFn: (group: FormGroup) => void,
     controlFn: (control: FormControl) => void
   ): void {
     if (aControl instanceof FormArray) { // We're in a collection
       formArrayFn(aControl);
-    } else if (aControl instanceof UntypedFormGroup) { // We're in a complex type.
+    } else if (aControl instanceof FormGroup) { // We're in a complex type.
       formGroupFn(aControl);
     } else if (aControl instanceof FormControl) { // FormControl
       controlFn(aControl);

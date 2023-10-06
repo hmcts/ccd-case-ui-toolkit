@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -27,8 +27,8 @@ describe('CaseEditConfirmComponent', () => {
 
   const firstPage = new WizardPage();
 
-  const FORM_GROUP = new UntypedFormGroup({
-    data: new UntypedFormGroup({ PersonLastName: new FormControl('Khaleesi') })
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({ PersonLastName: new FormControl('Khaleesi') })
   });
   routerStub = {
     navigate: jasmine.createSpy('navigate'),

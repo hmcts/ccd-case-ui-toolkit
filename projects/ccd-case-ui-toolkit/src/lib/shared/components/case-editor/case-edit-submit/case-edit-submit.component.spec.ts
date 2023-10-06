@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
@@ -81,16 +81,16 @@ describe('CaseEditSubmitComponent', () => {
   const caseFieldService = new CaseFieldService();
   const $EVENT_NOTES = By.css('#fieldset-event');
   const fieldsUtils = new FieldsUtils();
-  const FORM_GROUP = new UntypedFormGroup({
-    data: new UntypedFormGroup({ PersonLastName: new FormControl('Khaleesi') })
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({ PersonLastName: new FormControl('Khaleesi') })
   });
   const COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED = '2nd child field of complex type (do not retain)';
   const COMPLEX_SUBFIELD_1_VALUE_EMPTY = '';
-  const COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY = new UntypedFormGroup({
+  const COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY = new FormGroup({
     childField1: new FormControl(COMPLEX_SUBFIELD_1_VALUE_EMPTY)
   });
   COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_EMPTY.disable();
-  const COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new UntypedFormGroup({
+  const COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED = new FormGroup({
     childField2: new FormControl(COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED)
   });
   COMPLEX_ELEMENT_HIDDEN_SINGLE_FIELD_NOT_RETAINED.disable();

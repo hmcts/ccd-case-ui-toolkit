@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, UpdateFlagErrorMessage } from '../../enums';
 import { UpdateFlagComponent } from './update-flag.component';
@@ -56,7 +56,7 @@ describe('UpdateFlagComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateFlagComponent);
     component = fixture.componentInstance;
-    component.formGroup = new UntypedFormGroup({});
+    component.formGroup = new FormGroup({});
     component.selectedFlag = selectedFlag1;
     nextButton = fixture.debugElement.nativeElement.querySelector('.button-primary');
     textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');

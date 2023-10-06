@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
@@ -17,7 +17,7 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage
 export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
   @Input()
-  public formGroup: UntypedFormGroup;
+  public formGroup: FormGroup;
 
   @Input()
   public jurisdiction: string;

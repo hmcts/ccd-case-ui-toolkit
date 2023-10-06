@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { ReadPhoneUKFieldComponent } from './read-phone-uk-field.component';
@@ -71,7 +71,7 @@ describe('ReadPhoneUKFieldComponent', () => {
   });
 
   describe('Persistable readonly phone-uk field', () => {
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
     const CASE_FIELD: CaseField = ({
       id: FIELD_ID,
       label: 'X',

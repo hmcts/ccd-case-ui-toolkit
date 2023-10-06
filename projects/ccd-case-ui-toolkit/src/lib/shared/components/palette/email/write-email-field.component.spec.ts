@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -23,7 +23,7 @@ const CASE_FIELD: CaseField = ({
   value: VALUE
 }) as CaseField;
 
-const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WriteEmailFieldComponent', () => {
   const $INPUT = By.css('.form-group input');
@@ -68,7 +68,7 @@ describe('WriteEmailFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the UntypedFormGroup', () => {
+  it('should add a formControl linked to the field ID to the FormGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
   });
 

@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
@@ -68,7 +68,7 @@ describe('WriteFixedListFieldComponent', () => {
     fixture = TestBed.createComponent(WriteFixedListFieldComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
 
     de = fixture.debugElement;
     fixture.detectChanges();

@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { PipesModule } from '../../../../../pipes';
@@ -108,8 +108,8 @@ describe('UnLinkCasesComponent', () => {
   };
 
   beforeEach(waitForAsync(() => {
-    const FORM_GROUP = new UntypedFormGroup({
-      data: new UntypedFormGroup({ caseLinks: new FormControl('SOME_VALUE') })
+    const FORM_GROUP = new FormGroup({
+      data: new FormGroup({ caseLinks: new FormControl('SOME_VALUE') })
     });
     caseEditComponentStub = {
       form: FORM_GROUP,

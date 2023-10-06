@@ -94,7 +94,7 @@ describe('CaseEventTriggerComponent', () => {
 
   const fieldWriteComponentMock: any = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'UntypedFormGroup', 'idPrefix', 'isExpanded', 'parent']
+    inputs: ['caseField', 'FormGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
   const routerLinkComponentMock: any = MockComponent({

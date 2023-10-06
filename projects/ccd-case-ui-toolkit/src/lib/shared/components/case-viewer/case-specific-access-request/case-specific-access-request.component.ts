@@ -3,7 +3,7 @@ import {
   AbstractControl,
   FormBuilder,
   FormControl,
-  UntypedFormGroup
+  FormGroup
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -25,7 +25,7 @@ export class CaseSpecificAccessRequestComponent implements OnDestroy, OnInit {
   public title: string;
   public hint: string;
   public caseRefLabel: string;
-  public formGroup: UntypedFormGroup;
+  public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
   public $roleAssignmentResponseSubscription: Subscription;

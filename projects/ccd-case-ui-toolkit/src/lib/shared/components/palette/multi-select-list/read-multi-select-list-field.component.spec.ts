@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -114,7 +114,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
   });
 
   describe('Persistable readonly multi-select-list field', () => {
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
     const CASE_FIELD = new CaseField();
     CASE_FIELD.id = FIELD_ID;
     CASE_FIELD.label = 'X';

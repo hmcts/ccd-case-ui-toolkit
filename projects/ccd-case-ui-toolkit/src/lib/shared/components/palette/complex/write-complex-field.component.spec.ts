@@ -1,6 +1,6 @@
 import { DebugElement, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { plainToClassFromExist } from 'class-transformer';
 import { MockComponent } from 'ng2-mock-component';
@@ -28,12 +28,12 @@ describe('WriteComplexFieldComponent', () => {
 
   const fieldWriteComponentMock = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'caseFields', 'UntypedFormGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
+    inputs: ['caseField', 'caseFields', 'FormGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
   });
 
   const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'caseFields', 'UntypedFormGroup', 'withLabel']
+    inputs: ['caseField', 'caseFields', 'FormGroup', 'withLabel']
   });
 
   @Pipe({ name: 'ccdIsReadOnly' })
@@ -175,7 +175,7 @@ describe('WriteComplexFieldComponent', () => {
     const LINE_2 = 1;
     const POSTCODE = 2;
 
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -231,7 +231,7 @@ describe('WriteComplexFieldComponent', () => {
       expect(labels[LINE_2].componentInstance.caseField.label).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label);
     });
 
-    it('should return control if it exists in the UntypedFormGroup', () => {
+    it('should return control if it exists in the FormGroup', () => {
       // component.caseField is CASE_FIELD to start with.
       // Try re-building the first field and ensure it's appropriately handled.
       const FIRST_FIELD = CASE_FIELD.field_type.complex_fields[0];
@@ -251,7 +251,7 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     // TODO: Ensure there is an equivalent test for AbstractFormFieldComponent.register.
-    it('should add control if it does not exist in the UntypedFormGroup', () => {
+    it('should add control if it does not exist in the FormGroup', () => {
       // component.caseField is CASE_FIELD to start with.
       // Try re-building the first field and ensure it's appropriately handled.
       const NEW_FIELD = ({
@@ -345,7 +345,7 @@ describe('WriteComplexFieldComponent', () => {
         }
       }
     }) as CaseField;
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
 
     const LINE_1 = 0;
     const LINE_2 = 1;
@@ -477,7 +477,7 @@ describe('WriteComplexFieldComponent', () => {
       field_type: FIELD_TYPE_WITH_VALUES
     }) as CaseField;
 
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -621,7 +621,7 @@ describe('WriteComplexFieldComponent', () => {
       retain_hidden_value: true
     }) as CaseField;
 
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -676,7 +676,7 @@ describe('WriteComplexFieldComponent', () => {
       retain_hidden_value: true
     }) as CaseField;
 
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -731,7 +731,7 @@ describe('WriteComplexFieldComponent', () => {
       display_context: 'COMPLEX'
     }) as CaseField;
 
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
@@ -787,7 +787,7 @@ describe('WriteComplexFieldComponent', () => {
       display_context: 'COMPLEX'
     }) as CaseField;
 
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
 
     beforeEach(waitForAsync(() => {
       formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);

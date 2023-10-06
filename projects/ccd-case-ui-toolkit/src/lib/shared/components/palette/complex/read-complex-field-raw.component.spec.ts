@@ -82,7 +82,7 @@ describe('ReadComplexFieldRawComponent', () => {
   beforeEach(() => {
     fieldReadComponentMock = MockComponent({
       selector: 'ccd-field-read',
-      inputs: ['caseField', 'caseFields', 'context', 'UntypedFormGroup', 'topLevelFormGroup', 'idPrefix']
+      inputs: ['caseField', 'caseFields', 'context', 'FormGroup', 'topLevelFormGroup', 'idPrefix']
     });
   });
 

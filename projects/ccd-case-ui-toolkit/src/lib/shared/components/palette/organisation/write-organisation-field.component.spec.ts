@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { OrganisationConverter } from '../../../domain/organisation';
@@ -138,7 +138,7 @@ describe('WriteOrganisationFieldComponent', () => {
       organisationName
     ];
     const prepopulateToUsersOrganisationControl = new FormControl('YES');
-    component.parent = new UntypedFormGroup({ PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl });
+    component.parent = new FormGroup({ PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl });
     component.defaultOrg = { organisationIdentifier: 'O333333', name: 'The Ethical solicitor' };
     fixture.detectChanges();
   });
@@ -197,7 +197,7 @@ describe('WriteOrganisationFieldComponent', () => {
 
   it('should pre-select organisation when PrepopulateToUsersOrganisationControl is NO but it has selected the org', () => {
     const prepopulateToUsersOrganisationControl = new FormControl('NO');
-    component.parent = new UntypedFormGroup({ PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl });
+    component.parent = new FormGroup({ PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl });
     component.caseField.value = { OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor' };
     component.ngOnInit();
     fixture.detectChanges();
@@ -207,7 +207,7 @@ describe('WriteOrganisationFieldComponent', () => {
 
   it('should not pre-select organisation when PrepopulateToUsersOrganisationControl is NO', () => {
     const prepopulateToUsersOrganisationControl = new FormControl('NO');
-    component.parent = new UntypedFormGroup({ PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl });
+    component.parent = new FormGroup({ PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl });
     component.caseField.value = null;
     component.ngOnInit();
     fixture.detectChanges();

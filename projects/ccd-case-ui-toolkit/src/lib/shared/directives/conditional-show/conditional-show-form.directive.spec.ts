@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldType } from '../../domain/definition/field-type.model';
@@ -12,7 +12,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   template: `
-      <div ccdConditionalShowForm [UntypedFormGroup]="UntypedFormGroup" [contextFields]="caseFields">
+      <div ccdConditionalShowForm [FormGroup]="FormGroup" [contextFields]="caseFields">
         <div>text field</div>
         <label>Yes</label>
         <input type="radio" formControlName="hasCar" id="HasCarY" value="Yes">
@@ -25,8 +25,8 @@ import createSpyObj = jasmine.createSpyObj;
 
 class TestHostComponent {
   @Input() public caseFields: CaseField[];
-  @Input() public formGroup: UntypedFormGroup;
-  @Input() public complexFormGroup: UntypedFormGroup;
+  @Input() public formGroup: FormGroup;
+  @Input() public complexFormGroup: FormGroup;
 
   public carHidden = false;
   public makeHidden = true;
@@ -96,7 +96,7 @@ describe('ConditionalShowFormDirective', () => {
     conditionalShowForm = de.injector.get(ConditionalShowFormDirective) as ConditionalShowFormDirective;
   });
 
-  function bindCaseFields(formGroup: UntypedFormGroup, caseFields: CaseField[]) {
+  function bindCaseFields(formGroup: FormGroup, caseFields: CaseField[]) {
     Object.keys(formGroup.controls).forEach((key, ix) => {
       formGroup.get(key)['caseField'] = caseFields[ix];
     });
@@ -106,7 +106,7 @@ describe('ConditionalShowFormDirective', () => {
     comp.caseFields = [field('hasCar', 'Yes', ''),
     field('carMake', 'Ford', ''),
     field('carModel', 'Prefect', '')];
-    comp.formGroup = new UntypedFormGroup({
+    comp.formGroup = new FormGroup({
       hasCar: new FormControl(comp.caseFields[0].value),
       carMake: new FormControl(comp.caseFields[1].value),
       carModel: new FormControl(comp.caseFields[2].value)
@@ -126,7 +126,7 @@ describe('ConditionalShowFormDirective', () => {
       field('carMake', 'Ford', 'hasCar="Yes"'),
       field('carModel', 'Prefect', 'hasCar="Yes"')
     ];
-    comp.formGroup = new UntypedFormGroup({
+    comp.formGroup = new FormGroup({
       hasCar: new FormControl(comp.caseFields[0].value),
       carMake: new FormControl(comp.caseFields[1].value),
       carModel: new FormControl(comp.caseFields[2].value)
@@ -144,7 +144,7 @@ describe('ConditionalShowFormDirective', () => {
     comp.caseFields = [field('hasCar', 'Yes', ''),
     field('carMake', 'Ford', 'hasCar="Yes"'),
     field('carModel', 'Prefect', 'hasCar="Yes"')];
-    comp.formGroup = new UntypedFormGroup({
+    comp.formGroup = new FormGroup({
       hasCar: new FormControl(comp.caseFields[0].value),
       carMake: new FormControl(comp.caseFields[1].value),
       carModel: new FormControl(comp.caseFields[2].value)
@@ -161,7 +161,7 @@ describe('ConditionalShowFormDirective', () => {
     comp.caseFields = [field('hasCar', 'Yes', ''),
     field('carMake', 'Ford', 'hasCar="Yes"'),
     field('carModel', 'Prefect', 'hasCar="Yes"')];
-    comp.formGroup = new UntypedFormGroup({
+    comp.formGroup = new FormGroup({
       hasCar: new FormControl(comp.caseFields[0].value),
       carMake: new FormControl(comp.caseFields[1].value),
       carModel: new FormControl(comp.caseFields[2].value)
@@ -188,7 +188,7 @@ describe('ConditionalShowFormDirective', () => {
       comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
       comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                           field('PersonFirstName', 'Mario', '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
           PersonLastName: new FormControl('Hollis'),
           PersonHasSecondAddress: new FormControl('No')
       });
@@ -222,7 +222,7 @@ describe('ConditionalShowFormDirective', () => {
       comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
       comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                           field('PersonFirstName', 'Mario', '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
           PersonLastName: new FormControl('Hollis'),
           PersonHasSecondAddress: new FormControl('No')
       });
@@ -242,7 +242,7 @@ describe('ConditionalShowFormDirective', () => {
       comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
       comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                           field('PersonFirstName', 'Mario', '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
           PersonLastName: new FormControl('Hollis'),
           PersonHasSecondAddress: new FormControl('No')
       });
@@ -285,7 +285,7 @@ describe('ConditionalShowFormDirective', () => {
       comp.caseField.field_type = fieldType;
       comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                           field('PersonFirstName', 'Mario', '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
           PersonLastName: new FormControl('Hollis'),
           PersonHasSecondAddress: new FormControl('No')
       });
@@ -329,7 +329,7 @@ describe('ConditionalShowFormDirective', () => {
     it('should display when condition matches a form field. No read only fields', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
         comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', '')];
-        comp.formGroup = new UntypedFormGroup({
+        comp.formGroup = new FormGroup({
             PersonHasSecondAddress: new FormControl('Yes'),
             PersonSecondAddress: new FormControl(''),
         });
@@ -341,7 +341,7 @@ describe('ConditionalShowFormDirective', () => {
     it('should display when condition matches a form field', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
         comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', ''), field('PersonHasSecondAddress', 'Yes', '')];
-        comp.formGroup = new UntypedFormGroup({
+        comp.formGroup = new FormGroup({
             PersonHasSecondAddress: new FormControl('Yes'),
             PersonSecondAddress: new FormControl(''),
         });
@@ -355,7 +355,7 @@ describe('ConditionalShowFormDirective', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
         comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
                              field('PersonHasSecondAddress', 'Yes', '')];
-        comp.formGroup = new UntypedFormGroup({
+        comp.formGroup = new FormGroup({
             PersonSecondAddress: new FormControl(''),
             PersonHasSecondAddress: new FormControl('No'),
             PersonFirstAddress: new FormControl({}),
@@ -370,7 +370,7 @@ describe('ConditionalShowFormDirective', () => {
         comp.caseField = field('PersonSecondAddress', '', 'PersonHasSecondAddress="Yes"');
         comp.caseFields = [comp.caseField, field('PersonLastName', 'Doe', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
-        comp.formGroup = new UntypedFormGroup({
+        comp.formGroup = new FormGroup({
             PersonSecondAddress: new FormControl(''),
             PersonHasSecondAddress: new FormControl('')
         });
@@ -383,7 +383,7 @@ describe('ConditionalShowFormDirective', () => {
         comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
         comp.caseFields = [comp.caseField, field('PersonHasSecondAddress', 'Yes', ''),
                             field('PersonFirstName', 'Mario', '')];
-        comp.formGroup = new UntypedFormGroup({
+        comp.formGroup = new FormGroup({
             PersonLastName: new FormControl('Hollis'),
             PersonHasSecondAddress: new FormControl('No')
         });
@@ -402,7 +402,7 @@ describe('ConditionalShowFormDirective', () => {
         comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
         comp.caseFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
-        comp.formGroup = new UntypedFormGroup({
+        comp.formGroup = new FormGroup({
             PersonLastName: new FormControl('Hollis'),
             PersonHasSecondAddress: new FormControl('Yes')
         });
@@ -435,7 +435,7 @@ describe('ConditionalShowFormDirective', () => {
         comp.caseField = field('PersonLastName', 'Hollis', 'PersonHasSecondAddress="Yes"');
         comp.caseFields = [comp.caseField, field('PersonFirstName', 'Mario', ''),
                             field('PersonHasSecondAddress', 'Yes', '')];
-        comp.formGroup = new UntypedFormGroup({
+        comp.formGroup = new FormGroup({
             PersonLastName: new FormControl('Hollis'),
             PersonHasSecondAddress: new FormControl('Yes')
         });
@@ -458,8 +458,8 @@ describe('ConditionalShowFormDirective', () => {
       comp.caseField = field('Postcode', '', 'Address.Country="UK"');
       comp.idPrefix = 'Address_';
       comp.caseFields = [field('PersonLastName', 'Doe', '')];
-      comp.formGroup = new UntypedFormGroup({
-        Address: new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
+        Address: new FormGroup({
           Country: new FormControl('UK'),
           Postcode: new FormControl('W4')
         })
@@ -467,7 +467,7 @@ describe('ConditionalShowFormDirective', () => {
     });
 
     it('should display when condition matches complex subfield', () => {
-      comp.complexFormGroup = new UntypedFormGroup({
+      comp.complexFormGroup = new FormGroup({
         Country: new FormControl('UK'),
         Postcode: new FormControl('W4')
       });
@@ -480,7 +480,7 @@ describe('ConditionalShowFormDirective', () => {
 
     it('should not display when condition does not match complex subfield', () => {
       comp.formGroup.patchValue({Address: {Country: 'FRANCE'}});
-      comp.complexFormGroup = new UntypedFormGroup({
+      comp.complexFormGroup = new FormGroup({
         Country: new FormControl('FRANCE'),
         Postcode: new FormControl('W4')
       });

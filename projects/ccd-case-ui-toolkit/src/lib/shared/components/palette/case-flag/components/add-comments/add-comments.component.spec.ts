@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockRpxTranslatePipe } from '../../../utils/first-error.pipe.spec';
 import { AddCommentsErrorMessage, CaseFlagFieldState } from '../../enums';
 import { AddCommentsComponent } from './add-comments.component';
@@ -23,7 +23,7 @@ describe('AddCommentsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AddCommentsComponent);
     component = fixture.componentInstance;
-    component.formGroup = new UntypedFormGroup({});
+    component.formGroup = new FormGroup({});
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +

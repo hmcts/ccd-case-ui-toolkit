@@ -1,5 +1,5 @@
 import { waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
@@ -13,8 +13,8 @@ describe('PageValidationService', () => {
   let wizardPage: WizardPage;
   const readOnly = new CaseField();
   const firstPage = new WizardPage();
-  const FORM_GROUP = new UntypedFormGroup({
-    data: new UntypedFormGroup({
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({
       field1: new FormControl('SOME_VALUE'),
       judicialUserField_judicialUserControl: new FormControl()
     })

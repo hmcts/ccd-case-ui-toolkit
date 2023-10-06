@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockComponent } from 'ng2-mock-component';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -23,7 +23,7 @@ const CASE_FIELD: CaseField = ({
   display_context: 'OPTIONAL'
 }) as CaseField;
 
-const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+const FORM_GROUP: FormGroup = new FormGroup({});
 
 const APP_CONFIG: AbstractAppConfig = {
   load: async () => { },

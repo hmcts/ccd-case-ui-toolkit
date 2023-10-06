@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
@@ -200,9 +200,9 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
       }
     }
   };
-  const parentFormGroup = new UntypedFormGroup({
-    [caseFlag1FieldId]: new UntypedFormGroup({}),
-    [caseFlag2FieldId]: new UntypedFormGroup({})
+  const parentFormGroup = new FormGroup({
+    [caseFlag1FieldId]: new FormGroup({}),
+    [caseFlag2FieldId]: new FormGroup({})
   });
   parentFormGroup.controls[caseFlag1FieldId]['caseField'] = {
     field_type: {
@@ -329,7 +329,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have called ngOnInit, created a UntypedFormGroup with a validator, and set the correct Case Flag field starting state', () => {
+  it('should have called ngOnInit, created a FormGroup with a validator, and set the correct Case Flag field starting state', () => {
     expect(component.ngOnInit).toBeTruthy();
     expect(component.formGroup).toBeTruthy();
     expect(component.formGroup.validator).toBeTruthy();
@@ -420,7 +420,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
   it('should remove the existing FlagLauncher control from the parent before re-registering', () => {
     spyOn(parentFormGroup, 'removeControl').and.callThrough();
     spyOn(component, 'setFlagsCaseFieldValue');
-    // Check the FlagLauncher component control has been registered to the parent UntypedFormGroup, and that it is in an invalid
+    // Check the FlagLauncher component control has been registered to the parent FormGroup, and that it is in an invalid
     // state (intentionally)
     const flagLauncherFormGroup = parentFormGroup.get(flagLauncherCaseField.id);
     expect(flagLauncherFormGroup).toBeTruthy();
@@ -430,7 +430,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     component.moveToFinalReviewStage();
     expect(flagLauncherFormGroup.invalid).toBe(false);
     expect(flagLauncherFormGroup.errors).toBeNull();
-    // Set the component's UntypedFormGroup reference back to the parent UntypedFormGroup (it gets reassigned in ngOnInit())
+    // Set the component's FormGroup reference back to the parent FormGroup (it gets reassigned in ngOnInit())
     component.formGroup = parentFormGroup;
     // Reload the component
     component.ngOnInit();
@@ -508,7 +508,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
   it('should update flag in collection when updating a case flag', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
-    component.caseFlagParentFormGroup = new UntypedFormGroup({
+    component.caseFlagParentFormGroup = new FormGroup({
       flagComments: new FormControl('An updated comment')
     });
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
@@ -543,7 +543,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     spyOn(component, 'setCaseFlagParentFormGroup').and.callThrough();
     component.onCaseFlagStateEmitted(caseFlagState);
     expect(component.setCaseFlagParentFormGroup).toHaveBeenCalledWith(caseFlagState.selectedFlagsLocation.pathToFlagsFormGroup);
-    expect(component.caseFlagParentFormGroup).toEqual(parentFormGroup.get(caseFlag1FieldId) as UntypedFormGroup);
+    expect(component.caseFlagParentFormGroup).toEqual(parentFormGroup.get(caseFlag1FieldId) as FormGroup);
     expect(component.selectedFlagsLocation).toEqual(caseFlagState.selectedFlagsLocation);
   });
 
@@ -588,7 +588,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     spyOn(component, 'setCaseFlagParentFormGroup').and.callThrough();
     component.onCaseFlagStateEmitted(caseFlagState);
     expect(component.setCaseFlagParentFormGroup).toHaveBeenCalledWith(caseFlagState.selectedFlag.pathToFlagsFormGroup);
-    expect(component.caseFlagParentFormGroup).toEqual(parentFormGroup.get(caseFlag1FieldId) as UntypedFormGroup);
+    expect(component.caseFlagParentFormGroup).toEqual(parentFormGroup.get(caseFlag1FieldId) as FormGroup);
     expect(component.selectedFlag).toEqual(caseFlagState.selectedFlag);
   });
 
@@ -740,7 +740,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
 
   it('should populate a new FlagDetail instance with data held by the component', () => {
     component.flagName = 'Other',
-      component.caseFlagParentFormGroup = new UntypedFormGroup({
+      component.caseFlagParentFormGroup = new FormGroup({
         languageSearchTerm: new FormControl(),
         manualLanguageEntry: new FormControl(),
         otherFlagTypeDescription: new FormControl(),

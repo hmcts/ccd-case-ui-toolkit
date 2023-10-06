@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { CaseField } from '../../domain/definition/case-field.model';
@@ -51,12 +51,12 @@ export class WorkbasketFiltersComponent implements OnInit {
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,
     caseState?: CaseState,
-    formGroup?: UntypedFormGroup,
+    formGroup?: FormGroup,
     page?: number,
     metadataFields?: string[]
   };
 
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
 
   public selectedJurisdictionCaseTypes?: CaseTypeLite[];
   public selectedCaseTypeStates?: CaseState[];
@@ -178,7 +178,7 @@ export class WorkbasketFiltersComponent implements OnInit {
     if (this.selected.caseType) {
       this.selectedCaseTypeStates = this.sortStates(this.selected.caseType.states);
       this.selected.caseState = null;
-      this.formGroup = new UntypedFormGroup({});
+      this.formGroup = new FormGroup({});
       this.clearWorkbasketInputs();
       if (!this.isApplyButtonDisabled()) {
         this.workbasketInputFilterService.getWorkbasketInputs(this.selected.jurisdiction.id, this.selected.caseType.id).pipe(

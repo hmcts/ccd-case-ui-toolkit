@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { AccessControlList } from '../../domain/definition/access-control-list.model';
@@ -265,7 +265,7 @@ let mockOrderService: any;
 let mockAlertService: any;
 let jurisdictionService: any;
 
-const TEST_FORM_GROUP = new UntypedFormGroup({});
+const TEST_FORM_GROUP = new FormGroup({});
 
 const changeDummy = (jurisdictions) => {
   return {

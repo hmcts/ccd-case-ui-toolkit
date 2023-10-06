@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../app.config';
 import { PlaceholderService } from '../../directives';
 import {
@@ -38,7 +38,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
   public caseState: CaseState;
 
   @Input()
-  public caseFilterFG: UntypedFormGroup;
+  public caseFilterFG: FormGroup;
 
   @Input()
   public resultView: SearchResultView;
@@ -87,7 +87,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
     jurisdiction?: Jurisdiction,
     caseType?: CaseType,
     caseState?: CaseState,
-    formGroup?: UntypedFormGroup,
+    formGroup?: FormGroup,
     metadataFields?: string[],
     page?: number
   } = {};

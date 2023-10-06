@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
@@ -25,7 +25,7 @@ describe('WriteMoneyGbpFieldComponent', () => {
     value: VALUE
   }) as CaseField;
 
-  const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+  const FORM_GROUP: FormGroup = new FormGroup({});
 
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;
@@ -60,7 +60,7 @@ describe('WriteMoneyGbpFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the UntypedFormGroup', () => {
+  it('should add a formControl linked to the field ID to the FormGroup', () => {
     expect(component.formGroup.controls[FIELD_ID]).toBeTruthy();
   });
 
@@ -91,7 +91,7 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
     value: VALUE
   }) as CaseField;
 
-  const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+  const FORM_GROUP: FormGroup = new FormGroup({});
 
   let fixture: ComponentFixture<WriteMoneyGbpFieldComponent>;
   let component: WriteMoneyGbpFieldComponent;
@@ -126,7 +126,7 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the UntypedFormGroup', () => {
+  it('should add a formControl linked to the field ID to the FormGroup', () => {
     expect(component.formGroup.controls[FIELD_ID]).toBeTruthy();
   });
 

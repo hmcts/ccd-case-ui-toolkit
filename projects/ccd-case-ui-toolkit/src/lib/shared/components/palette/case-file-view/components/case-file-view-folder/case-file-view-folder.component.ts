@@ -1,6 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
@@ -37,7 +37,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   public categoriesAndDocumentsSubscription: Subscription;
   public selectedNodeItem: DocumentTreeNode | undefined;
 
-  public documentFilterFormGroup: UntypedFormGroup;
+  public documentFilterFormGroup: FormGroup;
   public documentSearchFormControl: FormControl;
   public documentTreeData: DocumentTreeNode[];
   public documentFilterSubscription: Subscription;
@@ -65,7 +65,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.documentFilterFormGroup = new UntypedFormGroup({});
+    this.documentFilterFormGroup = new FormGroup({});
     this.documentSearchFormControl = new FormControl('');
     this.documentFilterFormGroup.addControl(CaseFileViewFolderComponent.DOCUMENT_SEARCH_FORM_CONTROL_NAME, this.documentSearchFormControl);
 

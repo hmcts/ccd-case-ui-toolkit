@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
 import { CaseField } from '../../../domain/definition';
@@ -300,7 +300,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     get: (controlName: string) => {
       return formGroup.controls[controlName];
     }
-  } as unknown as UntypedFormGroup;
+  } as unknown as FormGroup;
   const selectedFlagsLocation = {
     flags: null,
     pathToFlagsFormGroup: caseFlag2FieldId,

@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FixedListPipe } from './fixed-list.pipe';
@@ -190,7 +190,7 @@ describe('ReadFixedListFieldComponent', () => {
   });
 
   describe('Persistable readonly fixed list field', () => {
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
     const CASE_FIELD: CaseField = Object.assign(new CaseField(), {
       id: FIELD_ID,
       label: 'X',

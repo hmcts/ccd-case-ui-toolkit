@@ -1,4 +1,4 @@
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs-compat';
 import { Confirmation, Wizard } from '../../components';
 import { CaseEventData, CaseEventTrigger, CaseView, HttpError, Profile } from '../../domain';
@@ -6,7 +6,7 @@ interface CaseEditModel {
   wizard: Wizard;
   currentPageId: string;
   eventTrigger: CaseEventTrigger;
-  form: UntypedFormGroup;
+  form: FormGroup;
   eventCanBeCompleted: boolean;
   caseDetails: CaseView;
   caseEventData: CaseEventData;

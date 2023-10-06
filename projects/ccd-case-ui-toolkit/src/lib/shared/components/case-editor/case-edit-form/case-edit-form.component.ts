@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -14,7 +14,7 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   @Input()
   public fields: CaseField[] = [];
   @Input()
-  public formGroup: UntypedFormGroup;
+  public formGroup: FormGroup;
   @Input()
   public caseFields: CaseField[] = [];
   @Input()

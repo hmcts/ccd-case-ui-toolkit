@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 
 import { CaseField } from '../../domain/definition/case-field.model';
@@ -49,7 +49,7 @@ export class SearchFiltersComponent implements OnInit {
   public selected: {
     jurisdiction?: Jurisdiction,
     caseType?: CaseTypeLite,
-    formGroup?: UntypedFormGroup,
+    formGroup?: FormGroup,
     caseState?: CaseState,
     page?: number,
     metadataFields?: string[]
@@ -57,7 +57,7 @@ export class SearchFiltersComponent implements OnInit {
 
   public selectedJurisdictionCaseTypes?: CaseTypeLite[];
 
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup: FormGroup = new FormGroup({});
 
   constructor(private readonly searchService: SearchService,
     private readonly orderService: OrderService,
@@ -150,7 +150,7 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   public onCaseTypeIdChange(): void {
-    this.formGroup = new UntypedFormGroup({});
+    this.formGroup = new FormGroup({});
     this.searchInputsReady = false;
     this.searchInputs = [];
     this.searchService.getSearchInputs(

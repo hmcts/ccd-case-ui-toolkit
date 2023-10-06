@@ -1,6 +1,6 @@
 import { Component, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { plainToClassFromExist } from 'class-transformer';
 import { of } from 'rxjs';
@@ -42,12 +42,12 @@ describe('FieldWriteComponent', () => {
   let paletteService: any;
   let formValidatorService: any;
 
-  let formGroup: UntypedFormGroup;
+  let formGroup: FormGroup;
   const caseFields: CaseField[] = [CASE_FIELD];
 
   let caseEditComponentStub: any;
-  const FORM_GROUP = new UntypedFormGroup({
-    data: new UntypedFormGroup({ field1: new FormControl('SOME_VALUE') })
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({ field1: new FormControl('SOME_VALUE') })
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);
@@ -74,7 +74,7 @@ describe('FieldWriteComponent', () => {
     ]);
     paletteService.getFieldComponentClass.and.returnValue(FieldTestComponent);
 
-    formGroup = new UntypedFormGroup({});
+    formGroup = new FormGroup({});
 
     cancelled = createSpyObj('cancelled', ['emit']);
     caseEditComponentStub = {

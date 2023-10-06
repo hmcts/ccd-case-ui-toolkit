@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, UntypedFormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { forkJoin, Observable } from 'rxjs';
 import { CaseView, ErrorMessage } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
@@ -21,7 +21,7 @@ export class UnLinkCasesComponent implements OnInit {
   @Output()
   public notifyAPIFailure: EventEmitter<boolean> = new EventEmitter(false);
 
-  public unlinkCaseForm: UntypedFormGroup;
+  public unlinkCaseForm: FormGroup;
   public caseId: string;
   public linkedCases: CaseLink[] = [];
   public errorMessages: ErrorMessage[] = [];

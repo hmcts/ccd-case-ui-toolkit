@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Observable, of, throwError } from 'rxjs';
 import { ConditionalShowModule } from '../../directives/conditional-show/conditional-show.module';
@@ -131,7 +131,7 @@ const TEST_SEARCH_INPUTS: SearchInput[] = createSearchInputs();
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
   @Input()
-  public formGroup: UntypedFormGroup;
+  public formGroup: FormGroup;
 }
 
 function createObservableFrom<T>(param: T): Observable<T> {
@@ -143,7 +143,7 @@ let mockSearchService;
 let orderService;
 let onJurisdictionHandler: any;
 
-const TEST_FORM_GROUP = new UntypedFormGroup({});
+const TEST_FORM_GROUP = new FormGroup({});
 const METADATA_FIELDS = ['PersonLastName'];
 const searchfiltervalue = `{\"PersonLastName\":null,\"PersonFirstName\":\"CaseFirstName\",`
   + `\"PersonAddress\":{\"AddressLine1\":null,\"AddressLine2\":null,\"AddressLine3\":null,`
@@ -526,7 +526,7 @@ describe('SearchFiltersComponent', () => {
       name: control
     };
 
-    const formGroup = new UntypedFormGroup(formControls);
+    const formGroup = new FormGroup(formControls);
 
     component.onCaseTypeIdChange();
     fixture.detectChanges();
@@ -539,7 +539,7 @@ describe('SearchFiltersComponent', () => {
         const arg: any = searchHandler.applyFilters.calls.mostRecent().args[0].selected;
         expect(arg['jurisdiction']).toEqual(JURISDICTION_3);
         expect(arg['caseType']).toEqual(CASE_TYPES_2[3]);
-        expect(arg['UntypedFormGroup'].value).toEqual(formGroup.value);
+        expect(arg['FormGroup'].value).toEqual(formGroup.value);
         expect(searchHandler.applyFilters).toHaveBeenCalledTimes(1);
 
       });
@@ -618,7 +618,7 @@ describe('Clear localStorage', () => {
       name: control
     };
 
-    const formGroup = new UntypedFormGroup(formControls);
+    const formGroup = new FormGroup(formControls);
 
     component.onCaseTypeIdChange();
     fixture.detectChanges();

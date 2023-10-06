@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormArray, FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
@@ -191,7 +191,7 @@ describe('CaseEditComponent', () => {
 
   const fieldWriteComponentMock: any = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'UntypedFormGroup', 'idPrefix', 'isExpanded', 'parent']
+    inputs: ['caseField', 'FormGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
   const routerLinkComponentMock: any = MockComponent({
@@ -360,8 +360,8 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.nextPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('John'),
               PersonLastName: new FormControl('Smith')
             })
@@ -383,8 +383,8 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.nextPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('John'),
               PersonLastName: new FormControl('Smith')
             })
@@ -406,8 +406,8 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.nextPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('John'),
               PersonLastName: new FormControl('Other')
             })
@@ -429,9 +429,9 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.nextPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
-              PersonFirstName: new UntypedFormGroup({ PersonMiddleName: new FormControl('John') }),
+          component.form = new FormGroup({
+            data: new FormGroup({
+              PersonFirstName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -452,9 +452,9 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.nextPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
-              PersonFirstName: new FormArray([new UntypedFormGroup({ PersonMiddleName: new FormControl('John') })]),
+          component.form = new FormGroup({
+            data: new FormGroup({
+              PersonFirstName: new FormArray([new FormGroup({ PersonMiddleName: new FormControl('John') })]),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -477,8 +477,8 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.previousPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('John'),
               PersonLastName: new FormControl('Smith')
             })
@@ -500,8 +500,8 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.previousPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('John'),
               PersonLastName: new FormControl('Smith')
             })
@@ -523,8 +523,8 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.previousPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('John'),
               PersonLastName: new FormControl('Other')
             })
@@ -546,9 +546,9 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.previousPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
-              PersonFirstName: new UntypedFormGroup({ PersonMiddleName: new FormControl('John') }),
+          component.form = new FormGroup({
+            data: new FormGroup({
+              PersonFirstName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -569,9 +569,9 @@ describe('CaseEditComponent', () => {
           currentPage.case_fields = [CASE_FIELD_WITH_SHOW_CONDITION, CASE_FIELD_2];
           wizard.getPage.and.returnValue(currentPage);
           wizard.previousPage.and.returnValue(new WizardPage());
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
-              PersonFirstName: new FormArray([new UntypedFormGroup({ PersonMiddleName: new FormControl('John') })]),
+          component.form = new FormGroup({
+            data: new FormGroup({
+              PersonFirstName: new FormArray([new FormGroup({ PersonMiddleName: new FormControl('John') })]),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -601,8 +601,8 @@ describe('CaseEditComponent', () => {
           nextPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
           wizard.pages = [currentPage, nextPage];
           wizard.nextPage.and.returnValue(nextPage);
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('John'),
               PersonLastName: new FormControl('Smith'),
               Address: new FormControl('Some street')
@@ -632,8 +632,8 @@ describe('CaseEditComponent', () => {
           nextPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
           wizard.nextPage.and.returnValue(nextPage);
           wizard.pages = [currentPage, nextPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               PersonLastName: new FormControl('Smith'),
               Address: new FormControl('Some street')
@@ -664,11 +664,11 @@ describe('CaseEditComponent', () => {
           nextPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
           wizard.nextPage.and.returnValue(nextPage);
           wizard.pages = [currentPage, nextPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonLastName: new UntypedFormGroup({ PersonMiddleName: new FormControl('John') }),
-              Address: new UntypedFormGroup({ AddressLine1: new FormControl('Street') })
+              PersonLastName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
+              Address: new FormGroup({ AddressLine1: new FormControl('Street') })
             })
           });
           fixture.detectChanges();
@@ -702,14 +702,14 @@ describe('CaseEditComponent', () => {
           nextPage.wizard_page_fields = [WIZARD_PAGE_2_COLLECTION, WIZARD_PAGE_3_COLLECTION];
           wizard.nextPage.and.returnValue(nextPage);
           wizard.pages = [currentPage, nextPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonLastNameCollection: new FormArray([new UntypedFormGroup({
-                value: new UntypedFormGroup({ PersonMiddleName: new FormControl('John') })
+              PersonLastNameCollection: new FormArray([new FormGroup({
+                value: new FormGroup({ PersonMiddleName: new FormControl('John') })
               })]),
-              AddressCollection: new FormArray([new UntypedFormGroup({
-                value: new UntypedFormGroup({ AddressLine1: new FormControl('Street') })
+              AddressCollection: new FormArray([new FormGroup({
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -734,7 +734,7 @@ describe('CaseEditComponent', () => {
             .get('value.AddressLine1').value).toBeNull();
         });
 
-        it('should not delete sub-field value if the UntypedFormGroup for the parent Complex hidden field cannot be determined', () => {
+        it('should not delete sub-field value if the FormGroup for the parent Complex hidden field cannot be determined', () => {
           spyOn(fieldsPurger, 'deleteFieldValue');
           component.wizard = wizard;
           const currentPage = new WizardPage();
@@ -748,10 +748,10 @@ describe('CaseEditComponent', () => {
           nextPage.wizard_page_fields = [WIZARD_PAGE_2];
           wizard.nextPage.and.returnValue(nextPage);
           wizard.pages = [currentPage, nextPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonFamilyName: new UntypedFormGroup({ PersonMiddleName: new FormControl('John') })
+              PersonFamilyName: new FormGroup({ PersonMiddleName: new FormControl('John') })
             })
           });
           fixture.detectChanges();
@@ -777,11 +777,11 @@ describe('CaseEditComponent', () => {
           nextPage.wizard_page_fields = [WIZARD_PAGE_3_COLLECTION];
           wizard.nextPage.and.returnValue(nextPage);
           wizard.pages = [currentPage, nextPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              AddressList: new FormArray([new UntypedFormGroup({
-                value: new UntypedFormGroup({ AddressLine1: new FormControl('Street') })
+              AddressList: new FormArray([new FormGroup({
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -808,11 +808,11 @@ describe('CaseEditComponent', () => {
             nextPage.case_fields = [CASE_FIELD_3_COLLECTION];
             nextPage.wizard_page_fields = [WIZARD_PAGE_3_COLLECTION];
             wizard.nextPage.and.returnValue(undefined);
-            component.form = new UntypedFormGroup({
-              data: new UntypedFormGroup({
+            component.form = new FormGroup({
+              data: new FormGroup({
                 PersonFirstName: new FormControl('Other'),
-                AddressList: new FormArray([new UntypedFormGroup({
-                  value: new UntypedFormGroup({ AddressLine1: new FormControl('Street') })
+                AddressList: new FormArray([new FormGroup({
+                  value: new FormGroup({ AddressLine1: new FormControl('Street') })
                 })])
               })
             });
@@ -882,8 +882,8 @@ describe('CaseEditComponent', () => {
           previousPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
           wizard.pages = [previousPage, currentPage];
           wizard.previousPage.and.returnValue(previousPage);
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('John'),
               PersonLastName: new FormControl('Smith'),
               Address: new FormControl('Some street')
@@ -913,8 +913,8 @@ describe('CaseEditComponent', () => {
           previousPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
           wizard.previousPage.and.returnValue(previousPage);
           wizard.pages = [previousPage, currentPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               PersonLastName: new FormControl('Smith'),
               Address: new FormControl('Some street')
@@ -945,11 +945,11 @@ describe('CaseEditComponent', () => {
           previousPage.wizard_page_fields = [WIZARD_PAGE_2, WIZARD_PAGE_3];
           wizard.previousPage.and.returnValue(previousPage);
           wizard.pages = [previousPage, currentPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonLastName: new UntypedFormGroup({ PersonMiddleName: new FormControl('John') }),
-              Address: new UntypedFormGroup({ AddressLine1: new FormControl('Street') })
+              PersonLastName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
+              Address: new FormGroup({ AddressLine1: new FormControl('Street') })
             })
           });
           fixture.detectChanges();
@@ -983,14 +983,14 @@ describe('CaseEditComponent', () => {
           previousPage.wizard_page_fields = [WIZARD_PAGE_2_COLLECTION, WIZARD_PAGE_3_COLLECTION];
           wizard.previousPage.and.returnValue(previousPage);
           wizard.pages = [currentPage, previousPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonLastNameCollection: new FormArray([new UntypedFormGroup({
-                value: new UntypedFormGroup({ PersonMiddleName: new FormControl('John') })
+              PersonLastNameCollection: new FormArray([new FormGroup({
+                value: new FormGroup({ PersonMiddleName: new FormControl('John') })
               })]),
-              AddressCollection: new FormArray([new UntypedFormGroup({
-                value: new UntypedFormGroup({ AddressLine1: new FormControl('Street') })
+              AddressCollection: new FormArray([new FormGroup({
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -1015,7 +1015,7 @@ describe('CaseEditComponent', () => {
             .get('value.AddressLine1').value).toBeNull();
         });
 
-        it('should not delete sub-field value if the UntypedFormGroup for the parent Complex hidden field cannot be determined', () => {
+        it('should not delete sub-field value if the FormGroup for the parent Complex hidden field cannot be determined', () => {
           spyOn(fieldsPurger, 'deleteFieldValue');
           component.wizard = wizard;
           const currentPage = new WizardPage();
@@ -1029,10 +1029,10 @@ describe('CaseEditComponent', () => {
           previousPage.wizard_page_fields = [WIZARD_PAGE_2];
           wizard.previousPage.and.returnValue(previousPage);
           wizard.pages = [currentPage, previousPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonFamilyName: new UntypedFormGroup({ PersonMiddleName: new FormControl('John') })
+              PersonFamilyName: new FormGroup({ PersonMiddleName: new FormControl('John') })
             })
           });
           fixture.detectChanges();
@@ -1058,11 +1058,11 @@ describe('CaseEditComponent', () => {
           previousPage.wizard_page_fields = [WIZARD_PAGE_3_COLLECTION];
           wizard.previousPage.and.returnValue(previousPage);
           wizard.pages = [currentPage, previousPage];
-          component.form = new UntypedFormGroup({
-            data: new UntypedFormGroup({
+          component.form = new FormGroup({
+            data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              AddressList: new FormArray([new UntypedFormGroup({
-                value: new UntypedFormGroup({ AddressLine1: new FormControl('Street') })
+              AddressList: new FormArray([new FormGroup({
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });

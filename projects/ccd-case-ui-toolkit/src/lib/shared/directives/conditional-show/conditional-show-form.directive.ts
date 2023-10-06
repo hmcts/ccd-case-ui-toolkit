@@ -1,5 +1,5 @@
 import { AfterViewInit, Directive, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -22,7 +22,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
 
   @Input() public caseFields: CaseField[];
   @Input() public contextFields: CaseField[] = [];
-  @Input() public formGroup: UntypedFormGroup;
+  @Input() public formGroup: FormGroup;
 
   private allFieldValues: any;
   private formChangesSubscription: Subscription;
@@ -32,7 +32,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
 
   public ngOnInit() {
     if (!this.formGroup) {
-      this.formGroup = new UntypedFormGroup({});
+      this.formGroup = new FormGroup({});
     }
   }
 
@@ -120,11 +120,11 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
     });
   }
 
-  private readonly handleFormGroup = (formGroup: UntypedFormGroup): void => {
+  private readonly handleFormGroup = (formGroup: FormGroup): void => {
     this.evaluateControl(formGroup);
     let groupControl = formGroup;
-    if (formGroup.get('value') && formGroup.get('value') instanceof UntypedFormGroup) { // Complex Field
-      groupControl = formGroup.get('value') as UntypedFormGroup;
+    if (formGroup.get('value') && formGroup.get('value') instanceof FormGroup) { // Complex Field
+      groupControl = formGroup.get('value') as FormGroup;
     } else if (formGroup.controls) {
       // Special Fields like AddressUK, AddressGlobal
       groupControl = formGroup;

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -53,7 +53,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public wizard: Wizard;
 
-  public form: UntypedFormGroup;
+  public form: FormGroup;
 
   public confirmation: Confirmation;
 
@@ -109,7 +109,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
 
     this.form = this.fb.group({
-      data: new UntypedFormGroup({}),
+      data: new FormGroup({}),
       event: this.fb.group({
         id: [this.eventTrigger.id, Validators.required],
         summary: [''],
@@ -262,7 +262,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     return (caseDetails ? caseDetails.case_id : '');
   }
 
-  private getEventId(form: UntypedFormGroup): string {
+  private getEventId(form: FormGroup): string {
     return form.value.event.id;
   }
 
@@ -271,7 +271,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       data: this.replaceEmptyComplexFieldValues(
         this.formValueService.sanitise(
           this.replaceHiddenFormValuesWithOriginalCaseData(
-            form.get('data') as UntypedFormGroup, eventTrigger.case_fields))),
+            form.get('data') as FormGroup, eventTrigger.case_fields))),
       event: form.value.event
     } as CaseEventData;
     this.formValueService.clearNonCaseFields(caseEventData.data, eventTrigger.case_fields);
@@ -314,7 +314,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Traverse *all* values of a {@link UntypedFormGroup}, including those for disabled fields (i.e. hidden ones), replacing the
+   * Traverse *all* values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), replacing the
    * value of any that are hidden AND have `retain_hidden_value` set to `true` in the corresponding `CaseField`, with
    * the *original* value held in the `CaseField` object.
    *
@@ -327,13 +327,13 @@ export class CaseEditComponent implements OnInit, OnDestroy {
    * * For Collection field types, including collections of Complex and Document field types, the replacement is
    * performed for all fields in the collection.
    *
-   * @param UntypedFormGroup The `UntypedFormGroup` instance whose raw values are to be traversed
-   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `UntypedFormGroup`
+   * @param FormGroup The `FormGroup` instance whose raw values are to be traversed
+   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `FormGroup`
    * @param parentField Reference to the parent `CaseField`. Used for retrieving the sub-field values of a Complex field
    * to perform recursive replacement - the sub-field `CaseField`s themselves do *not* contain any values
    * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
    */
-  private replaceHiddenFormValuesWithOriginalCaseData(formGroup: UntypedFormGroup, caseFields: CaseField[], parentField?: CaseField): object {
+  private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFields: CaseField[], parentField?: CaseField): object {
     // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
     const rawFormValueData = formGroup.getRawValue();
 
@@ -373,8 +373,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
             // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
             // parent)
             // Update rawFormValueData for this field
-            // creating form group and adding control into it in case caseField is of complext type and and part of UntypedFormGroup
-            const form: UntypedFormGroup = new UntypedFormGroup({});
+            // creating form group and adding control into it in case caseField is of complext type and and part of FormGroup
+            const form: FormGroup = new FormGroup({});
             if (formGroup.controls[key].value) {
               Object.keys(formGroup.controls[key].value).forEach((item) => {
                 form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
@@ -425,7 +425,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
           /* istanbul ignore else */
           if (this.error.details) {
             this.formErrorService
-              .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as UntypedFormGroup, 'validation');
+              .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
           }
           this.isSubmitting = false;
         }

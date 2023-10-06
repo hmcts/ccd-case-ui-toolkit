@@ -1,4 +1,4 @@
-import { FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { CaseField, FieldType, FixedListItem } from '../../domain';
 import { aCaseField, createCaseField, createMultiSelectListFieldType } from '../../fixture/shared.test.fixture';
 import { FieldsPurger } from './fields.purger';
@@ -103,8 +103,8 @@ describe('deleteFieldValue() tests', () => {
   }) as CaseField;
 
   it('should delete fields of a Complex type', () => {
-    const formGroup = new UntypedFormGroup({
-      Address: new UntypedFormGroup({
+    const formGroup = new FormGroup({
+      Address: new FormGroup({
         AddressLine1: new FormControl('Street'),
         Postcode: new FormControl('AB12 3CD')
       })
@@ -118,8 +118,8 @@ describe('deleteFieldValue() tests', () => {
   });
 
   it('should delete only those fields not set to be retained of a Complex type, if the Complex type itself is to be retained', () => {
-    const formGroup = new UntypedFormGroup({
-      Address: new UntypedFormGroup({
+    const formGroup = new FormGroup({
+      Address: new FormGroup({
         AddressLine1: new FormControl('Street'),
         Postcode: new FormControl('AB12 3CD')
       })
@@ -132,16 +132,16 @@ describe('deleteFieldValue() tests', () => {
   });
 
   it('should delete fields of a collection of Complex types', () => {
-    const formGroup = new UntypedFormGroup({
+    const formGroup = new FormGroup({
       AddressCollection: new FormArray([
-        new UntypedFormGroup({
-          value: new UntypedFormGroup({
+        new FormGroup({
+          value: new FormGroup({
             AddressLine1: new FormControl('Street'),
             Postcode: new FormControl('AB12 3CD')
           })
         }),
-        new UntypedFormGroup({
-          value: new UntypedFormGroup({
+        new FormGroup({
+          value: new FormGroup({
             AddressLine1: new FormControl('Another street'),
             Postcode: new FormControl('AB12 3CD')
           })
@@ -157,17 +157,17 @@ describe('deleteFieldValue() tests', () => {
   });
 
   it('should delete fields of a collection of Document types', () => {
-    const formGroup = new UntypedFormGroup({
+    const formGroup = new FormGroup({
       DocumentCollection: new FormArray([
-        new UntypedFormGroup({
-          value: new UntypedFormGroup({
+        new FormGroup({
+          value: new FormGroup({
             document_binary_url: new FormControl('http://document_binary.url'),
             document_filename: new FormControl('document.dummy'),
             document_url: new FormControl('http://document.url')
           })
         }),
-        new UntypedFormGroup({
-          value: new UntypedFormGroup({
+        new FormGroup({
+          value: new FormGroup({
             document_binary_url: new FormControl('http://document_binary.url'),
             document_filename: new FormControl('document.dummy'),
             document_url: new FormControl('http://document.url')
@@ -186,7 +186,7 @@ describe('deleteFieldValue() tests', () => {
   });
 
   it('should delete fields of a MultiSelectList type', () => {
-    const formGroup = new UntypedFormGroup({
+    const formGroup = new FormGroup({
       CountrySelection: new FormArray([
         new FormControl({ value: 'UK', disabled: true }),
         new FormControl({ value: 'US', disabled: true })
@@ -199,8 +199,8 @@ describe('deleteFieldValue() tests', () => {
   });
 
   it('should delete fields of a Document type', () => {
-    const formGroup = new UntypedFormGroup({
-      Document: new UntypedFormGroup({
+    const formGroup = new FormGroup({
+      Document: new FormGroup({
         document_binary_url: new FormControl('http://document_binary.url'),
         document_filename: new FormControl('document.dummy'),
         document_url: new FormControl('http://document.url')
@@ -214,7 +214,7 @@ describe('deleteFieldValue() tests', () => {
   });
 
   it('should delete the field of a Text type', () => {
-    const formGroup = new UntypedFormGroup({
+    const formGroup = new FormGroup({
       Colour: new FormControl('Red')
     });
 
@@ -223,7 +223,7 @@ describe('deleteFieldValue() tests', () => {
   });
 
   it('should delete the field of a DynamicList type', () => {
-    const formGroup = new UntypedFormGroup({
+    const formGroup = new FormGroup({
       CourtSelection: new FormControl({
         value: {
           list_items: COURT_LIST,

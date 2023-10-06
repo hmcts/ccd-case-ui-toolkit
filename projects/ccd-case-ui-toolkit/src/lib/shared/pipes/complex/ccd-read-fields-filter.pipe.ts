@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 
 import { plainToClassFromExist } from 'class-transformer';
 import { ShowCondition } from '../../directives/conditional-show/domain/conditional-show.model';
@@ -135,7 +135,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
    */
   public transform(
     complexField: CaseField, keepEmpty?: boolean, index?: number,
-    setupHidden = false, formGroup?: UntypedFormGroup | AbstractControl, path?: string): CaseField[] {
+    setupHidden = false, formGroup?: FormGroup | AbstractControl, path?: string): CaseField[] {
     if (!complexField || !complexField.field_type) {
       return [];
     }

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CaseEventTrigger, CaseField, Profile } from '../../../domain';
@@ -24,7 +24,7 @@ import { Wizard, WizardPage } from '../domain';
 })
 export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public eventTrigger: CaseEventTrigger;
-  public editForm: UntypedFormGroup;
+  public editForm: FormGroup;
   public triggerText: string;
   public wizard: Wizard;
   public profile: Profile;

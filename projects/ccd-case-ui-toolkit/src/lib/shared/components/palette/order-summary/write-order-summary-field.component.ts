@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 
 @Component({
@@ -14,7 +14,7 @@ export class WriteOrderSummaryFieldComponent extends AbstractFieldWriteComponent
     and has to be built manually.
   */
   public ngOnInit(): void {
-    const orderSummaryGroup: UntypedFormGroup = this.registerControl(new UntypedFormGroup({}), true) as UntypedFormGroup;
+    const orderSummaryGroup: FormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
     const paymentReference: FormControl = new FormControl(this.caseField.value.PaymentReference);
     orderSummaryGroup.addControl('PaymentReference', paymentReference);
     const paymentTotal: FormControl = new FormControl(this.caseField.value.PaymentTotal);
@@ -26,13 +26,13 @@ export class WriteOrderSummaryFieldComponent extends AbstractFieldWriteComponent
     orderSummaryGroup.addControl('Fees', feesArray);
   }
 
-  private getFeeValue(feeValue): UntypedFormGroup {
-    const feeGroup = new UntypedFormGroup({});
+  private getFeeValue(feeValue): FormGroup {
+    const feeGroup = new FormGroup({});
     feeGroup.addControl('FeeCode', new FormControl(feeValue.FeeCode));
     feeGroup.addControl('FeeAmount', new FormControl(feeValue.FeeAmount));
     feeGroup.addControl('FeeDescription', new FormControl(feeValue.FeeDescription));
     feeGroup.addControl('FeeVersion', new FormControl(feeValue.FeeVersion));
-    const feeValueGroup = new UntypedFormGroup({});
+    const feeValueGroup = new FormGroup({});
     feeValueGroup.addControl('value', feeGroup);
     return feeValueGroup;
   }

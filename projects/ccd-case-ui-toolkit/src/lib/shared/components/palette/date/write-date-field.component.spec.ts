@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { FormModule } from '../../../../components/form/form.module';
 import { CaseField, FieldType } from '../../../domain';
@@ -23,7 +23,7 @@ const CASE_FIELD: CaseField = ({
   value: VALUE
 }) as CaseField;
 
-const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+const FORM_GROUP: FormGroup = new FormGroup({});
 
 describe('WriteDateFieldComponent', () => {
 
@@ -64,7 +64,7 @@ describe('WriteDateFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the UntypedFormGroup', () => {
+  it('should add a formControl linked to the field ID to the FormGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
   });
 

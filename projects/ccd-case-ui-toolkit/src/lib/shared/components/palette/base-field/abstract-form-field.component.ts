@@ -1,11 +1,11 @@
 import { Directive, Input } from '@angular/core';
-import { AbstractControl, FormArray, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 
 
-type FormContainer = UntypedFormGroup | FormArray;
+type FormContainer = FormGroup | FormArray;
 
 @Directive()
 export abstract class AbstractFormFieldComponent {
@@ -13,7 +13,7 @@ export abstract class AbstractFormFieldComponent {
   public caseField: CaseField;
 
   @Input()
-  public formGroup: UntypedFormGroup;
+  public formGroup: FormGroup;
 
   @Input()
   public parent?: FormContainer;
@@ -65,7 +65,7 @@ export abstract class AbstractFormFieldComponent {
     return control;
   }
 
-  private addControlToFormGroup(control: AbstractControl, parent: UntypedFormGroup, replace: boolean): AbstractControl {
+  private addControlToFormGroup(control: AbstractControl, parent: FormGroup, replace: boolean): AbstractControl {
     if (replace) {
       if (this.caseField.field_type && this.caseField.field_type.id === 'CaseLink' && this.caseField.field_type.type === 'Complex' && /^-?\d+$/.test(this.caseField.id)) {
         parent.setControl('CaseReference', control['controls']['CaseReference']);

@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CaseField } from '../../../../../domain';
 import { MockRpxTranslatePipe } from '../../../utils/first-error.pipe.spec';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from '../../domain';
@@ -130,7 +130,7 @@ describe('ManageCaseFlagsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ManageCaseFlagsComponent);
     component = fixture.componentInstance;
-    component.formGroup = new UntypedFormGroup({});
+    component.formGroup = new FormGroup({});
     component.flagsData = flagsData;
     fixture.detectChanges();
   });

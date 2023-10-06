@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState, FlagDetailDisplayWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
@@ -10,7 +10,7 @@ import { CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlag
 })
 export class UpdateFlagComponent implements OnInit {
 
-  @Input() public formGroup: UntypedFormGroup;
+  @Input() public formGroup: FormGroup;
   @Input() public selectedFlag: FlagDetailDisplayWithFormGroupPath;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();

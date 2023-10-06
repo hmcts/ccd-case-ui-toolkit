@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
@@ -81,7 +81,7 @@ describe('ReadDateFieldComponent', () => {
   });
 
   describe('Persistable readonly date field', () => {
-    const FORM_GROUP: UntypedFormGroup = new UntypedFormGroup({});
+    const FORM_GROUP: FormGroup = new FormGroup({});
     const REGISTER_CONTROL = (control) => {
       FORM_GROUP.addControl(FIELD_ID, control);
       return control;

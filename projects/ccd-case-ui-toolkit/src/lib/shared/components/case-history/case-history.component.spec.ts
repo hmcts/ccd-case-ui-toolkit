@@ -81,7 +81,7 @@ describe('CaseHistoryComponent', () => {
 
   const fieldReadComponentMock: any = MockComponent({
     selector: 'ccd-field-read', inputs: [
-      'caseField', 'caseReference', 'UntypedFormGroup', 'topLevelFormGroup', 'idPrefix'
+      'caseField', 'caseReference', 'FormGroup', 'topLevelFormGroup', 'idPrefix'
     ]
   });
 

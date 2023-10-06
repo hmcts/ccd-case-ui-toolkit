@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
 import { ErrorMessage } from '../../../domain';
@@ -16,7 +16,7 @@ import { LinkedCasesService } from './services';
   templateUrl: './write-linked-cases-field.component.html'
 })
 export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
-  public caseEditForm: UntypedFormGroup;
+  public caseEditForm: FormGroup;
   public caseDetails: CaseView;
   public linkedCasesPage: number;
   public linkedCasesPages = LinkedCasesPages;
@@ -123,7 +123,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
       this.linkedCasesService.caseFieldValue = caseFieldValue.filter(item => unlinkedCaseRefereneIds.indexOf(item.id) === -1);
     }
     this.formGroup.value.caseLinks = this.linkedCasesService.caseFieldValue;
-    (this.caseEditForm.controls['data'] as any) = new UntypedFormGroup({ caseLinks: new FormControl(this.linkedCasesService.caseFieldValue || []) });
+    (this.caseEditForm.controls['data'] as any) = new FormGroup({ caseLinks: new FormControl(this.linkedCasesService.caseFieldValue || []) });
     this.caseEditDataService.setCaseEditForm(this.caseEditForm);
   }
 

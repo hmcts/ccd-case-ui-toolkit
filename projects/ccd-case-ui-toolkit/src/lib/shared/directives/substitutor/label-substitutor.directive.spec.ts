@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FormatTranslatorService } from '../../services/case-fields/format-translator.service';
@@ -11,7 +11,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   template: `
-    <tr ccdLabelSubstitutor [caseField]="caseField" [UntypedFormGroup]="UntypedFormGroup" [contextFields]="caseFields"
+    <tr ccdLabelSubstitutor [caseField]="caseField" [FormGroup]="FormGroup" [contextFields]="caseFields"
         [elementsToSubstitute]="elementsToSubstitute">
       <td>{{caseField.label}}</td>
       <td>{{caseField.hint_text}}</td>
@@ -22,7 +22,7 @@ class TestHostComponent {
 
   @Input() public caseField: CaseField;
   @Input() public caseFields: CaseField[];
-  @Input() public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  @Input() public formGroup: FormGroup = new FormGroup({});
   @Input() public elementsToSubstitute: string[] = ['label', 'hint_text', 'value'];
 }
 
@@ -158,7 +158,7 @@ describe('LabelSubstitutorDirective', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, field('LabelA', 'ValueA1', '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl('ValueA2'),
       });
       fixture.detectChanges();
@@ -170,7 +170,7 @@ describe('LabelSubstitutorDirective', () => {
       const label = 'someLabel';
       comp.caseField = textField('LabelB', '', label);
       comp.caseFields = [comp.caseField, textField('LabelD', 'ValueD', '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl('ValueA'),
         LabelC: new FormControl('ValueC')
       });
@@ -193,7 +193,7 @@ describe('LabelSubstitutorDirective', () => {
         })
       }, '')];
       if (labelAValue) {
-        comp.formGroup = new UntypedFormGroup({
+        comp.formGroup = new FormGroup({
           LabelA: new FormControl(labelAValue)
         });
       }
@@ -266,7 +266,7 @@ describe('LabelSubstitutorDirective', () => {
         type: 'MoneyGBP'
       }, '')];
       if (labelAValue) {
-        comp.formGroup = new UntypedFormGroup({
+        comp.formGroup = new FormGroup({
           LabelA: new FormControl(labelAValue)
         });
       }
@@ -295,7 +295,7 @@ describe('LabelSubstitutorDirective', () => {
         id: 'LabelA',
         type: 'MoneyGBP'
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl('20055')
       });
       fixture.detectChanges();
@@ -325,7 +325,7 @@ describe('LabelSubstitutorDirective', () => {
         id: 'LabelA',
         type: 'Date'
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl('2018-03-07')
       });
       fixture.detectChanges();
@@ -340,7 +340,7 @@ describe('LabelSubstitutorDirective', () => {
         id: 'LabelA',
         type: 'Date'
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl('2018-03-07')
       });
       fixture.detectChanges();
@@ -355,7 +355,7 @@ describe('LabelSubstitutorDirective', () => {
         id: 'LabelA',
         type: 'Date'
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl('bob')
       });
       fixture.detectChanges();
@@ -419,7 +419,7 @@ describe('LabelSubstitutorDirective', () => {
           type: 'Text'
         }
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl(VALUES)
       });
       fixture.detectChanges();
@@ -459,7 +459,7 @@ describe('LabelSubstitutorDirective', () => {
           type: 'Text'
         }
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl(VALUES)
       });
       fixture.detectChanges();
@@ -527,7 +527,7 @@ describe('LabelSubstitutorDirective', () => {
           ]
         }
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl(VALUES)
       });
       fixture.detectChanges();
@@ -561,7 +561,7 @@ describe('LabelSubstitutorDirective', () => {
           ]
         }
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl(VALUES)
       });
       fixture.detectChanges();
@@ -603,7 +603,7 @@ describe('LabelSubstitutorDirective', () => {
           type: 'MoneyGBP'
         }
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl(RAW_VALUES)
       });
       fixture.detectChanges();
@@ -624,7 +624,7 @@ describe('LabelSubstitutorDirective', () => {
           type: 'MoneyGBP'
         }
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl(RAW_VALUES)
       });
       fixture.detectChanges();
@@ -666,7 +666,7 @@ describe('LabelSubstitutorDirective', () => {
           type: 'Date'
         }
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl(RAW_VALUES)
       });
       fixture.detectChanges();
@@ -687,7 +687,7 @@ describe('LabelSubstitutorDirective', () => {
           type: 'Date'
         }
       }, '')];
-      comp.formGroup = new UntypedFormGroup({
+      comp.formGroup = new FormGroup({
         LabelA: new FormControl(RAW_VALUES)
       });
       fixture.detectChanges();

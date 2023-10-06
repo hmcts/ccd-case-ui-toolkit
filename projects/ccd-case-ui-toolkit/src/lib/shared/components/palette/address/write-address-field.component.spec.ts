@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormArray, FormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
@@ -33,7 +33,7 @@ xdescribe('WriteAddressFieldComponent', () => {
 
   @Component({
     selector: `ccd-host-component`,
-    template: `<ccd-write-address-field [caseField]="caseField" [UntypedFormGroup]="UntypedFormGroup">
+    template: `<ccd-write-address-field [caseField]="caseField" [FormGroup]="FormGroup">
     </ccd-write-address-field>`
   })
   class TestHostComponent {
@@ -54,7 +54,7 @@ xdescribe('WriteAddressFieldComponent', () => {
     public caseField: CaseField;
 
     @Input()
-    public parent?: UntypedFormGroup | FormArray;
+    public parent?: FormGroup | FormArray;
 
     @Input()
     public idPrefix = '';
@@ -87,7 +87,7 @@ xdescribe('WriteAddressFieldComponent', () => {
   }
 
   function addressFormGroup() {
-    return new UntypedFormGroup({
+    return new FormGroup({
       AddressLine1: new FormControl(),
       AddressLine2: new FormControl(),
       AddressLine3: new FormControl(),

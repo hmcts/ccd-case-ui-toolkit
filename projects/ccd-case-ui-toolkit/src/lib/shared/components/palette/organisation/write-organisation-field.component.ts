@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -27,7 +27,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   private static readonly MANDATORY: string = 'MANDATORY';
   public defaultOrg: any;
 
-  public organisationFormGroup: UntypedFormGroup;
+  public organisationFormGroup: FormGroup;
   public searchOrgTextFormControl: FormControl;
   public organisationIDFormControl: FormControl;
   public organisationNameFormControl: FormControl;
@@ -51,7 +51,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.searchOrgValue$ = this.searchOrgTextFormControl.valueChanges;
     this.searchOrgValue$.subscribe(value => this.onSearchOrg(value));
 
-    this.organisationFormGroup = this.registerControl(new UntypedFormGroup({}), true) as UntypedFormGroup;
+    this.organisationFormGroup = this.registerControl(new FormGroup({}), true) as FormGroup;
     if (this.parent && this.parent.controls && this.parent.controls.hasOwnProperty(WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION)
       && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value
       && this.parent.controls[WriteOrganisationFieldComponent.PRE_POPULATE_TO_USERS_ORGANISATION].value.toUpperCase()

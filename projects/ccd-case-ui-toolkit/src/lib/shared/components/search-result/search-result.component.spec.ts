@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input, NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockComponent } from 'ng2-mock-component';
@@ -224,7 +224,7 @@ describe('SearchResultComponent', () => {
       component.caseState = CASE_STATE;
       component.paginationMetadata = PAGINATION_METADATA;
       component.paginationLimitEnforced = false;
-      component.caseFilterFG = new UntypedFormGroup({});
+      component.caseFilterFG = new FormGroup({});
       component.metadataFields = METADATA_FIELDS;
       component.ngOnChanges({
         resultView: new SimpleChange(null, RESULT_VIEW, true),

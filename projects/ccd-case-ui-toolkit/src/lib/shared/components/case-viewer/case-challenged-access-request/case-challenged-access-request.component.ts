@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -18,7 +18,7 @@ export class CaseChallengedAccessRequestComponent implements OnDestroy, OnInit {
   public hint: string;
   public caseRefLabel: string;
   public readonly accessReasons: DisplayedAccessReason[];
-  public formGroup: UntypedFormGroup;
+  public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
   public $roleAssignmentResponseSubscription: Subscription;
