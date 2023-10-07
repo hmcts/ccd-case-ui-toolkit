@@ -77,8 +77,7 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[0].textContent).toContain(flagDetailDisplay.partyName);
     expect(summaryListValues[1].textContent).toContain(flagDetailDisplay.flagDetail.name);
     expect(summaryListValues[2].textContent).toContain(flagDetailDisplay.flagDetail.flagComment);
-    // Flag status is not expected to be displayed if the summary page is shown during the Create Case Flag journey
-    expect(summaryListValues[3]).toBeUndefined();
+    expect(summaryListValues[3].textContent).toContain(flagDetailDisplay.flagDetail.status);
   });
 
   it('should display the flag summary for a flag without comments, as part of the Create Case Flag journey', () => {
@@ -102,10 +101,8 @@ describe('CaseFlagSummaryListComponent', () => {
     const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
-    // Flag comments is not displayed if there is no comments
-    expect(summaryListValues[2]).toBeUndefined();
-    // Flag status is not expected to be displayed if the summary page is shown during the Create Case Flag journey
-    expect(summaryListValues[3]).toBeUndefined();
+    // Flag comments section omitted if there are no comments, so next section is Status
+    expect(summaryListValues[2].textContent).toContain(flagDetailDisplay.flagDetail.status);
   });
 
   it('should display the flag summary for the "Other" flag type with a description, as part of the Create Case Flag journey', () => {
@@ -131,8 +128,7 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(`${flag.flagDetail.name} - ${flag.flagDetail.otherDescription}`);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
-    // Flag status is not expected to be displayed if the summary page is shown during the Create Case Flag journey
-    expect(summaryListValues[3]).toBeUndefined();
+    expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
   });
 
   it('should display the flag summary for a flag that has a sub-type value, as part of the Create Case Flag journey', () => {
@@ -158,8 +154,7 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[0].textContent).toContain(flag.partyName);
     expect(summaryListValues[1].textContent).toContain(`${flag.flagDetail.name} - ${flag.flagDetail.subTypeValue}`);
     expect(summaryListValues[2].textContent).toContain(flag.flagDetail.flagComment);
-    // Flag status is not expected to be displayed if the summary page is shown during the Create Case Flag journey
-    expect(summaryListValues[3]).toBeUndefined();
+    expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
   });
 
   it('should display the flag summary for a flag with comments, as part of the Manage Case Flags journey', () => {
@@ -172,7 +167,6 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[0].textContent).toContain(flagDetailDisplay.partyName);
     expect(summaryListValues[1].textContent).toContain(flagDetailDisplay.flagDetail.name);
     expect(summaryListValues[2].textContent).toContain(flagDetailDisplay.flagDetail.flagComment);
-    // Flag status is expected to be displayed if the summary page is shown during the Manage Case Flags journey
     expect(summaryListValues[3].textContent).toContain(flagDetailDisplay.flagDetail.status);
   });
 

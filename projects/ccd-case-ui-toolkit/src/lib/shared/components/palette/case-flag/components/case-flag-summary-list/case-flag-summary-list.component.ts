@@ -28,7 +28,6 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public addUpdateFlagHeaderText: string;
   public caseFlagFieldState = CaseFlagFieldState;
   public displayMode = CaseFlagSummaryListDisplayMode;
-  public canDisplayStatus = false;
   public flagTypeHeaderText: string;
   public caseFlagCheckYourAnswersPageStep = CaseFlagCheckYourAnswersPageStep;
 
@@ -45,7 +44,6 @@ export class CaseFlagSummaryListComponent implements OnInit {
       this.addUpdateFlagHeaderText = this.getAddUpdateFlagHeaderText();
       this.flagTypeHeaderText = this.getFlagTypeHeaderText();
       this.summaryListDisplayMode = this.getSummaryListDisplayMode();
-      this.canDisplayStatus = this.getCanDisplayStatus();
     }
   }
 
@@ -99,11 +97,5 @@ export class CaseFlagSummaryListComponent implements OnInit {
       return CaseFlagSummaryListDisplayMode.CREATE;
     }
     return CaseFlagSummaryListDisplayMode.MANAGE;
-  }
-
-  private getCanDisplayStatus(): boolean {
-    return !(this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
-      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ||
-      this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE);
   }
 }
