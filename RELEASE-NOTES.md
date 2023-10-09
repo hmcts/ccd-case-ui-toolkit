@@ -11,6 +11,12 @@
 ### Version 6.19.5-case-flags-v2-1-internal-external-grouping
 **EUI-8711** Ensure internal and external collections of flag data are grouped by groupId into one instance of the `Flags` object per party, for internal users
 
+### Version 6.19.6-case-flags-v2-external-user-flag-update-fix
+**EUI-8840** Use flagUpdateComment field for persisting flag comments on update by external users
+
+### Version 6.19.6-case-flags-v2-reasonable-adjustments-v2
+**EUI-7243** Case flags v2 reasonable adjustments
+
 ### Version 6.19.5
 **EXUI-623** Make secure docstore work during case creation
 
