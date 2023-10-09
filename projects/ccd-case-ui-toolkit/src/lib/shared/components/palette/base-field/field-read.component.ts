@@ -53,7 +53,7 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       }
       component.instance['caseField'] = this.caseField;
       component.instance['caseFields'] = this.caseFields;
-      component.instance['FormGroup'] = this.formGroup;
+      component.instance['formGroup'] = this.formGroup;
       component.instance['topLevelFormGroup'] = this.topLevelFormGroup;
       component.instance['idPrefix'] = this.idPrefix;
       component.instance['parent'] = this.parent;
