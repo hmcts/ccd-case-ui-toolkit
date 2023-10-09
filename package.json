@@ -2,8 +2,7 @@
   "name": "@hmcts/ccd-case-ui-toolkit",
   "version": "7.0.0-NodeAndNgUpgrades.1",
   "engines": {
-    "yarn": "^3.5.0",
-    "npm": "^8.10.0"
+    "node": ">=18.17.0"
   },
   "description": "Case UI Toolkit",
   "main": "./dist/index.umd.js",
@@ -92,14 +91,14 @@
     "underscore": "^1.9.1",
     "util": "^0.12.4",
     "yargs": "17.7.2",
-    "yargs-parser": "21.1.2",
+    "yargs-parser": "^21.1.1",
     "zone.js": "~0.13.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.9",
     "@angular/cli": "^15.2.9",
     "@angular/compiler-cli": "^15.2.9",
-    "@babel/core": "^7.18.10",
+    "@babel/core": "^7.23.0",
     "@compodoc/compodoc": "1.1.12",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-essentials": "^6.5.10",
@@ -137,8 +136,8 @@
     "gulp-inline-ng2-template": "^5.0.1",
     "gulp-sass": "^5.1.0",
     "istanbul-instrumenter-loader": "^3.0.1",
-    "jasmine-core": "~3.6.0",
-    "jasmine-spec-reporter": "~5.0.0",
+    "jasmine-core": "~5.1.0",
+    "jasmine-spec-reporter": "~7.0.0",
     "json-loader": "^0.5.4",
     "just-clone": "^6.2.0",
     "karma": "~6.4.0",
@@ -149,7 +148,7 @@
     "karma-spec-reporter": "0.0.34",
     "local-storage": "^2.0.0",
     "merge-stream": "^1.0.0",
-    "mocha": "^8.1.1",
+    "mocha": "^10.2.0",
     "multidep": "2.0.2",
     "ng-mocks": "^14.1.1",
     "ng-packagr": "^14.2.2",
