@@ -6,7 +6,15 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagDetailDisplayWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus, CaseFlagWizardStepTitle, UpdateFlagErrorMessage, UpdateFlagStep } from '../../enums';
+import {
+  CaseFlagDisplayContextParameter,
+  CaseFlagFieldState,
+  CaseFlagFormFields,
+  CaseFlagStatus,
+  CaseFlagWizardStepTitle,
+  UpdateFlagErrorMessage,
+  UpdateFlagStep
+} from '../../enums';
 import { UpdateFlagTitleDisplayPipe } from '../../pipes';
 import { UpdateFlagComponent } from './update-flag.component';
 
@@ -24,7 +32,8 @@ describe('UpdateFlagComponent', () => {
     path: [{id: null, value: 'Reasonable adjustment'}],
     hearingRelevant: false,
     flagCode: 'FL1',
-    status: 'Active'
+    status: 'Active',
+    flagUpdateComment: 'This flag is approved'
   } as FlagDetail;
   const inactiveFlag = {
     name: 'Flag 2',
@@ -160,6 +169,24 @@ describe('UpdateFlagComponent', () => {
     // Check the textarea value property, rather than textContent, because this input element has no child nodes
     const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
     expect(textarea.value).toEqual(activeFlag.flagComment);
+  });
+
+  it('should show no error message if displayContextParameter is empty and clicked on "Next" button if existing comments have been deleted', () => {
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = 'First flag';
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = null;
+    component.selectedFlag = selectedFlag1;
+    component.displayContextParameter = '';
+    fixture.detectChanges();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    // Delete existing flag comments
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    textarea.value = '';
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(fixture.debugElement.nativeElement.querySelector('.govuk-error-message')).toBeNull();
   });
 
   it('should show an error message on clicking "Next" if existing comments have been deleted', () => {
@@ -462,13 +489,13 @@ describe('UpdateFlagComponent', () => {
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.NONE);
   });
 
-  it('should display only comments text area for manage support', () => {
-    component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
+  it('should display only the status reason textarea for Manage Support', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     fixture.detectChanges();
-    const commentsTextarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
-    expect(commentsTextarea).toBeDefined();
+    const commentsTextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.COMMENTS}`);
+    expect(commentsTextarea).toBeNull();
     const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
-    expect(statusChangeReasontextarea).toBeNull();
+    expect(statusChangeReasontextarea).toBeTruthy();
     const radioButtons = fixture.debugElement.nativeElement.querySelector('#flag-status-container');
     expect(radioButtons).toBeNull();
     const checkboxWelshTranslation = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED}`));
@@ -487,5 +514,72 @@ describe('UpdateFlagComponent', () => {
     fixture.detectChanges();
     const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
     expect(warningTextElement).toBeNull();
+  });
+
+  it('should populate the status reason textarea with any existing text if the user is not external', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    expect(statusChangeReasontextarea.value).toEqual(selectedFlag1.flagDetailDisplay.flagDetail.flagUpdateComment);
+  });
+
+  it('should not populate the status reason textarea with any existing text if the user is external', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    component.selectedFlag = selectedFlag1;
+    fixture.detectChanges();
+    const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    expect(statusChangeReasontextarea.value).toEqual('');
+  });
+
+  it('should show correct error message for support request on clicking "Next" if no status reason has been entered', () => {
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment = 'First flag';
+    selectedFlag1.flagDetailDisplay.flagDetail.flagComment_cy = null;
+    component.selectedFlag = selectedFlag1;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    fixture.detectChanges();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED_EXTERNAL,
+      fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+    });
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement.textContent).toContain(UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED_EXTERNAL);
+  });
+
+  it('should set the flag status to "Inactive" and update the status reason on clicking "Next" for an external user', () => {
+    component.selectedFlag = selectedFlag1;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    fixture.detectChanges();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    spyOn(component.formGroup.get(CaseFlagFormFields.STATUS), 'setValue');
+    expect(component.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON).value).toEqual('');
+    const textarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
+    textarea.value = textareaInput;
+    textarea.dispatchEvent(new Event('input'));
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.errorMessages.length).toBe(0);
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement).toBeNull();
+    expect(component.formGroup.get(CaseFlagFormFields.STATUS).setValue).toHaveBeenCalledWith(Object.keys(CaseFlagStatus)[2]);
+    expect(component.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON).value).toEqual(textareaInput);
   });
 });
