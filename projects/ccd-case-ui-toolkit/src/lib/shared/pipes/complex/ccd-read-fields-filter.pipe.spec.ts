@@ -88,6 +88,18 @@ describe('ReadFieldsFilterPipe', () => {
     show_condition: null
   }, value);
 
+  const complexCaseField1: CaseField = buildCaseField('ViewApplicationTab', {
+    display_context: 'COMPLEX',
+    field_type: {
+      complex_fields: [],
+      id: 'Party',
+      type: 'Complex'
+    },
+    id: 'applicant1',
+    label: 'Claimants details',
+    show_condition: null
+  }, value);
+
   let pipe: ReadFieldsFilterPipe;
 
   beforeEach(() => {
@@ -237,5 +249,13 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(3);
     expect(RESULT[1].hidden).toEqual(true);
     expect(RESULT[2].hidden).toEqual(true);
+  });
+  it('it shoulld return blank array if we sent null as input parameters', () => {
+    const RESULT: CaseField[] = pipe.transform(null);
+    expect(RESULT.length).toEqual(0);
+  });
+  it('it shoulld return blank array if we sent blank array for complex field type', () => {
+    const RESULT: CaseField[] = pipe.transform(complexCaseField1);
+    expect(RESULT.length).toEqual(0);
   });
 });
