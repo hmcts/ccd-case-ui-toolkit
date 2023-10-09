@@ -93,7 +93,7 @@ export const standard: Story = template.bind({});
 standard.args = {
   caseField,
   parent: {
-    formGroup {
+    formGroup: {
   organisationName: {
     OrganisationID: 'Org1234',
       OrganisationName: 'Waffles Ltd'

@@ -275,8 +275,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       const flagDetailToUpdate = flagsCaseFieldValue.details.find(
         detail => detail.id === this.selectedFlag.flagDetailDisplay.flagDetail.id);
       if (flagDetailToUpdate) {
-        flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value.flagComments
-          ? this.caseFlagParentFormGroup.value.flagComments
+        flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.value['flagComments']
+          ? this.caseFlagParentFormGroup.value['flagComments']
           : null;
         flagDetailToUpdate.value.status = this.selectedFlag.flagDetailDisplay.flagDetail.status;
         flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
@@ -320,19 +320,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     return {
       name: this.flagName,
       // Currently, subTypeValue and subTypeKey are applicable only to language flag types
-      subTypeValue: this.caseFlagParentFormGroup.value.languageSearchTerm
-        ? this.caseFlagParentFormGroup.value.languageSearchTerm.value
-        : this.caseFlagParentFormGroup.value.manualLanguageEntry
-          ? this.caseFlagParentFormGroup.value.manualLanguageEntry
+      subTypeValue: this.caseFlagParentFormGroup.value['languageSearchTerm']
+        ? this.caseFlagParentFormGroup.value['languageSearchTerm'].value
+        : this.caseFlagParentFormGroup.value['mmanualLanguageEntry']
+          ? this.caseFlagParentFormGroup.value['mmanualLanguageEntry']
           : null,
       // For user-entered (i.e. non-Reference Data) languages, there is no key
-      subTypeKey: this.caseFlagParentFormGroup.value.languageSearchTerm
-        ? this.caseFlagParentFormGroup.value.languageSearchTerm.key
+      subTypeKey: this.caseFlagParentFormGroup.value['languageSearchTerm']
+        ? this.caseFlagParentFormGroup.value['languageSearchTerm'].key
         : null,
-      otherDescription: this.flagCode === this.otherFlagTypeCode && this.caseFlagParentFormGroup.value.otherFlagTypeDescription
-        ? this.caseFlagParentFormGroup.value.otherFlagTypeDescription
+      otherDescription: this.flagCode === this.otherFlagTypeCode && this.caseFlagParentFormGroup.value['otherFlagTypeDescription']
+        ? this.caseFlagParentFormGroup.value['otherFlagTypeDescription']
         : null,
-      flagComment: this.caseFlagParentFormGroup.value.flagComments ? this.caseFlagParentFormGroup.value.flagComments : null,
+      flagComment: this.caseFlagParentFormGroup.value['flagComments'] ? this.caseFlagParentFormGroup.value['flagComments'] : null,
       dateTimeCreated: new Date().toISOString(),
       path: this.flagPath,
       hearingRelevant: this.hearingRelevantFlag ? 'Yes' : 'No',
