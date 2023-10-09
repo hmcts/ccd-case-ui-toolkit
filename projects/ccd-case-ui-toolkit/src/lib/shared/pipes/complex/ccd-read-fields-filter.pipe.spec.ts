@@ -1,3 +1,4 @@
+import { FormControl, FormGroup } from '@angular/forms';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
@@ -93,12 +94,12 @@ describe('ReadFieldsFilterPipe', () => {
     field_type: {
       complex_fields: [],
       id: 'Party',
-      type: 'Complex'
+      type: 'Text'
     },
-    id: 'applicant1',
+    id: 'test',
     label: 'Claimants details',
     show_condition: null
-  }, value);
+  }, 'test1');
 
   let pipe: ReadFieldsFilterPipe;
 
@@ -257,5 +258,24 @@ describe('ReadFieldsFilterPipe', () => {
   it('it shoulld return blank array if we sent blank array for complex field type', () => {
     const RESULT: CaseField[] = pipe.transform(complexCaseField1);
     expect(RESULT.length).toEqual(0);
+  });
+  it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field even Formgroup passed', () => {
+    const FORM_GROUP = new FormGroup({
+      data: new FormGroup({
+        type: new FormControl('ORGANISATION'),
+        individualFirstName: new FormControl('Aamir'),
+        individualLastName: new FormControl('Khan'),
+        address: new FormControl('street 1')
+      })
+    });
+    complexCaseField.value = {
+      type: 'ORGANISATION',
+      individualFirstName: 'Aamir',
+      individualLastName: 'Khan'
+    };
+    const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true, FORM_GROUP.controls['data'], undefined, 'address_0');
+    expect(RESULT.length).toEqual(3);
+    expect(RESULT[1].hidden).toEqual(true);
+    expect(RESULT[2].hidden).toEqual(true);
   });
 });
