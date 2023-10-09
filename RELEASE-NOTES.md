@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.7-case-flags-v2-1-remove-duplicate-party-locations
+**EUI-8844** Remove duplicate party locations where an internal and external `Flags` object (with the same groupId) exists for a party
+
 ### Version 6.19.7
 **EUI-8711/EUI-8706** Re-tag for formal release. Also includes EUI-8734
 
