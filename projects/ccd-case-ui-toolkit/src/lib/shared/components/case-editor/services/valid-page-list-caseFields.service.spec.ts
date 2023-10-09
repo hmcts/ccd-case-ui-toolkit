@@ -52,6 +52,11 @@ describe('ValidPageListCaseFieldsService', () => {
     expect(Object.keys(caseEventData).length).toBe(5);
   });
 
+  it('should return caseField list of valid page list', () => {
+    const caseField = validPageListCaseFieldsService.validPageListCaseFields(validPageList, caseEventData, eventTriggerFields);
+    expect(caseField.length).toBe(8);
+  });
+
   function buildPage(pageId: string, label: string, order: number, caseFields?: CaseField[], condition?: string): WizardPage {
     const wp = new WizardPage();
     wp.id = pageId;
