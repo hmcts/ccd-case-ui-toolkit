@@ -11,8 +11,7 @@ import { QualifyingQuestionOptionsComponent } from './qualifying-question-option
 describe('QualifyingQuestionOptionsComponent', () => {
   let component: QualifyingQuestionOptionsComponent;
   let fixture: ComponentFixture<QualifyingQuestionOptionsComponent>;
-  let router: any;
-  router = {
+  let router = {
     navigate: jasmine.createSpy('navigate')
   };
   const caseId = '12345';
@@ -22,7 +21,7 @@ describe('QualifyingQuestionOptionsComponent', () => {
         cid: caseId
       }
     }
-  }
+  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -49,7 +48,7 @@ describe('QualifyingQuestionOptionsComponent', () => {
         name: 'Response to directions',
         url: '/response-to-directions'
       }
-    ])
+    ]);
     fixture.detectChanges();
   });
 
@@ -64,7 +63,7 @@ describe('QualifyingQuestionOptionsComponent', () => {
   it('should have the link to case details queries tab', () => {
     component.click();
     expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '12345'], { fragment: 'Queries' });
-  })
+  });
 
   describe('displayError', () => {
     describe('true', () => {

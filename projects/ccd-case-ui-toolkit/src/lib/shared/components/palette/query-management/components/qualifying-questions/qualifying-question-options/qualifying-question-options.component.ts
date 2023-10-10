@@ -9,7 +9,7 @@ import { QualifyingQuestion } from '../../../models';
   selector: 'ccd-qualifying-question-options',
   templateUrl: './qualifying-question-options.component.html'
 })
-export class QualifyingQuestionOptionsComponent implements OnInit{
+export class QualifyingQuestionOptionsComponent implements OnInit {
   @Input() public qualifyingQuestionsControl: FormControl;
   @Input() public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsErrorMessage = QualifyingQuestionsErrorMessage;
@@ -24,7 +24,7 @@ export class QualifyingQuestionOptionsComponent implements OnInit{
     this.caseId = this.route.snapshot.params.cid;
   }
 
-  public click():void {
+  public click(): void {
     this.router.navigate(['cases', 'case-details', this.caseId], { fragment: 'Queries' });
   }
 
