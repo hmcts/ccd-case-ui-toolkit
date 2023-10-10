@@ -17,7 +17,7 @@ export class QualifyingQuestionOptionsComponent implements OnInit{
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly router: Router) {   
+    private readonly router: Router) {
   }
 
   public ngOnInit(): void {
