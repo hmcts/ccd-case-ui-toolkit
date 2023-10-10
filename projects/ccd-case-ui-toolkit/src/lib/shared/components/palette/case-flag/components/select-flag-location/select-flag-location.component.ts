@@ -30,9 +30,14 @@ export class SelectFlagLocationComponent implements OnInit {
 
     // Filter out any flags instances that don't have a party name, unless the instance is for case-level flags (this
     // is expected not to have a party name)
+    // Also de-duplicate flags instances where the groupId, if present, is the same
     if (this.flagsData) {
       this.filteredFlagsData =
-        this.flagsData.filter(f => f.flags.partyName !== null || f.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
+        this.flagsData
+        .filter((f) => f.flags.partyName !== null || f.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId)
+        .filter((value, index, partyLevelFlags) => !value.flags.groupId
+          ? value
+          : partyLevelFlags.findIndex((p) => p.flags.groupId === value.flags.groupId) === index);
     }
     // Add a FormControl for the selected flag location if there is at least one flags instance remaining after filtering
     if (this.filteredFlagsData && this.filteredFlagsData.length > 0) {
