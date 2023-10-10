@@ -8,5 +8,6 @@ import { QueryCreateContext } from '../../models/query-create-context.enum';
 export class QueryConfirmationComponent {
   @Input() public queryCreateContext: QueryCreateContext;
 
+  public caseId = '';
   public queryCreateContextEnum = QueryCreateContext;
 }

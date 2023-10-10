@@ -1,6 +1,6 @@
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { CaseView } from '../../domain';
+import { CaseEventTrigger, CaseView } from '../../domain';
 import { CaseEditValidationError } from './case-edit-validation.model';
 
 export class CaseEditDataService {
@@ -9,6 +9,7 @@ export class CaseEditDataService {
   private formValidationErrors$ = new BehaviorSubject<CaseEditValidationError[]>([]);
   private editForm$ = new BehaviorSubject<FormGroup>(null);
   private isLinkedCasesJourneyAtFinalStep$ = new BehaviorSubject<boolean>(null);
+  private eventTrigger$ = new BehaviorSubject<CaseEventTrigger>(null);
   private eventTriggerName$ = new BehaviorSubject<string>(null);
   private triggerSubmitEvent$ = new BehaviorSubject<boolean>(null);
 
@@ -17,6 +18,7 @@ export class CaseEditDataService {
   public caseEditForm$ = this.editForm$.asObservable();
   public caseFormValidationErrors$ = this.formValidationErrors$.asObservable();
   public caseIsLinkedCasesJourneyAtFinalStep$ = this.isLinkedCasesJourneyAtFinalStep$.asObservable();
+  public caseEventTrigger$ = this.eventTrigger$.asObservable();
   public caseEventTriggerName$ = this.eventTriggerName$.asObservable();
   public caseTriggerSubmitEvent$ = this.triggerSubmitEvent$.asObservable();
 
@@ -28,6 +30,10 @@ export class CaseEditDataService {
 
   public setCaseTitle(caseTitle: string): void {
     this.title$.next(caseTitle);
+  }
+
+  public setCaseEventTrigger(trigger: CaseEventTrigger): void {
+    this.eventTrigger$.next(trigger);
   }
 
   public setCaseEventTriggerName(triggerName: string): void {

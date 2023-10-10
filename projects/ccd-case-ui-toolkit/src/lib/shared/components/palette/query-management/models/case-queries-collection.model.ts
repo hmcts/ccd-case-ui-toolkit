@@ -6,7 +6,7 @@ export interface QueryMessageDocument {
 }
 
 export interface CaseMessage {
-  id: string;
+  id?: string;
   subject?: string;
   name: string;
   body: string;
@@ -19,7 +19,7 @@ export interface CaseMessage {
 }
 
 export interface QueryMessage {
-  id: string;
+  id?: string;
   value: CaseMessage;
 }
 
