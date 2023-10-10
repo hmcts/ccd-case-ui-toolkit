@@ -1,7 +1,14 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { QueryConfirmationComponent } from './query-confirmation.component';
 import { QueryCreateContext } from '../../models';
+import { QueryConfirmationComponent } from './query-confirmation.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string, args?: any): string {
+    return value;
+  }
+}
 
 describe('QueryConfirmationComponent', () => {
   let component: QueryConfirmationComponent;
@@ -11,7 +18,10 @@ describe('QueryConfirmationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [QueryConfirmationComponent],
+      declarations: [
+        QueryConfirmationComponent,
+        RpxTranslateMockPipe
+      ],
       providers: []
     })
       .compileComponents();

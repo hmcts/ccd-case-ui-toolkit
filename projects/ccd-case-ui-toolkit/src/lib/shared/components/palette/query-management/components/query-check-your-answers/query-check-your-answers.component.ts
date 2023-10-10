@@ -80,7 +80,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       switchMap((caseEventTrigger: CaseEventTrigger) => {
         // Setup CaseEventData
         const caseEventData: CaseEventData = {
-          data: data,
+          data,
           event: {
             id: this.caseViewTrigger.id,
             summary: '',
@@ -138,7 +138,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     const subject = this.formGroup.get('subject').value;
     const body = this.formGroup.get('body').value;
     const isHearingRelated = this.formGroup.get('isHearingRelated').value;
-    const hearingDate = (isHearingRelated as Boolean)
+    const hearingDate = (isHearingRelated as boolean)
       ? this.formGroup.get('hearingDate').value
       : null;
     const attachments = this.formGroup.get('attachments').value;
@@ -149,12 +149,12 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       caseMessages: [
         {
           value: {
-            subject: subject,
+            subject,
             name: currentUserName,
-            body: body,
-            attachments: attachments,
-            isHearingRelated: isHearingRelated,
-            hearingDate: hearingDate,
+            body,
+            attachments,
+            isHearingRelated,
+            hearingDate,
             createdOn: new Date(),
             createdBy: currentUserId
           }
