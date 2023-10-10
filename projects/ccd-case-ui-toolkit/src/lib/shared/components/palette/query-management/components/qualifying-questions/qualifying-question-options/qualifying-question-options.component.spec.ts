@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../../../shared/test/mock-rpx-translate.pipe';
 import { QualifyingQuestionsErrorMessage } from '../../../enums';
 import { QualifyingQuestionOptionsComponent } from './qualifying-question-options.component';
@@ -9,6 +11,18 @@ import { QualifyingQuestionOptionsComponent } from './qualifying-question-option
 describe('QualifyingQuestionOptionsComponent', () => {
   let component: QualifyingQuestionOptionsComponent;
   let fixture: ComponentFixture<QualifyingQuestionOptionsComponent>;
+  let router: any;
+  router = {
+    navigate: jasmine.createSpy('navigate')
+  };
+  const caseId = '12345';
+  const mockRoute = {
+    snapshot: {
+      params: {
+        cid: caseId
+      }
+    }
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -16,15 +30,26 @@ describe('QualifyingQuestionOptionsComponent', () => {
       declarations: [
         QualifyingQuestionOptionsComponent,
         MockRpxTranslatePipe
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: Router, useValue: router }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(QualifyingQuestionOptionsComponent);
     component = fixture.componentInstance;
     component.qualifyingQuestionsControl = new FormControl(null, Validators.required);
+    component.qualifyingQuestions$ = of([
+      {
+        markdown: '',
+        name: 'Response to directions',
+        url: '/response-to-directions'
+      }
+    ])
     fixture.detectChanges();
   });
 
@@ -35,6 +60,11 @@ describe('QualifyingQuestionOptionsComponent', () => {
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have the link to case details queries tab', () => {
+    component.click();
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '12345'], { fragment: 'Queries' });
+  })
 
   describe('displayError', () => {
     describe('true', () => {
