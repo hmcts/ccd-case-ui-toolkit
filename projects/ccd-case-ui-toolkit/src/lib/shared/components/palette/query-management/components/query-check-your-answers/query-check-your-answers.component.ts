@@ -78,11 +78,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     // Actual submission of query
     this.createEventSubscription = this.getEventTrigger$.pipe(
       switchMap((caseEventTrigger: CaseEventTrigger) => {
-        // Event token to be used for query submission
-        return caseEventTrigger.event_token;
-      }),
-      // take(1),
-      switchMap((event_token: string) => {
         // Setup CaseEventData
         const caseEventData: CaseEventData = {
           data: data,
@@ -91,7 +86,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
             summary: '',
             description: this.caseViewTrigger.description
           },
-          event_token: event_token,
+          event_token: caseEventTrigger.event_token,
           ignore_warning: false
         };
         // Complete event
@@ -110,76 +105,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     );
   }
 
-  private generateCaseQueriesCollectionData(): CaseQueriesCollection {
-    // TODO: Modify to cater for query response
-    // https://tools.hmcts.net/jira/browse/EUI-8388
-
-    console.log('FORM GROUP VALUE', this.formGroup.value);
-
-    const currentUserDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
-    const currentUserId = currentUserDetails?.uid;
-    const currentUserName = currentUserDetails?.name;
-
-    const subject = this.formGroup.get('subject').value;
-    const body = this.formGroup.get('body')?.value;
-    const isHearingRelated = this.formGroup.get('isHearingRelated').value;
-    const hearingDate = (isHearingRelated as Boolean)
-      ? this.formGroup.get('hearingDate').value
-      : null;
-    const attachments = this.formGroup.get('attachments').value;
-
-    console.log(currentUserId, currentUserName, subject, body, isHearingRelated, hearingDate, attachments);
-
-    // return {
-    //   partyName: '',
-    //   roleOnCase: 'Defendant',
-    //   caseMessages: [
-    //     {
-    //       value: {
-    //         subject: subject,
-    //         name: currentUserName,
-    //         body: body,
-    //         attachments: attachments,
-    //         isHearingRelated: isHearingRelated,
-    //         hearingDate: hearingDate,
-    //         createdOn: new Date(2023, 0, 3),
-    //         createdBy: currentUserId
-    //       }
-    //     }
-    //   ]
-    // };
-
-    return {
-      partyName: 'John Smith - Appellant',
-      roleOnCase: 'Defendant',
-      caseMessages: [
-        {
-          value: {
-            subject: 'Review attached document',
-            name: 'Maggie Conroy',
-            body: 'Please review attached document and advise if hearing should proceed?',
-            isHearingRelated: 'Yes',
-            hearingDate: '2023-01-10',
-            createdOn: new Date(2023, 0, 3),
-            createdBy: '1111-1111-1111-1111'
-          }
-        },
-        {
-          value: {
-            subject: 'Games',
-            name: 'Maggie Conroy',
-            body: 'Can I play games in my phone when my solicitor is talking?',
-            isHearingRelated: 'Yes',
-            hearingDate: '2023-01-10',
-            createdOn: new Date(2023, 0, 3),
-            createdBy: '1111-1111-1111-1111'
-          }
-        }
-      ]
-    };
-  }
-
-  private searchAndCompleteTask(): void {
+  public searchAndCompleteTask(): void {
     // Search Task
     const searchParameter = { ccdId: this.caseDetails.case_id } as TaskSearchParameter;
     this.searchTasksSubsciption = this.workAllocationService.searchTasks(searchParameter)
@@ -199,5 +125,41 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
           task: filteredtask
         };
       });
+  }
+
+  private generateCaseQueriesCollectionData(): CaseQueriesCollection {
+    // TODO: Modify to cater for query response
+    // https://tools.hmcts.net/jira/browse/EUI-8388
+
+    const currentUserDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
+    const currentUserId = currentUserDetails?.uid;
+    const currentUserName = currentUserDetails?.name;
+
+    const subject = this.formGroup.get('subject').value;
+    const body = this.formGroup.get('body').value;
+    const isHearingRelated = this.formGroup.get('isHearingRelated').value;
+    const hearingDate = (isHearingRelated as Boolean)
+      ? this.formGroup.get('hearingDate').value
+      : null;
+    const attachments = this.formGroup.get('attachments').value;
+
+    return {
+      partyName: '', // Not returned by CCD
+      roleOnCase: '', // Not returned by CCD
+      caseMessages: [
+        {
+          value: {
+            subject: subject,
+            name: currentUserName,
+            body: body,
+            attachments: attachments,
+            isHearingRelated: isHearingRelated,
+            hearingDate: hearingDate,
+            createdOn: new Date(),
+            createdBy: currentUserId
+          }
+        }
+      ]
+    };
   }
 }

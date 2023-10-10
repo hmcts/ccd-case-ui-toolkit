@@ -1,8 +1,8 @@
-import { FormDocument } from '../../../../domain';
+import { Document } from '../../../../domain';
 
 export interface QueryMessageDocument {
   id: string;
-  value: FormDocument;
+  value: Document;
 }
 
 export interface CaseMessage {
