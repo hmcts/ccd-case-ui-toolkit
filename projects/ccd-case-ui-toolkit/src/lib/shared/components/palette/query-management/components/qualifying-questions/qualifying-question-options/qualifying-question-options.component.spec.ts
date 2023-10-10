@@ -11,7 +11,7 @@ import { QualifyingQuestionOptionsComponent } from './qualifying-question-option
 describe('QualifyingQuestionOptionsComponent', () => {
   let component: QualifyingQuestionOptionsComponent;
   let fixture: ComponentFixture<QualifyingQuestionOptionsComponent>;
-  let router = {
+  const router = {
     navigate: jasmine.createSpy('navigate')
   };
   const caseId = '12345';
