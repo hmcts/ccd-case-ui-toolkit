@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.19.7-case-flags-v2-1-remove-duplicate-party-locations",
+  "version": "6.19.7-case-flags-v2-1-consolidation-interim",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"

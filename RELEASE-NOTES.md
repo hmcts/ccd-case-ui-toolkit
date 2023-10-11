@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.7-case-flags-v2-1-consolidation-interim
+**EUI-8819** Interim release of Case Flags v2.1 consolidation; includes minor UI display changes (flag status tag colour changes; flag status displayed on Case Flag Summary page always)
+
 ### Version 6.19.7-case-flags-v2-1-remove-duplicate-party-locations
 **EUI-8844** Remove duplicate party locations where an internal and external `Flags` object (with the same groupId) exists for a party
 
