@@ -2,8 +2,8 @@ import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef, MatLegacyDialogConfig } from '@angular/material/legacy-dialog';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -570,7 +570,7 @@ const WORK_ALLOCATION_CASE_VIEW = {
 };
 const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
 const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
-const DIALOG_CONFIG = new MatDialogConfig();
+const DIALOG_CONFIG = new MatLegacyDialogConfig();
 
 let fixture: ComponentFixture<CaseFullAccessViewComponent>;
 let fixtureDialog: ComponentFixture<DeleteOrCancelDialogComponent>;

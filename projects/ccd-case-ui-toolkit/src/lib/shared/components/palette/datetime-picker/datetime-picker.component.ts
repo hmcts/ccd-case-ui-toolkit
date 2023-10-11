@@ -7,7 +7,7 @@ import {
 import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MAT_DATE_LOCALE, ThemePalette } from '@angular/material/core';
+import { MAT_LEGACY_DATE_LOCALE, LegacyThemePalette as ThemePalette } from '@angular/material/legacy-core';
 import { Moment } from 'moment/moment';
 
 import * as moment from 'moment';
@@ -26,7 +26,7 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
     {
       provide: NgxMatDateAdapter,
       useClass: NgxMatMomentAdapter,
-      deps: [MAT_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+      deps: [MAT_LEGACY_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
     { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
   ]
