@@ -171,10 +171,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.formArray.setErrors(null);
     let item = { value: null };
 
-    if ( this.isCollectionDynamic() ) {
-      item  = {...this.caseField.value[this.caseField.value.length - 1]};
+    if (this.isCollectionDynamic()) {
+      item = { ...this.caseField.value[this.caseField.value.length - 1] };
       const key: number = Number(item['id'][item['id'].length - 1]) + 1;
-      (item as any).id = item['id'].replace(/.$/, key.toString() );
+      (item as any).id = item['id'].replace(/.$/, key.toString());
     }
     this.caseField.value.push(item);
     const index = this.caseField.value.length - 1;

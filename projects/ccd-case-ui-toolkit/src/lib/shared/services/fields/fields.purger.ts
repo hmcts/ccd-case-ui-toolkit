@@ -34,9 +34,9 @@ export class FieldsPurger {
   }
 
   private clearHiddenFieldForFieldShowCondition(currentPageId: string,
-                                                form: FormGroup,
-                                                wizard: Wizard,
-                                                eventTrigger: CaseEventTrigger): void {
+    form: FormGroup,
+    wizard: Wizard,
+    eventTrigger: CaseEventTrigger): void {
     const formFields = form.getRawValue();
     const currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
     currentPage.wizard_page_fields.forEach(wpf => {
@@ -190,7 +190,7 @@ export class FieldsPurger {
    * types, this recursive method is called until simple or "base" field types are reached. For `Document` field
    * types, its _sub-field_ `FormControl` values are set to null.
    *
-   * @param formGroup The `FormGroup` instance containing the `FormControl` for the specified field
+   * @param FormGroup The `FormGroup` instance containing the `FormControl` for the specified field
    * @param field The `CaseField` whose value is to be deleted in the backend
    * @param parentField Reference to the parent `CaseField`. Used for checking specifically where a Complex field and
    * its sub-fields have `retain_hidden_value` set to `true`, but the field's parent has it set to `false` or undefined

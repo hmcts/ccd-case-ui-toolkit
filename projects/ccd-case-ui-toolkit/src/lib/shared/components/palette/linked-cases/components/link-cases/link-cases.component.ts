@@ -145,7 +145,7 @@ export class LinkCasesComponent implements OnInit {
       });
     }
     if (this.linkCaseForm.controls.reasonType.valid
-        && this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected) {
+      && this.linkCaseReasons.find(reason => reason.value_en === 'Other').selected) {
       if (this.linkCaseForm.controls.otherDescription.value.trim().length === 0) {
         this.caseReasonCommentsError = LinkedCasesErrorMessages.otherDescriptionError;
         this.errorMessages.push({

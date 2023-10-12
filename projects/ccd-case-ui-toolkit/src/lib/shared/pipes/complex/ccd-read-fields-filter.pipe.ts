@@ -72,7 +72,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
 
   private static isValidCompound(field: CaseField, value?: object): boolean {
     return ReadFieldsFilterPipe.isCompound(field)
-            && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value);
+      && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value);
   }
 
   private static keepField(field: CaseField, value?: object, ignoreLabels = false): boolean {
@@ -92,13 +92,13 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     }
 
     return !ReadFieldsFilterPipe.isEmpty(field.value)
-              || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
+      || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
   }
 
   private static getValue(field: CaseField, values: any, index?: number): any {
     if (ReadFieldsFilterPipe.isEmpty(field.value)) {
       let value: any;
-      if (index >= 0 ) {
+      if (index >= 0) {
         value = values[index].value[field.id];
       } else {
         value = values[field.id];

@@ -76,7 +76,7 @@ describe('WriteFixedRadioListFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the formGroup', () => {
+  it('should add a formControl linked to the field ID to the FormGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
   });
 

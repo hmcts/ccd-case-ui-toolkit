@@ -62,11 +62,11 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 const fieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
+  inputs: ['caseField', 'caseFields', 'FormGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
 });
 const fieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
-  inputs: ['caseField', 'caseFields', 'formGroup', 'context']
+  inputs: ['caseField', 'caseFields', 'FormGroup', 'context']
 });
 
 describe('WriteCollectionFieldComponent', () => {
@@ -819,7 +819,7 @@ describe('WriteCollectionFieldComponent', () => {
   it('should add dynamic item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
     component.caseField = ({ ...component.caseField, field_type: null } as unknown as CaseField);
-    component.caseFields = [({...component.caseField, field_type: null } as unknown as CaseField)];
+    component.caseFields = [({ ...component.caseField, field_type: null } as unknown as CaseField)];
     addButton.nativeElement.click();
     fixture.detectChanges();
 

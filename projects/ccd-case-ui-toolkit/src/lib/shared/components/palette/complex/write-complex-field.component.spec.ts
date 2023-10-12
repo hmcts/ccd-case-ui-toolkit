@@ -28,15 +28,15 @@ describe('WriteComplexFieldComponent', () => {
 
   const fieldWriteComponentMock = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
+    inputs: ['caseField', 'caseFields', 'FormGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
   });
 
   const fieldReadComponentMock = MockComponent({
     selector: 'ccd-field-read',
-    inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel']
+    inputs: ['caseField', 'caseFields', 'FormGroup', 'withLabel']
   });
 
-  @Pipe({name: 'ccdIsReadOnly'})
+  @Pipe({ name: 'ccdIsReadOnly' })
   class IsReadOnlyPipeMock implements PipeTransform {
     public transform(field: CaseField): boolean {
       if (!field || !field.display_context) {
@@ -71,7 +71,7 @@ describe('WriteComplexFieldComponent', () => {
         providers: [
           IsCompoundPipe,
           IsReadOnlyPipe,
-          {provide: FormValidatorsService, useValue: formValidatorService}
+          { provide: FormValidatorsService, useValue: formValidatorService }
         ]
       })
       .compileComponents();
@@ -231,7 +231,7 @@ describe('WriteComplexFieldComponent', () => {
       expect(labels[LINE_2].componentInstance.caseField.label).toBe(FIELD_TYPE_WITH_VALUES.complex_fields[LINE_2].label);
     });
 
-    it('should return control if it exists in the formGroup', () => {
+    it('should return control if it exists in the FormGroup', () => {
       // component.caseField is CASE_FIELD to start with.
       // Try re-building the first field and ensure it's appropriately handled.
       const FIRST_FIELD = CASE_FIELD.field_type.complex_fields[0];
@@ -251,7 +251,7 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     // TODO: Ensure there is an equivalent test for AbstractFormFieldComponent.register.
-    it('should add control if it does not exist in the formGroup', () => {
+    it('should add control if it does not exist in the FormGroup', () => {
       // component.caseField is CASE_FIELD to start with.
       // Try re-building the first field and ensure it's appropriately handled.
       const NEW_FIELD = ({
@@ -403,7 +403,7 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     it('should render fields with empty value', () => {
-      component.caseField = (( ({
+      component.caseField = ((({
         id: 'x',
         label: 'x',
         display_context: 'OPTIONAL',
@@ -470,7 +470,7 @@ describe('WriteComplexFieldComponent', () => {
     };
 
     const FIELD_ID = 'AComplexField';
-    const CASE_FIELD_M: CaseField =  ({
+    const CASE_FIELD_M: CaseField = ({
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'MANDATORY',
@@ -502,7 +502,7 @@ describe('WriteComplexFieldComponent', () => {
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ BROKEN_ADDRESS_LINE_1, ADDRESS_LINE_2 ]
+          complex_fields: [BROKEN_ADDRESS_LINE_1, ADDRESS_LINE_2]
         }
       }) as CaseField);
       component.ngOnInit();
@@ -511,7 +511,7 @@ describe('WriteComplexFieldComponent', () => {
 
       // Should have been called for the group overall, but not for either of the complex_fields.
       expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
-      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FORM_GROUP));
     });
 
     it('should add validators when case field is AddressLine1 and TextMax150', () => {
@@ -522,7 +522,7 @@ describe('WriteComplexFieldComponent', () => {
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ ADDRESS_LINE_1, ADDRESS_LINE_2 ]
+          complex_fields: [ADDRESS_LINE_1, ADDRESS_LINE_2]
         }
       }) as CaseField);
       component.ngOnInit();
@@ -531,7 +531,7 @@ describe('WriteComplexFieldComponent', () => {
 
       // Should have been called for the group overall, but not for either of the complex_fields.
       // expect(formValidatorService.addValidators).toHaveBeenCalledTimes(2);
-      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FORM_GROUP));
       expect(formValidatorService.addValidators).toHaveBeenCalledWith(ADDRESS_LINE_1, jasmine.any(FormControl));
     });
 
@@ -543,7 +543,7 @@ describe('WriteComplexFieldComponent', () => {
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ ({
+          complex_fields: [({
             id: 'AddressLine1',
             label: 'Line 1',
             field_type: {
@@ -551,7 +551,7 @@ describe('WriteComplexFieldComponent', () => {
               type: 'Text'
             },
             value: ''
-          }) as CaseField, ADDRESS_LINE_2 ]
+          }) as CaseField, ADDRESS_LINE_2]
         }
       }) as CaseField);
       component.ngOnInit();
@@ -560,7 +560,7 @@ describe('WriteComplexFieldComponent', () => {
 
       // Should have been called for the group overall, but not for either of the complex_fields.
       expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
-      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FORM_GROUP));
     });
 
     it('should not add validators when case field is NOT AddressLine1', () => {
@@ -571,7 +571,7 @@ describe('WriteComplexFieldComponent', () => {
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ ({
+          complex_fields: [({
             id: 'AddressLine3', // Should fall down here.
             label: 'Line 1',
             field_type: {
@@ -579,7 +579,7 @@ describe('WriteComplexFieldComponent', () => {
               type: 'Text'
             },
             value: ''
-          }) as CaseField, ADDRESS_LINE_2 ]
+          }) as CaseField, ADDRESS_LINE_2]
         }
       }) as CaseField);
       component.ngOnInit();
@@ -588,7 +588,7 @@ describe('WriteComplexFieldComponent', () => {
 
       // Should have been called for the group overall, but not for either of the complex_fields.
       expect(formValidatorService.addValidators).toHaveBeenCalledTimes(1);
-      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FormGroup));
+      expect(formValidatorService.addValidators).toHaveBeenCalledWith(component.caseField, jasmine.any(FORM_GROUP));
     });
   });
 
@@ -596,13 +596,13 @@ describe('WriteComplexFieldComponent', () => {
     const ADDRESS_LINE_1: CaseField = ({
       id: 'AddressLine1',
       label: 'Line 1',
-      field_type: {id: 'TextMax150', type: 'Text'},
+      field_type: { id: 'TextMax150', type: 'Text' },
       value: ''
     }) as CaseField;
     const ADDRESS_LINE_2: CaseField = ({
       id: 'AddressLine2',
       label: 'Line 2',
-      field_type: {id: 'Text', type: 'Text'},
+      field_type: { id: 'Text', type: 'Text' },
       value: '111 East India road'
     }) as CaseField;
     const ADDRESS_TYPE: FieldType = {
@@ -651,13 +651,13 @@ describe('WriteComplexFieldComponent', () => {
     const ADDRESS_LINE_1: CaseField = ({
       id: 'AddressLine1',
       label: 'Line 1',
-      field_type: {id: 'TextMax150', type: 'Text'},
+      field_type: { id: 'TextMax150', type: 'Text' },
       value: ''
     }) as CaseField;
     const ADDRESS_LINE_2: CaseField = ({
       id: 'AddressLine2',
       label: 'Line 2',
-      field_type: {id: 'Text', type: 'Text'},
+      field_type: { id: 'Text', type: 'Text' },
       value: '111 East India road'
     }) as CaseField;
     const COMPLEX_TYPE: FieldType = {

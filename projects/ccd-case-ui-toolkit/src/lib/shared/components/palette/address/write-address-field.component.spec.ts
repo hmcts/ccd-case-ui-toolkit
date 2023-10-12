@@ -33,7 +33,7 @@ xdescribe('WriteAddressFieldComponent', () => {
 
   @Component({
     selector: `ccd-host-component`,
-    template: `<ccd-write-address-field [caseField]="caseField" [formGroup]="formGroup">
+    template: `<ccd-write-address-field [caseField]="caseField" [FormGroup]="FormGroup">
     </ccd-write-address-field>`
   })
   class TestHostComponent {
@@ -66,7 +66,7 @@ xdescribe('WriteAddressFieldComponent', () => {
     public renderLabel: boolean;
 
     public complexGroup = {
-      value : {},
+      value: {},
       setValue: (value) => { this.complexGroup.value = value; }
     };
 

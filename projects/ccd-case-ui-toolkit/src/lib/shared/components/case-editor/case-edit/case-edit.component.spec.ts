@@ -191,7 +191,7 @@ describe('CaseEditComponent', () => {
 
   const fieldWriteComponentMock: any = MockComponent({
     selector: 'ccd-field-write',
-    inputs: ['caseField', 'formGroup', 'idPrefix', 'isExpanded', 'parent']
+    inputs: ['caseField', 'FormGroup', 'idPrefix', 'isExpanded', 'parent']
   });
 
   const routerLinkComponentMock: any = MockComponent({
@@ -270,7 +270,7 @@ describe('CaseEditComponent', () => {
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
 
       route = {
-        queryParams: of({Origin: 'viewDraft'}),
+        queryParams: of({ Origin: 'viewDraft' }),
         snapshot: {
           data: {},
           params: {},
@@ -307,14 +307,14 @@ describe('CaseEditComponent', () => {
           ],
           providers: [
             WizardFactoryService,
-            {provide: CaseNotifier, useValue: { cachedCaseView: null}},
-            {provide: FormErrorService, useValue: formErrorService},
-            {provide: FormValueService, useValue: formValueService},
-            {provide: FieldsUtils, useValue: fieldsUtils},
-            {provide: FieldsPurger, useValue: fieldsPurger},
-            {provide: ConditionalShowRegistrarService, useValue: registrarService},
-            {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: route},
+            { provide: CaseNotifier, useValue: { cachedCaseView: null } },
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FieldsUtils, useValue: fieldsUtils },
+            { provide: FieldsPurger, useValue: fieldsPurger },
+            { provide: ConditionalShowRegistrarService, useValue: registrarService },
+            { provide: Router, useValue: routerStub },
+            { provide: ActivatedRoute, useValue: route },
             SessionStorageService,
             WindowService,
             { provide: LoadingService, loadingServiceMock }
@@ -431,7 +431,7 @@ describe('CaseEditComponent', () => {
           wizard.nextPage.and.returnValue(new WizardPage());
           component.form = new FormGroup({
             data: new FormGroup({
-              PersonFirstName: new FormGroup({PersonMiddleName: new FormControl('John')}),
+              PersonFirstName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -454,7 +454,7 @@ describe('CaseEditComponent', () => {
           wizard.nextPage.and.returnValue(new WizardPage());
           component.form = new FormGroup({
             data: new FormGroup({
-              PersonFirstName: new FormArray([new FormGroup({PersonMiddleName: new FormControl('John')})]),
+              PersonFirstName: new FormArray([new FormGroup({ PersonMiddleName: new FormControl('John') })]),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -548,7 +548,7 @@ describe('CaseEditComponent', () => {
           wizard.previousPage.and.returnValue(new WizardPage());
           component.form = new FormGroup({
             data: new FormGroup({
-              PersonFirstName: new FormGroup({PersonMiddleName: new FormControl('John')}),
+              PersonFirstName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -571,7 +571,7 @@ describe('CaseEditComponent', () => {
           wizard.previousPage.and.returnValue(new WizardPage());
           component.form = new FormGroup({
             data: new FormGroup({
-              PersonFirstName: new FormArray([new FormGroup({PersonMiddleName: new FormControl('John')})]),
+              PersonFirstName: new FormArray([new FormGroup({ PersonMiddleName: new FormControl('John') })]),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -667,8 +667,8 @@ describe('CaseEditComponent', () => {
           component.form = new FormGroup({
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonLastName: new FormGroup({PersonMiddleName: new FormControl('John')}),
-              Address: new FormGroup({AddressLine1: new FormControl('Street')})
+              PersonLastName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
+              Address: new FormGroup({ AddressLine1: new FormControl('Street') })
             })
           });
           fixture.detectChanges();
@@ -706,10 +706,10 @@ describe('CaseEditComponent', () => {
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               PersonLastNameCollection: new FormArray([new FormGroup({
-                value: new FormGroup({PersonMiddleName: new FormControl('John')})
+                value: new FormGroup({ PersonMiddleName: new FormControl('John') })
               })]),
               AddressCollection: new FormArray([new FormGroup({
-                value: new FormGroup({AddressLine1: new FormControl('Street')})
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -751,7 +751,7 @@ describe('CaseEditComponent', () => {
           component.form = new FormGroup({
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonFamilyName: new FormGroup({PersonMiddleName: new FormControl('John')})
+              PersonFamilyName: new FormGroup({ PersonMiddleName: new FormControl('John') })
             })
           });
           fixture.detectChanges();
@@ -781,7 +781,7 @@ describe('CaseEditComponent', () => {
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               AddressList: new FormArray([new FormGroup({
-                value: new FormGroup({AddressLine1: new FormControl('Street')})
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -794,7 +794,7 @@ describe('CaseEditComponent', () => {
           expect(fieldsPurger.deleteFieldValue).not.toHaveBeenCalled();
         });
 
-        describe('next submitForm call', ()=> {
+        describe('next submitForm call', () => {
           beforeEach(() => {
             spyOn(fieldsPurger, 'deleteFieldValue');
             component.wizard = wizard;
@@ -812,7 +812,7 @@ describe('CaseEditComponent', () => {
               data: new FormGroup({
                 PersonFirstName: new FormControl('Other'),
                 AddressList: new FormArray([new FormGroup({
-                  value: new FormGroup({AddressLine1: new FormControl('Street')})
+                  value: new FormGroup({ AddressLine1: new FormControl('Street') })
                 })])
               })
             });
@@ -823,7 +823,7 @@ describe('CaseEditComponent', () => {
             spyObj.getNextPage.and.returnValue(undefined);
             component.eventTrigger.show_event_notes = false;
             component.eventTrigger.show_event_notes = false;
-            spyOn(component, 'submitForm').and.callFake(()=>{});
+            spyOn(component, 'submitForm').and.callFake(() => { });
             fixture.detectChanges();
             component.next('somePage');
             expect(component.submitForm).toHaveBeenCalled();
@@ -834,7 +834,7 @@ describe('CaseEditComponent', () => {
             spyObj.getNextPage.and.returnValue(undefined);
             component.eventTrigger.show_event_notes = true;
             component.eventTrigger.show_event_notes = true;
-            spyOn(component, 'submitForm').and.callFake(()=>{});
+            spyOn(component, 'submitForm').and.callFake(() => { });
             fixture.detectChanges();
             component.next('somePage');
             expect(component.submitForm).not.toHaveBeenCalled();
@@ -842,10 +842,10 @@ describe('CaseEditComponent', () => {
 
           it('should call submit form if next page is something, show event note is null, show summary is null', () => {
             const spyObj = jasmine.createSpyObj(['getNextPage']);
-            spyObj.getNextPage.and.returnValue({something:'something'});
+            spyObj.getNextPage.and.returnValue({ something: 'something' });
             component.eventTrigger.show_event_notes = null;
             component.eventTrigger.show_event_notes = null;
-            spyOn(component, 'submitForm').and.callFake(()=>{});
+            spyOn(component, 'submitForm').and.callFake(() => { });
             fixture.detectChanges();
             component.next('somePage');
             expect(component.submitForm).toHaveBeenCalled();
@@ -948,8 +948,8 @@ describe('CaseEditComponent', () => {
           component.form = new FormGroup({
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonLastName: new FormGroup({PersonMiddleName: new FormControl('John')}),
-              Address: new FormGroup({AddressLine1: new FormControl('Street')})
+              PersonLastName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
+              Address: new FormGroup({ AddressLine1: new FormControl('Street') })
             })
           });
           fixture.detectChanges();
@@ -987,10 +987,10 @@ describe('CaseEditComponent', () => {
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               PersonLastNameCollection: new FormArray([new FormGroup({
-                value: new FormGroup({PersonMiddleName: new FormControl('John')})
+                value: new FormGroup({ PersonMiddleName: new FormControl('John') })
               })]),
               AddressCollection: new FormArray([new FormGroup({
-                value: new FormGroup({AddressLine1: new FormControl('Street')})
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -1032,7 +1032,7 @@ describe('CaseEditComponent', () => {
           component.form = new FormGroup({
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonFamilyName: new FormGroup({PersonMiddleName: new FormControl('John')})
+              PersonFamilyName: new FormGroup({ PersonMiddleName: new FormControl('John') })
             })
           });
           fixture.detectChanges();
@@ -1062,7 +1062,7 @@ describe('CaseEditComponent', () => {
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               AddressList: new FormArray([new FormGroup({
-                value: new FormGroup({AddressLine1: new FormControl('Street')})
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -1161,13 +1161,13 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
 
         fixture.detectChanges();
 
@@ -1194,9 +1194,9 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1205,7 +1205,7 @@ describe('CaseEditComponent', () => {
 
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1232,7 +1232,7 @@ describe('CaseEditComponent', () => {
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1258,7 +1258,7 @@ describe('CaseEditComponent', () => {
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: false,
@@ -1285,7 +1285,7 @@ describe('CaseEditComponent', () => {
         spyOn(component, 'confirm');
         spyOn(component, 'emitSubmitted');
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1364,8 +1364,8 @@ describe('CaseEditComponent', () => {
         ]
       };
       const mockRouteNoProfile = {
-        queryParams: of({Origin: 'viewDraft'}),
-        params: of({id: 123}),
+        queryParams: of({ Origin: 'viewDraft' }),
+        params: of({ id: 123 }),
         snapshot: snapshotNoProfile
       };
 
@@ -1387,13 +1387,13 @@ describe('CaseEditComponent', () => {
           ],
           providers: [
             WizardFactoryService,
-            {provide: FormErrorService, useValue: formErrorService},
-            {provide: FormValueService, useValue: formValueService},
-            {provide: FieldsUtils, useValue: fieldsUtils},
-            {provide: FieldsPurger, useValue: fieldsPurger},
-            {provide: ConditionalShowRegistrarService, useValue: registrarService},
-            {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FieldsUtils, useValue: fieldsUtils },
+            { provide: FieldsPurger, useValue: fieldsPurger },
+            { provide: ConditionalShowRegistrarService, useValue: registrarService },
+            { provide: Router, useValue: routerStub },
+            { provide: ActivatedRoute, useValue: mockRouteNoProfile },
             SessionStorageService,
             WindowService
           ]

@@ -77,18 +77,18 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseEditDataService = {},
     loadingService = {},
   }) =>
-  new CaseEditPageComponent(
-    caseEdit as CaseEditComponent,
-    route as ActivatedRoute,
-    formValueService as FormValueService,
-    formErrorService as FormErrorService,
-    cdRef as ChangeDetectorRef,
-    pageValidationService as PageValidationService,
-    dialog as MatDialog,
-    caseFieldService as CaseFieldService,
-    caseEditDataService as CaseEditDataService,
-    loadingService as LoadingService
-  );
+    new CaseEditPageComponent(
+      caseEdit as CaseEditComponent,
+      route as ActivatedRoute,
+      formValueService as FormValueService,
+      formErrorService as FormErrorService,
+      cdRef as ChangeDetectorRef,
+      pageValidationService as PageValidationService,
+      dialog as MatDialog,
+      caseFieldService as CaseFieldService,
+      caseEditDataService as CaseEditDataService,
+      loadingService as LoadingService
+    );
 
   it('should create', () => {
     component = initializeComponent({});
@@ -213,7 +213,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
         data: {
           bothDefendants: {
             people: {
-            list: ['sample', 'sample']
+              list: ['sample', 'sample']
             }
           }
         }
@@ -236,9 +236,9 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
-          people: {
-            value: true
-          }
+        people: {
+          value: true
+        }
       };
       const jsonDataMock = {
         data: {
@@ -253,7 +253,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
             value: {
               people: {
                 value: true
-                }
+              }
             }
           }
         ],
@@ -454,13 +454,13 @@ describe('CaseEditPageComponent - all other tests', () => {
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
-        spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+        spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
         spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-        spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => {});
+        spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
         spyOn(pageValidationService, 'isPageValid').and.returnValue(true);
         comp = fixture.componentInstance;
         readOnly.display_context = 'READONLY';
@@ -851,12 +851,12 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage(
@@ -918,7 +918,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         firstPage.id = 'first page';
 
         caseEditComponentStub = {
-          form: formGroup,
+          form: FormGroup,
           wizard: WIZARD,
           data: '',
           eventTrigger,
@@ -1016,12 +1016,12 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
       comp.wizard = new Wizard([wizardPage]);
       comp.editForm = FORM_GROUP;
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
       fixture.detectChanges();
     });
 
@@ -1512,12 +1512,12 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
 
       de = fixture.debugElement;
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
       spyOn(comp, 'buildCaseEventData').and.callThrough();
       fixture.detectChanges();
     });
@@ -1700,10 +1700,10 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       spyOn(caseEditDataService, 'addFormValidationError').and.callFake((validationError: CaseEditValidationError) => {
         caseEditDataService.caseFormValidationErrors$.next(

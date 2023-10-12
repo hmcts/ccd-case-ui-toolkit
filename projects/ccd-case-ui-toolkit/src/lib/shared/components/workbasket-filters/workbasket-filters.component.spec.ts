@@ -638,7 +638,7 @@ describe('with defaults', () => {
       });
       expect(arg['jurisdiction']).toEqual(JURISDICTION_2);
       expect(arg['caseType']).toEqual(CASE_TYPES_2[2]);
-      expect(arg['formGroup'].value).toEqual(formGroup.value);
+      expect(arg['FormGroup'].value).toEqual(formGroup.value);
       expect(workbasketHandler.applyFilters).toHaveBeenCalledTimes(1);
     });
   });

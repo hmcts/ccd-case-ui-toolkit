@@ -86,11 +86,11 @@ describe('WriteDynamicListFieldComponent', () => {
     expect(options[2].nativeElement.textContent).toEqual('Female');
     expect(options[3].nativeElement.textContent).toEqual('Other');
     fixture
-        .whenStable()
-        .then(() => {
-          const select = de.query($SELECT);
-          expect(select.nativeElement.selectedIndex).toEqual(0);
-        });
+      .whenStable()
+      .then(() => {
+        const select = de.query($SELECT);
+        expect(select.nativeElement.selectedIndex).toEqual(0);
+      });
   });
 
   it('should render all options', () => {
@@ -105,10 +105,10 @@ describe('WriteDynamicListFieldComponent', () => {
     component.dynamicListFormControl.setValue('M');
     fixture.detectChanges();
     fixture
-        .whenStable()
-        .then(() => {
-          const select = de.query($SELECT);
-          expect(select.nativeElement.selectedIndex).toEqual(1);
-        });
+      .whenStable()
+      .then(() => {
+        const select = de.query($SELECT);
+        expect(select.nativeElement.selectedIndex).toEqual(1);
+      });
   }));
 });

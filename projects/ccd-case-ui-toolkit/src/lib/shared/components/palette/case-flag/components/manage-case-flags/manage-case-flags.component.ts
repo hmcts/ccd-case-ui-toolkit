@@ -162,7 +162,7 @@ export class ManageCaseFlagsComponent implements OnInit {
     // Set error flag on component to remove the "Next" button (user cannot proceed with flag creation)
     this.noFlagsError = true;
     this.errorMessages = [];
-    this.errorMessages.push({title: '', description: SelectFlagErrorMessage.NO_FLAGS, fieldId: 'conditional-radios-list'});
+    this.errorMessages.push({ title: '', description: SelectFlagErrorMessage.NO_FLAGS, fieldId: 'conditional-radios-list' });
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,

@@ -32,10 +32,12 @@ describe('WriteYesNoFieldComponent', () => {
   const $INPUT = By.css('.form-group input');
 
   // Input is mocked so that one-way bound inputs can be tested
-  const inputComponentMock: any = MockComponent({ selector: 'input', inputs: [
-    'type',
-    'formControl'
-  ]});
+  const inputComponentMock: any = MockComponent({
+    selector: 'input', inputs: [
+      'type',
+      'formControl'
+    ]
+  });
 
   let fixture: ComponentFixture<WriteYesNoFieldComponent>;
   let component: WriteYesNoFieldComponent;
@@ -76,7 +78,7 @@ describe('WriteYesNoFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the formGroup', () => {
+  it('should add a formControl linked to the field ID to the FormGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
   });
 

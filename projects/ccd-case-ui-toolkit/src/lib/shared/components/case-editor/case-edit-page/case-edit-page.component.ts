@@ -118,9 +118,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       next: editForm => this.editForm = editForm
     });
     this.caseIsLinkedCasesJourneyAtFinalStepSub =
-    this.caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$.subscribe({
-      next: isLinkedCasesJourneyAtFinalStep => this.isLinkedCasesJourneyAtFinalStep = isLinkedCasesJourneyAtFinalStep
-    });
+      this.caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$.subscribe({
+        next: isLinkedCasesJourneyAtFinalStep => this.isLinkedCasesJourneyAtFinalStep = isLinkedCasesJourneyAtFinalStep
+      });
     this.caseTriggerSubmitEventSub = this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
       next: state => {
         if (state) {
@@ -239,7 +239,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
                 message: `Please select Next to complete the ${action} of the ${action === 'update' ? 'selected ' : ''}case flag`
               });
             } else {
-              this.validationErrors.push({id, message: `Select or fill the required ${casefield.label} field`});
+              this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();
             }
           }
@@ -254,7 +254,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       const htmlElement = document.getElementById(elementId);
       /* istanbul ignore else */
       if (htmlElement) {
-        htmlElement.scrollIntoView({behavior: 'smooth', block: 'center'});
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         htmlElement.focus();
       }
     }
@@ -409,9 +409,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           } else if (result === 'Save') {
             const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
             if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData});
+              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData });
             } else {
-              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData});
+              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData });
             }
           }
         });
@@ -435,7 +435,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   public getCaseTitle(): string {
     return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
-    this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
+      this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
   }
 
   public getCancelText(): string {
@@ -465,9 +465,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   private discard(): void {
     if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-      this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
     } else {
-      this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
     }
   }
 
@@ -556,7 +556,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
    * @returns CaseEventData for the specified parameters.
    */
   private getFilteredCaseEventData(caseFields: CaseField[], formValue: object, clearEmpty = false,
-                                   clearNonCase = false, fromPreviousPage = false): CaseEventData {
+    clearNonCase = false, fromPreviousPage = false): CaseEventData {
     // Get the data for the fields specified.
     const formFields = this.formValueService.filterCurrentPageFields(caseFields, formValue);
 

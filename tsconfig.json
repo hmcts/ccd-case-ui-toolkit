@@ -12,10 +12,10 @@
     "experimentalDecorators": true,
     "target": "es2015",
     "importHelpers": true,
+    "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types"
     ],
-    "skipLibCheck": true,
     "lib": [
       "es2019",
       "dom"

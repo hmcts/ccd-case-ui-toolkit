@@ -45,9 +45,11 @@ describe('WriteDateFieldComponent', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: CaseFieldService, useValue: caseFieldService},
-          { provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
-        ['getTranslation$', 'translate']) },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          {
+            provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
+              ['getTranslation$', 'translate'])
+          },
         ]
       })
       .compileComponents();
@@ -62,7 +64,7 @@ describe('WriteDateFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the formGroup', () => {
+  it('should add a formControl linked to the field ID to the FormGroup', () => {
     expect(FORM_GROUP.controls[FIELD_ID]).toBeTruthy();
   });
 

@@ -203,9 +203,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         if (result === 'Delete') {
           this.draftService.deleteDraft(this.caseDetails.case_id)
             .subscribe(_ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.DRAFT_DELETED});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.DRAFT_DELETED });
             }, _ => {
-              this.navigationNotifierService.announceNavigation({action: NavigationOrigin.ERROR_DELETING_DRAFT});
+              this.navigationNotifierService.announceNavigation({ action: NavigationOrigin.ERROR_DELETING_DRAFT });
             });
         }
       });
@@ -246,8 +246,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public isTriggerButtonDisabled(): boolean {
     return (this.error
-        && this.error.callbackErrors
-        && this.error.callbackErrors.length)
+      && this.error.callbackErrors
+      && this.error.callbackErrors.length)
       || (this.error
         && this.error.details
         && this.error.details.field_errors
@@ -268,7 +268,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
-        foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
+        foundTab = additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
       }
       // found tasks or hearing tab
       if (foundTab) {
@@ -401,7 +401,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
     return tabs
-      .map(tab => Object.assign({}, tab, {fields: this.orderService.sort(tab.fields)}))
+      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
       .filter(tab => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
@@ -429,7 +429,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         };
       });
     }
-    return new FormGroup({data: new FormControl(value)});
+    return new FormGroup({ data: new FormControl(value) });
   }
 
   private resetErrors(): void {

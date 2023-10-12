@@ -306,14 +306,14 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ WriteCaseFlagFieldComponent ],
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [WriteCaseFlagFieldComponent],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -430,7 +430,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     component.moveToFinalReviewStage();
     expect(flagLauncherFormGroup.invalid).toBe(false);
     expect(flagLauncherFormGroup.errors).toBeNull();
-    // Set the component's formGroup reference back to the parent FormGroup (it gets reassigned in ngOnInit())
+    // Set the component's FormGroup reference back to the parent FormGroup (it gets reassigned in ngOnInit())
     component.formGroup = parentFormGroup;
     // Reload the component
     component.ngOnInit();
@@ -740,12 +740,12 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
 
   it('should populate a new FlagDetail instance with data held by the component', () => {
     component.flagName = 'Other',
-    component.caseFlagParentFormGroup = new FormGroup({
-      languageSearchTerm: new FormControl(),
-      manualLanguageEntry: new FormControl(),
-      otherFlagTypeDescription: new FormControl(),
-      flagComments: new FormControl()
-    });
+      component.caseFlagParentFormGroup = new FormGroup({
+        languageSearchTerm: new FormControl(),
+        manualLanguageEntry: new FormControl(),
+        otherFlagTypeDescription: new FormControl(),
+        flagComments: new FormControl()
+      });
     component.caseFlagParentFormGroup.setValue(
       {
         languageSearchTerm: {
@@ -758,12 +758,12 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
       }
     );
     component.flagCode = 'OT0001',
-    component.flagPath = [
-      {
-        id: '123',
-        value: 'Reasonable adjustment'
-      }
-    ];
+      component.flagPath = [
+        {
+          id: '123',
+          value: 'Reasonable adjustment'
+        }
+      ];
     component.hearingRelevantFlag = true;
     const newFlagDetailInstance = component.populateNewFlagDetailInstance();
     expect(newFlagDetailInstance.name).toEqual(component.flagName);

@@ -45,7 +45,7 @@ describe('WriteMoneyGbpFieldComponent', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: CaseFieldService, useValue: caseFieldService},
+          { provide: CaseFieldService, useValue: caseFieldService },
         ]
       })
       .compileComponents();
@@ -60,7 +60,7 @@ describe('WriteMoneyGbpFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the formGroup', () => {
+  it('should add a formControl linked to the field ID to the FormGroup', () => {
     expect(component.formGroup.controls[FIELD_ID]).toBeTruthy();
   });
 
@@ -111,7 +111,7 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: CaseFieldService, useValue: caseFieldService},
+          { provide: CaseFieldService, useValue: caseFieldService },
         ]
       })
       .compileComponents();
@@ -126,7 +126,7 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the formGroup', () => {
+  it('should add a formControl linked to the field ID to the FormGroup', () => {
     expect(component.formGroup.controls[FIELD_ID]).toBeTruthy();
   });
 

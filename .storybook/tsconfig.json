@@ -7,7 +7,6 @@
     "allowSyntheticDefaultImports": true
   },
   "exclude": [
-    "../projects/ccd-case-ui-toolkit/src/test.ts",
     "../projects/**/*.spec.ts"
   ],
   "include": [

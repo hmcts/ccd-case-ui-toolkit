@@ -268,7 +268,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     documentFormGroup = this.secureModeOn ? {
       ...documentFormGroup,
-      ...{ document_hash:  new FormControl(document.document_hash) }
+      ...{ document_hash: new FormControl(document.document_hash) }
     } : documentFormGroup;
 
     this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
@@ -315,9 +315,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private handleDocumentUploadResult(result: DocumentData): void {
     if (!this.uploadedDocument) {
       if (this.secureModeOn) {
-        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null, document_hash: null});
+        this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null, document_hash: null });
       } else {
-        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null});
+        this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null });
       }
     }
 

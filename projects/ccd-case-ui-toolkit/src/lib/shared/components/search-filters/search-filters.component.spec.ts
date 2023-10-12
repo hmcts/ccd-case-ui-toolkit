@@ -230,7 +230,7 @@ describe('SearchFiltersComponent', () => {
       .whenStable()
       .then(() => {
         expect(searchHandler.applyFilters).toHaveBeenCalledWith({
-          selected: {formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined},
+          selected: { formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined },
           queryParams: {}
         });
       });
@@ -431,7 +431,7 @@ describe('SearchFiltersComponent', () => {
     component.apply();
     expect(searchHandler.applyFilters).toHaveBeenCalledWith({
       selected: component.selected,
-      queryParams: {jurisdiction: component.selected.jurisdiction.id}
+      queryParams: { jurisdiction: component.selected.jurisdiction.id }
     });
     expect(component.selected.formGroup.value).toEqual(TEST_FORM_GROUP.value);
   }));
@@ -539,7 +539,7 @@ describe('SearchFiltersComponent', () => {
         const arg: any = searchHandler.applyFilters.calls.mostRecent().args[0].selected;
         expect(arg['jurisdiction']).toEqual(JURISDICTION_3);
         expect(arg['caseType']).toEqual(CASE_TYPES_2[3]);
-        expect(arg['formGroup'].value).toEqual(formGroup.value);
+        expect(arg['FormGroup'].value).toEqual(formGroup.value);
         expect(searchHandler.applyFilters).toHaveBeenCalledTimes(1);
 
       });
