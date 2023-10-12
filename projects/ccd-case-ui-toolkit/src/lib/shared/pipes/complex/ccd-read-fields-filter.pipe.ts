@@ -28,14 +28,14 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   /**
    * Complex type should have at least on simple field descendant with a value.
    */
-  private static isValidComplex(field: CaseField, values?: object): boolean {
+  private static isValidComplex(field: CaseField, values?: object, checkConditionalShowAgainst?: object): boolean {
     values = values || {};
     const type = field.field_type;
     const value = ReadFieldsFilterPipe.getValue(field, values);
 
     const hasChildrenWithValue = type.complex_fields.find(f => {
-      const willKeep = ReadFieldsFilterPipe.keepField(f, value, true);
-      return willKeep && ReadFieldsFilterPipe.evaluateConditionalShow(f, value).hidden !== true;
+      const willKeep = ReadFieldsFilterPipe.keepField(f, value, true, checkConditionalShowAgainst);
+      return willKeep && ReadFieldsFilterPipe.evaluateConditionalShow(f, checkConditionalShowAgainst).hidden !== true;
     });
 
     return !!hasChildrenWithValue;
@@ -70,12 +70,12 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     return ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type];
   }
 
-  private static isValidCompound(field: CaseField, value?: object): boolean {
+  private static isValidCompound(field: CaseField, value?: object, checkConditionalShowAgainst?: object): boolean {
     return ReadFieldsFilterPipe.isCompound(field)
-            && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value);
+            && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value, checkConditionalShowAgainst);
   }
 
-  private static keepField(field: CaseField, value?: object, ignoreLabels = false): boolean {
+  private static keepField(field: CaseField, value?: object, ignoreLabels = false, checkConditionalShowAgainst?: object): boolean {
     // We shouldn't ditch labels.
     if (!ignoreLabels && field.field_type.type === 'Label' && (field.label || '').length > 0) {
       return true;
@@ -88,7 +88,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     value = value || {};
 
     if (ReadFieldsFilterPipe.isCompound(field)) {
-      return ReadFieldsFilterPipe.isValidCompound(field, value);
+      return ReadFieldsFilterPipe.isValidCompound(field, value, checkConditionalShowAgainst);
     }
 
     return !ReadFieldsFilterPipe.isEmpty(field.value)
@@ -174,6 +174,6 @@ export class ReadFieldsFilterPipe implements PipeTransform {
         }
         return f;
       })
-      .filter(f => keepEmpty || ReadFieldsFilterPipe.keepField(f));
+      .filter(f => keepEmpty || ReadFieldsFilterPipe.keepField(f, undefined, false, checkConditionalShowAgainst));
   }
 }
