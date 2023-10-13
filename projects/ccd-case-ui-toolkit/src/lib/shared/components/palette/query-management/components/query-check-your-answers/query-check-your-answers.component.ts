@@ -14,6 +14,7 @@ import { SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
+import { QueryManagementUtils } from '../../utils/query-management.utils';
 
 @Component({
   selector: 'ccd-query-check-your-answers',
@@ -32,7 +33,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   private caseViewTrigger: CaseViewTrigger;
   private caseDetails: CaseView;
-  private eventId: string;
   private queryId: string;
   private getEventTrigger$: Observable<CaseEventTrigger>;
   private createEventSubscription: Subscription;
@@ -54,12 +54,18 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
     this.queryId = this.route.snapshot.params.qid;
     this.caseNotifier.caseView.pipe(take(1)).subscribe(caseDetails => {
       this.caseDetails = caseDetails;
-      // Find raise a query event trigger from the list, will be used when submitting the query
-      this.caseViewTrigger = this.caseDetails.triggers.find((trigger) => trigger.id = this.RAISE_A_QUERY_EVENT_TRIGGER_ID);
-      // Initialise getEventTrigger observable, will be used when submitting the query
-      this.getEventTrigger$ = this.casesService.getEventTrigger(undefined, this.RAISE_A_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
-      // To be set after integration
-      this.eventId = 'respondToQuery';
+      if (this.queryCreateContext === QueryCreateContext.RESPOND) {
+        // Find raise a query event trigger from the list, will be used when submitting the query
+        this.caseViewTrigger = this.caseDetails.triggers.find((trigger) => trigger.id = this.RAISE_A_QUERY_EVENT_TRIGGER_ID);
+        // Initialise getEventTrigger observable, will be used when submitting the query
+        this.getEventTrigger$ = this.casesService.getEventTrigger(undefined, this.RAISE_A_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
+      } else {
+        // Raise a query and Follow-up query uses the same event trigger id
+        // Find raise a query event trigger from the list, will be used when submitting the query
+        this.caseViewTrigger = this.caseDetails.triggers.find((trigger) => trigger.id = this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID);
+        // Initialise getEventTrigger observable, will be used when submitting the query
+        this.getEventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
+      }
     });
   }
 
@@ -121,43 +127,26 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         // Trigger event completion
         this.eventCompletionParams = {
           caseId: this.caseDetails.case_id,
-          eventId: this.eventId,
+          eventId: this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID,
           task: filteredtask
         };
       });
   }
 
   private generateCaseQueriesCollectionData(): CaseQueriesCollection {
-    // TODO: Modify to cater for query response
-    // https://tools.hmcts.net/jira/browse/EUI-8388
-
     const currentUserDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
-    const currentUserId = currentUserDetails?.uid;
-    const currentUserName = currentUserDetails?.name;
 
-    const subject = this.formGroup.get('subject').value;
-    const body = this.formGroup.get('body').value;
-    const isHearingRelated = this.formGroup.get('isHearingRelated').value;
-    const hearingDate = (isHearingRelated as boolean)
-      ? this.formGroup.get('hearingDate').value
-      : null;
-    const attachments = this.formGroup.get('attachments').value;
+    const caseMessage = this.queryCreateContext === QueryCreateContext.NEW_QUERY
+      ? QueryManagementUtils.getNewQueryData(this.formGroup, currentUserDetails)
+      : QueryManagementUtils.getRespondOrFollowupQueryData(this.formGroup, this.queryItem, currentUserDetails);
 
     return {
       partyName: '', // Not returned by CCD
       roleOnCase: '', // Not returned by CCD
       caseMessages: [
         {
-          value: {
-            subject,
-            name: currentUserName,
-            body,
-            attachments,
-            isHearingRelated,
-            hearingDate,
-            createdOn: new Date(),
-            createdBy: currentUserId
-          }
+          id: null,
+          value: caseMessage
         }
       ]
     };

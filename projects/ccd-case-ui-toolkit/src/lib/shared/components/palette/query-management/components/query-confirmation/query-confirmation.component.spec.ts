@@ -1,5 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { QueryCreateContext } from '../../models';
 import { QueryConfirmationComponent } from './query-confirmation.component';
 
@@ -15,6 +17,14 @@ describe('QueryConfirmationComponent', () => {
   let fixture: ComponentFixture<QueryConfirmationComponent>;
   let nativeElement: any;
 
+  const mockRoute = {
+    snapshot: {
+      params: {
+        cid: '1234'
+      }
+    }
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -22,7 +32,10 @@ describe('QueryConfirmationComponent', () => {
         QueryConfirmationComponent,
         RpxTranslateMockPipe
       ],
-      providers: []
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: ActivatedRoute, useValue: mockRoute }
+      ]
     })
       .compileComponents();
   });

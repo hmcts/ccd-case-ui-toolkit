@@ -176,7 +176,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     name: 'queryManagementRaiseQuery',
     description: 'Respond to a query',
     event_token: 'token0011223344'
-  }
+  };
 
   const userDetails = {
     email: 'smith_solicitor@test.com',
@@ -288,6 +288,7 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   describe('searchAndCompleteTask', () => {
     it('should call search task', () => {
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY;
       component.searchAndCompleteTask();
       fixture.detectChanges();
       const searchParameter = { ccdId: '1' } as TaskSearchParameter;
@@ -299,7 +300,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       fixture.detectChanges();
       const eventCompletionParams: EventCompletionParams = {
         caseId: '1',
-        eventId: 'respondToQuery',
+        eventId: 'queryManagementRespondQuery',
         task: response.tasks[0]
       };
       expect(component.eventCompletionParams).toEqual(eventCompletionParams);

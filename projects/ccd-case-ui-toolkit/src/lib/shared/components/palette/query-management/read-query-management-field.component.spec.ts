@@ -93,6 +93,12 @@ describe('ReadQueryManagementFieldComponent', () => {
     expect(component.query).toEqual(new QueryListItem());
   });
 
+  it('should show query list page when back link is clicked', () => {
+    component.backToQueryListPage();
+    expect(component.showQueryList).toEqual(true);
+    expect(component.query).toBeNull();
+  });
+
   describe('query is set', () => {
     beforeEach(() => {
       component.setQuery(new QueryListItem());
