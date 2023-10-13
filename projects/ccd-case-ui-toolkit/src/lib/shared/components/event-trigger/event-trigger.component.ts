@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractAppConfig } from '../../../app.config';
 import { CaseViewTrigger } from '../../domain/case-view/case-view-trigger.model';
 import { OrderService } from '../../services/order/order.service';
 
@@ -27,12 +28,15 @@ export class EventTriggerComponent implements OnChanges {
 
   public triggerForm: FormGroup;
 
-  constructor(private readonly fb: FormBuilder, private readonly orderService: OrderService) {}
+  constructor(private readonly appConfig: AbstractAppConfig,
+    private readonly fb: FormBuilder,
+    private readonly orderService: OrderService) {}
 
   public ngOnChanges(changes?: SimpleChanges): void {
     if (changes.triggers && changes.triggers.currentValue) {
+      const eventsToHide = this.appConfig.getEventsToHide();
+      this.triggers = this.triggers?.filter((event) => !eventsToHide.includes(event.id));
       this.triggers = this.orderService.sort(this.triggers);
-
       this.triggerForm = this.fb.group({
         trigger: [this.getDefault(), Validators.required]
       });
