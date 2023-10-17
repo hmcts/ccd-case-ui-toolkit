@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.19.6-restricted-case-access-v2
+### Version 6.19.6-restricted-case-access-v3
 **EUI-6645** Restricted case access
 
 ### Version 6.19.5
