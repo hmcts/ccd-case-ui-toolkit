@@ -918,7 +918,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         firstPage.id = 'first page';
 
         caseEditComponentStub = {
-          form: FormGroup,
+          form: formGroup,
           wizard: WIZARD,
           data: '',
           eventTrigger,

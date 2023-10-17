@@ -62,11 +62,11 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 const fieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'caseFields', 'FormGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
+  inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
 });
 const fieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
-  inputs: ['caseField', 'caseFields', 'FormGroup', 'context']
+  inputs: ['caseField', 'caseFields', 'formGroup', 'context']
 });
 
 describe('WriteCollectionFieldComponent', () => {
