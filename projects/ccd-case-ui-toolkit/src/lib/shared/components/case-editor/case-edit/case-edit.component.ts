@@ -16,9 +16,11 @@ import {
   FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
   SessionStorageService, WindowService
 } from '../../../services';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService } from '../services';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -81,6 +83,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public callbackErrorsSubject: Subject<any> = new Subject();
 
+  public validPageList: WizardPage[] = [];
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly caseNotifier: CaseNotifier,
@@ -94,7 +98,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     private readonly windowsService: WindowService,
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService
   ) {}
 
   public ngOnInit(): void {
@@ -286,6 +291,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
   // Remove "Launcher"-type fields (these have no values and are not intended to be persisted)
   this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
+
+  // delete fields which are not part of the case event journey wizard pages case fields
+  this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, eventTrigger.case_fields, false);
+
   caseEventData.event_token = eventTrigger.event_token;
   caseEventData.ignore_warning = this.ignoreWarning;
   if (this.confirmation) {
@@ -391,7 +400,9 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
         if (parentField && parentField.formatted_value) {
           rawFormValueData[key] = parentField.formatted_value[caseField.id];
         } else {
-          rawFormValueData[key] = caseField.formatted_value;
+          if (!(caseField.hidden && caseField.retain_hidden_value)) {
+            rawFormValueData[key] = caseField.formatted_value;
+          }
         }
       }
     }

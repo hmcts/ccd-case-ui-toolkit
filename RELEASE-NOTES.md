@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.19.7-case-flags-v2-1-consolidation-final
+### Version 6.19.8-case-flags-v2-1-consolidation-final
 **EUI-8819** Final release of Case Flags v2.1 consolidation; includes support for "dual mode" operation, allowing the Case Flags feature to be run as either v1 or v2.1
 
 ### Version 6.19.7-case-flags-v2-1-consolidation-interim
