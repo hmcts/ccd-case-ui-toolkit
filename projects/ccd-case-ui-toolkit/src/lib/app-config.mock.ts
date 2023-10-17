@@ -206,4 +206,8 @@ export class AppMockConfig implements AbstractAppConfig {
   public getCaseDataStoreApiUrl(): string {
     return '';
   }
+
+  public getEnableRestrictedCaseAccessConfig(): boolean {
+    return true;
+  }
 }
