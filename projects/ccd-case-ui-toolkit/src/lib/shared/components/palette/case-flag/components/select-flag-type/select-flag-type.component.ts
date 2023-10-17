@@ -32,6 +32,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public isDisplayContextParameterExternal = false;
 
   @Input()
+  public isDisplayContextParameter2Point1Enabled = false;
+
+  @Input()
   public selectedFlagsLocation: FlagsWithFormGroupPath;
 
   @Output()

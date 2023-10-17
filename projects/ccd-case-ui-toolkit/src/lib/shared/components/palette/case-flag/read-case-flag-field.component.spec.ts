@@ -704,7 +704,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].flags.details).toBeNull();
   });
 
-  it('should select the correct (i.e. new) flag to display on the summary page, as part of the Create Case Flag journey', () => {
+  it('should select the correct (i.e. new) flag to display on the summary page, as part of the Create Case Flag journey v1', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: CaseFlagDisplayContextParameter.CREATE
@@ -719,6 +719,40 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
     // Check the correct display context parameter for the "Review flag details" summary page has been set
     expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
+  });
+
+  it('should select the correct (i.e. new) flag to display on the summary page, as part of the Create Case Flag journey v2.1', () => {
+    component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
+      display_context_parameter: CaseFlagDisplayContextParameter.CREATE_2_POINT_1
+    };
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocation)
+    });
+    component.formGroup = formGroup;
+    component.ngOnInit();
+    expect(component.flagForSummaryDisplay).toBeTruthy();
+    expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE_2_POINT_1);
+  });
+
+  it('should select the correct (i.e. new) flag to display on the summary page, as part of the Request Support journey for legal reps', () => {
+    component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
+      display_context_parameter: CaseFlagDisplayContextParameter.CREATE_EXTERNAL
+    };
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseFlagParentFormGroup'] = new FormGroup({
+      selectedLocation: new FormControl(selectedFlagsLocation)
+    });
+    component.formGroup = formGroup;
+    component.ngOnInit();
+    expect(component.flagForSummaryDisplay).toBeTruthy();
+    expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE_EXTERNAL);
   });
 
   it('should select the correct (i.e. new) flag to display on the summary page, when the flag is contained in a Complex field', () => {
@@ -754,7 +788,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
   });
 
-  it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Case Flags journey', () => {
+  it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Case Flags journey v1', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: CaseFlagDisplayContextParameter.UPDATE
@@ -777,7 +811,30 @@ describe('ReadCaseFlagFieldComponent', () => {
     expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.UPDATE);
   });
 
-  it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage support journey for Legal Ops', () => {
+  it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Case Flags journey v2.1', () => {
+    component.context = PaletteContext.CHECK_YOUR_ANSWER;
+    formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
+      display_context_parameter: CaseFlagDisplayContextParameter.UPDATE_2_POINT_1
+    };
+    component.formGroup = formGroup;
+    // Simulate presence of selected flag
+    formGroup.controls[flagLauncher1CaseField.id]['component'].selectedFlag = {
+      flagDetailDisplay: {
+        partyName: caseFlag2PartyName,
+        flagDetail: caseFlag2DetailsValue1,
+        flagsCaseFieldId: caseFlag2FieldId
+      } as FlagDetailDisplay
+    };
+    component.ngOnInit();
+    expect(component.flagForSummaryDisplay).toBeTruthy();
+    expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual(caseFlag2DetailsValue1 as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagsCaseFieldId).toEqual(caseFlag2FieldId);
+    // Check the correct display context parameter for the "Review flag details" summary page has been set
+    expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.UPDATE_2_POINT_1);
+  });
+
+  it('should select the correct (i.e. selected) flag to display on the summary page, as part of the Manage Support journey for legal reps', () => {
     component.context = PaletteContext.CHECK_YOUR_ANSWER;
     formGroup.controls[flagLauncher1CaseField.id]['component']['caseField'] = {
       display_context_parameter: CaseFlagDisplayContextParameter.UPDATE_EXTERNAL

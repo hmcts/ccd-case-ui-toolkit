@@ -301,6 +301,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should render flag status radio buttons correctly when current flag status is "Requested"', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag3)
     });
@@ -316,6 +317,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should render flag status radio buttons correctly when current flag status is "Active"', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     const statusCheckboxLabelsElements = fixture.debugElement.nativeElement.querySelectorAll(`#${CaseFlagFormFields.STATUS} label`);
@@ -329,6 +331,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not render any flag status radio buttons when current flag status is "Inactive"', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag2)
     });
@@ -337,6 +340,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not render any flag status radio buttons when current flag status is "Not approved"', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag4)
     });
@@ -347,6 +351,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if status reason is mandatory but none has been entered', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag3)
@@ -375,6 +380,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not show an error message on clicking "Next" if status reason is not mandatory and none has been entered', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag3)
@@ -425,6 +431,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if status reason exceeds 200-character limit, regardless of optionality', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag3)
@@ -461,6 +468,7 @@ describe('UpdateFlagComponent', () => {
   });
 
   it('should not show an error message if status reason equals a 200-character limit, regardless of optionality', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     // Select flag with current status of "Requested", so that all status radio buttons are displayed
     component.formGroup = new FormGroup({
       selectedManageCaseLocation: new FormControl(selectedFlag3)
@@ -490,7 +498,9 @@ describe('UpdateFlagComponent', () => {
 
   it('should display correct title based on the display mode', () => {
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
-    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual('Update flag "Flag 1"');
+    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(`${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1"`);
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(`${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1"`);
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_EXTERNAL);
     component.displayContextParameter = '';
@@ -515,22 +525,29 @@ describe('UpdateFlagComponent', () => {
     expect(checkboxWelshTranslation).toBeNull();
   });
 
-  it('should display the warning text for case workers and internal staff users', () => {
-    component.displayContextParameter = '#ARGUMENT(UPDATE)';
+  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     fixture.detectChanges();
     const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
     expect(warningTextElement.textContent.trim()).toContain(UpdateFlagStep.WARNING_TEXT);
   });
 
-  it('should not display the warning text for solicitors and external users', () => {
-    component.displayContextParameter = '#ARGUMENT(UPDATE,EXTERNAL)';
+  it('should not display the warning text for case workers and internal staff users if Case Flags v2.1 is not enabled', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     fixture.detectChanges();
     const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
     expect(warningTextElement).toBeNull();
   });
 
-  it('should populate the status reason textarea with any existing text if the user is not external', () => {
-    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
+  it('should not display the warning text for solicitors and external users', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
+  });
+
+  it('should populate the status reason textarea with any existing text if the user is not external and Case Flags v2.1 is enabled', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     component.selectedFlag = selectedFlag1;
     fixture.detectChanges();
     const statusChangeReasontextarea = fixture.debugElement.nativeElement.querySelector(`#${CaseFlagFormFields.STATUS_CHANGE_REASON}`);
@@ -594,5 +611,82 @@ describe('UpdateFlagComponent', () => {
     expect(errorMessageElement).toBeNull();
     expect(component.formGroup.get(CaseFlagFormFields.STATUS).setValue).toHaveBeenCalledWith(Object.keys(CaseFlagStatus)[2]);
     expect(component.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON).value).toEqual(textareaInput);
+  });
+
+  it('should show the v2.1 flag status section and translation checkbox if user is internal and Case Flags v2.1 is enabled', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    fixture.detectChanges();
+    const flagStatusContainerElement = fixture.debugElement.nativeElement.querySelector('#flag-status-container-v2_1');
+    expect(flagStatusContainerElement).toBeTruthy();
+    const translationCheckboxContainerElement = fixture.debugElement.nativeElement.querySelector('#translation-checkbox-container');
+    expect(translationCheckboxContainerElement).toBeTruthy();
+  });
+
+  it('should not show the v2.1 flag status section and translation checkbox if user is internal and Case Flags v2.1 is not enabled', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
+    fixture.detectChanges();
+    const flagStatusContainerElement = fixture.debugElement.nativeElement.querySelector('#flag-status-container-v2_1');
+    expect(flagStatusContainerElement).toBeNull();
+    const translationCheckboxContainerElement = fixture.debugElement.nativeElement.querySelector('#translation-checkbox-container');
+    expect(translationCheckboxContainerElement).toBeNull();
+  });
+
+  it('should not show the v2.1 flag status section and translation checkbox if user is external', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    fixture.detectChanges();
+    const flagStatusContainerElement = fixture.debugElement.nativeElement.querySelector('#flag-status-container-v2_1');
+    expect(flagStatusContainerElement).toBeNull();
+    const translationCheckboxContainerElement = fixture.debugElement.nativeElement.querySelector('#translation-checkbox-container');
+    expect(translationCheckboxContainerElement).toBeNull();
+  });
+
+  it('should not show the v1 flag status section if user is internal and Case Flags v2.1 is enabled', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    fixture.detectChanges();
+    const flagStatusContainerElement = fixture.debugElement.nativeElement.querySelector('#flag-status-container-v1');
+    expect(flagStatusContainerElement).toBeNull();
+  });
+
+  it('should show the v1 flag status section if user is internal and Case Flags v2.1 is not enabled', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
+    fixture.detectChanges();
+    const flagStatusContainerElement = fixture.debugElement.nativeElement.querySelector('#flag-status-container-v1');
+    expect(flagStatusContainerElement).toBeTruthy();
+  });
+
+  it('should not show the v1 flag status section if user is external', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    fixture.detectChanges();
+    const flagStatusContainerElement = fixture.debugElement.nativeElement.querySelector('#flag-status-container-v1');
+    expect(flagStatusContainerElement).toBeNull();
+  });
+
+  it('should update the flag comments and status, for Case Flags v1', () => {
+    component.internalUserUpdate = true;
+    fixture.detectChanges();
+    spyOn(component, 'onMakeInactive').and.callThrough();
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    spyOn(component.formGroup.get(CaseFlagFormFields.STATUS), 'setValue');
+    // Edit existing flag comments
+    const textarea = fixture.debugElement.query(By.css(`#${CaseFlagFormFields.COMMENTS}`)).nativeElement;
+    textarea.value = 'Edited comment';
+    textarea.dispatchEvent(new Event('input'));
+    // Click the "Make inactive" button to change the flag status
+    fixture.debugElement.nativeElement.querySelector('.button-secondary').click();
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onMakeInactive).toHaveBeenCalled();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_UPDATE,
+      errorMessages: component.errorMessages,
+      selectedFlag: component.selectedFlag
+    });
+    expect(component.formGroup.get(CaseFlagFormFields.COMMENTS).value).toEqual(textarea.value);
+    expect(component.selectedFlag.flagDetailDisplay.flagDetail.status).toEqual(CaseFlagStatus.INACTIVE);
+    expect(component.formGroup.get(CaseFlagFormFields.STATUS).setValue).toHaveBeenCalledWith(Object.keys(CaseFlagStatus)[2]);
+    // The "Make inactive" button should no longer be visible
+    expect(fixture.debugElement.nativeElement.querySelector('.button-secondary')).toBeNull();
   });
 });

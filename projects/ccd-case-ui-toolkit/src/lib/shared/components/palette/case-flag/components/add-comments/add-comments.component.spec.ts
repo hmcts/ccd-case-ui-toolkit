@@ -164,15 +164,25 @@ describe('AddCommentsComponent', () => {
     expect(component.addCommentsTitle).toBe(CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS_EXTERNAL_MODE);
   });
 
-  it('should display the warning text for case workers and internal staff users', () => {
+  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled', () => {
     component.isDisplayContextParameterExternal = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
     fixture.detectChanges();
     const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
     expect(warningTextElement.textContent.trim()).toContain(AddCommentsStep.WARNING_TEXT);
   });
 
+  it('should not display the warning text for case workers and internal staff users if Case Flags v2.1 is not enabled', () => {
+    component.isDisplayContextParameterExternal = false;
+    component.isDisplayContextParameter2Point1Enabled = false;
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
+  });
+
   it('should not display the warning text for solicitors and external users', () => {
     component.isDisplayContextParameterExternal = true;
+    component.isDisplayContextParameter2Point1Enabled = true;
     fixture.detectChanges();
     const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
     expect(warningTextElement).toBeNull();

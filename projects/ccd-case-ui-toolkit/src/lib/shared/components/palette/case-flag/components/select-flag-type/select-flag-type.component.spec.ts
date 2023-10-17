@@ -209,8 +209,8 @@ describe('SelectFlagTypeComponent', () => {
     component.formGroup = new FormGroup({});
     component.isDisplayContextParameterExternal = false;
     component.selectedFlagsLocation = selectedFlagsLocation;
-    // Deliberately omitted fixture.detectChanges() here to allow for setting isDisplayContextParameterExternal to
-    // "true" for one test that needs to run as if the user is external
+    // Deliberately omitted fixture.detectChanges() here to allow for overriding default values for
+    // isDisplayContextParameterExternal and isDisplayContextParameter2Point1Enabled for selected tests
   });
 
   it('should create component', () => {
@@ -575,24 +575,55 @@ describe('SelectFlagTypeComponent', () => {
     expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(flagTypes[0].childFlags[0].name_cy);
   });
 
-  it('should not display flag visibility checkbox for support request', () => {
+  it('should not display flag visibility checkbox for support request (external user)', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
     component.isDisplayContextParameterExternal = true;
+    component.isCaseLevelFlag = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
     fixture.detectChanges();
     const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
     expect(flagVisibilityCheckboxEl).toBeNull();
   });
 
-  it('should not display flag visibility checkbox for case level flag', () => {
+  it('should not display flag visibility checkbox for case-level flag', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
     component.isDisplayContextParameterExternal = false;
     component.isCaseLevelFlag = true;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    fixture.detectChanges();
     const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
     expect(flagVisibilityCheckboxEl).toBeNull();
   });
 
-  it('should display flag visibility checkbox for party level flag', () => {
+  it('should display flag visibility checkbox for party-level flag if Case Flags v2.1 is enabled', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
     component.isDisplayContextParameterExternal = false;
     component.isCaseLevelFlag = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    fixture.detectChanges();
     const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
-    expect(flagVisibilityCheckboxEl).toBeDefined();
+    expect(flagVisibilityCheckboxEl).toBeTruthy();
+  });
+
+  it('should not display flag visibility checkbox for party-level flag if Case Flags v2.1 is not enabled', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
+    component.isDisplayContextParameterExternal = false;
+    component.isCaseLevelFlag = false;
+    component.isDisplayContextParameter2Point1Enabled = false;
+    fixture.detectChanges();
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(flagVisibilityCheckboxEl).toBeNull();
   });
 });

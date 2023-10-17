@@ -12,6 +12,7 @@ export class AddCommentsComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public optional = false;
   @Input() public isDisplayContextParameterExternal = false;
+  @Input() public isDisplayContextParameter2Point1Enabled = false;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 

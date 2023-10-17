@@ -66,10 +66,12 @@ export class CaseFlagSummaryListComponent implements OnInit {
   private getAddUpdateFlagHeaderText(): string {
     switch(this.displayContextParameter) {
       case CaseFlagDisplayContextParameter.CREATE:
+      case CaseFlagDisplayContextParameter.CREATE_2_POINT_1:
         return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT;
       case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
         return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT_EXTERNAL;
       case CaseFlagDisplayContextParameter.UPDATE:
+      case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
         return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT;
       case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
         return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT_EXTERNAL;
@@ -81,7 +83,9 @@ export class CaseFlagSummaryListComponent implements OnInit {
   private getFlagTypeHeaderText(): string {
     switch(this.displayContextParameter) {
       case CaseFlagDisplayContextParameter.CREATE:
+      case CaseFlagDisplayContextParameter.CREATE_2_POINT_1:
       case CaseFlagDisplayContextParameter.UPDATE:
+      case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
         return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT;
       case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
       case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:

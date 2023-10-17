@@ -234,11 +234,18 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT);
   });
 
-  it('should return correct flag type header text for "CREATE EXTERNAL" display context parameter', () => {
+  it('should return correct flag type header text for "CREATE,EXTERNAL" display context parameter', () => {
     component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE_EXTERNAL;
     fixture.detectChanges();
     expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT_EXTERNAL);
+  });
+
+  it('should return correct flag type header text for "CREATE,VERSION2.1" display context parameter', () => {
+    component.flagForSummaryDisplay = flagDetailDisplay;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE_2_POINT_1;
+    fixture.detectChanges();
+    expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT);
   });
 
   it('should return correct flag type header text for "UPDATE" display context parameter', () => {
@@ -248,11 +255,18 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT);
   });
 
-  it('should return correct flag type header text for "UPDATE EXTERNAL" display context parameter', () => {
+  it('should return correct flag type header text for "UPDATE,EXTERNAL" display context parameter', () => {
     component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     fixture.detectChanges();
     expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT_EXTERNAL);
+  });
+
+  it('should return correct flag type header text for "UPDATE,VERSION2.1" display context parameter', () => {
+    component.flagForSummaryDisplay = flagDetailDisplay;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    fixture.detectChanges();
+    expect(component.flagTypeHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT);
   });
 
   it('should return correct flag type header text for empty display context parameter', () => {
@@ -269,11 +283,18 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT);
   });
 
-  it('should return correct add update flag header text for "CREATE EXTERNAL" display context parameter', () => {
+  it('should return correct add update flag header text for "CREATE,EXTERNAL" display context parameter', () => {
     component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE_EXTERNAL;
     fixture.detectChanges();
     expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT_EXTERNAL);
+  });
+
+  it('should return correct add update flag header text for "CREATE,VERSION2.1" display context parameter', () => {
+    component.flagForSummaryDisplay = flagDetailDisplay;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.CREATE_2_POINT_1;
+    fixture.detectChanges();
+    expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT);
   });
 
   it('should return correct add update flag header text for "UPDATE" display context parameter', () => {
@@ -283,11 +304,18 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT);
   });
 
-  it('should return correct add update flag header text for "UPDATE EXTERNAL" display context parameter', () => {
+  it('should return correct add update flag header text for "UPDATE,EXTERNAL" display context parameter', () => {
     component.flagForSummaryDisplay = flagDetailDisplay;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     fixture.detectChanges();
     expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT_EXTERNAL);
+  });
+
+  it('should return correct add update flag header text for "UPDATE,VERSION2.1" display context parameter', () => {
+    component.flagForSummaryDisplay = flagDetailDisplay;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    fixture.detectChanges();
+    expect(component.addUpdateFlagHeaderText).toEqual(CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT);
   });
 
   it('should return correct add update flag header text for empty display context parameter', () => {
