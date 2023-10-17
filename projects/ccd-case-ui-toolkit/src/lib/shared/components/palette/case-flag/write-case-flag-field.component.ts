@@ -23,7 +23,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public flagsData: FlagsWithFormGroupPath[];
   public selectedFlag: FlagDetailDisplayWithFormGroupPath;
   public selectedFlagsLocation: FlagsWithFormGroupPath;
-  public caseFlagParentFormGroup = new FormGroup({});
+  public caseFlagParentFormGroup = new FormGroup<any>({});
   public flagCommentsOptional = false;
   public jurisdiction: string;
   public caseTypeId: string;

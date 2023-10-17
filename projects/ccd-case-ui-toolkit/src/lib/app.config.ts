@@ -50,6 +50,7 @@ export abstract class AbstractAppConfig {
   public abstract getActivityMaxRequestPerBatch(): number;
   public abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
   public abstract getPrintServiceUrl(): string;
+
   /**
    * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release
    * @deprecated
@@ -58,6 +59,7 @@ export abstract class AbstractAppConfig {
   public getRemotePrintServiceUrl(): string {
     return undefined;
   }
+
   public abstract getPaginationPageSize(): number;
   public abstract getBannersUrl(): string;
   public abstract getPrdUrl(): string;
@@ -66,21 +68,27 @@ export abstract class AbstractAppConfig {
   public getUserInfoApiUrl(): string {
     return undefined;
   }
+
   public getWAServiceConfig(): any {
     return undefined;
   }
+
   public getAccessManagementMode(): boolean {
     return undefined;
   }
+
   public getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return undefined;
   }
+
   public getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
     return undefined;
   }
+
   public getLocationRefApiUrl(): string {
     return undefined;
   }
+
   public getEnvironment() {
     if (this.getActivityUrl()?.includes('.aat.'))
       return 'aat';
@@ -92,6 +100,7 @@ export abstract class AbstractAppConfig {
       return 'ithc';
     return 'prod';
   }
+
   public abstract getRefundsUrl(): string;
   public abstract getNotificationUrl(): string;
   public abstract getPaymentReturnUrl(): string;
@@ -100,6 +109,7 @@ export abstract class AbstractAppConfig {
   public getCamRoleAssignmentsApiUrl(): string {
     return undefined;
   }
+
   public abstract getCaseFlagsRefdataApiUrl(): string;
   public abstract getRDCommonDataApiUrl(): string;
   public abstract getCaseDataStoreApiUrl(): string;
@@ -150,6 +160,7 @@ export class CaseEditorConfig {
     },
     accessProcess?: string
   };
+
   public access_management_request_review_mock?: {
     active?: boolean;
     details?: {
@@ -161,6 +172,7 @@ export class CaseEditorConfig {
     };
     accessProcess?: string;
   };
+
   public location_ref_api_url?: string;
   public cam_role_assignments_api_url?: string;
   public refunds_url: string;
