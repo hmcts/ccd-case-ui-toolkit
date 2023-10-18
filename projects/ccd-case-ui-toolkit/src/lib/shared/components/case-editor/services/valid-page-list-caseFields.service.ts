@@ -34,7 +34,6 @@ export class ValidPageListCaseFieldsService {
         page.case_fields.forEach(field => validPageListCaseFields.push(field));
       }
     });
-
     return validPageListCaseFields;
   }
 }
