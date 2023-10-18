@@ -206,4 +206,8 @@ export class AppMockConfig implements AbstractAppConfig {
   public getCaseDataStoreApiUrl(): string {
     return '';
   }
+
+  public getEnableCaseFileViewVersion1_1(): boolean {
+    return true;
+  }
 }
