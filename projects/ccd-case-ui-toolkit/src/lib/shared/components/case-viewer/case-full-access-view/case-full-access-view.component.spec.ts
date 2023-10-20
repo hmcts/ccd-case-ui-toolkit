@@ -12,6 +12,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of, Subject, Subscription } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -654,17 +655,17 @@ xdescribe('CaseFullAccessViewComponent', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          {provide: NavigationNotifierService, useValue: navigationNotifierService},
-          {provide: ErrorNotifierService, useValue: errorNotifierService},
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService},
-          {provide: ActivityPollingService, useValue: activityService},
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: ErrorNotifierService, useValue: errorNotifierService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: ActivityPollingService, useValue: activityService },
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -831,7 +832,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
       jid: 'TESTJURISDICTION',
       ctid: 'TEST',
       etid: TRIGGERS[1].id,
-      queryParams: {ignoreWarning: true, draft: 'DRAFT123', origin: 'viewDraft'}
+      queryParams: { ignoreWarning: true, draft: 'DRAFT123', origin: 'viewDraft' }
     });
   });
 
@@ -1018,7 +1019,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
         field_errors: FIELD_ERRORS
       }
     };
-    component.error = HttpError.from(new HttpErrorResponse({error: VALID_ERROR}));
+    component.error = HttpError.from(new HttpErrorResponse({ error: VALID_ERROR }));
 
     const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
     const eventTrigger = eventTriggerElement.componentInstance;
@@ -1098,17 +1099,17 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          {provide: NavigationNotifierService, useValue: navigationNotifierService},
-          {provide: ErrorNotifierService, useValue: errorNotifierService},
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService},
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ActivityPollingService, useValue: activityService},
+          { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: ErrorNotifierService, useValue: errorNotifierService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ActivityPollingService, useValue: activityService },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1185,17 +1186,17 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          {provide: NavigationNotifierService, useValue: navigationNotifierService},
-          {provide: ErrorNotifierService, useValue: errorNotifierService},
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService},
-          {provide: ActivityPollingService, useValue: activityService},
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: ErrorNotifierService, useValue: errorNotifierService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: ActivityPollingService, useValue: activityService },
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1288,22 +1289,23 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
             }
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1416,22 +1418,23 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
             }
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1615,22 +1618,22 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
             }
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           DeleteOrCancelDialogComponent,
           FieldsPurger,
           WizardFactoryService,
@@ -1640,7 +1643,8 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           FormErrorService,
           FieldTypeSanitiser,
           PageValidationService,
-          CaseFieldService
+          CaseFieldService,
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
         ]
       })
       .compileComponents();
@@ -1752,22 +1756,23 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
             useValue: mockLocation
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1926,22 +1931,23 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
             useValue: mockLocation
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
         ]
       })
