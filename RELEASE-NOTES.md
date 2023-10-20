@@ -1,4 +1,10 @@
 ## RELEASE NOTES
+### Version 6.19.8-case-flags-v2-1-consolidation-final-fixes-1
+**EUI-8914** Fix case-level flag creation to work when the case-level `Flags` object in the form data is an empty object initially
+**EUI-8913** Remove the "Previous" button from the Case Flag Summary (CYA) page
+**EUI-8915** Remove the "Change" link for the "Status" item on the Case Flag Summary (CYA) page if Case Flags v2.1 is not enabled
+**EUI-8916** Fix "Change" link navigations from the Case Flag Summary (CYA) page when Case Flags v2.1 is enabled
+
 ### Version 6.19.8-case-flags-v2-1-consolidation-final
 **EUI-8819** Final release of Case Flags v2.1 consolidation; includes support for "dual mode" operation, allowing the Case Flags feature to be run as either v1 or v2.1
 

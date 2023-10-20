@@ -30,6 +30,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public displayMode = CaseFlagSummaryListDisplayMode;
   public flagTypeHeaderText: string;
   public caseFlagCheckYourAnswersPageStep = CaseFlagCheckYourAnswersPageStep;
+  public is2Point1Enabled = false;
 
   constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
@@ -44,6 +45,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
       this.addUpdateFlagHeaderText = this.getAddUpdateFlagHeaderText();
       this.flagTypeHeaderText = this.getFlagTypeHeaderText();
       this.summaryListDisplayMode = this.getSummaryListDisplayMode();
+      this.is2Point1Enabled = this.getDisplayContextParameter2Point1Enabled();
     }
   }
 
@@ -97,9 +99,15 @@ export class CaseFlagSummaryListComponent implements OnInit {
 
   private getSummaryListDisplayMode(): number {
     if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE ||
-        this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) {
+        this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
+        this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1) {
       return CaseFlagSummaryListDisplayMode.CREATE;
     }
     return CaseFlagSummaryListDisplayMode.MANAGE;
+  }
+
+  private getDisplayContextParameter2Point1Enabled(): boolean {
+    return this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
+      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
   }
 }
