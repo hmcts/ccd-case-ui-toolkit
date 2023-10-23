@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 6.19.10-doc-upload
+**EXUI-803** Make secure docstore work during case creation
+
+
 ### Version 6.19.5
 **EXUI-623** Make secure docstore work during case creation
 
