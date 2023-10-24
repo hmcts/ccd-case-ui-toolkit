@@ -505,12 +505,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         formValues?.flagType?.Path.map(pathValue => Object.assign({ id: null, value: pathValue })),
       hearingRelevant: formValues?.flagType?.hearingRelevant ? 'Yes' : 'No',
       flagCode: formValues?.flagType?.flagCode,
-      // Status should be set to "Active" if Case Flags v2.1 is NOT enabled, otherwise it should be set to whatever
-      // the default is for this flag type, if flag is being created by an external user
-      status: !this.isDisplayContextParameter2Point1Enabled
-        ? CaseFlagStatus.ACTIVE
-        : this.isDisplayContextParameterExternal
-          ? formValues?.flagType?.defaultStatus
+      // Status should be set to whatever the default is for this flag type, if flag is being created by an external
+      // user, otherwise it should be set to "Active" if Case Flags v2.1 is NOT enabled, or the selected status if it is
+      status: this.isDisplayContextParameterExternal
+        ? formValues?.flagType?.defaultStatus
+        : !this.isDisplayContextParameter2Point1Enabled
+          ? CaseFlagStatus.ACTIVE
           : CaseFlagStatus[formValues?.selectedStatus],
       availableExternally: formValues?.flagType?.externallyAvailable ? 'Yes' : 'No'
     } as FlagDetail;

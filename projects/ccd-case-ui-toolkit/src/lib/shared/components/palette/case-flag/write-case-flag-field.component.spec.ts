@@ -1246,8 +1246,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(newFlagDetailInstance3.subTypeValue_cy).toBeNull();
   });
 
-  it('should populate a new FlagDetail instance with data held by the component, for an external user (v2.1 enabled)', () => {
-    component.isDisplayContextParameter2Point1Enabled = true;
+  it('should populate a new FlagDetail instance with data held by the component, for an external user', () => {
     component.isDisplayContextParameterExternal = true;
     component.caseFlagParentFormGroup = new FormGroup({
       flagType: new FormControl(null),
