@@ -267,7 +267,8 @@ describe('CaseEditComponent', () => {
         'repopulateFormDataFromCaseFieldValues',
         'removeCaseFieldsOfType',
         'removeEmptyCollectionsWithMinValidation',
-        'populateLinkedCasesDetailsFromCaseFields'
+        'populateLinkedCasesDetailsFromCaseFields',
+        'removeUnnecessaryFields'
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
@@ -1224,6 +1225,7 @@ describe('CaseEditComponent', () => {
           .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
         expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
         expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
+        expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
       });
 
       it('should NOT submit the case due to error', () => {
