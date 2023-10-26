@@ -294,6 +294,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   // delete fields which are not part of the case event journey wizard pages case fields
   this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, eventTrigger.case_fields, false);
+  const pageListCaseFields = this.validPageListCaseFieldsService.validPageListCaseFields(this.validPageList, caseEventData.data, eventTrigger.case_fields);
+  // // Remove unnesessary case fields which are hidden
+  this.formValueService.removeUnnecessaryFields(caseEventData.data, pageListCaseFields, true, true);
 
   caseEventData.event_token = eventTrigger.event_token;
   caseEventData.ignore_warning = this.ignoreWarning;
