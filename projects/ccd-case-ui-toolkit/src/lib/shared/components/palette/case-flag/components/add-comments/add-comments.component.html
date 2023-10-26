@@ -6,9 +6,9 @@
         </label>
       </h1>
       <div id="add-comments-hint" class="govuk-hint">
-        {{addCommentsStepEnum.HINT_TEXT | rpxTranslate}}
+        {{addCommentsHint | rpxTranslate}}
       </div>
-      <div class="govuk-warning-text" *ngIf="!isDisplayContextParameterExternal">
+      <div class="govuk-warning-text" *ngIf="!isDisplayContextParameterExternal && isDisplayContextParameter2Point1Enabled">
         <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
         <strong class="govuk-warning-text__text">
           <span class="govuk-warning-text__assistive">{{'Warning' | rpxTranslate}}</span>

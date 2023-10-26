@@ -1,4 +1,10 @@
 ## RELEASE NOTES
+### Version 6.19.8-case-flags-v2-1-consolidation-final
+**EUI-8819** Final release of Case Flags v2.1 consolidation; includes support for "dual mode" operation, allowing the Case Flags feature to be run as either v1 or v2.1
+
+### Version 6.19.7-case-flags-v2-1-consolidation-interim
+**EUI-8819** Interim release of Case Flags v2.1 consolidation; includes minor UI display changes (flag status tag colour changes; flag status displayed on Case Flag Summary page always)
+
 ### Version 6.19.7-case-flags-v2-1-remove-duplicate-party-locations
 **EUI-8844** Remove duplicate party locations where an internal and external `Flags` object (with the same groupId) exists for a party
 
@@ -51,6 +57,17 @@
 
 ### Version 6.16.0-query-management-raise-a-query-page-changes
 **EUI-8602** Query management raise a query page changes
+
+### Version 6.19.2-case-flags-v2-status-text-wrapping-fix
+**EUI-8778** Prevent flag status tag text from wrapping in Case Flags table
+
+### Version 6.19.2-case-flags-v2-reasonable-adjustments-text-amendments-v3
+**EUI-8283** Reasonable adjustments amend the term flag and flag type
+**EUI-8284** Reasonable adjustments amend screen caption text on the tell us more about the request screen
+**EUI-8287** Reasonable adjustments amend the update screen caption text to remove for not approved
+
+### Version 6.19.2-case-flags-v2-reasonable-adjustments-v2
+**EUI-7243** Case flags v2 reasonable adjustments
 
 ### Version 6.18.3-hotfix-EUI-8738
 **EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page

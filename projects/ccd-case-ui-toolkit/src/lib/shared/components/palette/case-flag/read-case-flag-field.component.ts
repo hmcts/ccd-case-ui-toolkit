@@ -101,6 +101,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
         if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE ||
+            flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
             flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL)
             && flagLauncherComponent.selectedFlagsLocation) {
           this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
@@ -109,6 +110,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
         } else if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE ||
+          flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1 ||
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) &&
           flagLauncherComponent.selectedFlag) {
             this.flagForSummaryDisplay =

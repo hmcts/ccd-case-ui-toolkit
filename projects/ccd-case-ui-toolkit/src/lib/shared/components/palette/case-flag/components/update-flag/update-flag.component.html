@@ -17,11 +17,16 @@
         <div id="update-flag-comments-hint-external" class="govuk-hint" *ngIf="externalUserUpdate">
           {{updateFlagStepEnum.COMMENT_HINT_TEXT_EXTERNAL | rpxTranslate}}
         </div>
-        <ng-container *ngIf="internalUserUpdate || displayContextParameter === ''; else externalUser">
+        <ng-container *ngIf="internalUserUpdate || internalUser2Point1EnabledUpdate || displayContextParameter === '';
+          else externalUser">
           <div id="update-flag-comments-hint" class="govuk-hint">
-            {{updateFlagStepEnum.COMMENT_HINT_TEXT_INTERNAL | rpxTranslate}}
+            {{
+              internalUserUpdate
+                ? (updateFlagStepEnum.COMMENT_HINT_TEXT_INTERNAL | rpxTranslate)
+                : (updateFlagStepEnum.COMMENT_HINT_TEXT_INTERNAL_2_POINT_1 | rpxTranslate)
+            }}
           </div>
-          <div class="govuk-warning-text" *ngIf="displayContextParameter === caseFlagDisplayContextParameter.UPDATE">
+          <div class="govuk-warning-text" *ngIf="internalUser2Point1EnabledUpdate">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
               <span class="govuk-warning-text__assistive">{{'Warning' | rpxTranslate}}</span>
@@ -72,7 +77,7 @@
         </div>
       </ng-template>
 
-      <div id="flag-status-container" class="govuk-!-margin-bottom-4" *ngIf="internalUserUpdate">
+      <div id="flag-status-container-v2_1" class="govuk-!-margin-bottom-4" *ngIf="internalUser2Point1EnabledUpdate">
         <fieldset class="govuk-fieldset" aria-describedby="update-flag-status-heading">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h1 id="update-flag-status-heading" class="govuk-fieldset__heading">
@@ -99,7 +104,7 @@
         <ng-container *ngTemplateOutlet="updateFlagStatusReason"></ng-container>
       </div>
 
-      <div class="govuk-!-margin-bottom-6" *ngIf="internalUserUpdate">
+      <div id="translation-checkbox-container" class="govuk-!-margin-bottom-6" *ngIf="internalUser2Point1EnabledUpdate">
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" type="checkbox"
@@ -111,6 +116,23 @@
               {{'I need to add a translation' | rpxTranslate}}
             </label>
           </div>
+        </div>
+      </div>
+
+      <div id="flag-status-container-v1" class="govuk-grid-row" *ngIf="internalUserUpdate">
+        <div class="govuk-grid-column-one-half">
+          <p>{{'Flag status:' | rpxTranslate}}
+            <span>
+              <strong class="govuk-tag" [ngClass]="{'govuk-tag--grey': selectedFlag.flagDetailDisplay.flagDetail.status === 'Inactive'}">
+                {{selectedFlag?.flagDetailDisplay?.flagDetail?.status | rpxTranslate}}
+              </strong>
+            </span>
+          </p>
+        </div>
+        <div class="govuk-grid-column-one-half">
+          <button class="button button-secondary" type="button" (click)="onMakeInactive()" *ngIf="selectedFlag.flagDetailDisplay.flagDetail.status === 'Active'">
+            {{'Make inactive' | rpxTranslate}}
+          </button>
         </div>
       </div>
     </div>

@@ -15,6 +15,7 @@ import { PaletteContext } from '../../palette';
 import { CaseEditPageComponent } from '../case-edit-page/case-edit-page.component';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
+import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 
 // @dynamic
 @Component({
@@ -82,7 +83,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']));
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
-    this.pageTitle = this.caseEdit.isCaseFlagSubmission ? 'Review flag details' : 'Check your answers';
+    this.pageTitle = this.getPageTitle();
   }
 
   public ngOnDestroy(): void {
@@ -109,6 +110,18 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       form: this.editForm,
       submit: this.caseEdit.submit,
     });
+  }
+
+  private getPageTitle(): string {
+    const caseFlagField = this.eventTrigger.case_fields.find(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']));
+    if (caseFlagField) {
+      const isCaseFlagExternalMode = caseFlagField.display_context_parameter === '#ARGUMENT(UPDATE,EXTERNAL)' ||
+        caseFlagField.display_context_parameter === '#ARGUMENT(CREATE,EXTERNAL)';
+      return isCaseFlagExternalMode
+        ? CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST
+        : CaseEditSubmitTitles.REVIEW_FLAG_DETAILS;
+    }
+    return CaseEditSubmitTitles.CHECK_YOUR_ANSWERS;
   }
 
   private get hasErrors(): boolean {
@@ -183,7 +196,15 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public showEventNotes(): boolean {
-    return !!this.eventTrigger.show_event_notes;
+    // Display event notes related controls only if the following conditions are met
+    // 1. show_event_notes flag is set to true
+    // 2. profile is not a solicitor
+    // 3. is not a case flags journey, as it uses a custom check your answers component
+    if (this.eventTrigger.show_event_notes) {
+      return !this.profile?.isSolicitor()
+        && !this.caseEdit.isCaseFlagSubmission;
+    }
+    return false;
   }
 
   private getLastPageShown(): WizardPage {
@@ -216,10 +237,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public canShowFieldInCYA(field: CaseField): boolean {
     return field.show_summary_change_option;
-  }
-
-  public isSolicitor(): boolean {
-    return this.profile.isSolicitor();
   }
 
   private sortFieldsByShowSummaryContent(fields: CaseField[]): CaseField[] {
