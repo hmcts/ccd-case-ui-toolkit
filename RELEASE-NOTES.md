@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.8-case-flags-v2-1-consolidation-final-fixes-2
+**EUI-8935** Fix incorrect logic for setting flag status on flag creation
+
 ### Version 6.19.8-case-flags-v2-1-consolidation-final-fixes-1
 **EUI-8914** Fix case-level flag creation to work when the case-level `Flags` object in the form data is an empty object initially
 **EUI-8913** Remove the "Previous" button from the Case Flag Summary (CYA) page
