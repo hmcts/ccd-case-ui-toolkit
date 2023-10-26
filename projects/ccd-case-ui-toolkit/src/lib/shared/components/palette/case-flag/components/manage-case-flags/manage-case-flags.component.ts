@@ -91,6 +91,7 @@ export class ManageCaseFlagsComponent implements OnInit {
   public setManageCaseFlagTitle(displayContextParameter: string): CaseFlagWizardStepTitle {
     switch (displayContextParameter) {
       case CaseFlagDisplayContextParameter.UPDATE:
+      case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
         return CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS;
       case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
         return CaseFlagWizardStepTitle.MANAGE_SUPPORT;

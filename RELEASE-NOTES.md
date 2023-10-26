@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.9-case-flags-v2-1-manage-case-flags-missing-header
+**EUI-8944** Fix missing header on "Manage case flags" page when Case Flags v2.1 is enabled
+
 ### Version 6.19.8-case-flags-v2-1-consolidation-final-fixes-2
 **EUI-8935** Fix incorrect logic for setting flag status on flag creation
 
