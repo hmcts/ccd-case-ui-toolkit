@@ -135,9 +135,6 @@ describe('ManageCaseFlagsComponent', () => {
     }
   ] as FlagsWithFormGroupPath[];
 
-  const updateMode = '#ARGUMENT(UPDATE)';
-  const updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
-
   beforeEach(waitForAsync(() => {
     const source = new BehaviorSubject<RpxLanguage>('en');
     let currentLanguage: RpxLanguage = 'en';
@@ -320,7 +317,8 @@ describe('ManageCaseFlagsComponent', () => {
   });
 
   it('should set Manage Case Flags component title correctly', () => {
-    expect(component.setManageCaseFlagTitle(updateMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
-    expect(component.setManageCaseFlagTitle(updateExternalMode)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
+    expect(component.setManageCaseFlagTitle(CaseFlagDisplayContextParameter.UPDATE)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
+    expect(component.setManageCaseFlagTitle(CaseFlagDisplayContextParameter.UPDATE_EXTERNAL)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
+    expect(component.setManageCaseFlagTitle(CaseFlagDisplayContextParameter.UPDATE_2_POINT_1)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
   });
 });
