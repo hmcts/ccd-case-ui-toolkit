@@ -6,6 +6,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
+import { AbstractAppConfig } from '../../../../../../app.config';
 import { CaseFileViewSortColumns, DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { mockDocumentManagementService } from '../../../../../services/document-management/document-management.service.mock';
@@ -24,10 +25,39 @@ describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
   let fixture: ComponentFixture<CaseFileViewFolderComponent>;
   let nativeElement: any;
+  let mockAppConfig: any;
+
+  const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
+    {
+      name: 'Lager encyclopedia',
+      type: DocumentTreeNodeType.DOCUMENT,
+      document_filename: 'Lager encyclopedia',
+      document_binary_url: '/test/binary',
+      attribute_path: '',
+      upload_timestamp: '11 May 2023'
+    },
+    {
+      name: 'Beers encyclopedia',
+      type: DocumentTreeNodeType.DOCUMENT,
+      document_filename: 'Beers encyclopedia',
+      document_binary_url: '/test/binary',
+      attribute_path: '',
+      upload_timestamp: '14 Apr 2023'
+    },
+    {
+      name: 'Ale encyclopedia',
+      type: DocumentTreeNodeType.DOCUMENT,
+      document_filename: 'Ale encyclopedia',
+      document_binary_url: '/test/binary',
+      attribute_path: '',
+      upload_timestamp: '12 Mar 2023'
+    }
+  ]);
 
   beforeEach(waitForAsync(() => {
     const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
-
+    mockAppConfig = jasmine.createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['getEnableCaseFileViewVersion1_1']);
+    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(true);
     TestBed.configureTestingModule({
       imports: [
         CdkTreeModule,
@@ -40,7 +70,8 @@ describe('CaseFileViewFolderComponent', () => {
       ],
       providers: [
         { provide: WindowService, useValue: mockWindowService },
-        { provide: DocumentManagementService, useValue: mockDocumentManagementService }
+        { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+        { provide: AbstractAppConfig, useValue: mockAppConfig }
       ]
     })
     .compileComponents();
@@ -69,35 +100,9 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.generateTreeData(categoriesAndDocumentsTestData.categories)).toEqual(categorisedTreeData);
   });
 
-  it('should get documents from category', () => {
+  it('should get documents from category with upload timestamp when feature toggle is on', () => {
     const documents = categoriesAndDocumentsTestData.categories[0].documents;
-    const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
-      {
-        name: 'Lager encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT,
-        document_filename: 'Lager encyclopedia',
-        document_binary_url: '/test/binary',
-        attribute_path: '',
-        upload_timestamp: '11 May 2023'
-      },
-      {
-        name: 'Beers encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT,
-        document_filename: 'Beers encyclopedia',
-        document_binary_url: '/test/binary',
-        attribute_path: '',
-        upload_timestamp: '14 Apr 2023'
-      },
-      {
-        name: 'Ale encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT,
-        document_filename: 'Ale encyclopedia',
-        document_binary_url: '/test/binary',
-        attribute_path: '',
-        upload_timestamp: '12 Mar 2023'
-      }
-    ]);
-
+    fixture.detectChanges();
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
   });
 
@@ -387,5 +392,20 @@ describe('CaseFileViewFolderComponent', () => {
     expect(fakeAnchorElement.download).toEqual('Document1.pdf');
     expect(fakeAnchorElement.click).toHaveBeenCalled();
     expect(fakeAnchorElement.remove).toHaveBeenCalled();
+  });
+
+  it('should get documents from category without upload timestamp when feature toggle is off', () => {
+    const documents = categoriesAndDocumentsTestData.categories[0].documents;
+    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
+    fixture.detectChanges();
+    documentsTreeNodes.forEach((n) => n.upload_timestamp = '');
+    expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
+  });
+
+  it('should get uncategorised documents', () => {
+    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
+    fixture.detectChanges();
+    uncategorisedTreeData.children.forEach((c) => c.upload_timestamp = '');
+    expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
   });
 });
