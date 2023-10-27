@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 6.19.11
+**EXUI-1006** Case Flags stopped working
+
 ### Version 6.19.5
 **EXUI-623** Make secure docstore work during case creation
 
