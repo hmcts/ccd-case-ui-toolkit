@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.19.9-case-flags-v2-1-manage-case-flags-missing-header",
+  "version": "6.19.9-case-flags-exui-848-fix",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
