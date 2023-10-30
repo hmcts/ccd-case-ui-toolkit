@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.9-case-flags-v2-1-consolidation-final-fixes-3
+**EUI-8934** Fix merging of internal and external flags collections to work when a `Flags.details` array is falsy
+
 ### Version 6.19.9-case-flags-exui-848-fix
 **EUI-8947** Fix bug introduced by change to `CaseEditComponent` case event data generation in EXUI-848
 

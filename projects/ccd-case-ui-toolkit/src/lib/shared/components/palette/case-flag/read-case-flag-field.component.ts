@@ -69,7 +69,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         .filter((f) => f.flags.groupId)
         .reduce((mergedFlagDetails, f) => {
           mergedFlagDetails[f.flags.groupId] = mergedFlagDetails[f.flags.groupId] || [];
-          mergedFlagDetails[f.flags.groupId].push(...f.flags.details);
+          // The flags.details property (which should be an array) could be falsy; spread an empty array if so
+          mergedFlagDetails[f.flags.groupId].push(...(f.flags.details || []));
           return mergedFlagDetails;
         }, Object.create(null));
         // Remove duplicate flags objects with the same groupId (which are going to be treated as one for display
