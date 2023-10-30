@@ -26,8 +26,8 @@ export class UpdateFlagComponent implements OnInit {
   public selectedFlag: FlagDetailDisplayWithFormGroupPath;
   public updateFlagTitle = '';
   public errorMessages: ErrorMessage[] = [];
-  public updateFlagNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
-  public updateFlagCharLimitErrorMessage: UpdateFlagErrorMessage = null;
+  public commentsNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
+  public commentsCharLimitErrorMessage: UpdateFlagErrorMessage = null;
   public statusReasonNotEnteredErrorMessage: UpdateFlagErrorMessage = null;
   public statusReasonCharLimitErrorMessage: UpdateFlagErrorMessage = null;
   public updateFlagStepEnum = UpdateFlagStep;
@@ -38,10 +38,17 @@ export class UpdateFlagComponent implements OnInit {
   private readonly selectedManageCaseLocation = 'selectedManageCaseLocation';
   private flagDetail: FlagDetail;
   public caseFlagDisplayContextParameter = CaseFlagDisplayContextParameter;
+  public externalUserUpdate = false;
+  public internalUserUpdate = false;
+  public internalUser2Point1EnabledUpdate = false;
 
   constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
   public ngOnInit(): void {
+    // Set whether this is an external, internal, or internal Case Flags v2.1 enabled user update
+    this.externalUserUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    this.internalUserUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE;
+    this.internalUser2Point1EnabledUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
     if (this.selectedFlag?.flagDetailDisplay?.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
@@ -58,7 +65,9 @@ export class UpdateFlagComponent implements OnInit {
       }
       this.formGroup.addControl(CaseFlagFormFields.COMMENTS, new FormControl(existingComments));
       this.formGroup.addControl(CaseFlagFormFields.STATUS, new FormControl(currentFlagStatusKey));
-      this.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(''));
+      // Populate status reason only if the user is not external
+      this.formGroup.addControl(CaseFlagFormFields.STATUS_CHANGE_REASON, new FormControl(
+        this.externalUserUpdate ? '' : this.flagDetail.flagUpdateComment));
       this.formGroup.addControl(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED, new FormControl(false));
 
       this.updateFlagTitle = this.setUpdateCaseFlagTitle(this.flagDetail);
@@ -84,12 +93,14 @@ export class UpdateFlagComponent implements OnInit {
   public setUpdateCaseFlagTitle(flagDetail: FlagDetail): string {
     switch (this.displayContextParameter) {
       case CaseFlagDisplayContextParameter.UPDATE:
+      case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
         if (flagDetail?.name) {
-          return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}"` : '"'}`;
+          const subTypeValue = flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}` : ''
+          return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${subTypeValue}"`;
         }
         return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE}`;
       case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
-        return CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_SUPPORT;
+        return CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_EXTERNAL;
       default:
         return CaseFlagWizardStepTitle.NONE;
     }
@@ -98,6 +109,11 @@ export class UpdateFlagComponent implements OnInit {
   public onNext(): void {
     // Validate flag comments and status reason entry
     this.validateTextEntry();
+
+    // Set selected flag status to "Inactive" if update is by external user
+    if (this.externalUserUpdate) {
+      this.formGroup.get(CaseFlagFormFields.STATUS).setValue(Object.keys(CaseFlagStatus)[2]);
+    }
 
     // Return case flag field state, error messages, and selected flag detail to the parent. The selected flag must be
     // re-emitted because the parent component repopulates this on handling this EventEmitter
@@ -110,9 +126,15 @@ export class UpdateFlagComponent implements OnInit {
     window.scrollTo(0, 0);
   }
 
+  public onMakeInactive(): void {
+    // Set selected flag status to "Inactive" on screen and in the FormGroup
+    this.selectedFlag.flagDetailDisplay.flagDetail.status = CaseFlagStatus.INACTIVE;
+    this.formGroup.get(CaseFlagFormFields.STATUS).setValue(Object.keys(CaseFlagStatus)[2]);
+  }
+
   private validateTextEntry(): void {
-    this.updateFlagNotEnteredErrorMessage = null;
-    this.updateFlagCharLimitErrorMessage = null;
+    this.commentsNotEnteredErrorMessage = null;
+    this.commentsCharLimitErrorMessage = null;
     this.statusReasonNotEnteredErrorMessage = null;
     this.statusReasonCharLimitErrorMessage = null;
     this.errorMessages = [];
@@ -120,16 +142,18 @@ export class UpdateFlagComponent implements OnInit {
     // is no existing comment then one is not required for validation to pass
     const comment = this.formGroup.get(CaseFlagFormFields.COMMENTS).value;
     if (!comment && (this.flagDetail.flagComment || this.flagDetail.flagComment_cy)) {
-      this.updateFlagNotEnteredErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
+      this.commentsNotEnteredErrorMessage = !this.displayContextParameter
+        ? UpdateFlagErrorMessage.NONE
+        : UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
-        description: UpdateFlagErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
+        description: this.commentsNotEnteredErrorMessage,
         fieldId: CaseFlagFormFields.COMMENTS
       });
     }
 
     if (comment && comment.length > this.textMaxCharLimit) {
-      this.updateFlagCharLimitErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED;
+      this.commentsCharLimitErrorMessage = UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED;
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
@@ -139,11 +163,21 @@ export class UpdateFlagComponent implements OnInit {
 
     const statusReason = this.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON).value;
     const flagStatusNotApprovedKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === CaseFlagStatus.NOT_APPROVED);
+    // Status reason is mandatory if flag status is "Not approved" or user is external
     if (this.formGroup.get(CaseFlagFormFields.STATUS).value === flagStatusNotApprovedKey && !statusReason) {
       this.statusReasonNotEnteredErrorMessage = UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
         description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED,
+        fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
+      });
+    }
+
+    if (this.externalUserUpdate && !statusReason) {
+      this.statusReasonNotEnteredErrorMessage = UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED_EXTERNAL;
+      this.errorMessages.push({
+        title: '',
+        description: UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED_EXTERNAL,
         fieldId: CaseFlagFormFields.STATUS_CHANGE_REASON
       });
     }

@@ -12,6 +12,7 @@ export class AddCommentsComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public optional = false;
   @Input() public isDisplayContextParameterExternal = false;
+  @Input() public isDisplayContextParameter2Point1Enabled = false;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -19,6 +20,7 @@ export class AddCommentsComponent implements OnInit {
   public errorMessages: ErrorMessage[] = [];
   public flagCommentsNotEnteredErrorMessage: AddCommentsErrorMessage = null;
   public flagCommentsCharLimitErrorMessage: AddCommentsErrorMessage = null;
+  public addCommentsHint: AddCommentsStep;
   public addCommentsStepEnum = AddCommentsStep;
   public readonly flagCommentsControlName = 'flagComments';
   private readonly commentsMaxCharLimit = 200;
@@ -26,6 +28,8 @@ export class AddCommentsComponent implements OnInit {
   public ngOnInit(): void {
     this.addCommentsTitle = !this.isDisplayContextParameterExternal ?
       CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS : CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS_EXTERNAL_MODE;
+    this.addCommentsHint = !this.isDisplayContextParameterExternal ?
+      AddCommentsStep.HINT_TEXT : AddCommentsStep.HINT_TEXT_EXTERNAL;
 
     if (!this.formGroup.get(this.flagCommentsControlName)) {
       this.formGroup.addControl(this.flagCommentsControlName, new FormControl(''));
@@ -44,10 +48,12 @@ export class AddCommentsComponent implements OnInit {
     this.flagCommentsCharLimitErrorMessage = null;
     this.errorMessages = [];
     if (!this.optional && !this.formGroup.get(this.flagCommentsControlName).value) {
-      this.flagCommentsNotEnteredErrorMessage = AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
+      this.flagCommentsNotEnteredErrorMessage = this.isDisplayContextParameterExternal
+        ? AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL
+        : AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
-        description: AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED,
+        description: this.flagCommentsNotEnteredErrorMessage,
         fieldId: this.flagCommentsControlName
       });
     }

@@ -1,5 +1,6 @@
 export * from './add-comments-error-message.enum';
 export * from './add-comments-step.enum';
+export * from './case-flag-check-your-answers-step.enum';
 export * from './case-flag-display-context-parameter.enum';
 export * from './case-flag-form-fields.enum';
 export * from './case-flag-status.enum';
