@@ -287,13 +287,13 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(0);
   });
 
-  it('it shoulld evaluate showcondition and set the hidden property of field to false when value doesnt match within complex field', () => {
+  it('should evaluate showcondition and set the hidden property of field to false when value doesn\'t match within complex field', () => {
     const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true);
     expect(RESULT.length).toEqual(3);
     expect(RESULT[1].hidden).toEqual(false);
     expect(RESULT[2].hidden).toEqual(false);
   });
-  it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field', () => {
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match within complex field', () => {
     complexCaseField.value = {
       type: 'ORGANISATION',
       individualFirstName: 'Aamir',
@@ -304,15 +304,15 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[1].hidden).toEqual(true);
     expect(RESULT[2].hidden).toEqual(true);
   });
-  it('it shoulld return blank array if we sent null as input parameters', () => {
+  it('should return blank array if we sent null as input parameters', () => {
     const RESULT: CaseField[] = pipe.transform(null);
     expect(RESULT.length).toEqual(0);
   });
-  it('it shoulld return blank array if we sent blank array for complex field type', () => {
+  it('should return blank array if we sent blank array for complex field type', () => {
     const RESULT: CaseField[] = pipe.transform(complexCaseField1);
     expect(RESULT.length).toEqual(0);
   });
-  it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field even Formgroup passed', () => {
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match within complex field even Formgroup passed', () => {
     complexCaseField.value = {
       type: 'ORGANISATION',
       individualFirstName: 'Aamir',
@@ -323,7 +323,7 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[1].hidden).toEqual(true);
     expect(RESULT[2].hidden).toEqual(true);
   });
-  it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
     complexCaseField2.value = {
       caseAccepted: 'Yes',
       dateAccepted: '10/01/2023'
@@ -333,7 +333,7 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(true);
   });
-  it('it shoulld evaluate showcondition and set the hidden property of field to false when value doesnt match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
+  it('should evaluate showcondition and set the hidden property of field to false when value doesn\'t match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
     complexCaseField2.value = {
       caseAccepted: 'Yes',
       dateAccepted: '10/01/2023'
