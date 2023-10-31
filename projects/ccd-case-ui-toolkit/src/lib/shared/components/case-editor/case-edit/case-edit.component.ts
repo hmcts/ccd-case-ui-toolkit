@@ -16,9 +16,11 @@ import {
   FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
   SessionStorageService, WindowService
 } from '../../../services';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService } from '../services';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -81,6 +83,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public callbackErrorsSubject: Subject<any> = new Subject();
 
+  public validPageList: WizardPage[] = [];
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly caseNotifier: CaseNotifier,
@@ -94,8 +98,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     private readonly windowsService: WindowService,
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
-    private readonly loadingService: LoadingService
-  ) { }
+    private readonly loadingService: LoadingService,
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService
+  ) {}
 
   public ngOnInit(): void {
     this.wizard = this.wizardFactory.create(this.eventTrigger);
@@ -266,7 +271,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     return form.value.event.id;
   }
 
-  private generateCaseEventData({ eventTrigger, form }: CaseEditGenerateCaseEventData): CaseEventData {
+  private generateCaseEventData({ eventTrigger, form }: CaseEditGenerateCaseEventData ): CaseEventData {
     const caseEventData: CaseEventData = {
       data: this.replaceEmptyComplexFieldValues(
         this.formValueService.sanitise(
@@ -287,6 +292,15 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
     // Remove "Launcher"-type fields (these have no values and are not intended to be persisted)
     this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
+
+    // delete fields which are not part of the case event journey wizard pages case fields
+    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, eventTrigger.case_fields, false);
+    const pageListCaseFields = this.validPageListCaseFieldsService.validPageListCaseFields(this.validPageList, caseEventData.data, eventTrigger.case_fields);
+    // Remove unnecessary case fields which are hidden, only if the submission is *not* for Case Flags
+    if (!this.isCaseFlagSubmission) {
+      this.formValueService.removeUnnecessaryFields(caseEventData.data, pageListCaseFields, true, true);
+    }
+
     caseEventData.event_token = eventTrigger.event_token;
     caseEventData.ignore_warning = this.ignoreWarning;
     if (this.confirmation) {
@@ -327,8 +341,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
    * * For Collection field types, including collections of Complex and Document field types, the replacement is
    * performed for all fields in the collection.
    *
-   * @param FormGroup The `FormGroup` instance whose raw values are to be traversed
-   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `FormGroup`
+   * @param formGroup The `FormGroup` instance whose raw values are to be traversed
+   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `formGroup`
    * @param parentField Reference to the parent `CaseField`. Used for retrieving the sub-field values of a Complex field
    * to perform recursive replacement - the sub-field `CaseField`s themselves do *not* contain any values
    * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
@@ -373,7 +387,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
             // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
             // parent)
             // Update rawFormValueData for this field
-            // creating form group and adding control into it in case caseField is of complext type and and part of FormGroup
+            // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
             const form: FormGroup = new FormGroup({});
             if (formGroup.controls[key].value) {
               Object.keys(formGroup.controls[key].value).forEach((item) => {
@@ -392,7 +406,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
           if (parentField && parentField.formatted_value) {
             rawFormValueData[key] = parentField.formatted_value[caseField.id];
           } else {
-            rawFormValueData[key] = caseField.formatted_value;
+            if (!(caseField.hidden && caseField.retain_hidden_value)) {
+              rawFormValueData[key] = caseField.formatted_value;
+            }
           }
         }
       }

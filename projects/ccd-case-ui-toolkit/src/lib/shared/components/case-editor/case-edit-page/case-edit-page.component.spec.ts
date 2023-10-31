@@ -41,6 +41,7 @@ import {
   FormValueService,
   LoadingService,
 } from '../../../services';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -52,7 +53,7 @@ import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
 import { CaseEditPageText } from './case-edit-page-text.enum';
 import { CaseEditPageComponent } from './case-edit-page.component';
-
+import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
@@ -76,19 +77,21 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService = {},
     caseEditDataService = {},
     loadingService = {},
+    validPageListCaseFieldsService = {}
   }) =>
-    new CaseEditPageComponent(
-      caseEdit as CaseEditComponent,
-      route as ActivatedRoute,
-      formValueService as FormValueService,
-      formErrorService as FormErrorService,
-      cdRef as ChangeDetectorRef,
-      pageValidationService as PageValidationService,
-      dialog as MatDialog,
-      caseFieldService as CaseFieldService,
-      caseEditDataService as CaseEditDataService,
-      loadingService as LoadingService
-    );
+  new CaseEditPageComponent(
+    caseEdit as CaseEditComponent,
+    route as ActivatedRoute,
+    formValueService as FormValueService,
+    formErrorService as FormErrorService,
+    cdRef as ChangeDetectorRef,
+    pageValidationService as PageValidationService,
+    dialog as MatDialog,
+    caseFieldService as CaseFieldService,
+    caseEditDataService as CaseEditDataService,
+    loadingService as LoadingService,
+    validPageListCaseFieldsService as ValidPageListCaseFieldsService
+  );
 
   it('should create', () => {
     component = initializeComponent({});
@@ -294,8 +297,24 @@ describe('CaseEditPageComponent - all other tests', () => {
   let wizardPage = createWizardPage(
     [createCaseField('field1', 'field1Value')],
     false,
-    0
+    0,
+    1
   );
+  const wizardPage1 = createWizardPage(
+    [createCaseField('field1', 'field1Value')],
+    false,
+    0,
+    2
+  );
+  const wizardPage2 = createWizardPage(
+    [createCaseField('field3', 'field3Value')],
+    false,
+    0,
+    3
+  );
+  wizardPage1.parsedShowCondition = ShowCondition.getInstance(null);
+  wizardPage2.parsedShowCondition = ShowCondition.getInstance(null);
+  const pageList = [wizardPage1, wizardPage2];
   const readOnly = new CaseField();
   const fieldTypeSanitiser = new FieldTypeSanitiser();
   const formValueService = new FormValueService(fieldTypeSanitiser);
@@ -303,6 +322,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   const firstPage = new WizardPage();
   const caseFieldService = new CaseFieldService();
   const pageValidationService = new PageValidationService(caseFieldService);
+  const fieldsUtils = new FieldsUtils();
+  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
   let route: any;
   let snapshot: any;
   const FORM_GROUP_NO_JUDICIAL_USERS = new FormGroup({
@@ -352,6 +373,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         firstPage.case_fields = [
           createCaseField('field1', 'SOME_VALUE')
         ];
+        firstPage.parsedShowCondition = ShowCondition.getInstance(null);
         cancelled = createSpyObj('cancelled', ['emit']);
         caseEditComponentStub = {
           form: FORM_GROUP,
@@ -373,7 +395,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             metadataFields: [caseField2],
           },
           getNextPage: () => null,
-          callbackErrorsSubject: new Subject<any>()
+          callbackErrorsSubject: new Subject<any>(),
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -448,9 +471,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
-            { provide: LoadingService, useValue: loadingServiceMock }
+            { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -766,7 +790,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             metadataFields: [],
           },
           getNextPage: () => null,
-          callbackErrorsSubject: new Subject<any>()
+          callbackErrorsSubject: new Subject<any>(),
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -841,9 +866,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -941,7 +967,8 @@ describe('CaseEditPageComponent - all other tests', () => {
               title_display: '# 1234567812345678: test',
             },
           },
-          getNextPage: () => null
+          getNextPage: () => null,
+          validPageList: pageList
         };
 
         route = {
@@ -1000,9 +1027,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -1097,7 +1125,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           getNextPage: () => null,
           callbackErrorsSubject: new Subject<any>(),
-          ignoreWarning: true
+          ignoreWarning: true,
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1125,6 +1154,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           eventData
         );
         spyOn(formValueService, 'removeUnnecessaryFields');
+        spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
 
         caseEditDataService = createSpyObj('caseEditDataService',
           [
@@ -1166,9 +1196,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -1185,7 +1216,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           aCaseField('judicialUserField2', 'judicialUser2', 'JudicialUser', 'OPTIONAL', null),
         ],
         false,
-        0
+        0,
+        2
       );
       comp.wizard = new Wizard([wizardPage]);
       // Rebuild the FORM_GROUP object before use because it gets modified by the "should call validate" test
@@ -1219,6 +1251,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(formValueService.sanitise).toHaveBeenCalled();
       expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
       expect(loadingServiceMock.register).toHaveBeenCalled();
+      expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
 
       fixture.whenStable().then(() => {
         expect(comp.caseEdit.eventTrigger.case_id).toEqual(DRAFT_PREFIX + draft.id);
@@ -1422,7 +1455,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             metadataFields: [caseField2],
           },
           getNextPage: () => null,
-          callbackErrorsSubject: new Subject<any>()
+          callbackErrorsSubject: new Subject<any>(),
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1496,9 +1530,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
-            { provide: LoadingService, useValue: loadingServiceMock }
+            { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -1621,7 +1656,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             tabs: [],
             metadataFields: [],
           },
-          getNextPage: () => null
+          getNextPage: () => null,
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1690,9 +1726,10 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
-            { provide: LoadingService, useValue: loadingServiceMock }
+            { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ],
         }).compileComponents();
       })
@@ -1939,7 +1976,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   function createWizardPage(
     fields: CaseField[] = [],
     isMultiColumn = false,
-    order = 0
+    order = 0,
+    id = 1
   ): WizardPage {
     const wp: WizardPage = new WizardPage();
     wp.case_fields = fields;
