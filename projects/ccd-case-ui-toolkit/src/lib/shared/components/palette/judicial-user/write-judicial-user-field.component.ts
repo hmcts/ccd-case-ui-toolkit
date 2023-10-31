@@ -41,7 +41,7 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
     super.ngOnInit();
     this.judicialUserControl = new FormControl(this.caseField.value);
     // FormControl needs to be added to the main FormGroup so it can be picked up by the PageValidationService when
-    // checking if the page is valid. formGroup.setControl() is used here to ensure any existing JudicialUser
+    // checking if the page is valid. FormGroup.setControl() is used here to ensure any existing JudicialUser
     // FormControl is replaced when the component is re-initialised, for example, if the user navigates away then
     // back to the page containing the JudicialUser field
     this.formGroup.setControl(`${this.caseField.id}_judicialUserControl`, this.judicialUserControl);

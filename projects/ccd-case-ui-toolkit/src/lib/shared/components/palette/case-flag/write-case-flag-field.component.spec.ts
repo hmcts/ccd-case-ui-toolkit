@@ -430,7 +430,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     component.moveToFinalReviewStage();
     expect(flagLauncherFormGroup.invalid).toBe(false);
     expect(flagLauncherFormGroup.errors).toBeNull();
-    // Set the component's FormGroup reference back to the parent FormGroup (it gets reassigned in ngOnInit())
+    // Set the component's formGroup reference back to the parent FormGroup (it gets reassigned in ngOnInit())
     component.formGroup = parentFormGroup;
     // Reload the component
     component.ngOnInit();

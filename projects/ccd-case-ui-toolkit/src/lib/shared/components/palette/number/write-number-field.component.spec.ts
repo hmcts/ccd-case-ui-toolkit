@@ -68,7 +68,7 @@ describe('WriteNumberFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should add a formControl linked to the field ID to the FormGroup', () => {
+  it('should add a formControl linked to the field ID to the formGroup', () => {
     expect(FORM_GROUP.controls[CASE_FIELD.id]).toBeTruthy();
   });
 

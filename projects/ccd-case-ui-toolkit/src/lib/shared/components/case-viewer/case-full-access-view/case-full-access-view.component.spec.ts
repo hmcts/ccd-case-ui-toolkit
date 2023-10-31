@@ -662,7 +662,6 @@ xdescribe('CaseFullAccessViewComponent', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           {provide: OrderService, useValue: orderService},
           {provide: ActivityPollingService, useValue: activityService},
-          //{provide: PollingService, useValue: pollingService},
           {provide: DraftService, useValue: draftService},
           {provide: AlertService, useValue: alertService},
           {provide: MatDialog, useValue: dialog},

@@ -53,7 +53,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       this.caseLevelCaseFlagData = this.flagsData.find(
         instance => instance.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
     } else if (this.context === PaletteContext.CHECK_YOUR_ANSWER) {
-      // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the formGroup.
+      // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the FormGroup.
       // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to:
       // i) the parent FormGroup for the Flags instance where changes have been made;
       // ii) the currently selected flag (selectedFlag) if one exists
