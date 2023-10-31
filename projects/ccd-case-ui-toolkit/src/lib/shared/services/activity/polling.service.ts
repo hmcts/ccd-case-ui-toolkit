@@ -65,13 +65,21 @@ export class PollingService {
         return Math.pow(2, consecutiveErrorsCount - 1) * options.exponentialUnit;
       case 'random':
         const [min, max] = options.randomRange;
-        const range = max - min;
-        return Math.floor(Math.random() * range) + min;
+        return this.cryptoSecureRandom(min, max);
       case 'consecutive':
         return options.constantTime || options.interval;
       default:
         console.error(`${options.backoffStrategy} is not a backoff strategy supported by rx-polling`);
         return options.constantTime || options.interval;
     }
+  }
+
+  private cryptoSecureRandom(min: number, max: number): number {
+    const range = max - min + 1;
+    const byteArray = new Uint32Array(1);
+
+    crypto.getRandomValues(byteArray);
+
+    return min + (byteArray[0] % range);
   }
 }
