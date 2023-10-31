@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.0-NodeAndNgUpgrades.1.1",
+  "version": "7.0.0-NodeAndNgUpgrades.2-material-legacy",
   "engines": {
     "node": ">=18.17.0"
   },

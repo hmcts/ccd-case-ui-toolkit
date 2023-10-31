@@ -1,7 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { MockComponent } from 'ng2-mock-component';
@@ -62,11 +62,11 @@ const $REMOVE_BUTTONS = By.css('.collection-title .button.button-secondary');
 
 const fieldWriteComponent = MockComponent({
   selector: 'ccd-field-write',
-  inputs: ['caseField', 'caseFields', 'FormGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
+  inputs: ['caseField', 'caseFields', 'formGroup', 'idPrefix', 'isExpanded', 'parent', 'isInSearchBlock']
 });
 const fieldReadComponent = MockComponent({
   selector: 'ccd-field-read',
-  inputs: ['caseField', 'caseFields', 'FormGroup', 'context']
+  inputs: ['caseField', 'caseFields', 'formGroup', 'context']
 });
 
 describe('WriteCollectionFieldComponent', () => {

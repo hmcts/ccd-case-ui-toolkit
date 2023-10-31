@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { MatTabsModule } from '@angular/material/tabs';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -41,7 +41,8 @@ import {
   NavigationOrigin,
   ProfileNotifier,
   ProfileService,
-  SessionStorageService
+  SessionStorageService,
+  PollingService
 } from '../../../services/';
 import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
 import { AlertService } from '../../../services/alert';
@@ -654,12 +655,14 @@ xdescribe('CaseFullAccessViewComponent', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
+          PollingService,
           {provide: NavigationNotifierService, useValue: navigationNotifierService},
           {provide: ErrorNotifierService, useValue: errorNotifierService},
           {provide: CaseNotifier, useValue: caseNotifier},
           {provide: ActivatedRoute, useValue: mockRoute},
           {provide: OrderService, useValue: orderService},
           {provide: ActivityPollingService, useValue: activityService},
+          //{provide: PollingService, useValue: pollingService},
           {provide: DraftService, useValue: draftService},
           {provide: AlertService, useValue: alertService},
           {provide: MatDialog, useValue: dialog},
@@ -1109,6 +1112,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: ActivityPollingService, useValue: activityService},
+          PollingService,
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1196,7 +1200,8 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DeleteOrCancelDialogComponent
+          DeleteOrCancelDialogComponent,
+          PollingService
         ]
       })
       .compileComponents();
@@ -1294,6 +1299,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
+          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,
@@ -1305,7 +1311,8 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
-        ]
+        ],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
 
@@ -1422,6 +1429,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
+          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,
@@ -1433,7 +1441,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
-        ]
+        ],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
 
@@ -1621,6 +1630,7 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
+          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,
@@ -1688,7 +1698,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     }
   ];
 
-  beforeEach((() => {
+  beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     navigationNotifierService = new NavigationNotifierService();
@@ -1758,6 +1768,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
+          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,
@@ -1769,10 +1780,13 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
-        ]
+        ],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
+  }));
 
+  beforeEach(() => {
     componentFixture = TestBed.createComponent(CaseFullAccessViewComponent);
     caseViewerComponent = componentFixture.componentInstance;
     caseViewerComponent.caseDetails = WORK_ALLOCATION_CASE_VIEW;
@@ -1800,7 +1814,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     ];
     debugElement = componentFixture.debugElement;
     componentFixture.detectChanges();
-  }));
+  });
 
   it('should display overview tab by default', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
@@ -1858,7 +1872,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
   let subscribeSpy: jasmine.Spy;
   let subscriptionMock: Subscription = new Subscription();
 
-  beforeEach((() => {
+  beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
     mockLocation = createSpyObj('location', ['path']);
@@ -1932,6 +1946,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
+          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,
@@ -1943,10 +1958,13 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
           DeleteOrCancelDialogComponent
-        ]
+        ],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
+  }));
 
+  beforeEach(() => {
     componentFixture = TestBed.createComponent(CaseFullAccessViewComponent);
     caseViewerComponent = componentFixture.componentInstance;
     caseViewerComponent.caseDetails = WORK_ALLOCATION_CASE_VIEW;
@@ -1967,7 +1985,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     debugElement = componentFixture.debugElement;
     componentFixture.detectChanges();
     de = componentFixture.debugElement;
-  }));
+  });
 
   it('should not call callAngularRouter() on initial (default) value', (done) => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);

@@ -12,7 +12,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Component({
   template: `
-      <div ccdConditionalShowForm [FormGroup]="FormGroup" [contextFields]="caseFields">
+      <div ccdConditionalShowForm [formGroup]="formGroup" [contextFields]="caseFields">
         <div>text field</div>
         <label>Yes</label>
         <input type="radio" formControlName="hasCar" id="HasCarY" value="Yes">

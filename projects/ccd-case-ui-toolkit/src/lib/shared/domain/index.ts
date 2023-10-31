@@ -21,3 +21,5 @@ export * from './search/sorting/sort-parameters';
 export * from './search/sorting/search-result-view-item-comparator';
 export * from './work-allocation';
 export * from './error-message.model';
+export * from './polling';
+

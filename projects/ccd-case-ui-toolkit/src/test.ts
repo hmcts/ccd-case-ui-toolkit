@@ -20,3 +20,5 @@ getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()
 );
+
+(window as any).process = { env: { DEBUG: undefined } };

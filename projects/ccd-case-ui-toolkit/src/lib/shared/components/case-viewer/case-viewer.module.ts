@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { RouterModule } from '@angular/router';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { AlertModule } from '../../../components/banners/alert/alert.module';
@@ -40,6 +40,7 @@ import { CaseViewComponent } from './case-view';
 import { CaseViewerComponent } from './case-viewer.component';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseResolver, EventTriggerResolver } from './services';
+import { PollingService } from '../../services/activity/polling.service';
 
 @NgModule({
   imports: [
@@ -95,6 +96,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     HttpService,
     CaseResolver,
     ErrorNotifierService,
+    PollingService
   ]
 })
 export class CaseViewerModule {

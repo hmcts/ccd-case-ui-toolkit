@@ -11,7 +11,7 @@ import { PaletteContext } from '../base-field/palette-context.enum';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { ReadComplexFieldComponent } from './read-complex-field.component';
 
-const inputs: string[] = ['caseField', 'caseFields', 'context', 'FormGroup', 'topLevelFormGroup', 'idPrefix'];
+const inputs: string[] = ['caseField', 'caseFields', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix'];
 
 describe('ReadComplexFieldComponent', () => {
   let readComplexFieldRawComponentMock;
@@ -31,7 +31,7 @@ describe('ReadComplexFieldComponent', () => {
 
     readComplexFieldNewTableComponentMock = MockComponent({
       selector: 'ccd-read-complex-field-collection-table',
-      inputs: ['caseField', 'context', 'FormGroup', 'topLevelFormGroup', 'idPrefix']
+      inputs: ['caseField', 'context', 'formGroup', 'topLevelFormGroup', 'idPrefix']
     });
   }
 

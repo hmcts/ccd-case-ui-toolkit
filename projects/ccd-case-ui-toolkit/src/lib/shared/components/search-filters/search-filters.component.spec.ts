@@ -539,7 +539,7 @@ describe('SearchFiltersComponent', () => {
         const arg: any = searchHandler.applyFilters.calls.mostRecent().args[0].selected;
         expect(arg['jurisdiction']).toEqual(JURISDICTION_3);
         expect(arg['caseType']).toEqual(CASE_TYPES_2[3]);
-        expect(arg['FormGroup'].value).toEqual(formGroup.value);
+        expect(arg['formGroup'].value).toEqual(formGroup.value);
         expect(searchHandler.applyFilters).toHaveBeenCalledTimes(1);
 
       });
