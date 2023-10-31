@@ -86,7 +86,7 @@
     "pegjs": "^0.10.0",
     "rpx-xui-translation": "1.0.0-NodeAndNgUpgrades-02",
     "rx-polling": "1.1.0",
-    "rxjs": "^6.6.7",
+    "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.9.1",
     "util": "^0.12.4",

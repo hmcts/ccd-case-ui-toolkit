@@ -61,10 +61,13 @@ describe('WriteFixedListFieldComponent', () => {
           WriteFixedListFieldComponent,
           MockRpxTranslatePipe
         ],
-        providers: []
+        providers: [],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
+  }));
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(WriteFixedListFieldComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
@@ -72,7 +75,7 @@ describe('WriteFixedListFieldComponent', () => {
 
     de = fixture.debugElement;
     fixture.detectChanges();
-  }));
+  });
 
   it('should select default value', () => {
     component.fixedListFormControl.setValue(null);

@@ -3672,7 +3672,7 @@ __metadata:
     rollup-plugin-typescript: ^1.0.0
     rpx-xui-translation: 1.0.0-NodeAndNgUpgrades-02
     rx-polling: 1.1.0
-    rxjs: ^6.6.7
+    rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     sass: ^1.54.0
     sass-loader: ^13.0.2
@@ -23153,7 +23153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:6.6.7, rxjs@npm:^6.5.2, rxjs@npm:^6.5.3, rxjs@npm:^6.6.7":
+"rxjs@npm:6.6.7, rxjs@npm:^6.5.2, rxjs@npm:^6.5.3":
   version: 6.6.7
   resolution: "rxjs@npm:6.6.7"
   dependencies:
@@ -23162,7 +23162,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.5":
+"rxjs@npm:^7.5.5, rxjs@npm:^7.8.1":
   version: 7.8.1
   resolution: "rxjs@npm:7.8.1"
   dependencies:
@@ -27559,11 +27559,11 @@ __metadata:
   linkType: hard
 
 "zone.js@npm:~0.13.1":
-  version: 0.13.1
-  resolution: "zone.js@npm:0.13.1"
+  version: 0.13.3
+  resolution: "zone.js@npm:0.13.3"
   dependencies:
     tslib: ^2.3.0
-  checksum: 35d18f7a3016c5c98d793ef7dd78acd53da7df38f45dc4739c562ff04189682ee8d2f9ee25faf1ac756d97fdb19bbaa73f3dc0acb192e5c56786ff33a31db56f
+  checksum: 73888a51b0299b4b56c56b97c71fe4a3548a9bdb9e4b4c49dd0e110a4487fbe7f141c08d3e3acff875a6fbb6d581750209ac767ae5d82dca0636ede41aebd436
   languageName: node
   linkType: hard
 

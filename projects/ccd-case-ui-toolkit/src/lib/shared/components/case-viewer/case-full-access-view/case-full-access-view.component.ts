@@ -8,8 +8,7 @@ import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig}
 import { MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
-import { Observable, Subject } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import {
   NotificationBannerConfig,

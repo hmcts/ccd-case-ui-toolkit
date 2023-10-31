@@ -10,7 +10,7 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "ccd-case",
+      "prefix": "app",
       "schematics": {},
       "architect": {
         "build": {
@@ -63,23 +63,6 @@
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "ccd-case-ui-toolkit:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
-            "styles": [],
-            "scripts": [],
-            "include": [
-              "**/*.spec.ts"
-            ],
-            "assets": [
-              "src/favicon.ico"
-            ]
           }
         },
         "lint": {
@@ -168,15 +151,13 @@
             "main": "projects/ccd-case-ui-toolkit/src/test.ts",
             "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.spec.json",
             "karmaConfig": "projects/ccd-case-ui-toolkit/src/karma.conf.js",
-            "codeCoverageExclude": [
-              "**/*.stories.ts",
-              "storybook/*.ts",
-              "storybook-static/*.ts"
-            ],
-            "include": [
-              "projects/**/*.spec.ts"
-            ],
+            "codeCoverageExclude": ["**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"],
             "codeCoverage": true
+          },
+          "codeCoverage": {
+            "exclude": [
+              "**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"
+            ]
           }
         },
         "lint": {
@@ -193,5 +174,6 @@
         }
       }
     }
-  }
+  },
+  "defaultProject": "ccd-case-ui-toolkit-lib"
 }
