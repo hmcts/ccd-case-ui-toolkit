@@ -38,6 +38,10 @@
 ### Version 6.19.6-case-flags-v2-reasonable-adjustments-v2
 **EUI-7243** Case flags v2 reasonable adjustments
 
+### Version 6.19.11-rc1
+**EXUI-1000** Complex type not showing data
+**EXUI-1006** Case Flags stopped working
+
 ### Version 6.19.5
 **EXUI-623** Make secure docstore work during case creation
 
