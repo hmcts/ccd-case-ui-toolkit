@@ -3,8 +3,7 @@ import { EMPTY, Observable, Subject, Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { ActivityService } from './activity.service';
-import { PollingService } from './polling.service';
-import { IOptionsApp } from '../../domain/polling';
+import { polling, IOptions } from 'rx-polling-hmcts';
 
 // @dynamic
 @Injectable()
@@ -12,11 +11,11 @@ export class ActivityPollingService {
   private readonly pendingRequests = new Map<string, Subject<Activity>>();
   private currentTimeoutHandle: any;
   private pollActivitiesSubscription: Subscription;
-  private readonly pollConfig: IOptionsApp;
+  private readonly pollConfig: IOptions;
   private readonly batchCollectionDelayMs: number;
   private readonly maxRequestsPerBatch: number;
 
-  constructor(private readonly activityService: ActivityService, private readonly ngZone: NgZone, private readonly config: AbstractAppConfig, private pollingService: PollingService) {
+  constructor(private readonly activityService: ActivityService, private readonly ngZone: NgZone, private readonly config: AbstractAppConfig) {
     this.pollConfig = {
       interval: config.getActivityNexPollRequestMs(),
       attempts: config.getActivityRetry(),
@@ -83,7 +82,7 @@ export class ActivityPollingService {
       return EMPTY;
     }
 
-    return this.pollingService.polling(this.activityService.getActivities(...caseIds), this.pollConfig);
+    return polling(this.activityService.getActivities(...caseIds), this.pollConfig);
   }
 
   public postViewActivity(caseId: string): Observable<Activity[]> {
@@ -91,7 +90,6 @@ export class ActivityPollingService {
   }
 
   public postEditActivity(caseId: string): Observable<Activity[]> {
-    console.log('this.postActivity(caseId, ActivityService.ACTIVITY_EDIT);', this.postActivity(caseId, ActivityService.ACTIVITY_EDIT))
     return this.postActivity(caseId, ActivityService.ACTIVITY_EDIT);
   }
 
@@ -127,6 +125,6 @@ export class ActivityPollingService {
       interval: 5000 // inline with CCD Backend
     };
 
-    return this.pollingService.polling(this.activityService.postActivity(caseId, activityType), pollingConfig);
+    return polling(this.activityService.postActivity(caseId, activityType), pollingConfig);
   }
 }

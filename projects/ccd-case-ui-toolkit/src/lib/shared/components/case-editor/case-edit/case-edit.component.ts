@@ -255,8 +255,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         eventTrigger,
         form
       });
-      this.caseSubmit({
-        form,
+      this.caseSubmit({form,
         caseEventData,
         submit
       });

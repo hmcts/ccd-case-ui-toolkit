@@ -40,7 +40,6 @@ import { CaseViewComponent } from './case-view';
 import { CaseViewerComponent } from './case-viewer.component';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseResolver, EventTriggerResolver } from './services';
-import { PollingService } from '../../services/activity/polling.service';
 
 @NgModule({
   imports: [
@@ -95,8 +94,7 @@ import { PollingService } from '../../services/activity/polling.service';
     DraftService,
     HttpService,
     CaseResolver,
-    ErrorNotifierService,
-    PollingService
+    ErrorNotifierService
   ]
 })
 export class CaseViewerModule {

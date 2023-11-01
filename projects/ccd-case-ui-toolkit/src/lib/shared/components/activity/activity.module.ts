@@ -8,7 +8,6 @@ import { SessionStorageService } from '../../services/session/session-storage.se
 import { ActivityBannerComponent } from './activity-banner';
 import { ActivityIconComponent } from './activity-icon';
 import { ActivityComponent } from './activity.component';
-import { PollingService } from '../../services/activity/polling.service';
 
 @NgModule({
     imports: [
@@ -30,7 +29,6 @@ import { PollingService } from '../../services/activity/polling.service';
         ActivityService,
         ActivityPollingService,
         SessionStorageService,
-        PollingService
     ]
 })
 export class ActivityModule {}

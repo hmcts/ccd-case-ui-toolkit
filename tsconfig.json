@@ -13,6 +13,7 @@
     "target": "es2015",
     "importHelpers": true,
     "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
     "typeRoots": [
       "node_modules/@types"
     ],

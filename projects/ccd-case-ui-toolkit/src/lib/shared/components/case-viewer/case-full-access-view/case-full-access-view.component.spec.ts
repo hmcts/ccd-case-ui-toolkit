@@ -41,8 +41,7 @@ import {
   NavigationOrigin,
   ProfileNotifier,
   ProfileService,
-  SessionStorageService,
-  PollingService
+  SessionStorageService
 } from '../../../services/';
 import { ActivityPollingService } from '../../../services/activity/activity.polling.service';
 import { AlertService } from '../../../services/alert';
@@ -655,7 +654,6 @@ xdescribe('CaseFullAccessViewComponent', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          PollingService,
           {provide: NavigationNotifierService, useValue: navigationNotifierService},
           {provide: ErrorNotifierService, useValue: errorNotifierService},
           {provide: CaseNotifier, useValue: caseNotifier},
@@ -1111,7 +1109,6 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: ActivityPollingService, useValue: activityService},
-          PollingService,
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1199,8 +1196,7 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           {provide: MatDialog, useValue: dialog},
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DeleteOrCancelDialogComponent,
-          PollingService
+          DeleteOrCancelDialogComponent
         ]
       })
       .compileComponents();
@@ -1298,7 +1294,6 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
-          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,
@@ -1428,7 +1423,6 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
-          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,
@@ -1629,7 +1623,6 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
-          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,
@@ -1767,7 +1760,6 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
-          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,
@@ -1945,7 +1937,6 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           {provide: ActivatedRoute, useValue: mockRoute},
           ActivityPollingService,
           ActivityService,
-          PollingService,
           HttpService,
           HttpErrorService,
           AuthService,

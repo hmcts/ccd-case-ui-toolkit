@@ -85,7 +85,7 @@
     "npm-registry-fetch": "^4.0.5",
     "pegjs": "^0.10.0",
     "rpx-xui-translation": "1.0.0-NodeAndNgUpgrades-02",
-    "rx-polling": "1.1.0",
+    "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "underscore": "^1.9.1",
