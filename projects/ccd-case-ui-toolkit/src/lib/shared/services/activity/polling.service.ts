@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, fromEvent, empty, timer } from 'rxjs';
-import { switchMap, startWith, retryWhen, scan, tap } from 'rxjs/operators';
+import { Observable, fromEvent, empty, timer, interval, concat } from 'rxjs';
+import { switchMap, startWith, retryWhen, scan, tap, take, repeat } from 'rxjs/operators';
 import { IOptionsApp } from '../../domain/polling';
 
 // Code adapted from rx-polling - https://github.com/jiayihu/rx-polling to work with angular 15 and node upgrade - angular 15 and node 18.17.0
@@ -24,9 +24,16 @@ export class PollingService {
       startWith(null),
       switchMap(() => {
         if (this.isPageActive() || options.backgroundPolling) {
-          return empty().pipe(
-            retryWhen(errors$ =>
-              errors$.pipe(
+          const firstRequest$ = request$;
+          const polling$ = interval(options.interval).pipe(
+            take(1),
+            switchMap(() => request$),
+            repeat()
+          );
+
+          return concat(firstRequest$, polling$).pipe(
+            retryWhen((errors$) => {
+              return errors$.pipe(
                 scan(
                   ({ errorCount, error }, err) => ({ errorCount: errorCount + 1, error: err }),
                   { errorCount: 0, error: null }
@@ -42,14 +49,15 @@ export class PollingService {
                   const delay = this.getStrategyDelay(consecutiveErrorsCount, options);
                   return timer(delay);
                 })
-              )
-            )
+              );
+            })
           );
         }
 
         return empty();
       }),
-      tap(() => {
+      tap<T>(() => {
+        // Update the counter after every successful polling
         lastRecoverCount = allErrorsCount;
       })
     );
@@ -64,7 +72,7 @@ export class PollingService {
       case 'exponential':
         return Math.pow(2, consecutiveErrorsCount - 1) * options.exponentialUnit;
       case 'random':
-        const [min, max] = options.randomRange;
+        const [min, max] = Array.isArray(options.randomRange) ? options.randomRange : [0, 0];
         return this.cryptoSecureRandom(min, max);
       case 'consecutive':
         return options.constantTime || options.interval;
