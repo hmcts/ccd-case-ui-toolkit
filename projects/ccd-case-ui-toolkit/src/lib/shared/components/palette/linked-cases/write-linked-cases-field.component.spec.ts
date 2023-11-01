@@ -10,7 +10,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseView } from '../../../domain/case-view';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { Draft } from '../../../domain/draft.model';
-import { LoadingService } from '../../../services';
+import { FieldsUtils, LoadingService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
@@ -29,6 +29,7 @@ import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.compo
 
 import createSpyObj = jasmine.createSpyObj;
 import { ServiceOrg } from '../../../domain/case-view/service-org-response.model';
+import { ValidPageListCaseFieldsService } from '../../case-editor/services/valid-page-list-caseFields.service';
 
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
@@ -85,8 +86,10 @@ describe('WriteLinkedCasesFieldComponent', () => {
   const formErrorService = new FormErrorService();
   const caseFieldService = new CaseFieldService();
   const pageValidationService = new PageValidationService(caseFieldService);
+  const fieldUtils = new FieldsUtils();
+  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldUtils);
   caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
-    route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, new CaseEditDataService(), new LoadingService());
+    route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, new CaseEditDataService(), new LoadingService(), validPageListCaseFieldsService);
 
   const caseInfo = {
     case_id: '1682374819203471',
