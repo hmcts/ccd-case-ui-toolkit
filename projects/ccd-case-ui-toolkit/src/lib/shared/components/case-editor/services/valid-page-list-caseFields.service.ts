@@ -16,7 +16,7 @@ export class ValidPageListCaseFieldsService {
   }
 
   public deleteNonValidatedFields(validPageList: WizardPage[], caseEventDatadata: object, eventTriggerFields: CaseField[],
-    fromPreviousPage: boolean = false, formFields: object): void {
+    fromPreviousPage: boolean, formFields: object): void {
     const pageListCaseFields = this.validPageListCaseFields(validPageList, eventTriggerFields, formFields);
     if (!fromPreviousPage && pageListCaseFields.length > 0) {
       Object.keys(caseEventDatadata).forEach(key => {
