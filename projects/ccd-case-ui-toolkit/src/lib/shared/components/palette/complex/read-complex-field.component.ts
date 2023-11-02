@@ -25,7 +25,7 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
       }
     }
     if (this.caseField.field_type) {
-      this.caseField.field_type.complex_fields.forEach(field => {
+      this.caseField?.field_type?.complex_fields?.forEach((field) => {
         if (field.isDynamic()) {
           field.list_items = this.caseField.value[field.id].list_items;
           field.value = {

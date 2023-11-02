@@ -10,7 +10,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { MAT_LEGACY_DATE_LOCALE, LegacyThemePalette as ThemePalette } from '@angular/material/legacy-core';
 import { Moment } from 'moment/moment';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
