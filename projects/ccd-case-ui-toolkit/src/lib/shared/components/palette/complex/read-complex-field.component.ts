@@ -31,8 +31,8 @@ export class ReadComplexFieldComponent extends AbstractFieldReadComponent implem
           field.value = {
             list_items: field.list_items,
             value: this.caseField.value[field.id].value && this.caseField.value[field.id].value.code ?
-                    this.caseField.value[field.id].value.code :
-                    this.caseField.value[field.id].value
+              this.caseField.value[field.id].value.code :
+              this.caseField.value[field.id].value
           };
         }
       });
