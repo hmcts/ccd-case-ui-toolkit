@@ -572,7 +572,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
 
     // delete fields which are not part of the case event journey wizard pages case fields
-    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.caseEdit.validPageList, caseEventData.data, this.eventTrigger.case_fields, fromPreviousPage);
+    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.caseEdit.validPageList, caseEventData.data, this.eventTrigger.case_fields, fromPreviousPage, this.editForm.controls['data'].value);
 
     // Tidy it up before we return it.
     this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase,
