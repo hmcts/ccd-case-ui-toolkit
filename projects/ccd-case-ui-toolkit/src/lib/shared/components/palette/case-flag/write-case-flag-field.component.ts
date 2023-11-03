@@ -543,6 +543,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public setDisplayContextParameter(caseFields: CaseField[]): string {
-    return caseFields.find(caseField => FieldsUtils.isFlagLauncherCaseField(caseField))?.display_context_parameter;
+    return caseFields.find(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))?.display_context_parameter;
   }
 }
