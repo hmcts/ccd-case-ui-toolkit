@@ -1,6 +1,9 @@
 ## RELEASE NOTES
 
-### Version 6.19.11-rc1
+### Version 7.0.0-rc3
+**EXUI-763** Upgrade ccd-ui-toolkit to Node 118.17.0 and Angular 15
+
+### Version 6.19.11-rc3
 **EXUI-1000** Complex type not showing data
 **EXUI-1006** Case Flags stopped working
 
