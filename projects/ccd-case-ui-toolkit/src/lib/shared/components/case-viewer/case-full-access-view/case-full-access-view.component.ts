@@ -281,7 +281,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       if (foundTab) {
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, foundTab.id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
-          this.tabGroup.selectedIndex = matTab.position;
+          if (matTab && matTab.position) {
+            this.tabGroup.selectedIndex = matTab.position;
+          }
         });
         // last path is caseId
       } else {
@@ -291,7 +293,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
-          this.tabGroup.selectedIndex = matTab.position;
+          if (matTab && matTab.position) {
+            this.tabGroup.selectedIndex = matTab.position;
+          }
         });
       }
     } else {
@@ -457,5 +461,4 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   private getTabIndexByTabLabel(tabGroup: MatTabGroup, tabLabel) {
     return tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tabLabel.toLowerCase());
   }
-
 }
