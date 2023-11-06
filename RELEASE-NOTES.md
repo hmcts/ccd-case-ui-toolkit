@@ -5,6 +5,10 @@
 ### Version 6.19.6-case-file-view-document-upload-date-v2
 **EUI-7807** Case file view v1.1
 
+### Version 6.19.11-rc1
+**EXUI-1000** Complex type not showing data
+**EXUI-1006** Case Flags stopped working
+
 ### Version 6.19.5
 **EXUI-623** Make secure docstore work during case creation
 

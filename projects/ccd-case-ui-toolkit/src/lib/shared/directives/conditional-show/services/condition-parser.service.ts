@@ -177,7 +177,7 @@ export class ConditionParser {
 
   private static findValueForComplexConditionInArray(fields: object, head: string, tail: string[], path?: string): any {
     // use the path to resolve which array element we refer to
-    if (path.startsWith(head)) {
+    if (path && path.startsWith(head)) {
       const [_, ...pathTail] = path.split(/[_]+/g);
       if (pathTail.length > 0) {
         try {
