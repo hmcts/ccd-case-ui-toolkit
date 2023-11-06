@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.11-case-file-view-feature-toggle-v1.1
+**EUI-7807** Case file view v1.1
+
 ### Version 6.19.6-case-file-view-document-upload-date-v2
 **EUI-7807** Case file view v1.1
 
