@@ -314,6 +314,45 @@ describe('CaseEventTriggerComponent', () => {
     expect(casesService.validateCase).toHaveBeenCalled();
   });
 
+  it('should not bypass validation if the eventTrigger has no case fields', (done) => {
+    spyOn(FieldsUtils, 'isCaseFieldOfType').and.callThrough();
+    component.eventTrigger = {
+      id: 'event',
+      name: 'Dummy event',
+      case_fields: null,
+      event_token: 'abc',
+      wizard_pages: [],
+      hasFields(): boolean {
+        return true;
+      },
+      hasPages(): boolean {
+        return false;
+      },
+    };
+    SANITISED_EDIT_FORM.data = {
+      caseFlagLauncherField1: null
+    };
+
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+      expect(result).not.toBeNull();
+      done();
+    });
+    expect(FieldsUtils.isCaseFieldOfType).not.toHaveBeenCalled();
+    expect(casesService.validateCase).toHaveBeenCalled();
+  });
+
+  it('should not bypass validation if the eventTrigger is falsy', (done) => {
+    spyOn(FieldsUtils, 'isCaseFieldOfType').and.callThrough();
+    component.eventTrigger = null;
+
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+      expect(result).not.toBeNull();
+      done();
+    });
+    expect(FieldsUtils.isCaseFieldOfType).not.toHaveBeenCalled();
+    expect(casesService.validateCase).toHaveBeenCalled();
+  });
+
   it('should cancel navigate to linked cases tab', () => {
     const routerWithModifiedUrl = TestBed.get(Router);
     routerWithModifiedUrl.url = 'linkCases';
