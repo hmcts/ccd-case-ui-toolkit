@@ -312,7 +312,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     // sortedTabs are fragments
     // appended/prepepended tabs use router navigation
     if ((tabIndexChanged <= 1 && this.prependedTabs && this.prependedTabs.length) ||
-      (this.appendedTabs && this.appendedTabs.length && tabLabel === this.HEARINGS_TAB_LABEL)) {
+      (this.appendedTabs?.length && tabLabel === this.HEARINGS_TAB_LABEL)) {
       // Hack to get ID from tab as it's not easily achieved through Angular Material Tabs
       const tab = matTab['_viewContainerRef'] as ViewContainerRef;
       const id = (tab.element.nativeElement as HTMLElement).id;
@@ -332,6 +332,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     const targetTabIndex = this.tabGroup._tabs.toArray().findIndex(tab => tab.textLabel === triggerOutputEventText);
     if (targetTabIndex > -1) {
       this.selectedTabIndex = targetTabIndex;
+      this.tabGroup.selectedIndex = targetTabIndex;
     }
   }
 
