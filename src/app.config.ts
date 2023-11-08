@@ -92,6 +92,7 @@ export abstract class AbstractAppConfig {
 
   abstract getRefundsUrl(): string;
   abstract getPaymentReturnUrl(): string;
+  abstract getEnableCaseFileViewVersion1_1(): boolean
 }
 
 export class CaseEditorConfig {
