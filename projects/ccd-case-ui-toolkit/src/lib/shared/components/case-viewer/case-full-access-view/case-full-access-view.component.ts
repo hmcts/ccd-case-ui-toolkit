@@ -175,7 +175,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           const tabUrl = url ? url.split('#') : null;
           const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
           const matTab = this.tabGroup._tabs.find((x) => x.textLabel.toLowerCase() === tab.toLowerCase());
-          if (matTab && matTab.position) {
+          if (matTab && matTab.position !== null) {
             this.tabGroup.selectedIndex = matTab.position;
           }
         }
@@ -275,13 +275,15 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
-        foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
+        foundTab = additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
       }
       // found tasks or hearing tab
       if (foundTab) {
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, foundTab.id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
-          this.tabGroup.selectedIndex = matTab.position;
+          if (matTab && matTab.position !== null) {
+            this.tabGroup.selectedIndex = matTab.position;
+          }
         });
         // last path is caseId
       } else {
@@ -291,7 +293,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
-          this.tabGroup.selectedIndex = matTab.position;
+          if (matTab && matTab.position !== null) {
+            this.tabGroup.selectedIndex = matTab.position;
+          }
         });
       }
     } else {
@@ -307,7 +311,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
         hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
-      if (matTab && matTab.position) {
+      if (matTab && matTab.position !== null) {
         this.tabGroup.selectedIndex = matTab.position;
       }
     }
@@ -457,5 +461,4 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   private getTabIndexByTabLabel(tabGroup: MatTabGroup, tabLabel) {
     return tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tabLabel.toLowerCase());
   }
-
 }

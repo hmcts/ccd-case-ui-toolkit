@@ -835,5 +835,19 @@ describe('FieldsUtils', () => {
         'Please select Next to complete the update of the selected support request'
       );
     });
+
+    it('should return correct validation error message when creating case flag, Case Flags v2.1 enabled', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(CREATE,VERSION2.1)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the creation of the case flag'
+      );
+    });
+
+    it('should return correct validation error message when updating case flag, Case Flags v2.1 enabled', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(UPDATE,VERSION2.1)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the update of the selected case flag'
+      );
+    });
   });
 });
