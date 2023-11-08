@@ -748,12 +748,12 @@ describe('CaseEditSubmitComponent', () => {
       expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
     });
 
-    fit('should return "Return to case list" text label for cancel button when save and resume enabled', () => {
+    it('should return "Return to case list" text label for cancel button when save and resume enabled', () => {
       const result = comp.getCancelText();
       expect(result).toBe('Return to case list');
     });
 
-    fit('should have metadata Fields', () => {
+    it('should have metadata Fields', () => {
       expect(comp.metadataFieldsObject).toBeDefined();
     });
 

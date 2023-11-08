@@ -140,184 +140,14 @@ describe('ReadFieldsFilterPipe', () => {
     show_condition: null
   });
 
-  const METADATA: CaseField[] = [
-    Object.assign(new CaseField(), {
-      id: '[CASE_REFERENCE]',
-      label: 'Case Reference',
-      value: 1533032330714079,
-      hint_text: null,
-      field_type: {
-        id: 'Number',
-        type: 'Number',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    }),
-    Object.assign(new CaseField(), {
-      id: '[STATE]',
-      label: 'State',
-      value: 1533032330714079,
-      hint_text: null,
-      field_type: {
-        id: 'Number',
-        type: 'Number',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    }),
-    Object.assign(new CaseField(), {
-      id: '[CASE_TYPE]',
-      label: 'Case Type',
-      value: 'DIVORCE',
-      hint_text: null,
-      field_type: {
-        id: 'Text',
-        type: 'Text',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    }),
-    Object.assign(new CaseField(), {
-      id: '[CREATED_DATE]',
-      label: 'Created Date',
-      value: '2018-07-31T10:18:50.737',
-      hint_text: null,
-      field_type: {
-        id: 'Date',
-        type: 'Date',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    }),
-    Object.assign(new CaseField(), {
-      id: '[JURISDICTION]',
-      label: 'Jurisdiction',
-      value: 'DIVORCE',
-      hint_text: null,
-      field_type: {
-        id: 'Text',
-        type: 'Text',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    }),
-    Object.assign(new CaseField(), {
-      id: '[LAST_MODIFIED_DATE]',
-      label: 'Last Modified Date',
-      value: '2018-07-31T10:18:50.737',
-      hint_text: null,
-      field_type: {
-        id: 'Date',
-        type: 'Date',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    }),
-    Object.assign(new CaseField(), {
-      id: '[SECURITY_CLASSIFICATION]',
-      label: 'Security Classification',
-      value: 'PUBLIC',
-      hint_text: null,
-      field_type: {
-        id: 'Text',
-        type: 'Text',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    }),
-    Object.assign(new CaseField(), {
-      id: '[SECURITY_CLASSIFICATION]',
-      label: 'Security Classification',
-      value: 'PUBLIC',
-      hint_text: null,
-      field_type: {
-        id: 'Text',
-        type: 'Text',
-        min: null,
-        max: null,
-        regular_expression: null,
-        fixed_list_items: [],
-        complex_fields: [],
-        collection_field_type: null
-      },
-      security_label: 'PUBLIC',
-      order: null,
-      display_context: null,
-      show_condition: null,
-      show_summary_change_option: null,
-      show_summary_content_option: null
-    })
-  ];
+  const METADATA: object = {
+    ACCESS_GRANTED: 'STANDARD',
+    ACCESS_PROCESS: 'NONE',
+    CASE_REFERENCE: 1699282593769522,
+    CASE_TYPE: 'Benefit',
+    JURISDICTION: 'SSCS',
+    STATE: 'readyToList'
+  };
 
   const FORM_GROUP = new FormGroup({
     data: new FormGroup({
@@ -512,7 +342,7 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(true);
   });
-  it('should evaluate showcondition and set the hidden property of field to false when value doesn\'t match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
+  it('should evaluate showcondition and set the hidden property of field to false when value match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
     complexCaseField2.value = {
       caseAccepted: 'Yes',
       dateAccepted: '10/01/2023'
@@ -523,15 +353,26 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(false);
   });
-  it('should evaluate showcondition and set the hidden property of field to true when value match with MetaData field', () => {
+  it('should evaluate showcondition and set the hidden property of field to false when value match with MetaData field', () => {
     complexCaseField2.value = {
       caseAccepted: 'Yes',
       dateAccepted: '10/01/2023'
     };
-    complexCaseField2.field_type.complex_fields[1].show_condition = 'caseAccepted=\"Yes\"';
-    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, FORM_GROUP.controls['data'], undefined, '');
+    complexCaseField2.field_type.complex_fields[1].show_condition = 'STATE=\"readyToList\"';
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, FORM_GROUP.controls['data'], undefined, undefined, METADATA);
     expect(RESULT.length).toEqual(2);
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(false);
+  });
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match with MetaData field', () => {
+    complexCaseField2.value = {
+      caseAccepted: 'Yes',
+      dateAccepted: '10/01/2023'
+    };
+    complexCaseField2.field_type.complex_fields[1].show_condition = 'STATE=\"Do Not Show\"';
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, FORM_GROUP.controls['data'], undefined, undefined, METADATA);
+    expect(RESULT.length).toEqual(2);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(true);
   });
 });
