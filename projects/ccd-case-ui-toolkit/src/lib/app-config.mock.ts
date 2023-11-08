@@ -210,4 +210,8 @@ export class AppMockConfig implements AbstractAppConfig {
   public getEnableRestrictedCaseAccessConfig(): boolean {
     return true;
   }
+
+  public getEnableCaseFileViewVersion1_1(): boolean {
+    return true;
+  }
 }
