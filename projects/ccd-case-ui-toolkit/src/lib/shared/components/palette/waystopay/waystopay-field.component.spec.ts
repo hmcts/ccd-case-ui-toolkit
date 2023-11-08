@@ -73,8 +73,7 @@ const APP_CONFIG: AbstractAppConfig = {
   getCaseFlagsRefdataApiUrl: () => 'caseFlagsRefdataApiUrl',
   getRDCommonDataApiUrl: () => 'rd_common_data_api_url',
   getCaseDataStoreApiUrl: () => 'case_data_store_api_url',
-  getWAServiceConfig: () => 'waServiceConfig',
-  getEnableCaseFileViewVersion1_1: () => true
+  getWAServiceConfig: () => 'waServiceConfig'
 };
 
 let paymentWebComponentMock;

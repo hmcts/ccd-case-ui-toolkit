@@ -13,7 +13,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
           document_filename: 'Lager encyclopedia',
           document_binary_url: '/test/binary',
           attribute_path: '',
-          upload_timestamp: new Date(2023, 4, 11),
+          upload_timestamp: '',
           content_type: ''
         },
         {
@@ -21,7 +21,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
           document_filename: 'Beers encyclopedia',
           document_binary_url: '/test/binary',
           attribute_path: '',
-          upload_timestamp: new Date(2023, 3, 14),
+          upload_timestamp: '',
           content_type: ''
         },
         {
@@ -29,7 +29,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
           document_filename: 'Ale encyclopedia',
           document_binary_url: '/test/binary',
           attribute_path: '',
-          upload_timestamp: new Date(2023, 2, 12),
+          upload_timestamp: '',
           content_type: ''
         }
       ],
@@ -74,40 +74,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
           category_id: 'WinesItalian',
           category_name: 'Italian',
           category_order: 2,
-          documents: [
-            {
-              document_url: '/red-wine',
-              document_filename: 'Details about red wine',
-              document_binary_url: '/test/binary',
-              attribute_path: '',
-              upload_timestamp: null,
-              content_type: ''
-            },
-            {
-              document_url: '/white-wine',
-              document_filename: 'Details about white wine',
-              document_binary_url: '/test/binary',
-              attribute_path: '',
-              upload_timestamp: new Date(2023, 1, 10),
-              content_type: ''
-            },
-            {
-              document_url: '/prosecco',
-              document_filename: 'Details about Prosecco',
-              document_binary_url: '/test/binary',
-              attribute_path: '',
-              upload_timestamp: new Date(2023, 3, 12),
-              content_type: ''
-            },
-            {
-              document_url: '/pinot-grigio',
-              document_filename: 'Details about Pinot Grigio',
-              document_binary_url: '/test/binary',
-              attribute_path: '',
-              upload_timestamp: new Date(2023, 2, 16),
-              content_type: ''
-            }
-          ],
+          documents: [],
           sub_categories: []
         }
       ]
@@ -155,7 +122,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
                       document_filename: 'Details about Whisky Lowland 1',
                       document_binary_url: '/test/binary',
                       attribute_path: '',
-                      upload_timestamp: new Date(2022, 5, 21),
+                      upload_timestamp: '',
                       content_type: ''
                     }
                   ],
@@ -180,7 +147,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
                   document_filename: 'Details about Whisky Islay',
                   document_binary_url: '/test/binary',
                   attribute_path: '',
-                  upload_timestamp: new Date(2022, 10, 4),
+                  upload_timestamp: '',
                   content_type: ''
                 },
                 {
@@ -188,7 +155,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
                   document_filename: 'More information about Whisky Islay',
                   document_binary_url: '/test/binary',
                   attribute_path: '',
-                  upload_timestamp: new Date(2022, 11, 28),
+                  upload_timestamp: '',
                   content_type: ''
                 }
               ],
@@ -219,7 +186,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
       document_filename: 'Uncategorised document 1',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: new Date(2022, 10, 17),
+      upload_timestamp: '',
       content_type: ''
     },
     {
@@ -227,7 +194,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
       document_filename: 'Uncategorised document 2',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: new Date(2023, 1, 23),
+      upload_timestamp: '',
       content_type: ''
     }
   ]
