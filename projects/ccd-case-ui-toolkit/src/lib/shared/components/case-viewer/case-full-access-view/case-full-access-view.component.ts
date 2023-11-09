@@ -341,6 +341,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     const targetTabIndex = this.tabGroup._tabs.toArray().findIndex(tab => tab.textLabel === triggerOutputEventText);
     if (targetTabIndex > -1) {
       this.selectedTabIndex = targetTabIndex;
+      this.tabGroup.selectedIndex = targetTabIndex;
     }
   }
 

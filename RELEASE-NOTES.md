@@ -16,6 +16,15 @@
 
 ### Version 6.19.6-case-flags-v2-reasonable-adjustments-v2
 **EUI-7243** Case flags v2 reasonable adjustments
+### Version 6.19.11-case-file-view-feature-toggle-v1.1
+**EUI-7807** Case file view v1.1
+
+### Version 6.19.6-case-file-view-document-upload-date-v2
+**EUI-7807** Case file view v1.1
+
+### Version 6.19.11-rc1
+**EXUI-1000** Complex type not showing data
+**EXUI-1006** Case Flags stopped working
 
 ### Version 6.19.5
 **EXUI-623** Make secure docstore work during case creation
@@ -139,6 +148,11 @@
 
 ### Version 6.10.7-case-flags-confirm-flag-status-step
 **EUI-7350** Add "confirm flag status" step of Create Case Flag journey
+### Version 6.13.10-case-file-view-sort-by-document-upload-date-v9
+**EUI-7812** Case file view sort by document upload date
+
+### Version 6.13.10-case-file-view-display-document-upload-date-v3
+**EUI-7819** Case file view display document upload date
 
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types

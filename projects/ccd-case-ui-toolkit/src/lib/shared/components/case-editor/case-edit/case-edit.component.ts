@@ -268,148 +268,153 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   private getEventId(form: FormGroup): string {
     return form.value.event.id;
- }
-
- private generateCaseEventData({ eventTrigger, form }: CaseEditGenerateCaseEventData ): CaseEventData {
-  const caseEventData: CaseEventData = {
-    data: this.replaceEmptyComplexFieldValues(
-      this.formValueService.sanitise(
-        this.replaceHiddenFormValuesWithOriginalCaseData(
-          form.get('data') as FormGroup, eventTrigger.case_fields))),
-    event: form.value.event
-  } as CaseEventData;
-  this.formValueService.clearNonCaseFields(caseEventData.data, eventTrigger.case_fields);
-  this.formValueService.removeNullLabels(caseEventData.data, eventTrigger.case_fields);
-  this.formValueService.removeEmptyDocuments(caseEventData.data, eventTrigger.case_fields);
-  // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
-  // these will fail validation
-  this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, eventTrigger.case_fields);
-  // For Case Flag submissions (where a FlagLauncher field is present in the event trigger), the flag details data
-  // needs populating for each Flags field, then the FlagLauncher field needs removing
-  this.formValueService.repopulateFormDataFromCaseFieldValues(caseEventData.data, eventTrigger.case_fields);
-  // Data population step required for Linked Cases
-  this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
-  // Remove "Launcher"-type fields (these have no values and are not intended to be persisted)
-  this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
-
-  // delete fields which are not part of the case event journey wizard pages case fields
-  this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, eventTrigger.case_fields, false);
-
-  caseEventData.event_token = eventTrigger.event_token;
-  caseEventData.ignore_warning = this.ignoreWarning;
-  if (this.confirmation) {
-    caseEventData.data = {};
   }
 
-  return caseEventData;
-}
+  private generateCaseEventData({ eventTrigger, form }: CaseEditGenerateCaseEventData ): CaseEventData {
+    const caseEventData: CaseEventData = {
+      data: this.replaceEmptyComplexFieldValues(
+        this.formValueService.sanitise(
+          this.replaceHiddenFormValuesWithOriginalCaseData(
+            form.get('data') as FormGroup, eventTrigger.case_fields))),
+      event: form.value.event
+    } as CaseEventData;
+    this.formValueService.clearNonCaseFields(caseEventData.data, eventTrigger.case_fields);
+    this.formValueService.removeNullLabels(caseEventData.data, eventTrigger.case_fields);
+    this.formValueService.removeEmptyDocuments(caseEventData.data, eventTrigger.case_fields);
+    // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
+    // these will fail validation
+    this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, eventTrigger.case_fields);
+    // For Case Flag submissions (where a FlagLauncher field is present in the event trigger), the flag details data
+    // needs populating for each Flags field, then the FlagLauncher field needs removing
+    this.formValueService.repopulateFormDataFromCaseFieldValues(caseEventData.data, eventTrigger.case_fields);
+    // Data population step required for Linked Cases
+    this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
+    // Remove "Launcher"-type fields (these have no values and are not intended to be persisted)
+    this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
 
-/**
- * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
- * all its sub-fields and descendants are `null` or `undefined`.
- *
- * @param data The object tree representing all the form field data
- * @returns The form field data modified accordingly
- */
-private replaceEmptyComplexFieldValues(data: object): object {
-  Object.keys(data).forEach((key) => {
-    if (!Array.isArray(data[key]) && typeof data[key] === 'object' && !FieldsUtils.containsNonEmptyValues(data[key])) {
-      data[key] = null;
+    // delete fields which are not part of the case event journey wizard pages case fields
+    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, eventTrigger.case_fields, false);
+    const pageListCaseFields = this.validPageListCaseFieldsService.validPageListCaseFields(this.validPageList, caseEventData.data, eventTrigger.case_fields);
+    // Remove unnecessary case fields which are hidden, only if the submission is *not* for Case Flags
+    if (!this.isCaseFlagSubmission) {
+      this.formValueService.removeUnnecessaryFields(caseEventData.data, pageListCaseFields, true, true);
     }
-  });
 
-  return data;
-}
+    caseEventData.event_token = eventTrigger.event_token;
+    caseEventData.ignore_warning = this.ignoreWarning;
+    if (this.confirmation) {
+      caseEventData.data = {};
+    }
 
-/**
- * Traverse *all* values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), replacing the
- * value of any that are hidden AND have `retain_hidden_value` set to `true` in the corresponding `CaseField`, with
- * the *original* value held in the `CaseField` object.
- *
- * This is as per design in EUI-3622, where any user-driven updates to hidden fields with `retain_hidden_value` =
- * `true` are ignored (thus retaining the value displayed originally).
- *
- * * For Complex field types, the replacement above is performed recursively for all hidden sub-fields with
- * `retain_hidden_value` = `true`.
- *
- * * For Collection field types, including collections of Complex and Document field types, the replacement is
- * performed for all fields in the collection.
- *
- * @param formGroup The `FormGroup` instance whose raw values are to be traversed
- * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `formGroup`
- * @param parentField Reference to the parent `CaseField`. Used for retrieving the sub-field values of a Complex field
- * to perform recursive replacement - the sub-field `CaseField`s themselves do *not* contain any values
- * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
- */
-private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFields: CaseField[], parentField?: CaseField): object {
-  // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
-  const rawFormValueData = formGroup.getRawValue();
-
-  // Place all case fields in a lookup object, so they can be retrieved by id
-  const caseFieldsLookup = {};
-  for (let i = 0, len = caseFields.length; i < len; i++) {
-    caseFieldsLookup[caseFields[i].id] = caseFields[i];
+    return caseEventData;
   }
 
   /**
-   * Replace any form value with the original, where its CaseField is hidden AND has the retain_hidden_value flag set
-   * to true.
+   * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
+   * all its sub-fields and descendants are `null` or `undefined`.
    *
-   * If the CaseField's `hidden` attribute is null or undefined, then check this attribute in the parent CaseField (if
-   * one exists). This is occurring (and is possibly a bug) when a CaseField is a sub-field of a Complex type, or an
-   * item in a Collection type.
-   *
-   * If the field is a Complex type with retain_hidden_value = true, perform a recursive replacement for all (hidden)
-   * sub-fields with retain_hidden_value = true, using their original CaseField values (from the `formatted_value`
-   * attribute).
-   *
-   * If the field is a Collection type with retain_hidden_value = true, the entire collection is replaced with the
-   * original from `formatted_value`. This applies to *all* types of Collections.
+   * @param data The object tree representing all the form field data
+   * @returns The form field data modified accordingly
    */
-  /* istanbul ignore next */
-  Object.keys(rawFormValueData).forEach((key) => {
-    const caseField: CaseField = caseFieldsLookup[key];
-    // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
-    // both null and undefined are equal to *neither false nor true*)
-    if (caseField && caseField.retain_hidden_value &&
-      (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
-      if (caseField.field_type.type === 'Complex') {
-        // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
-        // handle both null and undefined values
-        if (caseField.value != null) {
-          // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
-          // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
-          // parent)
-          // Update rawFormValueData for this field
-          // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
-          const form: FormGroup = new FormGroup({});
-          if (formGroup.controls[key].value) {
-            Object.keys(formGroup.controls[key].value).forEach((item) => {
-              form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
-            });
+  private replaceEmptyComplexFieldValues(data: object): object {
+    Object.keys(data).forEach((key) => {
+      if (!Array.isArray(data[key]) && typeof data[key] === 'object' && !FieldsUtils.containsNonEmptyValues(data[key])) {
+        data[key] = null;
+      }
+    });
+
+    return data;
+  }
+
+  /**
+   * Traverse *all* values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), replacing the
+   * value of any that are hidden AND have `retain_hidden_value` set to `true` in the corresponding `CaseField`, with
+   * the *original* value held in the `CaseField` object.
+   *
+   * This is as per design in EUI-3622, where any user-driven updates to hidden fields with `retain_hidden_value` =
+   * `true` are ignored (thus retaining the value displayed originally).
+   *
+   * * For Complex field types, the replacement above is performed recursively for all hidden sub-fields with
+   * `retain_hidden_value` = `true`.
+   *
+   * * For Collection field types, including collections of Complex and Document field types, the replacement is
+   * performed for all fields in the collection.
+   *
+   * @param formGroup The `FormGroup` instance whose raw values are to be traversed
+   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `formGroup`
+   * @param parentField Reference to the parent `CaseField`. Used for retrieving the sub-field values of a Complex field
+   * to perform recursive replacement - the sub-field `CaseField`s themselves do *not* contain any values
+   * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
+   */
+  private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFields: CaseField[], parentField?: CaseField): object {
+    // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
+    const rawFormValueData = formGroup.getRawValue();
+
+    // Place all case fields in a lookup object, so they can be retrieved by id
+    const caseFieldsLookup = {};
+    for (let i = 0, len = caseFields.length; i < len; i++) {
+      caseFieldsLookup[caseFields[i].id] = caseFields[i];
+    }
+
+    /**
+     * Replace any form value with the original, where its CaseField is hidden AND has the retain_hidden_value flag set
+     * to true.
+     *
+     * If the CaseField's `hidden` attribute is null or undefined, then check this attribute in the parent CaseField (if
+     * one exists). This is occurring (and is possibly a bug) when a CaseField is a sub-field of a Complex type, or an
+     * item in a Collection type.
+     *
+     * If the field is a Complex type with retain_hidden_value = true, perform a recursive replacement for all (hidden)
+     * sub-fields with retain_hidden_value = true, using their original CaseField values (from the `formatted_value`
+     * attribute).
+     *
+     * If the field is a Collection type with retain_hidden_value = true, the entire collection is replaced with the
+     * original from `formatted_value`. This applies to *all* types of Collections.
+     */
+    /* istanbul ignore next */
+    Object.keys(rawFormValueData).forEach((key) => {
+      const caseField: CaseField = caseFieldsLookup[key];
+      // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
+      // both null and undefined are equal to *neither false nor true*)
+      if (caseField && caseField.retain_hidden_value &&
+        (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
+        if (caseField.field_type.type === 'Complex') {
+          // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
+          // handle both null and undefined values
+          if (caseField.value != null) {
+            // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
+            // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
+            // parent)
+            // Update rawFormValueData for this field
+            // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
+            const form: FormGroup = new FormGroup({});
+            if (formGroup.controls[key].value) {
+              Object.keys(formGroup.controls[key].value).forEach((item) => {
+                form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
+              });
+            }
+            rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
+              form, caseField.field_type.complex_fields, caseField);
           }
-          rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
-            form, caseField.field_type.complex_fields, caseField);
-        }
-      } else {
-        // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
-        // replaced with the original from formatted_value
-        // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
-        // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
-        // from the CaseField itself.
-        if (parentField && parentField.formatted_value) {
-          rawFormValueData[key] = parentField.formatted_value[caseField.id];
         } else {
-          if (!(caseField.hidden && caseField.retain_hidden_value)) {
-            rawFormValueData[key] = caseField.formatted_value;
+          // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
+          // replaced with the original from formatted_value
+          // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
+          // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
+          // from the CaseField itself.
+          if (parentField && parentField.formatted_value) {
+            rawFormValueData[key] = parentField.formatted_value[caseField.id];
+          } else {
+            if (!(caseField.hidden && caseField.retain_hidden_value)) {
+              rawFormValueData[key] = caseField.formatted_value;
+            }
           }
         }
       }
-    }
-  });
+    });
 
-  return rawFormValueData;
-}
+    return rawFormValueData;
+  }
 
   private caseSubmit({form, caseEventData, submit}: CaseEditCaseSubmit): void {
     const loadingSpinnerToken = this.loadingService.register();
