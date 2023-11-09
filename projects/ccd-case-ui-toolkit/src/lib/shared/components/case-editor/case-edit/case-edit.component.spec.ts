@@ -267,7 +267,8 @@ describe('CaseEditComponent', () => {
         'repopulateFormDataFromCaseFieldValues',
         'removeCaseFieldsOfType',
         'removeEmptyCollectionsWithMinValidation',
-        'populateLinkedCasesDetailsFromCaseFields'
+        'populateLinkedCasesDetailsFromCaseFields',
+        'removeUnnecessaryFields'
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
@@ -1224,6 +1225,47 @@ describe('CaseEditComponent', () => {
           .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
         expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
         expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
+        expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
+      });
+
+      it('should submit the case for a Case Flags submission', () => {
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+
+        spyOn(component, 'confirm');
+
+        component.isCaseFlagSubmission = true;
+        component.confirmation = {} as unknown as Confirmation;
+
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        component.onEventCanBeCompleted({
+          eventTrigger: component.eventTrigger,
+          eventCanBeCompleted: true,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(component.confirm).toHaveBeenCalled();
+        expect(formValueService.populateLinkedCasesDetailsFromCaseFields).toHaveBeenCalled();
+        expect(formValueService.removeCaseFieldsOfType)
+          .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
+        expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
+        expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
+        expect(formValueService.removeUnnecessaryFields).not.toHaveBeenCalled();
       });
 
       it('should NOT submit the case due to error', () => {
