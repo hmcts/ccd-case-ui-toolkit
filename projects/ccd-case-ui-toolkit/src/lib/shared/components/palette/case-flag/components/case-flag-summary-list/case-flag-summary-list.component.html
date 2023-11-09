@@ -4,7 +4,7 @@
       {{addUpdateFlagHeaderText | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagForSummaryDisplay.partyName || caseLevelLocation | rpxTranslate}}
+      {{flagForSummaryDisplay.partyName || caseFlagCheckYourAnswersPageStep.CASE_LEVEL_LOCATION | rpxTranslate}}
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
@@ -15,7 +15,7 @@
   </div>
   <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">
-      {{'Flag type' | rpxTranslate}}
+      {{flagTypeHeaderText | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
       {{flagDescription}}
@@ -50,7 +50,7 @@
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
-        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE: caseFlagFieldState.FLAG_COMMENTS)">
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE : caseFlagFieldState.FLAG_COMMENTS)">
         {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'comments' | rpxTranslate}}</span>
       </a>
     </dd>
@@ -64,12 +64,12 @@
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
-        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION: caseFlagFieldState.FLAG_COMMENTS)">
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION : caseFlagFieldState.FLAG_COMMENTS)">
         {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'comments (Welsh)' | rpxTranslate}}</span>
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="canDisplayStatus">
+  <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">
       {{'Status' | rpxTranslate}}
     </dt>
@@ -77,8 +77,8 @@
       {{flagStatus | rpxTranslate}}
     </dd>
     <dd class="govuk-summary-list__actions">
-      <a class="govuk-link" href="javascript:void(0)"
-        (click)="changeButtonEmitter.emit(caseFlagFieldState.FLAG_UPDATE)">
+      <a *ngIf="is2Point1Enabled" class="govuk-link" href="javascript:void(0)"
+        (click)="changeButtonEmitter.emit(this.summaryListDisplayMode === displayMode.MANAGE ? caseFlagFieldState.FLAG_UPDATE : caseFlagFieldState.FLAG_STATUS)">
         {{'Change' | rpxTranslate}}<span class="govuk-visually-hidden"> {{'status' | rpxTranslate}}</span>
       </a>
     </dd>

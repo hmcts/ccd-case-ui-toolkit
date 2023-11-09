@@ -69,7 +69,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         .filter((f) => f.flags.groupId)
         .reduce((mergedFlagDetails, f) => {
           mergedFlagDetails[f.flags.groupId] = mergedFlagDetails[f.flags.groupId] || [];
-          mergedFlagDetails[f.flags.groupId].push(...f.flags.details);
+          // The flags.details property (which should be an array) could be falsy; spread an empty array if so
+          mergedFlagDetails[f.flags.groupId].push(...(f.flags.details || []));
           return mergedFlagDetails;
         }, Object.create(null));
         // Remove duplicate flags objects with the same groupId (which are going to be treated as one for display
@@ -101,6 +102,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
         if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE ||
+            flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
             flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL)
             && flagLauncherComponent.selectedFlagsLocation) {
           this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
@@ -109,6 +111,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
         } else if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE ||
+          flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1 ||
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) &&
           flagLauncherComponent.selectedFlag) {
             this.flagForSummaryDisplay =

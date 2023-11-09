@@ -10,7 +10,7 @@ import {
   Output,
   SimpleChange
 } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
@@ -618,7 +618,6 @@ describe('CaseFullAccessViewComponent', () => {
   let convertHrefToRouterMockService: jasmine.SpyObj<ConvertHrefToRouterService>;
   let sessionStorageMockService: jasmine.SpyObj<SessionStorageService>;
   let router: Router;
-  let activatedRoute: ActivatedRoute;
 
   beforeEach((() => {
     // Clone
@@ -725,7 +724,6 @@ describe('CaseFullAccessViewComponent', () => {
     ];
     de = fixture.debugElement;
     router = TestBed.inject(Router);
-    activatedRoute = TestBed.inject(ActivatedRoute);
     fixture.detectChanges();
   }));
 
@@ -1395,7 +1393,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
     d = f.debugElement;
     // Use a fake implementation of Router.navigate() to avoid unhandled navigation errors when invoked by
     // ngAfterViewInit() before each unit test
-    const router = TestBed.get(Router);
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
     f.detectChanges();
   }));
@@ -1531,7 +1529,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     d = f.debugElement;
     // Use a fake implementation of Router.navigate() to avoid unhandled navigation errors when invoked by
     // ngAfterViewInit() before each unit test
-    const router = TestBed.get(Router);
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
     f.detectChanges();
   }));
@@ -1737,7 +1735,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
     debugElement = compFixture.debugElement;
     // Use a fake implementation of Router.navigate() to avoid unhandled navigation errors when invoked by
     // ngAfterViewInit() before each unit test
-    const router = TestBed.get(Router);
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
     compFixture.detectChanges();
   }));
@@ -1759,6 +1757,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
   let convertHrefToRouterService;
+  let router: Router;
   const prependedTabsList = [
     {
       id: 'tasks',
@@ -1853,7 +1852,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1866,6 +1865,12 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
       {
         id: 'hearings',
         label: 'Hearings',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'caseNotes',
+        label: 'Case notes',
         fields: [],
         show_condition: null
       }
@@ -1885,6 +1890,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
       }
     ];
     debugElement = componentFixture.debugElement;
+    router = TestBed.inject(Router);
     componentFixture.detectChanges();
   }));
 
@@ -1909,10 +1915,10 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
-    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(5);
+    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(6);
   });
 
-  it('should return blank array when pretended tabs are null', () => {
+  it('should return blank array when prepended tabs are null', () => {
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330');
     componentFixture.detectChanges();
     caseViewerComponent.prependedTabs = null;
@@ -1932,6 +1938,44 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     componentFixture.detectChanges();
     expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
   });
+
+  it('should set tabGroup selected index if a non-roles/tasks/hearings tab with ID matching last path of the URL is found', fakeAsync(() => {
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/caseNotes');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index is actually the *absolute* position of the "Case notes" tab (after Tasks, Roles, and Overview), which is 3
+    expect(selectedIndexSetSpy).toHaveBeenCalledWith(3);
+    expect(caseViewerComponent.tabGroup.selectedIndex).toBe(3);
+  }));
+
+  it('should set tabGroup selected index to pre-selected tab if a non-roles/tasks/hearings tab is not found', fakeAsync(() => {
+    caseViewerComponent.appendedTabs = [
+      {
+        id: 'hearings',
+        label: 'Hearings',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    // Using /caseNotes at the end of the URL ensures there won't be a matching tab found, so the selected tab should
+    // default to the first *in the CaseView object*, which is the "Overview" tab
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/caseNotes');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index is actually the *absolute* position of the "Overview" tab (after Tasks and Roles), which is 2
+    expect(selectedIndexSetSpy).toHaveBeenCalledWith(2);
+    expect(caseViewerComponent.tabGroup.selectedIndex).toBe(2);
+  }));
 });
 
 describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {

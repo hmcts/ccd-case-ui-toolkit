@@ -3,10 +3,8 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { AbstractAppConfig } from '../../../../../../app.config';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
@@ -14,7 +12,6 @@ import {
   DocumentTreeNode,
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
-import { SortOrder } from '../../../../../domain/sort-order.enum';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
@@ -62,8 +59,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     private readonly windowService: WindowService,
     private readonly router: Router,
     private readonly documentManagementService: DocumentManagementService,
-    private readonly dialog: MatDialog,
-    private readonly appConfig: AbstractAppConfig
+    private readonly dialog: MatDialog
   ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
@@ -126,8 +122,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
-      documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY') : '';
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -144,8 +138,6 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
-      documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY') : '';
 
       documents.push(documentTreeNode);
     });
@@ -213,18 +205,18 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public sortDataSourceAscending(column: number) {
+  public sortDataSourceAscAlphabetically() {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenAscending(column, SortOrder.ASCENDING);
+      item.sortChildrenAscending();
       return item;
     });
 
     this.updateNodeData(sortedData);
   }
 
-  public sortDataSourceDescending(column: number) {
+  public sortDataSourceDescAlphabetically() {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending(column, SortOrder.DESCENDING);
+      item.sortChildrenDescending();
       return item;
     });
 

@@ -40,13 +40,15 @@ export class UpdateFlagComponent implements OnInit {
   public caseFlagDisplayContextParameter = CaseFlagDisplayContextParameter;
   public externalUserUpdate = false;
   public internalUserUpdate = false;
+  public internalUser2Point1EnabledUpdate = false;
 
   constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
   public ngOnInit(): void {
-    // Set whether this is an external or internal user update
+    // Set whether this is an external, internal, or internal Case Flags v2.1 enabled user update
     this.externalUserUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     this.internalUserUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE;
+    this.internalUser2Point1EnabledUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
     this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
     if (this.selectedFlag?.flagDetailDisplay?.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
@@ -91,12 +93,14 @@ export class UpdateFlagComponent implements OnInit {
   public setUpdateCaseFlagTitle(flagDetail: FlagDetail): string {
     switch (this.displayContextParameter) {
       case CaseFlagDisplayContextParameter.UPDATE:
+      case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
         if (flagDetail?.name) {
-          return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}"` : '"'}`;
+          const subTypeValue = flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}` : ''
+          return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${subTypeValue}"`;
         }
         return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE}`;
       case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
-        return CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_SUPPORT;
+        return CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE_EXTERNAL;
       default:
         return CaseFlagWizardStepTitle.NONE;
     }
@@ -120,6 +124,12 @@ export class UpdateFlagComponent implements OnInit {
     });
 
     window.scrollTo(0, 0);
+  }
+
+  public onMakeInactive(): void {
+    // Set selected flag status to "Inactive" on screen and in the FormGroup
+    this.selectedFlag.flagDetailDisplay.flagDetail.status = CaseFlagStatus.INACTIVE;
+    this.formGroup.get(CaseFlagFormFields.STATUS).setValue(Object.keys(CaseFlagStatus)[2]);
   }
 
   private validateTextEntry(): void {

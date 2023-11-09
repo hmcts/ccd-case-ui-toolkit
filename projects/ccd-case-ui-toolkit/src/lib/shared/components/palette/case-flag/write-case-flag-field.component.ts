@@ -31,6 +31,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public hmctsServiceId: string;
   public isDisplayContextParameterUpdate: boolean;
   public isDisplayContextParameterExternal: boolean;
+  public isDisplayContextParameter2Point1Enabled: boolean;
   public caseTitle: string;
   public caseTitleSubscription: Subscription;
   public displayContextParameter: string;
@@ -130,6 +131,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         // Set boolean indicating the display_context_parameter is "external"
         this.isDisplayContextParameterExternal = this.setDisplayContextParameterExternal(this.displayContextParameter);
 
+        // Set boolean indicating the display_context_parameter is Case Flags v2.1 enabled
+        this.isDisplayContextParameter2Point1Enabled = this.setDisplayContextParameter2Point1Enabled(this.displayContextParameter);
+
         // Set starting field state if fieldState not the right value
         if (!this.fieldState) {
           this.fieldState = this.isDisplayContextParameterUpdate ? CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS : CaseFlagFieldState.FLAG_LOCATION;
@@ -147,12 +151,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public setDisplayContextParameterUpdate(displayContextParameter: string): boolean {
     return displayContextParameter === CaseFlagDisplayContextParameter.UPDATE ||
-      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ||
+      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
   }
 
   public setDisplayContextParameterExternal(displayContextParameter: string): boolean {
     return displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
       displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+  }
+
+  public setDisplayContextParameter2Point1Enabled(displayContextParameter: string): boolean {
+    return displayContextParameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
+      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
@@ -180,14 +190,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // then move to final review stage
     if (this.isDisplayContextParameterExternal) {
       return caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
-          caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE;
+        caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE;
     }
     // If the current state is one of:
-    // * CaseFlagFieldState.FLAG_STATUS
+    // * CaseFlagFieldState.FLAG_STATUS AND Case Flags v2.1 is enabled
+    // * CaseFlagFieldState.FLAG_COMMENTS AND Case Flags v2.1 is not enabled
     // * CaseFlagFieldState.FLAG_UPDATE and Welsh translation checkbox is not selected
     // * CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION
     // then move to final review stage
-    return caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_STATUS ||
+    return (caseFlagState.currentCaseFlagFieldState ===
+      CaseFlagFieldState.FLAG_STATUS && this.isDisplayContextParameter2Point1Enabled) ||
+      (caseFlagState.currentCaseFlagFieldState ===
+        CaseFlagFieldState.FLAG_COMMENTS && !this.isDisplayContextParameter2Point1Enabled) ||
       (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE &&
         !this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value) ||
       caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION;
@@ -213,7 +227,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         this.addFlagToCollection();
         break;
       case CaseFlagFieldState.FLAG_COMMENTS:
-        if (this.isDisplayContextParameterExternal) {
+        if (this.isDisplayContextParameterExternal || !this.isDisplayContextParameter2Point1Enabled) {
           this.addFlagToCollection();
         }
         break;
@@ -432,7 +446,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public isAtFinalState(): boolean {
     return this.isDisplayContextParameterUpdate
       ? this.fieldState === this.manageFlagFinalState
-      : this.fieldState === CaseFlagFieldState.FLAG_STATUS;
+      : !this.isDisplayContextParameter2Point1Enabled
+        ? this.fieldState === CaseFlagFieldState.FLAG_COMMENTS
+        : this.fieldState === CaseFlagFieldState.FLAG_STATUS;
   }
 
   public navigateToErrorElement(elementId: string): void {
@@ -489,8 +505,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         formValues?.flagType?.Path.map(pathValue => Object.assign({ id: null, value: pathValue })),
       hearingRelevant: formValues?.flagType?.hearingRelevant ? 'Yes' : 'No',
       flagCode: formValues?.flagType?.flagCode,
-      // Status should be set to whatever the default is for this flag type, if flag is being created by an external user
-      status: this.isDisplayContextParameterExternal ? formValues?.flagType?.defaultStatus : CaseFlagStatus[formValues?.selectedStatus],
+      // Status should be set to whatever the default is for this flag type, if flag is being created by an external
+      // user, otherwise it should be set to "Active" if Case Flags v2.1 is NOT enabled, or the selected status if it is
+      status: this.isDisplayContextParameterExternal
+        ? formValues?.flagType?.defaultStatus
+        : !this.isDisplayContextParameter2Point1Enabled
+          ? CaseFlagStatus.ACTIVE
+          : CaseFlagStatus[formValues?.selectedStatus],
       availableExternally: formValues?.flagType?.externallyAvailable ? 'Yes' : 'No'
     } as FlagDetail;
   }
@@ -522,6 +543,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public setDisplayContextParameter(caseFields: CaseField[]): string {
-    return caseFields.find(caseField => FieldsUtils.isFlagLauncherCaseField(caseField))?.display_context_parameter;
+    return caseFields.find(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))?.display_context_parameter;
   }
 }
