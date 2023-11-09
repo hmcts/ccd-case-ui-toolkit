@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 6.19.13
+**EXUI-908** Unable to upload correspondence to Manage Cases
+
 ### Version 6.19.11-case-file-view-feature-toggle-v1.1
 **EUI-7807** Case file view v1.1
 
@@ -8,10 +12,6 @@
 ### Version 6.19.11-rc1
 **EXUI-1000** Complex type not showing data
 **EXUI-1006** Case Flags stopped working
-
-### Version 6.19.10-doc-upload
-**EXUI-803** Make secure docstore work during case creation
-
 
 ### Version 6.19.5
 **EXUI-623** Make secure docstore work during case creation
