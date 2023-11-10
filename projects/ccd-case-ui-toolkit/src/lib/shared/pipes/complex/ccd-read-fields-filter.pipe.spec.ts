@@ -354,23 +354,27 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[1].hidden).toEqual(false);
   });
   it('should evaluate showcondition and set the hidden property of field to false when value match with MetaData field', () => {
+    const formField = FORM_GROUP.controls['data'].value;
+    const allFieldValues = Object.assign(METADATA, formField);
     complexCaseField2.value = {
       caseAccepted: 'Yes',
       dateAccepted: '10/01/2023'
     };
     complexCaseField2.field_type.complex_fields[1].show_condition = 'STATE=\"readyToList\"';
-    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, FORM_GROUP.controls['data'], undefined, undefined, METADATA);
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, allFieldValues);
     expect(RESULT.length).toEqual(2);
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(false);
   });
   it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match with MetaData field', () => {
+    const formField = FORM_GROUP.controls['data'].value;
+    const allFieldValues = Object.assign(METADATA, formField);
     complexCaseField2.value = {
       caseAccepted: 'Yes',
       dateAccepted: '10/01/2023'
     };
     complexCaseField2.field_type.complex_fields[1].show_condition = 'STATE=\"Do Not Show\"';
-    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, FORM_GROUP.controls['data'], undefined, undefined, METADATA);
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, allFieldValues);
     expect(RESULT.length).toEqual(2);
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(true);

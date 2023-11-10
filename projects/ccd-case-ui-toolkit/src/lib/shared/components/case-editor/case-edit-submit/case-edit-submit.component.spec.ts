@@ -754,8 +754,10 @@ describe('CaseEditSubmitComponent', () => {
       expect(result).toBe('Return to case list');
     });
 
-    it('should have metadata Fields', () => {
+    it('should have metadata Fields along with other fields', () => {
       expect(comp.metadataFieldsObject).toBeDefined();
+      expect(comp.allFieldsValues).toBeDefined();
+      expect(comp.allFieldsValues['[CASE_TYPE]']).toBe('DIVORCE');
     });
 
     it('should show valid title on the page', () => {
