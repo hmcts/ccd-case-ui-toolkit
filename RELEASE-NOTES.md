@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.12-case-flags-v2-1-consolidation-final-fixes-4
+**EUI-8918/EUI-8968** Re-tag for re-release following deployment of Case File View 1.1 to live
+
 ### Version 6.19.11-case-flags-v2-1-consolidation-final-fixes-4
 **EUI-8918** Fix `CaseEventTriggerComponent` to bypass case validation only if a `FlagLauncher` case field is present in the eventTrigger case fields, instead of being present in any `CaseTab` case fields
 **EUI-8968** Fix missing validation error message on clicking "Continue" button when Case Flags v2.1 is enabled
