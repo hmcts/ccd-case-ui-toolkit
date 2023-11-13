@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-4
+**EUI-8918/EUI-8968** Re-tag for re-release following deployment of Case File View 1.1 to live
+
 ### Version 6.19.11-case-flags-v2-1-consolidation-final-fixes-4
 **EUI-8918** Fix `CaseEventTriggerComponent` to bypass case validation only if a `FlagLauncher` case field is present in the eventTrigger case fields, instead of being present in any `CaseTab` case fields
 **EUI-8968** Fix missing validation error message on clicking "Continue" button when Case Flags v2.1 is enabled
@@ -44,6 +47,15 @@
 
 ### Version 6.19.6-case-flags-v2-reasonable-adjustments-v2
 **EUI-7243** Case flags v2 reasonable adjustments
+
+### Version 6.19.13
+**EXUI-908** Unable to upload correspondence to Manage Cases
+
+### Version 6.19.11-case-file-view-feature-toggle-v1.1
+**EUI-7807** Case file view v1.1
+
+### Version 6.19.6-case-file-view-document-upload-date-v2
+**EUI-7807** Case file view v1.1
 
 ### Version 6.19.11-rc1
 **EXUI-1000** Complex type not showing data
@@ -182,6 +194,12 @@
 
 ### Version 6.10.7-case-flags-confirm-flag-status-step
 **EUI-7350** Add "confirm flag status" step of Create Case Flag journey
+
+### Version 6.13.10-case-file-view-sort-by-document-upload-date-v9
+**EUI-7812** Case file view sort by document upload date
+
+### Version 6.13.10-case-file-view-display-document-upload-date-v3
+**EUI-7819** Case file view display document upload date
 
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
