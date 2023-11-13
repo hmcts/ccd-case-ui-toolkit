@@ -8,16 +8,22 @@ export interface FlagPath {
 export interface FlagDetail {
   id?: string;
   name: string;
+  name_cy?: string;
   subTypeValue?: string;
+  subTypeValue_cy?: string;
   subTypeKey?: string;
   otherDescription?: string;
+  otherDescription_cy?: string;
   flagComment?: string;
+  flagComment_cy?: string;
+  flagUpdateComment?: string;
   dateTimeModified?: Date | string;
   dateTimeCreated: Date | string;
   path: FlagPath[];
   hearingRelevant: boolean | string;
   flagCode: string;
   status: string;
+  availableExternally?: boolean | string;
 }
 
 export interface Flags {
@@ -27,6 +33,8 @@ export interface Flags {
   partyName?: string;
   roleOnCase?: string;
   details?: FlagDetail[];
+  visibility?: string;
+  groupId?: string;
 }
 
 export interface FlagDetailDisplay {

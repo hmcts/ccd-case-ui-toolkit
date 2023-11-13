@@ -47,6 +47,7 @@ describe('WriteNumberFieldComponent', () => {
         ],
         declarations: [
           WriteNumberFieldComponent,
+          MockRpxTranslatePipe,
 
           // Mocks
           MockRpxTranslatePipe,

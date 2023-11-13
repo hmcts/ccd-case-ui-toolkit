@@ -46,7 +46,7 @@ describe('WriteCaseLinkFieldComponent', () => {
       ],
       declarations: [
         WriteCaseLinkFieldComponent,
-        MockRpxTranslatePipe,
+        MockRpxTranslatePipe
       ],
       providers: [
         { provide: RpxTranslatePipe, useClass: MockRpxTranslatePipe }

@@ -1,6 +1,6 @@
 <div *ngIf="!caseEdit.isEventCompletionChecksRequired">
   <!-- Event trigger name -->
-  <h1 class="govuk-heading-l">{{ eventTrigger.name}}</h1>
+  <h1 class="govuk-heading-l">{{eventTrigger.name | rpxTranslate}}</h1>
 
   <!--Case ID or Title -->
   <div *ngIf="getCaseTitle(); then titleBlock; else idBlock"></div>
@@ -39,10 +39,16 @@
                       [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
                       [caseField]="summaryCaseField(field)" [context]="paletteContext" [caseFields]="contextFields"></ccd-field-read>
                   </td>
-                  <td class="valign-top check-your-answers__change case-field-change">
-                    <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id)"
-                      href="javascript:void(0)"><span class="text-16" attr.aria-label="Change {{ field.label }}">Change</span></a>
-                  </td>
+                  <ng-container *ngIf="!caseEdit.isCaseFlagSubmission">
+                    <td class="valign-top check-your-answers__change case-field-change">
+                      <a *ngIf="isChangeAllowed(field)" (click)="navigateToPage(page.id)"
+                        href="javascript:void(0)">
+                        <span class="text-16" attr.aria-label="{{'Change' | rpxTranslate}} {{ field.label | rpxTranslate }}">
+                          {{'Change' | rpxTranslate}}
+                        </span>
+                      </a>
+                    </td>
+                  </ng-container>
                 </tr>
               </ng-container>
             </ng-container>
@@ -74,7 +80,7 @@
       </table>
     </ng-container>
     <ng-container *ngIf="showEventNotes()">
-      <fieldset id="fieldset-event" formGroupName="event" *ngIf="profile && !isSolicitor()">
+      <fieldset id="fieldset-event" formGroupName="event">
         <legend style="display: none;"></legend>
         <div class="form-group">
           <label for="field-trigger-summary" class="form-label">
@@ -91,10 +97,18 @@
       </fieldset>
     </ng-container>
     <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" [disabled]="!hasPrevious() || caseEdit.isSubmitting" (click)="previous()">Previous</button>
-      <button type="submit" [disabled]="isDisabled" class="button">{{triggerText}}</button>
+      <button *ngIf="!caseEdit.isCaseFlagSubmission" class="button button-secondary" type="button" [disabled]="!hasPrevious() || caseEdit.isSubmitting" (click)="previous()">
+        {{'Previous' | rpxTranslate}}
+      </button>
+      <button type="submit" [disabled]="isDisabled" class="button">
+        {{triggerText | rpxTranslate}}
+      </button>
     </div>
-    <p class="cancel"><a (click)="cancel()" href="javascript:void(0)" [class.disabled]="caseEdit.isSubmitting">{{getCancelText()}}</a></p>
+    <p class="cancel">
+      <a (click)="cancel()" href="javascript:void(0)" [class.disabled]="caseEdit.isSubmitting">
+        {{getCancelText() | rpxTranslate}}
+      </a>
+    </p>
   </form>
 </div>
 <ccd-case-event-completion *ngIf="caseEdit.isEventCompletionChecksRequired"

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
@@ -58,17 +58,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     private readonly jurisdictionService: JurisdictionService,
   ) {
     super();
-  }
-
-  @HostListener('document:click', ['$event'])
-  public clickout(event) {
-    // Capturing the event of the associated  ElementRef <input type="file" #fileInpu
-
-    if (this.fileInput.nativeElement.contains(event.target)) {
-      this.clickInsideTheDocument = true;
-    } else {
-      this.fileValidations();
-    }
   }
 
   public ngOnInit(): void {
