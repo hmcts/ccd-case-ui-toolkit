@@ -105,6 +105,9 @@
 ### Version 6.19.2-case-flags-v2-reasonable-adjustments-v2
 **EUI-7243** Case flags v2 reasonable adjustments
 
+### Version 6.19.4-sscs-joh-fixes
+**EUI-8679/EUI-8770** Re-tag for formal release. Also includes partial reversion of EXUI-623 (`WriteDocumentFieldComponent` changes) due to deficient unit test coverage
+
 ### Version 6.18.3-hotfix-EUI-8738
 **EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
 
@@ -192,6 +195,7 @@
 
 ### Version 6.10.7-case-flags-confirm-flag-status-step
 **EUI-7350** Add "confirm flag status" step of Create Case Flag journey
+
 ### Version 6.13.10-case-file-view-sort-by-document-upload-date-v9
 **EUI-7812** Case file view sort by document upload date
 
