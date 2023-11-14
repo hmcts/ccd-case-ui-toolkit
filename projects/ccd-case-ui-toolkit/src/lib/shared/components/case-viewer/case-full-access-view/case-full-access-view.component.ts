@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatTabGroup } from '@angular/material/tabs';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
@@ -175,7 +175,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
           const tabUrl = url ? url.split('#') : null;
           const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
           const matTab = this.tabGroup._tabs.find((x) => x.textLabel.toLowerCase() === tab.toLowerCase());
-          if (matTab && matTab.position !== null) {
+          // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
+          // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
+          if (matTab?.position) {
             this.tabGroup.selectedIndex = matTab.position;
           }
         }
@@ -262,7 +264,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public organiseTabPosition(): void {
-    let matTab;
+    let matTab: MatTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
     if (!url.includes('#') && !url.includes('roles-and-access') && !url.includes('tasks') && !url.includes('hearings')) {
@@ -281,7 +283,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       if (foundTab) {
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, foundTab.id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
-          if (matTab && matTab.position !== null) {
+          // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
+          // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
+          if (matTab?.position) {
             this.tabGroup.selectedIndex = matTab.position;
           }
         });
@@ -293,7 +297,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
-          if (matTab && matTab.position !== null) {
+          // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
+          // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
+          if (matTab?.position) {
             this.tabGroup.selectedIndex = matTab.position;
           }
         });
@@ -311,7 +317,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
         hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
-      if (matTab && matTab.position !== null) {
+      // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
+      // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
+      if (matTab?.position) {
         this.tabGroup.selectedIndex = matTab.position;
       }
     }
