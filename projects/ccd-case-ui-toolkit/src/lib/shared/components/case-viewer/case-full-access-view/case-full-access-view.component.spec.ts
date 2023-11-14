@@ -1976,6 +1976,76 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     expect(selectedIndexSetSpy).toHaveBeenCalledWith(2);
     expect(caseViewerComponent.tabGroup.selectedIndex).toBe(2);
   }));
+
+  it('should set tabGroup selected index if a roles/tasks/hearings tab is found', fakeAsync(() => {
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index is actually the *absolute* position of the "Roles and access" tab (after Tasks), which is 1
+    expect(selectedIndexSetSpy).toHaveBeenCalledWith(1);
+    expect(caseViewerComponent.tabGroup.selectedIndex).toBe(1);
+  }));
+
+  it('should not set tabGroup selected index if a non-roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
+    caseViewerComponent.prependedTabs = [
+      {
+        id: 'dummy',
+        label: 'Dummy',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/dummy');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index should not be set because the "Dummy" tab has position 0 (already selected)
+    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
+  }));
+
+  it('should not set tabGroup selected index to pre-selected tab if it is already selected', fakeAsync(() => {
+    caseViewerComponent.prependedTabs = [];
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/dummy');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index should not be set because the pre-selected tab is "Overview", which has position 0 (already selected)
+    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
+  }));
+
+  it('should not set tabGroup selected index if a roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
+    caseViewerComponent.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/tasks');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index should not be set because the "Tasks" tab has position 0 (already selected)
+    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
+  }));
 });
 
 describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {

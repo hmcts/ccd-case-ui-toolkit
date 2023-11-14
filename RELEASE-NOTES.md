@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-5
+**EUI-8985** Fix incorrect logic for updating tab group selected index, ensuring it is done only when non-zero because zero indicates it is already selected
+
 ### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-4
 **EUI-8918/EUI-8968** Re-tag for re-release following deployment of Case File View 1.1 to live
 
