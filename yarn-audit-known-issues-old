@@ -1,0 +1,14 @@
+➤ YN0001: TypeError [ERR_INVALID_URL]: Invalid URL: /-/npm/v1/security/audits/quick
+    at new NodeError (internal/errors.js:322:7)
+    at onParseError (internal/url.js:270:9)
+    at new URL (internal/url.js:346:5)
+    at $De (/Users/olaogunyemi/web-applications/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:9738)
+    at a (/Users/olaogunyemi/web-applications/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:8836)
+    at bC (/Users/olaogunyemi/web-applications/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:9052)
+    at processTicksAndRejections (internal/process/task_queues.js:95:5)
+    at async pB (/Users/olaogunyemi/web-applications/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:7061)
+    at async Object.kR (/Users/olaogunyemi/web-applications/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:392:9461)
+    at async Object.Gze (/Users/olaogunyemi/web-applications/ccd-case-ui-toolkit/.yarn/releases/yarn-3.5.0.cjs:709:18949)
+
+➤ Errors happened when preparing the environment required to run this command.
+➤ This might be caused by packages being missing from the lockfile, in which case running "yarn install" might help.
