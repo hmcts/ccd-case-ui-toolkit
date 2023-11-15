@@ -497,6 +497,31 @@ describe('DatetimePickerComponent', () => {
     expect(component.minDate(MIN_MAX_CASE_FIELD)).toEqual(miniDate);
     expect(component.maxDate(MIN_MAX_CASE_FIELD)).toEqual(maxiDate);
   }));
+
+  it('should be able to confirm datepicker formatting is wrong', fakeAsync(() => {
+
+    fixture.detectChanges();
+    tick(1);
+
+    const firstDateEntryParameter = 'DD MM YYYY HH+mm+ss';
+
+    const FIRST_CASE_FIELD: CaseField = ({
+      id: FIELD_ID,
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE,
+      value: initialDateTime,
+      dateTimeEntryFormat: firstDateEntryParameter
+    }) as CaseField;
+
+    fixture.detectChanges();
+    component.ngOnInit();
+    tick(1);
+    fixture.detectChanges();
+    expect(FIRST_CASE_FIELD.dateTimeEntryFormat).not.toEqual(CUSTOM_MOMENT_FORMATS.parse.dateInput);
+    flush();
+    discardPeriodicTasks();
+  }));
 });
 
 function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {
