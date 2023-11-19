@@ -52,7 +52,12 @@ export class UpdateFlagComponent implements OnInit {
     this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
     if (this.selectedFlag?.flagDetailDisplay?.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
-      const currentFlagStatusKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === this.flagDetail.status);
+      // If present, use the *original* flag status, not the one in the flagDetail object, because the status could have
+      // been modified via a previous "Update Flag" journey through the UI but not persisted yet (thus not the *true* flag
+      // status). Otherwise, use the status from the flagDetail object (initially, the original flag status won't be
+      // present because it gets cached only on first update by WriteCaseFlagFieldComponent)
+      const currentFlagStatusKey = Object.keys(CaseFlagStatus).find(
+        (key) => CaseFlagStatus[key] === (this.selectedFlag.originalStatus || this.flagDetail.status));
 
       // Populate flag comments text area with existing comments; use the comments appropriate for the selected language,
       // falling back on their alternate counterpart if none are available. Comments are to be populated one time only -

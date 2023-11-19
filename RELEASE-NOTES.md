@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.13-case-flags-v2-manage-case-flags-status-fix
+**EUI-8990** Fix bug where `UpdateFlagComponent` and `ManageCaseFlagsComponent` are using the flag status updated via the UI as if it was the actual persisted status. This causes problems when a user sets the status to "Inactive" or "Not approved", then returns to an earlier point in the "Manage Case Flags" journey via the Case Flag Summary (CYA) page. `UpdateFlagComponent` displays the wrong flag status options or none at all (if "Not approved" was selected previously), and `ManageCaseFlagsComponent` no longer displays the flag in the selection list because it has been wrongly filtered out
+
 ### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-5
 **EUI-8985** Fix incorrect logic for updating tab group selected index, ensuring it is done only when non-zero because zero indicates it is already selected
 

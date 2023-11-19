@@ -750,6 +750,8 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[0].caseField.value.details[0].value.status).toEqual(
       CaseFlagStatus[component.caseFlagParentFormGroup.value[CaseFlagFormFields.STATUS]]);
     expect(component.flagsData[0].caseField.value.details[0].value.dateTimeModified).toBeTruthy();
+    // Check the original status has been cached
+    expect(component.selectedFlag.originalStatus).toEqual('Active');
     // Check all other existing changes have been discarded (i.e. values restored from corresponding values in formatted_value)
     expect(component.flagsData[0].caseField.value.details[1].value.otherDescription).toEqual('Original description');
     expect(component.flagsData[0].caseField.value.details[1].value.otherDescription_cy).toEqual('Welsh description');
