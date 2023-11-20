@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
+import { FieldsUtils } from '../../../../../services/fields';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
 
@@ -29,7 +30,8 @@ export class ManageCaseFlagsComponent implements OnInit {
   public ngOnInit(): void {
     this.manageCaseFlagTitle = this.setManageCaseFlagTitle(this.displayContextParameter);
 
-    // Map flags instances to objects for display
+    // Map flags instances to objects for display, filtering out any where the original status is either "Inactive" or
+    // "Not approved"
     /* istanbul ignore else */
     if (this.flagsData) {
       this.flagsDisplayData = this.flagsData.reduce((displayData, flagsInstance) => {
@@ -37,17 +39,11 @@ export class ManageCaseFlagsComponent implements OnInit {
         if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
           displayData = [
             ...displayData,
-            ...flagsInstance.flags.details.map(detail => {
-              // Only map flags instances where the status is neither "Inactive" nor "Not approved"
-              // This will result in some undefined mappings, which need to be filtered out after the reduce operation
-              if (!this.excludedFlagStatuses.includes(detail.status as CaseFlagStatus)) {
-                return this.mapFlagDetailForDisplay(detail, flagsInstance);
-              }
-            })
+            ...flagsInstance.flags.details.map((detail) => this.mapFlagDetailForDisplay(detail, flagsInstance))
           ];
         }
         return displayData;
-      }, []).filter(flagDetailDisplay => !!flagDetailDisplay);
+      }, []).filter((flagForDisplay) => !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus));
     }
 
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
@@ -61,6 +57,29 @@ export class ManageCaseFlagsComponent implements OnInit {
   }
 
   public mapFlagDetailForDisplay(flagDetail: FlagDetail, flagsInstance: FlagsWithFormGroupPath): FlagDetailDisplayWithFormGroupPath {
+    // Cache the *original* status of the flag before it is modified. This is needed because ngOnInit() needs to filter
+    // out any "Inactive" or "Not approved" flags based on their status *before* modification. If the user changes a
+    // flag's status then decides to return to the start of the flag update journey, the flag's status no longer
+    // reflects its actual *persisted* status
+    let originalStatus: string;
+    let formattedValue = flagsInstance.caseField.formatted_value;
+    // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
+    // CaseField formatted_value from which to get the original status
+    const pathToValue = flagsInstance.pathToFlagsFormGroup;
+    // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
+    if (pathToValue.indexOf('.') > -1) {
+      pathToValue.slice(pathToValue.indexOf('.') + 1).split('.').forEach((part) => {
+        if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
+          formattedValue = formattedValue[part];
+        }
+      });
+    }
+    if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
+      const originalFlagDetail = formattedValue.details.find((detail) => detail.id === flagDetail.id);
+      if (originalFlagDetail) {
+        originalStatus = originalFlagDetail.value.status;
+      }
+    }
     return {
       flagDetailDisplay: {
         partyName: flagsInstance.flags.partyName,
@@ -69,7 +88,8 @@ export class ManageCaseFlagsComponent implements OnInit {
       },
       pathToFlagsFormGroup: flagsInstance.pathToFlagsFormGroup,
       caseField: flagsInstance.caseField,
-      roleOnCase: flagsInstance.flags.roleOnCase
+      roleOnCase: flagsInstance.flags.roleOnCase,
+      originalStatus
     };
   }
 

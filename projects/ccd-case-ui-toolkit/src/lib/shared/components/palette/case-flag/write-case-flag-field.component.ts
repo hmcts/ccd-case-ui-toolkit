@@ -416,6 +416,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       const flagDetailToUpdate = flagsCaseFieldValue.details.find(
         detail => detail.id === this.selectedFlag.flagDetailDisplay.flagDetail.id);
       if (flagDetailToUpdate) {
+        // Cache the *original* status of the flag before it is modified. This is needed if the user changes the flag status
+        // then decides to return to any part of the flag update journey. The ManageCaseFlagsComponent and UpdateFlagComponent
+        // should refer to a flag's original status, not the one set via the UI because this hasn't been persisted yet
+        this.selectedFlag.originalStatus = flagDetailToUpdate.value.status;
         // Update description fields only if flag type is "Other" (flag code OT0001); these fields apply only to that flag type
         flagDetailToUpdate.value.otherDescription = flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode
           ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.value

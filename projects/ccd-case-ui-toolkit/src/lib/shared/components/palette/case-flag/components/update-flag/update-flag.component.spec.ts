@@ -689,4 +689,23 @@ describe('UpdateFlagComponent', () => {
     // The "Make inactive" button should no longer be visible
     expect(fixture.debugElement.nativeElement.querySelector('.button-secondary')).toBeNull();
   });
+
+  it('should use the original persisted flag status instead of the UI value, to determine the actual flag status', () => {
+    // Set the original status of selectedFlag1 to "Requested" (its UI value is "Active")
+    selectedFlag1.originalStatus = 'Requested';
+    // Reset activeFlag status to "Active" because it gets changed by other tests
+    activeFlag.status = 'Active';
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1)
+    });
+    fixture.detectChanges();
+    // All four status options should be in the list of valid progressions
+    expect(component.validStatusProgressions).toEqual(Object.keys(CaseFlagStatus));
+    // Remove the original status of selectedFlag1; the component should fall back on the UI value
+    selectedFlag1.originalStatus = null;
+    component.ngOnInit();
+    // Only "Active" and "Inactive" status options should be in the list of valid progressions
+    expect(component.validStatusProgressions).toEqual(
+      Object.keys(CaseFlagStatus).filter(key => !['REQUESTED', 'NOT_APPROVED'].includes(key)));
+  });
 });
