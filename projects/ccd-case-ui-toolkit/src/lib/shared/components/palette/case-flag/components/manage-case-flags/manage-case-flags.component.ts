@@ -84,7 +84,8 @@ export class ManageCaseFlagsComponent implements OnInit {
       flagDetailDisplay: {
         partyName: flagsInstance.flags.partyName,
         flagDetail,
-        flagsCaseFieldId: flagsInstance.caseField.id
+        flagsCaseFieldId: flagsInstance.caseField.id,
+        visibility: flagsInstance.flags.visibility
       },
       pathToFlagsFormGroup: flagsInstance.pathToFlagsFormGroup,
       caseField: flagsInstance.caseField,

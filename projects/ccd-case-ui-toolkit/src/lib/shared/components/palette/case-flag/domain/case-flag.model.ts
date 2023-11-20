@@ -43,6 +43,7 @@ export interface FlagDetailDisplay {
   // The flagsCaseFieldId property could be removed in future, given that the full path is now available through the
   // FlagDetailDisplayWithFormGroupPath interface
   flagsCaseFieldId: string;
+  visibility: string;
 }
 
 /**

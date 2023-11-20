@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ErrorMessage } from '../../../../../domain';
 import { CaseFlagState } from '../../domain';
-import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
+import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagFormFields, CaseFlagWizardStepTitle } from '../../enums';
 
 @Component({
   selector: 'ccd-add-comments',
@@ -24,6 +24,13 @@ export class AddCommentsComponent implements OnInit {
   public addCommentsStepEnum = AddCommentsStep;
   public readonly flagCommentsControlName = 'flagComments';
   private readonly commentsMaxCharLimit = 200;
+  // Code for "Other" flag type as defined in Reference Data
+  private readonly otherFlagTypeCode = 'OT0001';
+
+  public get otherInternalFlagTypeSelected(): boolean {
+    return this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.value?.flagCode === this.otherFlagTypeCode &&
+      this.formGroup.get(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY)?.value === true;
+  }
 
   public ngOnInit(): void {
     this.addCommentsTitle = !this.isDisplayContextParameterExternal ?

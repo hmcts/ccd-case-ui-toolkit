@@ -42,6 +42,10 @@ export class UpdateFlagComponent implements OnInit {
   public internalUserUpdate = false;
   public internalUser2Point1EnabledUpdate = false;
 
+  public get externallyVisibleFlag(): boolean {
+    return this.selectedFlag.flagDetailDisplay.visibility?.toLowerCase() === 'external';
+  }
+
   constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
   public ngOnInit(): void {
