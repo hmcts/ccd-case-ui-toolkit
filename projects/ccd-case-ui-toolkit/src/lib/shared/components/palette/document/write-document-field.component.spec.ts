@@ -296,7 +296,7 @@ describe('WriteDocumentFieldComponent', () => {
   });
 
   it('should be invalid if document management throws error', () => {
-    mockDocumentManagementService.uploadFile.and.returnValue(throwError('{"error": "A terrible thing happened", ' +
+    mockDocumentManagementService.uploadFile.and.returnValue(throwError('{"error": "422 Unprocessable Entity A terrible thing happened", ' +
       '"message": "But really really terrible thing!", "status": 502}'));
 
     const blobParts: BlobPart[] = ['some contents for blob'];
@@ -308,7 +308,7 @@ describe('WriteDocumentFieldComponent', () => {
         ]
       }
     });
-    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(true);
+    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
     expect(component.valid).toBeFalsy();
   });
 

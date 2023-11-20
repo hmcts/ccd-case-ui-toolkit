@@ -283,7 +283,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (0 === error.status || 502 === error.status) {
       return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     }
-    if (error  && error.error.includes('422 Unprocessable Entity')) {
+    if (error.error  && error.error.includes('422 Unprocessable Entity')) {
       const errorMsg = error.error.substring(116, 159);
       return errorMsg
     }
