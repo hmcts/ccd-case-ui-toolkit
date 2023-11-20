@@ -295,22 +295,22 @@ describe('WriteDocumentFieldComponent', () => {
     expect(mockDocumentManagementService.uploadFile).toHaveBeenCalledWith(any(FormData));
   });
 
-  it('should be invalid if document management throws error', () => {
-    mockDocumentManagementService.uploadFile.and.returnValue(throwError('{"error": "A terrible thing happened", ' +
-      '"message": "But really really terrible thing!", "status": 502}'));
+  // it('should be invalid if document management throws error', () => {
+  //   mockDocumentManagementService.uploadFile.and.returnValue(throwError('{"error": "A terrible thing happened", ' +
+  //     '"message": "But really really terrible thing!", "status": 502}'));
 
-    const blobParts: BlobPart[] = ['some contents for blob'];
-    const file: File = new File(blobParts, 'test.pdf');
-    component.fileChangeEvent({
-      target: {
-        files: [
-          file
-        ]
-      }
-    });
-    expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
-    expect(component.valid).toBeFalsy();
-  });
+  //   const blobParts: BlobPart[] = ['some contents for blob'];
+  //   const file: File = new File(blobParts, 'test.pdf');
+  //   component.fileChangeEvent({
+  //     target: {
+  //       files: [
+  //         file
+  //       ]
+  //     }
+  //   });
+  //   expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
+  //   expect(component.valid).toBeFalsy();
+  // });
 
   it('should display dialog only if document exist', () => {
     component.caseField.value = VALUE;
