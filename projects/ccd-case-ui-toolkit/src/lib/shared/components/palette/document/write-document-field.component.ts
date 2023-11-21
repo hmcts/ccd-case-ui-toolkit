@@ -257,7 +257,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     documentFormGroup = this.secureModeOn ? {
       ...documentFormGroup,
-      ...{ document_hash:  new FormControl(document.document_hash) }
+      ...{ document_hash: new FormControl(document.document_hash) }
     } : documentFormGroup;
 
     this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
@@ -283,7 +283,16 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (0 === error.status || 502 === error.status) {
       return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     }
-    return error.error;
+
+    let errorMsg = null;
+    if (error && error.error) {
+      const fullError = error.error;
+      const start = fullError.indexOf('{');
+      const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
+      const obj = JSON.parse(json);
+      errorMsg = obj.error;
+    }
+    return errorMsg;
   }
 
   private buildDocumentUploadData(selectedFile: File): FormData {
@@ -293,7 +302,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     if (this.appConfig.getDocumentSecureMode()) {
       const caseTypeId = this.caseTypeId ? this.caseTypeId : null;
-      const caseTypeJurisdictionId = this.jurisdictionId? this.jurisdictionId  : null;
+      const caseTypeJurisdictionId = this.jurisdictionId ? this.jurisdictionId : null;
       documentUpload.append('caseTypeId', caseTypeId);
       documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
     }
@@ -304,9 +313,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private handleDocumentUploadResult(result: DocumentData): void {
     if (!this.uploadedDocument) {
       if (this.secureModeOn) {
-        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null, document_hash: null});
+        this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null, document_hash: null });
       } else {
-        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null});
+        this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null });
       }
     }
 
