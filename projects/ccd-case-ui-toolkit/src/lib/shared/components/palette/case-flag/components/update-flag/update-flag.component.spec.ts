@@ -73,7 +73,7 @@ describe('UpdateFlagComponent', () => {
   const selectedFlag1 = {
     flagDetailDisplay: {
       partyName: 'Rose Bank',
-      flagDetail: activeFlag,
+      flagDetail: activeFlag
     },
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
@@ -87,7 +87,8 @@ describe('UpdateFlagComponent', () => {
   const selectedFlag3 = {
     flagDetailDisplay: {
       partyName: 'Rose Bank',
-      flagDetail: requestedFlag
+      flagDetail: requestedFlag,
+      visibility: 'External'
     },
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
@@ -525,8 +526,23 @@ describe('UpdateFlagComponent', () => {
     expect(checkboxWelshTranslation).toBeNull();
   });
 
-  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled', () => {
+  it('should not display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is internally visible only', () => {
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1)
+    });
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
+  });
+
+  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is externally visible', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
     expect(warningTextElement.textContent.trim()).toContain(UpdateFlagStep.WARNING_TEXT);

@@ -92,7 +92,8 @@ describe('ManageCaseFlagsComponent', () => {
             ...flag2
           }
         ] as FlagDetail[],
-        flagsCaseFieldId: 'CaseFlag1'
+        flagsCaseFieldId: 'CaseFlag1',
+        visibility: 'Internal'
       },
       pathToFlagsFormGroup: 'CaseFlag1',
       caseField: {
@@ -142,7 +143,8 @@ describe('ManageCaseFlagsComponent', () => {
             ...flag3
           }
         ] as FlagDetail[],
-        flagsCaseFieldId: 'CaseFlag2'
+        flagsCaseFieldId: 'CaseFlag2',
+        visibility: 'External'
       },
       pathToFlagsFormGroup: 'CaseFlag2',
       caseField: {
@@ -357,6 +359,7 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.flagsDisplayData[0].flagDetailDisplay.flagDetail.flagCode).toEqual(flagsData[0].flags.details[0].flagCode);
     expect(component.flagsDisplayData[0].pathToFlagsFormGroup).toEqual(flagsData[0].pathToFlagsFormGroup);
     expect(component.flagsDisplayData[0].originalStatus).toEqual(flagsData[0].caseField.formatted_value.details[0].value.status);
+    expect(component.flagsDisplayData[0].flagDetailDisplay.visibility).toEqual(flagsData[0].flags.visibility);
     // Check correct mapping of the second party's flags
     expect(component.flagsDisplayData[1].flagDetailDisplay.partyName).toEqual(flagsData[1].flags.partyName);
     expect(component.flagsDisplayData[1].flagDetailDisplay.flagDetail.name).toEqual(flagsData[1].flags.details[1].name);
@@ -461,7 +464,8 @@ describe('ManageCaseFlagsComponent', () => {
         flagDetailDisplay: {
           partyName: flagsData[1].flags.partyName,
           flagDetail: flagsData[1].flags.details[1],
-          flagsCaseFieldId: flagsData[1].flags.flagsCaseFieldId
+          flagsCaseFieldId: flagsData[1].flags.flagsCaseFieldId,
+          visibility: flagsData[1].flags.visibility
         },
         pathToFlagsFormGroup: flagsData[1].pathToFlagsFormGroup,
         caseField: flagsData[1].caseField,

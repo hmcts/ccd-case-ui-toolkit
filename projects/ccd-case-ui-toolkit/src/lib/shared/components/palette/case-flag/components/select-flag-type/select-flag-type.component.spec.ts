@@ -626,4 +626,19 @@ describe('SelectFlagTypeComponent', () => {
     const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
     expect(flagVisibilityCheckboxEl).toBeNull();
   });
+
+  it('should set the correct FormControl value when the flag visibility checkbox is checked', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
+    component.isDisplayContextParameterExternal = false;
+    component.isCaseLevelFlag = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    fixture.detectChanges();
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(component.formGroup.get(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY).value).toBe(false);
+    flagVisibilityCheckboxEl.click();
+    expect(component.formGroup.get(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY).value).toBe(true);
+  });
 });

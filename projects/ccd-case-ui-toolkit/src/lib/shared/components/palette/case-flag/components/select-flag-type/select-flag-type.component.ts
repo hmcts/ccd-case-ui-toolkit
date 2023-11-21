@@ -85,7 +85,8 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
-    this.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(''));
+    // FormControl is linked to a checkbox input element, so initial value should be false
+    this.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(false));
 
     // Should clear descriptionControlName if flagTypeControlName is changed
     this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).valueChanges

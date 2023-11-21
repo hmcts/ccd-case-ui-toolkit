@@ -26,7 +26,7 @@
                 : (updateFlagStepEnum.COMMENT_HINT_TEXT_INTERNAL_2_POINT_1 | rpxTranslate)
             }}
           </div>
-          <div class="govuk-warning-text" *ngIf="internalUser2Point1EnabledUpdate">
+          <div class="govuk-warning-text" *ngIf="internalUser2Point1EnabledUpdate && externallyVisibleFlag">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
               <span class="govuk-warning-text__assistive">{{'Warning' | rpxTranslate}}</span>
