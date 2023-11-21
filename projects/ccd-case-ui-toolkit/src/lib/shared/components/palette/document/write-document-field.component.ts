@@ -284,7 +284,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     }
 
-    let errorMsg = null;
+    let errorMsg = 'Error uploading file';
     if (error && error.error) {
       const fullError = error.error;
       const start = fullError.indexOf('{');
