@@ -288,9 +288,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (error && error.error) {
       const fullError = error.error;
       const start = fullError.indexOf('{');
-      const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
-      const obj = JSON.parse(json);
-      errorMsg = obj.error;
+      if (start >= 0) {
+        const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
+        const obj = JSON.parse(json);
+        errorMsg = obj.error;
+      }
     }
     return errorMsg;
   }
