@@ -285,13 +285,16 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
 
     let errorMsg = 'Error uploading file';
-    if (error && error.error) {
+    if (error && error?.error) {
       const fullError = error.error;
       const start = fullError.indexOf('{');
       if (start >= 0) {
         const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
         const obj = JSON.parse(json);
-        errorMsg = obj.error;
+        if (obj && obj?.error) {
+          errorMsg = obj.error;
+        }
+
       }
     }
     return errorMsg;
