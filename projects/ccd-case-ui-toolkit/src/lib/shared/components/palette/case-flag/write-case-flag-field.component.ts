@@ -421,25 +421,35 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         // should refer to a flag's original status, not the one set via the UI because this hasn't been persisted yet
         this.selectedFlag.originalStatus = flagDetailToUpdate.value.status;
         // Update description fields only if flag type is "Other" (flag code OT0001); these fields apply only to that flag type
-        flagDetailToUpdate.value.otherDescription = flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode
-          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.value
-          : null,
-        flagDetailToUpdate.value.otherDescription_cy = flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode
-          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)?.value
-          : null,
+        // If their FormControls don't exist, it means these fields weren't visited as part of the "Update Flag" journey, so do
+        // *not* update their values (otherwise they will become undefined)
+        if (flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode) {
+          if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)) {
+            flagDetailToUpdate.value.otherDescription = this.caseFlagParentFormGroup.get(
+              CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
+          }
+          if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)) {
+            flagDetailToUpdate.value.otherDescription_cy = this.caseFlagParentFormGroup.get(
+              CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH).value;
+          }
+        }
         // Ensure that any comments entered with language set to Welsh do not end up in the English comments field
-        flagDetailToUpdate.value.flagComment = this.rpxTranslationService.language !== 'cy'
-          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
-          : null,
+        if (this.rpxTranslationService.language !== 'cy') {
+          flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value;
+        }
         // Populate from the *English* comments field if:
         // * The Welsh comments field has no value (Welsh comments field acquires a value only when an HMCTS internal user has
         // gone through the "add translation" step for Manage Case Flags), AND
         // * The language is set to Welsh
-        flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
+        // If the FormControl doesn't exist, it means this field wasn't visited as part of the "Update Flag" journey, so do
+        // *not* update its value (otherwise it will be overridden) - unless the user is external AND working in Welsh
+        if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH) || this.rpxTranslationService.language === 'cy') {
+          flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
           ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
           : this.rpxTranslationService.language === 'cy'
             ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
-            : null,
+            : null;
+        }
         flagDetailToUpdate.value.flagUpdateComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value;
         flagDetailToUpdate.value.status = CaseFlagStatus[this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS)?.value];
         flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();

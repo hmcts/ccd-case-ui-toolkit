@@ -776,37 +776,107 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(component.flagsData[1].caseField.value.details[1].value.status).toEqual(CaseFlagStatus.ACTIVE);
   });
 
-  it('should update flag comments correctly when updating a case flag with the language set to Welsh', () => {
-    rpxTranslationServiceSpy.language = 'cy';
+  it('should retain existing values for otherDescription, otherDescription_cy and flagComment_cy fields if not being updated', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
-    component.caseFlagParentFormGroup = new FormGroup({
-      [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment intended to be Welsh'),
+    const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === 'Inactive');
+    const firstUpdateFormGroup = new FormGroup({
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('A description'),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),
+      [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
+      [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl('An updated comment (Welsh)'),
+      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
     });
+    component.caseFlagParentFormGroup = firstUpdateFormGroup;
     component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
-    // Check the comments fields have the correct values
-    expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toBeNull();
+    // Check the description, Welsh description, comments, and Welsh comments have been applied
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]);
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]);
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.COMMENTS]);
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.COMMENTS_WELSH]);
+    // Perform a second flag update, this time without the otherDescription, otherDescription_cy, and flagComment_cy
+    // fields
+    component.caseFlagParentFormGroup = new FormGroup({
+      [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
+      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
+    });
+    component.updateFlagInCollection();
+    // Check the description, Welsh description, and Welsh comments have been retained
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]);
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]);
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.COMMENTS_WELSH]);
+    // Perform a third flag update, this time with the language set to Welsh
+    rpxTranslationServiceSpy.language = 'cy';
+    component.caseFlagParentFormGroup = new FormGroup({
+      [CaseFlagFormFields.COMMENTS]: new FormControl('Cymraeg'),
+      [CaseFlagFormFields.STATUS_CHANGE_REASON]: new FormControl('Status set to inactive'),
+      [CaseFlagFormFields.STATUS]: new FormControl(flagStatusInactiveKey)
+    });
+    component.updateFlagInCollection();
+    // Check the original (English) comments have been retained
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.COMMENTS]);
+  });
+
+  it('should update flag comments correctly when updating a case flag with the language set to Welsh', () => {
+    // Set an initial flag comment (in English)
+    component.selectedFlag = selectedFlag;
+    component.selectedFlag.caseField = component.flagsData[0].caseField;
+    const firstUpdateFormGroup = new FormGroup({
+      [CaseFlagFormFields.COMMENTS]: new FormControl('Initial comment in English')
+    });
+    component.caseFlagParentFormGroup = firstUpdateFormGroup;
+    component.caseFlagParentFormGroup.setParent(parentFormGroup);
+    component.updateFlagInCollection();
+    // Perform a second flag update, this time with the language set to Welsh
+    rpxTranslationServiceSpy.language = 'cy';
+    component.caseFlagParentFormGroup = new FormGroup({
+      [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment intended to be Welsh')
+    });
+    component.updateFlagInCollection();
+    // Check the comments fields have the correct values; the flagComment field should retain whatever value it had
+    // previously, the flagComment_cy field should contain the new comment
+    expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.COMMENTS]);
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual(
       component.caseFlagParentFormGroup.value[CaseFlagFormFields.COMMENTS]);
   });
 
   it('should not update description fields when updating a case flag not of type "Other"', () => {
+    // Set an initial description for both description fields
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
-    // Deliberately change the flag code to non-"Other" code
+    const firstUpdateFormGroup = new FormGroup({
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('Initial description'),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('Initial description (Welsh)')
+    });
+    component.caseFlagParentFormGroup = firstUpdateFormGroup;
+    component.caseFlagParentFormGroup.setParent(parentFormGroup);
+    component.updateFlagInCollection();
+    // Perform a second flag update and deliberately change the flag code to non-"Other" code
     component.selectedFlag.flagDetailDisplay.flagDetail.flagCode = 'ABC';
     component.caseFlagParentFormGroup = new FormGroup({
-      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('A description'),
-      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('Another description'),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('Another description (Welsh)'),
       [CaseFlagFormFields.COMMENTS]: new FormControl('An updated comment'),
       [CaseFlagFormFields.COMMENTS_WELSH]: new FormControl('An updated comment (Welsh)')
     });
-    component.caseFlagParentFormGroup.setParent(parentFormGroup);
     component.updateFlagInCollection();
     // Check the description fields have not been updated but the comments have
-    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toBeNull();
-    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toBeNull();
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]);
+    expect(component.flagsData[0].caseField.value.details[0].value.otherDescription_cy).toEqual(
+      firstUpdateFormGroup.value[CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]);
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
       component.caseFlagParentFormGroup.value[CaseFlagFormFields.COMMENTS]);
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment_cy).toEqual(
