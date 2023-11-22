@@ -1,4 +1,4 @@
-import { SortOrder } from '../../../../complex/sort-order';
+import { SortOrder } from '../../../../../../domain/sort-order.enum';
 
 export interface QueryListColumn {
   name: string;

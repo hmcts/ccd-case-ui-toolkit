@@ -17,6 +17,19 @@
 ### Version 6.19.6-case-flags-v2-reasonable-adjustments-v2
 **EUI-7243** Case flags v2 reasonable adjustments
 
+### Version 6.19.13
+**EXUI-908** Unable to upload correspondence to Manage Cases
+
+### Version 6.19.11-case-file-view-feature-toggle-v1.1
+**EUI-7807** Case file view v1.1
+
+### Version 6.19.6-case-file-view-document-upload-date-v2
+**EUI-7807** Case file view v1.1
+
+### Version 6.19.11-rc1
+**EXUI-1000** Complex type not showing data
+**EXUI-1006** Case Flags stopped working
+
 ### Version 6.19.5
 **EXUI-623** Make secure docstore work during case creation
 
@@ -29,7 +42,6 @@
 
 ### Version 6.19.5-secure-doc-case-creation.1
 **EXUI-623** Make secure docstore work during case creation
-
 ### Version 6.19.1-case-flags-v2-reasonable-adjustments
 **EUI-7243** Case flags v2 reasonable adjustments - updating latest from master
 
@@ -51,6 +63,9 @@
 
 ### Version 6.16.0-query-management-raise-a-query-page-changes
 **EUI-8602** Query management raise a query page changes
+
+### Version 6.19.4-sscs-joh-fixes
+**EUI-8679/EUI-8770** Re-tag for formal release. Also includes partial reversion of EXUI-623 (`WriteDocumentFieldComponent` changes) due to deficient unit test coverage
 
 ### Version 6.18.3-hotfix-EUI-8738
 **EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
@@ -139,6 +154,12 @@
 
 ### Version 6.10.7-case-flags-confirm-flag-status-step
 **EUI-7350** Add "confirm flag status" step of Create Case Flag journey
+
+### Version 6.13.10-case-file-view-sort-by-document-upload-date-v9
+**EUI-7812** Case file view sort by document upload date
+
+### Version 6.13.10-case-file-view-display-document-upload-date-v3
+**EUI-7819** Case file view display document upload date
 
 ### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types

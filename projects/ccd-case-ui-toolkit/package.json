@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.19.7-qm-qualifying-questions-changes-v4",
+  "version": "6.19.13-qm-qualifying-questions-changes-v4",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
