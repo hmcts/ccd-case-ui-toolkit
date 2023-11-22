@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-7
+**EUI-9000** Amend "Comments" field label for external users to display static text instead of duplicating the page title
+**EUI-9009** Fix bug where `otherDescription`, `otherDescription_cy`, and `flagComment_cy` field values are not retained when a flag is updated and those fields are not part of the update
+
 ### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-6
 **EUI-8999** Restrict display of the comments visibility warning text to flags not of type "Other (internal)" for the "Create Case Flag" journey, and flags that were previously created as external for the "Manage Case Flags" journey
 

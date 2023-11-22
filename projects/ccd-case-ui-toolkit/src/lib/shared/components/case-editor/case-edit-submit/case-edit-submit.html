@@ -105,9 +105,7 @@
       </button>
     </div>
     <p class="cancel">
-      <a (click)="cancel()" href="javascript:void(0)" [class.disabled]="caseEdit.isSubmitting">
-        {{getCancelText() | rpxTranslate}}
-      </a>
+      <a (click)="cancel()" href="javascript:void(0)" [class.disabled]="caseEdit.isSubmitting">{{getCancelText() | rpxTranslate}}</a>
     </p>
   </form>
 </div>
