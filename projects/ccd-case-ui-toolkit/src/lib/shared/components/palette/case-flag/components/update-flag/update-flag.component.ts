@@ -104,8 +104,15 @@ export class UpdateFlagComponent implements OnInit {
       case CaseFlagDisplayContextParameter.UPDATE:
       case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
         if (flagDetail?.name) {
-          const subTypeValue = flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}` : ''
-          return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${subTypeValue}"`;
+          const subTypeValue = flagDetail.subTypeValue || flagDetail.subTypeValue_cy
+            ? `, ${flagDetail.subTypeValue || flagDetail.subTypeValue_cy}`
+            : '';
+          const otherDescription = flagDetail.otherDescription || flagDetail.otherDescription_cy
+            ? `, ${flagDetail.otherDescription || flagDetail.otherDescription_cy}`
+            : '';
+          return subTypeValue
+            ? `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${subTypeValue}"`
+            : `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${otherDescription}"`;
         }
         return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE}`;
       case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
