@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.13-case-flags-v2-update-flag-show-other-description
+**EUI-9016** Amend display of page title and field labels on "Update flag" page, to include the flag description for flags of type "Other"
+
 ### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-7
 **EUI-9000** Amend "Comments" field label for external users to display static text instead of duplicating the page title
 **EUI-9009** Fix bug where `otherDescription`, `otherDescription_cy`, and `flagComment_cy` field values are not retained when a flag is updated and those fields are not part of the update

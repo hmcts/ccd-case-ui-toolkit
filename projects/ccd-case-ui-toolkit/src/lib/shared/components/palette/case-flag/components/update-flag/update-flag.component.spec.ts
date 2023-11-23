@@ -70,6 +70,39 @@ describe('UpdateFlagComponent', () => {
     status: 'Active',
     subTypeValue: 'Sub Type'
   } as FlagDetail;
+  const activeFlagWithSubTypeValueCy = {
+    name: 'Flag 1',
+    flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'FL1',
+    status: 'Active',
+    subTypeValue_cy: 'Sub Type (Welsh)'
+  } as FlagDetail;
+  const activeFlagWithOtherDescription = {
+    name: 'Flag 1',
+    flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'OT0001',
+    status: 'Active',
+    otherDescription: 'Description'
+  } as FlagDetail;
+  const activeFlagWithOtherDescriptionCy = {
+    name: 'Flag 1',
+    flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'OT0001',
+    status: 'Active',
+    otherDescription_cy: 'Description (Welsh)'
+  } as FlagDetail;
   const selectedFlag1 = {
     flagDetailDisplay: {
       partyName: 'Rose Bank',
@@ -507,7 +540,14 @@ describe('UpdateFlagComponent', () => {
     component.displayContextParameter = '';
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.NONE);
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
-    expect(component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValue)).toEqual(`${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Sub Type"`);
+    expect(component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValue)).toEqual(
+      `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Sub Type"`);
+    expect(component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValueCy)).toEqual(
+      `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Sub Type (Welsh)"`);
+    expect(component.setUpdateCaseFlagTitle(activeFlagWithOtherDescription)).toEqual(
+      `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Description"`);
+    expect(component.setUpdateCaseFlagTitle(activeFlagWithOtherDescriptionCy)).toEqual(
+      `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Description (Welsh)"`);
     const flag = {} as FlagDetail;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     expect(component.setUpdateCaseFlagTitle(flag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE);
