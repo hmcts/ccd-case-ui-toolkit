@@ -57,6 +57,34 @@ const field = (id, value, showCondition?) => {
     return caseField;
 };
 
+const TEXT_FIELD: CaseField = buildCaseField('text', {
+  field_type: { id: 'Text', type: 'Text' },
+  hidden: false
+}, null);
+
+const field1 = (id, value, showCondition?) => {
+  const caseField = new CaseField();
+  const fieldType = new FieldType();
+  fieldType.id = 'Complex';
+  fieldType.type = 'Complex';
+  fieldType.complex_fields= [TEXT_FIELD];
+  caseField.id = id;
+  caseField.display_context = 'HIDDEN';
+  caseField.value = value;
+  caseField.show_condition = showCondition;
+  caseField.field_type = fieldType;
+  caseField.hidden = false;
+  return caseField;
+};
+
+function buildCaseField(id: string, properties: object, value?: any): CaseField {
+  return ({
+    id,
+    ...properties,
+    value
+  }) as CaseField;
+}
+
 describe('ConditionalShowFormDirective', () => {
     let comp:    TestHostComponent;
     let fixture: ComponentFixture<TestHostComponent>;
@@ -120,25 +148,45 @@ describe('ConditionalShowFormDirective', () => {
       });
     });
 
-    it('should hide when condition is false', (done) => {
-      comp.caseFields = [
-        field('hasCar', 'No', ''),
-        field('carMake', 'Ford', 'hasCar="Yes"'),
-        field('carModel', 'Prefect', 'hasCar="Yes"')
-      ];
-      comp.formGroup = new FormGroup({
-        hasCar: new FormControl(comp.caseFields[0].value),
-        carMake: new FormControl(comp.caseFields[1].value),
-        carModel: new FormControl( comp.caseFields[2].value)
-      });
-      bindCaseFields(comp.formGroup, comp.caseFields);
-      fixture.detectChanges();
-      fixture.whenStable().then(() => {
-        expect(comp.caseFields[1].hidden).toBeTruthy();
-        expect(comp.caseFields[2].hidden).toBeTruthy();
-        done();
-      });
+  it('should hide when condition is false', (done) => {
+    comp.caseFields = [
+      field('hasCar', 'No', ''),
+      field('carMake', 'Ford', 'hasCar="Yes"'),
+      field('carModel', 'Prefect', 'hasCar="Yes"')
+    ];
+    comp.formGroup = new FormGroup({
+      hasCar: new FormControl(comp.caseFields[0].value),
+      carMake: new FormControl(comp.caseFields[1].value),
+      carModel: new FormControl( comp.caseFields[2].value)
     });
+    bindCaseFields(comp.formGroup, comp.caseFields);
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(comp.caseFields[1].hidden).toBeTruthy();
+      expect(comp.caseFields[2].hidden).toBeTruthy();
+      done();
+    });
+  });
+
+  it('should hide when condition is false and its parent field is hidden', (done) => {
+    comp.caseFields = [
+      field('hasCar', 'No', ''),
+      field('carMake', 'Ford', 'hasCar="Yes"'),
+      field1('carModel', 'Prefect', 'hasCar="Yes"')
+    ];
+    comp.formGroup = new FormGroup({
+      hasCar: new FormControl(comp.caseFields[0].value),
+      carMake: new FormControl(comp.caseFields[1].value),
+      carModel: new FormControl( comp.caseFields[2].value)
+    });
+    bindCaseFields(comp.formGroup, comp.caseFields);
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(comp.caseFields[1].hidden).toBeTruthy();
+      expect(comp.caseFields[2].hidden).toBeTruthy();
+      done();
+    });
+  });
 
   it ('should show when condition is true', (done) => {
     comp.caseFields = [ field('hasCar', 'Yes', ''),
