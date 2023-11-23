@@ -1,6 +1,6 @@
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldType } from '../../domain/definition/field-type.model';
@@ -205,6 +205,26 @@ describe('ConditionalShowFormDirective', () => {
       done();
     });
   });
+
+  it ('should show when condition is true', (done) => {
+    comp.caseFields = [ field('hasCar', 'Yes', ''),
+      field('carMake', 'Ford', 'hasCar="Yes"'),
+      field('carModel', 'Prefect', 'hasCar="Yes"')];
+    comp.caseFields[1].hidden = null;
+    comp.formGroup = new FormGroup({
+      hasCar: new FormControl(comp.caseFields[0].value),
+      carMake: new FormControl(comp.caseFields[1].value),
+      carModel: new FormControl( comp.caseFields[2].value, Validators.required)
+    });
+    bindCaseFields(comp.formGroup, comp.caseFields);
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(comp.caseFields[1].hidden).toBe(false);
+      expect(comp.caseFields[2].hidden).toBe(false);
+      done();
+    });
+  });
+
   it ('should hide when field value changes to make condition false', fakeAsync(() => {
     comp.caseFields = [ field('hasCar', 'Yes', ''),
       field('carMake', 'Ford', 'hasCar="Yes"'),
