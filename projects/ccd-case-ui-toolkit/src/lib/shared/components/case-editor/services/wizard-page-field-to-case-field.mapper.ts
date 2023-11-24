@@ -106,7 +106,7 @@ export class WizardPageFieldToCaseFieldMapper {
 
     childrenCaseFields.forEach(e => this.hideParentIfAllChildrenHidden(e));
 
-    // filter out judicialuser field to avoid issue with the field to be hide/unhide based on the selection 
+    // filter out judicialuser field to avoid issue with the field to be hide/unhide based on the selection
     if (childrenCaseFields.length > 0 && this.allCaseFieldsHidden(childrenCaseFields)) {
       caseField.hidden = true;
       if (caseField.field_type.id !== 'JudicialUser' && caseField.field_type.collection_field_type?.id !== 'JudicialUser') {
