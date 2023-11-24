@@ -1,7 +1,7 @@
 <exui-error-message *ngIf="formGroup.invalid && submitted" [error]="errorMessage"></exui-error-message>
 <cut-alert type="information">
   {{'This case requires challenged access.' | rpxTranslate}}<br/>
-  {{'This is because the case is outside your work area. If you request access to the case, it will be logged for auditing purposes.'}}
+  {{'This is because the case is outside your work area. If you request access to the case, it will be logged for auditing purposes.' | rpxTranslate}}
 </cut-alert>
 <form [formGroup]="formGroup" (submit)="onSubmit()">
   <div class="govuk-form-group" [ngClass]="{'form-group-error': formGroup.invalid && submitted}">

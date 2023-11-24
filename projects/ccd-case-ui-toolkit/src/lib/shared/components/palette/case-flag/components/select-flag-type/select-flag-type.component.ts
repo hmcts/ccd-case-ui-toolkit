@@ -6,7 +6,7 @@ import { ErrorMessage } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService } from '../../../../../services';
 import { RefdataCaseFlagType } from '../../../../../services/case-flag/refdata-case-flag-type.enum';
-import { CaseFlagState } from '../../domain';
+import { CaseFlagState, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
 
@@ -31,6 +31,12 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   @Input()
   public isDisplayContextParameterExternal = false;
 
+  @Input()
+  public isDisplayContextParameter2Point1Enabled = false;
+
+  @Input()
+  public selectedFlagsLocation: FlagsWithFormGroupPath;
+
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -47,6 +53,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public cachedFlagType: FlagType;
   public flagTypeControlChangesSubscription: Subscription;
   public caseFlagFormField = CaseFlagFormFields;
+  public isCaseLevelFlag: boolean;
 
   private readonly maxCharactersForOtherFlagType = 80;
   // Code for "Other" flag type as defined in Reference Data
@@ -68,6 +75,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
 
   public ngOnInit(): void {
+    this.isCaseLevelFlag = this.selectedFlagsLocation.flags.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId;
     this.flagTypes = [];
     const flagType = this.formGroup['caseField']
       && this.formGroup['caseField'].id
@@ -77,6 +85,8 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
+    // FormControl is linked to a checkbox input element, so initial value should be false
+    this.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(false));
 
     // Should clear descriptionControlName if flagTypeControlName is changed
     this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).valueChanges
@@ -163,17 +173,24 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
 
     if (!this.selectedFlagType) {
       // If there is any prior flag type selection then the message will differ
-      const errorMessage = !this.cachedFlagType
-        ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED
-        : SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
+      let errorMessage = '';
+      if (this.cachedFlagType) {
+        errorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
+      } else {
+        errorMessage  = this.isDisplayContextParameterExternal
+        ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED_EXTERNAL
+        : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
+      }
       this.flagTypeNotSelectedErrorMessage = errorMessage;
       this.errorMessages.push({title: '', description: errorMessage, fieldId: 'conditional-radios-list'});
     }
     if (this.otherFlagTypeSelected) {
       const otherFlagTypeDescription = this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
       if (!otherFlagTypeDescription) {
-        this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
-        this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED}`, fieldId: 'other-flag-type-description'});
+        this.flagTypeErrorMessage = this.isDisplayContextParameterExternal
+          ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED_EXTERNAL
+          : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
+        this.errorMessages.push({title: '', description: `${this.flagTypeErrorMessage}`, fieldId: 'other-flag-type-description'});
       }
       if (otherFlagTypeDescription.length > this.maxCharactersForOtherFlagType) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED;

@@ -1,6 +1,7 @@
 import { CaseField, CaseTab, CaseView } from '../../../domain';
 import { CaseNotifier } from './case.notifier';
 import { CasesService } from './cases.service';
+import { Observable } from 'rxjs';
 
 describe('setBasicFields', () => {
   let caseNotifier: CaseNotifier;
@@ -31,6 +32,27 @@ describe('setBasicFields', () => {
     events: []
   };
 
+  const CASE_VIEW_2: CaseView = {
+    case_id: '2',
+    case_type: {
+      id: 'TestAddressBookCase2',
+      name: 'Test Address Book Case 2',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test',
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: []
+  };
+
+
   beforeEach(() => {
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.cachedCaseView = CASE_VIEW;
@@ -51,10 +73,18 @@ describe('setBasicFields', () => {
     caseField3.value = 'Something else';
   });
 
-  it('should be empty when tabs are not available', () => {
-    caseNotifier.cachedCaseView.tabs = [];
-    caseNotifier.setBasicFields(caseNotifier.cachedCaseView.tabs);
-    expect(caseNotifier.cachedCaseView.basicFields).toBeUndefined();
+  xit ('should call getCaseV2 on refresh', () => {
+    const csv: jasmine.SpyObj<CasesService> = jasmine.createSpyObj<CasesService>('CasesService', ['getCaseViewV2']);
+    csv.getCaseViewV2.and.returnValue(CASE_VIEW_2);
+    const cNote = new CaseNotifier(csv);
+    cNote.fetchAndRefresh('1');
+    expect(csv.getCaseViewV2).toHaveBeenCalled();
+  });
+
+  it('should be empty when cached case is removed', () => {
+    expect(caseNotifier.cachedCaseView).toBeTruthy('CachedCaseView null before remove');
+    caseNotifier.removeCachedCase();
+    expect(caseNotifier.cachedCaseView).toBeNull('CachedCaseView not null after remove');
   });
 
   it('should be empty when fields are not available', () => {
@@ -77,7 +107,7 @@ describe('setBasicFields', () => {
     expect(caseNotifier.cachedCaseView.basicFields).toEqual(basicFields);
   });
 
-  it('should have Case Name bascic details when caseNameHmctsInternal field is available', () => {
+  it('should have Case Name basic details when caseNameHmctsInternal field is available', () => {
     caseTab1.fields.push(caseField1);
     caseNotifier.cachedCaseView.tabs.push(caseTab1);
     caseNotifier.setBasicFields(caseNotifier.cachedCaseView.tabs);

@@ -237,7 +237,7 @@ describe('ReadComplexFieldComponent', () => {
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES,
       value: VALUE,
-      isDynamic: (()=>{})
+      isDynamic: (() => {})
     }) as CaseField;
 
     let fixture: ComponentFixture<ReadComplexFieldComponent>;
@@ -281,5 +281,130 @@ describe('ReadComplexFieldComponent', () => {
       expect(FORM_GROUP.controls[FIELD_ID].value).toBe(VALUE);
     });
 
+  });
+
+  describe('Persistable readonly complex field with dynamic lists', () => {
+    const FORM_GROUP: FormGroup = new FormGroup({});
+    const FIELD_TYPE_WITH_VALUES: FieldType = {
+      id: 'Complex',
+      type: 'Complex',
+      complex_fields: [
+        ({
+          id: 'DynamicListWithValue',
+          label: 'Dynamic list 1',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'DynamicList',
+            type: 'DynamicList'
+          },
+          isDynamic: () => true
+        }) as CaseField,
+        ({
+          id: 'DynamicListWithCode',
+          label: 'Dynamic list 2',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'DynamicList',
+            type: 'DynamicList'
+          },
+          isDynamic: () => true
+        }) as CaseField,
+        ({
+          id: 'DynamicListWithNoCaseFieldValue',
+          label: 'Dynamic list 3',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'DynamicList',
+            type: 'DynamicList'
+          },
+          isDynamic: () => true
+        }) as CaseField
+      ]
+    };
+
+    const FIELD_ID = 'AComplexField';
+    const VALUE = {
+      DynamicListWithValue: {
+        list_items: ['One', 'Two'],
+        value: 'One'
+      },
+      DynamicListWithCode: {
+        list_items: [
+          {
+            code: '1',
+            label: 'One'
+          },
+          {
+            code: '2',
+            label: 'Two'
+          }
+        ],
+        value: {
+          code: '1',
+          label: 'One'
+        }
+      },
+      DynamicListWithNoCaseFieldValue: null
+    };
+    /* tslint:disable-next-line */
+    const CASE_FIELD = ({
+      id: FIELD_ID,
+      label: 'Complex Field',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE_WITH_VALUES,
+      value: VALUE,
+      isDynamic: (() => {})
+    }) as CaseField;
+
+    let fixture: ComponentFixture<ReadComplexFieldComponent>;
+    let component: ReadComplexFieldComponent;
+    let de: DebugElement;
+
+    beforeEach(waitForAsync(() => {
+      setupComponents();
+
+      TestBed
+        .configureTestingModule({
+          imports: [
+            PaletteUtilsModule,
+            ConditionalShowModule
+          ],
+          declarations: [
+            ReadComplexFieldComponent,
+            FieldsFilterPipe,
+
+            // Mocks
+            readComplexFieldRawComponentMock,
+            readComplexFieldTableComponentMock,
+            readComplexFieldNewTableComponentMock
+          ],
+          providers: []
+        })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(ReadComplexFieldComponent);
+      component = fixture.componentInstance;
+
+      component.caseField = CASE_FIELD;
+      component.formGroup = FORM_GROUP;
+
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    }));
+
+    it('should populate DynamicList field values', () => {
+      expect(FIELD_TYPE_WITH_VALUES.complex_fields[0].list_items).toEqual(VALUE.DynamicListWithValue.list_items);
+      expect(FIELD_TYPE_WITH_VALUES.complex_fields[0].value).toEqual(VALUE.DynamicListWithValue);
+      expect(FIELD_TYPE_WITH_VALUES.complex_fields[1].list_items).toEqual(VALUE.DynamicListWithCode.list_items);
+      expect(FIELD_TYPE_WITH_VALUES.complex_fields[1].value).toEqual({
+        list_items: VALUE.DynamicListWithCode.list_items,
+        value: VALUE.DynamicListWithCode.value.code
+      });
+      expect(FIELD_TYPE_WITH_VALUES.complex_fields[2].list_items).toBeUndefined();
+      expect(FIELD_TYPE_WITH_VALUES.complex_fields[2].value).toEqual({
+        list_items: undefined,
+        value: undefined
+      });
+    });
   });
 });

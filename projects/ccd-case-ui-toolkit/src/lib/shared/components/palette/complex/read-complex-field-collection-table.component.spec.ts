@@ -116,7 +116,7 @@ describe('ReadComplexFieldCollectionTableComponent', () => {
             // Mocks
             MockFieldReadComponent,
             MockReadCaseLinkFieldComponent,
-            MockRpxTranslatePipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })
@@ -318,7 +318,7 @@ describe('ReadComplexFieldCollectionTableComponent - nested complex field values
             // Mocks
             MockFieldReadComponent,
             MockReadCaseLinkFieldComponent,
-            MockRpxTranslatePipe,
+            MockRpxTranslatePipe
           ],
           providers: []
         })

@@ -9,7 +9,6 @@ describe('DocumentDialogComponent', () => {
   let fixture: ComponentFixture<DocumentDialogComponent>;
   const matDialogRef = jasmine.createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
 
-
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DocumentDialogComponent, MockRpxTranslatePipe ],

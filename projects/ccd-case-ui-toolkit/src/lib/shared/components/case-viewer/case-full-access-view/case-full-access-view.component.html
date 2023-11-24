@@ -16,7 +16,7 @@
 <div *ngIf="error && error.details" class="error-summary" role="group"
      aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
   <h2 class="heading-h2 error-summary-heading" id="edit-case-event_error-summary-heading">
-    {{"The callback data failed validation" | rpxTranslate}}
+    {{'The callback data failed validation' | rpxTranslate}}
   </h2>
   <p>{{error.message | rpxTranslate}}</p>
   <ul *ngIf="error.details?.field_errors" class="error-summary-list">

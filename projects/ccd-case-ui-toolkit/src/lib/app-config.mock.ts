@@ -23,6 +23,14 @@ export class AppMockConfig implements AbstractAppConfig {
     return 0;
   }
 
+  public getTimeoutsForCaseRetrieval(): number[] {
+    return [0];
+  }
+
+  public getTimeoutsCaseRetrievalArtificialDelay(): number {
+    return 0;
+  }
+
   public getActivityUrl(): string {
     return '';
   }
@@ -45,6 +53,18 @@ export class AppMockConfig implements AbstractAppConfig {
 
   public getCaseDataUrl(): string {
     return '';
+  }
+
+  public getEnvironment() {
+    if (this.getActivityUrl()?.includes('.aat.'))
+      return 'aat';
+    else if (this.getActivityUrl()?.includes('.preview.'))
+      return 'preview';
+    else if (this.getActivityUrl()?.includes('.demo.'))
+      return 'demo';
+    else if (this.getActivityUrl()?.includes('.ithc.'))
+      return 'ithc';
+    return 'prod';
   }
 
   public getCaseHistoryUrl(caseId: string, eventId: string): string {
@@ -185,5 +205,9 @@ export class AppMockConfig implements AbstractAppConfig {
 
   public getCaseDataStoreApiUrl(): string {
     return '';
+  }
+
+  public getEnableCaseFileViewVersion1_1(): boolean {
+    return true;
   }
 }

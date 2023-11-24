@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
-import { AddCommentsErrorMessage, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
+import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagFormFields, CaseFlagWizardStepTitle } from '../../enums';
 import { AddCommentsComponent } from './add-comments.component';
 
 describe('AddCommentsComponent', () => {
@@ -10,12 +10,14 @@ describe('AddCommentsComponent', () => {
   let fixture: ComponentFixture<AddCommentsComponent>;
   let nextButton: HTMLElement;
   let textareaInput: string;
+  // Code for "Other" flag type as defined in Reference Data
+  const otherFlagTypeCode = 'OT0001';
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [AddCommentsComponent, MockRpxTranslatePipe],
+      imports: [ ReactiveFormsModule ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [ AddCommentsComponent, MockRpxTranslatePipe ]
     })
       .compileComponents();
   }));
@@ -39,6 +41,7 @@ describe('AddCommentsComponent', () => {
   it('should show an error message on clicking "Next" if comments are mandatory but none have been entered', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
+    component.isDisplayContextParameterExternal = false;
     nextButton.click();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
@@ -53,6 +56,26 @@ describe('AddCommentsComponent', () => {
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessageElement.textContent).toContain(AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED);
+  });
+
+  it('should show an error message on clicking "Next" if comments are mandatory but none have been entered for support request', () => {
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    component.isDisplayContextParameterExternal = true;
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_COMMENTS,
+      errorMessages: component.errorMessages
+    });
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL,
+      fieldId: component.flagCommentsControlName
+    });
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessageElement.textContent).toContain(AddCommentsErrorMessage.FLAG_COMMENTS_NOT_ENTERED_EXTERNAL);
   });
 
   it('should not show an error message on clicking "Next" if comments are not mandatory and none have been entered', () => {
@@ -126,12 +149,12 @@ describe('AddCommentsComponent', () => {
     component.optional = true;
     component.ngOnInit();
     fixture.detectChanges();
-    const flagCommentsLabel = fixture.debugElement.nativeElement.querySelector('.govuk-label--l');
+    const flagCommentsLabel = fixture.debugElement.nativeElement.querySelector('.govuk-label--m');
     expect(flagCommentsLabel.textContent).toContain('(optional)');
   });
 
   it('should not show the text "(optional)" in the textarea label if comments are mandatory', () => {
-    const flagCommentsLabel = fixture.debugElement.nativeElement.querySelector('.govuk-label--l');
+    const flagCommentsLabel = fixture.debugElement.nativeElement.querySelector('.govuk-label--m');
     expect(flagCommentsLabel.textContent).not.toContain('(optional)');
   });
 
@@ -141,5 +164,53 @@ describe('AddCommentsComponent', () => {
     component.isDisplayContextParameterExternal = true;
     component.ngOnInit();
     expect(component.addCommentsTitle).toBe(CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS_EXTERNAL_MODE);
+  });
+
+  it('should not display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is of type "Other" and is internally visible only', () => {
+    component.isDisplayContextParameterExternal = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    component.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl({ flagCode: otherFlagTypeCode }));
+    component.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(true));
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
+  });
+
+  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is of type "Other" and is externally visible', () => {
+    component.isDisplayContextParameterExternal = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    component.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl({ flagCode: otherFlagTypeCode }));
+    component.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(false));
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement.textContent.trim()).toContain(AddCommentsStep.WARNING_TEXT);
+  });
+
+  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is not of type "Other"', () => {
+    component.isDisplayContextParameterExternal = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    component.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl({ flagCode: 'ABC' }));
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement.textContent.trim()).toContain(AddCommentsStep.WARNING_TEXT);
+  });
+
+  it('should not display the warning text for case workers and internal staff users if Case Flags v2.1 is not enabled', () => {
+    component.isDisplayContextParameterExternal = false;
+    component.isDisplayContextParameter2Point1Enabled = false;
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
+  });
+
+  it('should not display the warning text for solicitors and external users', () => {
+    component.isDisplayContextParameterExternal = true;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
   });
 });

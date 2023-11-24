@@ -114,9 +114,12 @@
         (click)="goBack()">
         {{ 'Previous' | rpxTranslate }}
       </button>
-      <button class="govuk-button" data-module="govuk-button">
+      <button class="govuk-button" data-module="govuk-button" (click)="submit()">
         {{ 'Submit' | rpxTranslate }}
       </button>
     </div>
   </div>
+
+  <ccd-query-event-completion [eventCompletionParams]="eventCompletionParams">    
+  </ccd-query-event-completion>
 </div>

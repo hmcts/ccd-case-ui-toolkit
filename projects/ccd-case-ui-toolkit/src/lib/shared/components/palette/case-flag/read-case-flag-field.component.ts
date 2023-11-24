@@ -19,11 +19,14 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   public caseLevelCaseFlagData: FlagsWithFormGroupPath;
   public paletteContext = PaletteContext;
   public flagForSummaryDisplay: FlagDetailDisplay;
-  public displayContextParameter: string;
+  public displayContextParameter: CaseFlagDisplayContextParameter;
   public caseFlagsExternalUser = false;
   public pathToFlagsFormGroup: string;
-  public readonly readSupportMode = '#ARGUMENT(READ,EXTERNAL)';
   private readonly caseLevelCaseFlagsFieldId = 'caseFlags';
+
+  public get caseFlagDisplayContextParameter(): typeof CaseFlagDisplayContextParameter {
+    return CaseFlagDisplayContextParameter;
+  }
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -35,10 +38,10 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
 
   public ngOnInit(): void {
     const flagLauncherControlName = Object.keys(this.formGroup.controls).find(
-      controlName => FieldsUtils.isFlagLauncherCaseField(this.formGroup.get(controlName)['caseField']));
+      controlName => FieldsUtils.isCaseFieldOfType(this.formGroup.get(controlName)['caseField'], ['FlagLauncher']));
     const flagLauncherComponent = this.formGroup.get(flagLauncherControlName)?.['component'];
     this.displayContextParameter = flagLauncherComponent?.caseField?.display_context_parameter;
-    this.caseFlagsExternalUser = this.displayContextParameter === this.readSupportMode;
+    this.caseFlagsExternalUser = this.displayContextParameter === CaseFlagDisplayContextParameter.READ_EXTERNAL;
 
     // If the context is PaletteContext.DEFAULT, the Flags fields need to be located by CaseTab (they won't be present
     // in the FormGroup - only the FlagLauncher field is present)
@@ -59,6 +62,34 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       // Separate the party-level and case-level flags
       this.partyLevelCaseFlagData = this.flagsData.filter(
         instance => instance.pathToFlagsFormGroup !== this.caseLevelCaseFlagsFieldId);
+      // If the user is internal, group all flags data by groupId where present so they see a combined collection of
+      // internal and external flags data for each party
+      if (!this.caseFlagsExternalUser) {
+        const groupedFlagsData = this.partyLevelCaseFlagData
+        .filter((f) => f.flags.groupId)
+        .reduce((mergedFlagDetails, f) => {
+          mergedFlagDetails[f.flags.groupId] = mergedFlagDetails[f.flags.groupId] || [];
+          // The flags.details property (which should be an array) could be falsy; spread an empty array if so
+          mergedFlagDetails[f.flags.groupId].push(...(f.flags.details || []));
+          return mergedFlagDetails;
+        }, Object.create(null));
+        // Remove duplicate flags objects with the same groupId (which are going to be treated as one for display
+        // purposes)
+        const uniquePartyData = this.partyLevelCaseFlagData
+        .filter((f) => f.flags.groupId)
+        .reduce((flagsUniqueByGroupId, f) => {
+          if (flagsUniqueByGroupId.findIndex(flag => flag.flags.groupId === f.flags.groupId) === -1) {
+            // Set the corresponding grouped flags data
+            f.flags.details = groupedFlagsData[f.flags.groupId];
+            flagsUniqueByGroupId.push(f);
+          }
+          return flagsUniqueByGroupId;
+        }, []);
+        // Append flags objects with no groupId
+        this.partyLevelCaseFlagData.filter((f) => !f.flags.groupId).forEach((f) => uniquePartyData.push(f));
+        this.partyLevelCaseFlagData = uniquePartyData;
+      }
+
       // There will be only one case-level flags instance containing all case-level flag details
       this.caseLevelCaseFlagData = this.flagsData.find(
         instance => instance.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
@@ -71,6 +102,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
         if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE ||
+            flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
             flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL)
             && flagLauncherComponent.selectedFlagsLocation) {
           this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
@@ -79,6 +111,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
         } else if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE ||
+          flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1 ||
           flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) &&
           flagLauncherComponent.selectedFlag) {
             this.flagForSummaryDisplay =

@@ -13,9 +13,6 @@
 </div>
 <div *ngIf="!isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="fieldState">
-    <div id="create-flag-caption" class="govuk-caption-l" [ngClass]="{'form-group-error': errorMessages.length > 0}">
-      {{createFlagCaption | rpxTranslate}}
-    </div>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
       <ccd-select-flag-location
         [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
@@ -26,6 +23,8 @@
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
       <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup" [jurisdiction]="jurisdiction" [caseTypeId]="caseTypeId"
         [hmctsServiceId]="hmctsServiceId" [isDisplayContextParameterExternal]="isDisplayContextParameterExternal"
+        [isDisplayContextParameter2Point1Enabled]="isDisplayContextParameter2Point1Enabled"
+        [selectedFlagsLocation]="selectedFlagsLocation"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
         (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"></ccd-select-flag-type>
     </ng-container>
@@ -39,7 +38,8 @@
       <ccd-add-comments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
         [isDisplayContextParameterExternal]="isDisplayContextParameterExternal"
-      ></ccd-add-comments>
+        [isDisplayContextParameter2Point1Enabled]="isDisplayContextParameter2Point1Enabled">
+      </ccd-add-comments>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_STATUS">
       <ccd-confirm-flag-status [formGroup]="caseFlagParentFormGroup" [defaultStatus]="flagType.defaultStatus"

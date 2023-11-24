@@ -108,6 +108,7 @@ export class WizardPageFieldToCaseFieldMapper {
 
     if (childrenCaseFields.length > 0 && this.allCaseFieldsHidden(childrenCaseFields)) {
       caseField.hidden = true;
+      caseField.display_context = 'HIDDEN';
     }
   }
 

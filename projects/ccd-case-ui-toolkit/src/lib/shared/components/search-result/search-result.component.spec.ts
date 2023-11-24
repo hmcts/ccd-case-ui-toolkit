@@ -194,7 +194,6 @@ describe('SearchResultComponent', () => {
             CaseReferencePipe,
 
             // Mocks
-            PaginatePipe,
             MockRpxTranslatePipe,
             caseActivityComponent,
             PaginatePipe
@@ -813,7 +812,6 @@ describe('SearchResultComponent', () => {
             CaseReferencePipe,
 
             // Mocks
-            PaginatePipe,
             MockRpxTranslatePipe,
             caseActivityComponent,
             PaginatePipe

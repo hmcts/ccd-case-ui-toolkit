@@ -7,6 +7,7 @@ import { BehaviorSubject, of, throwError } from 'rxjs';
 import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
 import { CaseFlagRefdataService, RefdataCaseFlagType } from '../../../../../services/case-flag';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
+import { FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagFieldState, CaseFlagFormFields, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
 import { FlagFieldDisplayPipe } from '../../pipes/flag-field-display.pipe';
 import { SearchLanguageInterpreterControlNames } from '../search-language-interpreter/search-language-interpreter-control-names.enum';
@@ -19,6 +20,7 @@ describe('SelectFlagTypeComponent', () => {
   let fixture: ComponentFixture<SelectFlagTypeComponent>;
   let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
   let flagTypes: FlagType[];
+  let selectedFlagsLocation: FlagsWithFormGroupPath;
   let mockRpxTranslationService: any;
 
   const serviceDetails = [
@@ -162,6 +164,14 @@ describe('SelectFlagTypeComponent', () => {
       }
     ] as FlagType[];
 
+    selectedFlagsLocation = {
+      flags: {
+        flagsCaseFieldId: 'caseFlags'
+      },
+      pathToFlagsFormGroup: null,
+      caseField: null
+    };
+
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('CaseFlagRefdataService',
       ['getCaseFlagsRefdata', 'getHmctsServiceDetailsByServiceName', 'getHmctsServiceDetailsByCaseType']);
     caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(of(flagTypes));
@@ -198,8 +208,9 @@ describe('SelectFlagTypeComponent', () => {
     component.caseTypeId = caseTypeId;
     component.formGroup = new FormGroup({});
     component.isDisplayContextParameterExternal = false;
-    // Deliberately omitted fixture.detectChanges() here to allow for setting isDisplayContextParameterExternal to
-    // "true" for one test that needs to run as if the user is external
+    component.selectedFlagsLocation = selectedFlagsLocation;
+    // Deliberately omitted fixture.detectChanges() here to allow for overriding default values for
+    // isDisplayContextParameterExternal and isDisplayContextParameter2Point1Enabled for selected tests
   });
 
   it('should create component', () => {
@@ -562,5 +573,72 @@ describe('SelectFlagTypeComponent', () => {
     mockRpxTranslationService.language = 'cy';
     fixture.detectChanges();
     expect(flagTypeHeadingEl.nativeElement.textContent.trim()).toEqual(flagTypes[0].childFlags[0].name_cy);
+  });
+
+  it('should not display flag visibility checkbox for support request (external user)', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
+    component.isDisplayContextParameterExternal = true;
+    component.isCaseLevelFlag = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    fixture.detectChanges();
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(flagVisibilityCheckboxEl).toBeNull();
+  });
+
+  it('should not display flag visibility checkbox for case-level flag', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
+    component.isDisplayContextParameterExternal = false;
+    component.isCaseLevelFlag = true;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    fixture.detectChanges();
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(flagVisibilityCheckboxEl).toBeNull();
+  });
+
+  it('should display flag visibility checkbox for party-level flag if Case Flags v2.1 is enabled', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
+    component.isDisplayContextParameterExternal = false;
+    component.isCaseLevelFlag = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    fixture.detectChanges();
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(flagVisibilityCheckboxEl).toBeTruthy();
+  });
+
+  it('should not display flag visibility checkbox for party-level flag if Case Flags v2.1 is not enabled', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
+    component.isDisplayContextParameterExternal = false;
+    component.isCaseLevelFlag = false;
+    component.isDisplayContextParameter2Point1Enabled = false;
+    fixture.detectChanges();
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(flagVisibilityCheckboxEl).toBeNull();
+  });
+
+  it('should set the correct FormControl value when the flag visibility checkbox is checked', () => {
+    fixture.detectChanges();
+    // Select "Other" flag type otherwise the outer containing div element is not rendered
+    const nativeElement = fixture.debugElement.nativeElement;
+    nativeElement.querySelector('#flag-type-2').click();
+    component.isDisplayContextParameterExternal = false;
+    component.isCaseLevelFlag = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    fixture.detectChanges();
+    const flagVisibilityCheckboxEl = fixture.debugElement.nativeElement.querySelector('#is-visible-externally');
+    expect(component.formGroup.get(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY).value).toBe(false);
+    flagVisibilityCheckboxEl.click();
+    expect(component.formGroup.get(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY).value).toBe(true);
   });
 });

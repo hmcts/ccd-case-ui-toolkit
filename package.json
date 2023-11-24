@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.16.0-query-management-navigate-back-to-query-list",
+  "version": "6.19.13-case-flags-v2-update-flag-show-other-description",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"
@@ -65,7 +65,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "5.2.8",
     "@hmcts/frontend": "^0.0.50-alpha",
-    "@hmcts/media-viewer": "2.9.3",
+    "@hmcts/media-viewer": "2.9.5",
     "@ngrx/effects": "^7.4.0",
     "@ngrx/store": "^7.4.0",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",

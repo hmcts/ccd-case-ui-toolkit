@@ -211,7 +211,7 @@ describe('CaseViewerComponent', () => {
         { id: '3', label: 'Application_', fields: [] },
         { id: '4', label: 'Payment_', fields: [] },
         { id: '1', label: 'AOS', fields: [] }
-      ]
+      ];
       expect(component.caseDetails.tabs).toEqual(expected);
     });
   });
