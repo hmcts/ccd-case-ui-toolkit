@@ -72,7 +72,7 @@ export class FieldTypeSanitiser {
     const stringValue = data[field.id];
     if (typeof stringValue === 'string') {
       const listItems = this.getListItems(field);
-      const matches = listItems.filter(value => value.code === stringValue);
+      const matches = listItems.filter(value => value?.code === stringValue);
       if (matches && matches.length > 0) {
         data[field.id] = {
           value: matches[0],

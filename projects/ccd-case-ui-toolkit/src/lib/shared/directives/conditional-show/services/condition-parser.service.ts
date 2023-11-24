@@ -75,7 +75,7 @@ export class ConditionParser {
 
   private static getValue(fields: object, head: string): any {
     if (this.isDynamicList(fields[head])) {
-      return fields[head].value.code;
+      return fields[head]?.value?.code;
     } else {
       return fields[head];
     }
