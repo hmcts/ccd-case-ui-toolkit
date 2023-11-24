@@ -56,19 +56,44 @@ export class CaseFlagRefdataService {
   }
 
   /**
-   * Retrieves the HMCTS service details for a jurisdiction or service, including service code. (For example, the "SSCS"
-   * service has a corresponding service code of "BBA3".)
+   * Retrieves the HMCTS service details for a jurisdiction or service, including service codes. More than one
+   * service code may be present. For example, the Divorce jurisdiction/service has corresponding service codes of
+   * "ABA1" and "ABA2".
    *
    * @param serviceNames The service name(s) to look up, comma-separated if more than one
    * @returns An `Observable` of an array of service details
    */
-  public getHmctsServiceDetails(serviceNames?: string): Observable<HmctsServiceDetail[]> {
+  public getHmctsServiceDetailsByServiceName(serviceNames?: string): Observable<HmctsServiceDetail[]> {
     let url = this.appConfig.getLocationRefApiUrl();
 
     if (url) {
       url += '/orgServices';
       if (serviceNames) {
         url += `?ccdServiceNames=${serviceNames}`;
+      }
+
+      return this.http.get(url, {observe: 'body'});
+    }
+
+    return of(null);
+  }
+
+  /**
+   * Retrieves the HMCTS service details for a case type, including service code. For example, the
+   * "FinancialRemedyContested" case type is associated with the Divorce jurisdiction/service and service code "ABA2".
+   *
+   * Note that a case type might not be associated with any service codes of a jurisdiction or service.
+   *
+   * @param caseTypeId The case type ID to look up
+   * @returns An `Observable` of an array of service details
+   */
+  public getHmctsServiceDetailsByCaseType(caseTypeId?: string): Observable<HmctsServiceDetail[]> {
+    let url = this.appConfig.getLocationRefApiUrl();
+
+    if (url) {
+      url += '/orgServices';
+      if (caseTypeId) {
+        url += `?ccdCaseType=${caseTypeId}`;
       }
 
       return this.http.get(url, {observe: 'body'});

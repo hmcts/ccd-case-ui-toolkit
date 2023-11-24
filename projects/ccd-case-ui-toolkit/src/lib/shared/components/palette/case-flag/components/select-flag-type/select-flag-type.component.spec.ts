@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { FlagType, HmctsServiceDetail } from '../../../../../domain/case-flag';
@@ -153,12 +153,14 @@ describe('SelectFlagTypeComponent', () => {
     }
   ] as HmctsServiceDetail[];
   const sscsJurisdiction = 'SSCS';
+  const caseTypeId = 'testCaseType';
 
-  beforeEach(async(() => {
-    caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>(
-      'caseFlagRefdataService', ['getCaseFlagsRefdata', 'getHmctsServiceDetails']);
+  beforeEach(waitForAsync(() => {
+    caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('caseFlagRefdataService',
+      ['getCaseFlagsRefdata', 'getHmctsServiceDetailsByServiceName', 'getHmctsServiceDetailsByCaseType']);
     caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(of(flagTypes));
-    caseFlagRefdataService.getHmctsServiceDetails.and.returnValue(of(serviceDetails));
+    caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of(serviceDetails));
+    caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(serviceDetails));
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -178,6 +180,7 @@ describe('SelectFlagTypeComponent', () => {
       otherFlagTypeDescription: new FormControl('')
     });
     component.jurisdiction = sscsJurisdiction;
+    component.caseTypeId = caseTypeId;
     fixture.detectChanges();
   });
 
@@ -208,9 +211,7 @@ describe('SelectFlagTypeComponent', () => {
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
     const flagPaths: FlagPath[] = [];
-    flagTypes[0].childFlags[0].Path.forEach(flagPath => {
-      flagPaths.push({ id: null, value: flagPath })
-    });
+    flagTypes[0].childFlags[0].Path.forEach(flagPath => flagPaths.push({ id: null, value: flagPath }));
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: true,
@@ -232,9 +233,7 @@ describe('SelectFlagTypeComponent', () => {
     const nextButtonElement = nativeElement.querySelector('.button');
     nextButtonElement.click();
     const flagPaths: FlagPath[] = [];
-    flagTypes[0].childFlags[1].Path.forEach(flagPath => {
-      flagPaths.push({ id: null, value: flagPath })
-    });
+    flagTypes[0].childFlags[1].Path.forEach(flagPath => flagPaths.push({ id: null, value: flagPath }));
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
@@ -265,9 +264,7 @@ describe('SelectFlagTypeComponent', () => {
     nativeElement.querySelector('#flag-type-0').click();
     nextButtonElement.click();
     const flagPaths: FlagPath[] = [];
-    flagTypes[0].childFlags[0].childFlags[1].childFlags[0].Path.forEach(flagPath => {
-      flagPaths.push({ id: null, value: flagPath })
-    });
+    flagTypes[0].childFlags[0].childFlags[1].childFlags[0].Path.forEach(flagPath => flagPaths.push({ id: null, value: flagPath }));
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
@@ -353,9 +350,31 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.selectedFlagType).toBeNull();
   });
 
-  it('should retrieve the list of flag types for the specified jurisdiction', () => {
+  it('should retrieve the list of flag types for the specified case type ID', () => {
+    // Need to reset caseFlagRefdataService spy object method call because component.hmctsServiceId is undefined on the
+    // first call of ngOnInit() triggered by fixture.detectChanges() - this means getHmctsServiceDetailsByCaseType() gets
+    // called even though it's not expected to be
+    caseFlagRefdataService.getHmctsServiceDetailsByCaseType.calls.reset();
+    component.hmctsServiceId = 'ABC1';
     component.ngOnInit();
-    expect(caseFlagRefdataService.getHmctsServiceDetails).toHaveBeenCalledWith(sscsJurisdiction);
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith('ABC1', RefdataCaseFlagType.PARTY);
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).not.toHaveBeenCalled();
+    expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
+  });
+
+  it('should retrieve the list of flag types for the specified case type ID', () => {
+    component.ngOnInit();
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith(caseTypeId);
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).not.toHaveBeenCalled();
+    expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
+    expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
+  });
+
+  it('should retrieve the list of flag types for the specified jurisdiction if lookup by case type ID failed', () => {
+    caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(throwError(new Error('Unknown case type ID')));
+    component.ngOnInit();
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByCaseType).toHaveBeenCalledWith(caseTypeId);
+    expect(caseFlagRefdataService.getHmctsServiceDetailsByServiceName).toHaveBeenCalledWith(sscsJurisdiction);
     expect(caseFlagRefdataService.getCaseFlagsRefdata).toHaveBeenCalledWith(serviceDetails[0].service_code, RefdataCaseFlagType.PARTY);
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
   });

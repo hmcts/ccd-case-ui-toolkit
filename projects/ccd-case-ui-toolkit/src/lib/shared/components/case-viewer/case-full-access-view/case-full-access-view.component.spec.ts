@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -12,7 +13,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { MockComponent } from 'ng2-mock-component';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, of } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
 import { NotificationBannerModule } from '../../../../components/banners/notification-banner/notification-banner.module';
@@ -30,9 +31,9 @@ import {
   AuthService,
   CaseFieldService,
   ErrorNotifierService,
+  FieldTypeSanitiser,
   FieldsPurger,
   FieldsUtils,
-  FieldTypeSanitiser,
   FormErrorService,
   FormValueService,
   HttpErrorService,
@@ -322,6 +323,10 @@ const METADATA: CaseField[] = [
     show_condition: null,
     show_summary_change_option: null,
     show_summary_content_option: null
+  }),
+  Object.assign(new CaseField(), {
+    id: '[ACCESS_GRANTED]',
+    value: 'BASIC,SPECIFIC'
   })
 ];
 
@@ -666,6 +671,9 @@ xdescribe('CaseFullAccessViewComponent', () => {
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
         ]
       })
       .compileComponents();
@@ -1110,6 +1118,9 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           {provide: ActivityPollingService, useValue: activityService},
           DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
         ]
       })
       .compileComponents();
@@ -1196,6 +1207,9 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           {provide: MatDialogRef, useValue: matDialogRef},
           {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
           DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
         ]
       })
       .compileComponents();
@@ -1232,6 +1246,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
     TestBed
       .configureTestingModule({
         imports: [
+          HttpClientTestingModule,
           PaletteUtilsModule,
           MatTabsModule,
           BrowserAnimationsModule,
@@ -1359,6 +1374,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     TestBed
       .configureTestingModule({
         imports: [
+          HttpClientTestingModule,
           PaletteUtilsModule,
           MatTabsModule,
           BrowserAnimationsModule,
@@ -1694,6 +1710,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     TestBed
       .configureTestingModule({
         imports: [
+          HttpClientTestingModule,
           PaletteUtilsModule,
           MatTabsModule,
           BrowserAnimationsModule,
@@ -1868,6 +1885,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     TestBed
       .configureTestingModule({
         imports: [
+          HttpClientTestingModule,
           PaletteUtilsModule,
           MatTabsModule,
           BrowserAnimationsModule,
@@ -1960,6 +1978,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     debugElement = componentFixture.debugElement;
     componentFixture.detectChanges();
     de = componentFixture.debugElement;
+
   }));
 
   it('should not call callAngularRouter() on initial (default) value', (done) => {
@@ -2017,3 +2036,167 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     expect(subscribeSpy).not.toHaveBeenCalled();
   });
 });
+
+describe('CaseFullAccessViewComponent - specificAccessType', () => {
+
+  let comp: CaseFullAccessViewComponent;
+  let f: ComponentFixture<CaseFullAccessViewComponent>;
+  let d: DebugElement;
+  let convertHrefToRouterService;
+
+  beforeEach((() => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          MatTabsModule,
+          BrowserAnimationsModule,
+          PaletteModule,
+          StoreModule.forRoot({}),
+          EffectsModule.forRoot([]),
+          HttpClientTestingModule,
+          RouterTestingModule.withRoutes([
+            {
+              path: 'cases',
+              children: [
+                {
+                  path: 'case-details',
+                  children: [
+                    {
+                      path: ':id',
+                      children: [
+                        {
+                          path: 'tasks',
+                          component: TasksContainerComponent
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]),
+        ],
+        declarations: [
+          TasksContainerComponent,
+          CaseFullAccessViewComponent,
+          DeleteOrCancelDialogComponent,
+          // Mock
+          CaseActivityComponent,
+          EventTriggerComponent,
+          CaseHeaderComponent,
+          LinkComponent,
+          CallbackErrorsComponent,
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          OrderService,
+          {
+            provide: Location,
+            useClass: class MockLocation {
+              public path =  (includeHash: string) => 'cases/case-details/1234567890123456/tasks'
+            }
+          },
+          ErrorNotifierService,
+          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          NavigationNotifierService,
+          {provide: CaseNotifier, useValue: caseNotifier},
+          {provide: ActivatedRoute, useValue: mockRoute},
+          ActivityPollingService,
+          ActivityService,
+          HttpService,
+          HttpErrorService,
+          AuthService,
+          SessionStorageService,
+          {provide: DraftService, useValue: draftService},
+          {provide: AlertService, useValue: alertService},
+          {provide: MatDialog, useValue: dialog},
+          {provide: MatDialogRef, useValue: matDialogRef},
+          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          DeleteOrCancelDialogComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
+        ]
+      })
+      .compileComponents();
+
+    f = TestBed.createComponent(CaseFullAccessViewComponent);
+    comp = f.componentInstance;
+    comp.caseDetails = CASE_VIEW;
+    comp.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'roles-and-access',
+        label: 'Roles and access',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    comp.appendedTabs = [
+      {
+        id: 'hearings',
+        label: 'Hearings',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    comp.roleAssignments = {
+      cases: [
+        {
+          case_id: 1662726999580940,
+          endDate: '21 Nov 2026',
+          startDate: '21 Oct 2022',
+          access: 'Specific'
+        },
+        {
+          case_id: 1662726999580942,
+          endDate: '21 Nov 2026',
+          startDate: '21 Oct 2026',
+          access: 'Specific'
+        },
+        {
+          case_id: 1662726999580944,
+          endDate: '',
+          startDate: '21 Oct 2022',
+          access: 'Specific'
+        }
+      ],
+      total_records: 0,
+      unique_cases: 0
+    }
+    d = f.debugElement;
+    f.detectChanges();
+  }));
+
+  it('getAccessType should return SPECIFIC-Access', () => {
+    comp.caseDetails.case_id = '1662726999580942';
+    expect(comp.getAccessType()).toBe('SPECIFIC');
+  });
+
+  it('should determine Specifc access in the future', () => {
+    comp.caseDetails.case_id = '1662726999580942';
+    expect(comp.specificAccessType()).toBe('You have been given specific access to this case from 21 Oct 2026 until midnight on 21 Nov 2026.');
+  });
+
+  it('should determine Specifc access in progress', () => {
+    comp.caseDetails.case_id = '1662726999580940';
+    expect(comp.specificAccessType()).toBe('You have been given specific access to this case until midnight on 21 Nov 2026.');
+  });
+
+  it('should determine Specifc access indefinite', () => {
+    comp.caseDetails.case_id = '1662726999580944';
+    expect(comp.specificAccessType()).toBe('You have been given indefinite specific access to this case.');
+  });
+
+})

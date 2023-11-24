@@ -133,7 +133,8 @@ describe('CaseViewerComponent', () => {
   casesService = createSpyObj('casesService', ['getCaseViewV2']);
   const mockAppConfig = createSpyObj('AbstractAppConfig', [
     'getAccessManagementMode',
-    'getAccessManagementBasicViewMock'
+    'getAccessManagementBasicViewMock',
+    'getAccessManagemenViewCaseMock'
   ]);
 
   const mockCaseNotifier = new CaseNotifier(casesService);
@@ -144,6 +145,7 @@ describe('CaseViewerComponent', () => {
 
   mockAppConfig.getAccessManagementMode.and.returnValue(false);
   mockAppConfig.getAccessManagementBasicViewMock.and.returnValue({active: false});
+  mockAppConfig.getAccessManagemenViewCaseMock.and.returnValue({active: false});
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

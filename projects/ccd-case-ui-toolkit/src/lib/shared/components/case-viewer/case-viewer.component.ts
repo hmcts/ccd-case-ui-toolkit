@@ -61,7 +61,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_PROCEES_ID);
       const access_granted = caseDetails.metadataFields.find(metadataField =>
         metadataField.id === CaseViewerComponent.METADATA_FIELD_ACCESS_GRANTED_ID);
-        this.accessGranted = access_granted ? access_granted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
+      this.accessGranted = access_granted ? access_granted.value !== CaseViewerComponent.BASIC_USER_ACCESS_TYPES : false;
       this.userAccessType = access_process ? access_process.value : null;
     }
   }
