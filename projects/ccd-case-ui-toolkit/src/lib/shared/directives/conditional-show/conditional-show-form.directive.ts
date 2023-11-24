@@ -79,8 +79,7 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
 
   private evaluateCondition(cf: CaseField, component: AbstractFormFieldComponent, control: AbstractControl) {
     if (cf) {
-      const childrenCaseFields = this.getCaseFieldChildren(cf);
-      if (cf.display_context === 'HIDDEN' && !this.allCaseFieldsHidden(childrenCaseFields)) {
+      if (cf.display_context === 'HIDDEN') {
         cf.hidden = true; // display_context === 'HIDDEN' means always hide
       } else if (cf.show_condition) {
         const showCondition: ShowCondition = ShowCondition.getInstance(cf.show_condition);
@@ -107,22 +106,6 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
         }
       }
     }
-  }
-
-  private getCaseFieldChildren(caseField: CaseField) {
-    let childrenCaseFields = [];
-    if (caseField.isCollection()) {
-      childrenCaseFields = caseField.field_type.collection_field_type.complex_fields || [];
-    } else if (caseField.isComplex()) {
-      childrenCaseFields = caseField.field_type.complex_fields || [];
-    }
-    return childrenCaseFields;
-  }
-
-  // this is extra to identify the field whio's all childs are hidden
-  // hence their parent field display_context property changed to "HIDDEN"
-  private allCaseFieldsHidden(children: CaseField[]): boolean {
-    return !children.some(e => e.hidden !== true);
   }
 
   // make sure for the 3 callbacks that we are bound to this via an arrow function
