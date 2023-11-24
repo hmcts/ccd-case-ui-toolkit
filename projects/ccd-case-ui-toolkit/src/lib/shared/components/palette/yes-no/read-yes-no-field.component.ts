@@ -7,7 +7,6 @@ import { YesNoService } from './yes-no.service';
   template: `<span class="text-16">{{formattedValue | rpxTranslate}}</span>`
 })
 export class ReadYesNoFieldComponent extends AbstractFieldReadComponent implements OnInit {
-
   public formattedValue: string;
 
   constructor(private readonly yesNoService: YesNoService) {
@@ -18,5 +17,4 @@ export class ReadYesNoFieldComponent extends AbstractFieldReadComponent implemen
     super.ngOnInit();
     this.formattedValue = this.yesNoService.format(this.caseField.value);
   }
-
 }

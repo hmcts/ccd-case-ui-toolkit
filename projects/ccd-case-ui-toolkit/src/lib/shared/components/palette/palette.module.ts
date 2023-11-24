@@ -30,6 +30,7 @@ import { FormValidatorsService } from '../../services/form/form-validators.servi
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { LoadingModule } from '../../services/loading/loading.module';
 import { WindowService } from '../../services/window';
+import { CaseEventCompletionComponent, CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '../case-editor/case-event-completion';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view';
@@ -125,7 +126,7 @@ import {
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
   QueryDetailsComponent,
-  QueryDetailsTableComponent,
+  QueryEventCompletionComponent,
   QueryListComponent,
   QueryWriteAddDocumentsComponent,
   QueryWriteDateInputComponent,
@@ -256,7 +257,6 @@ const PALETTE_COMPONENTS = [
   ReadQueryManagementFieldComponent,
   QueryDetailsComponent,
   QueryListComponent,
-  QueryDetailsTableComponent,
   QueryWriteRespondToQueryComponent,
   QueryWriteRaiseQueryComponent,
   QueryCaseDetailsHeaderComponent,
@@ -265,7 +265,13 @@ const PALETTE_COMPONENTS = [
   QueryWriteDateInputComponent,
   QualifyingQuestionOptionsComponent,
   QualifyingQuestionDetailComponent,
-  QueryAttachmentsReadComponent
+  QueryAttachmentsReadComponent,
+  QueryEventCompletionComponent,
+
+  // Case event completion
+  CaseEventCompletionComponent,
+  CaseEventCompletionTaskCancelledComponent,
+  CaseEventCompletionTaskReassignedComponent
 ];
 
 @NgModule({
@@ -296,6 +302,9 @@ const PALETTE_COMPONENTS = [
     OverlayModule,
     PaymentLibModule,
     ScrollToModule.forRoot(),
+    RpxTranslationModule.forChild(),
+    CdkTreeModule,
+    OverlayModule,
     MatDialogModule,
     MediaViewerModule,
     LoadingModule,
@@ -312,7 +321,7 @@ const PALETTE_COMPONENTS = [
     LanguageInterpreterDisplayPipe,
     ManageCaseFlagsLabelDisplayPipe,
     UpdateFlagTitleDisplayPipe,
-    ...PALETTE_COMPONENTS,
+    ...PALETTE_COMPONENTS
   ],
   exports: [
     NgxMatDatetimePickerModule,
@@ -329,17 +338,16 @@ const PALETTE_COMPONENTS = [
     CaseFlagRefdataService,
     YesNoService,
     CollectionCreateCheckerService,
+    JurisdictionService,
     PaletteService,
     FormValidatorsService,
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
     CommonDataService,
-    JurisdictionService,
     LinkedCasesService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
-  ],
-  entryComponents: [CaseFileViewFolderSelectorComponent]
+  ]
 })
 export class PaletteModule {
 }

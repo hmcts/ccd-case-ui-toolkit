@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { SessionStorageService } from '../../../../../services';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
@@ -7,6 +8,7 @@ import { QueryDetailsComponent } from './query-details.component';
 describe('QueryDetailsComponent', () => {
   let component: QueryDetailsComponent;
   let fixture: ComponentFixture<QueryDetailsComponent>;
+  const mockSessionStorageService = jasmine.createSpyObj<SessionStorageService>('SessionStorageService', ['getItem']);
 
   const items = [
     {
@@ -109,7 +111,8 @@ describe('QueryDetailsComponent', () => {
       declarations: [
         QueryDetailsComponent,
         MockRpxTranslatePipe
-      ]
+      ],
+      providers: [ {provide: SessionStorageService, useValue: mockSessionStorageService } ]
     })
     .compileComponents();
   });
@@ -146,5 +149,34 @@ describe('QueryDetailsComponent', () => {
     expect(columnHeaders[1].nativeElement.textContent.trim()).toEqual('Last submitted by');
     expect(columnHeaders[2].nativeElement.textContent.trim()).toEqual('Query detail');
     expect(columnHeaders[3].nativeElement.textContent.trim()).toEqual('Attachments');
+  });
+
+  describe('isCaseworker', () => {
+    const USER = {
+      roles: [
+        'caseworker'
+      ]
+    };
+
+    it('should return true if the user doesnt have pui-case-manager', () => {
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isCaseworker()).toBeTruthy();
+    });
+
+    it('should return true if the user doesnt have pui-case-manager', () => {
+      USER.roles.push('pui-case-manager');
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isCaseworker()).toBeFalsy();
+      USER.roles.pop();
+    });
+
+    it('should return true if the user doesnt have pui-case-manager', () => {
+      USER.roles.push('Civil-Judge');
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(USER));
+      fixture.detectChanges();
+      expect(component.isCaseworker()).toBeFalsy();
+    });
   });
 });

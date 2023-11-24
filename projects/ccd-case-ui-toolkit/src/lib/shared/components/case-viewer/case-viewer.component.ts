@@ -34,7 +34,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    console.info('Loading case details...');
     this.loadCaseDetails();
+    console.info('Loaded case details...');
   }
 
   public ngOnDestroy(): void {
@@ -45,12 +47,14 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
   public loadCaseDetails(): void {
     if (this.route.snapshot.data.case) {
+      console.info('Setting the case into case viewer component from this.route.snapshot.data.case.');
       this.caseDetails = this.route.snapshot.data.case;
       this.caseDetails.tabs = this.orderService.sort(this.caseDetails.tabs);
       this.caseDetails.tabs = this.suffixDuplicateTabs(this.caseDetails.tabs);
       this.setUserAccessType(this.caseDetails);
     } else {
       this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
+        console.info('Setting the case into case viewer component as retrieved from XHR request.');
         this.caseDetails = caseDetails;
         this.setUserAccessType(this.caseDetails);
       });

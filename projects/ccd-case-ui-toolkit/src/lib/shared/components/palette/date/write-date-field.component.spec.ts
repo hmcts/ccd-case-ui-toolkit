@@ -42,7 +42,6 @@ describe('WriteDateFieldComponent', () => {
         ],
         declarations: [
           WriteDateFieldComponent,
-          // DateInputComponent,
           MockRpxTranslatePipe
         ],
         providers: [

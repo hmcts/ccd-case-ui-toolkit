@@ -2,6 +2,11 @@ import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, of } from 'rxjs';
+import { CaseView, TaskSearchParameter } from '../../../../../../shared/domain';
+import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
+import { CaseNotifier, WorkAllocationService } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
 
@@ -16,6 +21,9 @@ describe('QueryCheckYourAnswersComponent', () => {
   let component: QueryCheckYourAnswersComponent;
   let fixture: ComponentFixture<QueryCheckYourAnswersComponent>;
   let nativeElement: any;
+  let casesService: any;
+  let caseNotifier: any;
+  let workAllocationService: any;
 
   const items = [
     {
@@ -113,12 +121,69 @@ describe('QueryCheckYourAnswersComponent', () => {
     ]
   });
 
+  const snapshotActivatedRoute = {
+    snapshot: {
+      params: {
+        qid: '1'
+      }
+    }
+  };
+
+  const CASE_VIEW: CaseView = {
+    case_id: '1',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test',
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: []
+  };
+
+  const response = {
+    tasks: [{
+      additional_properties: {
+        additionalProp1: '1'
+      },
+      assignee: '12345',
+      case_id: '1',
+      case_name: 'Alan Jonson',
+      created_date: '2021-04-19T14:00:00.000+0000',
+      due_date: '2021-05-20T16:00:00.000+0000',
+      id: 'Task_2',
+      jurisdiction: 'Immigration and Asylum',
+      case_category: 'asylum',
+      name: 'Task name',
+      permissions: null
+    }]
+  };
+
   beforeEach(async () => {
+    workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
+    workAllocationService.searchTasks.and.returnValue(of(response));
+    casesService = jasmine.createSpyObj('casesService', ['getCaseViewV2']);
+    caseNotifier = new CaseNotifier(casesService);
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         QueryCheckYourAnswersComponent,
         RpxTranslateMockPipe
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: snapshotActivatedRoute },
+        { provide: WorkAllocationService, useValue: workAllocationService },
+        { provide: CaseNotifier, useValue: caseNotifier }
       ]
     })
       .compileComponents();
@@ -172,8 +237,9 @@ describe('QueryCheckYourAnswersComponent', () => {
     const heading = nativeElement.querySelector('.govuk-heading-l');
     expect(heading.textContent.trim()).toEqual('Review query response details');
     const columnHeadings = fixture.debugElement.queryAll(By.css('.govuk-summary-list__key'));
-    expect(columnHeadings[0].nativeElement.textContent.trim()).toEqual('Response message');
-    expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Document attached');
+    expect(columnHeadings[0].nativeElement.textContent.trim()).toEqual('Submitted query');
+    expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Response detail');
+    expect(columnHeadings[2].nativeElement.textContent.trim()).toEqual('Document attached');
   });
 
   it('should display correct columns for following up a query', () => {
@@ -186,5 +252,25 @@ describe('QueryCheckYourAnswersComponent', () => {
     const columnHeadings = fixture.debugElement.queryAll(By.css('.govuk-summary-list__key'));
     expect(columnHeadings[0].nativeElement.textContent.trim()).toEqual('Query detail');
     expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Document attached');
+  });
+
+  describe('submit', () => {
+    it('should call search task', () => {
+      component.submit();
+      fixture.detectChanges();
+      const searchParameter = { ccdId: '1' } as TaskSearchParameter;
+      expect(workAllocationService.searchTasks).toHaveBeenCalledWith(searchParameter);
+    });
+
+    it('should trigger event completion', () => {
+      component.submit();
+      fixture.detectChanges();
+      const eventCompletionParams: EventCompletionParams = {
+        caseId: '1',
+        eventId: 'respondToQuery',
+        task: response.tasks[0]
+      };
+      expect(component.eventCompletionParams).toEqual(eventCompletionParams);
+    });
   });
 });

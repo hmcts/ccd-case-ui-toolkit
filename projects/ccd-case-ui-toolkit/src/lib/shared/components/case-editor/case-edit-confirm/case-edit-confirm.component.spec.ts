@@ -158,7 +158,7 @@ describe('CaseEditConfirmComponent', () => {
         declarations: [
           CaseEditConfirmComponent,
           MarkdownComponent,
-          // Mocks
+          // Mock
           MockRpxTranslatePipe
         ],
         providers: [
@@ -172,9 +172,6 @@ describe('CaseEditConfirmComponent', () => {
     fixture = TestBed.createComponent(CaseEditConfirmComponent);
     component = fixture.componentInstance;
   }));
-
-  beforeEach(() => {
-  });
 
   it('should call route when no confirmation provided', () => {
     expect(routerStub.navigate).toHaveBeenCalled();

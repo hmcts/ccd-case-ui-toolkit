@@ -1,6 +1,6 @@
 <ng-container *ngIf="queryListData">
   <table class="govuk-table query-list__table">
-    <caption class="govuk-table__cell query-list__caption query-list__row">
+    <caption class="govuk-table__caption govuk-table__caption--l">
       <div>{{ queryListData.partyName }}</div>
     </caption>
     <thead class="govuk-table__head">
@@ -16,7 +16,7 @@
 
     <tbody class="govuk-table__body">
     <tr class="govuk-table__row query-list__row"
-        *ngFor="let message of queryListData.partyMessages"
+        *ngFor="let message of queryListData.queries"
     >
       <td class="govuk-table__cell query-list__cell query-list__cell--first">
         <a href="javascript:void(0)" (click)="showDetails(message)">{{ message.subject }}</a>

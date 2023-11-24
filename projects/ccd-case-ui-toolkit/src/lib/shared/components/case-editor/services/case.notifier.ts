@@ -20,9 +20,8 @@ export class CaseNotifier {
     }
 
     public announceCase(c: CaseView) {
-        this.caseViewSource.next(c);
+      this.caseViewSource.next(c);
     }
-
     public fetchAndRefresh(cid: string) {
       return this.casesService
         .getCaseViewV2(cid)

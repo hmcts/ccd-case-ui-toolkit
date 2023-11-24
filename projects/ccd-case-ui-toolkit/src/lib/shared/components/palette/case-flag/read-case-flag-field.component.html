@@ -8,7 +8,7 @@
 
 <ng-container *ngIf="context !== paletteContext.CHECK_YOUR_ANSWER">
   <ng-container [ngSwitch]="displayContextParameter">
-    <ng-container *ngSwitchCase="readSupportMode">
+    <ng-container *ngSwitchCase="caseFlagDisplayContextParameter.READ_EXTERNAL">
       <h2 id="read-case-flag-title" class="govuk-heading-l">
         {{ 'Support requested' | rpxTranslate }}
       </h2>

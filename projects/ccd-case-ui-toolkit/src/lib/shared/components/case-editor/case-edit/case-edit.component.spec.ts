@@ -17,6 +17,7 @@ import { PaletteUtilsModule } from '../../palette';
 import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
 import { CaseNotifier } from '../services';
 import { WizardFactoryService } from '../services/wizard-factory.service';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { CaseEditComponent } from './case-edit.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -211,6 +212,7 @@ describe('CaseEditComponent', () => {
   const registrarService = new ConditionalShowRegistrarService();
   let route: any;
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
+  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
 
   describe('profile available in route', () => {
     routerStub = {
@@ -265,9 +267,11 @@ describe('CaseEditComponent', () => {
         'repopulateFormDataFromCaseFieldValues',
         'removeCaseFieldsOfType',
         'removeEmptyCollectionsWithMinValidation',
-        'populateLinkedCasesDetailsFromCaseFields'
+        'populateLinkedCasesDetailsFromCaseFields',
+        'removeUnnecessaryFields'
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
+      spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
 
       route = {
         queryParams: of({Origin: 'viewDraft'}),
@@ -317,7 +321,8 @@ describe('CaseEditComponent', () => {
             {provide: ActivatedRoute, useValue: route},
             SessionStorageService,
             WindowService,
-            { provide: LoadingService, loadingServiceMock }
+            { provide: LoadingService, loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ]
         })
         .compileComponents();
@@ -1098,7 +1103,7 @@ describe('CaseEditComponent', () => {
           'delete_draft_response_status': 'delete_draft_response_status',
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
-        }
+        };
         const actual = component.getStatus(response);
         expect(actual).toEqual(response['callback_response_status']);
       });
@@ -1109,11 +1114,11 @@ describe('CaseEditComponent', () => {
           'delete_draft_response_status': 'delete_draft_response_status',
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_COMPLETED'
-        }
+        };
         const actual = component.getStatus(response);
         expect(actual).toEqual(response['delete_draft_response_status']);
       });
-    })
+    });
 
     describe('emitSubmitted', () => {
       it('should emit submitted', () => {
@@ -1122,13 +1127,13 @@ describe('CaseEditComponent', () => {
           'delete_draft_response_status': 'delete_draft_response_status',
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
-        }
+        };
         spyOn(component.submitted, 'emit');
         component.emitSubmitted(response);
 
         expect(component.submitted.emit).toHaveBeenCalled();
       });
-    })
+    });
 
     describe('confirm', () => {
       it('should call routers navigate', () => {
@@ -1137,7 +1142,7 @@ describe('CaseEditComponent', () => {
         expect(routerStub.navigate).toHaveBeenCalled();
         expect(component.confirmation).toEqual({} as unknown as Confirmation);
       });
-    })
+    });
 
     describe('getCaseId', () => {
       it('should return case id', () => {
@@ -1148,13 +1153,13 @@ describe('CaseEditComponent', () => {
 
         expect(actual).toEqual('case_id');
       });
-    })
+    });
 
     describe('submitForm', () => {
       it('should submit case', () => {
         const mockClass = {
           submit: () => of({})
-        }
+        };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
           /* tslint:disable:object-literal-key-quotes */
@@ -1166,8 +1171,8 @@ describe('CaseEditComponent', () => {
           /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
-        }))
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        }));
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
 
         fixture.detectChanges();
 
@@ -1181,13 +1186,13 @@ describe('CaseEditComponent', () => {
         expect(component.isSubmitting).toEqual(true);
         expect(formValueService.sanitise).toHaveBeenCalled();
       });
-    })
+    });
 
     describe('onEventCanBeCompleted', () => {
       it('should submit the case', () => {
         const mockClass = {
           submit: () => of({})
-        }
+        };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
           /* tslint:disable:object-literal-key-quotes */
@@ -1199,13 +1204,13 @@ describe('CaseEditComponent', () => {
           /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
-        }))
+        }));
 
-        spyOn(component, 'confirm')
+        spyOn(component, 'confirm');
 
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1219,20 +1224,62 @@ describe('CaseEditComponent', () => {
         expect(formValueService.removeCaseFieldsOfType)
           .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
         expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
+        expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
+        expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
+      });
+
+      it('should submit the case for a Case Flags submission', () => {
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+
+        spyOn(component, 'confirm');
+
+        component.isCaseFlagSubmission = true;
+        component.confirmation = {} as unknown as Confirmation;
+
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        component.onEventCanBeCompleted({
+          eventTrigger: component.eventTrigger,
+          eventCanBeCompleted: true,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(component.confirm).toHaveBeenCalled();
+        expect(formValueService.populateLinkedCasesDetailsFromCaseFields).toHaveBeenCalled();
+        expect(formValueService.removeCaseFieldsOfType)
+          .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
+        expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
+        expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
+        expect(formValueService.removeUnnecessaryFields).not.toHaveBeenCalled();
       });
 
       it('should NOT submit the case due to error', () => {
         const mockClass = {
           submit: () => of({})
-        }
-        spyOn(mockClass, 'submit').and.returnValue(throwError(({ details: 'details' } as unknown as HttpError)))
-        spyOn(component, 'confirm')
+        };
+        spyOn(mockClass, 'submit').and.returnValue(throwError(({ details: 'details' } as unknown as HttpError)));
+        spyOn(component, 'confirm');
 
         component.isCaseFlagSubmission = true;
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1249,16 +1296,16 @@ describe('CaseEditComponent', () => {
       it('should NOT submit the case and should navigate to tasks tab', () => {
         const mockClass = {
           submit: () => of({})
-        }
+        };
         spyOn(mockClass, 'submit');
 
-        spyOn(component, 'confirm')
+        spyOn(component, 'confirm');
 
         component.isCaseFlagSubmission = true;
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: false,
@@ -1275,17 +1322,17 @@ describe('CaseEditComponent', () => {
       it('should emit submit as after_submit_callback_response is NOT present in response', () => {
         const mockClass = {
           submit: () => of({})
-        }
+        };
         spyOn(mockClass, 'submit').and.returnValue(of({
           id: 'id',
           /* tslint:disable:object-literal-key-quotes */
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED'
-        }))
+        }));
 
         spyOn(component, 'confirm');
         spyOn(component, 'emitSubmitted');
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'})
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1297,7 +1344,7 @@ describe('CaseEditComponent', () => {
         expect(component.confirm).not.toHaveBeenCalled();
         expect(component.emitSubmitted).toHaveBeenCalled();
       });
-    })
+    });
   });
 
   xdescribe('profile not available in route', () => {
@@ -1395,7 +1442,8 @@ describe('CaseEditComponent', () => {
             {provide: Router, useValue: routerStub},
             {provide: ActivatedRoute, useValue: mockRouteNoProfile},
             SessionStorageService,
-            WindowService
+            WindowService,
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
           ]
         })
         .compileComponents();

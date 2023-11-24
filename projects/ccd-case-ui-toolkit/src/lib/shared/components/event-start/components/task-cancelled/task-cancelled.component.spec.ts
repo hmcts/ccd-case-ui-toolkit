@@ -26,6 +26,6 @@ describe('TaskCancelledComponent', () => {
   it('should display error message task cancelled', () => {
     const heading: DebugElement = fixture.debugElement.query(By.css('.govuk-heading-m'));
     const headingHtml = heading.nativeElement as HTMLElement;
-    expect(headingHtml.innerText).toBe('Task cancelled / marked as done');
+    expect(headingHtml.innerText).toBe('Task cancelled/marked as done');
   });
 });

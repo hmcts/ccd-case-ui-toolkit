@@ -29,10 +29,10 @@
       </td>
       <td class="govuk-table__cell">{{flagDetail.dateTimeCreated | date: 'dd LLL yyyy'}}</td>
       <td class="govuk-table__cell">{{flagDetail.dateTimeModified | date: 'dd LLL yyyy'}}</td>
-      <td class="govuk-table__cell">
-        <strong *ngIf="flagDetail.status === caseFlagStatus.ACTIVE" class="govuk-tag">{{'Active' | rpxTranslate}}</strong>
+      <td class="govuk-table__cell cell-flag-status">
+        <strong *ngIf="flagDetail.status === caseFlagStatus.ACTIVE" class="govuk-tag govuk-tag--turquoise">{{'Active' | rpxTranslate}}</strong>
         <strong *ngIf="flagDetail.status === caseFlagStatus.INACTIVE" class="govuk-tag govuk-tag--grey">{{'Inactive' | rpxTranslate}}</strong>
-        <strong *ngIf="flagDetail.status === caseFlagStatus.REQUESTED" class="govuk-tag govuk-tag--grey">{{'Requested' | rpxTranslate}}</strong>
+        <strong *ngIf="flagDetail.status === caseFlagStatus.REQUESTED" class="govuk-tag govuk-tag--yellow">{{'Requested' | rpxTranslate}}</strong>
         <strong *ngIf="flagDetail.status === caseFlagStatus.NOT_APPROVED" class="govuk-tag govuk-tag--red">{{'Not approved' | rpxTranslate}}</strong>
       </td>
     </tr>
