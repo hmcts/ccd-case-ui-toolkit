@@ -1,5 +1,5 @@
 ## RELEASE NOTES
-### Version 6.19.12-restricted-case-access
+### Version 6.19.13-restricted-case-access
 **EUI-8816** Restricted case access feature toggle functionality
 
 ### Version 6.19.6-restricted-case-access-v4
