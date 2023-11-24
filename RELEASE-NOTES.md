@@ -5,6 +5,9 @@
 ### Version 6.19.6-restricted-case-access-v4
 **EUI-6645** Restricted case access
 
+### Version 6.19.13
+**EXUI-908** Unable to upload correspondence to Manage Cases
+
 ### Version 6.19.11-case-file-view-feature-toggle-v1.1
 **EUI-7807** Case file view v1.1
 
