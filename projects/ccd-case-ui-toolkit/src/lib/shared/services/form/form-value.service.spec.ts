@@ -730,6 +730,24 @@ describe('FormValueService', () => {
   });
 
   describe('removeUnnecessaryFields', () => {
+    function buildCaseField(id: string, properties: object, value?: any): CaseField {
+      return ({
+        id,
+        ...properties,
+        value
+      }) as CaseField;
+    }
+
+    const TEXT_FIELD1: CaseField = buildCaseField('idamId', {
+      field_type: { id: 'Text', type: 'Text' },
+      hidden: false
+    }, null);
+
+    const TEXT_FIELD2: CaseField = buildCaseField('personalCode', {
+      field_type: { id: 'Text', type: 'Text' },
+      hidden: false
+    }, null);
+
     it('should empty the collection field if it contains only id', () => {
       const data = {collection1: [{id: '123'}]};
       const caseField = new CaseField();
@@ -742,6 +760,49 @@ describe('FormValueService', () => {
 
       formValueService.removeUnnecessaryFields(data, [caseField]);
       const actual = {collection1: [{id: '123'}]};
+      expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
+    });
+
+    it('should keep the data if field is JudicialUser', () => {
+      const data = { reservedToJudgeInterloc: {
+        idamId: null,
+        personalCode: null
+      }};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'JudicialUser';
+      fieldType.min = null;
+      fieldType.type = 'Complex';
+      fieldType.complex_fields= [TEXT_FIELD1, TEXT_FIELD2];
+      caseField.field_type = fieldType;
+      caseField.id = 'reservedToJudgeInterloc';
+      caseField.display_context = 'OPTIONAL';
+
+      formValueService.removeUnnecessaryFields(data, [caseField]);
+      const actual = { reservedToJudgeInterloc: {
+        idamId: null,
+        personalCode: null
+      }};
+      expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
+    });
+
+    it('should keep the data if field is JudicialUser', () => {
+      const data = { reservedToJudgeInterloc: {
+        idamId: null,
+        personalCode: null
+      }};
+      const caseField = new CaseField();
+      const fieldType = new FieldType();
+      fieldType.id = 'JudicialUser1';
+      fieldType.min = null;
+      fieldType.type = 'Complex';
+      fieldType.complex_fields= [TEXT_FIELD1, TEXT_FIELD2];
+      caseField.field_type = fieldType;
+      caseField.id = 'reservedToJudgeInterloc';
+      caseField.display_context = 'OPTIONAL';
+
+      formValueService.removeUnnecessaryFields(data, [caseField]);
+      const actual = {};
       expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
     });
   });
