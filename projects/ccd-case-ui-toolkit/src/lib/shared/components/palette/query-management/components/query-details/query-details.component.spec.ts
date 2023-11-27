@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { MockRpxTranslatePipe } from 'projects/ccd-case-ui-toolkit/src/lib/shared/test/mock-rpx-translate.pipe';
 import { SessionStorageService } from '../../../../../services';
+import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
 import { QueryListItem } from '../../models';
 import { QueryDetailsComponent } from './query-details.component';
 
