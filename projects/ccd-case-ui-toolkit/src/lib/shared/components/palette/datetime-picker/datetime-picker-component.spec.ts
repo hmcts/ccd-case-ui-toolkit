@@ -15,9 +15,9 @@ import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FieldLabelPipe, FirstErrorPipe } from '../utils';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { DatetimePickerComponent } from './datetime-picker.component';
+import moment from 'moment';
 
 describe('DatetimePickerComponent', () => {
-
   let component: DatetimePickerComponent;
   let fixture: ComponentFixture<DatetimePickerComponent>;
   const caseFieldService = new CaseFieldService();
@@ -44,33 +44,33 @@ describe('DatetimePickerComponent', () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-          imports: [
-            NgxMatDatetimePickerModule,
-            NgxMatTimepickerModule,
-            NgxMatNativeDateModule,
-            NoopAnimationsModule,
-            MatFormFieldModule,
-            MatInputModule,
-            MatDatepickerModule,
-            FormsModule,
-            ReactiveFormsModule
-          ],
-          declarations: [
-            DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe
-          ],
-          providers: [FormatTranslatorService,
-            { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-            { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
-            { provide: CaseFieldService, useValue: caseFieldService }
-            ]
-        })
-        .compileComponents();
+      imports: [
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule,
+        NgxMatNativeDateModule,
+        NoopAnimationsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        FormsModule,
+        ReactiveFormsModule
+      ],
+      declarations: [
+        DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe
+      ],
+      providers: [FormatTranslatorService,
+        { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+        { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
+        { provide: CaseFieldService, useValue: caseFieldService }
+      ]
+    })
+      .compileComponents();
 
-      fixture = TestBed.createComponent(DatetimePickerComponent);
-      component = fixture.componentInstance;
-      component.caseField = CASE_FIELD;
-      component.hideTime = false;
-      component.hideMinutes = false;
+    fixture = TestBed.createComponent(DatetimePickerComponent);
+    component = fixture.componentInstance;
+    component.caseField = CASE_FIELD;
+    component.hideTime = false;
+    component.hideMinutes = false;
   }));
 
   afterEach(fakeAsync(() => {
@@ -294,6 +294,61 @@ describe('DatetimePickerComponent', () => {
     discardPeriodicTasks();
   }));
 
+  it('should be able to confirm datepicker concurs with formatting for field_type Date', fakeAsync(() => {
+    fixture.detectChanges();
+    tick(1);
+
+    const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss';
+    const FIELD_TYPE_1: FieldType = {
+      id: 'Date',
+      type: 'Date'
+    };
+
+    const FIRST_CASE_FIELD: CaseField = ({
+      id: FIELD_ID,
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE_1,
+      value: initialDateTime,
+      dateTimeEntryFormat: firstDateEntryParameter
+    }) as CaseField;
+
+    component.caseField = FIRST_CASE_FIELD;
+    fixture.detectChanges();
+    component.ngOnInit();
+    tick(1);
+    // fixture.detectChanges();
+
+    clickFirstElement(fixture);
+
+    const dayCells = fixture.debugElement.queryAll(
+      By.css('.mat-calendar-body-cell')
+    );
+
+    // get the collection of day buttons in order to click them
+    if (dayCells && dayCells[0]) {
+      dayCells[0].nativeElement.click();
+      fixture.detectChanges();
+    }
+
+    // check the new input against the first day of the month of the year in order to verify
+    if (fixture.debugElement.query(By.css('.actions'))) {
+      const confirm = fixture.debugElement.query(By.css('.actions')).nativeElement;
+      confirm.dispatchEvent(new MouseEvent('click'));
+      fixture.detectChanges();
+      if (initialDateTime.getDate() !== 1) {
+        const initialFormattedDate = fixture.nativeElement.querySelector('.govuk-input').value;
+        expect(initialFormattedDate).not.toBe(null);
+        expectSeparatorCharacters(initialFormattedDate, '-', '+');
+        expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBe(null);
+      }
+    }
+
+    flush();
+    discardPeriodicTasks();
+  }));
+
+  
   xit('should be able to change the selected time (hours and minutes)', fakeAsync(() => {
     fixture.detectChanges();
     tick(1);
@@ -333,7 +388,7 @@ describe('DatetimePickerComponent', () => {
     discardPeriodicTasks();
   }));
 
-  xit('should be able to change the selected time (seconds)', fakeAsync(() => {
+  it('should be able to change the selected time (seconds)', fakeAsync(() => {
     component.showSeconds = true;
     fixture.detectChanges();
     tick(1);
@@ -497,6 +552,26 @@ describe('DatetimePickerComponent', () => {
     expect(component.minDate(MIN_MAX_CASE_FIELD)).toEqual(miniDate);
     expect(component.maxDate(MIN_MAX_CASE_FIELD)).toEqual(maxiDate);
   }));
+
+  it('should set the correct formatted value in dateControl on focusOut', () => {
+    fixture.detectChanges();
+    const inputValue = '2022-11-23T12:34:56.789';
+    component.inputElement.nativeElement.value = inputValue;
+    component.focusOut();
+
+    const expectedFormattedValue = moment(inputValue).format('YYYY-MM-DDTHH:mm:ss.SSS');
+    expect(component.dateControl.value).toEqual(expectedFormattedValue);
+  });
+
+  it('should set the correct formatted value in dateControl on focusOut', () => {
+    fixture.detectChanges();
+    const inputValue = '';
+    component.inputElement.nativeElement.value = inputValue;
+    component.focusOut();
+
+    const expectedFormattedValue = moment(inputValue).format('YYYY-MM-DDTHH:mm:ss.SSS');
+    expect(expectedFormattedValue).toEqual('Invalid date');
+  });
 });
 
 function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {

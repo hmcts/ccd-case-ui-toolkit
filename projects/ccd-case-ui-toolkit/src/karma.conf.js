@@ -33,7 +33,11 @@ module.exports = function(config) {
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../../../coverage/ccd-case-ui-toolkit'),
-      reports: ['html', 'lcovonly', 'text-summary'],
+      subdir: '.',
+      reporters: [
+        { type: 'html', subdir: 'html-report' },
+        { type: 'lcov', subdir: 'lcov-report' }
+      ],
       fixWebpackSourcePaths: true,
       combineBrowserReports: true
     },
