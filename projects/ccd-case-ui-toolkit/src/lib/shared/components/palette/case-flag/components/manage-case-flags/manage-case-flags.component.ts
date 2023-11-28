@@ -57,14 +57,17 @@ export class ManageCaseFlagsComponent implements OnInit {
   }
 
   public mapFlagDetailForDisplay(flagDetail: FlagDetail, flagsInstance: FlagsWithFormGroupPath): FlagDetailDisplayWithFormGroupPath {
-    // Cache the *original* status of the flag before it is modified. This is needed because ngOnInit() needs to filter
+    // Reset the flag status with the original persisted status. This is needed because ngOnInit() needs to filter
     // out any "Inactive" or "Not approved" flags based on their status *before* modification. If the user changes a
-    // flag's status then decides to return to the start of the flag update journey, the flag's status no longer
-    // reflects its actual *persisted* status
+    // flag's status then decides to return to the start of the flag update journey, the flag's status would no
+    // longer reflect its actual *persisted* status
+    // Also reset comments and description fields (both English and Welsh) with the original persisted data, to avoid
+    // the UI caching any changes that the user might not want persisted, if they start over and don't intend to add
+    // translations subsequently
     let originalStatus: string;
-    let formattedValue = flagsInstance.caseField.formatted_value;
+    let formattedValue = flagsInstance.caseField?.formatted_value;
     // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
-    // CaseField formatted_value from which to get the original status
+    // CaseField formatted_value from which to get the original persisted data
     const pathToValue = flagsInstance.pathToFlagsFormGroup;
     // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
     if (pathToValue.indexOf('.') > -1) {
@@ -75,21 +78,25 @@ export class ManageCaseFlagsComponent implements OnInit {
       });
     }
     if (formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
-      const originalFlagDetail = formattedValue.details.find((detail) => detail.id === flagDetail.id);
+      const originalFlagDetail = formattedValue.details?.find((detail) => detail.id === flagDetail.id);
       if (originalFlagDetail) {
-        originalStatus = originalFlagDetail.value.status;
+        originalStatus = originalFlagDetail.value?.status;
+        flagDetail.flagComment = originalFlagDetail.value?.flagComment;
+        flagDetail.flagComment_cy = originalFlagDetail.value?.flagComment_cy;
+        flagDetail.otherDescription = originalFlagDetail.value?.otherDescription;
+        flagDetail.otherDescription_cy = originalFlagDetail.value?.otherDescription_cy;
       }
     }
     return {
       flagDetailDisplay: {
-        partyName: flagsInstance.flags.partyName,
+        partyName: flagsInstance.flags?.partyName,
         flagDetail,
-        flagsCaseFieldId: flagsInstance.caseField.id,
-        visibility: flagsInstance.flags.visibility
+        flagsCaseFieldId: flagsInstance.caseField?.id,
+        visibility: flagsInstance.flags?.visibility
       },
       pathToFlagsFormGroup: flagsInstance.pathToFlagsFormGroup,
       caseField: flagsInstance.caseField,
-      roleOnCase: flagsInstance.flags.roleOnCase,
+      roleOnCase: flagsInstance.flags?.roleOnCase,
       originalStatus
     };
   }

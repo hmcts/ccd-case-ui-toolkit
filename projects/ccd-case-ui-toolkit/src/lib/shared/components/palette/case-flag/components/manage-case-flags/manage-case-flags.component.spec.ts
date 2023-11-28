@@ -78,6 +78,28 @@ describe('ManageCaseFlagsComponent', () => {
     subTypeValue: 'Dummy subtype value',
     subTypeValue_cy: 'Dummy subtype value - Welsh'
   };
+  const activeFlagWithOtherDescription = {
+    name: 'Flag 1',
+    flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'OT0001',
+    status: 'Active',
+    otherDescription: 'Description'
+  } as FlagDetail;
+  const activeFlagWithOtherDescriptionCy = {
+    name: 'Flag 1',
+    flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
+    dateTimeCreated: new Date(),
+    path: [{id: null, value: 'Reasonable adjustment'}],
+    hearingRelevant: false,
+    flagCode: 'OT0001',
+    status: 'Active',
+    otherDescription_cy: 'Description (Welsh)'
+  } as FlagDetail;
   const flagsData = [
     {
       flags: {
@@ -448,6 +470,124 @@ describe('ManageCaseFlagsComponent', () => {
     expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail).toEqual(flag1Detail);
     expect(flagDetailMappedForDisplay.pathToFlagsFormGroup).toEqual(flagsInstance.pathToFlagsFormGroup);
     expect(flagDetailMappedForDisplay.originalStatus).toEqual(flagsInstance.caseField.formatted_value.partyFlags.details[0].value.status);
+  });
+
+  it('should not cache any changes to the comments and description fields (English and Welsh) if the user starts over', () => {
+    const flagWithOtherDescriptionDetail = {
+      id: 'a6073742-f616-4a6a-a412-a0e60f47dc32',
+      ...activeFlagWithOtherDescription
+    } as FlagDetail;
+    const flagsInstance = {
+      flags: {
+        partyName: 'Rose Bank',
+        details: [flagWithOtherDescriptionDetail] as FlagDetail[],
+        flagsCaseFieldId: 'CaseFlag'
+      },
+      pathToFlagsFormGroup: 'CaseFlag',
+      caseField: {
+        id: 'CaseFlag',
+        field_type: {
+          id: 'Flags',
+          type: 'Complex'
+        } as FieldType,
+        formatted_value: {
+          partyName: 'Rose Bank',
+          details: [
+            {
+              id: 'a6073742-f616-4a6a-a412-a0e60f47dc32',
+              value: { ...activeFlagWithOtherDescription }
+            }
+          ]
+        },
+        value: {
+          partyName: 'Rose Bank',
+          details: [
+            {
+              id: 'a6073742-f616-4a6a-a412-a0e60f47dc32',
+              value: { ...activeFlagWithOtherDescription }
+            }
+          ]
+        }
+      } as CaseField
+    } as FlagsWithFormGroupPath;
+    // Make some changes to comments and description fields in the flag instance, simulating previous updates via the UI
+    flagsInstance.flags.details[0].flagComment = 'A new comment';
+    flagsInstance.flags.details[0].flagComment_cy = 'A new comment in Welsh';
+    flagsInstance.flags.details[0].otherDescription = 'A new description';
+    flagsInstance.flags.details[0].otherDescription_cy = 'A new description in Welsh';
+    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionDetail, flagsInstance);
+    // Expect all four fields to have been reset to the original persisted values
+    expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.flagComment).toEqual(
+      flagsInstance.caseField.formatted_value.details[0].value.flagComment);
+    expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.flagComment_cy).toEqual(
+      flagsInstance.caseField.formatted_value.details[0].value.flagComment_cy);
+    expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.otherDescription).toEqual(
+      flagsInstance.caseField.formatted_value.details[0].value.otherDescription);
+    expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.otherDescription_cy).toEqual(
+      flagsInstance.caseField.formatted_value.details[0].value.otherDescription_cy);
+  });
+
+  it('should not cache changes to comments and description fields where flag is within a Complex type, if the user starts over', () => {
+    const flagWithOtherDescriptionCyDetail = {
+      id: 'b43d9d2c-9f9f-4514-b182-508cfe19550e',
+      ...activeFlagWithOtherDescriptionCy
+    } as FlagDetail;
+    const flagsInstance = {
+      flags: {
+        partyName: 'Rose Bank',
+        details: [flagWithOtherDescriptionCyDetail] as FlagDetail[],
+        flagsCaseFieldId: 'Witness1'
+      },
+      pathToFlagsFormGroup: 'Witness1.partyFlags',
+      caseField: {
+        id: 'Witness1',
+        field_type: {
+          id: 'Witness',
+          type: 'Complex'
+        } as FieldType,
+        formatted_value: {
+          firstName: 'Rose',
+          lastName: 'Bank',
+          partyFlags: {
+            partyName: 'Rose Bank',
+            details: [
+              {
+                id: 'b43d9d2c-9f9f-4514-b182-508cfe19550e',
+                value: { ...activeFlagWithOtherDescriptionCy }
+              }
+            ]
+          }
+        },
+        value: {
+          firstName: 'Rose',
+          lastName: 'Bank',
+          partyFlags: {
+            partyName: 'Rose Bank',
+            details: [
+              {
+                id: 'b43d9d2c-9f9f-4514-b182-508cfe19550e',
+                value: { ...activeFlagWithOtherDescriptionCy }
+              }
+            ]
+          }
+        }
+      } as CaseField
+    } as FlagsWithFormGroupPath;
+    // Make some changes to comments and description fields in the flag instance, simulating previous updates via the UI
+    flagsInstance.flags.details[0].flagComment = 'A new comment';
+    flagsInstance.flags.details[0].flagComment_cy = 'A new comment in Welsh';
+    flagsInstance.flags.details[0].otherDescription = 'A new description';
+    flagsInstance.flags.details[0].otherDescription_cy = 'A new description in Welsh';
+    const flagDetailMappedForDisplay = component.mapFlagDetailForDisplay(flagWithOtherDescriptionCyDetail, flagsInstance);
+    // Expect all four fields to have been reset to the original persisted values
+    expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.flagComment).toEqual(
+      flagsInstance.caseField.formatted_value.partyFlags.details[0].value.flagComment);
+    expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.flagComment_cy).toEqual(
+      flagsInstance.caseField.formatted_value.partyFlags.details[0].value.flagComment_cy);
+    expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.otherDescription).toEqual(
+      flagsInstance.caseField.formatted_value.partyFlags.details[0].value.otherDescription);
+    expect(flagDetailMappedForDisplay.flagDetailDisplay.flagDetail.otherDescription_cy).toEqual(
+      flagsInstance.caseField.formatted_value.partyFlags.details[0].value.otherDescription_cy);
   });
 
   it('should emit to parent with the selected party and flag details if the validation succeeds', () => {

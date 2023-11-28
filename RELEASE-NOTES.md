@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.13-case-flags-v2-manage-case-flags-value-caching-fix
+**EUI-9020** Fix bug where previous changes to a flag are retained in the UI when the user starts over and selects the same flag to update again
+
 ### Version 6.16.0-follow-up-on-query-tab-v2
 **EUI-8608** Query management follow up on the query tab
 

@@ -134,7 +134,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   private extractNewFlagToFlagDetailDisplayObject(selectedFlagsLocation: FlagsWithFormGroupPath): FlagDetailDisplay {
     // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
     // CaseField value containing the new flag
-    let flagsCaseFieldValue = selectedFlagsLocation.caseField.value;
+    let flagsCaseFieldValue = selectedFlagsLocation.caseField?.value;
     const path = selectedFlagsLocation.pathToFlagsFormGroup;
     // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
     if (path.indexOf('.') > -1) {
@@ -144,7 +144,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       return {
         partyName: flagsCaseFieldValue.partyName,
         // Look in the details array for the object that does *not* have an id - this indicates it is the new flag
-        flagDetail: flagsCaseFieldValue.details.find(element => !element.hasOwnProperty('id'))?.value
+        flagDetail: flagsCaseFieldValue.details?.find(element => !element.hasOwnProperty('id'))?.value
       } as FlagDetailDisplay;
     }
 
