@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.19.13-case-flags-v2-update-flag-show-other-description",
+  "version": "6.19.13-case-flags-v2-manage-case-flags-value-caching-fix",
   "engines": {
     "yarn": "^3.5.0",
     "npm": "^8.10.0"

@@ -245,13 +245,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.flagsData.forEach(instance => {
       // Use the pathToFlagsFormGroup property for each Flags case field to drill down to the correct part of the
       // CaseField value to remove the new value from
-      let value = instance.caseField.value;
+      let value = instance.caseField?.value;
       const pathToValue = instance.pathToFlagsFormGroup;
       // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
       if (pathToValue.indexOf('.') > -1) {
         pathToValue.slice(pathToValue.indexOf('.') + 1).split('.').forEach(part => value = value[part]);
       }
-      if (value && value.details && value.details.length > 0) {
+      if (value?.details?.length > 0) {
         const indexOfNewFlagDetail = value.details.findIndex(element => !element.hasOwnProperty('id'));
         if (indexOfNewFlagDetail > -1) {
           value.details.splice(indexOfNewFlagDetail, 1);
@@ -271,7 +271,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     if (this.determinedLocation) {
       const path = this.determinedLocation.pathToFlagsFormGroup;
       const flagDataRef = this.flagsData.find(item => item.pathToFlagsFormGroup === path);
-      let flagsCaseFieldValue = flagDataRef.caseField.value;
+      let flagsCaseFieldValue = flagDataRef.caseField?.value;
       // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
       // CaseField value to apply changes to
       // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
@@ -374,8 +374,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.flagsData.forEach(instance => {
       // Use the pathToFlagsFormGroup property for each Flags case field to drill down to the correct part of the
       // CaseField value for which to restore the original values
-      let value = instance.caseField.value;
-      let formattedValue = instance.caseField.formatted_value;
+      let value = instance.caseField?.value;
+      let formattedValue = instance.caseField?.formatted_value;
       const pathToValue = instance.pathToFlagsFormGroup;
       // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
       if (pathToValue.indexOf('.') > -1) {
@@ -388,15 +388,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
       if (value?.details?.length > 0 && formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
         value.details.forEach(flagDetail => {
-          const originalFlagDetail = formattedValue.details.find(detail => detail.id === flagDetail.id);
+          const originalFlagDetail = formattedValue.details?.find(detail => detail.id === flagDetail.id);
           if (originalFlagDetail) {
-            flagDetail.value.otherDescription = originalFlagDetail.value.otherDescription || null;
-            flagDetail.value.otherDescription_cy = originalFlagDetail.value.otherDescription_cy || null;
-            flagDetail.value.flagComment = originalFlagDetail.value.flagComment || null;
-            flagDetail.value.flagComment_cy = originalFlagDetail.value.flagComment_cy || null;
-            flagDetail.value.flagUpdateComment = originalFlagDetail.value.flagUpdateComment || null;
-            flagDetail.value.status = originalFlagDetail.value.status;
-            flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified || null;
+            flagDetail.value.otherDescription = originalFlagDetail.value?.otherDescription || null;
+            flagDetail.value.otherDescription_cy = originalFlagDetail.value?.otherDescription_cy || null;
+            flagDetail.value.flagComment = originalFlagDetail.value?.flagComment || null;
+            flagDetail.value.flagComment_cy = originalFlagDetail.value?.flagComment_cy || null;
+            flagDetail.value.flagUpdateComment = originalFlagDetail.value?.flagUpdateComment || null;
+            flagDetail.value.status = originalFlagDetail.value?.status;
+            flagDetail.value.dateTimeModified = originalFlagDetail.value?.dateTimeModified || null;
           }
         });
       }
@@ -404,7 +404,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     if (!this.selectedFlag) {
       this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
     }
-    let flagsCaseFieldValue = this.selectedFlag.caseField.value;
+    let flagsCaseFieldValue = this.selectedFlag.caseField?.value;
     // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
     // CaseField value to apply changes to
     const path = this.selectedFlag.pathToFlagsFormGroup;
@@ -413,17 +413,17 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
     }
     if (flagsCaseFieldValue) {
-      const flagDetailToUpdate = flagsCaseFieldValue.details.find(
-        detail => detail.id === this.selectedFlag.flagDetailDisplay.flagDetail.id);
+      const flagDetailToUpdate = flagsCaseFieldValue.details?.find(
+        detail => detail.id === this.selectedFlag.flagDetailDisplay?.flagDetail?.id);
       if (flagDetailToUpdate) {
         // Cache the *original* status of the flag before it is modified. This is needed if the user changes the flag status
         // then decides to return to any part of the flag update journey. The ManageCaseFlagsComponent and UpdateFlagComponent
         // should refer to a flag's original status, not the one set via the UI because this hasn't been persisted yet
-        this.selectedFlag.originalStatus = flagDetailToUpdate.value.status;
+        this.selectedFlag.originalStatus = flagDetailToUpdate.value?.status;
         // Update description fields only if flag type is "Other" (flag code OT0001); these fields apply only to that flag type
         // If their FormControls don't exist, it means these fields weren't visited as part of the "Update Flag" journey, so do
         // *not* update their values (otherwise they will become undefined)
-        if (flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode) {
+        if (flagDetailToUpdate.value?.flagCode === this.otherFlagTypeCode) {
           if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)) {
             flagDetailToUpdate.value.otherDescription = this.caseFlagParentFormGroup.get(
               CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
