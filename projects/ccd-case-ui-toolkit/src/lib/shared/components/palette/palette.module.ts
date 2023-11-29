@@ -30,6 +30,7 @@ import { FormValidatorsService } from '../../services/form/form-validators.servi
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { LoadingModule } from '../../services/loading/loading.module';
 import { WindowService } from '../../services/window';
+import { CaseEventCompletionComponent, CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '../case-editor/case-event-completion';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view';
@@ -48,12 +49,18 @@ import {
   AddCommentsComponent,
   CaseFlagSummaryListComponent,
   CaseFlagTableComponent,
+  ConfirmFlagStatusComponent,
+  FlagFieldDisplayPipe,
+  LanguageInterpreterDisplayPipe,
   ManageCaseFlagsComponent,
+  ManageCaseFlagsLabelDisplayPipe,
   ReadCaseFlagFieldComponent,
   SearchLanguageInterpreterComponent,
   SelectFlagLocationComponent,
   SelectFlagTypeComponent,
+  UpdateFlagAddTranslationFormComponent,
   UpdateFlagComponent,
+  UpdateFlagTitleDisplayPipe,
   WriteCaseFlagFieldComponent
 } from './case-flag';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
@@ -97,7 +104,7 @@ import {
   WriteLinkedCasesFieldComponent
 } from './linked-cases';
 import { LinkedCasesService } from './linked-cases/services';
-import { MarkdownComponent } from './markdown';
+import { MarkdownComponentModule } from './markdown';
 import { MoneyGbpInputComponent, ReadMoneyGbpFieldComponent, WriteMoneyGbpFieldComponent } from './money-gbp';
 import { ReadMultiSelectListFieldComponent, WriteMultiSelectListFieldComponent } from './multi-select-list';
 import { ReadNumberFieldComponent, WriteNumberFieldComponent } from './number';
@@ -112,6 +119,21 @@ import {
 import { PaletteService } from './palette.service';
 import { CasePaymentHistoryViewerFieldComponent } from './payment';
 import { ReadPhoneUKFieldComponent, WritePhoneUKFieldComponent } from './phone-uk';
+import {
+  QualifyingQuestionDetailComponent,
+  QualifyingQuestionOptionsComponent,
+  QueryAttachmentsReadComponent,
+  QueryCaseDetailsHeaderComponent,
+  QueryCheckYourAnswersComponent,
+  QueryDetailsComponent,
+  QueryEventCompletionComponent,
+  QueryListComponent,
+  QueryWriteAddDocumentsComponent,
+  QueryWriteDateInputComponent,
+  QueryWriteRaiseQueryComponent,
+  QueryWriteRespondToQueryComponent,
+  ReadQueryManagementFieldComponent
+} from './query-management';
 import { ReadTextFieldComponent, WriteTextFieldComponent } from './text';
 import { ReadTextAreaFieldComponent, WriteTextAreaFieldComponent } from './text-area';
 import { UnsupportedFieldComponent } from './unsupported-field.component';
@@ -123,7 +145,6 @@ const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
   DatetimePickerComponent,
   WaysToPayFieldComponent,
-  MarkdownComponent,
   FieldReadComponent,
   FieldWriteComponent,
   FieldReadLabelComponent,
@@ -175,8 +196,6 @@ const PALETTE_COMPONENTS = [
   WriteDocumentFieldComponent,
   WriteDynamicListFieldComponent,
   WriteDynamicRadioListFieldComponent,
-  WriteDynamicMultiSelectListFieldComponent,
-  ReadDynamicMultiSelectListFieldComponent,
   WriteTextFieldComponent,
   WriteDateContainerFieldComponent,
   WriteTextAreaFieldComponent,
@@ -223,6 +242,8 @@ const PALETTE_COMPONENTS = [
   AddCommentsComponent,
   UpdateFlagComponent,
   CaseFlagSummaryListComponent,
+  ConfirmFlagStatusComponent,
+  UpdateFlagAddTranslationFormComponent,
   // Components for linked cases
   LinkedCasesToTableComponent,
   LinkedCasesFromTableComponent,
@@ -230,7 +251,27 @@ const PALETTE_COMPONENTS = [
   LinkCasesComponent,
   CheckYourAnswersComponent,
   UnLinkCasesComponent,
-  NoLinkedCasesComponent
+  NoLinkedCasesComponent,
+
+  // Components for Query Management
+  ReadQueryManagementFieldComponent,
+  QueryDetailsComponent,
+  QueryListComponent,
+  QueryWriteRespondToQueryComponent,
+  QueryWriteRaiseQueryComponent,
+  QueryCaseDetailsHeaderComponent,
+  QueryCheckYourAnswersComponent,
+  QueryWriteAddDocumentsComponent,
+  QueryWriteDateInputComponent,
+  QualifyingQuestionOptionsComponent,
+  QualifyingQuestionDetailComponent,
+  QueryAttachmentsReadComponent,
+  QueryEventCompletionComponent,
+
+  // Case event completion
+  CaseEventCompletionComponent,
+  CaseEventCompletionTaskCancelledComponent,
+  CaseEventCompletionTaskReassignedComponent
 ];
 
 @NgModule({
@@ -266,7 +307,9 @@ const PALETTE_COMPONENTS = [
     OverlayModule,
     MatDialogModule,
     MediaViewerModule,
-    LoadingModule
+    LoadingModule,
+    RpxTranslationModule.forChild(),
+    MarkdownComponentModule
   ],
   declarations: [
     FixedListPipe,
@@ -274,6 +317,10 @@ const PALETTE_COMPONENTS = [
     DynamicListPipe,
     DynamicRadioListPipe,
     DocumentUrlPipe,
+    FlagFieldDisplayPipe,
+    LanguageInterpreterDisplayPipe,
+    ManageCaseFlagsLabelDisplayPipe,
+    UpdateFlagTitleDisplayPipe,
     ...PALETTE_COMPONENTS
   ],
   exports: [
@@ -283,6 +330,7 @@ const PALETTE_COMPONENTS = [
     TabsModule,
     PaletteUtilsModule,
     PipesModule,
+    MarkdownComponentModule,
     ...PALETTE_COMPONENTS
   ],
   providers: [
@@ -290,17 +338,16 @@ const PALETTE_COMPONENTS = [
     CaseFlagRefdataService,
     YesNoService,
     CollectionCreateCheckerService,
+    JurisdictionService,
     PaletteService,
     FormValidatorsService,
     FileUploadStateService,
     FileUploadProgressGuard,
     WindowService,
     CommonDataService,
-    JurisdictionService,
     LinkedCasesService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
-  ],
-  entryComponents: [CaseFileViewFolderSelectorComponent]
+  ]
 })
 export class PaletteModule {
 }

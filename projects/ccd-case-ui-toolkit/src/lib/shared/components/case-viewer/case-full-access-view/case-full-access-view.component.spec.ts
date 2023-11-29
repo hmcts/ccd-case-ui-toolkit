@@ -1,7 +1,16 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  DebugElement,
+  EventEmitter,
+  Input,
+  NO_ERRORS_SCHEMA,
+  Output,
+  SimpleChange
+} from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
@@ -11,7 +20,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import clone from 'just-clone';
 import { MockComponent } from 'ng2-mock-component';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of, Subject, Subscription } from 'rxjs';
 import { AppMockConfig } from '../../../../app-config.mock';
 import { AbstractAppConfig } from '../../../../app.config';
@@ -22,6 +33,7 @@ import { ConditionalShowRegistrarService } from '../../../directives';
 import { LabelSubstitutorDirective } from '../../../directives/substitutor';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../../domain/case-view';
+import { CaseViewEventIds } from '../../../domain/case-view/case-view-event-ids.enum';
 import { CaseField } from '../../../domain/definition';
 import { HttpError } from '../../../domain/http';
 import { CaseReferencePipe } from '../../../pipes/case-reference';
@@ -474,7 +486,8 @@ const CASE_VIEW: CaseView = {
           display_context: null,
           field_type: {
             id: 'Flags',
-            type: 'Complex'
+            type: 'Complex',
+            complex_fields: []
           },
           value: {
             partyName: 'John Smith',
@@ -513,7 +526,7 @@ const CASE_VIEW: CaseView = {
                 }
               }
             ]
-          }
+          },
         })
       ],
       show_condition: null
@@ -571,6 +584,7 @@ const WORK_ALLOCATION_CASE_VIEW = {
 const $DIALOG_DELETE_BUTTON = By.css('.button[title=Delete]');
 const $DIALOG_CANCEL_BUTTON = By.css('.button[title=Cancel]');
 const DIALOG_CONFIG = new MatDialogConfig();
+const CASE_FLAGS_READ_EXTERNAL_MODE = '#ARGUMENT(READ,EXTERNAL)';
 
 let fixture: ComponentFixture<CaseFullAccessViewComponent>;
 let fixtureDialog: ComponentFixture<DeleteOrCancelDialogComponent>;
@@ -590,18 +604,29 @@ let caseNotifier: jasmine.SpyObj<CaseNotifier>;
 let navigationNotifierService: NavigationNotifierService;
 let errorNotifierService: ErrorNotifierService;
 
-xdescribe('CaseFullAccessViewComponent', () => {
-  const FIELDS = CASE_VIEW.tabs[0].fields;
-  const SIMPLE_FIELDS = CASE_VIEW.tabs[0].fields.slice(0, 2);
-  const COMPLEX_FIELDS = CASE_VIEW.tabs[0].fields.slice(2);
+describe('CaseFullAccessViewComponent', () => {
+  let caseViewData: CaseView;
+  let FIELDS: CaseField[];
+  let SIMPLE_FIELDS: CaseField[];
+  let COMPLEX_FIELDS: CaseField[];
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
   const ERROR_HEADING_GENERIC = 'Something went wrong';
   const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
   const ERROR_HEADING_SPECIFIC = 'The callback data failed validation';
+  let convertHrefToRouterMockService: jasmine.SpyObj<ConvertHrefToRouterService>;
+  let sessionStorageMockService: jasmine.SpyObj<SessionStorageService>;
+  let router: Router;
 
   beforeEach((() => {
+    // Clone
+    caseViewData = clone(CASE_VIEW);
+    caseViewData.metadataFields = caseViewData.metadataFields.map(field => Object.assign(new CaseField(), field));
+    FIELDS = caseViewData.tabs[0].fields;
+    SIMPLE_FIELDS = caseViewData.tabs[0].fields.slice(0, 2);
+    COMPLEX_FIELDS = caseViewData.tabs[0].fields.slice(2);
+
     orderService = new OrderService();
     spyOn(orderService, 'sort').and.callThrough();
 
@@ -627,26 +652,31 @@ xdescribe('CaseFullAccessViewComponent', () => {
 
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
+    convertHrefToRouterMockService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterMockService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
+
+    sessionStorageMockService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
+
     TestBed
       .configureTestingModule({
         imports: [
           PaletteUtilsModule,
-          PaymentLibModule
+          PaymentLibModule,
+          RouterTestingModule
         ],
         declarations: [
           CaseFullAccessViewComponent,
           LabelSubstitutorDirective,
           DeleteOrCancelDialogComponent,
-
-          // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
-          EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
+          EventTriggerComponent,
+          // Mocks
+          caseActivityComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock,
           markdownComponentMock,
           MockRpxTranslatePipe
         ],
@@ -654,141 +684,165 @@ xdescribe('CaseFullAccessViewComponent', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          {provide: NavigationNotifierService, useValue: navigationNotifierService},
-          {provide: ErrorNotifierService, useValue: errorNotifierService},
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService},
-          {provide: ActivityPollingService, useValue: activityService},
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          DeleteOrCancelDialogComponent
-        ]
+          { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: ErrorNotifierService, useValue: errorNotifierService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: ActivityPollingService, useValue: activityService },
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          DeleteOrCancelDialogComponent,
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterMockService },
+          { provide: SessionStorageService, useValue: sessionStorageMockService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+        ],
+        schemas: [NO_ERRORS_SCHEMA]
       })
       .compileComponents();
 
     fixture = TestBed.createComponent(CaseFullAccessViewComponent);
     component = fixture.componentInstance;
     component.callbackErrorsSubject = mockCallbackErrorSubject;
+    component.caseDetails = caseViewData;
+    component.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'roles-and-access',
+        label: 'Roles and access',
+        fields: [],
+        show_condition: null
+      }
+    ];
     de = fixture.debugElement;
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   }));
 
   it('should render a case header', () => {
     const header = de.query(By.directive(caseHeaderComponentMock));
     expect(header).toBeTruthy();
-    expect(header.componentInstance.caseDetails).toEqual(CASE_VIEW);
+    expect(header.componentInstance.caseDetails).toEqual(caseViewData);
   });
 
-  it('should render the correct tabs based on show_condition', () => {
-    // we expect address tab not to be rendered
-    const tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length);
-    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[1].label);
-    expect(attr(tabHeaders[1], 'title')).toBe(CASE_VIEW.tabs[0].label);
-  });
+  xdescribe('tabs', () => {
+    it('should render the correct tabs based on show_condition', () => {
+      // we expect address tab not to be rendered
+      const tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+      expect(tabHeaders.length).toBe(caseViewData.tabs.length);
+      expect(attr(tabHeaders[0], 'title')).toBe(caseViewData.tabs[1].label);
+      expect(attr(tabHeaders[1], 'title')).toBe(caseViewData.tabs[0].label);
+    });
 
-  it('should render the history tab first and select it', () => {
-    // we expect address tab not to be rendered
-    const firstTabHeader = de.query($FIRST_TAB_HEADER);
+    it('should render the history tab first and select it', () => {
+      // we expect address tab not to be rendered
+      const firstTabHeader = de.query($FIRST_TAB_HEADER);
 
-    expect(firstTabHeader).toBeTruthy();
-    expect(attr(firstTabHeader, 'title')).toBe('History');
-  });
+      expect(firstTabHeader).toBeTruthy();
+      expect(attr(firstTabHeader, 'title')).toBe('History');
+    });
 
-  it('should render each tab defined by the Case view', () => {
-    // we expect address tab not to be rendered
-    const tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(CASE_VIEW.tabs.length);
+    it('should render each tab defined by the Case view', () => {
+      // we expect address tab not to be rendered
+      const tabHeaders = de.queryAll($ALL_TAB_HEADERS);
+      expect(tabHeaders.length).toBe(caseViewData.tabs.length);
 
-    expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeTruthy('Could not find tab Name');
-    expect(tabHeaders.find(c => 'Some Tab' === attr(c, 'title'))).toBeTruthy('Could not find tab Some Tab');
-  });
+      expect(tabHeaders.find(c => 'Name' === attr(c, 'title'))).toBeTruthy('Could not find tab Name');
+      expect(tabHeaders.find(c => 'Some Tab' === attr(c, 'title'))).toBeTruthy('Could not find tab Some Tab');
+    });
 
-  it('should render the field labels based on show_condition', () => {
-    const headers = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr>th'));
+    it('should render the field labels based on show_condition', () => {
+      const headers = de
+        .query($NAME_TAB_CONTENT)
+        .queryAll(By.css('tbody>tr>th'));
 
-    expect(headers.find(r => r.nativeElement.textContent.trim() === 'Complex field'))
-      .toBeFalsy('Found row with label Complex field');
-    expect(headers.find(r => r.nativeElement.textContent.trim() === 'Last name'))
-      .toBeTruthy('Cannot find row with label Last name');
-    expect(headers.find(r => r.nativeElement.textContent.trim() === 'First name'))
-      .toBeTruthy('Cannot find row with label First name');
-  });
+      expect(headers.find(r => r.nativeElement.textContent.trim() === 'Complex field'))
+        .toBeFalsy('Found row with label Complex field');
+      expect(headers.find(r => r.nativeElement.textContent.trim() === 'Last name'))
+        .toBeTruthy('Cannot find row with label Last name');
+      expect(headers.find(r => r.nativeElement.textContent.trim() === 'First name'))
+        .toBeTruthy('Cannot find row with label First name');
+    });
 
-  it('should render tabs in ascending order', () => {
-    const tabHeaders = de.queryAll($CASE_TAB_HEADERS);
+    it('should render tabs in ascending order', () => {
+      const tabHeaders = de.queryAll($CASE_TAB_HEADERS);
 
-    expect(attr(tabHeaders[0], 'title')).toBe(CASE_VIEW.tabs[0].label);
-    expect(orderService.sort).toHaveBeenCalledWith(CASE_VIEW.tabs);
-  });
+      expect(attr(tabHeaders[0], 'title')).toBe(caseViewData.tabs[0].label);
+      expect(orderService.sort).toHaveBeenCalledWith(caseViewData.tabs);
+    });
 
-  it('should render a row for each field in a given tab', () => {
-    const rows = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr'));
-    expect(rows.length).toBe(FIELDS.length);
-  });
+    it('should render a row for each field in a given tab', () => {
+      const rows = de
+        .query($NAME_TAB_CONTENT)
+        .queryAll(By.css('tbody>tr'));
+      expect(rows.length).toBe(FIELDS.length);
+    });
 
-  it('should render each simple field label as a table header', () => {
-    const headers = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr>th'));
+    it('should render each simple field label as a table header', () => {
+      const headers = de
+        .query($NAME_TAB_CONTENT)
+        .queryAll(By.css('tbody>tr>th'));
 
-    SIMPLE_FIELDS.forEach(field => {
-      expect(headers.find(r => r.nativeElement.textContent.trim() === field.label))
-        .toBeTruthy(`Could not find row with label ${field.label}`);
+      SIMPLE_FIELDS.forEach(field => {
+        expect(headers.find(r => r.nativeElement.textContent.trim() === field.label))
+          .toBeTruthy(`Could not find row with label ${field.label}`);
+      });
+    });
+
+    it('should render each compound field without label as a cell spanning 2 columns', () => {
+      const headers = de
+        .query($NAME_TAB_CONTENT)
+        .queryAll(By.css('tbody>tr.complex-field>th'));
+
+      expect(headers.length).toBe(0);
+
+      const cells = de
+        .query($NAME_TAB_CONTENT)
+        .queryAll(By.css('tbody>tr.compound-field>th'));
+
+      expect(cells.length).toEqual(COMPLEX_FIELDS.length);
+    });
+
+    it('should render each field value using FieldReadComponent', () => {
+      const readFieldsFields = de
+        .query($NAME_TAB_CONTENT)
+        .queryAll(By.css('tbody>tr td>span>ccd-field-read'));
+
+      const readFieldsCompound = de
+        .query($NAME_TAB_CONTENT)
+        .queryAll(By.css('tbody>tr th>span>ccd-field-read'));
+
+      const readFields = readFieldsFields.concat(readFieldsCompound);
+
+      FIELDS.forEach(field => {
+        expect(readFields.find(f => {
+          const fieldInstance = f.componentInstance;
+          return JSON.stringify(fieldInstance.caseField) === JSON.stringify(field);
+        }))
+          .toBeTruthy(`Could not find field with type ${field.field_type}`);
+      });
+      expect(FIELDS.length).toBe(readFields.length);
+    });
+
+    it('should render fields in ascending order', () => {
+      const headers = de
+        .query($NAME_TAB_CONTENT)
+        .queryAll(By.css('tbody>tr>th'));
+
+
+      expect(headers[0].nativeElement.textContent.trim()).toBe(FIELDS[1].label);
+      expect(orderService.sort).toHaveBeenCalledWith(FIELDS);
     });
   });
 
-  it('should render each compound field without label as a cell spanning 2 columns', () => {
-    const headers = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr.complex-field>th'));
-
-    expect(headers.length).toBe(0);
-
-    const cells = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr.compound-field>th'));
-
-    expect(cells.length).toEqual(COMPLEX_FIELDS.length);
-  });
-
-  it('should render each field value using FieldReadComponent', () => {
-    const readFieldsFields = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr td>span>ccd-field-read'));
-
-    const readFieldsCompound = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr th>span>ccd-field-read'));
-
-    const readFields = readFieldsFields.concat(readFieldsCompound);
-
-    FIELDS.forEach(field => {
-      expect(readFields.find(f => {
-        const fieldInstance = f.componentInstance;
-        return JSON.stringify(fieldInstance.caseField) === JSON.stringify(field);
-      }))
-        .toBeTruthy(`Could not find field with type ${field.field_type}`);
-    });
-    expect(FIELDS.length).toBe(readFields.length);
-  });
-
-  it('should render fields in ascending order', () => {
-    const headers = de
-      .query($NAME_TAB_CONTENT)
-      .queryAll(By.css('tbody>tr>th'));
-
-    expect(headers[0].nativeElement.textContent.trim()).toBe(FIELDS[1].label);
-    expect(orderService.sort).toHaveBeenCalledWith(FIELDS);
-  });
 
   it('should render an event trigger', () => {
     const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
@@ -798,40 +852,51 @@ xdescribe('CaseFullAccessViewComponent', () => {
     expect(eventTrigger.triggers).toEqual(TRIGGERS);
   });
 
-  it('should emit trigger event on trigger submit', () => {
-    spyOn(component, 'applyTrigger').and.callThrough();
+  describe('applyTrigger', () => {
+    it('should emit trigger event on trigger submit', () => {
+      spyOn(component, 'applyTrigger').and.callThrough();
 
-    const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
-    const eventTrigger = eventTriggerElement.componentInstance;
+      const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+      const eventTrigger = eventTriggerElement.componentInstance;
 
-    eventTrigger.onTriggerSubmit.emit(TRIGGERS[0]);
+      eventTrigger.onTriggerSubmit.emit(TRIGGERS[0]);
 
-    expect(component.applyTrigger).toHaveBeenCalledWith(TRIGGERS[0]);
-    expect(component.applyTrigger).toHaveBeenCalledTimes(1);
-  });
-
-  it('should navigate to event trigger view on trigger emit', () => {
-    component.applyTrigger(TRIGGERS[0]);
-    expect(navigationNotifierService.announceNavigation).toHaveBeenCalledWith({
-      action: NavigationOrigin.EVENT_TRIGGERED,
-      queryParams: {},
-      etid: TRIGGERS[0].id,
-      relativeTo: mockRoute
+      expect(component.applyTrigger).toHaveBeenCalledWith(TRIGGERS[0]);
+      expect(component.applyTrigger).toHaveBeenCalledTimes(1);
     });
-  });
 
-  it('should navigate to resume draft trigger view on trigger emit', () => {
-    component.ignoreWarning = true;
-    component.caseDetails.case_id = 'DRAFT123';
-    component.caseDetails.case_type.jurisdiction.id = 'TESTJURISDICTION';
-    component.caseDetails.case_type.id = 'TEST';
-    component.applyTrigger(TRIGGERS[1]);
-    expect(navigationNotifierService.announceNavigation).toHaveBeenCalledWith({
-      action: NavigationOrigin.DRAFT_RESUMED,
-      jid: 'TESTJURISDICTION',
-      ctid: 'TEST',
-      etid: TRIGGERS[1].id,
-      queryParams: {ignoreWarning: true, draft: 'DRAFT123', origin: 'viewDraft'}
+    it('should navigate to event trigger view on trigger emit', () => {
+      component.applyTrigger(TRIGGERS[0]);
+      expect(navigationNotifierService.announceNavigation).toHaveBeenCalledWith({
+        action: NavigationOrigin.EVENT_TRIGGERED,
+        queryParams: {},
+        etid: TRIGGERS[0].id,
+        relativeTo: mockRoute
+      });
+    });
+
+    it('should navigate to resume draft trigger view on trigger emit', () => {
+      component.ignoreWarning = true;
+      component.caseDetails.case_id = 'DRAFT123';
+      component.caseDetails.case_type.jurisdiction.id = 'TESTJURISDICTION';
+      component.caseDetails.case_type.id = 'TEST';
+      component.applyTrigger(TRIGGERS[1]);
+      expect(navigationNotifierService.announceNavigation).toHaveBeenCalledWith({
+        action: NavigationOrigin.DRAFT_RESUMED,
+        jid: 'TESTJURISDICTION',
+        ctid: 'TEST',
+        etid: TRIGGERS[1].id,
+        queryParams: {ignoreWarning: true, draft: 'DRAFT123', origin: 'viewDraft'}
+      });
+    });
+
+    it('should navigate to route when the id of the emitted trigger is CaseViewEventIds.QueryManagementRaiseQuery', async () => {
+      const respondToQueryTrigger = new CaseViewTrigger();
+      respondToQueryTrigger.id = CaseViewEventIds.QueryManagementRaiseQuery;
+      const spyObj = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+
+      await component.applyTrigger(respondToQueryTrigger);
+      expect(spyObj).toHaveBeenCalledWith([`/query-management/query/${component.caseDetails.case_id}`]);
     });
   });
 
@@ -1018,7 +1083,7 @@ xdescribe('CaseFullAccessViewComponent', () => {
         field_errors: FIELD_ERRORS
       }
     };
-    component.error = HttpError.from(new HttpErrorResponse({error: VALID_ERROR}));
+    component.error = HttpError.from(new HttpErrorResponse({ error: VALID_ERROR }));
 
     const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
     const eventTrigger = eventTriggerElement.componentInstance;
@@ -1081,16 +1146,15 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           CaseFullAccessViewComponent,
           LabelSubstitutorDirective,
           DeleteOrCancelDialogComponent,
-
-          // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
+          // Mocks
+          caseActivityComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock,
           markdownComponentMock,
           MockRpxTranslatePipe
         ],
@@ -1098,17 +1162,18 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          {provide: NavigationNotifierService, useValue: navigationNotifierService},
-          {provide: ErrorNotifierService, useValue: errorNotifierService},
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService},
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ActivityPollingService, useValue: activityService},
+          { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: ErrorNotifierService, useValue: errorNotifierService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ActivityPollingService, useValue: activityService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1168,16 +1233,15 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           CaseFullAccessViewComponent,
           LabelSubstitutorDirective,
           DeleteOrCancelDialogComponent,
-
-          // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
           EventTriggerComponent,
-          caseHeaderComponentMock,
-          linkComponentMock,
           CallbackErrorsComponent,
           TabsComponent,
           TabComponent,
+          // Mocks
+          caseActivityComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock,
           markdownComponentMock,
           MockRpxTranslatePipe
         ],
@@ -1185,17 +1249,17 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
           FieldsUtils,
           PlaceholderService,
           CaseReferencePipe,
-          {provide: NavigationNotifierService, useValue: navigationNotifierService},
-          {provide: ErrorNotifierService, useValue: errorNotifierService},
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService},
-          {provide: ActivityPollingService, useValue: activityService},
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
+          { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: ErrorNotifierService, useValue: errorNotifierService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: ActivityPollingService, useValue: activityService },
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1224,7 +1288,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
-  let convertHrefToRouterService;
+  let convertHrefToRouterService: jasmine.SpyObj<ConvertHrefToRouterService>;
 
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
@@ -1267,13 +1331,12 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -1288,22 +1351,23 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
             }
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1329,7 +1393,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
     d = f.debugElement;
     // Use a fake implementation of Router.navigate() to avoid unhandled navigation errors when invoked by
     // ngAfterViewInit() before each unit test
-    const router = TestBed.get(Router);
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
     f.detectChanges();
   }));
@@ -1395,13 +1459,12 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -1416,22 +1479,23 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
             }
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1465,7 +1529,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     d = f.debugElement;
     // Use a fake implementation of Router.navigate() to avoid unhandled navigation errors when invoked by
     // ngAfterViewInit() before each unit test
-    const router = TestBed.get(Router);
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
     f.detectChanges();
   }));
@@ -1544,9 +1608,29 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     f.detectChanges();
     expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('true');
   });
+
+  it('should not display active Case Flags banner message for an external user, even if there are active Case Flags', () => {
+    // Set the display_context_parameter attribute of the FlagLauncher CaseField to external mode
+    CASE_VIEW.tabs[3].fields[0].display_context_parameter = CASE_FLAGS_READ_EXTERNAL_MODE;
+    // Set both Case Flags' status to "Active"
+    CASE_VIEW.tabs[3].fields[1].value.details[0].value.status = CaseFlagStatus.ACTIVE;
+    CASE_VIEW.tabs[3].fields[1].value.details[1].value.status = CaseFlagStatus.ACTIVE;
+
+    // Spy on the hasActiveCaseFlags() function to check it is called in ngOnInit(), checking for active Case Flags
+    spyOn(comp, 'hasActiveCaseFlags').and.callThrough();
+
+    // Manual call of ngOnInit() as above
+    comp.ngOnInit();
+    f.detectChanges();
+
+    expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
+    expect(bannerElement).toBeNull();
+    expect(comp.activeCaseFlags).toBe(true);
+  });
 });
 
-xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
+describe('CaseFullAccessViewComponent - ends with caseID', () => {
   let comp: CaseFullAccessViewComponent;
   let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
@@ -1579,7 +1663,7 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
                       ]
                     }
                   ]
-                }
+                },
               ]
             }
           ]),
@@ -1591,13 +1675,12 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -1615,22 +1698,22 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
             }
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           DeleteOrCancelDialogComponent,
           FieldsPurger,
           WizardFactoryService,
@@ -1640,7 +1723,8 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
           FormErrorService,
           FieldTypeSanitiser,
           PageValidationService,
-          CaseFieldService
+          CaseFieldService,
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
         ]
       })
       .compileComponents();
@@ -1651,7 +1735,7 @@ xdescribe('CaseFullAccessViewComponent - ends with caseID', () => {
     debugElement = compFixture.debugElement;
     // Use a fake implementation of Router.navigate() to avoid unhandled navigation errors when invoked by
     // ngAfterViewInit() before each unit test
-    const router = TestBed.get(Router);
+    const router = TestBed.inject(Router);
     spyOn(router, 'navigate').and.callFake(() => Promise.resolve(true));
     compFixture.detectChanges();
   }));
@@ -1673,6 +1757,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
   let convertHrefToRouterService;
+  let router: Router;
   const prependedTabsList = [
     {
       id: 'tasks',
@@ -1733,13 +1818,12 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -1752,22 +1836,23 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
             useValue: mockLocation
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1780,6 +1865,12 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
       {
         id: 'hearings',
         label: 'Hearings',
+        fields: [],
+        show_condition: null
+      },
+      {
+        id: 'caseNotes',
+        label: 'Case notes',
         fields: [],
         show_condition: null
       }
@@ -1799,6 +1890,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
       }
     ];
     debugElement = componentFixture.debugElement;
+    router = TestBed.inject(Router);
     componentFixture.detectChanges();
   }));
 
@@ -1823,10 +1915,10 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
     componentFixture.detectChanges();
-    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(5);
+    expect(caseViewerComponent.tabGroup._tabs.length).toEqual(6);
   });
 
-  it('should return blank array when pretended tabs are null', () => {
+  it('should return blank array when prepended tabs are null', () => {
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330');
     componentFixture.detectChanges();
     caseViewerComponent.prependedTabs = null;
@@ -1846,6 +1938,114 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     componentFixture.detectChanges();
     expect(caseViewerComponent.tabGroup.selectedIndex).toEqual(1);
   });
+
+  it('should set tabGroup selected index if a non-roles/tasks/hearings tab with ID matching last path of the URL is found', fakeAsync(() => {
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/caseNotes');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index is actually the *absolute* position of the "Case notes" tab (after Tasks, Roles, and Overview), which is 3
+    expect(selectedIndexSetSpy).toHaveBeenCalledWith(3);
+    expect(caseViewerComponent.tabGroup.selectedIndex).toBe(3);
+  }));
+
+  it('should set tabGroup selected index to pre-selected tab if a non-roles/tasks/hearings tab is not found', fakeAsync(() => {
+    caseViewerComponent.appendedTabs = [
+      {
+        id: 'hearings',
+        label: 'Hearings',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    // Using /caseNotes at the end of the URL ensures there won't be a matching tab found, so the selected tab should
+    // default to the first *in the CaseView object*, which is the "Overview" tab
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/caseNotes');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index is actually the *absolute* position of the "Overview" tab (after Tasks and Roles), which is 2
+    expect(selectedIndexSetSpy).toHaveBeenCalledWith(2);
+    expect(caseViewerComponent.tabGroup.selectedIndex).toBe(2);
+  }));
+
+  it('should set tabGroup selected index if a roles/tasks/hearings tab is found', fakeAsync(() => {
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/roles-and-access');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index is actually the *absolute* position of the "Roles and access" tab (after Tasks), which is 1
+    expect(selectedIndexSetSpy).toHaveBeenCalledWith(1);
+    expect(caseViewerComponent.tabGroup.selectedIndex).toBe(1);
+  }));
+
+  it('should not set tabGroup selected index if a non-roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
+    caseViewerComponent.prependedTabs = [
+      {
+        id: 'dummy',
+        label: 'Dummy',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/dummy');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index should not be set because the "Dummy" tab has position 0 (already selected)
+    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
+  }));
+
+  it('should not set tabGroup selected index to pre-selected tab if it is already selected', fakeAsync(() => {
+    caseViewerComponent.prependedTabs = [];
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/dummy');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index should not be set because the pre-selected tab is "Overview", which has position 0 (already selected)
+    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
+  }));
+
+  it('should not set tabGroup selected index if a roles/tasks/hearings tab is found and it is already selected', fakeAsync(() => {
+    caseViewerComponent.prependedTabs = [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        fields: [],
+        show_condition: null
+      }
+    ];
+    spyOn(caseViewerComponent, 'organiseTabPosition').and.callThrough();
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    const selectedIndexSetSpy = spyOnProperty(caseViewerComponent.tabGroup, 'selectedIndex', 'set').and.callThrough();
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330/tasks');
+    caseViewerComponent.ngOnChanges({ prependedTabs: new SimpleChange(null, prependedTabsList, false) });
+    tick();
+    componentFixture.detectChanges();
+    expect(caseViewerComponent.organiseTabPosition).toHaveBeenCalled();
+    // Selected index should not be set because the "Tasks" tab has position 0 (already selected)
+    expect(selectedIndexSetSpy).not.toHaveBeenCalled();
+  }));
 });
 
 describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', () => {
@@ -1907,13 +2107,12 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           TasksContainerComponent,
           CaseFullAccessViewComponent,
           DeleteOrCancelDialogComponent,
-
+          EventTriggerComponent,
+          CallbackErrorsComponent,
           // Mocks
           caseActivityComponentMock,
-          EventTriggerComponent,
           caseHeaderComponentMock,
           linkComponentMock,
-          CallbackErrorsComponent,
           MockRpxTranslatePipe
         ],
         providers: [
@@ -1926,22 +2125,23 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
             useValue: mockLocation
           },
           ErrorNotifierService,
-          {provide: AbstractAppConfig, useClass: AppMockConfig},
+          { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
-          {provide: CaseNotifier, useValue: caseNotifier},
-          {provide: ActivatedRoute, useValue: mockRoute},
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
           ActivityPollingService,
           ActivityService,
           HttpService,
           HttpErrorService,
           AuthService,
           SessionStorageService,
-          {provide: DraftService, useValue: draftService},
-          {provide: AlertService, useValue: alertService},
-          {provide: MatDialog, useValue: dialog},
-          {provide: MatDialogRef, useValue: matDialogRef},
-          {provide: MatDialogConfig, useValue: DIALOG_CONFIG},
-          {provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService},
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
         ]
       })

@@ -5,7 +5,7 @@ import { plainToClassFromExist } from 'class-transformer';
 import { WizardPage } from '../../components/case-editor/domain';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../components/palette/case-flag/domain/case-flag.model';
-import { CaseFlagStatus } from '../../components/palette/case-flag/enums/case-flag-status.enum';
+import { CaseFlagDisplayContextParameter, CaseFlagStatus } from '../../components/palette/case-flag/enums';
 import { DatePipe } from '../../components/palette/utils';
 import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
@@ -523,7 +523,9 @@ export class FieldsUtils {
                 }
               }));
             }) as FlagDetail[]
-            : null
+            : null,
+          visibility: value ? value['visibility'] : null,
+          groupId: value ? value['groupId'] : null
         },
         pathToFlagsFormGroup,
         caseField
@@ -607,6 +609,23 @@ export class FieldsUtils {
           // Ignore all other field types
       }
       return activeCount;
+  }
+
+  public static getValidationErrorMessageForFlagLauncherCaseField(caseField: CaseField): string {
+    switch(caseField.display_context_parameter) {
+      case CaseFlagDisplayContextParameter.CREATE:
+      case CaseFlagDisplayContextParameter.CREATE_2_POINT_1:
+        return 'Please select Next to complete the creation of the case flag';
+      case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
+        return 'Please select Next to complete the creation of the support request';
+      case CaseFlagDisplayContextParameter.UPDATE:
+      case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
+        return 'Please select Next to complete the update of the selected case flag';
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
+        return 'Please select Next to complete the update of the selected support request';
+      default:
+        return '';
+    }
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {

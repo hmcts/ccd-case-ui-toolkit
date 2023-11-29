@@ -26,7 +26,7 @@ const CASE_FIELD: CaseField = ({
 const FORM_GROUP: FormGroup = new FormGroup({});
 
 const APP_CONFIG: AbstractAppConfig = {
-  load: async () => {},
+  load: async () => { },
   getLoginUrl: () => 'loginUrl',
   getApiUrl: () => 'apiUrl',
   getCaseDataUrl: () => 'caseDataUrl',
@@ -48,6 +48,9 @@ const APP_CONFIG: AbstractAppConfig = {
   getActivityNexPollRequestMs: () => 30000,
   getActivityRetry: () => 3,
   getActivityUrl: () => 'activityUrl',
+  getTimeoutsForCaseRetrieval: () => [20],
+  getTimeoutsCaseRetrievalArtificialDelay: () => 25,
+  getEnvironment: () => 'demo',
   getCaseHistoryUrl: () => 'caseHistoryUrl',
   getPrintServiceUrl: () => 'printServiceUrl',
   getRemotePrintServiceUrl: () => 'remotePrintServiceUrl',
@@ -70,7 +73,8 @@ const APP_CONFIG: AbstractAppConfig = {
   getCaseFlagsRefdataApiUrl: () => 'caseFlagsRefdataApiUrl',
   getRDCommonDataApiUrl: () => 'rd_common_data_api_url',
   getCaseDataStoreApiUrl: () => 'case_data_store_api_url',
-  getWAServiceConfig: () => 'waServiceConfig'
+  getWAServiceConfig: () => 'waServiceConfig',
+  getEnableCaseFileViewVersion1_1: () => true
 };
 
 let paymentWebComponentMock;
@@ -81,23 +85,25 @@ describe('Ways To Pay Component', () => {
   let de: DebugElement;
 
   beforeEach(waitForAsync(() => {
-    paymentWebComponentMock = MockComponent({ selector: 'ccpay-payment-lib', inputs: [
-      'API_ROOT',
-      'CCD_CASE_NUMBER',
-      'BULKSCAN_API_ROOT',
-      'ISBSENABLE',
-      'SELECTED_OPTION',
-      'VIEW',
-      'REFUNDS_API_ROOT',
-      'TAKEPAYMENT',
-      'SERVICEREQUEST',
-      'PAYMENT_GROUP_REF',
-      'EXC_REFERENCE',
-      'DCN_NUMBER',
-      'LOGGEDINUSERROLES',
-      'CARDPAYMENTRETURNURL',
-      'ISPAYMENTSTATUSENABLED'
-    ]});
+    paymentWebComponentMock = MockComponent({
+      selector: 'ccpay-payment-lib', inputs: [
+        'API_ROOT',
+        'CCD_CASE_NUMBER',
+        'BULKSCAN_API_ROOT',
+        'ISBSENABLE',
+        'SELECTED_OPTION',
+        'VIEW',
+        'REFUNDS_API_ROOT',
+        'TAKEPAYMENT',
+        'SERVICEREQUEST',
+        'PAYMENT_GROUP_REF',
+        'EXC_REFERENCE',
+        'DCN_NUMBER',
+        'LOGGEDINUSERROLES',
+        'CARDPAYMENTRETURNURL',
+        'ISPAYMENTSTATUSENABLED'
+      ]
+    });
 
     TestBed
       .configureTestingModule({
@@ -112,8 +118,8 @@ describe('Ways To Pay Component', () => {
           paymentWebComponentMock
         ],
         providers: [
-            { provide: AbstractAppConfig, useValue: APP_CONFIG },
-            SessionStorageService
+          { provide: AbstractAppConfig, useValue: APP_CONFIG },
+          SessionStorageService
         ]
       })
       .compileComponents();

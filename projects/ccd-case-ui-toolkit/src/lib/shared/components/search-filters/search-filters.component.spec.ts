@@ -173,7 +173,7 @@ describe('SearchFiltersComponent', () => {
         imports: [
           FormsModule,
           ReactiveFormsModule,
-          ConditionalShowModule
+          ConditionalShowModule,
         ],
         declarations: [
           SearchFiltersComponent,

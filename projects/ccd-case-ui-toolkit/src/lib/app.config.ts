@@ -44,6 +44,8 @@ export abstract class AbstractAppConfig {
   public abstract getActivityUrl(): string;
   public abstract getActivityNexPollRequestMs(): number;
   public abstract getActivityRetry(): number;
+  public abstract getTimeoutsForCaseRetrieval(): number[];
+  public abstract getTimeoutsCaseRetrievalArtificialDelay(): number;
   public abstract getActivityBatchCollectionDelayMs(): number;
   public abstract getActivityMaxRequestPerBatch(): number;
   public abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
@@ -79,6 +81,17 @@ export abstract class AbstractAppConfig {
   public getLocationRefApiUrl(): string {
     return undefined;
   }
+  public getEnvironment() {
+    if (this.getActivityUrl()?.includes('.aat.'))
+      return 'aat';
+    else if (this.getActivityUrl()?.includes('.preview.'))
+      return 'preview';
+    else if (this.getActivityUrl()?.includes('.demo.'))
+      return 'demo';
+    else if (this.getActivityUrl()?.includes('.ithc.'))
+      return 'ithc';
+    return 'prod';
+  }
   public abstract getRefundsUrl(): string;
   public abstract getNotificationUrl(): string;
   public abstract getPaymentReturnUrl(): string;
@@ -90,6 +103,7 @@ export abstract class AbstractAppConfig {
   public abstract getCaseFlagsRefdataApiUrl(): string;
   public abstract getRDCommonDataApiUrl(): string;
   public abstract getCaseDataStoreApiUrl(): string;
+  public abstract getEnableCaseFileViewVersion1_1(): boolean;
 }
 
 export class CaseEditorConfig {
@@ -110,6 +124,8 @@ export class CaseEditorConfig {
   public activity_batch_collection_delay_ms: number;
   public activity_next_poll_request_ms: number;
   public activity_retry: number;
+  public timeouts_case_retrieval: number[];
+  public timeouts_case_retrieval_artificial_delay: number;
   public activity_url: string;
   public activity_max_request_per_batch: number;
   public print_service_url: string;
@@ -156,4 +172,5 @@ export class CaseEditorConfig {
   public case_flags_refdata_api_url: string;
   public rd_common_data_api_url: string;
   public case_data_store_api_url: string;
+  public enable_case_file_view_version_1_1: boolean;
 }

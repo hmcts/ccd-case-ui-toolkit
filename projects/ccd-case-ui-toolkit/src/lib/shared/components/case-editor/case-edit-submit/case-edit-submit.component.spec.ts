@@ -24,12 +24,14 @@ import {
   ProfileNotifier,
   SessionStorageService
 } from '../../../services';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
 import { aWizardPage } from '../case-edit.spec';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { CaseNotifier } from '../services';
+import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
 
 import createSpyObj = jasmine.createSpyObj;
@@ -204,7 +206,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -229,10 +232,10 @@ describe('CaseEditSubmitComponent', () => {
 
       comp.ngOnInit();
       comp.wizard.pages[0].case_fields = [caseField1];
-      fixture.detectChanges();
     });
 
     it('must render correct button label', () => {
+      fixture.detectChanges();
       const buttons = de.queryAll(By.css('div>button'));
       expect(buttons[1].nativeElement.textContent.trim()).toEqual(END_BUTTON_LABEL);
     });
@@ -341,6 +344,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should show event notes when set in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
       comp.eventTrigger.show_event_notes = true;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -352,6 +356,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should show event notes when not set in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
       comp.eventTrigger.show_event_notes = null;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -363,6 +368,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should show event notes when not defined in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
       comp.eventTrigger.show_event_notes = undefined;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -374,6 +380,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should not show event notes when set to false in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
       comp.eventTrigger.show_event_notes = false;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -382,6 +389,111 @@ describe('CaseEditSubmitComponent', () => {
 
       expect(result).toBeFalsy();
       expect(eventNotes).toBeNull();
+    });
+
+    it('should show event notes when set in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(true);
+      expect(eventNotes).not.toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and profile is solicitor and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.profile.user.idam.roles = ['divorce-solicitor'];
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.caseEdit.isCaseFlagSubmission = true;
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not set in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.eventTrigger.show_event_notes = null;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not defined in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.eventTrigger.show_event_notes = undefined;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should set correct page title', () => {
+      const caseFieldCaseFlagCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE)', 2);
+      const caseFieldCaseFlagUpdate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE)', 2);
+      const caseFieldCaseFlagExternalCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE,EXTERNAL)', 2);
+      const caseFieldCaseFlagExternalUpdate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE,EXTERNAL)', 2);
+      const caseFieldCaseFlagCreate2Point1: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE,VERSION2.1)', 2);
+      const caseFieldCaseFlagUpdate2Point1: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE,VERSION2.1)', 2);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalUpdate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagUpdate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagCreate2Point1
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagUpdate2Point1
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseField1
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.CHECK_YOUR_ANSWERS);
     });
 
     it('should return false when no field exists and readOnlySummaryFieldsToDisplayExists is called', () => {
@@ -422,6 +534,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should disable submit button, previous button and cancel link when isSubmitting is set to true', () => {
+      fixture.detectChanges();
       caseEditComponent.isSubmitting = true;
       fixture.detectChanges();
 
@@ -439,6 +552,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should enable submit button, previous button and cancel link when isSubmitting is set to false', () => {
+      fixture.detectChanges();
       caseEditComponent.isSubmitting = false;
       fixture.detectChanges();
 
@@ -453,6 +567,25 @@ describe('CaseEditSubmitComponent', () => {
 
       const cancelLink = de.query(By.css('a[class=disabled]'));
       expect(cancelLink).toBeNull();
+    });
+
+    it('should not display the "Previous" button if submission is for a Case Flag', () => {
+      const caseFieldCaseFlagCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE)', 2);
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagCreate
+      ];
+      fixture.detectChanges();
+      expect(comp.caseEdit.isCaseFlagSubmission).toBe(true);
+      const previousButton = de.query(By.css('.button-secondary'));
+      expect(previousButton).toBeNull();
+    });
+
+    it('should display the "Previous" button if submission is not for a Case Flag', () => {
+      comp.eventTrigger.case_fields = [];
+      fixture.detectChanges();
+      expect(comp.caseEdit.isCaseFlagSubmission).toBe(false);
+      const previousButton = de.query(By.css('.button-secondary'));
+      expect(previousButton.nativeElement.textContent).toContain('Previous');
     });
   });
 
@@ -532,7 +665,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdPageFieldsPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
@@ -683,7 +817,8 @@ describe('CaseEditSubmitComponent', () => {
           CcdPageFieldsPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
