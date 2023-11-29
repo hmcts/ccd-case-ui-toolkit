@@ -34,9 +34,9 @@ export class FieldsPurger {
   }
 
   private clearHiddenFieldForFieldShowCondition(currentPageId: string,
-                                                form: FormGroup,
-                                                wizard: Wizard,
-                                                eventTrigger: CaseEventTrigger): void {
+    form: FormGroup,
+    wizard: Wizard,
+    eventTrigger: CaseEventTrigger): void {
     const formFields = form.getRawValue();
     const currentPage: WizardPage = wizard.getPage(currentPageId, this.fieldsUtils.buildCanShowPredicate(eventTrigger, form));
     currentPage.wizard_page_fields.forEach(wpf => {
@@ -309,10 +309,18 @@ export class FieldsPurger {
    * @returns A new array with the mapped values
    */
   public mapArrayValuesToNull(array: any[]): any[] {
-    return array.map(element => {
-      return typeof element === 'object'
-        ? Object.assign({}, ...Object.keys(element).map(k => ({ [k]: null })))
-        : null;
-    });
+    if (array && array.length > 0) {
+      return array.map(element => {
+        if (element !== undefined || element === null) {
+          return typeof element === 'object'
+            ? Object.assign({}, ...Object.keys(element).map(k => ({ [k]: null })))
+            : null;
+        } else {
+          return {};
+        }
+      });
+    } else {
+      return array
+    }
   }
 }
