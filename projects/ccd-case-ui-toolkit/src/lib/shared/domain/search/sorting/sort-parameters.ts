@@ -1,5 +1,5 @@
+import { SortOrder } from '../../sort-order.enum';
 import { SearchResultViewItemComparator } from './search-result-view-item-comparator';
-import { SortOrder } from './sort-order';
 
 export class SortParameters {
 
