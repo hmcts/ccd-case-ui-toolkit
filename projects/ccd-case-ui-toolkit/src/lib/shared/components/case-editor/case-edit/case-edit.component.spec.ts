@@ -272,6 +272,7 @@ describe('CaseEditComponent', () => {
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
+      spyOn(validPageListCaseFieldsService, 'validPageListCaseFields');
 
       route = {
         queryParams: of({ Origin: 'viewDraft' }),
@@ -1225,6 +1226,7 @@ describe('CaseEditComponent', () => {
           .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
         expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
         expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
+        expect(validPageListCaseFieldsService.validPageListCaseFields).toHaveBeenCalled();
         expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
       });
 
@@ -1265,6 +1267,7 @@ describe('CaseEditComponent', () => {
           .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
         expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
         expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
+        expect(validPageListCaseFieldsService.validPageListCaseFields).toHaveBeenCalled();
         expect(formValueService.removeUnnecessaryFields).not.toHaveBeenCalled();
       });
 

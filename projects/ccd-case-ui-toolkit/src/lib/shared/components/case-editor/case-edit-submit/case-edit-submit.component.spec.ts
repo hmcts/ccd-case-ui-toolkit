@@ -106,6 +106,162 @@ describe('CaseEditSubmitComponent', () => {
   const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
   let cancelled: any;
+  const METADATA: CaseField[] = [
+    Object.assign(new CaseField(), {
+      id: '[CASE_REFERENCE]',
+      label: 'Case Reference',
+      value: 1533032330714079,
+      hint_text: null,
+      field_type: {
+        id: 'Number',
+        type: 'Number',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[CASE_TYPE]',
+      label: 'Case Type',
+      value: 'DIVORCE',
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[CREATED_DATE]',
+      label: 'Created Date',
+      value: '2018-07-31T10:18:50.737',
+      hint_text: null,
+      field_type: {
+        id: 'Date',
+        type: 'Date',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[JURISDICTION]',
+      label: 'Jurisdiction',
+      value: 'DIVORCE',
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[LAST_MODIFIED_DATE]',
+      label: 'Last Modified Date',
+      value: '2018-07-31T10:18:50.737',
+      hint_text: null,
+      field_type: {
+        id: 'Date',
+        type: 'Date',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[SECURITY_CLASSIFICATION]',
+      label: 'Security Classification',
+      value: 'PUBLIC',
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[SECURITY_CLASSIFICATION]',
+      label: 'Security Classification',
+      value: 'PUBLIC',
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    })
+  ];
 
   const USER = {
     idam: {
@@ -175,6 +331,7 @@ describe('CaseEditSubmitComponent', () => {
         navigateToPage: () => undefined,
         cancel: () => undefined,
         cancelled,
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: METADATA, state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
         ignoreWarning: false,
         isEventCompletionChecksRequired: false,
         isSubmitting: false,
@@ -504,7 +661,7 @@ describe('CaseEditSubmitComponent', () => {
         navigateToPage: () => undefined,
         cancel: () => undefined,
         cancelled,
-        caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [], state: { id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west' } },
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: METADATA, state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
         ignoreWarning: false,
         isEventCompletionChecksRequired: false,
         isSubmitting: false,
@@ -597,6 +754,12 @@ describe('CaseEditSubmitComponent', () => {
       expect(result).toBe('Return to case list');
     });
 
+    it('should have metadata Fields along with other fields', () => {
+      expect(comp.metadataFieldsObject).toBeDefined();
+      expect(comp.allFieldsValues).toBeDefined();
+      expect(comp.allFieldsValues['[CASE_TYPE]']).toBe('DIVORCE');
+    });
+
     it('should show valid title on the page', () => {
       const title = comp.getCaseTitle();
       expect(title).toEqual('# 12345678123456: west');
@@ -651,7 +814,7 @@ describe('CaseEditSubmitComponent', () => {
         navigateToPage: () => undefined,
         cancel: () => undefined,
         cancelled,
-        caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [], state: { id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west' } },
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: METADATA, state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
         ignoreWarning: false,
         isEventCompletionChecksRequired: false,
         isSubmitting: false,

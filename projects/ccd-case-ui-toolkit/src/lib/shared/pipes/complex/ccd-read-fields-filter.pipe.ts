@@ -145,7 +145,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     let checkConditionalShowAgainst: any = values;
     let formGroupAvailable = false;
     if (formGroup) {
-      checkConditionalShowAgainst = formGroup.parent.getRawValue().data;
+      checkConditionalShowAgainst = formGroup.value ? formGroup.parent.getRawValue().data : formGroup;
       formGroupAvailable = true;
       if (idPrefix !== undefined) {
         if (idPrefix !== '') {
