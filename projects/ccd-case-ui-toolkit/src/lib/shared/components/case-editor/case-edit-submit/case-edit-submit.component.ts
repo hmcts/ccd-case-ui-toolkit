@@ -34,6 +34,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public contextFields: CaseField[];
   public task: Task;
   public pageTitle: string;
+  public metadataFieldsObject: object;
+  public allFieldsValues: any;
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -76,6 +78,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.caseEdit.isSubmitting = false;
     this.contextFields = this.getCaseFields();
+    this.metadataFieldsObject = this.caseEdit?.caseDetails?.metadataFields?.
+      reduce((o, key) => Object.assign(o, {[key.id]: key.value}), {});
+    this.allFieldsValues = Object.assign(this.metadataFieldsObject ? this.metadataFieldsObject : {}, this.editForm.getRawValue().data);
     // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
     // a FlagLauncher field in the event trigger
     this.caseEdit.isCaseFlagSubmission =
