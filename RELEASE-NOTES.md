@@ -5,6 +5,13 @@
 ### Version 6.19.6-restricted-case-access-v4
 **EUI-6645** Restricted case access
 
+### Version 6.19.15
+**EXUI-987** Fields in page with PageShowCondition are not available as part of about to submit callback
+**EXUI-997** Amend Reasons not showing on CYA page during Update Listing requirements tab
+**EXUI-1080** Retain Hidden Values No Longer Working
+**COT-616** ExUI losing hidden value
+
+
 ### Version 6.19.13
 **EXUI-908** Unable to upload correspondence to Manage Cases
 

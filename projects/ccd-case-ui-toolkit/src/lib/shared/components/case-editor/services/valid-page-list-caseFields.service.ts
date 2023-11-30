@@ -9,15 +9,15 @@ export class ValidPageListCaseFieldsService {
     private readonly fieldsUtils: FieldsUtils
   ) {}
 
-  private isShown(page: WizardPage, eventTriggerFields: CaseField[], data: object): boolean {
+  private isShown(page: WizardPage, eventTriggerFields: CaseField[], formFields: object): boolean {
     const fields = this.fieldsUtils
-      .mergeCaseFieldsAndFormFields(eventTriggerFields, data);
+      .mergeCaseFieldsAndFormFields(eventTriggerFields, formFields);
     return page.parsedShowCondition.match(fields);
   }
 
   public deleteNonValidatedFields(validPageList: WizardPage[], caseEventDatadata: object, eventTriggerFields: CaseField[],
-                                  fromPreviousPage: boolean = false): void {
-    const pageListCaseFields = this.validPageListCaseFields(validPageList, caseEventDatadata, eventTriggerFields);
+    fromPreviousPage: boolean, formFields: object): void {
+    const pageListCaseFields = this.validPageListCaseFields(validPageList, eventTriggerFields, formFields);
     if (!fromPreviousPage && pageListCaseFields.length > 0) {
       Object.keys(caseEventDatadata).forEach(key => {
         if (pageListCaseFields.findIndex((element) => element.id === key) < 0) {
@@ -27,10 +27,10 @@ export class ValidPageListCaseFieldsService {
     }
   }
 
-  public validPageListCaseFields(validPageList: WizardPage[], data: object, eventTriggerFields: CaseField[]) : CaseField[] {
+  public validPageListCaseFields(validPageList: WizardPage[], eventTriggerFields: CaseField[], formFields: object) : CaseField[] {
     const validPageListCaseFields: CaseField[] = [];
     validPageList.forEach(page => {
-      if (this.isShown(page, eventTriggerFields, data)) {
+      if (this.isShown(page, eventTriggerFields, formFields)) {
         page.case_fields.forEach(field => validPageListCaseFields.push(field));
       }
     });
