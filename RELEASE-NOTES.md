@@ -1,4 +1,9 @@
 ## RELEASE NOTES
+### Version 6.19.15-restricted-case-access
+**EUI-8816** Restricted case access feature toggle functionality
+
+### Version 6.19.6-restricted-case-access-v4
+**EUI-6645** Restricted case access
 
 ### Version 6.19.15
 **EXUI-987** Fields in page with PageShowCondition are not available as part of about to submit callback
@@ -44,13 +49,16 @@
 **EUI-8687** Fix validation logic for `WriteJudicialUserField` component
 **EUI-8732** Fix `WriteJudicialUserField` error handling to allow user to continue searching if an error occurs on calling `getJudicialUsersSearch` API endpoint
 
-### Version 6.18.0-welsh-release-v6
-**EUI-5497** Welsh release part 1
-
 ### Version 6.18.2-rc2
 **EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button
 **EXUI-229** DynamicMultiSelectList Updates Required
 **EXUI-313** Fix issue with secure document store
+
+### Version 6.18.0-restricted-case-access-v6
+**EUI-6645** Restricted case access
+
+### Version 6.18.0-welsh-release-v6
+**EUI-5497** Welsh release part 1
 
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
 **EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
