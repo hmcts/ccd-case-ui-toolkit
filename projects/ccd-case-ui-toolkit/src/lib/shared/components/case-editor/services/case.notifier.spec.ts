@@ -1,7 +1,6 @@
 import { CaseField, CaseTab, CaseView } from '../../../domain';
 import { CaseNotifier } from './case.notifier';
 import { CasesService } from './cases.service';
-import { Observable } from 'rxjs';
 
 describe('setBasicFields', () => {
   let caseNotifier: CaseNotifier;
