@@ -24,6 +24,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public flagCommentsWelsh: string;
   public otherDescription: string;
   public otherDescriptionWelsh: string;
+  public flagUpdateComments: string;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
   public addUpdateFlagHeaderText: string;
   public caseFlagFieldState = CaseFlagFieldState;
@@ -31,6 +32,7 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public flagTypeHeaderText: string;
   public caseFlagCheckYourAnswersPageStep = CaseFlagCheckYourAnswersPageStep;
   public is2Point1Enabled = false;
+  public externalUserUpdate = false;
 
   constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
@@ -41,11 +43,15 @@ export class CaseFlagSummaryListComponent implements OnInit {
       this.flagDescriptionWelsh = flagDetail.otherDescription_cy;
       this.flagComments = flagDetail.flagComment;
       this.flagCommentsWelsh = flagDetail.flagComment_cy;
+      // Flag update comments will be coming from the flagStatusReasonChange property instead of flagUpdateComment
+      // because these haven't been persisted yet
+      this.flagUpdateComments = flagDetail['flagStatusReasonChange'];
       this.flagStatus = flagDetail.status;
       this.addUpdateFlagHeaderText = this.getAddUpdateFlagHeaderText();
       this.flagTypeHeaderText = this.getFlagTypeHeaderText();
       this.summaryListDisplayMode = this.getSummaryListDisplayMode();
       this.is2Point1Enabled = this.getDisplayContextParameter2Point1Enabled();
+      this.externalUserUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     }
   }
 
