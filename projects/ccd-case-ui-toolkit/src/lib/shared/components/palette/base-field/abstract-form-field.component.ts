@@ -31,7 +31,11 @@ export abstract class AbstractFormFieldComponent {
       return control;
     }
     const existing = container.controls[this.caseField.id];
-    if (existing && existing.status !== 'DISABLED') {
+    // update the field value which has been set in mid-event call back
+    if (existing) {
+      if(existing.value === null && this.caseField?.value) {
+        existing.value = this.caseField.value;
+      }
       if (replace) {
         // Set the validators on the replacement with what already exists.
         control.setValidators(existing.validator);
