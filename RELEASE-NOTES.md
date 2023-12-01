@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 6.19.13-case-flags-v2-manage-case-flags-flag-update-comments-fix
+**EUI-9035** Fix bug where Case Flag Summary (CYA) page displays original flag comments instead of flag update comments, during the "Manage support" journey for an external user. Also amend Case Flags page to display flag update comments for "Inactive" flags
+
 ### Version 6.19.13-case-flags-v2-manage-case-flags-value-caching-fix
 **EUI-9020** Fix bug where previous changes to a flag are retained in the UI when the user starts over and selects the same flag to update again
 
