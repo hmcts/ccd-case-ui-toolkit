@@ -1,6 +1,15 @@
 ## RELEASE NOTES
+### Version 6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix-2
+**EUI-9035** Re-tag for re-release following deployment of Restricted Case Access feature to live
+
 ### Version 6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix
 **EUI-9035** Fix bug where Case Flag Summary (CYA) page displays original flag comments instead of flag update comments, during the "Manage support" journey for an external user. Also amend Case Flags page to display flag update comments for "Inactive" flags
+
+### Version 6.19.15-restricted-case-access
+**EUI-8816** Restricted case access feature toggle functionality
+
+### Version 6.19.6-restricted-case-access-v4
+**EUI-6645** Restricted case access
 
 ### Version 6.19.13-case-flags-v2-manage-case-flags-value-caching-fix
 **EUI-9020** Fix bug where previous changes to a flag are retained in the UI when the user starts over and selects the same flag to update again
@@ -82,7 +91,6 @@
 **EXUI-1080** Retain Hidden Values No Longer Working
 **COT-616** ExUI losing hidden value
 
-
 ### Version 6.19.13
 **EXUI-908** Unable to upload correspondence to Manage Cases
 
@@ -150,13 +158,16 @@
 **EUI-8687** Fix validation logic for `WriteJudicialUserField` component
 **EUI-8732** Fix `WriteJudicialUserField` error handling to allow user to continue searching if an error occurs on calling `getJudicialUsersSearch` API endpoint
 
-### Version 6.18.0-welsh-release-v6
-**EUI-5497** Welsh release part 1
-
 ### Version 6.18.2-rc2
 **EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button
 **EXUI-229** DynamicMultiSelectList Updates Required
 **EXUI-313** Fix issue with secure document store
+
+### Version 6.18.0-restricted-case-access-v6
+**EUI-6645** Restricted case access
+
+### Version 6.18.0-welsh-release-v6
+**EUI-5497** Welsh release part 1
 
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
 **EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
@@ -540,6 +551,7 @@ Add refunds functionality
 
 ### Version 4.13.8-event-start-task-not-required"
 **EUI-5569** Task not required for event functionality
+
 ### Version 4.12.1-EUI-5877-repeating-label
 **EUI-5877** Bug fix for repeating label
 
@@ -605,6 +617,7 @@ Add refunds functionality
 
 ### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
 **EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
+
 ### Version 4.3.2-rc3
 **EUI-4430** Case reference field regression bugs
 
@@ -629,7 +642,6 @@ Add refunds functionality
 ### Version 4.3.0
 **EUI-4344** Document uploaded shows incorrect name
 **EUI-4377** removing unwanted html tags from title
-
 
 ### Version 4.2.3
 **EUI-3425** Hotfix for work already done. Secure uploading for new cases
@@ -692,6 +704,7 @@ Add refunds functionality
 **EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 for "retain = true"
 **EUI-2744** EventToComplexTypes regression with hidden fields
 **EUI-4106** Show/hide functionality
+
 ### Version 4.0.0-activity-tracker-unauthorised-beta
 **EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
 
