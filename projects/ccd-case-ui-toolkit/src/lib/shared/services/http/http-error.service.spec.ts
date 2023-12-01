@@ -149,9 +149,9 @@ describe('HttpErrorService', () => {
       expect(authService.signIn).toHaveBeenCalled();
     });
 
-    it('should trigger sign-in when IDAM returns HTTP-403 as response', () => {
+    it('should not trigger sign-in when IDAM returns HTTP-403 as response', () => {
       errorService.handle(HTTP_403_RESPONSE);
-      expect(authService.signIn).toHaveBeenCalled();
+      expect(authService.signIn).not.toHaveBeenCalled();
     });
 
     it('should empty error when removed', () => {

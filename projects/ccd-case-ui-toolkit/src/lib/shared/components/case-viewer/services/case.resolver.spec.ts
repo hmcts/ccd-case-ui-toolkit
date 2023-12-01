@@ -1,7 +1,13 @@
 import { NavigationEnd } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
+import { AbstractAppConfig } from '../../../../app.config';
 import { CaseView } from '../../../domain';
-import { AlertService, DraftService, NavigationNotifierService, NavigationOrigin } from '../../../services';
+import {
+  AlertService,
+  DraftService,
+  NavigationNotifierService,
+  NavigationOrigin
+} from '../../../services';
 import { CaseResolver } from './case.resolver';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -25,14 +31,14 @@ describe('CaseResolver', () => {
     let navigationNotifierService: NavigationNotifierService;
     let sessionStorageService: any;
     let route: any;
-
     let router: any;
+    let mockAppConfig: any;
 
     beforeEach(() => {
       router = {
         navigate: jasmine.createSpy('navigate'),
         events: of( new NavigationEnd(0, '/case', '/home'))
-    };
+      };
       caseNotifier = createSpyObj('caseNotifier', ['announceCase', 'fetchAndRefresh']);
       casesService = createSpyObj('casesService', ['getCaseViewV2']);
       draftService = createSpyObj('draftService', ['getDraft']);
@@ -41,7 +47,8 @@ describe('CaseResolver', () => {
       spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
       caseNotifier.fetchAndRefresh.and.returnValue(of(CASE));
       sessionStorageService.getItem.and.returnValue(null);
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
+      mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getEnableRestrictedCaseAccessConfig']);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
 
       route = {
         firstChild: {
@@ -172,7 +179,7 @@ describe('CaseResolver', () => {
         events: of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
 
       caseResolver
         .resolve(route)
@@ -196,7 +203,7 @@ describe('CaseResolver', () => {
         events: of( new NavigationEnd(0, '/trigger/COMPLETE/process', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
 
       caseResolver
         .resolve(route)
@@ -220,7 +227,7 @@ describe('CaseResolver', () => {
         events: of( new NavigationEnd(0, '/trigger/COMPLETE/submit', '/home'))
       };
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
 
       caseResolver
         .resolve(route)
@@ -254,7 +261,7 @@ describe('CaseResolver', () => {
       };
       sessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
 
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
 
       caseResolver
         .resolve(route)
@@ -289,6 +296,49 @@ describe('CaseResolver', () => {
       expect(caseNotifier.fetchAndRefresh).not.toHaveBeenCalled();
       expect(caseNotifier.cachedCaseView).toBe(CASE);
     });
+
+    describe('Restricted case access', () => {
+      beforeEach(() => {
+        const error = {
+          status: 403
+        };
+        caseNotifier.fetchAndRefresh.and.returnValue(throwError(error));
+
+        const userInfo = {
+          id: '2',
+          forename: 'G',
+          surname: 'Testing',
+          email: 'testing2@mail.com',
+          active: true,
+          roles: ['caseworker-ia-caseofficer']
+        };
+        sessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
+      });
+
+      it('should navigate to restricted case access if feature enabled and error code is 403', () => {
+        mockAppConfig.getEnableRestrictedCaseAccessConfig.and.returnValue(true);
+        caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+        caseResolver
+          .resolve(route)
+          .then(
+            data => expect(data).toBeFalsy(),
+            err => expect(err).toBeTruthy()
+          );
+        expect(router.navigate).toHaveBeenCalledWith(['/cases/restricted-case-access/42']);
+      });
+
+      it('should not navigate to restricted case access if feature not enabled and error code is 403', () => {
+        mockAppConfig.getEnableRestrictedCaseAccessConfig.and.returnValue(false);
+        caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
+        caseResolver
+          .resolve(route)
+          .then(
+            data => expect(data).toBeFalsy(),
+            err => expect(err).toBeTruthy()
+          );
+        expect(router.navigate).not.toHaveBeenCalledWith(['/cases/restricted-case-access/42']);
+      });
+    });
   });
 
   describe('resolve()', () => {
@@ -312,8 +362,8 @@ describe('CaseResolver', () => {
     let navigationNotifierService: NavigationNotifierService;
     let sessionStorageService: any;
     let route: any;
-
     let router: any;
+    let mockAppConfig: any;
 
     beforeEach(() => {
       router = {
@@ -328,7 +378,9 @@ describe('CaseResolver', () => {
       alertService = createSpyObj('alertService', ['success']);
       navigationNotifierService = createSpyObj('navigationNotifierService', ['announceNavigation']);
       sessionStorageService.getItem.and.returnValue(null);
-      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService);
+      mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getEnableRestrictedCaseAccessConfig']);
+      mockAppConfig.getEnableRestrictedCaseAccessConfig.and.returnValue(true);
+      caseResolver = new CaseResolver(caseNotifier, draftService, navigationNotifierService, router, sessionStorageService, mockAppConfig);
 
       route = {
         firstChild: {
