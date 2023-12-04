@@ -252,4 +252,9 @@ describe('deleteFieldValue() tests', () => {
       null
     ]);
   });
+
+  it('should not map array values to null when array is empty', () => {
+    const array = [];
+    expect(fieldsPurger.mapArrayValuesToNull(array)).toEqual([]);
+  });
 });

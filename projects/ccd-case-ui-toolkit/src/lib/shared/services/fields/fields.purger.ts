@@ -311,12 +311,10 @@ export class FieldsPurger {
   public mapArrayValuesToNull(array: any[]): any[] {
     if (array && array.length > 0) { FieldsUtils.isArray([])
       return array.map(element => {
-        if (FieldsUtils.isObject(element)) {
+        if (element !==  undefined  && element !== null) {
           return typeof element === 'object'
             ? Object.assign({}, ...Object.keys(element).map(k => ({ [k]: null })))
             : null;
-        } else {
-          return {};
         }
       });
     } else {
