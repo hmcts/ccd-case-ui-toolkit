@@ -309,10 +309,18 @@ export class FieldsPurger {
    * @returns A new array with the mapped values
    */
   public mapArrayValuesToNull(array: any[]): any[] {
-    return array.map(element => {
-      return typeof element === 'object'
-        ? Object.assign({}, ...Object.keys(element).map(k => ({ [k]: null })))
-        : null;
-    });
+    if (array && array.length > 0) { FieldsUtils.isArray([])
+      return array.map(element => {
+        if (FieldsUtils.isObject(element)) {
+          return typeof element === 'object'
+            ? Object.assign({}, ...Object.keys(element).map(k => ({ [k]: null })))
+            : null;
+        } else {
+          return {};
+        }
+      });
+    } else {
+      return array
+    }
   }
 }
