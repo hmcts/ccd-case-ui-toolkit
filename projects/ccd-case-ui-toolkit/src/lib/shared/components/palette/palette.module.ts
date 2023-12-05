@@ -30,7 +30,11 @@ import { FormValidatorsService } from '../../services/form/form-validators.servi
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { LoadingModule } from '../../services/loading/loading.module';
 import { WindowService } from '../../services/window';
-import { CaseEventCompletionComponent, CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '../case-editor/case-event-completion';
+import {
+  CaseEventCompletionComponent,
+  CaseEventCompletionTaskCancelledComponent,
+  CaseEventCompletionTaskReassignedComponent
+} from '../case-editor/case-event-completion';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view';
@@ -125,6 +129,7 @@ import {
   QueryAttachmentsReadComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
+  QueryConfirmationComponent,
   QueryDetailsComponent,
   QueryEventCompletionComponent,
   QueryListComponent,
@@ -267,6 +272,7 @@ const PALETTE_COMPONENTS = [
   QualifyingQuestionDetailComponent,
   QueryAttachmentsReadComponent,
   QueryEventCompletionComponent,
+  QueryConfirmationComponent,
 
   // Case event completion
   CaseEventCompletionComponent,
