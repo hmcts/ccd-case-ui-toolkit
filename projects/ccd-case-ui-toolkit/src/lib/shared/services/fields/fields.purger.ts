@@ -315,6 +315,8 @@ export class FieldsPurger {
           return typeof element === 'object'
             ? Object.assign({}, ...Object.keys(element).map(k => ({ [k]: null })))
             : null;
+        } else {
+          return {};
         }
       });
     } else {
