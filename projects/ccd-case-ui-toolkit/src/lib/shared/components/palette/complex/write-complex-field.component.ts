@@ -11,7 +11,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
 import { IsCompoundPipe } from '../utils/is-compound.pipe';
 
-const ADDRESS_FIELD_TYPES = [ 'AddressUK', 'AddressGlobalUK', 'AddressGlobal' ];
+const ADDRESS_FIELD_TYPES = ['AddressUK', 'AddressGlobalUK', 'AddressGlobal'];
 
 @Component({
   selector: 'ccd-write-complex-type-field',

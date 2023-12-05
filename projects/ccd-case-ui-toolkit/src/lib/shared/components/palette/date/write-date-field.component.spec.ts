@@ -45,9 +45,11 @@ describe('WriteDateFieldComponent', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: CaseFieldService, useValue: caseFieldService},
-          { provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
-        ['getTranslation$', 'translate']) },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          {
+            provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
+              ['getTranslation$', 'translate'])
+          },
         ]
       })
       .compileComponents();

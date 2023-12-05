@@ -354,8 +354,8 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[1].hidden).toEqual(false);
   });
   it('should evaluate showcondition and set the hidden property of field to false when value match with MetaData field', () => {
-    const formField = FORM_GROUP.controls['data'].value;
-    const allFieldValues = Object.assign(METADATA, formField);
+    const formField = FORM_GROUP.controls['data'] as FormGroup;
+    const allFieldValues = Object.assign(METADATA, formField.value);
     complexCaseField2.value = {
       caseAccepted: 'Yes',
       dateAccepted: '10/01/2023'
@@ -367,8 +367,8 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[1].hidden).toEqual(false);
   });
   it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match with MetaData field', () => {
-    const formField = FORM_GROUP.controls['data'].value;
-    const allFieldValues = Object.assign(METADATA, formField);
+    const formField = FORM_GROUP.controls['data'] as FormGroup;
+    const allFieldValues = Object.assign(METADATA, formField.value);
     complexCaseField2.value = {
       caseAccepted: 'Yes',
       dateAccepted: '10/01/2023'

@@ -1,9 +1,9 @@
 import { Injectable, NgZone } from '@angular/core';
-import polling, { IOptions } from 'rx-polling';
 import { EMPTY, Observable, Subject, Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../app.config';
 import { Activity } from '../../domain/activity/activity.model';
 import { ActivityService } from './activity.service';
+import { polling, IOptions } from 'rx-polling-hmcts';
 
 // @dynamic
 @Injectable()

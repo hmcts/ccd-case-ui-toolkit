@@ -1,7 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription, of } from 'rxjs';
 import { Activity, CaseEventData, CaseEventTrigger, CaseField, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils } from '../../../services';
@@ -35,9 +34,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.data.case) {
       this.caseDetails = this.route.snapshot.data.case;
     } else {
-        this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
-          this.caseDetails = caseDetails;
-        });
+      this.caseSubscription = this.caseNotifier.caseView.subscribe(caseDetails => {
+        this.caseDetails = caseDetails;
+      });
     }
     this.eventTrigger = this.route.snapshot.data.eventTrigger;
     if (this.activityPollingService.isEnabled) {
@@ -114,7 +113,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
             preserve: true
           });
         }
-    });
+      });
   }
 
   public cancel(): Promise<boolean> {
