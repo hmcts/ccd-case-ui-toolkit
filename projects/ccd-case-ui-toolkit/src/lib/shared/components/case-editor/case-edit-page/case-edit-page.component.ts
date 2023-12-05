@@ -264,8 +264,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   public submit(): void {
     this.caseEditDataService.clearFormValidationErrors();
-    console.log('Submit button event fired!')
-
+    console.log('Page submit event fired!')
     if (this.currentPageIsNotValid()) {
       // The generateErrorMessage method filters out the hidden fields.
       // The error message for LinkedCases journey will never get displayed because the
@@ -287,7 +286,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       this.caseEdit.error = null;
       const caseEventData: CaseEventData = this.buildCaseEventData();
       const loadingSpinnerToken = this.loadingService.register();
-      this.validateSub = this.caseEdit.validate(caseEventData, '00001')
+      this.validateSub = this.caseEdit.validate(caseEventData, this.currentPage.id)
         .pipe(
           finalize(() => {
             this.loadingService.unregister(loadingSpinnerToken);
