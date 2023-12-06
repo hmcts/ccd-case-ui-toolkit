@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -114,6 +114,7 @@
     "@storybook/manager-webpack4": "^6.5.10",
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/testing-library": "^0.0.13",
+    "@stryker-mutator/core": "^3.0.1",
     "@types/jasmine": "~2.8.0",
     "@types/jasminewd2": "^2.0.3",
     "@types/node": "^18.17.0",
