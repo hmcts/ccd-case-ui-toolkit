@@ -316,13 +316,13 @@ describe('ReadCaseFlagFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ReadCaseFlagFieldComponent ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ReadCaseFlagFieldComponent],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -417,7 +417,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
-    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({ name: 'New flag' } as FlagDetail);
     // Check the correct display mode for the "Review flag details" summary page has been set
     expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
   });
@@ -432,7 +432,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(witnessCaseFlagPartyName);
-    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag in Witness field'} as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({ name: 'New flag in Witness field' } as FlagDetail);
     // Check the correct display mode for the "Review flag details" summary page has been set
     expect(component.summaryListDisplayMode).toEqual(CaseFlagSummaryListDisplayMode.CREATE);
   });

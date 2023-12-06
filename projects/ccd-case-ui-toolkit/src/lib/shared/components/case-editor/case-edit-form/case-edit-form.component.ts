@@ -26,7 +26,7 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   public pageChangeSubscription: Subscription;
   public formGroupChangeSubscription: Subscription;
 
-  constructor(private readonly formValueService: FormValueService) {}
+  constructor(private readonly formValueService: FormValueService) { }
 
   public ngOnDestroy(): void {
     if (this.pageChangeSubscription) {

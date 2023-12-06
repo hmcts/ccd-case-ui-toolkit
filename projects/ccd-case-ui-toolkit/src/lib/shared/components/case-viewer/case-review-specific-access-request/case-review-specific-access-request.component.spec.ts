@@ -28,11 +28,12 @@ const ACCESS_MANAGEMENT_REQUEST_REVIEW: AccessManagementRequestReviewMockModel =
 class MockActivatedRouteSnapshot implements ActivatedRouteSnapshot {
   public url: UrlSegment[];
   public params: Params;
+  public title: string;
   public queryParams: Params;
   public fragment: string;
   public data: Data;
   public outlet: string;
-  public component: Type<any> | string | null;
+  public component: Type<any>;
   public readonly routeConfig: Route | null;
   public readonly root: ActivatedRouteSnapshot;
   public readonly parent: ActivatedRouteSnapshot | null;
@@ -49,12 +50,13 @@ class MockActivatedRouteSnapshot implements ActivatedRouteSnapshot {
 class MockActivatedRoute implements ActivatedRoute {
   public snapshot: ActivatedRouteSnapshot;
   public url: Observable<UrlSegment[]>;
+  public title: Observable<string>;
   public params: Observable<Params>;
   public queryParams: Observable<Params>;
   public fragment: Observable<string>;
   public data: Observable<Data>;
   public outlet: string;
-  public component: Type<any> | string;
+  public component: Type<any>;
   public routeConfig: Route;
   public root: ActivatedRoute;
   public parent: ActivatedRoute;
@@ -68,8 +70,8 @@ class MockActivatedRoute implements ActivatedRoute {
   }
 }
 
-@Component({template: ``})
-class StubComponent {}
+@Component({ template: `` })
+class StubComponent { }
 
 describe('CaseSpecificAccessRequestComponent', () => {
   let de: DebugElement;
@@ -207,6 +209,6 @@ describe('CaseSpecificAccessRequestComponent', () => {
     submitButton.click();
     fixture.detectChanges();
     expect(component.formGroup.valid).toBe(true);
-    expect(router.navigate).toHaveBeenCalledWith(['rejected'], {relativeTo: mockRoute});
+    expect(router.navigate).toHaveBeenCalledWith(['rejected'], { relativeTo: mockRoute });
   });
 });
