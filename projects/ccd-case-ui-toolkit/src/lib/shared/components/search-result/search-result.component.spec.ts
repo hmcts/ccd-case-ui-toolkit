@@ -105,7 +105,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -124,7 +124,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -135,7 +135,7 @@ describe('SearchResultComponent', () => {
             PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -145,7 +145,7 @@ describe('SearchResultComponent', () => {
             PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         }
       ],
@@ -383,7 +383,7 @@ describe('SearchResultComponent', () => {
       expect(component.selected.page).toBe(2);
       expect(searchHandler.applyFilters).toHaveBeenCalledWith({
         selected,
-        queryParams: {jurisdiction: selected.jurisdiction.id, 'case-type': selected.caseType.id, 'case-state': selected.caseState.id}
+        queryParams: { jurisdiction: selected.jurisdiction.id, 'case-type': selected.caseType.id, 'case-state': selected.caseState.id }
       });
     });
 
@@ -447,7 +447,7 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         },
       };
       expect(component.canBeShared(caseView)).toEqual(true);
@@ -464,7 +464,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('can any be shared', () => {
-        component.resultView.results = [{
+      component.resultView.results = [{
         case_id: '1',
         case_fields: {
           OrganisationPolicyField: {
@@ -477,14 +477,14 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         },
       }];
       expect(component.canAnyBeShared()).toEqual(true);
     });
 
     it('check if case is selected', () => {
-        component.selectedCases = [{
+      component.selectedCases = [{
         case_id: '1',
         case_fields: null
       }, {
@@ -496,14 +496,14 @@ describe('SearchResultComponent', () => {
         case_id: '1',
         case_fields: null,
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         }
       };
       expect(component.isSelected(tempCaseItem)).toBeTruthy();
     });
 
     it('check if case is not selected', () => {
-        component.selectedCases = [{
+      component.selectedCases = [{
         case_id: '1',
         case_fields: null
       }, {
@@ -520,7 +520,7 @@ describe('SearchResultComponent', () => {
     });
 
     it('select all cases is enabled', () => {
-       component.selectedCases = [{
+      component.selectedCases = [{
         case_id: 'DRAFT190',
         case_fields: {
           PersonFirstName: 'Jason',
@@ -536,7 +536,7 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         }
       }];
       const tempCaseItem: SearchResultViewItem = {
@@ -555,7 +555,7 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         }
       };
       expect(component.isSelected(tempCaseItem)).toBeTruthy();
@@ -583,7 +583,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -602,7 +602,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -613,7 +613,7 @@ describe('SearchResultComponent', () => {
             PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         },
         {
@@ -631,7 +631,7 @@ describe('SearchResultComponent', () => {
             }
           },
           supplementary_data: {
-            orgs_assigned_users: {'9QV1DT1': 3}
+            orgs_assigned_users: { '9QV1DT1': 3 }
           }
         }
       ];
@@ -655,7 +655,7 @@ describe('SearchResultComponent', () => {
           }
         },
         supplementary_data: {
-          orgs_assigned_users: {'9QV1DT1': 3}
+          orgs_assigned_users: { '9QV1DT1': 3 }
         }
       };
       component.changeSelection(aSelectedCase);
@@ -724,13 +724,13 @@ describe('SearchResultComponent', () => {
           PersonAddress: '1 Infinite Loop, Cupertino, California, USA, CA 95014'
         }
       },
-        {
-          case_id: '0000000000000002',
-          case_fields: {
-            PersonFirstName: 'Bill',
-            PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
-          }
-        }];
+      {
+        case_id: '0000000000000002',
+        case_fields: {
+          PersonFirstName: 'Bill',
+          PersonAddress: 'Thames Valley Park, Sonning, Reading, England, RG6 1WA'
+        }
+      }];
       component.ngOnInit();
       expect(component.selectedCases.length).toEqual(2);
     });

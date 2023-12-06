@@ -70,12 +70,12 @@ describe('WriteOrganisationFieldComponent', () => {
   const ORGANISATION_ID: CaseField = ({
     id: 'OrganisationID',
     label: 'Organisation ID',
-    field_type: {id: 'Text', type: 'Text'}
+    field_type: { id: 'Text', type: 'Text' }
   }) as CaseField;
   const ORGANISATION_NAME: CaseField = ({
     id: 'OrganisationName',
     label: 'Name',
-    field_type: {id: 'Text', type: 'Text'}
+    field_type: { id: 'Text', type: 'Text' }
   }) as CaseField;
 
   const CASE_FIELD: CaseField = ({
@@ -103,7 +103,7 @@ describe('WriteOrganisationFieldComponent', () => {
       ],
       providers: [
         WindowService,
-        {provide: OrganisationService, useValue: mockOrganisationService},
+        { provide: OrganisationService, useValue: mockOrganisationService },
         OrganisationConverter
       ]
     })
@@ -138,8 +138,8 @@ describe('WriteOrganisationFieldComponent', () => {
       organisationName
     ];
     const prepopulateToUsersOrganisationControl = new FormControl('YES');
-    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
-    component.defaultOrg = {organisationIdentifier: 'O333333', name: 'The Ethical solicitor'};
+    component.parent = new FormGroup({ PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl });
+    component.defaultOrg = { organisationIdentifier: 'O333333', name: 'The Ethical solicitor' };
     fixture.detectChanges();
   });
 
@@ -197,8 +197,8 @@ describe('WriteOrganisationFieldComponent', () => {
 
   it('should pre-select organisation when PrepopulateToUsersOrganisationControl is NO but it has selected the org', () => {
     const prepopulateToUsersOrganisationControl = new FormControl('NO');
-    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
-    component.caseField.value = {OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor'};
+    component.parent = new FormGroup({ PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl });
+    component.caseField.value = { OrganisationID: 'O333333', OrganisationName: 'The Ethical solicitor' };
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
@@ -207,7 +207,7 @@ describe('WriteOrganisationFieldComponent', () => {
 
   it('should not pre-select organisation when PrepopulateToUsersOrganisationControl is NO', () => {
     const prepopulateToUsersOrganisationControl = new FormControl('NO');
-    component.parent = new FormGroup({PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl});
+    component.parent = new FormGroup({ PrepopulateToUsersOrganisation: prepopulateToUsersOrganisationControl });
     component.caseField.value = null;
     component.ngOnInit();
     fixture.detectChanges();
@@ -443,7 +443,7 @@ describe('WriteOrganisationFieldComponent', () => {
     component.selectOrg(selectedOrg);
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.disabled).toBeTruthy();
-    expect(component.caseField.value).toEqual({OrganisationID: 'O111111', OrganisationName: 'Woodford solicitor'});
+    expect(component.caseField.value).toEqual({ OrganisationID: 'O111111', OrganisationName: 'Woodford solicitor' });
   });
 
   it('should deselect organisation', () => {
@@ -454,7 +454,7 @@ describe('WriteOrganisationFieldComponent', () => {
     component.deSelectOrg();
     expect(component.searchOrgTextFormControl.value).toEqual('');
     expect(component.searchOrgTextFormControl.enabled).toBeTruthy();
-    expect(component.caseField.value).toEqual({OrganisationID: null, OrganisationName: null});
+    expect(component.caseField.value).toEqual({ OrganisationID: null, OrganisationName: null });
   });
 
   it('should set retain_hidden_value to true for all sub-fields that are part of an Organisation field', () => {

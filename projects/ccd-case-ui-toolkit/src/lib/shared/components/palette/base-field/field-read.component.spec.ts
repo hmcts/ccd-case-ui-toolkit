@@ -44,7 +44,7 @@ const CLASS = 'text-cls';
     <span class="${CLASS}"></span>
   `
 })
-class FieldTestComponent {}
+class FieldTestComponent { }
 
 @Component({
   selector: 'ccd-field-read-label',
@@ -77,7 +77,7 @@ describe('FieldReadComponent', () => {
   const caseFields: CaseField[] = [CASE_FIELD];
   let caseEditComponentStub: any;
   const FORM_GROUP = new FormGroup({
-    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
+    data: new FormGroup({ field1: new FormControl('SOME_VALUE') })
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);
@@ -108,7 +108,7 @@ describe('FieldReadComponent', () => {
       form: FORM_GROUP,
       wizard: WIZARD,
       data: '',
-      eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+      eventTrigger: { case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true },
       hasPrevious: () => true,
       getPage: () => firstPage,
       first: () => true,
@@ -118,10 +118,10 @@ describe('FieldReadComponent', () => {
       cancelled,
       validate: (caseEventData: CaseEventData) => of(caseEventData),
       saveDraft: (_: CaseEventData) => of(someObservable),
-      caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
+      caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] },
     };
     route = {
-      params: of({id: 123}),
+      params: of({ id: 123 }),
       snapshot: {
         queryParamMap: createSpyObj('queryParamMap', ['get'])
       }

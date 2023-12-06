@@ -27,7 +27,7 @@ export class EventTriggerComponent implements OnChanges {
 
   public triggerForm: FormGroup;
 
-  constructor(private readonly fb: FormBuilder, private readonly orderService: OrderService) {}
+  constructor(private readonly fb: FormBuilder, private readonly orderService: OrderService) { }
 
   public ngOnChanges(changes?: SimpleChanges): void {
     if (changes.triggers && changes.triggers.currentValue) {

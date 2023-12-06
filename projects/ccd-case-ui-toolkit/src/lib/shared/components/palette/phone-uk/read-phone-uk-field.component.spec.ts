@@ -16,13 +16,13 @@ describe('ReadPhoneUKFieldComponent', () => {
   const EMPTY = '';
 
   describe('Non-persistable readonly phone-uk field', () => {
-  const CASE_FIELD: CaseField = ({
-    id: 'x',
-    label: 'X',
-    display_context: 'OPTIONAL',
-    field_type: FIELD_TYPE,
-    value: VALUE
-  }) as CaseField;
+    const CASE_FIELD: CaseField = ({
+      id: 'x',
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE,
+      value: VALUE
+    }) as CaseField;
 
     let fixture: ComponentFixture<ReadPhoneUKFieldComponent>;
     let component: ReadPhoneUKFieldComponent;
