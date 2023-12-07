@@ -1,0 +1,91 @@
+:host {
+    position: relative;
+    display: block;
+}
+
+.folders {
+    margin-bottom: 20px;
+}
+
+.folder {
+    display: none;
+    border-top: 1px solid #CCC;
+    margin: 0 0 -1px 0;
+}
+
+.folder:last-child {
+  border-bottom: 1px solid #CCC;  
+}
+
+.folders > .folder {
+    display: block;
+}
+
+input:checked ~ .folder {
+    display: block;
+}
+
+.iconImg {
+    position: relative;
+    display: inline-block;
+    height: 28px;
+}
+
+.folder > .folder {
+    margin-left: 20px;
+}
+
+.folder label:before {
+    top: 3px;
+}
+
+.folder label:after {
+    top: 13px;
+}
+
+p {
+    font-weight: bold;
+}
+
+button {
+    margin-right: 20px;
+}
+
+.close {
+    float: right;
+    width: 30px;
+    height: 30px;
+    background: url('/assets/img/x.PNG') no-repeat center center;
+    cursor: pointer;
+}
+
+.cancel {
+    cursor: pointer;
+}
+
+.cdk-overlay-pane {
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #AAAAAA;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background: #EEE;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #CCC;
+  }
+}
