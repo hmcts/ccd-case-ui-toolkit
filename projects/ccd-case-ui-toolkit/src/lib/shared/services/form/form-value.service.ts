@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { CaseField } from '../../domain';
+import { CaseField, FieldTypeEnum } from '../../domain';
 import { FieldsUtils } from '../fields';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
 
@@ -400,7 +400,7 @@ export class FormValueService {
           // Retain anything that is readonly and not a label.
           continue;
         }
-        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.id !== 'caseLinks') {
+        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.id !== 'caseLinks' && !field.retain_hidden_value) {
           // Delete anything that is hidden (that is NOT readonly), and that
           // hasn't had its display_context overridden to make it hidden.
           delete data[field.id];
@@ -476,8 +476,8 @@ export class FormValueService {
   public removeEmptyCollectionsWithMinValidation(data: object, caseFields: CaseField[]): void {
     if (data && caseFields && caseFields.length > 0) {
       for (const field of caseFields) {
-        if (field.field_type.type === 'Collection' && field.field_type.min > 0 && data[field.id] &&
-          Array.isArray(data[field.id]) && data[field.id].length === 0) {
+        if (field.field_type.type === 'Collection' && typeof field.field_type.min === 'number' && field.field_type.min > 0 &&
+          data[field.id] && Array.isArray(data[field.id]) && data[field.id].length === 0) {
           delete data[field.id];
         }
       }
@@ -485,65 +485,60 @@ export class FormValueService {
   }
 
   /**
-   * Remove the FlagLauncher case field, which is not intended to be persisted.
+   * Remove from the top level of the form data any case fields of a given type or types that are not intended to be
+   * persisted. This function is intended to remove "special" case field types from the data, such as FlagLauncher or
+   * ComponentLauncher fields.
    *
-   * @param data The object tree of form values on which to perform the removal
+   * @param data The object tree of form values on which to perform the removal at the top level only
    * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
+   * @param types An array of one or more field types
    */
-  public removeFlagLauncherField(data: object, caseFields: CaseField[]): void {
-    if (data && caseFields && caseFields.length > 0) {
-      const flagLauncherCaseField = caseFields.filter(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
-      if (flagLauncherCaseField.length > 0) {
-        // There should be only one FlagLauncher case field
-        delete data[flagLauncherCaseField[0].id];
+  public removeCaseFieldsOfType(data: object, caseFields: CaseField[], types: FieldTypeEnum[]): void {
+    if (data && caseFields && caseFields.length > 0 && types.length > 0) {
+      const caseFieldsToRemove = caseFields.filter(caseField => FieldsUtils.isCaseFieldOfType(caseField, types));
+      for (const caseField of caseFieldsToRemove) {
+        delete data[caseField.id];
       }
     }
   }
 
   /**
-   * Populate the flag data for each Flags field, from the data held in its corresponding CaseField.
+   * Re-populate the form data from the values held in the case fields. This is necessary in order to pick up, for
+   * each `Flags` field, any flag details data not currently present.
+   *
+   * `Flags` fields may be contained in other `CaseField` instances, either as a sub-field of a Complex field, or
+   * fields in a collection (or sub-fields of Complex fields in a collection). Therefore, it is necessary to
+   * iterate through all `CaseField`s.
    *
    * @param data The object tree of form values on which to perform the data population
    * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
    */
-  public populateFlagDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
-    if (data && caseFields && caseFields.length > 0) {
-      // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
-      // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
-      // (or sub-fields of Complex fields in a collection)
-      caseFields.filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField))
+  public repopulateFormDataFromCaseFieldValues(data: object, caseFields: CaseField[]): void {
+    if (data && caseFields && caseFields.length > 0 &&
+      caseFields.findIndex(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])) > -1) {
+      // Ignore the FlagLauncher CaseField because it does not hold any values
+      caseFields.filter(caseField => !FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))
         .forEach(caseField => {
-          // Ensure that the data object is populated for all case field IDs it contains, even if there is currently
-          // nothing for a given case field ID (hence the use of hasOwnProperty())
+          // Ensure that the data object is populated for all CaseField keys it contains, even if for a given
+          // CaseField key, the data object has a falsy value (hence the use of hasOwnProperty() for the check below)
+          // See https://tools.hmcts.net/jira/browse/EUI-7377
           if (data.hasOwnProperty(caseField.id) && caseField.value) {
-            // Create new object for the case field ID within the data object, if necessary
-            if (data[caseField.id]) {
+            // Create new object for the CaseField ID within the data object, if necessary (i.e. if the current value
+            // is falsy); populate from the corresponding CaseField
+            if (!data[caseField.id]) {
+              data[caseField.id] = {};
+              Object.keys(caseField.value).forEach((key) => data[caseField.id][key] = caseField.value[key]);
+            } else {
               // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
               // Flags field within a Complex field or a collection of Complex fields) is copied across
-              Object.keys(data[caseField.id]).forEach(key => {
+              Object.keys(data[caseField.id]).forEach((key) => {
                 if (caseField.value.hasOwnProperty(key)) {
                   data[caseField.id][key] = caseField.value[key];
                 }
               });
             }
-        }
-      });
-    }
-  }
-
-  /**
-   * Remove the ComponentLauncher case field, which is not intended to be persisted.
-   *
-   * @param data The object tree of form values on which to perform the removal
-   * @param caseFields The list of underlying {@link CaseField} domain model objects for each field
-   */
-  public removeComponentLauncherField(data: object, caseFields: CaseField[]): void {
-    if (data && caseFields && caseFields.length > 0) {
-      const componentLauncherCaseField = caseFields.filter(caseField => FieldsUtils.isComponentLauncherCaseField(caseField));
-      if (componentLauncherCaseField.length > 0) {
-        // There should be only one ComponentLauncher case field
-        delete data[componentLauncherCaseField[0].id];
-      }
+          }
+        });
     }
   }
 
@@ -555,7 +550,7 @@ export class FormValueService {
    */
   public populateLinkedCasesDetailsFromCaseFields(data: object, caseFields: CaseField[]): void {
     if (data && caseFields && caseFields.length > 0) {
-      caseFields.filter(caseField => !FieldsUtils.isComponentLauncherCaseField(caseField))
+      caseFields.filter(caseField => !FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']))
         .forEach(caseField => {
           if (data.hasOwnProperty('caseLinks') && caseField.value) {
             data[caseField.id] = caseField.value;

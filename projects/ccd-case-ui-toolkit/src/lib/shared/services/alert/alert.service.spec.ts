@@ -1,4 +1,5 @@
 import { NavigationEnd, NavigationStart } from '@angular/router';
+import { of } from 'rxjs';
 import { Alert } from '../../domain/alert/alert.model';
 import { AlertService } from './alert.service';
 
@@ -35,6 +36,8 @@ describe('AlertService', () => {
   let firstMockUrlAlertService: AlertService;
   let secondMockUrlAlertService: AlertService;
 
+  const rpxTranslationServiceSpy = jasmine.createSpyObj('RpxTranslationService', ['getTranslation$', 'getTranslationWithReplacements$']);
+
   beforeEach(() => {
     router = {
       events: {
@@ -42,7 +45,7 @@ describe('AlertService', () => {
       }
     };
 
-    alertService = new AlertService(router);
+    alertService = new AlertService(router, rpxTranslationServiceSpy);
   });
 
   it('should offer observable alert stream', () => {
@@ -52,6 +55,8 @@ describe('AlertService', () => {
   });
 
   it('should publish alert to observable when errors method used', done => {
+    rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(ERROR_MESSAGE));
+
     alertService
       .errors
       .subscribe(alert => {
@@ -59,10 +64,12 @@ describe('AlertService', () => {
         done();
       });
 
-    alertService.error(ERROR_MESSAGE);
+    alertService.error({ phrase: ERROR_MESSAGE });
   });
 
   it('should publish alert to observable when successes method used', done => {
+    rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(SUCCESS_MESSAGE));
+
     alertService
       .successes
       .subscribe(alert => {
@@ -70,10 +77,12 @@ describe('AlertService', () => {
         done();
       });
 
-    alertService.success(SUCCESS_MESSAGE);
+    alertService.success({ phrase: SUCCESS_MESSAGE });
   });
 
   it('should publish alert to observable when warnings method used', done => {
+    rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(WARNING_MESSAGE));
+
     alertService
       .warnings
       .subscribe(alert => {
@@ -81,7 +90,7 @@ describe('AlertService', () => {
         done();
       });
 
-    alertService.warning(WARNING_MESSAGE);
+    alertService.warning({ phrase: WARNING_MESSAGE });
   });
 
   it('should publish null to errors observable when clear method used', done => {
@@ -154,47 +163,107 @@ describe('AlertService', () => {
     expect(alertService.clear).not.toHaveBeenCalled();
   });
 
-  it('should be a hot alert errors observable', done => {
-    // set an original message
-    alertService.error(WARNING_MESSAGE);
 
-    alertService
-      .errors
-      .subscribe(alert => {
-        expect(alert).toEqual(ERROR_ALERT);
-        done();
-      });
+  describe('error', () => {
+    it('should be a hot alert errors observable', done => {
+      rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(ERROR_MESSAGE));
+      // set an original message
+      alertService.error({ phrase: WARNING_MESSAGE });
 
-    // set the new message
-    alertService.error(ERROR_MESSAGE);
+      alertService
+        .errors
+        .subscribe(alert => {
+          expect(alert).toEqual(ERROR_ALERT);
+          done();
+        });
+
+      // set the new message
+      alertService.error({ phrase: ERROR_MESSAGE });
+    });
+
+    it('should be a hot alert errors observable with replacements params', done => {
+      rpxTranslationServiceSpy.getTranslationWithReplacements$.and.returnValue(of(WARNING_MESSAGE));
+      // set an original message
+      alertService.error({ phrase: WARNING_MESSAGE, replacements: { CASEID: '1234' } });
+
+      alertService
+        .errors
+        .subscribe(alert => {
+          expect(alert).toEqual(ERROR_ALERT);
+          done();
+        });
+
+      // set the new message
+      alertService.error({ phrase: ERROR_MESSAGE });
+    });
   });
-  it('should be a hot alert successes observable', done => {
-    // set an original message
-    alertService.success(WARNING_MESSAGE);
 
-    alertService
-      .successes
-      .subscribe(alert => {
-        expect(alert).toEqual(SUCCESS_ALERT);
-        done();
-      });
+  describe('warning', () => {
+    it('should be a hot alert warnings observable', done => {
+      rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(WARNING_MESSAGE));
+      // set an original message
+      alertService.warning({ phrase: A_MESSAGE });
 
-    // set the new message
-    alertService.success(SUCCESS_MESSAGE);
+      alertService
+        .warnings
+        .subscribe(alert => {
+          expect(alert).toEqual(WARNING_ALERT);
+          done();
+        });
+
+      // set the new message
+      alertService.warning({ phrase: WARNING_MESSAGE });
+    });
+
+    it('should be a hot alert warnings observable with replacements params', done => {
+      rpxTranslationServiceSpy.getTranslationWithReplacements$.and.returnValue(of(A_MESSAGE));
+      // set an original message
+      alertService.warning({ phrase: WARNING_MESSAGE, replacements: { CASEID: '1234' } });
+
+      alertService
+        .warnings
+        .subscribe(alert => {
+          expect(alert).toEqual(WARNING_ALERT);
+          done();
+        });
+
+      // set the new message
+      alertService.warning({ phrase: WARNING_MESSAGE });
+    });
   });
-  it('should be a hot alert warnings observable', done => {
-    // set an original message
-    alertService.warning(A_MESSAGE);
 
-    alertService
-      .warnings
-      .subscribe(alert => {
-        expect(alert).toEqual(WARNING_ALERT);
-        done();
-      });
+  describe('success', () => {
+    it('should be a hot alert successs observable', done => {
+      rpxTranslationServiceSpy.getTranslation$.and.returnValue(of(SUCCESS_MESSAGE));
+      // set an original message
+      alertService.success({ phrase: A_MESSAGE });
 
-    // set the new message
-    alertService.warning(WARNING_MESSAGE);
+      alertService
+        .successes
+        .subscribe(alert => {
+          expect(alert).toEqual(SUCCESS_ALERT);
+          done();
+        });
+
+      // set the new message
+      alertService.success({ phrase: SUCCESS_MESSAGE });
+    });
+
+    it('should be a hot alert successs observable with replacements params', done => {
+      rpxTranslationServiceSpy.getTranslationWithReplacements$.and.returnValue(of(SUCCESS_MESSAGE));
+      // set an original message
+      alertService.success({ phrase: WARNING_MESSAGE, replacements: { CASEID: '1234' } });
+
+      alertService
+        .successes
+        .subscribe(alert => {
+          expect(alert).toEqual(SUCCESS_ALERT);
+          done();
+        });
+
+      // set the new message
+      alertService.success({ phrase: SUCCESS_MESSAGE });
+    });
   });
 
   it('should set the messages to be preserved and kept', () => {
@@ -218,8 +287,8 @@ describe('AlertService', () => {
       },
       url: 'cases/case-2/'
     };
-    firstMockUrlAlertService = new AlertService(firstMockUrlRouter);
-    secondMockUrlAlertService = new AlertService(secondMockUrlRouter);
+    firstMockUrlAlertService = new AlertService(firstMockUrlRouter, rpxTranslationServiceSpy);
+    secondMockUrlAlertService = new AlertService(secondMockUrlRouter, rpxTranslationServiceSpy);
     it('should enable checking if the current url contains the string', () => {
       // first check the first alert service
       expect(firstMockUrlAlertService.currentUrlIncludesInfo(true, ['example'])).toBe(false);

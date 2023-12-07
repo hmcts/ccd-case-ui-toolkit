@@ -1,5 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, Input } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.se
 import { OrderService } from '../../services/order/order.service';
 import { WindowService } from '../../services/window/window.service';
 import { WorkbasketInputFilterService } from '../../services/workbasket/workbasket-input-filter.service';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { AbstractFieldWriteComponent } from '../palette/base-field/abstract-field-write.component';
 import { WorkbasketFiltersComponent } from './workbasket-filters.component';
 
@@ -192,7 +193,7 @@ describe('Clear localStorage for workbasket filters', () => {
     httpService = createSpyObj<HttpService>('httpService', ['get', 'post']);
     jurisdictionService = new JurisdictionService(httpService);
     windowMockService = createSpyObj<WindowService>('windowService', ['clearLocalStorage', 'locationAssign',
-      'getLocalStorage', 'removeLocalStorage']);
+      'getLocalStorage', 'removeLocalStorage', 'setLocalStorage']);
     resetCaseTypes(JURISDICTION_2, CASE_TYPES_2);
     activatedRoute = {
       queryParams: of({}),
@@ -210,7 +211,8 @@ describe('Clear localStorage for workbasket filters', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -278,7 +280,8 @@ describe('with defaults', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -439,7 +442,6 @@ describe('with defaults', () => {
   }));
 
   it('should submit filters when defaults could be selected, preserving the alerts', () => {
-
     expect(workbasketHandler.applyFilters).toHaveBeenCalledWith({
       selected: {
         jurisdiction: JURISDICTION_2,
@@ -505,7 +507,7 @@ describe('with defaults', () => {
     expect(component.workbasketInputsReady).toBeFalsy();
   });
 
-  it('should have form group details added when apply button is clicked ', () => {
+  it('should have form group details added when apply button is clicked', () => {
     component.selected.jurisdiction = JURISDICTION_2;
     component.apply(true);
 
@@ -641,6 +643,31 @@ describe('with defaults', () => {
     });
   });
 
+  it('should remove any "_judicialUserControl"-suffixed FormControl values from the FormGroup value to be stored locally', () => {
+    const control = new FormControl('test');
+    const judicialUserControl = new FormControl('judicialUser1');
+    const formControls = {
+      name: control,
+      j1_judicialUserControl: judicialUserControl
+    };
+    const formGroup = new FormGroup(formControls);
+    component.formGroup = formGroup;
+    component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseType = CASE_TYPES_2[2];
+    component.selected.caseState = DEFAULT_CASE_STATE;
+
+    workbasketHandler.applyFilters.calls.reset();
+
+    const button = de.query(By.css('button'));
+    button.nativeElement.click();
+
+    fixture.detectChanges();
+    // The "j1_judicialUserControl" property is expected to have been removed, leaving just the "name" property
+    // Need to check the second call to windowService.setLocalStorage(); the first one is for "savedQueryParams"
+    expect(windowService.setLocalStorage.calls.argsFor(1)).toEqual(
+      ['workbasket-filter-form-group-value', JSON.stringify({ name: 'test' })]);
+  });
+
   it('should update form group filters', () => {
     const formGroupLocalStorage = {
       regionList: 'london',
@@ -663,6 +690,15 @@ describe('with defaults', () => {
     component.updateFormGroupFilters();
     expect(component.formGroup.get('londonFRCList').value).toBe(null);
     expect(component.formGroup.get('londonCourtList').value).toBe(null);
+  });
+
+  it('should announce the selected jurisdiction and case type via the JurisdictionService when filters are applied', () => {
+    spyOn(jurisdictionService, 'announceSelectedJurisdiction');
+    component.selected.jurisdiction = JURISDICTION_2;
+    component.selected.caseType = CASE_TYPES_2[0];
+    component.apply(false);
+    expect(component.selected.jurisdiction.currentCaseType).toEqual(CASE_TYPES_2[0]);
+    expect(jurisdictionService.announceSelectedJurisdiction).toHaveBeenCalledWith(component.selected.jurisdiction);
   });
 });
 
@@ -694,7 +730,8 @@ describe('with defaults and CRUD', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -795,7 +832,8 @@ describe('with defaults and CRUD and empty case types', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -871,7 +909,8 @@ describe('with defaults and CRUD and type with empty case states', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -954,7 +993,8 @@ describe('with query parameters', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -1040,7 +1080,8 @@ describe('with invalid query parameters: jurisdiction and empty case types', () 
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -1121,7 +1162,8 @@ describe('with no defaults', () => {
         ],
         declarations: [
           WorkbasketFiltersComponent,
-          FieldWriteComponent
+          FieldWriteComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           { provide: Router, useValue: router },
@@ -1139,7 +1181,7 @@ describe('with no defaults', () => {
     component = fixture.componentInstance;
 
     component.jurisdictions = [
-      JURISDICTION_ONE,
+      JURISDICTION_ONE
     ];
     component.formGroup = TEST_FORM_GROUP;
     component.defaults = {};
@@ -1235,24 +1277,44 @@ describe('with no defaults', () => {
       });
   });
 
-  it('should remove localStorage and clear selected fields once reset button is clicked', async () => {
+  it('should remove localStorage and clear selected fields once reset button is clicked', fakeAsync(() => {
+    // Set some initial values for the jurisdiction, case type and case state
+    component.selected.jurisdiction = JURISDICTION_ONE;
+    component.onJurisdictionIdChange();
+    component.selected.caseType = CASE_TYPES_1[0];
+    component.onCaseTypeIdChange();
+    component.selected.caseState = CASE_TYPES_1[0].states[0];
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    let selector = de.query(By.css('#wb-jurisdiction'));
+    expect(selector.nativeElement.selectedIndex).toEqual(1);
+    selector = de.query(By.css('#wb-case-type'));
+    expect(selector.nativeElement.selectedIndex).toEqual(1);
+    selector = de.query(By.css('#wb-case-state'));
+    expect(selector.nativeElement.selectedIndex).toEqual(1);
+
+    spyOn(component, 'apply').and.callThrough();
     component.reset();
+    // Use same time interval as the component does for setTimeout() in the reset() function
+    tick(500);
     fixture.detectChanges();
 
-    await fixture
-      .whenStable()
-      .then(() => {
-        let selector = de.query(By.css('#wb-jurisdiction'));
-        expect(selector.nativeElement.selectedIndex).toEqual(0);
-        expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
-        selector = de.query(By.css('#wb-case-type'));
-        expect(selector.nativeElement.selectedIndex).toEqual(-1);
-        selector = de.query(By.css('#wb-case-state'));
-        expect(selector.nativeElement.selectedIndex).toEqual(-1);
-      });
+    selector = de.query(By.css('#wb-jurisdiction'));
+    // Jurisdiction selection is left unchanged
+    expect(selector.nativeElement.selectedIndex).toEqual(1);
+    expect(selector.children[0].nativeElement.textContent).toEqual(SELECT_A_VALUE);
+    expect(selector.children[1].nativeElement.textContent).toEqual(JURISDICTION_ONE.name);
+    selector = de.query(By.css('#wb-case-type'));
+    expect(selector.nativeElement.selectedIndex).toEqual(-1);
+    selector = de.query(By.css('#wb-case-state'));
+    expect(selector.nativeElement.selectedIndex).toEqual(-1);
 
-    expect(windowService.removeLocalStorage).toHaveBeenCalled();
-  });
+    expect(windowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
+    expect(windowService.removeLocalStorage).toHaveBeenCalledWith('savedQueryParams');
+    expect(component.apply).toHaveBeenCalledWith(true);
+    expect(windowService.setLocalStorage).toHaveBeenCalledWith('savedQueryParams', jasmine.any(String));
+  }));
 });
 
 

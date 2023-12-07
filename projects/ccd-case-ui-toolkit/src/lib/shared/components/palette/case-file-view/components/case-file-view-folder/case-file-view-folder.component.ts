@@ -3,8 +3,10 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Observable, of, Subscription } from 'rxjs';
+import * as moment from 'moment';
+import { Observable, Subscription, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
+import { AbstractAppConfig } from '../../../../../../app.config';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
@@ -12,6 +14,7 @@ import {
   DocumentTreeNode,
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
+import { SortOrder } from '../../../../../domain/sort-order.enum';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
@@ -29,7 +32,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
   @Input() public allowMoving: boolean;
   @Output() public clickedDocument = new EventEmitter<DocumentTreeNode>();
-  @Output() public moveDocument = new EventEmitter<any>();
+  @Output() public moveDocument = new EventEmitter<{newCategory: string, document: DocumentTreeNode}>();
 
   public nestedTreeControl: NestedTreeControl<DocumentTreeNode>;
   public nestedDataSource: DocumentTreeNode[];
@@ -59,7 +62,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     private readonly windowService: WindowService,
     private readonly router: Router,
     private readonly documentManagementService: DocumentManagementService,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly appConfig: AbstractAppConfig
   ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
@@ -122,6 +126,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
+      documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
+          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY') : '';
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -138,6 +144,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
+      documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
+          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY') : '';
 
       documents.push(documentTreeNode);
     });
@@ -205,18 +213,18 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public sortDataSourceAscAlphabetically() {
+  public sortDataSourceAscending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenAscending();
+      item.sortChildrenAscending(column, SortOrder.ASCENDING);
       return item;
     });
 
     this.updateNodeData(sortedData);
   }
 
-  public sortDataSourceDescAlphabetically() {
+  public sortDataSourceDescending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending();
+      item.sortChildrenDescending(column, SortOrder.DESCENDING);
       return item;
     });
 

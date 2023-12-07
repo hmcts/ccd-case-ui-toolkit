@@ -633,7 +633,9 @@ describe('FieldsUtils', () => {
             flagsCaseFieldId: caseField.id,
             partyName: 'Party 1',
             roleOnCase: null,
-            details: null
+            details: null,
+            visibility: undefined,
+            groupId: undefined
           }
         }
       ]);
@@ -656,7 +658,9 @@ describe('FieldsUtils', () => {
             flagsCaseFieldId: caseField.id,
             partyName: undefined,
             roleOnCase: undefined,
-            details: null
+            details: null,
+            visibility: undefined,
+            groupId: undefined
           }
         }
       ]);
@@ -679,7 +683,9 @@ describe('FieldsUtils', () => {
             flagsCaseFieldId: caseField.id,
             partyName: null,
             roleOnCase: null,
-            details: null
+            details: null,
+            visibility: null,
+            groupId: null
           }
         }
       ]);
@@ -701,7 +707,9 @@ describe('FieldsUtils', () => {
             flagsCaseFieldId: caseField.id,
             partyName: null,
             roleOnCase: null,
-            details: null
+            details: null,
+            visibility: null,
+            groupId: null
           }
         }
       ]);
@@ -749,6 +757,97 @@ describe('FieldsUtils', () => {
     it('should return true if case field is of type ComponentLauncher', () => {
       const caseFields = [aCaseField('LinkedCasesComponentLauncher', 'componentLauncher', 'ComponentLauncher', 'OPTIONAL', null, null, false, true)];
       expect(FieldsUtils.containsLinkedCasesCaseField(caseFields)).toBe(true);
+    });
+  });
+
+  describe('isCaseFieldOfType() function test', () => {
+    it('should return false if case field is null', () => {
+      expect(FieldsUtils.isCaseFieldOfType(null, ['FlagLauncher'])).toBe(false);
+    });
+
+    it('should return false if case field is not of the specified type', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])).toBe(false);
+    });
+
+    it('should return false if case field is not any of the specified types', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'Complex', 'OPTIONAL', null, [], false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher', 'FlagLauncher'])).toBe(false);
+    });
+
+    it('should return true if case field is of the specified type', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])).toBe(true);
+    });
+
+    it('should return true if case field is of one of the specified types', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher', 'FlagLauncher'])).toBe(true);
+    });
+
+    it('should return false if the types argument is falsy', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, null)).toBe(false);
+    });
+
+    it('should return false if no types are specified', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.isCaseFieldOfType(caseField, [])).toBe(false);
+    });
+
+    it('should return true if case field is of the specified type but type ID and name are different (e.g. "Flags" type)', () => {
+      const caseField = aCaseField('flags', 'flags', 'Flags', 'OPTIONAL', null, null, false, true);
+      caseField.field_type.type = 'Complex';
+      expect(FieldsUtils.isCaseFieldOfType(caseField, ['Flags'])).toBe(true);
+    });
+  });
+
+  describe('getValidationErrorMessageForFlagLauncherCaseField() function test', () => {
+    it('should return empty string if the display context parameter provided is incorrect', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual('');
+    });
+
+    it('should return correct validation error message when creating case flag', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(CREATE)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the creation of the case flag'
+      );
+    });
+
+    it('should return correct validation error message when updating case flag', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(UPDATE)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the update of the selected case flag'
+      );
+    });
+
+    it('should return correct validation error message when creating support request', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(CREATE,EXTERNAL)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the creation of the support request'
+      );
+    });
+
+    it('should return correct validation error message when updating support request', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(UPDATE,EXTERNAL)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the update of the selected support request'
+      );
+    });
+
+    it('should return correct validation error message when creating case flag, Case Flags v2.1 enabled', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(CREATE,VERSION2.1)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the creation of the case flag'
+      );
+    });
+
+    it('should return correct validation error message when updating case flag, Case Flags v2.1 enabled', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(UPDATE,VERSION2.1)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the update of the selected case flag'
+      );
     });
   });
 });

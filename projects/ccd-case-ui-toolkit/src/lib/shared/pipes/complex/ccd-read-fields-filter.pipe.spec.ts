@@ -1,3 +1,4 @@
+import { FormControl, FormGroup } from '@angular/forms';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { ReadFieldsFilterPipe } from './ccd-read-fields-filter.pipe';
 
@@ -87,6 +88,80 @@ describe('ReadFieldsFilterPipe', () => {
     label: 'Claimants details',
     show_condition: null
   }, value);
+
+  const complexCaseField1: CaseField = buildCaseField('ViewApplicationTab', {
+    display_context: 'COMPLEX',
+    field_type: {
+      complex_fields: [],
+      id: 'Party',
+      type: 'Text'
+    },
+    id: 'test',
+    label: 'Claimants details',
+    show_condition: null
+  }, 'test1');
+
+  const complexCaseField2: CaseField = buildCaseField('ViewApplicationTab', {
+    display_context: 'COMPLEX',
+    field_type: {
+      complex_fields: [
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            id: 'YesOrNo',
+            type: 'YesOrNo',
+          },
+          hidden: false,
+          id: 'caseAccepted',
+          label: 'Case Accepted?',
+          show_condition: null,
+          value: null,
+        },
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            id: 'Date',
+            type: 'Date',
+          },
+          hidden: false,
+          id: 'dateAccepted',
+          label: 'Date Accepted',
+          show_condition: 'caseAccepted=\"No\"',
+          value: null,
+        }
+      ],
+      id: 'acceptOrRejectCase',
+      type: 'Complex'
+    },
+    id: 'preAcceptCase',
+    label: '',
+    show_condition: null
+  });
+
+  const METADATA: object = {
+    ACCESS_GRANTED: 'STANDARD',
+    ACCESS_PROCESS: 'NONE',
+    CASE_REFERENCE: 1699282593769522,
+    CASE_TYPE: 'Benefit',
+    JURISDICTION: 'SSCS',
+    STATE: 'readyToList'
+  };
+
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({
+      type: new FormControl('ORGANISATION'),
+      individualFirstName: new FormControl('Aamir'),
+      individualLastName: new FormControl('Khan'),
+      gender: new FormControl('Male'),
+      address: new FormControl('street 1'),
+      preAcceptCase: new FormGroup({
+        caseAccepted: new FormControl('Yes'),
+        dateAccepted: new FormControl('10/01/2023')
+      })
+    })
+  });
 
   let pipe: ReadFieldsFilterPipe;
 
@@ -221,13 +296,13 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(0);
   });
 
-  it('it shoulld evaluate showcondition and set the hidden property of field to false when value doesnt match within complex field', () => {
+  it('should evaluate showcondition and set the hidden property of field to false when value doesn\'t match within complex field', () => {
     const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true);
     expect(RESULT.length).toEqual(3);
     expect(RESULT[1].hidden).toEqual(false);
     expect(RESULT[2].hidden).toEqual(false);
   });
-  it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field', () => {
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match within complex field', () => {
     complexCaseField.value = {
       type: 'ORGANISATION',
       individualFirstName: 'Aamir',
@@ -237,5 +312,71 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(3);
     expect(RESULT[1].hidden).toEqual(true);
     expect(RESULT[2].hidden).toEqual(true);
+  });
+  it('should return blank array if we sent null as input parameters', () => {
+    const RESULT: CaseField[] = pipe.transform(null);
+    expect(RESULT.length).toEqual(0);
+  });
+  it('should return blank array if we sent blank array for complex field type', () => {
+    const RESULT: CaseField[] = pipe.transform(complexCaseField1);
+    expect(RESULT.length).toEqual(0);
+  });
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match within complex field even Formgroup passed', () => {
+    complexCaseField.value = {
+      type: 'ORGANISATION',
+      individualFirstName: 'Aamir',
+      individualLastName: 'Khan'
+    };
+    const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true, FORM_GROUP.controls['data'], undefined, 'address_0');
+    expect(RESULT.length).toEqual(3);
+    expect(RESULT[1].hidden).toEqual(true);
+    expect(RESULT[2].hidden).toEqual(true);
+  });
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
+    complexCaseField2.value = {
+      caseAccepted: 'Yes',
+      dateAccepted: '10/01/2023'
+    };
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, FORM_GROUP.controls['data'], undefined, '');
+    expect(RESULT.length).toEqual(2);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(true);
+  });
+  it('should evaluate showcondition and set the hidden property of field to false when value match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
+    complexCaseField2.value = {
+      caseAccepted: 'Yes',
+      dateAccepted: '10/01/2023'
+    };
+    complexCaseField2.field_type.complex_fields[1].show_condition = 'caseAccepted=\"Yes\"';
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, FORM_GROUP.controls['data'], undefined, '');
+    expect(RESULT.length).toEqual(2);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(false);
+  });
+  it('should evaluate showcondition and set the hidden property of field to false when value match with MetaData field', () => {
+    const formField = FORM_GROUP.controls['data'].value;
+    const allFieldValues = Object.assign(METADATA, formField);
+    complexCaseField2.value = {
+      caseAccepted: 'Yes',
+      dateAccepted: '10/01/2023'
+    };
+    complexCaseField2.field_type.complex_fields[1].show_condition = 'STATE=\"readyToList\"';
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, allFieldValues);
+    expect(RESULT.length).toEqual(2);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(false);
+  });
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match with MetaData field', () => {
+    const formField = FORM_GROUP.controls['data'].value;
+    const allFieldValues = Object.assign(METADATA, formField);
+    complexCaseField2.value = {
+      caseAccepted: 'Yes',
+      dateAccepted: '10/01/2023'
+    };
+    complexCaseField2.field_type.complex_fields[1].show_condition = 'STATE=\"Do Not Show\"';
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, allFieldValues);
+    expect(RESULT.length).toEqual(2);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(true);
   });
 });

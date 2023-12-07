@@ -47,7 +47,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
         })
       )
       .toPromise()
-      .catch(error => this.checkAuthorizationError(error));
+      .catch(error => this.checkErrorGettingCaseView(error));
     this.navigationSubscription = this.navigationNotifierService.navigation.subscribe(navigation => {
       this.navigationTriggered.emit(navigation);
     });
@@ -76,8 +76,9 @@ export class CaseViewComponent implements OnInit, OnDestroy {
       .getDraft(cid);
   }
 
-  private checkAuthorizationError(error: any) {
+  private checkErrorGettingCaseView(error: any) {
     // TODO Should be logged to remote logging infrastructure
+    console.error('Called checkErrorGettingCaseView.');
     console.error(error);
     if (error.status !== 401 && error.status !== 403) {
       this.alertService.error(error.message);

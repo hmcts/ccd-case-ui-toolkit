@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpError } from '../../domain/http';
 import { CallbackErrorsContext } from './domain/error-context';
@@ -7,7 +7,7 @@ import { CallbackErrorsContext } from './domain/error-context';
   selector: 'ccd-callback-errors',
   templateUrl: './callback-errors.html'
 })
-export class CallbackErrorsComponent implements OnInit, OnDestroy {
+export class CallbackErrorsComponent implements OnInit {
 
   public static readonly TRIGGER_TEXT_SUBMIT = 'Submit';
   public static readonly TRIGGER_TEXT_START = 'Start';
@@ -34,12 +34,6 @@ export class CallbackErrorsComponent implements OnInit, OnDestroy {
         this.callbackErrorsContext.emit(callbackErrorsContext);
       }
     });
-  }
-
-  public ngOnDestroy(): void {
-    if (this.callbackErrorsSubject) {
-      this.callbackErrorsSubject.unsubscribe();
-    }
   }
 
   public hasErrors(): boolean {

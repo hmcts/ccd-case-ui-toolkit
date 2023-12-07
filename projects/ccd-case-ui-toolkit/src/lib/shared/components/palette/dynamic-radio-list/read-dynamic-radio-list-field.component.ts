@@ -3,7 +3,7 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 
 @Component({
   selector: 'ccd-read-dynamic-radio-list-field',
-  template: '<span class="text-16">{{caseField.value | ccdDynamicRadioList:caseField.list_items}}</span>',
+  template: '<span class="text-16">{{caseField.value | ccdDynamicRadioList:caseField.list_items | rpxTranslate}}</span>',
 })
 export class ReadDynamicRadioListFieldComponent extends AbstractFieldReadComponent implements OnInit {
 

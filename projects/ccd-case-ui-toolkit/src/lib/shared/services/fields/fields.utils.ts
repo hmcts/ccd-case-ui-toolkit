@@ -5,7 +5,7 @@ import { plainToClassFromExist } from 'class-transformer';
 import { WizardPage } from '../../components/case-editor/domain';
 import { AbstractFormFieldComponent } from '../../components/palette/base-field/abstract-form-field.component';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../components/palette/case-flag/domain/case-flag.model';
-import { CaseFlagStatus } from '../../components/palette/case-flag/enums/case-flag-status.enum';
+import { CaseFlagDisplayContextParameter, CaseFlagStatus } from '../../components/palette/case-flag/enums';
 import { DatePipe } from '../../components/palette/utils';
 import { CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, FieldTypeEnum, FixedListItem, Predicate } from '../../domain';
 import { FormatTranslatorService } from '../case-fields/format-translator.service';
@@ -341,6 +341,9 @@ export class FieldsUtils {
     return this.isFlagsFieldType(caseField.field_type);
   }
 
+  /**
+   * @deprecated Use {@link isCaseFieldOfType} instead, passing 'FlagLauncher' as the single type in the `types` array
+   */
   public static isFlagLauncherCaseField(caseField: CaseField): boolean {
     if (!caseField) {
       return false;
@@ -349,12 +352,32 @@ export class FieldsUtils {
     return caseField.field_type.type === 'FlagLauncher';
   }
 
+  /**
+   * @deprecated Use {@link isCaseFieldOfType} instead, passing 'ComponentLauncher' as the single type in the `types`
+   * array
+   */
   public static isComponentLauncherCaseField(caseField: CaseField): boolean {
     if (!caseField) {
       return false;
     }
 
     return caseField.field_type.type === 'ComponentLauncher';
+  }
+
+  /**
+   * Checks if a {@link CaseField} is of one of the given field types.
+   *
+   * @param caseField The `CaseField` to check
+   * @param types An array of one or more field types
+   * @returns `true` if the `CaseField` type is one of those in the array of types to check against; `false`
+   * otherwise or if `caseField` or `types` are falsy
+   */
+  public static isCaseFieldOfType(caseField: CaseField, types: FieldTypeEnum[]): boolean {
+    if (!caseField || !types) {
+      return false;
+    }
+
+    return types.some(type => type === caseField.field_type.type || type === caseField.field_type.id);
   }
 
   public static isLinkedCasesCaseField(caseField: CaseField): boolean {
@@ -500,7 +523,9 @@ export class FieldsUtils {
                 }
               }));
             }) as FlagDetail[]
-            : null
+            : null,
+          visibility: value ? value['visibility'] : null,
+          groupId: value ? value['groupId'] : null
         },
         pathToFlagsFormGroup,
         caseField
@@ -584,6 +609,23 @@ export class FieldsUtils {
           // Ignore all other field types
       }
       return activeCount;
+  }
+
+  public static getValidationErrorMessageForFlagLauncherCaseField(caseField: CaseField): string {
+    switch(caseField.display_context_parameter) {
+      case CaseFlagDisplayContextParameter.CREATE:
+      case CaseFlagDisplayContextParameter.CREATE_2_POINT_1:
+        return 'Please select Next to complete the creation of the case flag';
+      case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
+        return 'Please select Next to complete the creation of the support request';
+      case CaseFlagDisplayContextParameter.UPDATE:
+      case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
+        return 'Please select Next to complete the update of the selected case flag';
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
+        return 'Please select Next to complete the update of the selected support request';
+      default:
+        return '';
+    }
   }
 
   public buildCanShowPredicate(eventTrigger: CaseEventTrigger, form: any): Predicate<WizardPage> {

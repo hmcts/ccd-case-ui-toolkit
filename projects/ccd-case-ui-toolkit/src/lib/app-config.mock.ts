@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import {
   AbstractAppConfig,
   AccessManagementBasicViewMockModel,
@@ -18,6 +20,14 @@ export class AppMockConfig implements AbstractAppConfig {
   }
 
   public getActivityRetry(): number {
+    return 0;
+  }
+
+  public getTimeoutsForCaseRetrieval(): number[] {
+    return [0];
+  }
+
+  public getTimeoutsCaseRetrievalArtificialDelay(): number {
     return 0;
   }
 
@@ -43,6 +53,18 @@ export class AppMockConfig implements AbstractAppConfig {
 
   public getCaseDataUrl(): string {
     return '';
+  }
+
+  public getEnvironment() {
+    if (this.getActivityUrl()?.includes('.aat.'))
+      return 'aat';
+    else if (this.getActivityUrl()?.includes('.preview.'))
+      return 'preview';
+    else if (this.getActivityUrl()?.includes('.demo.'))
+      return 'demo';
+    else if (this.getActivityUrl()?.includes('.ithc.'))
+      return 'ithc';
+    return 'prod';
   }
 
   public getCaseHistoryUrl(caseId: string, eventId: string): string {
@@ -183,5 +205,13 @@ export class AppMockConfig implements AbstractAppConfig {
 
   public getCaseDataStoreApiUrl(): string {
     return '';
+  }
+
+  public getEnableRestrictedCaseAccessConfig(): boolean {
+    return true;
+  }
+
+  public getEnableCaseFileViewVersion1_1(): boolean {
+    return true;
   }
 }

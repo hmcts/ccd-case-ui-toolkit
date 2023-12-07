@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseViewTrigger } from '../../domain';
 import { OrderService } from '../../services';
 import { attr, text } from '../../test/helpers';
+import { MockRpxTranslatePipe } from '../../test/mock-rpx-translate.pipe';
 import { EventTriggerComponent } from './event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
 
@@ -61,7 +62,8 @@ describe('EventTriggerComponent', () => {
             ReactiveFormsModule
           ],
           declarations: [
-            EventTriggerComponent
+            EventTriggerComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             {provide: OrderService, useValue: orderService}
@@ -190,7 +192,8 @@ describe('EventTriggerComponent', () => {
             ReactiveFormsModule
           ],
           declarations: [
-            EventTriggerComponent
+            EventTriggerComponent,
+            MockRpxTranslatePipe
           ],
           providers: [
             {provide: OrderService, useValue: orderService}

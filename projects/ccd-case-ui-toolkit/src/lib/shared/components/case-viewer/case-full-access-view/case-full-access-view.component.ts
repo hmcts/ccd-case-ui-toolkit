@@ -1,21 +1,25 @@
 import { Location } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
-  SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  ChangeDetectorRef, Component, Input, NgZone, OnChanges, OnDestroy, OnInit,
+  SimpleChanges, ViewChild, ViewContainerRef
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
+import { RpxTranslatePipe } from 'rpx-xui-translation';
 import { Observable, Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
+import { filter } from 'rxjs/operators';
 import {
   NotificationBannerConfig,
   NotificationBannerHeaderClass,
   NotificationBannerType
 } from '../../../../components/banners/notification-banner';
 import { ShowCondition } from '../../../directives';
-import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DisplayMode, Draft, DRAFT_QUERY_PARAM } from '../../../domain';
+import { Activity, CaseField, CaseTab, CaseView, CaseViewTrigger, DRAFT_QUERY_PARAM, DisplayMode, Draft } from '../../../domain';
+import { CaseViewEventIds } from '../../../domain/case-view/case-view-event-ids.enum';
 import {
   ActivityPollingService,
   AlertService,
@@ -43,6 +47,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Go';
   public static readonly UNICODE_SPACE = '%20';
   public static readonly EMPTY_SPACE = ' ';
+  private readonly HEARINGS_TAB_LABEL = 'Hearings';
 
   @Input() public hasPrint = true;
   @Input() public hasEventSelector = true;
@@ -69,6 +74,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public notificationBannerConfig: NotificationBannerConfig;
   public selectedTabIndex = 0;
   public activeCaseFlags = false;
+  public caseFlagsExternalUser = false;
+  private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
+  private subs: Subscription[] = [];
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
@@ -87,7 +95,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly convertHrefToRouterService: ConvertHrefToRouterService,
     private readonly location: Location,
     private readonly crf: ChangeDetectorRef,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly rpxTranslationPipe: RpxTranslatePipe
   ) {
   }
 
@@ -120,7 +129,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       });
     }
 
-    this.checkRouteAndSetCaseViewTab ();
+    this.checkRouteAndSetCaseViewTab();
 
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
@@ -148,6 +157,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.unsubscribe(this.callbackErrorsSubject);
     this.unsubscribe(this.errorSubscription);
     this.unsubscribe(this.subscription);
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   public unsubscribe(subscription: any) {
@@ -157,19 +167,21 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private checkRouteAndSetCaseViewTab(): void {
-    this.router.events
+    this.subs.push(this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         const url = event && (event as any).url;
         if (url) {
-          const tabUrl = url ? url.split('#') : null ;
+          const tabUrl = url ? url.split('#') : null;
           const tab = tabUrl && tabUrl.length > 1 ? tabUrl[tabUrl.length - 1].replaceAll('%20', ' ') : '';
-          const matTab = this.tabGroup._tabs.find( (x) => x.textLabel.toLowerCase() === tab.toLowerCase());
-          if (matTab && matTab.position) {
+          const matTab = this.tabGroup._tabs.find((x) => x.textLabel.toLowerCase() === tab.toLowerCase());
+          // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
+          // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
+          if (matTab?.position) {
             this.tabGroup.selectedIndex = matTab.position;
           }
         }
-      });
+      }));
   }
 
   public postViewActivity(): Observable<Activity[]> {
@@ -182,7 +194,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.triggerText = CaseFullAccessViewComponent.TRIGGER_TEXT_START;
   }
 
-  public applyTrigger(trigger: CaseViewTrigger): void {
+  public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
     this.error = null;
 
     const theQueryParams: Params = {};
@@ -192,7 +204,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     }
 
     // we may need to take care of different triggers in the future
-    if (trigger.id === CaseViewTrigger.DELETE) {
+    if (trigger.id === CaseViewEventIds.QueryManagementRaiseQuery) {
+      await this.router.navigate([`/query-management/query/${this.caseDetails.case_id}`]);
+    } else if (trigger.id === CaseViewEventIds.DELETE) {
       const dialogRef = this.dialog.open(DeleteOrCancelDialogComponent, this.dialogConfig);
       dialogRef.afterClosed().subscribe(result => {
         if (result === 'Delete') {
@@ -204,7 +218,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
             });
         }
       });
-    } else if (this.isDraft() && trigger.id !== CaseViewTrigger.DELETE) {
+    } else if (this.isDraft() && trigger.id !== CaseViewEventIds.DELETE) {
       theQueryParams[DRAFT_QUERY_PARAM] = this.caseDetails.case_id;
       theQueryParams[CaseFullAccessViewComponent.ORIGIN_QUERY_PARAM] = 'viewDraft';
       this.navigationNotifierService.announceNavigation(
@@ -241,8 +255,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public isTriggerButtonDisabled(): boolean {
     return (this.error
-      && this.error.callbackErrors
-      && this.error.callbackErrors.length)
+        && this.error.callbackErrors
+        && this.error.callbackErrors.length)
       || (this.error
         && this.error.details
         && this.error.details.field_errors
@@ -250,7 +264,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public organiseTabPosition(): void {
-    let matTab;
+    let matTab: MatTab;
     const url = this.location.path(true);
     let hashValue = url.substring(url.indexOf('#') + 1);
     if (!url.includes('#') && !url.includes('roles-and-access') && !url.includes('tasks') && !url.includes('hearings')) {
@@ -263,23 +277,31 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       const additionalTabs = [...this.prependedTabs, ...this.appendedTabs];
       if (additionalTabs && additionalTabs.length) {
-        foundTab =  additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
+        foundTab = additionalTabs.find((caseTab: CaseTab) => caseTab.id.toLowerCase() === lastPath.toLowerCase());
       }
       // found tasks or hearing tab
       if (foundTab) {
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id, foundTab.id]).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === foundTab.label);
-          this.tabGroup.selectedIndex = matTab.position;
+          // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
+          // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
+          if (matTab?.position) {
+            this.tabGroup.selectedIndex = matTab.position;
+          }
         });
-      // last path is caseId
+        // last path is caseId
       } else {
         // sort with the order of CCD predefined tabs
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
         // preselect the 1st order of CCD predefined tabs
         const preSelectTab: CaseTab = this.caseDetails.tabs[0];
-        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], {fragment: preSelectTab.label}).then(() => {
+        this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
-          this.tabGroup.selectedIndex = matTab.position;
+          // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
+          // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
+          if (matTab?.position) {
+            this.tabGroup.selectedIndex = matTab.position;
+          }
         });
       }
     } else {
@@ -294,29 +316,34 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       }
       matTab = this.tabGroup._tabs.find((x) =>
         x.textLabel.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase() ===
-                                hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
-      if (matTab && matTab.position) {
+        hashValue.replace(CaseFullAccessViewComponent.EMPTY_SPACE, '').toLowerCase());
+      // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
+      // matTab is not already selected (position is relative; positive = right, negative = left) or it would be 0
+      if (matTab?.position) {
         this.tabGroup.selectedIndex = matTab.position;
       }
     }
   }
 
-  public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    // Update selected tab index
-    this.selectedTabIndex = tabChangeEvent.index;
-
-    const tab = tabChangeEvent.tab['_viewContainerRef'] as ViewContainerRef;
-    const id = (tab.element.nativeElement as HTMLElement).id;
-    // due to some edge case like hidden tab we can't calculate the last index of existing tabs,
-    // so have to hard code the hearings id here
-    if ((tabChangeEvent.index <= 1 && this.prependedTabs && this.prependedTabs.length) ||
-      (this.appendedTabs && this.appendedTabs.length && id === 'hearings')) {
-      this.router.navigate([id], {relativeTo: this.route});
+  // Refactored under EXUI-110 to address infinite tab loop to use tabIndexChanged instead
+  public tabChanged(tabIndexChanged: number): void {
+    const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
+    const tabLabel = matTab.textLabel;
+    // sortedTabs are fragments
+    // appended/prepepended tabs use router navigation
+    if ((tabIndexChanged <= 1 && this.prependedTabs && this.prependedTabs.length) ||
+      (this.appendedTabs?.length && (tabLabel === this.HEARINGS_TAB_LABEL
+        || tabLabel === this.rpxTranslationPipe.transform(this.HEARINGS_TAB_LABEL)))) {
+      // Hack to get ID from tab as it's not easily achieved through Angular Material Tabs
+      const tab = matTab['_viewContainerRef'] as ViewContainerRef;
+      const id = (tab.element.nativeElement as HTMLElement).id;
+      // cases/case-details/:caseId/hearings
+      // cases/case-details/:caseId/roles-and-access
+      this.router.navigate([id], { relativeTo: this.route });
     } else {
-      const label = tabChangeEvent.tab.textLabel;
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id]).then(() => {
-        window.location.hash = label;
-      });
+      // Routing here is based on tab label, not ideal
+      // cases/case-details/:caseId#tabLabel
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel });
     }
   }
 
@@ -326,6 +353,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     const targetTabIndex = this.tabGroup._tabs.toArray().findIndex(tab => tab.textLabel === triggerOutputEventText);
     if (targetTabIndex > -1) {
       this.selectedTabIndex = targetTabIndex;
+      this.tabGroup.selectedIndex = targetTabIndex;
     }
   }
 
@@ -337,6 +365,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       : null;
 
     if (caseFlagsTab) {
+      // Check whether the FlagLauncher CaseField is in external mode or not; the notification banner should not be
+      // displayed for external users
+      this.caseFlagsExternalUser = caseFlagsTab.fields.find(
+        caseField => FieldsUtils.isFlagLauncherCaseField(caseField)).display_context_parameter === this.caseFlagsReadExternalMode;
+
       // Get the active case flags count
       // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
       // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
@@ -386,7 +419,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
-
     if (this.caseDetails.triggers && this.error) {
       this.resetErrors();
     }
@@ -431,4 +463,11 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.alertService.clear();
   }
 
+  private getUrlFragment(url: string) {
+    return url.split('#')[url.split('#').length - 1];
+  }
+
+  private getTabIndexByTabLabel(tabGroup: MatTabGroup, tabLabel) {
+    return tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tabLabel.toLowerCase());
+  }
 }

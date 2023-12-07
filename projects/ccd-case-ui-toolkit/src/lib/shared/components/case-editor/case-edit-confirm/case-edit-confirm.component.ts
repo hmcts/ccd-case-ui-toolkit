@@ -20,15 +20,12 @@ export class CaseEditConfirmComponent {
   public caseFields: CaseField[];
   public editForm: FormGroup;
 
-  private readonly caseId: string;
-
   constructor(private readonly caseEdit: CaseEditComponent, private readonly router: Router) {
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
     this.caseFields = this.getCaseFields();
     if (this.caseEdit.confirmation) {
       this.confirmation = this.caseEdit.confirmation;
-      this.caseId = this.caseEdit.confirmation.getCaseId();
     } else {
       this.router.navigate(['/']);
     }
@@ -39,7 +36,7 @@ export class CaseEditConfirmComponent {
   }
 
   public getCaseId(): string {
-    return (this.caseEdit.caseDetails ? this.caseEdit.caseDetails.case_id : '');
+    return this.caseEdit?.caseDetails?.case_id || '';
   }
 
   public getCaseTitle(): string {

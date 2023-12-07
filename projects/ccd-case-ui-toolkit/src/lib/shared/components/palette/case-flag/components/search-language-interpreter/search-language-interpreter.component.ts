@@ -1,15 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
+import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagState, Language } from '../../domain';
-import {
-  CaseFlagFieldState,
-  CaseFlagWizardStepTitle,
-  SearchLanguageInterpreterErrorMessage,
-  SearchLanguageInterpreterStep
-} from '../../enums';
+import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
+import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';
 
 @Component({
   selector: 'ccd-search-language-interpreter',
@@ -17,26 +15,24 @@ import {
   styleUrls: ['./search-language-interpreter.component.scss']
 })
 export class SearchLanguageInterpreterComponent implements OnInit {
+  public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {
+    return SearchLanguageInterpreterStep;
+  }
+  public readonly SearchLanguageInterpreterControlNames = SearchLanguageInterpreterControlNames;
 
   @Input()
   public formGroup: FormGroup;
 
   @Input()
-  public languages: Language[];
-
-  @Input()
-  public flagCode: string;
+  public flagType: FlagType;
 
   @Output()
   public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
   public readonly minSearchCharacters = 3;
-  public readonly languageSearchTermControlName = 'languageSearchTerm';
-  public readonly manualLanguageEntryControlName = 'manualLanguageEntry';
   public filteredLanguages$: Observable<Language[]>;
   public searchTerm = '';
   public isCheckboxEnabled = false;
-  public searchLanguageInterpreterTitle: CaseFlagWizardStepTitle;
   public searchLanguageInterpreterHint: SearchLanguageInterpreterStep;
   public errorMessages: ErrorMessage[] = [];
   public languageNotSelectedErrorMessage = '';
@@ -47,20 +43,15 @@ export class SearchLanguageInterpreterComponent implements OnInit {
   private readonly languageMaxCharLimit = 80;
   private readonly signLanguageFlagCode = 'RA0042';
 
-  public get searchLanguageInterpreterStep(): typeof SearchLanguageInterpreterStep {
-    return SearchLanguageInterpreterStep;
-  }
+  constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
   public ngOnInit(): void {
-    this.searchLanguageInterpreterTitle = this.flagCode === this.signLanguageFlagCode
-      ? CaseFlagWizardStepTitle.SEARCH_SIGN_LANGUAGE_INTERPRETER
-      : CaseFlagWizardStepTitle.SEARCH_LANGUAGE_INTERPRETER;
-    this.searchLanguageInterpreterHint = this.flagCode === this.signLanguageFlagCode
+    this.searchLanguageInterpreterHint = this.flagType.flagCode === this.signLanguageFlagCode
       ? SearchLanguageInterpreterStep.SIGN_HINT_TEXT
       : SearchLanguageInterpreterStep.HINT_TEXT;
-    this.formGroup.addControl(this.languageSearchTermControlName, new FormControl());
-    this.formGroup.addControl(this.manualLanguageEntryControlName, new FormControl());
-    this.filteredLanguages$ = this.formGroup.get(this.languageSearchTermControlName).valueChanges.pipe(
+    this.formGroup.addControl(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM, new FormControl());
+    this.formGroup.addControl(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY, new FormControl());
+    this.filteredLanguages$ = this.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).valueChanges.pipe(
       // Need to check type of input because it changes to object (i.e. Language) when a value is selected from the
       // autocomplete panel, instead of string when a value is being typed in
       map(input => typeof input === 'string' ? input : input.value),
@@ -89,7 +80,7 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     // If the checkbox is disabled, i.e. unchecked, then clear the manual language entry FormControl of any value to
     // prevent it being retained even when the field itself is hidden
     if (!this.isCheckboxEnabled) {
-      this.formGroup.get(this.manualLanguageEntryControlName).setValue(null);
+      this.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).setValue(null);
     }
   }
 
@@ -104,37 +95,37 @@ export class SearchLanguageInterpreterComponent implements OnInit {
     this.languageEnteredInBothFieldsErrorMessage = null;
     this.errorMessages = [];
     // Checkbox not enabled means the user has opted to search for and select the language
-    if (!this.isCheckboxEnabled && !this.formGroup.get(this.languageSearchTermControlName).value) {
+    if (!this.isCheckboxEnabled && !this.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).value) {
       this.languageNotSelectedErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED;
       this.errorMessages.push({
         title: '',
         description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
-        fieldId: this.languageSearchTermControlName
+        fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
       });
     }
     // Checkbox enabled means the user has opted to enter the language manually
     if (this.isCheckboxEnabled) {
-      if (!this.formGroup.get(this.manualLanguageEntryControlName).value) {
+      if (!this.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).value) {
         this.languageNotEnteredErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED;
         this.errorMessages.push({
           title: '',
           description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
-          fieldId: this.manualLanguageEntryControlName
+          fieldId: SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY
         });
-      } else if (this.formGroup.get(this.manualLanguageEntryControlName).value.length > this.languageMaxCharLimit) {
+      } else if (this.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).value.length > this.languageMaxCharLimit) {
         this.languageCharLimitErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_CHAR_LIMIT_EXCEEDED;
         this.errorMessages.push({
           title: '',
           description: SearchLanguageInterpreterErrorMessage.LANGUAGE_CHAR_LIMIT_EXCEEDED,
-          fieldId: this.manualLanguageEntryControlName
+          fieldId: SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY
         });
-      } else if (this.formGroup.get(this.languageSearchTermControlName).value) {
+      } else if (this.formGroup.get(SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM).value) {
         // Language entry is permitted in only one field at a time
         this.languageEnteredInBothFieldsErrorMessage = SearchLanguageInterpreterErrorMessage.LANGUAGE_ENTERED_IN_BOTH_FIELDS;
         this.errorMessages.push({
           title: '',
           description: SearchLanguageInterpreterErrorMessage.LANGUAGE_ENTERED_IN_BOTH_FIELDS,
-          fieldId: this.languageSearchTermControlName
+          fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
         });
       }
     }
@@ -145,8 +136,18 @@ export class SearchLanguageInterpreterComponent implements OnInit {
       return [];
     }
 
-    return this.languages
-      ? this.languages.filter(language => language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0))
+    return this.flagType.listOfValues
+      ? this.flagType.listOfValues.filter(language =>
+        // If a language has both English and Welsh values, match only on the value appropriate for the page language,
+        // i.e. if RpxTranslationService.language is 'cy' then match on the value_cy property only. This is to prevent
+        // cross-matches, where a user enters a search term in English and sees the corresponding Welsh value (because
+        // the page language is Welsh) and vice versa
+        this.rpxTranslationService.language === 'cy' && language.value && language.value_cy &&
+        language.value_cy.toLowerCase().includes(searchTerm.toLowerCase(), 0) ||
+        this.rpxTranslationService.language !== 'cy' && language.value && language.value_cy &&
+        language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0) ||
+        !language.value_cy && language.value.toLowerCase().includes(searchTerm.toLowerCase(), 0) ||
+        !language.value && language.value_cy.toLowerCase().includes(searchTerm.toLowerCase(), 0))
       : [];
   }
 }

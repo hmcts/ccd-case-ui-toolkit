@@ -1,6 +1,7 @@
 import { Component, ComponentFactoryResolver, Injector, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { plainToClassFromExist } from 'class-transformer';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { PaletteService } from '../palette.service';
 import { AbstractFieldReadComponent } from './abstract-field-read.component';
@@ -12,7 +13,6 @@ const FIX_CASEFIELD_FOR = [ 'FixedList', 'DynamicList', 'DynamicMultiSelectList'
   templateUrl: './field-read.html'
 })
 export class FieldReadComponent extends AbstractFieldReadComponent implements OnInit {
-
   @Input()
   public withLabel = false;
 
@@ -61,8 +61,13 @@ export class FieldReadComponent extends AbstractFieldReadComponent implements On
       component.instance['caseReference'] = this.caseReference;
       component.instance['context'] = this.context;
       component.instance['markdownUseHrefAsRouterLink'] = this.markdownUseHrefAsRouterLink;
+      component.instance['labelCanBeTranslated'] = this.labelCanBeTranslated(this.caseField);
 
       this.fieldContainer.insert(component.hostView);
     });
+  }
+
+  private labelCanBeTranslated(caseField: CaseField): boolean {
+    return !!(caseField.field_type.type === 'Label' && caseField.label);
   }
 }
