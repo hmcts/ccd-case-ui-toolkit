@@ -45,7 +45,7 @@ describe('ReadYesNoFieldComponent', () => {
             MockRpxTranslatePipe
           ],
           providers: [
-            {provide: YesNoService, useValue: yesNoService}
+            { provide: YesNoService, useValue: yesNoService }
           ]
         })
         .compileComponents();
@@ -92,7 +92,7 @@ describe('ReadYesNoFieldComponent', () => {
             MockRpxTranslatePipe
           ],
           providers: [
-            {provide: YesNoService, useValue: yesNoService}
+            { provide: YesNoService, useValue: yesNoService }
           ]
         })
         .compileComponents();

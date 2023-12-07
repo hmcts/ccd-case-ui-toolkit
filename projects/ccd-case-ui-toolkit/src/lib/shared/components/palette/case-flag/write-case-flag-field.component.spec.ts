@@ -352,9 +352,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ WriteCaseFlagFieldComponent, MockRpxTranslatePipe ],
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [WriteCaseFlagFieldComponent, MockRpxTranslatePipe],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseEditDataService, useValue: caseEditDataServiceSpy },
@@ -362,7 +362,7 @@ describe('WriteCaseFlagFieldComponent', () => {
         { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -554,7 +554,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       caseField: component.flagsData[0].caseField
     } as FlagsWithFormGroupPath;
     component.caseFlagParentFormGroup = new FormGroup({
-      selectedLocation: new FormControl({...newFlag1})
+      selectedLocation: new FormControl({ ...newFlag1 })
     });
     component.addFlagToCollection();
     expect(component.determineLocationForFlag).toHaveBeenCalled();
@@ -572,7 +572,7 @@ describe('WriteCaseFlagFieldComponent', () => {
       caseField: component.flagsData[1].caseField
     } as FlagsWithFormGroupPath;
     component.caseFlagParentFormGroup = new FormGroup({
-      selectedLocation: new FormControl({...newFlag2})
+      selectedLocation: new FormControl({ ...newFlag2 })
     });
     component.addFlagToCollection();
     // Check there are now two case flag values in the caseField object for caseFlag1, and three in caseFlag2
@@ -629,7 +629,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   });
 
   it('should populate a new FlagDetail instance correctly from the form values', () => {
-    const flagStatusActiveKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === 'Active');
+    const flagStatusActiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Active');
     component.caseFlagParentFormGroup = new FormGroup({
       [CaseFlagFormFields.FLAG_TYPE]: new FormControl({
         name: 'Other',
@@ -662,9 +662,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(flagDetail.flagUpdateComment).toEqual(component.caseFlagParentFormGroup.value['statusReason']);
     expect(flagDetail.dateTimeCreated).toBeTruthy();
     expect(flagDetail.path).toEqual([
-      {id: null, value: 'Part1'},
-      {id: null, value: 'Part2'},
-      {id: null, value: 'Part3'}
+      { id: null, value: 'Part1' },
+      { id: null, value: 'Part2' },
+      { id: null, value: 'Part3' }
     ]);
     expect(flagDetail.hearingRelevant).toEqual('No');
     expect(flagDetail.flagCode).toEqual(component.caseFlagParentFormGroup.value[CaseFlagFormFields.FLAG_TYPE].flagCode);
@@ -674,7 +674,7 @@ describe('WriteCaseFlagFieldComponent', () => {
 
   it('should populate a new FlagDetail instance correctly from the form values when selected language is Welsh', () => {
     rpxTranslationServiceSpy.language = 'cy';
-    const flagStatusActiveKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === 'Active');
+    const flagStatusActiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Active');
     component.caseFlagParentFormGroup = new FormGroup({
       [CaseFlagFormFields.FLAG_TYPE]: new FormControl({
         name: 'Other',
@@ -703,9 +703,9 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(flagDetail.flagUpdateComment).toEqual(component.caseFlagParentFormGroup.value['statusReason']);
     expect(flagDetail.dateTimeCreated).toBeTruthy();
     expect(flagDetail.path).toEqual([
-      {id: null, value: 'Part1'},
-      {id: null, value: 'Part2'},
-      {id: null, value: 'Part3'}
+      { id: null, value: 'Part1' },
+      { id: null, value: 'Part2' },
+      { id: null, value: 'Part3' }
     ]);
     expect(flagDetail.hearingRelevant).toEqual('Yes');
     expect(flagDetail.flagCode).toEqual(component.caseFlagParentFormGroup.value[CaseFlagFormFields.FLAG_TYPE].flagCode);
@@ -725,7 +725,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   it('should update flag in collection when updating a case flag', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
-    const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === 'Inactive');
+    const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Inactive');
     component.caseFlagParentFormGroup = new FormGroup({
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('A description'),
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),
@@ -779,7 +779,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   it('should retain existing values for otherDescription, otherDescription_cy and flagComment_cy fields if not being updated', () => {
     component.selectedFlag = selectedFlag;
     component.selectedFlag.caseField = component.flagsData[0].caseField;
-    const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === 'Inactive');
+    const flagStatusInactiveKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === 'Inactive');
     const firstUpdateFormGroup = new FormGroup({
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('A description'),
       [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH]: new FormControl('A description (Welsh)'),
@@ -1187,7 +1187,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(newFlagDetailInstance.availableExternally).toBe('No');
     component.caseFlagParentFormGroup.setValue(
       {
-        flagType: {...flagType, hearingRelevant: false, externallyAvailable: true},
+        flagType: { ...flagType, hearingRelevant: false, externallyAvailable: true },
         languageSearchTerm: null,
         manualLanguageEntry: 'TypeScript',
         otherDescription: null,
@@ -1283,7 +1283,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(newFlagDetailInstance.availableExternally).toBe('No');
     component.caseFlagParentFormGroup.setValue(
       {
-        flagType: {...flagType, hearingRelevant: false, externallyAvailable: true},
+        flagType: { ...flagType, hearingRelevant: false, externallyAvailable: true },
         languageSearchTerm: null,
         manualLanguageEntry: 'TypeScript',
         otherDescription: null,
@@ -1378,7 +1378,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     expect(newFlagDetailInstance.availableExternally).toBe('Yes');
     component.caseFlagParentFormGroup.setValue(
       {
-        flagType: {...flagType, hearingRelevant: false, defaultStatus: 'Active', externallyAvailable: true},
+        flagType: { ...flagType, hearingRelevant: false, defaultStatus: 'Active', externallyAvailable: true },
         languageSearchTerm: null,
         manualLanguageEntry: 'TypeScript',
         otherDescription: null,
@@ -1470,7 +1470,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   it('should set selectedFlagsLocation on the Case Flag parent FormGroup', () => {
     component.caseFlagParentFormGroup = {
       value: {
-        selectedLocation: {}
+        selectedLocation: { }
       }
     } as FormGroup;
     const selectedFlagsLocation = {

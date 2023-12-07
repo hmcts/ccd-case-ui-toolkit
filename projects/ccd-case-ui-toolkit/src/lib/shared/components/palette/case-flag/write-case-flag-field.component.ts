@@ -88,10 +88,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
     // From this point, this.formGroup refers to the FormGroup for the FlagLauncher field, not the parent FormGroup
     this.formGroup = this.registerControl(new FormGroup({}, {
-      validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+      validators: (_: AbstractControl): { [key: string]: boolean } | null => {
         if (!this.allCaseFlagStagesCompleted) {
           // Return an error to mark the FormGroup as invalid if not all Case Flag stages have been completed
-          return {notAllCaseFlagStagesCompleted: true};
+          return { notAllCaseFlagStagesCompleted: true };
         }
         return null;
       }
@@ -117,9 +117,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
       if (this.route.snapshot.data.eventTrigger.case_fields) {
         this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
-          .reduce((flags, caseField) => {
-            return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
-          }, []);
+          .reduce((flags, caseField) => FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField), []);
 
         // Set displayContextParameter (to be passed as an input to ManageCaseFlagsComponent for setting correct title)
         this.displayContextParameter =

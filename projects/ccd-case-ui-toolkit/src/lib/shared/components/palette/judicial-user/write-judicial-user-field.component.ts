@@ -30,10 +30,10 @@ export class WriteJudicialUserFieldComponent extends WriteComplexFieldComponent 
   public jurisdictionSubscription: Subscription;
 
   constructor(private readonly jurisdictionService: JurisdictionService,
-              private readonly sessionStorageService: SessionStorageService,
-              private readonly caseFlagRefDataService: CaseFlagRefdataService,
-              private readonly compoundPipe: IsCompoundPipe,
-              private readonly validatorsService: FormValidatorsService) {
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly caseFlagRefDataService: CaseFlagRefdataService,
+    private readonly compoundPipe: IsCompoundPipe,
+    private readonly validatorsService: FormValidatorsService) {
     super(compoundPipe, validatorsService);
   }
 

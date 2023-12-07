@@ -75,7 +75,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
 
   public ngOnInit(): void {
-    this.isCaseLevelFlag = this.selectedFlagsLocation.flags.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId;
+    this.isCaseLevelFlag = this.selectedFlagsLocation?.flags?.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId;
     this.flagTypes = [];
     const flagType = this.formGroup['caseField']
       && this.formGroup['caseField'].id
@@ -89,9 +89,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     this.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(false));
 
     // Should clear descriptionControlName if flagTypeControlName is changed
-    this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).valueChanges
+    this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.valueChanges
       .subscribe(_ => {
-        this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).setValue('');
+        this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.setValue('');
         this.cachedPath = [];
 
         // required to clear language interpreter
@@ -129,9 +129,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.flagRefdata$) {
-      this.flagRefdata$.unsubscribe();
-    }
+    this.flagRefdata$?.unsubscribe();
     this.flagTypeControlChangesSubscription?.unsubscribe();
   }
 
@@ -151,13 +149,13 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     }
 
     // If the selected flag type is a parent, load the list of child flag types and reset the current selection
-    if (this.selectedFlagType && this.selectedFlagType.isParent) {
+    if (this.selectedFlagType?.isParent) {
       // Cache the current flag type selection before it is reset - this is needed for displaying its name as the title
       // when displaying the next set of child flags
       this.cachedFlagType = this.selectedFlagType;
       this.flagTypes = this.selectedFlagType.childFlags;
       this.cachedPath?.shift();
-      this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).setValue(this.cachedPath?.length ? this.cachedPath[0] : null, { emitEvent: false });
+      this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(this.cachedPath?.length ? this.cachedPath[0] : null, { emitEvent: false });
     }
   }
 
@@ -182,19 +180,19 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
         : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
       }
       this.flagTypeNotSelectedErrorMessage = errorMessage;
-      this.errorMessages.push({title: '', description: errorMessage, fieldId: 'conditional-radios-list'});
+      this.errorMessages.push({ title: '', description: errorMessage, fieldId: 'conditional-radios-list' });
     }
     if (this.otherFlagTypeSelected) {
-      const otherFlagTypeDescription = this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
+      const otherFlagTypeDescription = this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.value;
       if (!otherFlagTypeDescription) {
         this.flagTypeErrorMessage = this.isDisplayContextParameterExternal
           ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED_EXTERNAL
           : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED;
-        this.errorMessages.push({title: '', description: `${this.flagTypeErrorMessage}`, fieldId: 'other-flag-type-description'});
+        this.errorMessages.push({ title: '', description: `${this.flagTypeErrorMessage}`, fieldId: 'other-flag-type-description' });
       }
       if (otherFlagTypeDescription.length > this.maxCharactersForOtherFlagType) {
         this.flagTypeErrorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED;
-        this.errorMessages.push({title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description'});
+        this.errorMessages.push({ title: '', description: `${SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED}`, fieldId: 'other-flag-type-description' });
       }
     }
   }
@@ -202,7 +200,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   private processFlagTypes(flagTypes: FlagType[]): void {
     // First (and only) object in the returned array should be the top-level "Party" flag type
     // The "Other" flag type should be removed from the top level if the user is external
-    this.flagTypes = flagTypes[0].childFlags.filter(flag =>
+    this.flagTypes = flagTypes[0].childFlags.filter((flag) =>
       this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
 
     const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
@@ -221,7 +219,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     // Set error flag on component to remove the "Next" button (user cannot proceed with flag creation)
     this.refdataError = true;
     this.errorMessages = [];
-    this.errorMessages.push({title: '', description: error.message, fieldId: 'conditional-radios-list'});
+    this.errorMessages.push({ title: '', description: error.message, fieldId: 'conditional-radios-list' });
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
   }

@@ -102,19 +102,19 @@ describe('UnLinkCasesComponent', () => {
   const linkedCasesService = {
     caseId: '1682374819203471',
     linkedCases,
-    getAllLinkedCaseInformation() {},
-    getCaseName() {},
+    getAllLinkedCaseInformation() { },
+    getCaseName() { },
     caseFieldValue: [],
   };
 
   beforeEach(waitForAsync(() => {
     const FORM_GROUP = new FormGroup({
-      data: new FormGroup({caseLinks: new FormControl('SOME_VALUE')})
+      data: new FormGroup({ caseLinks: new FormControl('SOME_VALUE') })
     });
     caseEditComponentStub = {
       form: FORM_GROUP,
       data: '',
-      eventTrigger: {case_fields: []},
+      eventTrigger: { case_fields: [] },
       hasPrevious: () => true,
       getPage: () => null,
       confirmation: {
@@ -123,9 +123,13 @@ describe('UnLinkCasesComponent', () => {
         getHeader: () => 'Header',
         getBody: () => 'A body with mark down'
       },
-      caseDetails: {case_id: '1234567812345678', tabs: [{id: 'tab1', label: 'tabLabel1',
-        fields: []}], metadataFields: [],
-        state: {id: '1', name: 'Incomplete Application', title_display: '# 1234567812345678: test'}},
+      caseDetails: {
+        case_id: '1234567812345678', tabs: [{
+          id: 'tab1', label: 'tabLabel1',
+          fields: []
+        }], metadataFields: [],
+        state: { id: '1', name: 'Incomplete Application', title_display: '# 1234567812345678: test' }
+      },
     };
     casesService = createSpyObj('CasesService', ['getCaseViewV2']);
     TestBed.configureTestingModule({
@@ -143,7 +147,7 @@ describe('UnLinkCasesComponent', () => {
         { provide: CaseEditComponent, useValue: caseEditComponentStub },
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

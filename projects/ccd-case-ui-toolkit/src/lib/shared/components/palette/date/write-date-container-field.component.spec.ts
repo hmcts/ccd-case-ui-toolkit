@@ -3,8 +3,8 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RpxTranslationService } from 'rpx-xui-translation';
 
@@ -61,9 +61,11 @@ describe('WriteDateContainerFieldComponent', () => {
         ],
         providers: [
           FormatTranslatorService,
-          {provide: CaseFieldService, useValue: caseFieldService},
-          { provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
-              ['getTranslation$', 'translate']) },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          {
+            provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
+              ['getTranslation$', 'translate'])
+          },
         ]
       })
       .compileComponents();

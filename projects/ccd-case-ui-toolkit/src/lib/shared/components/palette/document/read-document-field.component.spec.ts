@@ -76,7 +76,7 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: ActivatedRoute, useValue: {snapshot: {params: {cid: '123'}}}},
+            { provide: ActivatedRoute, useValue: { snapshot: { params: { cid: '123' } } } },
             { provide: CasesService, useValue: mockCasesService }
           ]
         })
@@ -171,7 +171,7 @@ describe('ReadDocumentFieldComponent', () => {
             { provide: DocumentManagementService, useValue: mockDocumentManagementService },
             { provide: WindowService, useValue: windowService },
             { provide: Router, useValue: router },
-            { provide: ActivatedRoute, useValue: {snapshot: {params: {cid: '123'}}}},
+            { provide: ActivatedRoute, useValue: { snapshot: { params: { cid: '123' } } } },
             { provide: CasesService, useValue: mockCasesService }
           ]
         })

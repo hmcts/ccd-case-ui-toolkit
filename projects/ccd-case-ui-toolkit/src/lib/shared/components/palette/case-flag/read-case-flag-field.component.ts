@@ -48,20 +48,19 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
     if (this.context === PaletteContext.DEFAULT) {
       // Determine the tab this CaseField belongs to (should be only one), from the CaseView object in the snapshot
       // data, and extract all flags-related data from its Flags fields
-      if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
+      if (this.route.snapshot.data.case?.tabs) {
         this.flagsData = (this.route.snapshot.data.case.tabs as CaseTab[])
-        .filter(tab => tab.fields && tab.fields
-          // There could be more than one FlagLauncher field instance so an additional check of caseField ID is
-          // required to ensure the correct instance is obtained
-          .some(caseField => caseField.field_type.type === 'FlagLauncher' && caseField.id === this.caseField.id))
-        [0].fields.reduce((flags, caseField) => {
-          return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
-        }, []);
+          .filter((tab) => tab.fields?.some(
+            // There could be more than one FlagLauncher field instance so an additional check of caseField ID is
+            // required to ensure the correct instance is obtained
+            (caseField) => caseField.field_type.type === 'FlagLauncher' && caseField.id === this.caseField.id))
+          [0].fields?.reduce((flags, caseField) => FieldsUtils.extractFlagsDataFromCaseField(
+            flags, caseField, caseField.id, caseField), []);
       }
 
       // Separate the party-level and case-level flags
       this.partyLevelCaseFlagData = this.flagsData.filter(
-        instance => instance.pathToFlagsFormGroup !== this.caseLevelCaseFlagsFieldId);
+        (instance) => instance.pathToFlagsFormGroup !== this.caseLevelCaseFlagsFieldId);
       // If the user is internal, group all flags data by groupId where present so they see a combined collection of
       // internal and external flags data for each party
       if (!this.caseFlagsExternalUser) {
@@ -92,7 +91,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
 
       // There will be only one case-level flags instance containing all case-level flag details
       this.caseLevelCaseFlagData = this.flagsData.find(
-        instance => instance.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
+        (instance) => instance.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
     } else if (this.context === PaletteContext.CHECK_YOUR_ANSWER) {
       // If the context is PaletteContext.CHECK_YOUR_ANSWER, the Flags data is already present within the FormGroup.
       // The FlagLauncher component, WriteCaseFlagFieldComponent, holds a reference to:
@@ -102,12 +101,12 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // The FlagLauncher component holds a reference (selectedFlagsLocation) containing the CaseField instance to
         // which the new flag has been added
         if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE ||
-            flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
-            flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL)
-            && flagLauncherComponent.selectedFlagsLocation) {
-          this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
-          this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
-            flagLauncherComponent.selectedFlagsLocation);
+          flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
+          flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) &&
+          flagLauncherComponent.selectedFlagsLocation) {
+            this.pathToFlagsFormGroup = flagLauncherComponent.selectedFlagsLocation.pathToFlagsFormGroup;
+            this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
+              flagLauncherComponent.selectedFlagsLocation);
         // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
         // Manage Case Flags journey
         } else if ((flagLauncherComponent.caseField.display_context_parameter === CaseFlagDisplayContextParameter.UPDATE ||

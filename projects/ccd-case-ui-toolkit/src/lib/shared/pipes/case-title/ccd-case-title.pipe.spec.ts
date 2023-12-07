@@ -53,8 +53,8 @@ describe('CcdCaseTitlePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{provide: PlaceholderService, useValue: placeholderService},
-                  {provide: FieldsUtils, useValue: fieldsUtils}]
+      providers: [{ provide: PlaceholderService, useValue: placeholderService },
+      { provide: FieldsUtils, useValue: fieldsUtils }]
     });
     ccdCaseTitle = new CcdCaseTitlePipe(placeholderService, fieldsUtils);
   });

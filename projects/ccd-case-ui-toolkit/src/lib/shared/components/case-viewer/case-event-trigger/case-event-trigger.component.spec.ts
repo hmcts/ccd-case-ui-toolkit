@@ -148,7 +148,7 @@ describe('CaseEventTriggerComponent', () => {
       navigate: jasmine.createSpy('navigate'),
       url: ''
     };
-    router.navigate.and.returnValue({then: f => f()});
+    router.navigate.and.returnValue({ then: f => f() });
 
     TestBed
       .configureTestingModule({
@@ -201,7 +201,7 @@ describe('CaseEventTriggerComponent', () => {
   it('should navigate to case view upon successful event creation', () => {
     casesService.createEvent.and.returnValue(of({}));
 
-    component.submitted({caseId: 123});
+    component.submitted({ caseId: 123 });
 
     expect(router.navigate).toHaveBeenCalledWith([`/${URL_SEGMENTS[0].path}/${URL_SEGMENTS[1].path}`]);
   });
@@ -209,7 +209,7 @@ describe('CaseEventTriggerComponent', () => {
   it('should alert success message after navigation upon successful event creation', () => {
     casesService.createEvent.and.returnValue(of({}));
 
-    component.submitted({caseId: 123});
+    component.submitted({ caseId: 123 });
 
     expect(alertService.success).toHaveBeenCalled();
   });
@@ -217,7 +217,7 @@ describe('CaseEventTriggerComponent', () => {
   it('should alert success message after navigation upon successful event creation and call back', () => {
     casesService.createEvent.and.returnValue(of({}));
 
-    component.submitted({caseId: 123, status: 'happy'});
+    component.submitted({ caseId: 123, status: 'happy' });
 
     expect(alertService.success).toHaveBeenCalled();
   });
@@ -225,7 +225,7 @@ describe('CaseEventTriggerComponent', () => {
   it('should alert warning message after navigation upon successful event creation but incomplete call back', () => {
     casesService.createEvent.and.returnValue(of({}));
 
-    component.submitted({caseId: 123, status: 'INCOMPLETE_CALLBACK'});
+    component.submitted({ caseId: 123, status: 'INCOMPLETE_CALLBACK' });
 
     expect(alertService.warning).toHaveBeenCalled();
   });

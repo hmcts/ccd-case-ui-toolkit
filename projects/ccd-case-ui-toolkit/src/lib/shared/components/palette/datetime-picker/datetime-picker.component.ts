@@ -1,16 +1,16 @@
 import {
   NgxMatDateAdapter,
   NgxMatDateFormats,
-  NgxMatDatetimePicker,
+  NgxMatDatetimepicker,
   NGX_MAT_DATE_FORMATS
 } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { Component, ElementRef, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MAT_DATE_LOCALE, ThemePalette } from '@angular/material/core';
+import { MAT_LEGACY_DATE_LOCALE, LegacyThemePalette as ThemePalette } from '@angular/material/legacy-core';
 import { Moment } from 'moment/moment';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
 import { AbstractFormFieldComponent } from '../base-field/abstract-form-field.component';
@@ -23,9 +23,10 @@ import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
   encapsulation: ViewEncapsulation.None,
   providers: [
     { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-    { provide: NgxMatDateAdapter,
+    {
+      provide: NgxMatDateAdapter,
       useClass: NgxMatMomentAdapter,
-      deps: [MAT_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+      deps: [MAT_LEGACY_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
     { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
   ]
@@ -52,7 +53,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
   public maxError = false;
   public dateTimeEntryFormat: string;
 
-  @ViewChild('picker', { static: false }) public datetimePicker: NgxMatDatetimePicker<any>;
+  @ViewChild('picker', { static: false }) public datetimePicker: NgxMatDatetimepicker<any>;
   @ViewChild('input', { static: false }) public inputElement: ElementRef<HTMLInputElement>;
 
   @Input() public dateControl: FormControl = new FormControl(new Date());
@@ -72,7 +73,7 @@ export class DatetimePickerComponent extends AbstractFormFieldComponent implemen
     // set date control based on mandatory field
     this.dateControl = (this.caseField.isMandatory ?
       this.registerControl(new FormControl(this.caseField.value || '', [Validators.required]))
-       : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
+      : this.registerControl(new FormControl(this.caseField.value))) as FormControl;
     // in resetting the format just after the page initialises, the input can be reformatted
     // otherwise the last format given will be how the text shown will be displayed
     setTimeout(() => {

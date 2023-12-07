@@ -527,15 +527,15 @@ describe('ReadCaseFlagFieldComponent', () => {
     caseFlagStateServiceSpy.fieldStateToNavigate = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
 
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ReadCaseFlagFieldComponent, MockRpxTranslatePipe ],
+      imports: [RouterTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ReadCaseFlagFieldComponent, MockRpxTranslatePipe],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -870,7 +870,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
-    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({ name: 'New flag' } as FlagDetail);
     // Check the correct display context parameter for the "Review flag details" summary page has been set
     expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
   });
@@ -887,7 +887,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
-    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({ name: 'New flag' } as FlagDetail);
     // Check the correct display context parameter for the "Review flag details" summary page has been set
     expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE_2_POINT_1);
   });
@@ -904,7 +904,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(caseFlag2PartyName);
-    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag'} as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({ name: 'New flag' } as FlagDetail);
     // Check the correct display context parameter for the "Review flag details" summary page has been set
     expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE_EXTERNAL);
   });
@@ -921,7 +921,7 @@ describe('ReadCaseFlagFieldComponent', () => {
     component.ngOnInit();
     expect(component.flagForSummaryDisplay).toBeTruthy();
     expect(component.flagForSummaryDisplay.partyName).toEqual(witnessCaseFlagPartyName);
-    expect(component.flagForSummaryDisplay.flagDetail).toEqual({name: 'New flag in Witness field'} as FlagDetail);
+    expect(component.flagForSummaryDisplay.flagDetail).toEqual({ name: 'New flag in Witness field' } as FlagDetail);
     // Check the correct display context parameter for the "Review flag details" summary page has been set
     expect(component.displayContextParameter).toEqual(CaseFlagDisplayContextParameter.CREATE);
   });

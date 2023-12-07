@@ -1,18 +1,9 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  Component,
-  CUSTOM_ELEMENTS_SCHEMA,
-  DebugElement,
-  EventEmitter,
-  Input,
-  NO_ERRORS_SCHEMA,
-  Output,
-  SimpleChange
-} from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { MatTabsModule } from '@angular/material/tabs';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -700,7 +691,7 @@ describe('CaseFullAccessViewComponent', () => {
           { provide: SessionStorageService, useValue: sessionStorageMockService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
         ],
-        schemas: [NO_ERRORS_SCHEMA]
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
       .compileComponents();
 
@@ -1369,7 +1360,8 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
-        ]
+        ],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
 
@@ -1497,7 +1489,8 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
-        ]
+        ],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
 
@@ -1725,7 +1718,8 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           PageValidationService,
           CaseFieldService,
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-        ]
+        ],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
 
@@ -1773,7 +1767,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     }
   ];
 
-  beforeEach((() => {
+  beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
     navigationNotifierService = new NavigationNotifierService();
@@ -1854,10 +1848,13 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
           DeleteOrCancelDialogComponent
-        ]
+        ],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
+  }));
 
+  beforeEach(() => {
     componentFixture = TestBed.createComponent(CaseFullAccessViewComponent);
     caseViewerComponent = componentFixture.componentInstance;
     caseViewerComponent.caseDetails = WORK_ALLOCATION_CASE_VIEW;
@@ -1892,7 +1889,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
     debugElement = componentFixture.debugElement;
     router = TestBed.inject(Router);
     componentFixture.detectChanges();
-  }));
+  });
 
   it('should display overview tab by default', () => {
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
@@ -2058,7 +2055,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
   let subscribeSpy: jasmine.Spy;
   let subscriptionMock: Subscription = new Subscription();
 
-  beforeEach((() => {
+  beforeEach(waitForAsync(() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
     mockLocation = createSpyObj('location', ['path']);
@@ -2143,10 +2140,13 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
           { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
           DeleteOrCancelDialogComponent
-        ]
+        ],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
+  }));
 
+  beforeEach(() => {
     componentFixture = TestBed.createComponent(CaseFullAccessViewComponent);
     caseViewerComponent = componentFixture.componentInstance;
     caseViewerComponent.caseDetails = WORK_ALLOCATION_CASE_VIEW;
@@ -2167,7 +2167,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     debugElement = componentFixture.debugElement;
     componentFixture.detectChanges();
     de = componentFixture.debugElement;
-  }));
+  });
 
   it('should not call callAngularRouter() on initial (default) value', (done) => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
