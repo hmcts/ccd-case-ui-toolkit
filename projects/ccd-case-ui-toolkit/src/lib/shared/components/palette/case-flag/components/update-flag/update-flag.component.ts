@@ -42,6 +42,10 @@ export class UpdateFlagComponent implements OnInit {
   public internalUserUpdate = false;
   public internalUser2Point1EnabledUpdate = false;
 
+  public get externallyVisibleFlag(): boolean {
+    return this.selectedFlag.flagDetailDisplay.visibility?.toLowerCase() === 'external';
+  }
+
   constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
   public ngOnInit(): void {
@@ -52,7 +56,12 @@ export class UpdateFlagComponent implements OnInit {
     this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
     if (this.selectedFlag?.flagDetailDisplay?.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
-      const currentFlagStatusKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === this.flagDetail.status);
+      // If present, use the *original* flag status, not the one in the flagDetail object, because the status could have
+      // been modified via a previous "Update Flag" journey through the UI but not persisted yet (thus not the *true* flag
+      // status). Otherwise, use the status from the flagDetail object (initially, the original flag status won't be
+      // present because it gets cached only on first update by WriteCaseFlagFieldComponent)
+      const currentFlagStatusKey = Object.keys(CaseFlagStatus).find(
+        (key) => CaseFlagStatus[key] === (this.selectedFlag.originalStatus || this.flagDetail.status));
 
       // Populate flag comments text area with existing comments; use the comments appropriate for the selected language,
       // falling back on their alternate counterpart if none are available. Comments are to be populated one time only -
@@ -95,8 +104,15 @@ export class UpdateFlagComponent implements OnInit {
       case CaseFlagDisplayContextParameter.UPDATE:
       case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
         if (flagDetail?.name) {
-          const subTypeValue = flagDetail.subTypeValue ? `, ${flagDetail.subTypeValue}` : ''
-          return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${subTypeValue}"`;
+          const subTypeValue = flagDetail.subTypeValue || flagDetail.subTypeValue_cy
+            ? `, ${flagDetail.subTypeValue || flagDetail.subTypeValue_cy}`
+            : '';
+          const otherDescription = flagDetail.otherDescription || flagDetail.otherDescription_cy
+            ? `, ${flagDetail.otherDescription || flagDetail.otherDescription_cy}`
+            : '';
+          return subTypeValue
+            ? `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${subTypeValue}"`
+            : `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "${flagDetail.name}${otherDescription}"`;
         }
         return `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE}`;
       case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:

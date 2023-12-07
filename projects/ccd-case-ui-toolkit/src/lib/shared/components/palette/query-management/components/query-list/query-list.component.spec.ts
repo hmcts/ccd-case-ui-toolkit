@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform, SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { SortOrder } from '../../../../../domain/sort-order.enum';
+import { SortOrder } from '../../../complex/sort-order';
 import { CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem, QueryMessage } from '../../models';
 import { QueryListComponent } from './query-list.component';
 

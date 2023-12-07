@@ -43,6 +43,7 @@ export interface FlagDetailDisplay {
   // The flagsCaseFieldId property could be removed in future, given that the full path is now available through the
   // FlagDetailDisplayWithFormGroupPath interface
   flagsCaseFieldId: string;
+  visibility: string;
 }
 
 /**
@@ -55,7 +56,8 @@ export interface FlagsWithFormGroupPath {
 }
 
 /**
- * Wrapper interface for FlagDetailDisplay that adds the path to the corresponding FormGroup, and the CaseField
+ * Wrapper interface for FlagDetailDisplay that adds the path to the corresponding FormGroup, the CaseField, and the
+ * original flag status
  */
 export interface FlagDetailDisplayWithFormGroupPath {
   flagDetailDisplay: FlagDetailDisplay;
@@ -63,4 +65,5 @@ export interface FlagDetailDisplayWithFormGroupPath {
   caseField: CaseField;
   roleOnCase?: string;
   label?: string;
+  originalStatus?: string;
 }

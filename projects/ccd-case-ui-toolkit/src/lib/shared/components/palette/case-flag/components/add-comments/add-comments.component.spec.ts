@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
-import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
+import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagFormFields, CaseFlagWizardStepTitle } from '../../enums';
 import { AddCommentsComponent } from './add-comments.component';
 
 describe('AddCommentsComponent', () => {
@@ -10,6 +10,8 @@ describe('AddCommentsComponent', () => {
   let fixture: ComponentFixture<AddCommentsComponent>;
   let nextButton: HTMLElement;
   let textareaInput: string;
+  // Code for "Other" flag type as defined in Reference Data
+  const otherFlagTypeCode = 'OT0001';
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -164,9 +166,33 @@ describe('AddCommentsComponent', () => {
     expect(component.addCommentsTitle).toBe(CaseFlagWizardStepTitle.ADD_FLAG_COMMENTS_EXTERNAL_MODE);
   });
 
-  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled', () => {
+  it('should not display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is of type "Other" and is internally visible only', () => {
     component.isDisplayContextParameterExternal = false;
     component.isDisplayContextParameter2Point1Enabled = true;
+    component.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl({ flagCode: otherFlagTypeCode }));
+    component.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(true));
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
+  });
+
+  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is of type "Other" and is externally visible', () => {
+    component.isDisplayContextParameterExternal = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    component.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl({ flagCode: otherFlagTypeCode }));
+    component.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(false));
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement.textContent.trim()).toContain(AddCommentsStep.WARNING_TEXT);
+  });
+
+  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is not of type "Other"', () => {
+    component.isDisplayContextParameterExternal = false;
+    component.isDisplayContextParameter2Point1Enabled = true;
+    component.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl({ flagCode: 'ABC' }));
     fixture.detectChanges();
     const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
     expect(warningTextElement.textContent.trim()).toContain(AddCommentsStep.WARNING_TEXT);

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { SortOrder } from '../../../../../domain/sort-order.enum';
+import { SortOrder } from '../../../complex/sort-order';
 import { CaseQueriesCollection, QueryListColumn, QueryListData, QueryListItem } from '../../models';
 
 @Component({

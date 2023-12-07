@@ -20,9 +20,7 @@ export class HttpErrorService {
     }
     let httpError = new HttpError();
     if (error instanceof HttpErrorResponse) {
-      if (error.headers
-          && error.headers.get(HttpErrorService.CONTENT_TYPE)
-          && error.headers.get(HttpErrorService.CONTENT_TYPE).indexOf(HttpErrorService.JSON) !== -1) {
+      if (error.headers?.get(HttpErrorService.CONTENT_TYPE).indexOf(HttpErrorService.JSON) !== -1) {
         try {
           httpError = HttpError.from(error);
         } catch (e) {
@@ -57,7 +55,7 @@ export class HttpErrorService {
     console.error('Handling error in http error service.');
     console.error(error);
     const httpError: HttpError = HttpErrorService.convertToHttpError(error);
-    if (redirectIfNotAuthorised && (httpError.status === 401 || httpError.status === 403)) {
+    if (redirectIfNotAuthorised && httpError.status === 401) {
       this.authService.signIn();
     }
     return throwError(httpError);

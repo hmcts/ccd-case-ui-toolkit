@@ -1,4 +1,7 @@
 <ng-container *ngIf="query">
+  <p>
+    <a class="govuk-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back to query list' | rpxTranslate }}</a>
+  </p>
   <div>
     <table class="govuk-table query-details-table" [attr.aria-describedby]="'Details of the query' | rpxTranslate">
       <caption class="govuk-table__caption govuk-table__caption--l">
@@ -84,6 +87,7 @@
       </ng-container>
 
       <ng-template #followUpMessage>
+        <div class="query_details_caption">{{ 'Follow-up' | rpxTranslate }}</div>
         <table class="govuk-table query-details-table"
                [attr.aria-describedby]="'Follow-up of the response' | rpxTranslate">
           <caption class="govuk-table__caption govuk-table__caption--l">
@@ -100,10 +104,21 @@
             <td class="govuk-table__cell">{{ child.name }}</td>
           </tr>
 
-          <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">{{ 'Query detail' | rpxTranslate }}</th>
-            <td class="govuk-table__cell">{{ child.body }}</td>
-          </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Query detail' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">{{ child.body }}</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">{{ 'Attachments' | rpxTranslate }}</th>
+              <td class="govuk-table__cell">
+                <ccd-query-attachments-read
+                  *ngIf="child.attachments"
+                  [attachments]="child.attachments"
+                >
+                </ccd-query-attachments-read>
+              </td>
+            </tr>
           </tbody>
         </table>
       </ng-template>

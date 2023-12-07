@@ -1,4 +1,95 @@
 ## RELEASE NOTES
+### Version 6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix-2
+**EUI-9035** Re-tag for re-release following deployment of Restricted Case Access feature to live
+
+### Version 6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix
+**EUI-9035** Fix bug where Case Flag Summary (CYA) page displays original flag comments instead of flag update comments, during the "Manage support" journey for an external user. Also amend Case Flags page to display flag update comments for "Inactive" flags
+
+### Version 6.19.15-restricted-case-access
+**EUI-8816** Restricted case access feature toggle functionality
+
+### Version 6.19.6-restricted-case-access-v4
+**EUI-6645** Restricted case access
+
+### Version 6.19.13-case-flags-v2-manage-case-flags-value-caching-fix
+**EUI-9020** Fix bug where previous changes to a flag are retained in the UI when the user starts over and selects the same flag to update again
+
+### Version 6.16.0-follow-up-on-query-tab-v2
+**EUI-8608** Query management follow up on the query tab
+
+### Version 6.16.0-query-management-navigate-back-to-query-list
+**EUI-8693** Query management navigate back to query list from query details
+
+### Version 6.19.13-case-flags-v2-update-flag-show-other-description
+**EUI-9016** Amend display of page title and field labels on "Update flag" page, to include the flag description for flags of type "Other"
+
+### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-7
+**EUI-9000** Amend "Comments" field label for external users to display static text instead of duplicating the page title
+**EUI-9009** Fix bug where `otherDescription`, `otherDescription_cy`, and `flagComment_cy` field values are not retained when a flag is updated and those fields are not part of the update
+
+### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-6
+**EUI-8999** Restrict display of the comments visibility warning text to flags not of type "Other (internal)" for the "Create Case Flag" journey, and flags that were previously created as external for the "Manage Case Flags" journey
+
+### Version 6.19.13-case-flags-v2-manage-case-flags-status-fix
+**EUI-8990** Fix bug where `UpdateFlagComponent` and `ManageCaseFlagsComponent` are using the flag status updated via the UI as if it was the actual persisted status. This causes problems when a user sets the status to "Inactive" or "Not approved", then returns to an earlier point in the "Manage Case Flags" journey via the Case Flag Summary (CYA) page. `UpdateFlagComponent` displays the wrong flag status options or none at all (if "Not approved" was selected previously), and `ManageCaseFlagsComponent` no longer displays the flag in the selection list because it has been wrongly filtered out
+
+### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-5
+**EUI-8985** Fix incorrect logic for updating tab group selected index, ensuring it is done only when non-zero because zero indicates it is already selected
+
+### Version 6.19.13-case-flags-v2-1-consolidation-final-fixes-4
+**EUI-8918/EUI-8968** Re-tag for re-release following deployment of Case File View 1.1 to live
+
+### Version 6.19.11-case-flags-v2-1-consolidation-final-fixes-4
+**EUI-8918** Fix `CaseEventTriggerComponent` to bypass case validation only if a `FlagLauncher` case field is present in the eventTrigger case fields, instead of being present in any `CaseTab` case fields
+**EUI-8968** Fix missing validation error message on clicking "Continue" button when Case Flags v2.1 is enabled
+
+### Version 6.19.9-case-flags-v2-1-consolidation-final-fixes-3
+**EUI-8934** Fix merging of internal and external flags collections to work when a `Flags.details` array is falsy
+
+### Version 6.19.9-case-flags-exui-848-fix
+**EUI-8947** Fix bug introduced by change to `CaseEditComponent` case event data generation in EXUI-848
+
+### Version 6.19.9-case-flags-v2-1-manage-case-flags-missing-header
+**EUI-8944** Fix missing header on "Manage case flags" page when Case Flags v2.1 is enabled
+
+### Version 6.19.8-case-flags-v2-1-consolidation-final-fixes-2
+**EUI-8935** Fix incorrect logic for setting flag status on flag creation
+
+### Version 6.19.8-case-flags-v2-1-consolidation-final-fixes-1
+**EUI-8914** Fix case-level flag creation to work when the case-level `Flags` object in the form data is an empty object initially
+**EUI-8913** Remove the "Previous" button from the Case Flag Summary (CYA) page
+**EUI-8915** Remove the "Change" link for the "Status" item on the Case Flag Summary (CYA) page if Case Flags v2.1 is not enabled
+**EUI-8916** Fix "Change" link navigations from the Case Flag Summary (CYA) page when Case Flags v2.1 is enabled
+
+### Version 6.19.8-case-flags-v2-1-consolidation-final
+**EUI-8819** Final release of Case Flags v2.1 consolidation; includes support for "dual mode" operation, allowing the Case Flags feature to be run as either v1 or v2.1
+
+### Version 6.19.7-case-flags-v2-1-consolidation-interim
+**EUI-8819** Interim release of Case Flags v2.1 consolidation; includes minor UI display changes (flag status tag colour changes; flag status displayed on Case Flag Summary page always)
+
+### Version 6.19.7-case-flags-v2-1-remove-duplicate-party-locations
+**EUI-8844** Remove duplicate party locations where an internal and external `Flags` object (with the same groupId) exists for a party
+
+### Version 6.19.7
+**EUI-8711/EUI-8706** Re-tag for formal release. Also includes EUI-8734
+
+### Version 6.19.5-case-flags-v2-1-determine-correct-flag-location
+**EUI-8706** Determine the correct location for a flag to be added - either internal or external - based on whether the flag is marked as "internal only" if of type "Other", or its `externallyAvailable` attribute if not of type "Other"
+
+### Version 6.19.5-case-flags-v2-1-internal-external-grouping
+**EUI-8711** Ensure internal and external collections of flag data are grouped by groupId into one instance of the `Flags` object per party, for internal users
+
+### Version 6.19.6-case-flags-v2-external-user-flag-update-fix
+**EUI-8840** Use flagUpdateComment field for persisting flag comments on update by external users
+
+### Version 6.19.6-case-flags-v2-reasonable-adjustments-v2
+**EUI-7243** Case flags v2 reasonable adjustments
+
+### Version 6.19.15
+**EXUI-987** Fields in page with PageShowCondition are not available as part of about to submit callback
+**EXUI-997** Amend Reasons not showing on CYA page during Update Listing requirements tab
+**EXUI-1080** Retain Hidden Values No Longer Working
+**COT-616** ExUI losing hidden value
 
 ### Version 6.19.11-case-flags-v2-1-consolidation-final-fixes-4
 **EUI-8918** Fix `CaseEventTriggerComponent` to bypass case validation only if a `FlagLauncher` case field is present in the eventTrigger case fields, instead of being present in any `CaseTab` case fields
@@ -116,13 +207,16 @@
 **EUI-8687** Fix validation logic for `WriteJudicialUserField` component
 **EUI-8732** Fix `WriteJudicialUserField` error handling to allow user to continue searching if an error occurs on calling `getJudicialUsersSearch` API endpoint
 
-### Version 6.18.0-welsh-release-v6
-**EUI-5497** Welsh release part 1
-
 ### Version 6.18.2-rc2
 **EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button
 **EXUI-229** DynamicMultiSelectList Updates Required
 **EXUI-313** Fix issue with secure document store
+
+### Version 6.18.0-restricted-case-access-v6
+**EUI-6645** Restricted case access
+
+### Version 6.18.0-welsh-release-v6
+**EUI-5497** Welsh release part 1
 
 ### Version 6.16-hotfix-EUI-8515-case-flags-submission
 **EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
@@ -506,6 +600,7 @@ Add refunds functionality
 
 ### Version 4.13.8-event-start-task-not-required"
 **EUI-5569** Task not required for event functionality
+
 ### Version 4.12.1-EUI-5877-repeating-label
 **EUI-5877** Bug fix for repeating label
 
@@ -571,6 +666,7 @@ Add refunds functionality
 
 ### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
 **EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
+
 ### Version 4.3.2-rc3
 **EUI-4430** Case reference field regression bugs
 
@@ -595,7 +691,6 @@ Add refunds functionality
 ### Version 4.3.0
 **EUI-4344** Document uploaded shows incorrect name
 **EUI-4377** removing unwanted html tags from title
-
 
 ### Version 4.2.3
 **EUI-3425** Hotfix for work already done. Secure uploading for new cases
@@ -658,6 +753,7 @@ Add refunds functionality
 **EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 for "retain = true"
 **EUI-2744** EventToComplexTypes regression with hidden fields
 **EUI-4106** Show/hide functionality
+
 ### Version 4.0.0-activity-tracker-unauthorised-beta
 **EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
 
