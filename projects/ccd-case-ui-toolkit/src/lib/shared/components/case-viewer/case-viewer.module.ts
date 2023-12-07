@@ -57,6 +57,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     MatTabsModule,
     ReactiveFormsModule,
     AlertModule,
+    LabelSubstitutorModule,
     RpxTranslationModule.forChild(),
     BannersModule,
     LabelSubstitutorModule,

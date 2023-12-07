@@ -471,7 +471,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
   }
 
-
   public getStatus(response: object): any {
     return this.hasCallbackFailed(response) ? response['callback_response_status'] : response['delete_draft_response_status'];
   }
@@ -479,5 +478,4 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   private hasCallbackFailed(response: object): boolean {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
   }
-
 }

@@ -49,7 +49,6 @@ describe('WriteEmailFieldComponent', () => {
         ],
         declarations: [
           WriteEmailFieldComponent,
-
           // Mocks
           inputComponentMock,
           MockRpxTranslatePipe
