@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+###Version 7.0.2
+**EXUI-1151** Angular 15 and Node 18 update
+
 ### Version 7.0.1
 **EXUI-1151** Angular 15 and Node 18 update
 
