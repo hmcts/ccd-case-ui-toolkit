@@ -39,17 +39,11 @@ export class ManageCaseFlagsComponent implements OnInit {
         if (flagsInstance.flags.details && flagsInstance.flags.details.length > 0) {
           displayData = [
             ...displayData,
-            ...flagsInstance.flags.details.map(detail => {
-              // Only map flags instances where the status is neither "Inactive" nor "Not approved"
-              // This will result in some undefined mappings, which need to be filtered out after the reduce operation
-              if (!this.excludedFlagStatuses.includes(detail.status as CaseFlagStatus)) {
-                return this.mapFlagDetailForDisplay(detail, flagsInstance);
-              }
-            })
+            ...flagsInstance.flags.details.map((detail) => this.mapFlagDetailForDisplay(detail, flagsInstance))
           ];
         }
         return displayData;
-      }, []).filter(flagDetailDisplay => !!flagDetailDisplay);
+      }, []).filter((flagForDisplay) => !this.excludedFlagStatuses.includes(flagForDisplay.originalStatus as CaseFlagStatus));
     }
 
     // Add a FormControl for the selected case flag if there is at least one flags instance remaining after mapping
