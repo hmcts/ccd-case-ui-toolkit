@@ -1,10 +1,399 @@
 ## RELEASE NOTES
+###Version 7.0.2
+**EXUI-1151** Angular 15 and Node 18 update
+
+### Version 7.0.1
+**EXUI-1151** Angular 15 and Node 18 update
+
+### Version 7.0.0
+**EXUI-763** Angular 15 and Node 18 update
+
+### Version 6.19.15-restricted-case-access
+**EUI-8816** Restricted case access feature toggle functionality
+
+### Version 6.19.6-restricted-case-access-v4
+**EUI-6645** Restricted case access
+
+### Version 6.19.15
+**EXUI-987** Fields in page with PageShowCondition are not available as part of about to submit callback
+**EXUI-997** Amend Reasons not showing on CYA page during Update Listing requirements tab
+**EXUI-1080** Retain Hidden Values No Longer Working
+**COT-616** ExUI losing hidden value
+
+
+### Version 6.19.13
+**EXUI-908** Unable to upload correspondence to Manage Cases
+
+### Version 6.19.11-case-file-view-feature-toggle-v1.1
+**EUI-7807** Case file view v1.1
+
+### Version 6.19.6-case-file-view-document-upload-date-v2
+**EUI-7807** Case file view v1.1
+
+### Version 7.0.0-rc3
+**EXUI-763** Upgrade ccd-ui-toolkit to Node 118.17.0 and Angular 15
+
+### Version 6.19.11-rc3
+**EXUI-1000** Complex type not showing data
+**EXUI-1006** Case Flags stopped working
+
+### Version 6.19.5
+**EXUI-623** Make secure docstore work during case creation
+
+### Version 6.19.4-sscs-joh-fixes
+**EUI-8679/EUI-8770** Re-tag for formal release. Also includes partial reversion of EXUI-623 (`WriteDocumentFieldComponent` changes) due to deficient unit test coverage
+
+### Version 6.19.5-hotfix-EUI-8679-8770
+**EUI-8679** Remove JudicialUser FormControl values from the overall FormGroup value stored and passed as search criteria by the `WorkbasketFiltersComponent` when applying filters
+**EUI-8770** Ensure the `WorkbasketFiltersComponent` announces the selected jurisdiction and case type via the `JurisdictionService`; in the `WriteJudicialUserField` component, get the current jurisdiction and case type from the `JurisdictionService` if no case info is present
+
+### Version 6.19.5-secure-doc-case-creation.1
+**EXUI-623** Make secure docstore work during case creation
+
+### Version 6.19.4-sscs-joh-fixes
+**EUI-8679/EUI-8770** Re-tag for formal release. Also includes partial reversion of EXUI-623 (`WriteDocumentFieldComponent` changes) due to deficient unit test coverage
+
+### Version 6.18.3-hotfix-EUI-8738
+**EUI-8738** Remove JudicialUser FormControls from FormGroup displayed on "Check your answers" page
+
+### Version 6.18.2-hotfix-EUI-8601-8687-8732
+**EUI-8601** Re-implement `WriteJudicialUserField` component to extend `WriteComplexFieldComponent`, to ensure correct working when used in a collection
+**EUI-8687** Fix validation logic for `WriteJudicialUserField` component
+**EUI-8732** Fix `WriteJudicialUserField` error handling to allow user to continue searching if an error occurs on calling `getJudicialUsersSearch` API endpoint
+
+### Version 6.18.2-rc2
+**EXUI-343** Fix XUI bug - Text not showing in the "Continue" green button
+**EXUI-229** DynamicMultiSelectList Updates Required
+**EXUI-313** Fix issue with secure document store
+
+### Version 6.18.0-restricted-case-access-v6
+**EUI-6645** Restricted case access
+
+### Version 6.18.0-welsh-release-v6
+**EUI-5497** Welsh release part 1
+
+### Version 6.16-hotfix-EUI-8515-case-flags-submission
+**EUI-8515** Fix Case Flags and Linked Cases submissions not to depend on presence of "Check your answers" page
+**EUI-8550** Fix incorrect behaviour of showEventNotes() function on Case Event submission, introduced in error by EUI-6693
+
+### Version 6.13.10-case-file-view-sort-by-document-upload-date-v9
+**EUI-7812** Case file view sort by document upload date
+
+### Version 6.13.10-case-file-view-display-document-upload-date-v3
+**EUI-7819** Case file view display document upload date
+
+### Version 6.13.10-case-flags-show-language-for-interpreter-flag-types
+**EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types
+
+### Version 6.13.11-judicial-user-typeahead-fix
+**EUI-7733** Judicial user typeahead fix
+
+### Version 6.13.10-linked-cases-continue-button-validation-v6
+**EUI-8025** Linked cases continue button validation
+
+### Version 6.13.10-rc1
+**EUI-5298** Release 6.13.10 including 6.13.0, linked cases (EUI-7676) and case file view fix (EUI-7417)
+
+### Version 6.13.0-rc11
+**EUI-7796** Re-tag for Release 6.13.0
+
+### Version 6.13.0-rc7
+**EUI-7796** Fix flag types retrieval to use HMCTSServiceId from supplementary data in the first instance (if available); this caters for case types that are associated with multiple HMCTS service codes
+
+### Version 6.10.10-linked-cases-other-description
+**EUI-7246** Linked cases other description
+
+### Version 6.10.10-linked-cases-and-case-file-view
+### Version 6.10.11-judicial-user-typeahead-fix
+**EUI-7733** Judicial user typeahead fix
+
+### Version 6.10.10-configure-linked-cases
+**EUI-7676** Configure linked cases
+**EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
+
+### Version 5.0.50-case-flags-multiple-service-codes-for-jurisdiction
+**EUI-7529** Fix flag types retrieval to use HMCTS service code associated with case type ID, falling back on jurisdiction only if the case type ID is not recognised, since there could be multiple service codes per jurisdiction
+
+**EUI-3729** Support combinations of AND and OR boolean logic
+
+### Version 6.10.7-rollback-case-link
+**EUI-7675** Rollback case link
+
+### Version 6.10.6-r3.5-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs (re-release following update to Release 3.5)
+
+### Version 5.0.50-case-flags-multiple-case-flags-tabs-support
+**EUI-7688** Support multiple Case Flags tabs
+
+### Version 6.14.1--fee-pay-props
+**EUI-7489** Added additional props to nested ccpay instance
+
+### Version 5.0.50-case-file-view-restrict-document-move
+**EUI-7417** Set boolean flag allowing Case File View document move functionality in readonly mode to `false`
+
+### Version 5.0.50-sscs-sit-release
+**EUI-7564** SSCS SIT release
+
+### Version 5.0.46-case-flags-not-approved-status
+**EUI-7347/EUI-7570** Support display of new "Not approved" status for Case Flags
+
+### Version 5.0.46-fix-case-link
+**EUI-7521** Fix case link hyperlink on applications tab
+
+### Version 5.0.46-case-file-view-media-viewer-scrolling-behaviour
+**EUI-7496** Fix incorrect Media Viewer vertical scrolling behaviour beyond Case File View container bottom boundary
+
+### Version 5.0.46-case-file-view-styling-fixes
+**EUI-7481** Case file view styling issues
+
+### Version 5.0.45-fix-case-access-table
+**EUI-7454** Fixed table alignment on case view
+
+### Version 5.0.44-case-flags-integration-fixes
+**EUI-7453** Case flags integration fixes
+
+### Version 5.0.42-fee-pay-status
+**EUI-7457** Payment status - ng11
+
+### Version 5.0.41-case-link-integration-fixes
+**EUI-7457** Case link integration fixes
+
+### Version 5.0.40-case-edit-module-for-integration
+**EUI-7457** Case edit module for integration
+
+### Version 5.0.38-case-flags-table-alignment
+**EUI-7454** Case flags table alignment
+
+### Version 5.0.36-prl-integration-merge-into-angular-11
+**EUI-5297** PrL integration merge into Angular 11
+
+### Version 5.0.34-case-file-view-merge-into-angular-11
+**EUI-5297** Case file view merge into Angular 11
+
+### Version 5.0.25-case-file-view-print-and-download-functions
+**EUI-6866** Implement print and download functions for the document context menu
+
+### Version 5.0.25-merge-from-angular11-upgrade
+**EUI-5297** Merge from angular upgrade
+
+### Version 5.0.25-case-file-view-error-message-display
+**EUI-6826** Display standard error message if Case File View component is unable to retrieve categories and documents data
+
+### Version 5.0.25-case-file-view-media-viewer-integration
+**EUI-5349** Integrate the Media Viewer component with Case File View
+
+### Version 5.0.25-case-file-view-document-tree-functionalities-v3
+**EUI-7066** Case file view search document exceptions
+**EUI-7160** Case file view hand icon for folder clicking
+**EUI-5458** Case file view document view and folder action
+
+### Version 5.0.24-case-file-view-folder-document-icons-v3
+**EUI-6974** Case file view folder and document icons display
+
+### Version 5.0.24-case-file-view-post-ccd-toolkit-angular11-upgrade
+**EUI-7062** Migrate Case File View to Angular 11-upgraded CCD Case UI Toolkit
+
+### Version 5.0.22-case-file-view-component-launcher-implementation
+**EUI-6965** Implement the ComponentLauncher mechanism for invoking the Case File View web component
+
+### Version 5.0.22-case-file-view-update-document-category
+**EUI-6815** Service layer for HTTP PUT call to CCD endpoint for updating the category associated with a document
+
+### Version 5.0.22-case-file-view-two-sections
+**EUI-6822** Two sections for case file view
+**EUI-5376** Slider function for case file view
+
+### Version 5.0.22-case-file-view-get-categories-and-documents
+**EUI-5481** Service layer for HTTP GET call to CCD endpoint for retrieving categories and documents
+
+### Version 5.0.33-angular11-upgrade
+**EUI-6326** Angular 11 upgrade
+
+### Version 7.0.18-case-flags-title-and-styles
+**EUI-7353** Case flags title and style changes
+
+### Version 7.0.16-case-links-enable-backward-compatibility
+**EUI-7413** Case links enable backward compatibility
+
+### Version 7.0.14-merge-case-flags-fixes
+**EUI-7274** Merge case flags fixes into integration branch
+
+### Version 6.10.0-rc11
+**EUI-7377** Fix to ensure case event data object gets populated correctly with data from all case fields whose ID exists in the data object
+
+### Version 6.10.0-rc10
+**EUI-7265** Fix minor, unrelated bug causing console error when changing case tabs
+
+### Version 7.0.12-linked-cases-display-name-instead-of-description
+**EUI-7323** Linked cases display name instead of description
+
+### Version 6.10.0-rc4
+**EUI-7210** Fix mapping of case field to flags object to handle `null` or `undefined` CaseField `value` property
+**EUI-7225** Fix to display party role (if provided) alongside party name for party-level flags options on "Select flag location" page
+
+### Version 6.10.0-rc3
+**EUI-7116** Re-tag for release
+
+### Version 6.10.0-case-flags-fix-for-empty-case-level-flags-field
+**EUI-7116** Fix to ensure a "caseFlags" case-level Flags field with an empty value is retained (it will be empty initially because no party name is required)
+
+### Version 4.18.10-revert-erroneous-html-tag-change
+**EUI-6551** Fix incorrect alignment of tabular display of non built-in CCD complex fields on tabs, caused by an erroneous HTML tag change for the Case Flags feature
+
+### Version 4.18.10-flags-field-in-complex-and-collection-types
+**EUI-6438** Ensure Flags fields can be stored and amended as sub-fields of a Complex field, including a collection of that type, and as instances within a collection of type "Flags"
+
+### Version 4.18.6-case-flags-table-styling-changes
+**EUI-6198** Increase table caption font size and width of first column
+
+### Version 4.13.24-manage-case-flags-display-case-level-case-flags
+**EUI-5872** Manage case flags display case level case flags
+
+### Version 4.13.19-manage-case-flags-review-flag-details-page
+**EUI-6168** Fix "Review flag details" page to work when updating a flag (Manage Case Flags journey)
+
+### Version 4.13.19-manage-case-flags-display-formatted-flag-details
+**EUI-5810** Manage case flags display formatted flag details
+**EUI-6164** Reasonable adjustment display for sign language interpreter
+
+### Version 4.13.9-case-flag-details-persistence-fixes
+**EUI-6148** Fix bug where discarded Case Flag details are persisted when restarting the Create Case Flag or Manage Case Flags journeys by clicking "Change" from the "Review Flag Details" page
+**EUI-6155** Fix bug where change to case flag status is not being reflected
+**EUI-6156** Fix bug where last modified date is not being updated when a case flag is updated
+
+### Version 4.13.9-manage-case-flags-update-flag-page
+**EUI-5342** Manage case flags comments update flag page
+
+### Version 4.13.7-create-case-level-case-flag
+**EUI-5849** Create and display case-level flags
+
+### Version 4.13.7-manage-case-flags-comments-mandatory-or-optional
+**EUI-5848** Manage case flags comments mandatory or optional
+
+### Version 4.13.6-review-flag-details-change-link-and-continue-bugfix
+**EUI-6043** Fix bug where error state of the FlagLauncher component is not being reset correctly to "invalid" when the component is reloaded after clicking "Change" from the "Review Flag Details" page
+
+### Version 4.13.6-review-flag-details-change-link-bugfix
+**EUI-6043** Fix bug that results in more than one new case flag being added at the same time, which gives the appearance of
+caching previous data when the user elects to change the case flag being created
+
+### Version 4.13.6-review-flag-details-content-and-layout
+**EUI-5968** Display alternate version of ReadCaseFlagField component, with a summary list when display context is "Check your answers"
+
+### Version 4.13.3-create-case-flag-review-flag-details-page-part3
+**EUI-5973** Review flag details page part 3
+
+### Version 4.13.2-create-case-flag-integration-with-check-your-answers
+**EUI-4852** First pass at integration with "Check your answers" stage of the main Case Event flow, and persisting a case flag
+
+### Version 4.13.2-manage-case-flags-selection-page-validation
+**EUI-5190** Add validation to "Select case flag" page
+
+### Version 4.13.2-manage-case-flags-defect-fixes
+**EUI-5816/EUI-5808** Various defect fixes for the "Select case flag" page (EUI-4895) and "Update flag" page (EUI-5125)
+
+### Version 4.13.1-case-flags-search-for-sign-language-interpreter
+**EUI-5772** Display page title and hint text variation when selected language flag type is sign language
+
+### Version 4.13.1-case-flags-language-interpreter-dual-entry-error-2
+**EUI-5657** Fix error styling and HTML structure for page title and hint text
+
+### Version 4.13.1-case-flags-language-interpreter-dual-entry-error
+**EUI-5657** Additional validation for "Search for a language interpreter" step, covering dual language entry error scenario
+
+### Version 4.13.1-case-flags-search-for-language-interpreter-step-validation
+**EUI-4849** Add validation to language search and manual language inputs of the "Search for a language interpreter" step
+
+### Version 4.13.1-case-flags-search-for-language-interpreter-step-integration
+**EUI-5654** Integrate "Search for a language interpreter" step with Reference Data list of values for selected flag types
+
+### Version 4.13.1-case-flags-error-handling-no-party-data
+**EUI-5385** Error handling for Create Case Flag when case has not been configured for flags
+
+### Version 4.13.1-case-flags-multi-level-flag-types
+**EUI-5351** Support for display and selection of multi-level flag types at "Select flag type" step
+
+### Version 4.13.1-case-flags-ref-data-integration
+**EUI-5495/EUI-4845** Integrate "Select flag type" stage with Reference Data Common API for case flags
+
+### Version 4.13.1-case-flags-add-comments-step
+**EUI-4851** Add "add comments" step of Create Case Flag journey
+
+### Version 4.13.1-case-flags-case-event-flow-error-message-fixes-2
+**EUI-5374** Revision to error message text
+
+### Version 4.13.1-case-flags-case-event-flow-error-message-fixes
+**EUI-5374** Fix error message text on clicking "Continue" when creating a Case Flag
+**EUI-5372** Fix incorrect handling of display of Case Event flow error message
+
+### Version 4.13.1-case-flags-banner-message-fix-active-count
+**EUI-4897** Fix count of active case flags in message banner
+
+### Version 4.13.1-case-flags-tab-navigation
+**EUI-4897** Fix case flags tab navigation from message banner
+
+### Version 4.13.1-case-flags-select-location-step-rc.2
+**EUI-4838** Add "select location" step of Create Case Flag journey
+
+### Version 4.13.1-case-flags-tab-and-banner-message
+**EUI-4836** Add case flags tab to case details
+**EUI-4897** Add banner message to case details
+
+### Version 4.22.0-judicial-user-typeahead
+**EUI-6746** CR-52 JOH typeahead
+
+### Version 4.20.24-linked-cases-private-law-integration
+Linked cases private law integration
+
+### Version 4.20.20-linked-cases-merge-from-release
+Linked cases merge from Release
+
+### Version 4.22.0-judicial-user-typeahead
+**EUI-6746** CR-52 JOH typeahead
+
+### Version 4.18.16-EUI-6309-mandatory-field-issue
+**EUI-6309** mandatory-field-issue
+
+### Version 4.19.6-EUI-6865
+**EUI-6865** Fixed issue with deleting collection items with allowDelete absent
+
+### Version 4.19.3-hearings
+**EUI-5912** Hearing tab is not loading
+
+### Version 4.12.1-EUI-5682-complex-table-collection-1
+**EUI-5682** Bug fix for the complex collection table view
+
+### Version 4.12.1-EUI-5225-organisation-search
+**EUI-5225** Bug fix the organisation search functionality
+
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
+### Version 4.12.6-date-year-validation
+**EUI-4606** Enhanced the date year input validation to restrict between 1900-2100
+
+### Version 4.17.6-EUI-5736-unassigned-cases-pagination
+**EUI-5736** unassigned cases pagination
 
 ### Version 4.14.1-EUI-5305-change-link-accessibility-update
 **EUI-5305** Accessibility improvement for 'Change' links
 
 ### Version 4.12.0
 Add refunds functionality
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
+### Version 4.12.1-EUI-5877-repeating-label
+**EUI-5877** Bug fix for repeating label
+
+### Version 4.9.16-wcag20-exui-4"
+**FPLA: Accessibility Issues Found in ExUI** FPLA: Accessibility Issues Found in ExUI
+
+### Version 4.13.8-event-start-task-not-required"
+**EUI-5569** Task not required for event functionality
 
 ### Version 4.12.16-task-event-completion"
 **Task event completion and state machine** Task event completion and state machine
@@ -28,6 +417,7 @@ Add refunds functionality
 **EUI-4562** Case details Active tasks tab on success not returning to active tasks page
 
 ### Version 4.7.6-hearings-tab
+**EUI-4441** Add hearings tab in case details 
 **EUI-4441** Add hearings tab in case details
 
 ### Version 4.7.6-hearings-tab
@@ -755,10 +1145,10 @@ REVERT | **RDM-5310** Fix for ComplexElementsOnEvent when used with CRUD on Comp
 **RDM-2804** OR and Not Equals support for Show and Hide
 
 ### Version 2.51.1 - June 07 2019
-	**RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
+  **RDM-4927** | Fixed list not populating values for collection fields, Unit test fixes
 
 ### Version 2.51.0 - May 29 2019
-	**RDM-3201** Dynamic Fixed Lists (Using service callbacks)
+  **RDM-3201** Dynamic Fixed Lists (Using service callbacks)
 
 ### Version 2.50.2 - May 29 2019
 **RDM-4687** Continue button is not enabled for a mandatory collection field that includes show/hide conditions inside complex fields

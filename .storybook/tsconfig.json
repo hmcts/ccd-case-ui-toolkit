@@ -1,0 +1,19 @@
+{
+  "extends": "../projects/ccd-case-ui-toolkit/tsconfig.lib.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": [
+    "../projects/ccd-case-ui-toolkit/src/test.ts",
+    "../projects/**/*.spec.ts"
+  ],
+  "include": [
+    "../projects/**/*"
+  ],
+  "files": [
+    "./typings.d.ts"
+  ]
+}

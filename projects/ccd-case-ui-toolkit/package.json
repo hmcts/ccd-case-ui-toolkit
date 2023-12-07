@@ -1,0 +1,16 @@
+{
+  "name": "@hmcts/ccd-case-ui-toolkit",
+  "version": "7.0.2",
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "description": "Case UI Toolkit",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hmcts/ccd-case-ui-toolkit.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,41 @@
+<div class="govuk-grid-row govuk-!-margin-bottom-2">
+  <div class="govuk-grid-column-full">
+    <table *ngIf="linkedCasesFromResponse" aria-describedby="table to display cases linked TO">
+      <thead>
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">Case name and number</th>
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">Case type </th>
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">Service</th>
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">State</th>
+          <th scope="col" class="govuk-table__header case-table-column" width="20%">Reasons for case link</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row" *ngFor="let case of linkedCasesFromResponse">
+          <td>
+            <p class="govuk-body"><a target="_blank" href="cases/case-details/{{case.caseReference}}"
+                rel="noopener"><span class="govuk-link">{{case.caseName}} <br>
+                  {{case.caseReference | ccdCaseReference}}</span></a></p>
+          </td>
+          <td><span [title]="case.caseTypeDescription">{{case.caseType}}</span></td>
+          <td><span>{{case.service}}</span></td>
+          <td><span [title]="case.stateDescription">{{case.state}}</span>
+          </td>
+          <td *ngIf="case && case.reasons">
+            <span *ngFor="let reason of case.reasons; let i = index; let isLast = last">
+              {{reason.value | ccdLinkCasesReasonValue}}<span><a class="govuk-!-padding-left-1"
+                  href="cases/case-details/{{ case.caseReference }}"
+                  *ngIf="hasLeadCaseOrConsolidated(reason.value.Reason)">{{getCaseRefereneLink(case.caseReference)}}</a></span>
+              <br *ngIf="!isLast" />
+            </span>
+          </td>
+        </tr>
+        <tr class="govuk-table__row" *ngIf="linkedCasesFromResponse.length === 0 && (!isServerError && !isServerReasonCodeError)">
+          <td class="govuk-table__cell" colspan="5">
+            None
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

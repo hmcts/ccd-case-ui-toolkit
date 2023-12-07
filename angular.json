@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -22,10 +25,9 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": []
+            "styles": [],
+            "scripts": [],
+            "preserveSymlinks": true
           },
           "configurations": {
             "production": {
@@ -38,7 +40,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -64,24 +65,12 @@
             "browserTarget": "ccd-case-ui-toolkit:build"
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js"
-          }
-        },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "eslintConfig": ".eslintrc.cjs",
+            "lintFilePatterns": [
+              "src/**/*.ts"
             ]
           }
         }
@@ -103,10 +92,81 @@
             }
           }
         },
+        "lint":  {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "eslintConfig": ".eslintrc.cjs",
+            "lintFilePatterns": [
+              "src/**/*.ts"
+            ]
+          }
+        }
+      }
+    },
+    "ccd-case-ui-toolkit-lib": {
+      "root": "projects/ccd-case-ui-toolkit",
+      "sourceRoot": "projects/ccd-case-ui-toolkit/src",
+      "projectType": "library",
+      "prefix": "xuilib",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.lib.json",
+            "project": "projects/ccd-case-ui-toolkit/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "storybook": {
+          "builder": "@storybook/angular:start-storybook",
+          "options": {
+            "browserTarget": "angular-cli:build",
+            "port": 6006,
+            "styles": [
+              "./storybook/storybook.styles.scss"
+            ]
+          }
+        },
+        "build-storybook": {
+          "builder": "@storybook/angular:build-storybook",
+          "options": {
+            "browserTarget": "angular-cli:build",
+            "styles": [
+              "./storybook/storybook.styles.scss"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ccd-case-ui-toolkit/src/test.ts",
+            "tsConfig": "projects/ccd-case-ui-toolkit/tsconfig.spec.json",
+            "karmaConfig": "projects/ccd-case-ui-toolkit/src/karma.conf.js",
+            "codeCoverageExclude": ["**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"],
+            "codeCoverage": true
+          },
+          "codeCoverage": {
+            "exclude": [
+              "**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts"
+            ]
+          }
+        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
+            "tsConfig": [
+              "projects/ccd-case-ui-toolkit/tsconfig.lib.json",
+              "projects/ccd-case-ui-toolkit/tsconfig.spec.json"
+            ],
             "exclude": [
               "**/node_modules/**"
             ]
@@ -115,5 +175,5 @@
       }
     }
   },
-  "defaultProject": "ccd-case-ui-toolkit"
+  "defaultProject": "ccd-case-ui-toolkit-lib"
 }
