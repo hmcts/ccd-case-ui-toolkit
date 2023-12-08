@@ -9,7 +9,7 @@ import { WizardPage } from '../domain/wizard-page.model';
 
 @Injectable()
 export class PageValidationService {
-  constructor(private readonly caseFieldService: CaseFieldService) {}
+  constructor(private readonly caseFieldService: CaseFieldService) { }
 
   public isPageValid(page: WizardPage, editForm: FormGroup): boolean {
     return page.case_fields

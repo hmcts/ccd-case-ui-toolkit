@@ -92,13 +92,13 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     }
 
     return !ReadFieldsFilterPipe.isEmpty(field.value)
-              || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
+      || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
   }
 
   private static getValue(field: CaseField, values: any, index?: number): any {
     if (ReadFieldsFilterPipe.isEmpty(field.value)) {
       let value: any;
-      if (index >= 0 ) {
+      if (index >= 0) {
         value = values[index].value[field.id];
       } else {
         value = values[field.id];
@@ -145,7 +145,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     let checkConditionalShowAgainst: any = values;
     let formGroupAvailable = false;
     if (formGroup) {
-      checkConditionalShowAgainst = formGroup.parent.getRawValue().data;
+      checkConditionalShowAgainst = formGroup.value ? formGroup.parent.getRawValue().data : formGroup;
       formGroupAvailable = true;
       if (idPrefix !== undefined) {
         if (idPrefix !== '') {
