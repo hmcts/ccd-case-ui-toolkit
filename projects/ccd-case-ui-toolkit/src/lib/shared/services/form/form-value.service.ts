@@ -419,7 +419,7 @@ export class FormValueService {
               this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
               // Also remove any optional complex objects that are completely empty.
               // EUI-4244: Ritesh's fix, passing true instead of clearEmpty.
-              if (FormValueService.clearOptionalEmpty(true, data[field.id], field)) {
+              if (FormValueService.clearOptionalEmpty(true, data[field.id], field) && field.field_type.id !== 'JudicialUser') {
                 delete data[field.id];
               }
               if (data[field.id] && FormValueService.isEmptyData(data[field.id]) && fromPreviousPage
