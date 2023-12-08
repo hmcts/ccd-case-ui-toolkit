@@ -11,6 +11,9 @@
 ### Version 7.0.0
 **EXUI-763** Angular 15 and Node 18 update
 
+### Version 6.19.15-welsh-translation-FirstErrorPipe-fix
+**EUI-8737** Re-tag for re-release following deployment of Restricted Case Access feature to live
+
 ### Version 6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix-2
 **EUI-9035** Re-tag for re-release following deployment of Restricted Case Access feature to live
 
@@ -22,6 +25,9 @@
 
 ### Version 6.19.6-restricted-case-access-v4
 **EUI-6645** Restricted case access
+
+### Version 6.19.13-welsh-translation-FirstErrorPipe-fix
+**EUI-8737** Reimplement `FirstErrorPipe` to use the `RpxTranslationService` directly instead of `RpxTranslatePipe`; remove incorrect use of `RpxTranslatePipe` from palette components where `FirstErrorPipe` is used in the component's HTML template
 
 ### Version 6.19.13-case-flags-v2-manage-case-flags-value-caching-fix
 **EUI-9020** Fix bug where previous changes to a flag are retained in the UI when the user starts over and selects the same flag to update again
