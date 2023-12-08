@@ -2,6 +2,12 @@
 ### Version 6.19.15-welsh-translation-FirstErrorPipe-fix
 **EUI-8737** Re-tag for re-release following deployment of Restricted Case Access feature to live
 
+### Version 6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix-2
+**EUI-9035** Re-tag for re-release following deployment of Restricted Case Access feature to live
+
+### Version 6.19.15-case-flags-v2-manage-case-flags-flag-update-comments-fix
+**EUI-9035** Fix bug where Case Flag Summary (CYA) page displays original flag comments instead of flag update comments, during the "Manage support" journey for an external user. Also amend Case Flags page to display flag update comments for "Inactive" flags
+
 ### Version 6.19.15-restricted-case-access
 **EUI-8816** Restricted case access feature toggle functionality
 
@@ -551,6 +557,7 @@ Add refunds functionality
 
 ### Version 4.13.8-event-start-task-not-required"
 **EUI-5569** Task not required for event functionality
+
 ### Version 4.12.1-EUI-5877-repeating-label
 **EUI-5877** Bug fix for repeating label
 
@@ -616,6 +623,7 @@ Add refunds functionality
 
 ### Version 4.1.6-EUI-4343-case-field-validation-red-bar-missing
 **EUI-4343** CCD case field validation indicator missing in WA2 release 2 part2 branch
+
 ### Version 4.3.2-rc3
 **EUI-4430** Case reference field regression bugs
 
@@ -640,7 +648,6 @@ Add refunds functionality
 ### Version 4.3.0
 **EUI-4344** Document uploaded shows incorrect name
 **EUI-4377** removing unwanted html tags from title
-
 
 ### Version 4.2.3
 **EUI-3425** Hotfix for work already done. Secure uploading for new cases
@@ -703,6 +710,7 @@ Add refunds functionality
 **EUI-3868** "Retain Hidden Value" matrix - support for Scenarios 5 and 8 for "retain = true"
 **EUI-2744** EventToComplexTypes regression with hidden fields
 **EUI-4106** Show/hide functionality
+
 ### Version 4.0.0-activity-tracker-unauthorised-beta
 **EUI-4226** Fixed an issue with 401/403 errors ignoring that the user is unauthorised.
 
