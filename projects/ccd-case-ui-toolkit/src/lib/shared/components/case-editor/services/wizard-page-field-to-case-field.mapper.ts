@@ -123,6 +123,6 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private allCaseFieldsHidden(children: CaseField[]): boolean {
-    return !children.some(e => e.hidden !== true);
+    return children.every(e => e.display_context === 'HIDDEN');
   }
 }
