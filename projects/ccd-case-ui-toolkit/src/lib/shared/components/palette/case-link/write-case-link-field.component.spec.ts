@@ -1,7 +1,8 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RpxTranslatePipe } from 'rpx-xui-translation';
+import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
+import { of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils';
@@ -37,6 +38,8 @@ describe('WriteCaseLinkFieldComponent', () => {
   let component: WriteCaseLinkFieldComponent;
   let fixture: ComponentFixture<WriteCaseLinkFieldComponent>;
   let de: DebugElement;
+  const rpxTranslationServiceSpy = jasmine.createSpyObj('RpxTranslationService', ['getTranslation$', 'translate']);
+  rpxTranslationServiceSpy.getTranslation$.and.callFake((someString: string) => of(someString));
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -49,7 +52,8 @@ describe('WriteCaseLinkFieldComponent', () => {
         MockRpxTranslatePipe
       ],
       providers: [
-        { provide: RpxTranslatePipe, useClass: MockRpxTranslatePipe }
+        { provide: RpxTranslatePipe, useClass: MockRpxTranslatePipe },
+        { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
       ]
     })
     .compileComponents();

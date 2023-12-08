@@ -8,7 +8,7 @@
         <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option below' | rpxTranslate}}</span>
         <span class="error-message"
             *ngIf="dynamicRadioListControl.errors && dynamicRadioListControl.dirty">{{(dynamicRadioListControl.errors |
-            ccdFirstError) | rpxTranslate}}</span>
+            ccdFirstError)}}</span>
     </label>
 
     <ng-container>
