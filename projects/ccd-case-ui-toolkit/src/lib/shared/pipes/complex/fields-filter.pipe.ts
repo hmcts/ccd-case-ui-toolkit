@@ -106,7 +106,10 @@ export class FieldsFilterPipe implements PipeTransform {
       .filter(f => keepEmpty || FieldsFilterPipe.keepField(f))
       .map(f => {
         if (!f.display_context) {
-          f.display_context = complexField.display_context;
+          if (complexField.display_context === 'MANDATORY' || complexField.display_context === 'READONLY'
+            || complexField.display_context === 'OPTIONAL' || complexField.display_context === 'HIDDEN') {
+            f.display_context = complexField.display_context;
+          }
         }
         return f;
       });
