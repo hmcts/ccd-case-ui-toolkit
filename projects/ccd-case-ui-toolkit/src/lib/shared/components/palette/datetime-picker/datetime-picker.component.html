@@ -41,6 +41,9 @@
                                (monthSelected)="monthSelected($event)"
                                (opened)="toggleClick()"
       >
+        <ngx-mat-datepicker-actions>
+          <button mat-raised-button color="primary" ngxMatDatepickerApply>Confirm</button>
+        </ngx-mat-datepicker-actions>
       </ngx-mat-datetime-picker>
     </div>
   </fieldset>

@@ -41,13 +41,13 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   private caseReferenceValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
       if (control.value) {
-        if ( this.validCaseReference(control.value) ) {
+        if (this.validCaseReference(control.value)) {
           return null;
         }
-        return {error: 'Please use a valid 16 Digit Case Reference'};
+        return { error: 'Please use a valid 16 Digit Case Reference' };
       } else {
         if (control.touched) {
-          return {error: 'Please use a valid 16 Digit Case Reference'};
+          return { error: 'Please use a valid 16 Digit Case Reference' };
         }
       }
       return null;
@@ -55,7 +55,7 @@ export class WriteCaseLinkFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private validCaseReference(valueString: string): boolean {
-    if (!valueString )  {
+    if (!valueString) {
       return false;
     }
     return new RegExp('^\\b\\d{4}[ -]?\\d{4}[ -]?\\d{4}[ -]?\\d{4}\\b$').test(valueString.trim());

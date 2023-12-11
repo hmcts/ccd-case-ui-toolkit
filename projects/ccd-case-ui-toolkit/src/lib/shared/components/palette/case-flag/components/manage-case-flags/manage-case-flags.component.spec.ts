@@ -83,7 +83,7 @@ describe('ManageCaseFlagsComponent', () => {
     flagComment: 'First flag',
     flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'OT0001',
     status: 'Active',
@@ -94,7 +94,7 @@ describe('ManageCaseFlagsComponent', () => {
     flagComment: 'First flag',
     flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'OT0001',
     status: 'Active',
@@ -298,14 +298,14 @@ describe('ManageCaseFlagsComponent', () => {
       }
     };
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ManageCaseFlagsComponent, MockRpxTranslatePipe, ManageCaseFlagsLabelDisplayPipe ],
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ManageCaseFlagsComponent, MockRpxTranslatePipe, ManageCaseFlagsLabelDisplayPipe],
       providers: [
         { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

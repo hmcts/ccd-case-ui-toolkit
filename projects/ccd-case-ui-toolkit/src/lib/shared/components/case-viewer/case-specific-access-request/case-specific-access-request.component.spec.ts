@@ -16,8 +16,8 @@ import { SpecificAccessRequestErrors, SpecificAccessRequestPageText } from './mo
 
 import createSpyObj = jasmine.createSpyObj;
 
-@Component({template: ``})
-class StubComponent {}
+@Component({ template: `` })
+class StubComponent { }
 
 describe('CaseSpecificAccessRequestComponent', () => {
   let component: CaseSpecificAccessRequestComponent;
@@ -39,7 +39,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
     casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
     casesService.createSpecificAccessRequest.and.returnValue(of(true));
     TestBed.configureTestingModule({
-      declarations: [ CaseSpecificAccessRequestComponent, ErrorMessageComponent, MockRpxTranslatePipe,
+      declarations: [CaseSpecificAccessRequestComponent, ErrorMessageComponent, MockRpxTranslatePipe,
         StubComponent],
       imports: [
         AlertModule,
@@ -51,15 +51,16 @@ describe('CaseSpecificAccessRequestComponent', () => {
       ],
       providers: [
         FormBuilder,
-        { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
-        ['getTranslation$', 'translate'])
+        {
+          provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
+            ['getTranslation$', 'translate'])
         },
         { provide: CasesService, useValue: casesService },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseNotifier, useValue: casesNotifier },
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

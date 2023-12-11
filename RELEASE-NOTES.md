@@ -1,4 +1,16 @@
 ## RELEASE NOTES
+### Version 7.0.2-case-flags-v2-1-release
+**EUI-9048** Re-tag for re-release of Case Flags v2.1, following sync of `Release` branch with latest from `master` to incorporate Angular 15 and Node 18 upgrade
+
+### Version 7.0.2
+**EXUI-1151** Angular 15 and Node 18 update
+
+### Version 7.0.1
+**EXUI-1151** Angular 15 and Node 18 update
+
+### Version 7.0.0
+**EXUI-763** Angular 15 and Node 18 update
+
 ### Version 6.19.15-welsh-translation-FirstErrorPipe-fix
 **EUI-8737** Re-tag for re-release following deployment of Restricted Case Access feature to live
 
@@ -106,7 +118,10 @@
 ### Version 6.19.6-case-file-view-document-upload-date-v2
 **EUI-7807** Case file view v1.1
 
-### Version 6.19.11-rc1
+### Version 7.0.0-rc3
+**EXUI-763** Upgrade ccd-ui-toolkit to Node 18.17.0 and Angular 15.2.9
+
+### Version 6.19.11-rc3
 **EXUI-1000** Complex type not showing data
 **EXUI-1006** Case Flags stopped working
 

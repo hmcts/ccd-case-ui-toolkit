@@ -29,7 +29,7 @@ describe('UpdateFlagComponent', () => {
     flagComment: 'First flag',
     flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active',
@@ -38,7 +38,7 @@ describe('UpdateFlagComponent', () => {
   const inactiveFlag = {
     name: 'Flag 2',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL2',
     status: 'Inactive'
@@ -46,7 +46,7 @@ describe('UpdateFlagComponent', () => {
   const requestedFlag = {
     name: 'Flag 3',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL3',
     status: 'Requested'
@@ -54,7 +54,7 @@ describe('UpdateFlagComponent', () => {
   const notApprovedFlag = {
     name: 'Flag 4',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL4',
     status: 'Not approved'
@@ -64,7 +64,7 @@ describe('UpdateFlagComponent', () => {
     flagComment: 'First flag',
     flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active',
@@ -75,7 +75,7 @@ describe('UpdateFlagComponent', () => {
     flagComment: 'First flag',
     flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active',
@@ -86,7 +86,7 @@ describe('UpdateFlagComponent', () => {
     flagComment: 'First flag',
     flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'OT0001',
     status: 'Active',
@@ -97,7 +97,7 @@ describe('UpdateFlagComponent', () => {
     flagComment: 'First flag',
     flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'OT0001',
     status: 'Active',
@@ -154,7 +154,7 @@ describe('UpdateFlagComponent', () => {
         { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -762,6 +762,6 @@ describe('UpdateFlagComponent', () => {
     component.ngOnInit();
     // Only "Active" and "Inactive" status options should be in the list of valid progressions
     expect(component.validStatusProgressions).toEqual(
-      Object.keys(CaseFlagStatus).filter(key => !['REQUESTED', 'NOT_APPROVED'].includes(key)));
+      Object.keys(CaseFlagStatus).filter((key) => !['REQUESTED', 'NOT_APPROVED'].includes(key)));
   });
 });

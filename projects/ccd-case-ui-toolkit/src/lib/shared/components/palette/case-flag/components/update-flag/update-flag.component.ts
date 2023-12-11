@@ -53,7 +53,7 @@ export class UpdateFlagComponent implements OnInit {
     this.externalUserUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     this.internalUserUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE;
     this.internalUser2Point1EnabledUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
-    this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
+    this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation)?.value as FlagDetailDisplayWithFormGroupPath;
     if (this.selectedFlag?.flagDetailDisplay?.flagDetail) {
       this.flagDetail = this.selectedFlag.flagDetailDisplay.flagDetail;
       // If present, use the *original* flag status, not the one in the flagDetail object, because the status could have
@@ -87,7 +87,7 @@ export class UpdateFlagComponent implements OnInit {
       if (currentFlagStatusKey) {
         switch (currentFlagStatusKey) {
           case 'ACTIVE':
-            this.validStatusProgressions = Object.keys(CaseFlagStatus).filter(key => !['REQUESTED', 'NOT_APPROVED'].includes(key));
+            this.validStatusProgressions = Object.keys(CaseFlagStatus).filter((key) => !['REQUESTED', 'NOT_APPROVED'].includes(key));
             break;
           case 'REQUESTED':
             this.validStatusProgressions = Object.keys(CaseFlagStatus);
@@ -128,7 +128,7 @@ export class UpdateFlagComponent implements OnInit {
 
     // Set selected flag status to "Inactive" if update is by external user
     if (this.externalUserUpdate) {
-      this.formGroup.get(CaseFlagFormFields.STATUS).setValue(Object.keys(CaseFlagStatus)[2]);
+      this.formGroup.get(CaseFlagFormFields.STATUS)?.setValue(Object.keys(CaseFlagStatus)[2]);
     }
 
     // Return case flag field state, error messages, and selected flag detail to the parent. The selected flag must be
@@ -145,7 +145,7 @@ export class UpdateFlagComponent implements OnInit {
   public onMakeInactive(): void {
     // Set selected flag status to "Inactive" on screen and in the FormGroup
     this.selectedFlag.flagDetailDisplay.flagDetail.status = CaseFlagStatus.INACTIVE;
-    this.formGroup.get(CaseFlagFormFields.STATUS).setValue(Object.keys(CaseFlagStatus)[2]);
+    this.formGroup.get(CaseFlagFormFields.STATUS)?.setValue(Object.keys(CaseFlagStatus)[2]);
   }
 
   private validateTextEntry(): void {
@@ -156,7 +156,7 @@ export class UpdateFlagComponent implements OnInit {
     this.errorMessages = [];
     // Validation should fail if the flag has an existing comment and it has been deleted on screen; conversely, if there
     // is no existing comment then one is not required for validation to pass
-    const comment = this.formGroup.get(CaseFlagFormFields.COMMENTS).value;
+    const comment = this.formGroup.get(CaseFlagFormFields.COMMENTS)?.value;
     if (!comment && (this.flagDetail.flagComment || this.flagDetail.flagComment_cy)) {
       this.commentsNotEnteredErrorMessage = !this.displayContextParameter
         ? UpdateFlagErrorMessage.NONE
@@ -177,10 +177,10 @@ export class UpdateFlagComponent implements OnInit {
       });
     }
 
-    const statusReason = this.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON).value;
-    const flagStatusNotApprovedKey = Object.keys(CaseFlagStatus).find(key => CaseFlagStatus[key] === CaseFlagStatus.NOT_APPROVED);
+    const statusReason = this.formGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value;
+    const flagStatusNotApprovedKey = Object.keys(CaseFlagStatus).find((key) => CaseFlagStatus[key] === CaseFlagStatus.NOT_APPROVED);
     // Status reason is mandatory if flag status is "Not approved" or user is external
-    if (this.formGroup.get(CaseFlagFormFields.STATUS).value === flagStatusNotApprovedKey && !statusReason) {
+    if (this.formGroup.get(CaseFlagFormFields.STATUS)?.value === flagStatusNotApprovedKey && !statusReason) {
       this.statusReasonNotEnteredErrorMessage = UpdateFlagErrorMessage.STATUS_REASON_NOT_ENTERED;
       this.errorMessages.push({
         title: '',

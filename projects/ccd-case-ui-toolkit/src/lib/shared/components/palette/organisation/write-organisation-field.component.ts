@@ -17,7 +17,7 @@ import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.
 })
 export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  private static readonly EMPTY_SIMPLE_ORG: SimpleOrganisationModel = {organisationIdentifier: '', name: '', address: ''};
+  private static readonly EMPTY_SIMPLE_ORG: SimpleOrganisationModel = { organisationIdentifier: '', name: '', address: '' };
   private static readonly MAX_RESULT_COUNT: number = 100;
   private static readonly ORGANISATION_ID: string = 'OrganisationID';
   private static readonly ORGANISATION_NAME: string = 'OrganisationName';
@@ -38,8 +38,8 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
   public selectedOrg$: Observable<SimpleOrganisationModel>;
 
   constructor(private readonly organisationService: OrganisationService,
-              private readonly organisationConverter: OrganisationConverter,
-              private readonly windowService: WindowService) {
+    private readonly organisationConverter: OrganisationConverter,
+    private readonly windowService: WindowService) {
     super();
     this.defaultOrg = JSON.parse(this.windowService.getSessionStorage(WriteOrganisationFieldComponent.ORGANISATION_DETAILS));
   }
@@ -86,7 +86,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
       this.simpleOrganisations$ = this.organisations$.pipe(
         switchMap(organisations => of(
           this.searchOrg(organisations, lowerOrgSearchText)
-          )
+        )
         )
       );
     } else {
@@ -103,7 +103,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     const withSpaceMatchingResultSet = [];
     const MAX_RESULT_COUNT = WriteOrganisationFieldComponent.MAX_RESULT_COUNT;
     organisations.forEach((organisation) => {
-      if ( partMatchingResultSet.length < MAX_RESULT_COUNT && this.searchCriteria(organisation, lowerOrgSearchText)) {
+      if (partMatchingResultSet.length < MAX_RESULT_COUNT && this.searchCriteria(organisation, lowerOrgSearchText)) {
         partMatchingResultSet.push(organisation);
       }
     });
@@ -148,7 +148,7 @@ export class WriteOrganisationFieldComponent extends AbstractFieldWriteComponent
     this.simpleOrganisations$ = of([]);
     this.searchOrgTextFormControl.setValue('');
     this.searchOrgTextFormControl.enable();
-    this.caseField.value = {OrganisationID: null, OrganisationName: null};
+    this.caseField.value = { OrganisationID: null, OrganisationName: null };
     this.organisationFormGroup.setValue(this.caseField.value);
   }
 

@@ -184,7 +184,7 @@ export class ConditionParser {
           const arrayIndex = Number.parseInt(pathTail[0], 10);
           const [__, ...dropNumberPath] = pathTail;
           return (fields[head][arrayIndex] !== undefined) ? this.findValueForComplexCondition(
-          fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
+            fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
         } catch (e) {
           console.error('Error while parsing number', pathTail[0], e);
         }

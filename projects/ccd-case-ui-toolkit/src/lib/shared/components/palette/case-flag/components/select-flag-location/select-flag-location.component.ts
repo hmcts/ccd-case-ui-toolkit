@@ -88,7 +88,7 @@ export class SelectFlagLocationComponent implements OnInit {
     this.caseFlagsConfigError = true;
     this.errorMessages = [];
     this.errorMessages.push(
-      {title: '', description: SelectFlagLocationErrorMessage.FLAGS_NOT_CONFIGURED, fieldId: 'conditional-radios-list'});
+      { title: '', description: SelectFlagLocationErrorMessage.FLAGS_NOT_CONFIGURED, fieldId: 'conditional-radios-list' });
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
   }

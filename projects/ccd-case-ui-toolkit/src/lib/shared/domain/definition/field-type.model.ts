@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import { CaseField } from './case-field.model';
 import { FieldTypeEnum } from './field-type-enum.model';
 import { FixedListItem } from './fixed-list-item.model';
+import 'reflect-metadata';
 
 // @dynamic
 export class FieldType {

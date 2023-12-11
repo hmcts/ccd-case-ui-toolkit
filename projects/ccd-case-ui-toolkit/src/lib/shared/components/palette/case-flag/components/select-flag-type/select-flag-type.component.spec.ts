@@ -198,7 +198,7 @@ describe('SelectFlagTypeComponent', () => {
         { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

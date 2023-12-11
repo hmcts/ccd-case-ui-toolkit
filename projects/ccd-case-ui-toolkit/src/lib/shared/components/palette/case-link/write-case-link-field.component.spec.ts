@@ -19,7 +19,7 @@ const FIELD_TYPE: FieldType = {
 const CASE_REFERENCE: CaseField = {
   id: 'CaseReference',
   label: 'Case Reference',
-  field_type: {id: 'TextCaseReference', type: 'Text'}
+  field_type: { id: 'TextCaseReference', type: 'Text' }
 } as CaseField;
 
 const CASE_FIELD: CaseField = {
@@ -56,7 +56,7 @@ describe('WriteCaseLinkFieldComponent', () => {
         { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(WriteCaseLinkFieldComponent);
     component = fixture.componentInstance;
@@ -77,7 +77,7 @@ describe('WriteCaseLinkFieldComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     component.caseLinkGroup.controls['CaseReference'].setValue(null);
-    component.caseLinkGroup.controls['CaseReference'].markAsTouched({onlySelf: true});
+    component.caseLinkGroup.controls['CaseReference'].markAsTouched({ onlySelf: true });
     component.caseLinkGroup.controls['CaseReference'].updateValueAndValidity();
     fixture.detectChanges();
     expect(component).toBeTruthy();

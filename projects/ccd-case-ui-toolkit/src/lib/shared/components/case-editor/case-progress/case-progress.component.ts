@@ -15,14 +15,15 @@ import { EventTriggerService } from '../services/event-trigger.service';
   templateUrl: 'case-progress.component.html'
 })
 export class CaseProgressComponent implements OnInit {
-
   @Input()
   public case: string;
+
   @Input()
   public event: string;
 
   @Output()
   public cancelled: EventEmitter<any> = new EventEmitter();
+
   @Output()
   public submitted: EventEmitter<any> = new EventEmitter();
 
@@ -40,8 +41,7 @@ export class CaseProgressComponent implements OnInit {
     let caseTypeId: string;
     this.casesService.getCaseViewV2(this.case).toPromise()
       .then(caseView => this.caseDetails = caseView)
-      .then(caseView => this.casesService.getEventTrigger(caseTypeId, this.event, caseView.case_id)
-                                                            .toPromise())
+      .then(caseView => this.casesService.getEventTrigger(caseTypeId, this.event, caseView.case_id).toPromise())
       .then(eventTrigger => {
         this.eventTriggerService.announceEventTrigger(eventTrigger);
         this.eventTrigger = eventTrigger;

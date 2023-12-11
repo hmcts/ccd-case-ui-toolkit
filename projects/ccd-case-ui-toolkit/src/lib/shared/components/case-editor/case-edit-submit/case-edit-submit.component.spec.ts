@@ -84,7 +84,7 @@ describe('CaseEditSubmitComponent', () => {
   const $EVENT_NOTES = By.css('#fieldset-event');
   const fieldsUtils = new FieldsUtils();
   const FORM_GROUP = new FormGroup({
-    data: new FormGroup({PersonLastName: new FormControl('Khaleesi')})
+    data: new FormGroup({ PersonLastName: new FormControl('Khaleesi') })
   });
   const COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED = '2nd child field of complex type (do not retain)';
   const COMPLEX_SUBFIELD_1_VALUE_EMPTY = '';
@@ -326,7 +326,7 @@ describe('CaseEditSubmitComponent', () => {
         form: FORM_GROUP,
         data: '',
         eventTrigger:
-          {case_fields: [caseField1, caseField2, caseField3], end_button_label: END_BUTTON_LABEL, can_save_draft: false},
+          { case_fields: [caseField1, caseField2, caseField3], end_button_label: END_BUTTON_LABEL, can_save_draft: false },
         wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
@@ -368,19 +368,19 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
-          {provide: CaseEditComponent, useValue: caseEditComponent},
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: FieldsUtils, useValue: fieldsUtils},
-          {provide: CaseReferencePipe, useValue: casesReferencePipe},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService},
-          {provide: ProfileNotifier, useValue: profileNotifier},
-          {provide: SessionStorageService, useValue: sessionStorageService},
-          {provide: Router, useValue: mockRouter},
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: SessionStorageService, useValue: sessionStorageService },
+          { provide: Router, useValue: mockRouter },
           PlaceholderService,
-          {provide: CaseNotifier, useValue: mockCaseNotifier},
+          { provide: CaseNotifier, useValue: mockCaseNotifier },
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -776,7 +776,7 @@ describe('CaseEditSubmitComponent', () => {
       queryParamMap: queryParamMapNoProfile,
     };
     const mockRouteNoProfile = {
-      params: of({id: 123}),
+      params: of({ id: 123 }),
       snapshot: snapshotNoProfile
     };
     beforeEach(() => {
@@ -787,7 +787,7 @@ describe('CaseEditSubmitComponent', () => {
       caseEditComponent = {
         form: FORM_GROUP,
         data: '',
-        eventTrigger: {case_fields: [], can_save_draft: true},
+        eventTrigger: { case_fields: [], can_save_draft: true },
         wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
@@ -827,19 +827,19 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
-          {provide: CaseEditComponent, useValue: caseEditComponent},
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: FieldsUtils, useValue: fieldsUtils},
-          {provide: CaseReferencePipe, useValue: casesReferencePipe},
-          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
-          {provide: OrderService, useValue: orderService},
-          {provide: ProfileNotifier, useValue: profileNotifier},
-          {provide: SessionStorageService, useValue: sessionStorageService},
-          {provide: Router, useValue: mockRouter},
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: SessionStorageService, useValue: sessionStorageService },
+          { provide: Router, useValue: mockRouter },
           PlaceholderService,
-          {provide: CaseNotifier, useValue: mockCaseNotifier},
+          { provide: CaseNotifier, useValue: mockCaseNotifier },
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -864,8 +864,8 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
 
       comp.cancel();
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageText.RESUMED_FORM_DISCARD });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageText.NEW_FORM_DISCARD });
     });
 
     it('should emit NEW_FORM_DISCARD on create event if cancel triggered and originated from create case', () => {
@@ -879,8 +879,8 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
 
       comp.cancel();
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageText.NEW_FORM_DISCARD });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageText.RESUMED_FORM_DISCARD });
     });
 
     it('should return "Return to case list" text label for cancel button when save and resume enabled', () => {
@@ -930,7 +930,7 @@ describe('CaseEditSubmitComponent', () => {
       queryParamMap: queryParamMapNoProfile,
     };
     const mockRouteNoProfile = {
-      params: of({id: 123}),
+      params: of({ id: 123 }),
       snapshot: snapshotNoProfile
     };
     beforeEach(() => {
@@ -941,7 +941,7 @@ describe('CaseEditSubmitComponent', () => {
       caseEditComponent = {
         form: FORM_GROUP,
         data: '',
-        eventTrigger: {case_fields: [], can_save_draft: true},
+        eventTrigger: { case_fields: [], can_save_draft: true },
         wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
@@ -985,19 +985,19 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
-          {provide: CaseEditComponent, useValue: caseEditComponent},
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: FieldsUtils, useValue: fieldsUtils},
-          {provide: CaseReferencePipe, useValue: casesReferencePipe},
-          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
-          {provide: OrderService, useValue: orderService},
-          {provide: ProfileNotifier, useValue: profileNotifier},
-          {provide: SessionStorageService, useValue: sessionStorageService},
-          {provide: Router, useValue: mockRouter},
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: SessionStorageService, useValue: sessionStorageService },
+          { provide: Router, useValue: mockRouter },
           PlaceholderService,
-          {provide: CaseNotifier, useValue: mockCaseNotifier},
+          { provide: CaseNotifier, useValue: mockCaseNotifier },
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);

@@ -1,9 +1,8 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.19.15-welsh-translation-FirstErrorPipe-fix",
+  "version": "7.0.2-case-flags-v2-1-release",
   "engines": {
-    "yarn": "^3.5.0",
-    "npm": "^8.10.0"
+    "node": ">=18.17.0"
   },
   "description": "Case UI Toolkit",
   "license": "MIT",
