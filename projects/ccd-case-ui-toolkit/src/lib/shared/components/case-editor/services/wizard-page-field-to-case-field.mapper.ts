@@ -106,12 +106,10 @@ export class WizardPageFieldToCaseFieldMapper {
 
     childrenCaseFields.forEach(e => this.hideParentIfAllChildrenHidden(e));
 
-    // filter out judicialuser field to avoid issue with the field to be hide/unhide based on the selection
     if (childrenCaseFields.length > 0 && this.allCaseFieldsHidden(childrenCaseFields)) {
       caseField.hidden = true;
-      if (caseField.field_type.id !== 'JudicialUser' && caseField.field_type.collection_field_type?.id !== 'JudicialUser') {
-        caseField.display_context = 'HIDDEN';
-      }
+      // marking display_context as special hidden so field not being deleted in event submission
+      caseField.display_context = 'HIDDEN_TEMP';
     }
   }
 
@@ -126,6 +124,6 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private allCaseFieldsHidden(children: CaseField[]): boolean {
-    return children.every(e => e.display_context === 'HIDDEN');
+    return children.every(e => e.display_context === 'HIDDEN' || e.display_context === 'HIDDEN_TEMP');
   }
 }
