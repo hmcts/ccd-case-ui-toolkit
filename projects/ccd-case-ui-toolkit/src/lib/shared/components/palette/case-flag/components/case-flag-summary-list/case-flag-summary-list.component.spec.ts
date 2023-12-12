@@ -255,6 +255,37 @@ describe('CaseFlagSummaryListComponent', () => {
     expect(summaryListValues[5].textContent).toContain(flag.flagDetail.status);
   });
 
+  it('should not display summary details for Welsh if the flag is being updated by an external user', () => {
+    const flag = {
+      partyName: 'Rose Bank',
+      flagDetail: {
+        name: 'Flag 1',
+        flagComment: 'First flag',
+        flagComment_cy: 'Flag comment for Welsh',
+        dateTimeCreated: new Date(),
+        path: [{ id: '', value: 'Reasonable adjustment' }],
+        hearingRelevant: false,
+        flagCode: 'FL1',
+        otherDescription_cy: 'Other description for Welsh',
+        status: 'Active'
+      } as FlagDetail
+    } as FlagDetailDisplay;
+    // Set a comment for the flag update reason (mandatory if the user is external)
+    flag.flagDetail['flagStatusReasonChange'] = 'Update by external user';
+    component.flagForSummaryDisplay = flag;
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+    fixture.detectChanges();
+    const addUpdateFlagHeaderTextElement = nativeElement.querySelector('dt');
+    expect(addUpdateFlagHeaderTextElement.textContent).toContain(updateSupportHeaderText);
+    const summaryListValues = nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+    expect(summaryListValues.length).toBe(4);
+    expect(summaryListValues[0].textContent).toContain(flag.partyName);
+    expect(summaryListValues[1].textContent).toContain(flag.flagDetail.name);
+    // The flag update comment is displayed in place of the original flag comment, for an external user
+    expect(summaryListValues[2].textContent).toContain('Update by external user');
+    expect(summaryListValues[3].textContent).toContain(flag.flagDetail.status);
+  });
+
   it('should use the stored Welsh values for flag name and sub-type value if the selected language is Welsh', () => {
     mockRpxTranslationService.language = 'cy';
     const flag = {

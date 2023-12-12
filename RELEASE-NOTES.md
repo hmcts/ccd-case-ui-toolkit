@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.2-case-flags-v2-1-release-2
+**EUI-9061** Fix bug where Welsh description (for flags of type "Other") and Welsh comments fields are shown on the Case Flag Summary (CYA) page when a flag is updated by an external user
+
 ### Version 7.0.2-case-flags-v2-1-release
 **EUI-9048** Re-tag for re-release of Case Flags v2.1, following sync of `Release` branch with latest from `master` to incorporate Angular 15 and Node 18 upgrade
 
