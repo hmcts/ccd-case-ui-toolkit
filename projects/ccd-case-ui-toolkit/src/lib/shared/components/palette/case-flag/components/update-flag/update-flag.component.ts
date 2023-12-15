@@ -25,7 +25,7 @@ export class UpdateFlagComponent implements OnInit {
   private readonly commentsMaxCharLimit = 200;
 
   public ngOnInit(): void {
-    this.updateFlagHint = UpdateFlagStep.HINT_TEXT ;
+    this.updateFlagHint = UpdateFlagStep.HINT_TEXT;
     this.updateFlagCharLimitInfo = UpdateFlagStep.CHARACTER_LIMIT_INFO;
     this.formGroup.addControl(this.updateFlagControlName, new FormControl(''));
 
