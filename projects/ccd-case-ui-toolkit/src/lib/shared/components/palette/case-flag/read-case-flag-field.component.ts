@@ -39,8 +39,8 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
       // data, and extract all flags-related data from its Flags fields
       if (this.route.snapshot.data.case && this.route.snapshot.data.case.tabs) {
         this.flagsData = (this.route.snapshot.data.case.tabs as CaseTab[])
-        .filter(tab => tab.fields && tab.fields
-          .some(caseField => caseField.field_type.type === 'FlagLauncher'))
+          .filter(tab => tab.fields && tab.fields
+            .some(caseField => caseField.field_type.type === 'FlagLauncher'))
         [0].fields.reduce((flags, caseField) => {
           return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
         }, []);
@@ -65,18 +65,18 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
         // which the new flag has been added
         if (flagLauncherComponent.caseField.display_context_parameter === this.createMode &&
           flagLauncherComponent.selectedFlagsLocation) {
-            this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
-              flagLauncherComponent.selectedFlagsLocation);
-            // Set the display mode for the "Review flag details" summary page
-            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
-        // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
-        // Manage Case Flags journey
+          this.flagForSummaryDisplay = this.extractNewFlagToFlagDetailDisplayObject(
+            flagLauncherComponent.selectedFlagsLocation);
+          // Set the display mode for the "Review flag details" summary page
+          this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.CREATE;
+          // The FlagLauncher component holds a reference (selectedFlag), which gets set after the selection step of the
+          // Manage Case Flags journey
         } else if (flagLauncherComponent.caseField.display_context_parameter === this.updateMode &&
           flagLauncherComponent.selectedFlag) {
-            this.flagForSummaryDisplay =
-              this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
-            // Set the display mode for the "Review flag details" summary page
-            this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
+          this.flagForSummaryDisplay =
+            this.formGroup.get(flagLauncherControlName)['component'].selectedFlag.flagDetailDisplay;
+          // Set the display mode for the "Review flag details" summary page
+          this.summaryListDisplayMode = CaseFlagSummaryListDisplayMode.MANAGE;
         }
       }
     }
