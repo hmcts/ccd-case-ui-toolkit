@@ -2,7 +2,7 @@
 
   <fieldset>
     <legend>
-      <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel) | rpxTranslate }}</span>
+      <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
     </legend>
     <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
     <span class="error-message" *ngIf="dateControl && dateControl.errors && (dateControl.dirty || dateControl.touched)">
