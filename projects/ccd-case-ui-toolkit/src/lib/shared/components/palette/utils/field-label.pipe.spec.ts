@@ -2,8 +2,9 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldLabelPipe } from './field-label.pipe';
 
 describe('FieldLabelPipe', () => {
-
-  const fieldLabelPipe: FieldLabelPipe = new FieldLabelPipe();
+  let translationPipeMock = jasmine.createSpyObj('RpxTranslatePipe', ['transform']);
+  translationPipeMock.transform.and.callFake((someString: string) => someString);
+  const fieldLabelPipe: FieldLabelPipe = new FieldLabelPipe(translationPipeMock);
 
   it('should return empty string for null values', () => {
     expect(fieldLabelPipe.transform(null))
