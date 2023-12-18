@@ -172,7 +172,9 @@ export class ReadFieldsFilterPipe implements PipeTransform {
       })
       .map(f => {
         if (!f.display_context) {
-          f.display_context = complexField.display_context;
+          if (FieldsUtils.isValidDisplayContext(complexField.display_context)) {
+            f.display_context = complexField.display_context;
+          }
         }
         if (setupHidden) {
           ReadFieldsFilterPipe.evaluateConditionalShow(f, checkConditionalShowAgainst, path, formGroupAvailable, complexField.id);
