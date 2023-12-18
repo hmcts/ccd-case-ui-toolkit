@@ -404,11 +404,7 @@ export class FormValueService {
           // Delete anything that is hidden (that is NOT readonly), and that
           // hasn't had its display_context overridden to make it hidden.
           // in event submission check for field's retain_hidden_value defore deletion
-          if(isCalledFromSubmit && !field.retain_hidden_value) {
-            delete data[field.id];
-          } else {
-            delete data[field.id];
-          }
+          isCalledFromSubmit && !field.retain_hidden_value ? delete data[field.id] : delete data[field.id];
         } else if (field.field_type) {
           switch (field.field_type.type) {
             case 'Label':
