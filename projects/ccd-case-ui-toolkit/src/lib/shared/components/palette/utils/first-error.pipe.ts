@@ -33,6 +33,8 @@ export class FirstErrorPipe implements PipeTransform {
       errorMessage = '%FIELDLABEL% is required';
     } else if (keys[0] === 'pattern') {
       errorMessage = 'The data entered is not valid for %FIELDLABEL%';
+    } else if (keys[0] === 'markDownPattern') {
+      errorMessage = 'The data entered is not valid for %FIELDLABEL%. Avoid using Markdown for links i.e [text](url), image and link tags - <img src="" /> or <a href="">text</a>';
     } else if (keys[0] === 'minlength') {
       errorMessage = '%FIELDLABEL% is below the minimum length';
     } else if (keys[0] === 'maxlength') {

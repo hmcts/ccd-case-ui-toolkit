@@ -4,6 +4,7 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 
+import { FormValidatorsService } from '../../../services/form/form-validators.service';
 
 type FormContainer = FormGroup | FormArray;
 
@@ -46,6 +47,7 @@ export abstract class AbstractFormFieldComponent {
 
   protected addValidators(caseField: CaseField, control: AbstractControl): void {
     // No validators by default, override this method to add validators to the form control
+    FormValidatorsService.addValidators(caseField, control);
   }
 
   private addControlToParent(control: AbstractControl, parent: FormContainer, replace: boolean): AbstractControl {
