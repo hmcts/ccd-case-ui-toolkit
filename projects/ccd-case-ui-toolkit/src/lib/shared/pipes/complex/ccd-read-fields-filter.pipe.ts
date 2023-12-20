@@ -62,8 +62,9 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   }
 
   private static isEmpty(value: any): boolean {
-    return ReadFieldsFilterPipe.EMPTY_VALUES.indexOf(value) !== -1
-      || value.length === 0;
+    const valueIsEmpty = value?.hasOwnProperty('list_items')  && value?.hasOwnProperty('value') ?
+      ReadFieldsFilterPipe.EMPTY_VALUES.indexOf(value.value) !== -1 : ReadFieldsFilterPipe.EMPTY_VALUES.indexOf(value) !== -1;
+    return valueIsEmpty || value.length === 0;
   }
 
   private static isCompound(field: CaseField): boolean {
