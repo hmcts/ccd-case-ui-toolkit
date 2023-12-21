@@ -1,0 +1,157 @@
+:host {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+
+  .document-tree-container {
+    flex: 1 0;
+  }
+}
+
+.document-filter-container {
+  border-bottom: 2px solid #C9C9C9;
+
+  .document-filter {
+    padding: 10px;
+
+    .document-search {
+      background: url(/assets/images/icon-search-black.svg) no-repeat right #FFF;
+      background-position-x: calc(100% - 4px);
+      padding-right: 30px;
+      width: 100%;
+    }
+  }
+
+  .documents-title {
+    height: 30%;
+    margin-left: 8px;
+    font-weight: bold;
+  }
+}
+
+.document-folders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #C9C9C9;
+  padding: 10px;
+
+  &__title {
+    font-weight: 700;
+  }
+}
+
+.document-tree-container {
+  padding: 4px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+
+  &__node {
+    display: block;
+
+    .document-tree-container__node {
+      padding-left: 40px;
+    }
+  }
+
+  &__node {
+    display: block;
+
+    .document-tree-container__node {
+      padding-left: 40px;
+    }
+  }
+
+  .document-tree-invisible {
+    display: none;
+  }
+
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #AAAAAA;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background: #EEE;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #CCC;
+  }
+}
+
+.document-folders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #C9C9C9;
+  padding: 10px;
+
+  &__title {
+    font-weight: 700;
+  }
+}
+
+.node {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 6px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &--selected {
+    background: #fff2cc;
+  }
+
+  &__icon {
+    position: relative;
+    display: inline-block;
+  }
+
+  &__count {
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.875rem;
+    // padding needed to adjust position
+    padding-top: 4px;
+  }
+
+  &__iconImg {
+    display: block;
+    height: 30px;
+    width: 30px;
+  }
+
+  &__document-options {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  &__name {
+    margin-left: 6px;
+    font-size: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__document-options {
+    margin-left: auto;
+    margin-right: 0;
+  }
+}

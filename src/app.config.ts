@@ -66,6 +66,9 @@ export abstract class AbstractAppConfig {
   getUserInfoApiUrl(): string {
     return undefined;
   }
+  getWAServiceConfig(): any {
+    return undefined;
+  }
   getAccessManagementMode(): boolean {
     return undefined;
   }
@@ -116,6 +119,7 @@ export class CaseEditorConfig {
   cache_time_out: number;
   work_allocation_api_url: string;
   user_info_api_url: string;
+  wa_service_config?: any;
   access_management_mode?: boolean;
   access_management_basic_view_mock?: {
     active?: boolean,
