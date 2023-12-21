@@ -542,7 +542,6 @@ describe('ReadFieldsFilterPipe', () => {
     const formField = FORM_GROUP1.controls['data'].value;
     const allFieldValues = Object.assign(METADATA, formField);
     const RESULT: CaseField[] = pipe.transform(complexCaseField3, false, undefined, true, allFieldValues);
-    console.log('Result', JSON.stringify(RESULT));
     expect(RESULT.length).toEqual(2);
   });
 });
