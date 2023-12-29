@@ -3,7 +3,7 @@
     <legend><h2 *ngIf="renderLabel" class="heading-h2">{{(caseField | ccdFieldLabel)}}</h2></legend>
     <ng-container [ngSwitch]="field | ccdIsReadOnly" *ngFor="let field of complexFields">
       <ccd-field-read *ngSwitchCase="true"
-                      ccdLabelSubstitutorp
+                      ccdLabelSubstitutor
                       [caseField]="buildField(field)"
                       [caseFields]="caseFields"
                       [formGroup]="formGroup"
