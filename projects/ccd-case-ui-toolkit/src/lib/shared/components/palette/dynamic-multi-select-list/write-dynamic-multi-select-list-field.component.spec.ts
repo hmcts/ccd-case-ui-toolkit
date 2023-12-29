@@ -8,6 +8,7 @@ import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { PipesModule } from '../../../pipes';
 import { attr } from '../../../test/helpers';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MarkdownComponent } from '../markdown';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDynamicMultiSelectListFieldComponent } from './write-dynamic-multi-select-list-field.component';
@@ -70,7 +71,8 @@ const moduleDef = {
   ],
   declarations: [
     WriteDynamicMultiSelectListFieldComponent,
-    MarkdownComponent
+    MarkdownComponent,
+    MockFieldLabelPipe
   ],
   providers: [
     NgxMdModule

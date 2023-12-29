@@ -1,14 +1,15 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { of, Subscription, throwError } from 'rxjs';
+import { Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseField, DocumentData, FieldType } from '../../../domain';
 import { DocumentManagementService, JurisdictionService } from '../../../services';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier, CasesService, EventTriggerService } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs';
@@ -147,7 +148,8 @@ describe('WriteDocumentFieldComponent', () => {
           DocumentDialogComponent,
           // Mocks
           readDocumentComponentMock,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: DocumentManagementService, useValue: mockDocumentManagementService },
@@ -506,7 +508,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           DocumentDialogComponent,
           // Mocks
           readDocumentComponentMock,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: DocumentManagementService, useValue: mockDocumentManagementService },

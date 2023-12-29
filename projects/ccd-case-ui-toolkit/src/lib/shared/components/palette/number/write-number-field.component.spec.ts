@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteNumberFieldComponent } from './write-number-field.component';
@@ -49,10 +50,10 @@ describe('WriteNumberFieldComponent', () => {
         ],
         declarations: [
           WriteNumberFieldComponent,
-          MockRpxTranslatePipe,
 
           // Mocks
           MockRpxTranslatePipe,
+          MockFieldLabelPipe,
           inputComponentMock
         ],
         providers: []
