@@ -2,7 +2,7 @@
 import { CaseField } from '../domain';
 import { MockFieldLabelPipe } from './mock-field-label.pipe';
 
-describe('FieldLabelPipe', () => {
+describe('MockFieldLabelPipe', () => {
   const fieldLabelPipe: MockFieldLabelPipe = new MockFieldLabelPipe();
 
   it('should return empty string for null values', () => {
