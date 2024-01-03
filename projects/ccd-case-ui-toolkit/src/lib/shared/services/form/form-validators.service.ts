@@ -18,11 +18,11 @@ export class FormValidatorsService {
     ) {
       const validators = [Validators.required];
       if (caseField.field_type.type === 'Text') {
+        validators.push(this.markDownPatternValidator());
         if (caseField.field_type.regular_expression) {
           validators.push(Validators.pattern(caseField.field_type.regular_expression));
         } else {
           validators.push(this.emptyValidator());
-          validators.push(this.markDownPatternValidator());
         }
         if (caseField.field_type.min && (typeof caseField.field_type.min === 'number')) {
           validators.push(Validators.minLength(caseField.field_type.min));
@@ -58,7 +58,7 @@ export class FormValidatorsService {
   }
 
   public static markDownPatternValidator(): ValidatorFn {
-    const pattern = /(\[[^\]]{0,50}\]\([^)]{0,50}\)|!\[[^\]]{0,50}\]\([^)]{0,50}\)|<img[^>]{0,50}>|<a[^>]{0,50}>.*?<\/a>)/g;
+    const pattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/g;
 
     return (control: AbstractControl): ValidationErrors | null => {
       return control && control.value && control.value.toString().trim().length > 0 && pattern.test(control.value)
