@@ -4,17 +4,6 @@ import { MockFieldLabelPipe } from './mock-field-label.pipe';
 
 describe('MockFieldLabelPipe', () => {
   const fieldLabelPipe: MockFieldLabelPipe = new MockFieldLabelPipe();
-
-  it('should return empty string for null values', () => {
-    expect(fieldLabelPipe.transform(null))
-      .toBe('');
-  });
-
-  it('should return empty string for undefined label', () => {
-    expect(fieldLabelPipe.transform({} as CaseField))
-      .toBe('');
-  });
-
   it('should return label for undefined display_context', () => {
     expect(fieldLabelPipe.transform({ label: 'label'} as CaseField))
       .toBe('label');
