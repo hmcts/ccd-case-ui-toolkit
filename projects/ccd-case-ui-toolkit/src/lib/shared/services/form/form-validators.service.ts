@@ -58,7 +58,7 @@ export class FormValidatorsService {
   }
 
   public static markDownPatternValidator(): ValidatorFn {
-    const pattern = /(?:\[.*?\]\(.*?\)|!\[.*?\]\(.*?\)|<img[^>]*>|<a[^>]*>.*?<\/a>)/g;
+    const pattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/g;
 
     return (control: AbstractControl): ValidationErrors | null => {
       return control?.value?.toString().trim().length > 0 && pattern.test(control.value)
