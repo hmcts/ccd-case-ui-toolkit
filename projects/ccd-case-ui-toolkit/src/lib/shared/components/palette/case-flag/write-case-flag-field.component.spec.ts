@@ -306,14 +306,14 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ WriteCaseFlagFieldComponent ],
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [WriteCaseFlagFieldComponent],
       providers: [
         { provide: ActivatedRoute, useValue: mockRoute }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -515,7 +515,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     component.updateFlagInCollection();
     // Check the comments have been applied and the modified date/time has been set
     expect(component.flagsData[0].caseField.value.details[0].value.flagComment).toEqual(
-      component.caseFlagParentFormGroup.value.flagComments);
+      component.caseFlagParentFormGroup.value['flagComments']);
     expect(component.flagsData[0].caseField.value.details[0].value.dateTimeModified).toBeTruthy();
     // Check all other existing changes have been discarded (i.e. values restored from corresponding values in formatted_value)
     expect(component.flagsData[0].caseField.value.details[0].value.status).toEqual(CaseFlagStatus.ACTIVE);
@@ -740,12 +740,12 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
 
   it('should populate a new FlagDetail instance with data held by the component', () => {
     component.flagName = 'Other',
-    component.caseFlagParentFormGroup = new FormGroup({
-      languageSearchTerm: new FormControl(),
-      manualLanguageEntry: new FormControl(),
-      otherFlagTypeDescription: new FormControl(),
-      flagComments: new FormControl()
-    });
+      component.caseFlagParentFormGroup = new FormGroup({
+        languageSearchTerm: new FormControl(),
+        manualLanguageEntry: new FormControl(),
+        otherFlagTypeDescription: new FormControl(),
+        flagComments: new FormControl()
+      });
     component.caseFlagParentFormGroup.setValue(
       {
         languageSearchTerm: {
@@ -758,19 +758,19 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
       }
     );
     component.flagCode = 'OT0001',
-    component.flagPath = [
-      {
-        id: '123',
-        value: 'Reasonable adjustment'
-      }
-    ];
+      component.flagPath = [
+        {
+          id: '123',
+          value: 'Reasonable adjustment'
+        }
+      ];
     component.hearingRelevantFlag = true;
     const newFlagDetailInstance = component.populateNewFlagDetailInstance();
     expect(newFlagDetailInstance.name).toEqual(component.flagName);
-    expect(newFlagDetailInstance.subTypeValue).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.value);
-    expect(newFlagDetailInstance.subTypeKey).toEqual(component.caseFlagParentFormGroup.value.languageSearchTerm.key);
-    expect(newFlagDetailInstance.otherDescription).toEqual(component.caseFlagParentFormGroup.value.otherFlagTypeDescription);
-    expect(newFlagDetailInstance.flagComment).toEqual(component.caseFlagParentFormGroup.value.flagComments);
+    expect(newFlagDetailInstance.subTypeValue).toEqual(component.caseFlagParentFormGroup.value['languageSearchTerm.'].value);
+    expect(newFlagDetailInstance.subTypeKey).toEqual(component.caseFlagParentFormGroup.value['languageSearchTerm'].key);
+    expect(newFlagDetailInstance.otherDescription).toEqual(component.caseFlagParentFormGroup.value['otherFlagTypeDescription']);
+    expect(newFlagDetailInstance.flagComment).toEqual(component.caseFlagParentFormGroup.value['flagComments']);
     expect(newFlagDetailInstance.dateTimeCreated).toBeTruthy();
     expect(newFlagDetailInstance.path).toEqual(component.flagPath);
     expect(newFlagDetailInstance.hearingRelevant).toEqual('Yes');
@@ -786,7 +786,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     );
     component.hearingRelevantFlag = false;
     const newFlagDetailInstance2 = component.populateNewFlagDetailInstance();
-    expect(newFlagDetailInstance2.subTypeValue).toEqual(component.caseFlagParentFormGroup.value.manualLanguageEntry);
+    expect(newFlagDetailInstance2.subTypeValue).toEqual(component.caseFlagParentFormGroup.value['manualLanguageEntry']);
     expect(newFlagDetailInstance2.subTypeKey).toBeNull();
     expect(newFlagDetailInstance2.otherDescription).toBeNull();
     expect(newFlagDetailInstance2.flagComment).toBeNull();

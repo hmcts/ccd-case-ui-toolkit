@@ -91,8 +91,8 @@ export class CaseReviewSpecificAccessRequestComponent
         reason: reasonNumber,
         caseId,
       } as ReviewSpecificAccessRequest;
-      if ( AccessReason.REJECT_REQUEST === radioSelectedValue ) {
-        this.router.navigate(['rejected'], {relativeTo: this.route});
+      if (AccessReason.REJECT_REQUEST === radioSelectedValue) {
+        this.router.navigate(['rejected'], { relativeTo: this.route });
       }
     }
   }

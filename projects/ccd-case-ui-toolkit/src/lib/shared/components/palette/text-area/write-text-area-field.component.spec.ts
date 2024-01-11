@@ -29,9 +29,11 @@ describe('WriteTextAreaFieldComponent', () => {
   const $INPUT = By.css('.form-group textarea');
 
   // Textarea input is mocked so that one-way bound inputs can be tested
-  const textareaComponentMock: any = MockComponent({ selector: 'textarea', inputs: [
-    'formControl'
-  ]});
+  const textareaComponentMock: any = MockComponent({
+    selector: 'textarea', inputs: [
+      'formControl'
+    ]
+  });
 
   let fixture: ComponentFixture<WriteTextAreaFieldComponent>;
   let component: WriteTextAreaFieldComponent;

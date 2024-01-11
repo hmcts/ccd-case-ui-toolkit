@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialogConfig } from '@angular/material/dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
@@ -171,10 +172,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.formArray.setErrors(null);
     let item = { value: null };
 
-    if ( this.isCollectionDynamic() ) {
-      item  = {...this.caseField.value[this.caseField.value.length - 1]};
+    if (this.isCollectionDynamic()) {
+      item = { ...this.caseField.value[this.caseField.value.length - 1] };
       const key: number = Number(item['id'][item['id'].length - 1]) + 1;
-      (item as any).id = item['id'].replace(/.$/, key.toString() );
+      (item as any).id = item['id'].replace(/.$/, key.toString());
     }
     this.caseField.value.push(item);
     const index = this.caseField.value.length - 1;

@@ -14,16 +14,16 @@ interface CaseEditModel {
 }
 
 export interface CaseEditGetNextPage
-  extends Pick<CaseEditModel, 'wizard' | 'currentPageId'| 'eventTrigger' | 'form'> {}
+  extends Pick<CaseEditModel, 'wizard' | 'currentPageId' | 'eventTrigger' | 'form'> { }
 
 export interface CaseEditSubmitForm
-  extends Pick<CaseEditModel, 'eventTrigger' | 'form' | 'caseDetails' | 'submit'>{}
+  extends Pick<CaseEditModel, 'eventTrigger' | 'form' | 'caseDetails' | 'submit'> { }
 
 export interface CaseEditGenerateCaseEventData
-  extends Pick<CaseEditModel, 'eventTrigger' | 'form'>{}
+  extends Pick<CaseEditModel, 'eventTrigger' | 'form'> { }
 
 export interface CaseEditCaseSubmit
-  extends Pick<CaseEditModel, 'form' | 'caseEventData' | 'submit'> {}
+  extends Pick<CaseEditModel, 'form' | 'caseEventData' | 'submit'> { }
 
 export interface CaseEditonEventCanBeCompleted
-  extends Pick<CaseEditModel, 'eventCanBeCompleted' | 'eventTrigger' | 'caseDetails' | 'form' | 'submit'>{}
+  extends Pick<CaseEditModel, 'eventCanBeCompleted' | 'eventTrigger' | 'caseDetails' | 'form' | 'submit'> { }

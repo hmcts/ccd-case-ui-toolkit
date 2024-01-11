@@ -1,7 +1,8 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialogConfig } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { of, Subscription, throwError } from 'rxjs';
@@ -300,7 +301,7 @@ describe('WriteDocumentFieldComponent', () => {
       '"message": "But really really terrible thing!", "status": 502}'));
 
     const blobParts: BlobPart[] = ['some contents for blob'];
-    const file: File = new File(blobParts, 'test.pdf');
+    const file: File = new File(blobParts, 'test.foo');
     component.fileChangeEvent({
       target: {
         files: [

@@ -169,7 +169,7 @@ describe('SelectFlagTypeComponent', () => {
         { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

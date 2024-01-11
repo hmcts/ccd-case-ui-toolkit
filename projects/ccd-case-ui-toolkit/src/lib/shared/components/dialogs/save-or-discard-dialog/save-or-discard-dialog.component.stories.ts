@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular';
 import { StorybookComponent } from '../../../../../../../../storybook/storybook.component';
 import { SaveOrDiscardDialogComponent } from './save-or-discard-dialog.component';
