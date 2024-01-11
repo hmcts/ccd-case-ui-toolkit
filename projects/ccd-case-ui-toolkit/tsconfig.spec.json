@@ -18,4 +18,3 @@
     "**/*.stories.ts", "storybook/*.ts", "storybook-static/*.ts",
   ]
 }
-
