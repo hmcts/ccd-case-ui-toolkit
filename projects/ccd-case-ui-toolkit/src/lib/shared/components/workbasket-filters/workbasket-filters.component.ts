@@ -130,14 +130,14 @@ export class WorkbasketFiltersComponent implements OnInit {
       this.jurisdictionService.announceSelectedJurisdiction(this.selected.jurisdiction);
     }
     // Apply filters
-    this.onApply.emit({selected: this.selected, queryParams});
+    this.onApply.emit({ selected: this.selected, queryParams });
     this.setFocusToTop();
   }
 
   public reset(): void {
     this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
     this.windowService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
-    setTimeout (() => {
+    setTimeout(() => {
       this.resetFieldsWhenNoDefaults();
       this.onReset.emit(true);
     }, 500);
@@ -184,25 +184,25 @@ export class WorkbasketFiltersComponent implements OnInit {
         this.workbasketInputFilterService.getWorkbasketInputs(this.selected.jurisdiction.id, this.selected.caseType.id).pipe(
           take(1)
         ).subscribe(workbasketInputs => {
-            this.workbasketInputsReady = true;
-            this.workbasketInputs = workbasketInputs
-              .sort(this.orderService.sortAsc);
-            const formValue = this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
+          this.workbasketInputsReady = true;
+          this.workbasketInputs = workbasketInputs
+            .sort(this.orderService.sortAsc);
+          const formValue = this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
 
-            workbasketInputs.forEach(item => {
-              if (item.field.elementPath) {
-                item.field.id = `${item.field.id}.${item.field.elementPath}`;
-              }
-              item.field.label = item.label;
-              if (formValue) {
-                const searchFormValueObject = JSON.parse(formValue);
-                item.field.value = searchFormValueObject[item.field.id];
-              }
-            });
-            this.getCaseFields();
-          }, error => {
-            console.log('Workbasket input fields request will be discarded reason: ', error.message);
+          workbasketInputs.forEach(item => {
+            if (item.field.elementPath) {
+              item.field.id = `${item.field.id}.${item.field.elementPath}`;
+            }
+            item.field.label = item.label;
+            if (formValue) {
+              const searchFormValueObject = JSON.parse(formValue);
+              item.field.value = searchFormValueObject[item.field.id];
+            }
           });
+          this.getCaseFields();
+        }, error => {
+          console.log('Workbasket input fields request will be discarded reason: ', error.message);
+        });
       }
     } else {
       this.resetCaseState();
@@ -233,7 +233,7 @@ export class WorkbasketFiltersComponent implements OnInit {
    * Has been implemented for 'Region and FRC filters' and can be extended
    * in future to incorporate other dynamic filters.
    */
-   public updateFormGroupFilters(): void {
+  public updateFormGroupFilters(): void {
     // Read the form group local storage
     const formGroupLS = JSON.parse(this.windowService.getLocalStorage(FORM_GROUP_VAL_LOC_STORAGE));
 

@@ -20,7 +20,7 @@ export class CaseEditDataService {
   public caseEventTriggerName$ = this.eventTriggerName$.asObservable();
   public caseTriggerSubmitEvent$ = this.triggerSubmitEvent$.asObservable();
 
-  constructor() {}
+  constructor() { }
 
   public setCaseDetails(caseDetails: CaseView): void {
     this.details$.next(caseDetails);

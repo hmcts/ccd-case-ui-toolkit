@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { DocumentDialogComponent } from './document-dialog.component';
 

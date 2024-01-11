@@ -22,7 +22,7 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   constructor(
     private readonly fieldsUtils: FieldsUtils,
     private readonly placeholderService: PlaceholderService
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
     this.initialLabel = this.caseField.label;
