@@ -74,10 +74,10 @@ export class UnLinkCasesComponent implements OnInit {
         this.linkedCasesService.linkedCases = this.linkedCases;
         this.isServerError = false;
       },
-      err => {
-        this.isServerError = true;
-        this.notifyAPIFailure.emit(true);
-      });
+        err => {
+          this.isServerError = true;
+          this.notifyAPIFailure.emit(true);
+        });
     }
   }
 

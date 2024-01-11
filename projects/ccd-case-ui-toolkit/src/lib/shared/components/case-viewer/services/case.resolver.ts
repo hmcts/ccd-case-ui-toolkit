@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, NavigationEnd, Resolve, Router } from '@angular
 import { plainToClassFromExist } from 'class-transformer';
 import { of, throwError } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
-
+import { AbstractAppConfig } from '../../../../app.config';
 import { CaseView, Draft } from '../../../domain';
 import { DraftService, NavigationOrigin, SessionStorageService } from '../../../services';
 import { NavigationNotifierService } from '../../../services/navigation/navigation-notifier.service';
@@ -25,7 +25,8 @@ export class CaseResolver implements Resolve<CaseView> {
               private draftService: DraftService,
               private navigationNotifierService: NavigationNotifierService,
               private router: Router,
-              private sessionStorage: SessionStorageService) {
+              private sessionStorage: SessionStorageService,
+              private readonly appConfig: AbstractAppConfig) {
     router.events.pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.previousUrl = event.url;
@@ -73,7 +74,7 @@ export class CaseResolver implements Resolve<CaseView> {
       } else {
       console.info('getAndCacheCaseView - Path B.');
         return this.caseNotifier.fetchAndRefresh(cid)
-          .pipe(catchError(error => this.processErrorInCaseFetch(error)))
+          .pipe(catchError(error => this.processErrorInCaseFetch(error, cid)))
           .toPromise();
       }
     }
@@ -88,11 +89,11 @@ export class CaseResolver implements Resolve<CaseView> {
           this.caseNotifier.announceCase(this.caseNotifier.cachedCaseView);
           return this.caseNotifier.cachedCaseView;
         }),
-        catchError(error => this.processErrorInCaseFetch(error))
+        catchError(error => this.processErrorInCaseFetch(error, cid))
       ).toPromise();
   }
 
-  private processErrorInCaseFetch(error: any) {
+  private processErrorInCaseFetch(error: any, caseReference: string) {
     console.error('!!! processErrorInCaseFetch !!!');
     console.error(error);
     // TODO Should be logged to remote logging infrastructure
@@ -100,12 +101,16 @@ export class CaseResolver implements Resolve<CaseView> {
       this.router.navigate(['/search/noresults']);
       return of(null);
     }
-    console.error(error);
     if (CaseResolver.EVENT_REGEX.test(this.previousUrl) && error.status === 404) {
       this.router.navigate(['/list/case']);
       return of(null);
     }
-    if (error.status !== 401 && error.status !== 403) {
+    // Error 403 and enable-restricted-case-access Launch Darkly flag is enabled, navigate to restricted case access page
+    if (error.status === 403 && this.appConfig.getEnableRestrictedCaseAccessConfig()) {
+      this.router.navigate([`/cases/restricted-case-access/${caseReference}`]);
+      return of(null);
+    }
+    if (error.status !== 401) {
       this.router.navigate(['/error']);
     }
     this.goToDefaultPage();

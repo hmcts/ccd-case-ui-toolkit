@@ -32,7 +32,7 @@ export class CaseEditConfirmComponent {
   }
 
   public submit(): void {
-    this.caseEdit.submitted.emit({caseId: this.confirmation.getCaseId(), status: this.confirmation.getStatus()});
+    this.caseEdit.submitted.emit({ caseId: this.confirmation.getCaseId(), status: this.confirmation.getStatus() });
   }
 
   public getCaseId(): string {

@@ -1,7 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { MockComponent } from 'ng2-mock-component';
@@ -819,7 +819,7 @@ describe('WriteCollectionFieldComponent', () => {
   it('should add dynamic item to collection when add button is clicked', () => {
     const addButton = de.query($ADD_BUTTON_TOP);
     component.caseField = ({ ...component.caseField, field_type: null } as unknown as CaseField);
-    component.caseFields = [({...component.caseField, field_type: null } as unknown as CaseField)];
+    component.caseFields = [({ ...component.caseField, field_type: null } as unknown as CaseField)];
     addButton.nativeElement.click();
     fixture.detectChanges();
 

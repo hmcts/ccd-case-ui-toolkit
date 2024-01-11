@@ -237,7 +237,7 @@ describe('ReadComplexFieldComponent', () => {
       display_context: 'OPTIONAL',
       field_type: FIELD_TYPE_WITH_VALUES,
       value: VALUE,
-      isDynamic: (()=>{})
+      isDynamic: (() => { })
     }) as CaseField;
 
     let fixture: ComponentFixture<ReadComplexFieldComponent>;

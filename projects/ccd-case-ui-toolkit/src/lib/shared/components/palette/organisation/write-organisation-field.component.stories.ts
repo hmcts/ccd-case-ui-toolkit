@@ -15,8 +15,8 @@ const caseFieldType = createFieldType('organisationName', 'Text');
 const caseField = createCaseField('organisationName', 'New Organisation', 'Add new organisation name', caseFieldType, 'MANDATORY');
 
 caseField.value = {
-    OrganisationID: 'Org1234',
-    OrganisationName: 'Waffles Ltd'
+  OrganisationID: 'Org1234',
+  OrganisationName: 'Waffles Ltd'
 };
 
 const organisations = [{
@@ -78,7 +78,7 @@ export default {
         MockProvider(OrganisationService, { getActiveOrganisations: () => of(organisations) }),
         OrganisationConverter,
         WindowService
-       ]
+      ]
     }),
     componentWrapperDecorator(story => `<storybook-wrapper>${story}</storybook-wrapper>`),
   ]
@@ -94,12 +94,12 @@ standard.args = {
   caseField,
   parent: {
     formGroup: {
-      organisationName: {
-        OrganisationID: 'Org1234',
-        OrganisationName: 'Waffles Ltd'
-      }
-    },
-    controls: {},
-    setControl: () => {}
+  organisationName: {
+    OrganisationID: 'Org1234',
+      OrganisationName: 'Waffles Ltd'
+  }
+},
+controls: { },
+setControl: () => { }
   }
 };

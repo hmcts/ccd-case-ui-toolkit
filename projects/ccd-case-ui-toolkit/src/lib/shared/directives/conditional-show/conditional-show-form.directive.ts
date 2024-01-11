@@ -67,8 +67,8 @@ export class ConditionalShowFormDirective implements OnInit, AfterViewInit, OnDe
         debounceTime(100)
       )
       .subscribe(_ => {
-      this.evalAllShowHideConditions();
-    });
+        this.evalAllShowHideConditions();
+      });
   }
 
   private evaluateControl(control: AbstractControl) {

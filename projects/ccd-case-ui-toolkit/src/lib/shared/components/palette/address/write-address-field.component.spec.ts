@@ -66,7 +66,7 @@ xdescribe('WriteAddressFieldComponent', () => {
     public renderLabel: boolean;
 
     public complexGroup = {
-      value : {},
+      value: {},
       setValue: (value) => { this.complexGroup.value = value; }
     };
 

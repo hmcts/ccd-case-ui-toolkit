@@ -5,7 +5,7 @@ import { ValidatorsUtils } from './validators.utils';
 describe('ValidatorsUtils', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ ValidatorsUtils ]
+      providers: [ValidatorsUtils]
     });
   });
 
