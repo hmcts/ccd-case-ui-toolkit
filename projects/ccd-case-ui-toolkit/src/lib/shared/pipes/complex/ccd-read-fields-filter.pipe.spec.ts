@@ -140,6 +140,133 @@ describe('ReadFieldsFilterPipe', () => {
     show_condition: null
   });
 
+  const value1 = {
+    addNewHearingLabel: null,
+    allPartiesAttendHearingSameWayYesOrNo: 'No',
+    localAuthorityHearingChannel: {
+      list_items: [
+        {
+          code: 'INTER',
+          label: 'In Person'
+        },
+        {
+          code: 'NA',
+          label: 'Not In Attendance'
+        },
+        {
+          code: 'ONPPRS',
+          label: 'On the Papers'
+        },
+        {
+          code: 'TEL',
+          label: 'Telephone'
+        },
+        {
+          code: 'VID',
+          label: 'Video'
+        }
+      ],
+      value: null
+    }
+  };
+
+  const complexCaseField3: CaseField = buildCaseField('hearing', {
+    field_type: {
+      complex_fields: [
+        {
+          display_context: 'OPTIONAL',
+          field_type: {
+            complex_fields: [],
+            id: 'DynamicList',
+            type: 'DynamicList',
+          },
+          hidden: false,
+          id: 'localAuthorityHearingChannel',
+          label: 'Local authority',
+          list_items: [
+            {
+              code: 'INTER',
+              label: 'In Person'
+            },
+            {
+              code: 'NA',
+              label: 'Not In Attendance'
+            },
+            {
+              code: 'ONPPRS',
+              label: 'On the Papers'
+            },
+            {
+              code: 'TEL',
+              label: 'Telephone'
+            },
+            {
+              code: 'VID',
+              label: 'Video'
+            }
+          ],
+          show_condition: null,
+          value: {
+            list_items: [
+              {
+                code: 'INTER',
+                label: 'In Person'
+              },
+              {
+                code: 'NA',
+                label: 'Not In Attendance'
+              },
+              {
+                code: 'ONPPRS',
+                label: 'On the Papers'
+              },
+              {
+                code: 'TEL',
+                label: 'Telephone'
+              },
+              {
+                code: 'VID',
+                label: 'Video'
+              }
+            ],
+            value: null
+          },
+        },
+        {
+          display_context: 'HIDDEN',
+          field_type: {
+            complex_fields: [],
+            id: 'Label',
+            type: 'Label',
+          },
+          hidden: true,
+          id: 'addNewHearingLabel',
+          label: 'Add new Hearing',
+          show_condition: null,
+          value: undefined,
+        },
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            id: 'YesOrNo',
+            type: 'YesOrNo',
+          },
+          hidden: false,
+          id: 'allPartiesAttendHearingSameWayYesOrNo',
+          label: 'Will all parties attend the hearing in the same way?',
+          show_condition: null,
+          value: undefined,
+        }
+      ],
+      id: 'HearingData',
+      type: 'Complex'
+    },
+    id: '0',
+    hidden: false,
+    label: 'Hearing 1',
+  }, value1);
+
   const METADATA: object = {
     ACCESS_GRANTED: 'STANDARD',
     ACCESS_PROCESS: 'NONE',
@@ -159,6 +286,38 @@ describe('ReadFieldsFilterPipe', () => {
       preAcceptCase: new FormGroup({
         caseAccepted: new FormControl('Yes'),
         dateAccepted: new FormControl('10/01/2023')
+      })
+    })
+  });
+
+  const FORM_GROUP1 = new FormGroup({
+    data: new FormGroup({
+      addNewHearingLabel: new FormControl(null),
+      allPartiesAttendHearingSameWayYesOrNo: new FormControl('No'),
+      localAuthorityHearingChannel: new FormControl({
+        list_items: [
+          {
+            code: 'INTER',
+            label: 'In Person'
+          },
+          {
+            code: 'NA',
+            label: 'Not In Attendance'
+          },
+          {
+            code: 'ONPPRS',
+            label: 'On the Papers'
+          },
+          {
+            code: 'TEL',
+            label: 'Telephone'
+          },
+          {
+            code: 'VID',
+            label: 'Video'
+          }
+        ],
+        value: null
       })
     })
   });
@@ -378,5 +537,11 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(2);
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(true);
+  });
+  it('should remove dynamic list field if on its value is null', () => {
+    const formField = FORM_GROUP1.controls['data'].value;
+    const allFieldValues = Object.assign(METADATA, formField);
+    const RESULT: CaseField[] = pipe.transform(complexCaseField3, false, undefined, true, allFieldValues);
+    expect(RESULT.length).toEqual(2);
   });
 });
