@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.19.16-exui-830-screen-event-fix",
+  "version": "7.0.3",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -159,7 +159,7 @@
     "karma-spec-reporter": "0.0.34",
     "local-storage": "^2.0.0",
     "merge-stream": "^1.0.0",
-    "mocha": "^10.2.0",
+    "mocha": "^8.1.1",
     "multidep": "2.0.2",
     "ng-mocks": "^14.1.1",
     "ng-packagr": "^14.2.2",

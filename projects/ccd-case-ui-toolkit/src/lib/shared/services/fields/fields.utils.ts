@@ -23,6 +23,12 @@ export class FieldsUtils {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
 
+  public static isValidDisplayContext(ctx: string): boolean {
+    return (ctx === 'MANDATORY' || ctx === 'READONLY'
+      || ctx === 'OPTIONAL' || ctx === 'HIDDEN'
+      || ctx === 'COMPLEX');
+  }
+
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {
       return plainToClassFromExist(new CaseField(), obj);
