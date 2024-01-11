@@ -301,7 +301,7 @@ describe('WriteDocumentFieldComponent', () => {
       '"message": "But really really terrible thing!", "status": 502}'));
 
     const blobParts: BlobPart[] = ['some contents for blob'];
-    const file: File = new File(blobParts, 'test.pdf');
+    const file: File = new File(blobParts, 'test.foo');
     component.fileChangeEvent({
       target: {
         files: [
