@@ -29,10 +29,12 @@ describe('WritePhoneUKFieldComponent', () => {
   const $INPUT = By.css('.form-group input');
 
   // Input is mocked so that one-way bound inputs can be tested
-  const inputComponentMock: any = MockComponent({ selector: 'input', inputs: [
-    'type',
-    'formControl'
-  ]});
+  const inputComponentMock: any = MockComponent({
+    selector: 'input', inputs: [
+      'type',
+      'formControl'
+    ]
+  });
 
   let fixture: ComponentFixture<WritePhoneUKFieldComponent>;
   let component: WritePhoneUKFieldComponent;

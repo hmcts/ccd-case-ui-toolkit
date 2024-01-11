@@ -61,10 +61,13 @@ describe('WriteDynamicListFieldComponent', () => {
           WriteDynamicListFieldComponent,
           MockRpxTranslatePipe
         ],
-        providers: []
+        providers: [],
+        teardown: { destroyAfterEach: false }
       })
       .compileComponents();
+  }));
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(WriteDynamicListFieldComponent);
     component = fixture.componentInstance;
     component.caseField = CASE_FIELD;
@@ -73,7 +76,7 @@ describe('WriteDynamicListFieldComponent', () => {
 
     de = fixture.debugElement;
     fixture.detectChanges();
-  }));
+  });
 
   it('should select default value', () => {
     component.dynamicListFormControl.setValue(null);
@@ -86,11 +89,11 @@ describe('WriteDynamicListFieldComponent', () => {
     expect(options[2].nativeElement.textContent).toEqual('Female');
     expect(options[3].nativeElement.textContent).toEqual('Other');
     fixture
-        .whenStable()
-        .then(() => {
-          const select = de.query($SELECT);
-          expect(select.nativeElement.selectedIndex).toEqual(0);
-        });
+      .whenStable()
+      .then(() => {
+        const select = de.query($SELECT);
+        expect(select.nativeElement.selectedIndex).toEqual(0);
+      });
   });
 
   it('should render all options', () => {
@@ -105,10 +108,10 @@ describe('WriteDynamicListFieldComponent', () => {
     component.dynamicListFormControl.setValue('M');
     fixture.detectChanges();
     fixture
-        .whenStable()
-        .then(() => {
-          const select = de.query($SELECT);
-          expect(select.nativeElement.selectedIndex).toEqual(1);
-        });
+      .whenStable()
+      .then(() => {
+        const select = de.query($SELECT);
+        expect(select.nativeElement.selectedIndex).toEqual(1);
+      });
   }));
 });

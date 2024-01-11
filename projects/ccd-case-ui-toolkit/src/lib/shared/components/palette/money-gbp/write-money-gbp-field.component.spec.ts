@@ -45,7 +45,7 @@ describe('WriteMoneyGbpFieldComponent', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: CaseFieldService, useValue: caseFieldService},
+          { provide: CaseFieldService, useValue: caseFieldService },
         ]
       })
       .compileComponents();
@@ -111,7 +111,7 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: CaseFieldService, useValue: caseFieldService},
+          { provide: CaseFieldService, useValue: caseFieldService },
         ]
       })
       .compileComponents();

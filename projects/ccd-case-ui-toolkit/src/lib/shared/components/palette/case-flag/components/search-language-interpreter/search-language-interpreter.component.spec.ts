@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
 import { SearchLanguageInterpreterComponent } from './search-language-interpreter.component';
 
@@ -11,10 +11,10 @@ describe('SearchLanguageInterpreterComponent', () => {
   let nextButton: any;
   let fieldInput: string;
   const languages = [
-    {key: 'AL1', value: 'Albanian1'},
-    {key: 'AL2', value: 'Albanian2'},
-    {key: 'AL3', value: 'Albanian3'},
-    {key: 'GB', value: 'English'}
+    { key: 'AL1', value: 'Albanian1' },
+    { key: 'AL2', value: 'Albanian2' },
+    { key: 'AL3', value: 'Albanian3' },
+    { key: 'GB', value: 'English' }
   ];
   const languageFlagCode = 'PF0015';
   const signLanguageFlagCode = 'RA0042';
@@ -28,14 +28,14 @@ describe('SearchLanguageInterpreterComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [SearchLanguageInterpreterComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchLanguageInterpreterComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({
-      [component.languageSearchTermControlName] : new FormControl('')
+      [component.languageSearchTermControlName]: new FormControl('')
     });
     component.languages = languages;
     component.flagCode = languageFlagCode;

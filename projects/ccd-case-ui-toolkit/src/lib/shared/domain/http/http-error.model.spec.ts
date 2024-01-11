@@ -31,6 +31,16 @@ describe('HttpError', () => {
       path: '/caseworkers/0/jurisdictions/TEST/case-types/TestAddressBookCase/cases'
     };
 
+    const ERROR_FORBIDDEN = {
+      error: {},
+      message: 'Http failure response for http://localhost:3000/data/internal/cases/1234123412341234: 403 Forbidden',
+      name: 'HttpErrorResponse',
+      ok: false,
+      status: 403,
+      statusText: 'Forbidden',
+      url: 'http://localhost:3000/data/internal/cases/1234123412341234'
+    };
+
     it('should return default error when given null', () => {
       const error = HttpError.from(null);
 
@@ -60,6 +70,17 @@ describe('HttpError', () => {
       expectedError.error = ERROR_PARTIAL.error;
       expectedError.exception = ERROR_PARTIAL.exception;
       expectedError.path = ERROR_PARTIAL.path;
+
+      expect(error).toEqual(expectedError);
+    });
+
+    it('should return the error properties for forbidden error', () => {
+      const error = HttpError.from(new HttpErrorResponse(ERROR_FORBIDDEN));
+
+      const expectedError = new HttpError();
+      expectedError.error = ERROR_FORBIDDEN.statusText;
+      expectedError.status = ERROR_FORBIDDEN.status;
+      expectedError.message = ERROR_FORBIDDEN.message;
 
       expect(error).toEqual(expectedError);
     });

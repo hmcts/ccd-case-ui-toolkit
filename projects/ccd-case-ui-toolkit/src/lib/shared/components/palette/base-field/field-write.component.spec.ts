@@ -22,7 +22,7 @@ const CLASS = 'person-first-name-cls';
     <div class="${CLASS}"></div>
   `
 })
-class FieldTestComponent {}
+class FieldTestComponent { }
 
 describe('FieldWriteComponent', () => {
   const CASE_FIELD: CaseField = plainToClassFromExist(new CaseField(), {
@@ -47,7 +47,7 @@ describe('FieldWriteComponent', () => {
 
   let caseEditComponentStub: any;
   const FORM_GROUP = new FormGroup({
-    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
+    data: new FormGroup({ field1: new FormControl('SOME_VALUE') })
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);
@@ -67,7 +67,7 @@ describe('FieldWriteComponent', () => {
   // const pageValidationService = new PageValidationService(caseFieldService);
   // const dialog: any = '';
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     formValidatorService = createSpyObj<FormValidatorsService>('formValidatorService', ['addValidators']);
     paletteService = createSpyObj<PaletteService>('paletteService', [
       'getFieldComponentClass'
@@ -81,7 +81,7 @@ describe('FieldWriteComponent', () => {
       form: FORM_GROUP,
       wizard: WIZARD,
       data: '',
-      eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+      eventTrigger: { case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true },
       hasPrevious: () => true,
       getPage: () => firstPage,
       first: () => true,
@@ -91,10 +91,10 @@ describe('FieldWriteComponent', () => {
       cancelled,
       validate: (caseEventData: CaseEventData) => of(caseEventData),
       saveDraft: (_: CaseEventData) => of(someObservable),
-      caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
+      caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] },
     };
     route = {
-      params: of({id: 123}),
+      params: of({ id: 123 }),
       snapshot: {
         queryParamMap: createSpyObj('queryParamMap', ['get'])
       }

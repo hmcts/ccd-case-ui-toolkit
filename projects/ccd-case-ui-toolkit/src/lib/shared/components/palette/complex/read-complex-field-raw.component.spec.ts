@@ -284,7 +284,7 @@ describe('ReadComplexFieldRawComponent', () => {
     let caseField: CaseField;
 
     beforeEach(waitForAsync(() => {
-      caseField =  (({
+      caseField = (({
         id: '',
         label: 'Complex Field',
         display_context: 'OPTIONAL',
@@ -355,7 +355,7 @@ describe('ReadComplexFieldRawComponent', () => {
             type: 'Text'
           },
         }) as CaseField,
-          ({
+        ({
           id: 'AddressLine3',
           label: 'Line 3',
           display_context: 'OPTIONAL',

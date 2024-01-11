@@ -46,11 +46,11 @@ describe('UpdateFlagComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ UpdateFlagComponent ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [UpdateFlagComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

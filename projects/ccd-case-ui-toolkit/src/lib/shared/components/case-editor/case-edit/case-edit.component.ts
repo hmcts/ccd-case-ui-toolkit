@@ -138,7 +138,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
       this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
-      this.router.navigate([this.initialUrl], { relativeTo: this.route});
+      this.router.navigate([this.initialUrl], { relativeTo: this.route });
       return true;
     }
     return false;
@@ -173,7 +173,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     });
 
     /* istanbul ignore else */
-    if(!nextPage &&
+    if (!nextPage &&
       !(this.eventTrigger.show_summary || this.eventTrigger.show_summary === null) &&
       !this.eventTrigger.show_event_notes) {
       this.submitForm({
@@ -216,7 +216,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   public emitSubmitted(response: Record<string, any>): void {
-    this.submitted.emit({caseId: response['id'], status: this.getStatus(response)});
+    this.submitted.emit({ caseId: response['id'], status: this.getStatus(response) });
   }
 
   public getNextPage({ wizard, currentPageId, eventTrigger, form }: CaseEditGetNextPage): WizardPage {
@@ -228,10 +228,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public confirm(confirmation: Confirmation): Promise<boolean> {
     this.confirmation = confirmation;
-    return this.router.navigate(['confirm'], {relativeTo: this.route});
+    return this.router.navigate(['confirm'], { relativeTo: this.route });
   }
 
-  public submitForm({ eventTrigger, form, caseDetails, submit }: CaseEditSubmitForm ): void {
+  public submitForm({ eventTrigger, form, caseDetails, submit }: CaseEditSubmitForm): void {
     this.isSubmitting = true;
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
@@ -293,8 +293,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
 
     // delete fields which are not part of the case event journey wizard pages case fields
-    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, eventTrigger.case_fields, false);
-    const pageListCaseFields = this.validPageListCaseFieldsService.validPageListCaseFields(this.validPageList, caseEventData.data, eventTrigger.case_fields);
+    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, eventTrigger.case_fields, false, form.controls['data'].value);
+    const pageListCaseFields = this.validPageListCaseFieldsService.validPageListCaseFields(this.validPageList, eventTrigger.case_fields, form.controls['data'].value);
     // Remove unnecessary case fields which are hidden, only if the submission is *not* for Case Flags
     if (!this.isCaseFlagSubmission) {
       this.formValueService.removeUnnecessaryFields(caseEventData.data, pageListCaseFields, true, true);
@@ -416,7 +416,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     return rawFormValueData;
   }
 
-  private caseSubmit({form, caseEventData, submit}: CaseEditCaseSubmit): void {
+  private caseSubmit({ form, caseEventData, submit }: CaseEditCaseSubmit): void {
     const loadingSpinnerToken = this.loadingService.register();
 
     submit(caseEventData)
@@ -460,7 +460,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onEventCanBeCompleted({ eventTrigger, eventCanBeCompleted, caseDetails, form, submit }: CaseEditonEventCanBeCompleted ): void {
+  public onEventCanBeCompleted({ eventTrigger, eventCanBeCompleted, caseDetails, form, submit }: CaseEditonEventCanBeCompleted): void {
     if (eventCanBeCompleted) {
       // Submit
       const caseEventData = this.generateCaseEventData({ eventTrigger, form });
