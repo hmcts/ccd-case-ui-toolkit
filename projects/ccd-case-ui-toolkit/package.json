@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.19.15-prerelease-service-id-params",
+  "version": "7.0.4",
   "engines": {
     "node": ">=18.17.0"
   },
