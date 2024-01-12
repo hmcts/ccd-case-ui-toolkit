@@ -9,6 +9,7 @@ import { FieldType } from '../../../domain/definition/field-type.model';
 import { PipesModule } from '../../../pipes';
 import { attr } from '../../../test/helpers';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { MarkdownComponent } from '../markdown';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDynamicMultiSelectListFieldComponent } from './write-dynamic-multi-select-list-field.component';
@@ -72,7 +73,8 @@ const moduleDef = {
   declarations: [
     WriteDynamicMultiSelectListFieldComponent,
     MarkdownComponent,
-    MockFieldLabelPipe
+    MockFieldLabelPipe,
+    MockRpxTranslatePipe
   ],
   providers: [
     NgxMdModule
