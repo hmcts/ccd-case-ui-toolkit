@@ -17,6 +17,7 @@ export class HttpError {
   private static readonly DEFAULT_MESSAGE = 'Something unexpected happened, our technical staff have been automatically notified';
   private static readonly DEFAULT_STATUS = 500;
 
+  private static readonly MESSAGE_ERROR_429 ='Your request was rate limited. Please wait a few seconds before retrying your document upload';
 
   public timestamp: string;
   public status: number;
