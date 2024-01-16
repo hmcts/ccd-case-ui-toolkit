@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { finalize, first, mergeMap, switchMap } from 'rxjs/operators';
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import {
   CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage,
@@ -19,7 +19,7 @@ import {
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
-import { CaseNotifier, WizardFactoryService } from '../services';
+import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 
 @Component({
@@ -99,7 +99,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
     private readonly loadingService: LoadingService,
-    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
+    private readonly workAllocationService: WorkAllocationService
   ) {}
 
   public ngOnInit(): void {
@@ -418,31 +419,51 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   private caseSubmit({ form, caseEventData, submit }: CaseEditCaseSubmit): void {
     const loadingSpinnerToken = this.loadingService.register();
-
-    submit(caseEventData)
-      .pipe(finalize(() => {
+    const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true' ? true : false;
+    // keep the initial event response to finalise process after task completion
+    let firstResponse: object;
+    submit(caseEventData).pipe(first(), mergeMap((response) => {
+      firstResponse = response;
+      if (taskStr && assignNeeded) {
+        const task: Task = JSON.parse(taskStr);
+        return this.workAllocationService.assignAndCompleteTask(task.id);
+      } else if (taskStr) {
+        const task: Task = JSON.parse(taskStr);
+        return this.workAllocationService.completeTask(task.id);
+      }
+      return of(true);
+    }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
       }))
       .subscribe(
-        response => {
+        () => {
           this.caseNotifier.cachedCaseView = null;
           this.sessionStorageService.removeItem('eventUrl');
-          const confirmation: Confirmation = this.buildConfirmation(response);
+          const confirmation: Confirmation = this.buildConfirmation(firstResponse);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
             this.confirm(confirmation);
           } else {
-            this.emitSubmitted(response);
+            this.emitSubmitted(firstResponse);
           }
         },
         error => {
-          this.error = error;
-          this.callbackErrorsSubject.next(error);
-          /* istanbul ignore else */
-          if (this.error.details) {
-            this.formErrorService
-              .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
+          if (!firstResponse) {
+            // event submission error
+            this.error = error;
+            this.callbackErrorsSubject.next(error);
+            /* istanbul ignore else */
+            if (this.error.details) {
+              this.formErrorService
+                .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
+            }
+            this.isSubmitting = false;
+          } else {
+            // task assignment/completion error
+            // set task to be deleted later?
+            // note: think error messages only shown if user is caseworker - might reqauire changing
+            this.router.navigate([`/cases/case-details/${this.getCaseId(this.caseDetails)}/tasks`], { relativeTo: this.route });
           }
-          this.isSubmitting = false;
         }
       );
   }
