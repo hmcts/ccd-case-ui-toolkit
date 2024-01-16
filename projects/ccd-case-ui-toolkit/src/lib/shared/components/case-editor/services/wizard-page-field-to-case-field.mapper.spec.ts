@@ -228,5 +228,6 @@ describe('WizardPageFieldToCaseFieldMapper - nested Collection of Collection typ
 
     expect(timelineEventDate.hidden).toEqual(true);
     expect(timelineEventDescription.hidden).toEqual(true);
+    expect(timelineEventDescription.display_context).toEqual('HIDDEN');
   });
 });
