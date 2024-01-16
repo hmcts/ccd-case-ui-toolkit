@@ -15,7 +15,7 @@ import { FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, Windo
 import { FormErrorService, FormValueService } from '../../../services/form';
 import { PaletteUtilsModule } from '../../palette';
 import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
-import { CaseNotifier } from '../services';
+import { CaseNotifier, WorkAllocationService } from '../services';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { CaseEditComponent } from './case-edit.component';
@@ -212,6 +212,7 @@ describe('CaseEditComponent', () => {
   const registrarService = new ConditionalShowRegistrarService();
   let route: any;
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
+  let mockWorkAllocationService: jasmine.SpyObj<WorkAllocationService>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
 
   describe('profile available in route', () => {
@@ -320,6 +321,7 @@ describe('CaseEditComponent', () => {
             { provide: ConditionalShowRegistrarService, useValue: registrarService },
             { provide: Router, useValue: routerStub },
             { provide: ActivatedRoute, useValue: route },
+            { provide: WorkAllocationService, useValue: mockWorkAllocationService},
             SessionStorageService,
             WindowService,
             { provide: LoadingService, loadingServiceMock },
