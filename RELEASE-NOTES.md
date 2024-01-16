@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.3-case-flags-v2-1-release
+**EUI-9048** Re-tag for re-release of Case Flags v2.1, following merge conflict resolution with latest from `master`
+
 ### Version 7.0.2-case-flags-v2-1-release-2
 **EUI-9061** Fix bug where Welsh description (for flags of type "Other") and Welsh comments fields are shown on the Case Flag Summary (CYA) page when a flag is updated by an external user
 
@@ -223,7 +226,7 @@
 **EUI-8371** Show details of the selected support being updated when the user is external
 
 ### Version 6.10.7-case-flags-v2-hide-event-summary-and-description-on-cya-page-v2
-**EUI-8246** Reasonable Adjustments legal rep hide Event Summary and Event Description section on CYA page
+**EUI-8286** Reasonable Adjustments legal rep hide Event Summary and Event Description section on CYA page
 
 ### Version 6.10.7-case-flags-v2-view-case-flags-ui-amendments-v2
 **EUI-8069** Fix Case Flags table display to show selected language for "Language Interpreter" flag types (ported from Case Flags v1)
