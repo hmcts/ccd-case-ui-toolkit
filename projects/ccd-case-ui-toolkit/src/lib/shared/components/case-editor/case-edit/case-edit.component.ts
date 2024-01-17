@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject, of } from 'rxjs';
-import { finalize, first, mergeMap, switchMap } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import {
   CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage,
@@ -419,20 +419,11 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   private caseSubmit({ form, caseEventData, submit }: CaseEditCaseSubmit): void {
     const loadingSpinnerToken = this.loadingService.register();
-    const taskStr = this.sessionStorageService.getItem('taskToComplete');
-    const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true' ? true : false;
     // keep the initial event response to finalise process after task completion
     let eventResponse: object;
-    submit(caseEventData).pipe(first(), mergeMap((response) => {
+    submit(caseEventData).pipe(switchMap((response) => {
       eventResponse = response;
-      if (taskStr && assignNeeded) {
-        const task: Task = JSON.parse(taskStr);
-        return this.workAllocationService.assignAndCompleteTask(task.id);
-      } else if (taskStr) {
-        const task: Task = JSON.parse(taskStr);
-        return this.workAllocationService.completeTask(task.id);
-      }
-      return of(true);
+      return this.postCompleteTaskIfRequired();
     }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
       }))
@@ -466,6 +457,19 @@ export class CaseEditComponent implements OnInit, OnDestroy {
           }
         }
       );
+  }
+
+  private postCompleteTaskIfRequired(): Observable<any> {
+    const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
+    if (taskStr && assignNeeded) {
+      const task: Task = JSON.parse(taskStr);
+      return this.workAllocationService.assignAndCompleteTask(task.id);
+    } else if (taskStr) {
+      const task: Task = JSON.parse(taskStr);
+      return this.workAllocationService.completeTask(task.id);
+    }
+    return of(true);
   }
 
   private buildConfirmation(response: object): Confirmation {
