@@ -422,9 +422,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true' ? true : false;
     // keep the initial event response to finalise process after task completion
-    let firstResponse: object;
+    let eventResponse: object;
     submit(caseEventData).pipe(first(), mergeMap((response) => {
-      firstResponse = response;
+      eventResponse = response;
       if (taskStr && assignNeeded) {
         const task: Task = JSON.parse(taskStr);
         return this.workAllocationService.assignAndCompleteTask(task.id);
@@ -440,15 +440,15 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         () => {
           this.caseNotifier.cachedCaseView = null;
           this.sessionStorageService.removeItem('eventUrl');
-          const confirmation: Confirmation = this.buildConfirmation(firstResponse);
+          const confirmation: Confirmation = this.buildConfirmation(eventResponse);
           if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
             this.confirm(confirmation);
           } else {
-            this.emitSubmitted(firstResponse);
+            this.emitSubmitted(eventResponse);
           }
         },
         error => {
-          if (!firstResponse) {
+          if (!eventResponse) {
             // event submission error
             this.error = error;
             this.callbackErrorsSubject.next(error);
@@ -459,8 +459,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
             }
             this.isSubmitting = false;
           } else {
-            // task assignment/completion error
-            // set task to be deleted later?
+            // task assignment/completion error - handled within workallocation service
+            // could set task to be deleted (or completed later)?
             // note: think error messages only shown if user is caseworker - might reqauire changing
             this.router.navigate([`/cases/case-details/${this.getCaseId(this.caseDetails)}/tasks`], { relativeTo: this.route });
           }
