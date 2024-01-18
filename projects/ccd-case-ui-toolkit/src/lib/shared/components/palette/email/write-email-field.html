@@ -1,7 +1,7 @@
 <div class="form-group bottom-30" [ngClass]="{'form-group-error': !emailControl.valid && (emailControl.dirty || emailControl.touched)}">
 
   <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel) | rpxTranslate}}</span>
+    <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
   <span class="error-message" *ngIf="emailControl.errors && (emailControl.dirty || emailControl.touched)">{{(emailControl.errors | ccdFirstError:caseField.label)}}</span>

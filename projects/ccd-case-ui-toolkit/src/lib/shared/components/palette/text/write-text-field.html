@@ -1,6 +1,6 @@
 <div class="form-group" [ngClass]="{'form-group-error': !!textControl && !textControl.valid && (textControl.dirty || textControl.touched)}">
   <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel | rpxTranslate}}</span>
+    <span class="form-label" *ngIf="caseField.label">{{caseField | ccdFieldLabel}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
   <span class="error-message" *ngIf="textControl?.errors && (textControl.dirty || textControl.touched)">

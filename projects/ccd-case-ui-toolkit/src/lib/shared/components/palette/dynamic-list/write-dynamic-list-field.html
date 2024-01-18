@@ -2,7 +2,7 @@
   [ngClass]="{'form-group-error': !dynamicListFormControl.valid && (dynamicListFormControl.dirty || dynamicListFormControl.touched)}">
 
   <label [for]="id()">
-    <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel) | rpxTranslate}}</span>
+    <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
   </label>
   <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
   <span class="form-label" *ngIf="!caseField.label && !caseField.hint_text">{{'Select an option from the dropdown' | rpxTranslate}}</span>
