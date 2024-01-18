@@ -462,10 +462,11 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   private postCompleteTaskIfRequired(): Observable<any> {
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
-    const task: Task = JSON.parse(taskStr);
     if (taskStr && assignNeeded) {
+      const task: Task = JSON.parse(taskStr);
       return this.workAllocationService.assignAndCompleteTask(task.id);
     } else if (taskStr) {
+      const task: Task = JSON.parse(taskStr);
       return this.workAllocationService.completeTask(task.id);
     }
     return of(true);
