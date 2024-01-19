@@ -538,9 +538,9 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[0].hidden).toEqual(false);
     expect(RESULT[1].hidden).toEqual(true);
   });
-  it('should remove dynamic list field if on its value is null', () => {
-    const formField = FORM_GROUP1.controls['data'].value;
-    const allFieldValues = Object.assign(METADATA, formField);
+  it('should remove dynamic list field if its value is null', () => {
+    const formField = FORM_GROUP1.controls['data'] as FormGroup;
+    const allFieldValues = Object.assign(METADATA, formField.value);
     const RESULT: CaseField[] = pipe.transform(complexCaseField3, false, undefined, true, allFieldValues);
     expect(RESULT.length).toEqual(2);
   });
