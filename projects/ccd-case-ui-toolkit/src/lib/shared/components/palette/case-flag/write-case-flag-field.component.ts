@@ -14,8 +14,6 @@ import { CaseFlagFieldState, CaseFlagStatus, CaseFlagText } from './enums';
   styleUrls: ['./write-case-flag-field.component.scss']
 })
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit {
-
-  public formGroup: FormGroup;
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];

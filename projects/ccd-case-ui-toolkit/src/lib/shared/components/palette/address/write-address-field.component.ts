@@ -22,9 +22,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   public addressesService: AddressesService;
 
-  @Input()
-  public formGroup: FormGroup;
-
   public addressFormGroup = new FormGroup({});
   public postcode: FormControl;
   public addressList: FormControl;
