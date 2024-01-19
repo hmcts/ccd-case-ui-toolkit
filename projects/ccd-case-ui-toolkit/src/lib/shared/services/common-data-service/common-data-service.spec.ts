@@ -92,6 +92,18 @@ describe('CommonDataService', () => {
     req.flush(serviceOrgData);
   });
 
+  it('should get null if you pass null as url', () => {
+    service.getRefData(null).subscribe(result => {
+      expect(result).toBe(null);
+    });
+  });
+
+  it('should get null if you pass null as url', () => {
+    service.getServiceOrgData(null).subscribe(result => {
+      expect(result).toBe(null);
+    });
+  });
+
   afterEach(() => {
     // Verify that no HTTP requests are outstanding
     httpMock.verify();
