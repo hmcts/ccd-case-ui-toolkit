@@ -429,14 +429,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       }))
       .subscribe(
         () => {
-          this.caseNotifier.cachedCaseView = null;
-          this.sessionStorageService.removeItem('eventUrl');
-          const confirmation: Confirmation = this.buildConfirmation(eventResponse);
-          if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
-            this.confirm(confirmation);
-          } else {
-            this.emitSubmitted(eventResponse);
-          }
+          this.finishEventCompletionLogic(eventResponse);
         },
         error => {
           if (!eventResponse) {
@@ -453,7 +446,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
             // task assignment/completion error - handled within workallocation service
             // could set task to be deleted (or completed later)?
             // note: think error messages only shown if user is caseworker - might reqauire changing
-            this.router.navigate([`/cases/case-details/${this.getCaseId(this.caseDetails)}/tasks`], { relativeTo: this.route });
+            this.finishEventCompletionLogic(eventResponse);
           }
         }
       );
@@ -470,6 +463,17 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       return this.workAllocationService.completeTask(task.id);
     }
     return of(true);
+  }
+
+  private finishEventCompletionLogic(eventResponse: any): void {
+    this.caseNotifier.cachedCaseView = null;
+    this.sessionStorageService.removeItem('eventUrl');
+    const confirmation: Confirmation = this.buildConfirmation(eventResponse);
+    if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
+      this.confirm(confirmation);
+    } else {
+      this.emitSubmitted(eventResponse);
+    }
   }
 
   private buildConfirmation(response: object): Confirmation {
