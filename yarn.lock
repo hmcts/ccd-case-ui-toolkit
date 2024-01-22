@@ -3559,7 +3559,7 @@ __metadata:
     "@hmcts/media-viewer": 2.10.1-RC.1
     "@ngrx/effects": ^11.1.1
     "@ngrx/store": ^15.2.1
-    "@nicky-lenaers/ngx-scroll-to": ^9.0.0
+    "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     "@storybook/addon-actions": ^6.5.10
     "@storybook/addon-essentials": ^6.5.10
     "@storybook/addon-interactions": ^6.5.10
@@ -4854,14 +4854,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nicky-lenaers/ngx-scroll-to@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@nicky-lenaers/ngx-scroll-to@npm:9.0.0"
+"@nicky-lenaers/ngx-scroll-to@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@nicky-lenaers/ngx-scroll-to@npm:14.0.0"
+  dependencies:
+    tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": ^8.0.0 || ^9.0.0
-    "@angular/core": ^8.0.0 || ^9.0.0
-    tslib: ^1.10.0
-  checksum: ece47f545bd85d2439cc98dddfaf6a400f8914bfb266881419c6e09e95452abb069cd21f9cb2b76ea3fee43fa26c218a480d9953b91b87ec3533f3733f4d64ac
+    "@angular/common": ^14.0.0
+    "@angular/core": ^14.0.0
+  checksum: fa66cdf1a44310079ccc0a00537e9c9356a7d326b2cc7d7fa0db13f3e3a2a9a584c4bdc38bc6710f1a932f9015d964e8feb368a9688bbf056899cd31378671e3
   languageName: node
   linkType: hard
 
