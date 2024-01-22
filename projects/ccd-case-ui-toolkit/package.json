@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.3",
+  "version": "7.0.4-ccpay-new-version",
   "engines": {
     "node": ">=18.17.0"
   },
