@@ -786,7 +786,7 @@ xdescribe('WriteCaseFlagFieldComponent', () => {
     );
     component.hearingRelevantFlag = false;
     const newFlagDetailInstance2 = component.populateNewFlagDetailInstance();
-    expect(newFlagDetailInstance2.subTypeValue).toEqual(component.caseFlagParentFormGroup.value['manualLanguageEntry']);
+    expect(newFlagDetailInstance2.subTypeValue).toEqual('TypeScript');
     expect(newFlagDetailInstance2.subTypeKey).toBeNull();
     expect(newFlagDetailInstance2.otherDescription).toBeNull();
     expect(newFlagDetailInstance2.flagComment).toBeNull();

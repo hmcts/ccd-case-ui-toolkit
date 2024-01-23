@@ -317,17 +317,19 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public populateNewFlagDetailInstance(): FlagDetail {
+    const langSearchTerm = this.caseFlagParentFormGroup.value['languageSearchTerm'];
+    const manualLangEntry = this.caseFlagParentFormGroup.value['manualLanguageEntry'];
     return {
       name: this.flagName,
       // Currently, subTypeValue and subTypeKey are applicable only to language flag types
-      subTypeValue: this.caseFlagParentFormGroup.value['languageSearchTerm']
-        ? this.caseFlagParentFormGroup.value['languageSearchTerm'].value
-        : this.caseFlagParentFormGroup.value['mmanualLanguageEntry']
-          ? this.caseFlagParentFormGroup.value['mmanualLanguageEntry']
+      subTypeValue: langSearchTerm
+        ? langSearchTerm.value
+        : manualLangEntry
+          ? manualLangEntry
           : null,
       // For user-entered (i.e. non-Reference Data) languages, there is no key
-      subTypeKey: this.caseFlagParentFormGroup.value['languageSearchTerm']
-        ? this.caseFlagParentFormGroup.value['languageSearchTerm'].key
+      subTypeKey: langSearchTerm
+        ? langSearchTerm.key
         : null,
       otherDescription: this.flagCode === this.otherFlagTypeCode && this.caseFlagParentFormGroup.value['otherFlagTypeDescription']
         ? this.caseFlagParentFormGroup.value['otherFlagTypeDescription']
