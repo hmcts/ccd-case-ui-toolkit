@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.3-case-flags-v2-1-case-level-flags-fix
+**EUI-9141/EUI-9142** Fix bug where party-level flag types are retrieved instead of case-level flag types, when "Case level" is selected for the flag location
+
 ### Version 7.0.3-case-flags-v2-1-release
 **EUI-9048** Re-tag for re-release of Case Flags v2.1, following merge conflict resolution with latest from `master`
 
