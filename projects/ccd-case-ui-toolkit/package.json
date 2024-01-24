@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.4-rc1",
+  "version": "7.0.4-task-completion-error-message",
   "engines": {
     "node": ">=18.17.0"
   },

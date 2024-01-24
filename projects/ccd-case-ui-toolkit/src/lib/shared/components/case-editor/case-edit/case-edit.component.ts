@@ -13,6 +13,7 @@ import {
 } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
+  AlertService,
   FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
   SessionStorageService, WindowService
 } from '../../../services';
@@ -21,6 +22,7 @@ import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
+import { Constants } from '../../../commons/constants';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -100,7 +102,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     private readonly formErrorService: FormErrorService,
     private readonly loadingService: LoadingService,
     private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
-    private readonly workAllocationService: WorkAllocationService
+    private readonly workAllocationService: WorkAllocationService,
+    private readonly alertService: AlertService
   ) {}
 
   public ngOnInit(): void {
@@ -425,11 +428,17 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       eventResponse = response;
       return this.postCompleteTaskIfRequired();
     }),finalize(() => {
+        this.sessionStorageService.removeItem('taskToComplete');
+        this.sessionStorageService.removeItem('assignNeeded');
         this.loadingService.unregister(loadingSpinnerToken);
       }))
       .subscribe(
         () => {
           this.finishEventCompletionLogic(eventResponse);
+          /* NOTE: Uncomment this to test event confirmation page display of error
+            Replicates lines 458-459
+          this.alertService.setPreserveAlerts(true);
+          this.alertService.error({phrase: 'The associated task for this event failed to complete automatically. Please complete the task manually in the Tasks tab on the case'}); */
         },
         error => {
           if (!eventResponse) {
@@ -445,8 +454,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
           } else {
             // task assignment/completion error - handled within workallocation service
             // could set task to be deleted (or completed later)?
-            // note: think error messages only shown if user is caseworker - might reqauire changing
             this.finishEventCompletionLogic(eventResponse);
+            // below allows error to be shown on navigation to confirmation page
+            this.alertService.setPreserveAlerts(true);
+            this.alertService.error({phrase: Constants.TASK_COMPLETION_ERROR});
           }
         }
       );
