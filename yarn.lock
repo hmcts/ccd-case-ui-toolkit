@@ -6692,16 +6692,16 @@ __metadata:
   linkType: hard
 
 "@types/jasmine@npm:*":
-  version: 4.3.5
-  resolution: "@types/jasmine@npm:4.3.5"
-  checksum: 33839af6efd42bed948cb49de117821649de952228b3bf4743af09ef9d1736a6e9e9500750f04ffa74e308f00781f697092dadde4e038e2f041e741b087ceb9b
+  version: 5.1.4
+  resolution: "@types/jasmine@npm:5.1.4"
+  checksum: 1b2048d988077aee747a72fab31f4e0820f928c25e886ab91aa5a1ee2d4277655c22f81feed5d7b3b15cc61542878568a24b2381457eb21dfc84250c693f980a
   languageName: node
   linkType: hard
 
 "@types/jasmine@npm:~2.8.0":
-  version: 2.8.19
-  resolution: "@types/jasmine@npm:2.8.19"
-  checksum: ad776b8912334a0dfbc2431991b55f73435b44ca1a1261c6179971245de9735c719e35b5d1976ba6c6c653b8f6a53aa4794c93f078902b8c4c17e9dcd10b93fd
+  version: 2.8.23
+  resolution: "@types/jasmine@npm:2.8.23"
+  checksum: b9538cfa84dca23df14e6355dda1d0b2e63c6aea5d0f62e5e8d03e4c19d2854d9d65780e7d4fe6d755e95a10dcb22ceae997a343473f7f30559c1075f7cf0d0b
   languageName: node
   linkType: hard
 
