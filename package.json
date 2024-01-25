@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.2-welsh-optional-text-fix-v1",
+  "version": "7.0.3-case-flags-v2-1-case-level-flags-fix",
   "engines": {
     "node": ">=18.17.0"
   },

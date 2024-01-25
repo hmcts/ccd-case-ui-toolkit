@@ -400,7 +400,7 @@ export class FormValueService {
           // Retain anything that is readonly and not a label.
           continue;
         }
-        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.id !== 'caseLinks' && !field.retain_hidden_value) {
+        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.display_context !== 'HIDDEN_TEMP' && field.id !== 'caseLinks' && !field.retain_hidden_value) {
           // Delete anything that is hidden (that is NOT readonly), and that
           // hasn't had its display_context overridden to make it hidden.
           delete data[field.id];

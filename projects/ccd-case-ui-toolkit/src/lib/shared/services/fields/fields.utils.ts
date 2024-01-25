@@ -23,6 +23,12 @@ export class FieldsUtils {
   public static readonly SERVER_RESPONSE_FIELD_TYPE_COMPLEX = 'Complex';
   public static readonly SERVER_RESPONSE_FIELD_TYPE_DYNAMIC_LIST_TYPE: FieldTypeEnum[] = ['DynamicList', 'DynamicRadioList'];
 
+  public static isValidDisplayContext(ctx: string): boolean {
+    return (ctx === 'MANDATORY' || ctx === 'READONLY'
+      || ctx === 'OPTIONAL' || ctx === 'HIDDEN'
+      || ctx === 'COMPLEX');
+  }
+
   public static convertToCaseField(obj: any): CaseField {
     if (!(obj instanceof CaseField)) {
       return plainToClassFromExist(new CaseField(), obj);
@@ -514,12 +520,12 @@ export class FieldsUtils {
                 // These two fields are date-time fields
                 case 'dateTimeModified':
                 case 'dateTimeCreated':
-                  return {[k]: detail.value[k] ? new Date(detail.value[k]) : null, id: detail.id};
+                  return { [k]: detail.value[k] ? new Date(detail.value[k]) : null, id: detail.id };
                 // This field is a "yes/no" field
                 case 'hearingRelevant':
-                  return detail.value[k].toUpperCase() === 'YES' ? {[k]: true, id: detail.id} : {[k]: false, id: detail.id};
+                  return detail.value[k].toUpperCase() === 'YES' ? { [k]: true, id: detail.id } : { [k]: false, id: detail.id };
                 default:
-                  return {[k]: detail.value[k], id: detail.id};
+                  return { [k]: detail.value[k], id: detail.id };
               }
             }));
           }) as FlagDetail[]

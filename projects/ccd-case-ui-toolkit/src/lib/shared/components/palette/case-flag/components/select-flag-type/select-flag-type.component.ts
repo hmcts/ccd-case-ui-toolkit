@@ -53,7 +53,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public cachedFlagType: FlagType;
   public flagTypeControlChangesSubscription: Subscription;
   public caseFlagFormField = CaseFlagFormFields;
-  public isCaseLevelFlag: boolean;
+  public isCaseLevelFlag = false;
 
   private readonly maxCharactersForOtherFlagType = 80;
   // Code for "Other" flag type as defined in Reference Data
@@ -77,11 +77,7 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isCaseLevelFlag = this.selectedFlagsLocation?.flags?.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId;
     this.flagTypes = [];
-    const flagType = this.formGroup['caseField']
-      && this.formGroup['caseField'].id
-      && this.formGroup['caseField'].id === this.caseLevelCaseFlagsFieldId
-      ? RefdataCaseFlagType.CASE
-      : RefdataCaseFlagType.PARTY;
+    const flagType = this.isCaseLevelFlag ? RefdataCaseFlagType.CASE : RefdataCaseFlagType.PARTY;
 
     this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
