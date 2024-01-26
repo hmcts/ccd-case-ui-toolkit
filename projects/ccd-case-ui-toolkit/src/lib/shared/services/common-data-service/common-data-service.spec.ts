@@ -1,6 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { CommonDataService, LovRefDataByServiceModel, LovRefDataModel } from './common-data-service';
+import { ServiceOrg } from '../../domain/case-view/service-org-response.model';
 
 describe('CommonDataService', () => {
   let service: CommonDataService;
@@ -37,6 +38,22 @@ describe('CommonDataService', () => {
   const dummyLovRefDataByServiceModel: LovRefDataByServiceModel = {
     list_of_values: dummyRefData
   };
+  const serviceOrgData: ServiceOrg[] = [
+    {
+      business_are: 'area',
+      ccd_case_types: 'case Type',
+      ccd_service_name: 'case name',
+      jurisdiction: 'Civil',
+      last_update: '22/08/1999',
+      org_unit: 'unit',
+      service_code: 'code',
+      service_description: 'description',
+      service_id: 39,
+      service_short_description: 'short descr',
+      sub_business_area: 'buss area'
+
+    }
+  ]
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -63,6 +80,28 @@ describe('CommonDataService', () => {
     const req = httpMock.expectOne('/refData');
     expect(req.request.method).toEqual('GET');
     req.flush(dummyLovRefDataByServiceModel);
+  });
+
+  it('should get ServiceOrgData', () => {
+    service.getServiceOrgData('/refdata/location/orgServices?ccdCaseType=39').subscribe({
+      next: lovRefDataByServiceModel => expect(lovRefDataByServiceModel).toEqual(serviceOrgData)
+    });
+
+    const req = httpMock.expectOne('/refdata/location/orgServices?ccdCaseType=39');
+    expect(req.request.method).toEqual('GET');
+    req.flush(serviceOrgData);
+  });
+
+  it('should get null if you pass null as url', () => {
+    service.getRefData(null).subscribe(result => {
+      expect(result).toBe(null);
+    });
+  });
+
+  it('should get null if you pass null as url', () => {
+    service.getServiceOrgData(null).subscribe(result => {
+      expect(result).toBe(null);
+    });
   });
 
   afterEach(() => {

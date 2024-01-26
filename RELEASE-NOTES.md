@@ -1,4 +1,16 @@
 ## RELEASE NOTES
+
+###Version 7.0.6
+**EXUI-812** Service ID not passed to LOV API during case linking
+**EXUI-1038** Uploading a Unsupported File type throws a Springframework error
+**EXUI-1042** In Manage orders having issue with format that is calling back for Date and time in Date Picker
+**EXUI-1112** Page in the middle of updateHearingRequirements event is stuck
+**EXUI-1121** Page in the middle of startAppeal event gets stuck
+**EXUI-1137** Additional details appearing on preview screen for hearing
+**EXUI-1152** Data going missing as going back and forth on UI screens
+**EXUI-830** Screen freezes when submitting event
+**EXUI-1229** Event could not complete but the task was auto completed
+
 ###Version 7.0.2
 **EXUI-1151** Angular 15 and Node 18 update
 

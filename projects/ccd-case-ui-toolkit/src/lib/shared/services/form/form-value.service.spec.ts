@@ -767,14 +767,46 @@ describe('FormValueService', () => {
       fieldType2.type = 'FixedRadioList';
       caseField2.field_type = fieldType2;
       caseField2.id = 'typeOfDocumentAttached';
-      caseField1.hidden = true;
-      caseField1.display_context = 'MANDATORY';
-      caseField2.retain_hidden_value = true;
+      caseField2.hidden = false;
+      caseField2.display_context = 'MANDATORY';
+      caseField2.retain_hidden_value = false;
 
       formValueService.removeUnnecessaryFields(data, [caseField1, caseField2]);
       const actual = {
         typeOfDocumentAttached : 'D10'
       };
+      expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
+    });
+    it('should remove all the field if the field retain_hidde_field set to true if isCalledFromSubmit passed as false', () => {
+      const data = {
+        applicationType :  'jointApplication',
+        typeOfDocumentAttached : 'D10'
+      };
+      const caseField1 = new CaseField();
+      const fieldType1 = new FieldType();
+      fieldType1.id = 'FixedRadioList-ApplicationType';
+      fieldType1.min = null;
+      fieldType1.type = 'FixedRadioList';
+      caseField1.field_type = fieldType1;
+      caseField1.id = 'applicationType';
+      caseField1.hidden = true;
+      caseField1.display_context = 'MANDATORY';
+      caseField1.retain_hidden_value = false;
+
+      const caseField2 = new CaseField();
+      const fieldType2 = new FieldType();
+      fieldType2.id = 'FixedRadioList-OfflineDocumentReceived';
+      fieldType2.min = null;
+      fieldType2.type = 'FixedRadioList';
+      caseField2.field_type = fieldType2;
+      caseField2.id = 'typeOfDocumentAttached';
+      caseField2.hidden = true;
+      caseField2.display_context = 'MANDATORY';
+      caseField2.retain_hidden_value = false;
+
+      formValueService.removeUnnecessaryFields(data, [caseField1, caseField2], false, false, false, [], false);
+      const actual = {};
+      console.log('final data:', data);
       expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
     });
   });
