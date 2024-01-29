@@ -2,6 +2,7 @@ export * from './activity';
 export * from './addresses';
 export * from './alert';
 export * from './auth';
+export * from './cachedJurisdiction';
 export * from './case-fields';
 export * from './case-file-view';
 export * from './case-flag';
