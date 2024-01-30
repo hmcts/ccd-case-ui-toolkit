@@ -9,7 +9,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
 import { DRAFT_PREFIX } from '../../../domain/draft.model';
-import { LoadingService } from '../../../services';
+import { AddressesService, LoadingService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FieldsUtils } from '../../../services/fields';
 import { FormErrorService } from '../../../services/form/form-error.service';
@@ -83,7 +83,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly caseFieldService: CaseFieldService,
     private readonly caseEditDataService: CaseEditDataService,
     private readonly loadingService: LoadingService,
-    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
+    private readonly addressService: AddressesService
   ) {
   }
 
@@ -200,7 +201,13 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             }
           }
           if (fieldElement.hasError('required')) {
-            this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
+            if (casefield.id === 'AddressLine1') {
+              // EUI-1067 - Display more relevant error message to user and correctly navigate to the field
+              this.addressService.setMandatoryError(true);
+              this.caseEditDataService.addFormValidationError({ id: `${path}_${path}`, message: `An address is required` });
+            } else {
+              this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
+            }
             fieldElement.markAsDirty();
             // For the JudicialUser field type, an error needs to be set on the component so that an error message
             // can be displayed at field level
@@ -278,6 +285,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     }
 
     if (!this.caseEdit.isSubmitting && !this.currentPageIsNotValid()) {
+      this.addressService.setMandatoryError(false);
       if (this.caseEdit.validPageList.findIndex(page=> page.id === this.currentPage.id) === -1) {
         this.caseEdit.validPageList.push(this.currentPage);
       }

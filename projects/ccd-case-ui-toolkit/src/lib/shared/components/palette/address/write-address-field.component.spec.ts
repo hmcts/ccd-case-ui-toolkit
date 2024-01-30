@@ -147,10 +147,10 @@ xdescribe('WriteAddressFieldComponent', () => {
     fixture = TestBed.createComponent(TestHostComponent);
     testHostComponent = fixture.componentInstance;
     testHostComponent.caseField.value = null;
+    spyOn(addressesService, 'getMandatoryError').and.returnValue(of(false));
 
     debugElement = fixture.debugElement;
     fixture.detectChanges();
-
   }));
 
   it('should render only title, lookup component and manual link when address not set', () => {
@@ -311,7 +311,6 @@ xdescribe('WriteAddressFieldComponent', () => {
     fixture.detectChanges();
 
     expect(debugElement.query($POSTCODE_LOOKUP_ERROR_MESSAGE)).toBeTruthy();
-
   });
 
   it('should clear the error when postcode is not blank', () => {
