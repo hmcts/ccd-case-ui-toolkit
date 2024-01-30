@@ -11,6 +11,7 @@ import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagLocationErrorMes
 export class SelectFlagLocationComponent implements OnInit {
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
+  @Input() public isDisplayContextParameterExternal = false;
 
   @Output() public caseFlagStateEmitter: EventEmitter<CaseFlagState> = new EventEmitter<CaseFlagState>();
 
@@ -24,18 +25,32 @@ export class SelectFlagLocationComponent implements OnInit {
   private readonly caseLevelCaseFlagsFieldId = 'caseFlags';
 
   public ngOnInit(): void {
-    this.flagLocationTitle = CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION;
+    this.flagLocationTitle = this.isDisplayContextParameterExternal ?
+      CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION_EXTERNAL : CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION;
 
     // Filter out any flags instances that don't have a party name, unless the instance is for case-level flags (this
     // is expected not to have a party name)
+    // Also de-duplicate flags instances where the groupId, if present, is the same
     if (this.flagsData) {
       this.filteredFlagsData =
-        this.flagsData.filter(f => f.flags.partyName !== null || f.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId);
+        this.flagsData
+        .filter((f) => f.flags.partyName !== null || f.pathToFlagsFormGroup === this.caseLevelCaseFlagsFieldId)
+        .filter((value, index, partyLevelFlags) => !value.flags.groupId
+          ? value
+          : partyLevelFlags.findIndex((p) => p.flags.groupId === value.flags.groupId) === index);
     }
-
     // Add a FormControl for the selected flag location if there is at least one flags instance remaining after filtering
     if (this.filteredFlagsData && this.filteredFlagsData.length > 0) {
-      this.formGroup.addControl(this.selectedLocationControlName, new FormControl(null));
+      const formControl = this.formGroup.get(this.selectedLocationControlName);
+
+      if (!formControl) {
+        this.formGroup.addControl(this.selectedLocationControlName, new FormControl(null));
+      } else {
+        // Needs to be setValue as they have different object references -- we use the pathToFlagsFormGroup key
+        formControl.setValue(
+          this.filteredFlagsData.find(item => item.pathToFlagsFormGroup === formControl.value?.pathToFlagsFormGroup)
+        );
+      }
     } else {
       // No filtered flags instances mean there are no parties to select from. The case has not been configured properly
       // for case flags and the user cannot proceed with flag creation. (Will need to be extended to check for case-level
@@ -52,9 +67,6 @@ export class SelectFlagLocationComponent implements OnInit {
     this.caseFlagStateEmitter.emit({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
       errorMessages: this.errorMessages,
-      selectedFlagsLocation: this.formGroup.get(this.selectedLocationControlName).value
-        ? this.formGroup.get(this.selectedLocationControlName).value as FlagsWithFormGroupPath
-        : null
     });
   }
 

@@ -389,7 +389,7 @@ export class FormValueService {
    * @param clearNonCase Whether or not we should clear out non-case fields at the top level.
    */
   public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false,
-    fromPreviousPage = false, currentPageCaseFields = []): void {
+    fromPreviousPage = false, currentPageCaseFields = [], isCalledFromSubmit = false): void {
     if (data && caseFields && caseFields.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       if (clearNonCase) {
@@ -400,10 +400,13 @@ export class FormValueService {
           // Retain anything that is readonly and not a label.
           continue;
         }
-        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.display_context !== 'HIDDEN_TEMP' && field.id !== 'caseLinks' && !field.retain_hidden_value) {
+        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.display_context !== 'HIDDEN_TEMP' && field.id !== 'caseLinks') {
           // Delete anything that is hidden (that is NOT readonly), and that
           // hasn't had its display_context overridden to make it hidden.
-          delete data[field.id];
+          // in event submission check for field's retain_hidden_value defore deletion
+          if((isCalledFromSubmit && !field.retain_hidden_value) || !isCalledFromSubmit) {
+            delete data[field.id];
+          }
         } else if (field.field_type) {
           switch (field.field_type.type) {
             case 'Label':
@@ -416,7 +419,7 @@ export class FormValueService {
               }
               break;
             case 'Complex':
-              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
+              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty, false, false, [], isCalledFromSubmit);
               // Also remove any optional complex objects that are completely empty.
               // EUI-4244: Ritesh's fix, passing true instead of clearEmpty.
               if (FormValueService.clearOptionalEmpty(true, data[field.id], field)) {
@@ -439,8 +442,8 @@ export class FormValueService {
                 if (field.field_type.collection_field_type.type === 'Complex') {
                   // Iterate through the elements and remove any unnecessary fields within.
                   for (const item of collection) {
-                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty);
-                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, false);
+                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty, false, false, [], isCalledFromSubmit);
+                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, false, false, false, [], isCalledFromSubmit);
                   }
                 }
               }
@@ -476,8 +479,8 @@ export class FormValueService {
   public removeEmptyCollectionsWithMinValidation(data: object, caseFields: CaseField[]): void {
     if (data && caseFields && caseFields.length > 0) {
       for (const field of caseFields) {
-        if (field.field_type.type === 'Collection' && field.field_type.min > 0 && data[field.id] &&
-          Array.isArray(data[field.id]) && data[field.id].length === 0) {
+        if (field.field_type.type === 'Collection' && typeof field.field_type.min === 'number' && field.field_type.min > 0 &&
+          data[field.id] && Array.isArray(data[field.id]) && data[field.id].length === 0) {
           delete data[field.id];
         }
       }
@@ -524,17 +527,19 @@ export class FormValueService {
           // See https://tools.hmcts.net/jira/browse/EUI-7377
           if (data.hasOwnProperty(caseField.id) && caseField.value) {
             // Create new object for the CaseField ID within the data object, if necessary (i.e. if the current value
-            // is falsy)
+            // is falsy); populate from the corresponding CaseField
             if (!data[caseField.id]) {
               data[caseField.id] = {};
+              Object.keys(caseField.value).forEach((key) => data[caseField.id][key] = caseField.value[key]);
+            } else {
+              // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+              // Flags field within a Complex field or a collection of Complex fields) is copied across
+              Object.keys(data[caseField.id]).forEach((key) => {
+                if (caseField.value.hasOwnProperty(key)) {
+                  data[caseField.id][key] = caseField.value[key];
+                }
+              });
             }
-            // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
-            // Flags field within a Complex field or a collection of Complex fields) is copied across
-            Object.keys(data[caseField.id]).forEach(key => {
-              if (caseField.value.hasOwnProperty(key)) {
-                data[caseField.id][key] = caseField.value[key];
-              }
-            });
           }
         });
     }
