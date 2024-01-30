@@ -7,7 +7,7 @@ import { SessionStorageService } from '../../../../../services/session/session-s
 import { CaseworkerService } from '../../../services/case-worker.service';
 import { JudicialworkerService } from '../../../services/judicial-worker.service';
 import { WorkAllocationService } from '../../../services/work-allocation.service';
-import { CaseEventCompletionComponent, COMPONENT_PORTAL_INJECTION_TOKEN } from '../../case-event-completion.component';
+import { COMPONENT_PORTAL_INJECTION_TOKEN, CaseEventCompletionComponent } from '../../case-event-completion.component';
 
 @Component({
   selector: 'app-case-event-completion-task-reassigned',
