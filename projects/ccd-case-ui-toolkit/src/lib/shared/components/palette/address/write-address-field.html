@@ -1,6 +1,6 @@
 <div class="form-group" [id]="id()">
   <div *ngIf="!isComplexWithHiddenFields()">
-    <h2 class="heading-h2">{{caseField | ccdFieldLabel | rpxTranslate}}</h2>
+    <h2 class="heading-h2">{{caseField | ccdFieldLabel}}</h2>
 
     <div class="form-group bottom-30 postcodeLookup" [id]="createElementId('postcodeLookup')" [ngClass]="{'form-group-error': missingPostcode}" *ngIf="!isExpanded">
       <label [for]="createElementId('postcodeInput')">

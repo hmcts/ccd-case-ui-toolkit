@@ -1,3 +1,4 @@
+export * from './../case-editor/case-event-completion';
 export * from './address';
 export * from './base-field';
 export * from './case-file-view';
@@ -28,6 +29,7 @@ export * from './palette.module';
 export * from './palette.service';
 export * from './payment';
 export * from './phone-uk';
+export * from './query-management';
 export * from './text';
 export * from './text-area';
 export * from './unsupported-field.component';

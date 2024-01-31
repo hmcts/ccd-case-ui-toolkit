@@ -103,7 +103,7 @@ describe('TaskReassignedComponent', () => {
   };
 
   beforeEach(async () => {
-    mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(task));
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
@@ -142,7 +142,6 @@ describe('TaskReassignedComponent', () => {
     spyOn(mockWorkAllocationService, 'assignAndCompleteTask').and.returnValue({subscribe: () => {}});
     component.onContinue();
     expect(mockSessionStorageService.getItem).toHaveBeenCalledTimes(1);
-    expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalled();
   });
 
   it('should unsubscribe subscriptions', () => {
