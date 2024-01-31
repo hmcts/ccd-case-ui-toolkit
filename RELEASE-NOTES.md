@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.6-welsh-translation-yes-no-field-fix
+**EUI-9165** Fix bug where nothing is shown for the yes/no field if there is no `caseField` label (should fall back on the field value)
+
 ### Version 7.0.6-case-flags-v2-1-release
 **EUI-9048** Re-tag for re-release of Case Flags v2.1, following merge conflict resolution with latest from `master`
 
