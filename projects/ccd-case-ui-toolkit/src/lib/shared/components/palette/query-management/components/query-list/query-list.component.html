@@ -1,0 +1,31 @@
+<ng-container *ngIf="queryListData">
+  <table class="govuk-table query-list__table">
+    <caption class="govuk-table__caption govuk-table__caption--l">
+      <div>{{ queryListData.partyName }}</div>
+    </caption>
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row query-list__row">
+        <th scope="col" class="govuk-table__header" [attr.aria-sort]="getAriaSortHeaderValue(col)"
+            *ngFor="let col of displayedColumns; let i = index;">
+          <button type="button" [attr.data-index]="i" aria-sort="none" (click)="sortTable(col)" href="javascript:void(0)">
+            {{ col.displayName | rpxTranslate }}
+          </button>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row query-list__row"
+        *ngFor="let message of queryListData.queries"
+    >
+      <td class="govuk-table__cell query-list__cell query-list__cell--first">
+        <a href="javascript:void(0)" (click)="showDetails(message)">{{ message.subject }}</a>
+      </td>
+      <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedBy }}</td>
+      <td class="govuk-table__cell query-list__cell">{{ message.lastSubmittedDate | date: 'dd MMM YYYY' }}</td>
+      <td class="govuk-table__cell query-list__cell">{{ message.lastResponseDate | date: 'dd MMM YYYY' }}</td>
+      <td class="govuk-table__cell query-list__cell">{{ message.responseStatus | rpxTranslate }}</td>
+    </tr>
+    </tbody>
+  </table>
+</ng-container>

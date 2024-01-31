@@ -1049,7 +1049,8 @@ describe('FormValueService', () => {
           } as FieldType,
           value: {
             a: 'Aa',
-            b: 'Bb'
+            b: 'Bb',
+            d: 'Dd'
           }
         } as CaseField,
         {
@@ -1102,7 +1103,9 @@ describe('FormValueService', () => {
         three: '3'
       });
       expect(data.hasOwnProperty('punctuation')).toBe(false);
-      expect(data.currency).toEqual({});
+      expect(data.currency).toEqual({
+        dollar: '$'
+      });
     });
   });
 });

@@ -1,6 +1,6 @@
-import { NgxMatDateAdapter, NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
+import { NGX_MAT_DATE_FORMATS, NgxMatDateAdapter, NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
-import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
@@ -8,14 +8,15 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
+import moment from 'moment';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FieldLabelPipe, FirstErrorPipe } from '../utils';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { DatetimePickerComponent } from './datetime-picker.component';
-import moment from 'moment';
 
 describe('DatetimePickerComponent', () => {
   let component: DatetimePickerComponent;
@@ -56,7 +57,7 @@ describe('DatetimePickerComponent', () => {
         ReactiveFormsModule
       ],
       declarations: [
-        DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe
+        DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe, MockFieldLabelPipe
       ],
       providers: [FormatTranslatorService,
         { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
