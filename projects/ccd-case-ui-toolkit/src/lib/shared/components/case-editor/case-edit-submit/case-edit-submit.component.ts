@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CaseEventTrigger, CaseField, Profile } from '../../../domain';
@@ -7,6 +7,7 @@ import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
   FieldsUtils,
+  FormValidatorsService,
   OrderService,
   ProfileNotifier
 } from '../../../services';
@@ -37,6 +38,10 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public pageTitle: string;
   public metadataFieldsObject: object;
   public allFieldsValues: any;
+  public summary: AbstractControl;
+  public description: AbstractControl;
+  public eventSummaryLabel: string = 'Event summary';
+  public eventDescriptionLabel: string = 'Event description';
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -67,6 +72,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly orderService: OrderService,
     private readonly profileNotifier: ProfileNotifier,
+    private readonly formValidatorsService: FormValidatorsService
   ) {
   }
 
@@ -89,6 +95,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.getPageTitle();
+
+    this.summary = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.summary');
+    this.description = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.description');
   }
 
   public ngOnDestroy(): void {
@@ -99,12 +108,14 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
-    this.caseEdit.submitForm({
-      eventTrigger: this.eventTrigger,
-      form: this.editForm,
-      submit: this.caseEdit.submit,
-      caseDetails: this.caseEdit.caseDetails
-    });
+    if (this.summary.valid && this.description.valid) {
+      this.caseEdit.submitForm({
+        eventTrigger: this.eventTrigger,
+        form: this.editForm,
+        submit: this.caseEdit.submit,
+        caseDetails: this.caseEdit.caseDetails
+      });
+    }
   }
 
   public onEventCanBeCompleted(eventCanBeCompleted: boolean): void {

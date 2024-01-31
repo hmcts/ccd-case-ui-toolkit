@@ -1,9 +1,9 @@
-import { AbstractControl, FormControl } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { aCaseField } from '../../fixture/shared.test.fixture';
 import { FormValidatorsService } from './form-validators.service';
 
-describe('FormValidatorsService', () => {
+fdescribe('FormValidatorsService', () => {
   const formValidatorsService: FormValidatorsService = new FormValidatorsService();
 
   it('should not add REQUIRED validator for OPTIONAL fields', () => {
@@ -146,6 +146,22 @@ describe('FormValidatorsService', () => {
     result.setValue('[Test](www.google.com)');
     result.markAsTouched();
     result.updateValueAndValidity();
+    expect(result.invalid).toBeFalsy();
+  });
+
+  it('should add Markdown validator for the specified control path', () => {
+    const formGroup = new FormGroup({
+      summary: new FormControl(),
+      description: new FormControl()
+    });
+
+    const controlPath = 'summary';
+    const result = formValidatorsService.addMarkDownValidators(formGroup, controlPath);
+
+    result.setValue('[Test](www.google.com)');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+
     expect(result.invalid).toBeFalsy();
   });
 });

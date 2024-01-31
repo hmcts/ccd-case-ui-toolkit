@@ -58,10 +58,11 @@ export class FormValidatorsService {
   }
 
   public static markDownPatternValidator(): ValidatorFn {
-    const pattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/g;
+    const pattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/;
 
     return (control: AbstractControl): ValidationErrors | null => {
-      return control?.value?.toString().trim().length > 0 && pattern.test(control.value)
+      const value = control?.value?.toString().trim();
+      return value && pattern.test(value)
         ? { markDownPattern: {} }
         : null;
     };
@@ -73,5 +74,14 @@ export class FormValidatorsService {
   // happy being static.
   public addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
     return FormValidatorsService.addValidators(caseField, control);
+  }
+
+  public addMarkDownValidators(formGroup: AbstractControl, controlPath: string): AbstractControl {
+    const control = formGroup.get(controlPath);
+    if (control) {
+      control.setValidators(FormValidatorsService.markDownPatternValidator());
+      control.updateValueAndValidity();
+    }
+    return control;
   }
 }
