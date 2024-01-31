@@ -19,6 +19,7 @@ import {
   CaseFieldService,
   FieldsUtils,
   FormErrorService,
+  FormValidatorsService,
   FormValueService,
   OrderService,
   ProfileNotifier,
@@ -104,6 +105,7 @@ describe('CaseEditSubmitComponent', () => {
   let orderService: OrderService;
   let profileNotifier: ProfileNotifier;
   let casesReferencePipe: jasmine.SpyObj<CaseReferencePipe>;
+  let formValidatorsService: jasmine.SpyObj<FormValidatorsService>;
   const caseField1: CaseField = aCaseField('field1', 'field1', 'Text', 'OPTIONAL', 4);
   const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
@@ -342,7 +344,7 @@ describe('CaseEditSubmitComponent', () => {
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
-
+      formValidatorsService = createSpyObj<FormValidatorsService>('ormValidatorsService', ['addMarkDownValidators']);
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
       spyOn(caseEditComponent, 'submitForm');
@@ -368,6 +370,7 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
+          { provide: FormValidatorsService, useValue: formValidatorsService },
           { provide: CaseEditComponent, useValue: caseEditComponent },
           { provide: FormValueService, useValue: formValueService },
           { provide: FormErrorService, useValue: formErrorService },
@@ -375,6 +378,7 @@ describe('CaseEditSubmitComponent', () => {
           { provide: FieldsUtils, useValue: fieldsUtils },
           { provide: CaseReferencePipe, useValue: casesReferencePipe },
           { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
           { provide: OrderService, useValue: orderService },
           { provide: ProfileNotifier, useValue: profileNotifier },
           { provide: SessionStorageService, useValue: sessionStorageService },
@@ -802,6 +806,7 @@ describe('CaseEditSubmitComponent', () => {
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
+      formValidatorsService = createSpyObj<FormValidatorsService>('ormValidatorsService', ['addMarkDownValidators']);
 
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
@@ -827,6 +832,7 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
+          { provide: FormValidatorsService, useValue: formValidatorsService },
           { provide: CaseEditComponent, useValue: caseEditComponent },
           { provide: FormValueService, useValue: formValueService },
           { provide: FormErrorService, useValue: formErrorService },
@@ -958,6 +964,7 @@ describe('CaseEditSubmitComponent', () => {
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
+      formValidatorsService = createSpyObj<FormValidatorsService>('ormValidatorsService', ['addMarkDownValidators']);
 
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
@@ -985,6 +992,7 @@ describe('CaseEditSubmitComponent', () => {
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
+          { provide: FormValidatorsService, useValue: formValidatorsService },
           { provide: CaseEditComponent, useValue: caseEditComponent },
           { provide: FormValueService, useValue: formValueService },
           { provide: FormErrorService, useValue: formErrorService },
@@ -1008,6 +1016,9 @@ describe('CaseEditSubmitComponent', () => {
 
     describe('submit', () => {
       it('should call caseEdits submitForm', () => {
+        comp.summary = new FormControl('ValidSummaryValue');
+        comp.description = new FormControl('ValidDescriptionValue');
+
         comp.submit();
         expect(caseEditComponent.submitForm).toHaveBeenCalled();
       });

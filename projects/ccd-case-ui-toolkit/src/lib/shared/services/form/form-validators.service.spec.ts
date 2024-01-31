@@ -3,7 +3,7 @@ import { CaseField } from '../../domain/definition/case-field.model';
 import { aCaseField } from '../../fixture/shared.test.fixture';
 import { FormValidatorsService } from './form-validators.service';
 
-fdescribe('FormValidatorsService', () => {
+describe('FormValidatorsService', () => {
   const formValidatorsService: FormValidatorsService = new FormValidatorsService();
 
   it('should not add REQUIRED validator for OPTIONAL fields', () => {
@@ -116,7 +116,7 @@ fdescribe('FormValidatorsService', () => {
     result.setValue('[Test](www.google.com)');
     result.markAsTouched();
     result.updateValueAndValidity();
-    expect(result.invalid).toBeFalsy();
+    expect(result.valid).toBeFalsy();
   });
 
   it('should return add Markdown validator for OPTIONAL fields', () => {
@@ -126,7 +126,7 @@ fdescribe('FormValidatorsService', () => {
     result.setValue('[Test](www.google.com)');
     result.markAsTouched();
     result.updateValueAndValidity();
-    expect(result.invalid).toBeFalsy();
+    expect(result.valid).toBeFalsy();
   });
 
   it('should return add Markdown validator for OPTIONAL fields - TextArea', () => {
@@ -136,7 +136,7 @@ fdescribe('FormValidatorsService', () => {
     result.setValue('[Test](www.google.com)');
     result.markAsTouched();
     result.updateValueAndValidity();
-    expect(result.invalid).toBeFalsy();
+    expect(result.valid).toBeFalsy();
   });
 
   it('should return add Markdown validator for MANDATORY fields - TextArea', () => {
@@ -146,7 +146,7 @@ fdescribe('FormValidatorsService', () => {
     result.setValue('[Test](www.google.com)');
     result.markAsTouched();
     result.updateValueAndValidity();
-    expect(result.invalid).toBeFalsy();
+    expect(result.valid).toBeFalsy();
   });
 
   it('should add Markdown validator for the specified control path', () => {
@@ -162,6 +162,6 @@ fdescribe('FormValidatorsService', () => {
     result.markAsTouched();
     result.updateValueAndValidity();
 
-    expect(result.invalid).toBeFalsy();
+    expect(result.valid).toBeFalsy();
   });
 });
