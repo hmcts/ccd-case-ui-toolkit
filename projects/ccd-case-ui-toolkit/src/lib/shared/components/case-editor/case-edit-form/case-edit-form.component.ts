@@ -4,6 +4,7 @@ import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FormValueService } from '../../../services/form/form-value.service';
+import { CaseEventTrigger } from '../../../domain';
 
 @Component({
   selector: 'ccd-case-edit-form',
@@ -19,6 +20,8 @@ export class CaseEditFormComponent implements OnDestroy, AfterViewInit {
   public caseFields: CaseField[] = [];
   @Input()
   public pageChangeSubject: Subject<boolean> = new Subject();
+  @Input()
+  public eventTrigger: CaseEventTrigger;
   @Output()
   public valuesChanged: EventEmitter<any> = new EventEmitter();
 
