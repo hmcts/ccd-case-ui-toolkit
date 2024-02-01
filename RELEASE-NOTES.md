@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-###Version 7.0.4-rc1
+###Version 7.0.6
 **EXUI-812** Service ID not passed to LOV API during case linking
 **EXUI-1038** Uploading a Unsupported File type throws a Springframework error
 **EXUI-1042** In Manage orders having issue with format that is calling back for Date and time in Date Picker
