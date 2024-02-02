@@ -219,9 +219,9 @@ describe('CaseEventTriggerComponent', () => {
     expect(alertService.success).toHaveBeenCalled();
   });
 
-  it('should alert warning message after task returned in session storage', () => {
+  it('should alert warning message after task completion error available and set to true in session storage', () => {
     casesService.createEvent.and.returnValue(of({}));
-    sessionStorageService.getItem.and.returnValue(of({'id': '12345'}))
+    sessionStorageService.getItem.and.returnValue('true')
 
     component.submitted({ caseId: 123, status: 'happy' });
 

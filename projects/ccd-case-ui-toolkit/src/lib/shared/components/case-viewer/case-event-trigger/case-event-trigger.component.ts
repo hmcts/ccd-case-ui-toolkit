@@ -100,19 +100,19 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
 
   public submitted(event: any): void {
     const eventStatus: string = event['status'];
-    const task = this.sessionStorageService.getItem('taskToComplete');
+    const taskCompletionFailed = this.sessionStorageService.getItem('taskCompletionError') === 'true';
     this.router
       .navigate([this.parentUrl])
       .then(() => {
         const caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
         const replacements = { CASEREFERENCE: caseReference, NAME: this.eventTrigger.name };
         this.alertService.setPreserveAlerts(true);
-        if (task) {
+        if (taskCompletionFailed) {
           // if task still present in session storage, we know that the task has not been correctly completed
           this.alertService.warning({
             phrase: CaseEventTriggerComponent.EVENT_COMPLETION_MESSAGE + '. ' + Constants.TASK_COMPLETION_ERROR
             , replacements});
-          this.sessionStorageService.removeItem('taskToComplete');
+          this.sessionStorageService.removeItem('taskCompletionError');
         } else if (EventStatusService.isIncomplete(eventStatus)) {
           this.alertService.warning({
             phrase: CaseEventTriggerComponent.EVENT_COMPLETION_MESSAGE + CaseEventTriggerComponent.CALLBACK_FAILED_MESSAGE,

@@ -424,12 +424,11 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const loadingSpinnerToken = this.loadingService.register();
     // keep the initial event response to finalise process after task completion
     let eventResponse: object;
+    this.sessionStorageService.setItem('taskCompletionError', 'false');
     submit(caseEventData).pipe(switchMap((response) => {
       eventResponse = response;
       return this.postCompleteTaskIfRequired();
     }),finalize(() => {
-        this.sessionStorageService.removeItem('taskToComplete');
-        this.sessionStorageService.removeItem('assignNeeded');
         this.loadingService.unregister(loadingSpinnerToken);
       }))
       .subscribe(
@@ -452,6 +451,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
             }
             this.isSubmitting = false;
           } else {
+            this.sessionStorageService.setItem('taskCompletionError', 'true');
             // task assignment/completion error - handled within workallocation service
             // could set task to be deleted (or completed later)?
             this.finishEventCompletionLogic(eventResponse);
