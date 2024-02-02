@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { tap } from 'rxjs/operators';
+import { compressToUTF16, decompressFromUTF16} from 'lz-string';
 
 import { CaseField } from '../../domain/definition/case-field.model';
 import { CaseState } from '../../domain/definition/case-state.model';
@@ -71,8 +72,17 @@ export class SearchFiltersComponent implements OnInit {
     if (this.jurisdictions.length === 1 || jurisdiction) {
       this.selected.jurisdiction = this.jurisdictions[0];
       if (jurisdiction) {
-        const localStorageJurisdiction = JSON.parse(jurisdiction);
-        this.selected.jurisdiction = this.jurisdictions.filter(j => j.id === localStorageJurisdiction.id)[0];
+        try {
+          console.log('jurisdiction retrieved from local storage len = ' + jurisdiction.length)
+          const localStorageJurisdiction = JSON.parse(decompressFromUTF16(jurisdiction));
+          if (localStorageJurisdiction) {
+            this.selected.jurisdiction = this.jurisdictions
+              .filter(j => j.id === localStorageJurisdiction.id)[0];
+          }
+        } catch (e) {
+          console.log("Failed to retrieve jurisdiction from local storage");
+          this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, null)
+        }
       }
       this.onJurisdictionIdChange();
     }
@@ -101,6 +111,7 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   public apply(): void {
+    console.log("Search filters apply");
     this.selected.formGroup = this.formGroup;
     this.selected.page = 1;
     this.selected.metadataFields = this.getMetadataFields();
@@ -116,7 +127,14 @@ export class SearchFiltersComponent implements OnInit {
     this.windowService.setLocalStorage(FORM_GROUP_VALUE_LOC_STORAGE,
       JSON.stringify(this.selected.formGroup.value));
     this.windowService.setLocalStorage(META_FIELDS_LOC_STORAGE, JSON.stringify(this.selected.metadataFields));
-    this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, JSON.stringify(this.selected.jurisdiction));
+    try {
+      const compJurisd = compressToUTF16(JSON.stringify(this.selected.jurisdiction));
+      this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, compJurisd);
+      console.log('jurisdiction compressed into local storage, length = ' + compJurisd.length);
+    } catch (e) {
+      console.log('Could not store jurisdiction in local storage');
+      this.windowService.setLocalStorage(JURISDICTION_LOC_STORAGE, null);
+    }
     if (this.selected.caseType) {
       this.windowService.setLocalStorage(CASE_TYPE_LOC_STORAGE, JSON.stringify(this.selected.caseType));
     }
