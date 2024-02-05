@@ -1,20 +1,21 @@
-import { Component, DebugElement, Input, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, DebugElement, Input} from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
-import { FocusElementDirective, FocusElementModule } from '../../../directives/focus-element';
+import { FocusElementModule } from '../../../directives/focus-element';
 import { AddressModel, CaseField } from '../../../domain';
 import { createFieldType } from '../../../fixture';
 import { AddressesService } from '../../../services/addresses/addresses.service';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { WriteAddressFieldComponent } from './write-address-field.component';
-import createSpyObj = jasmine.createSpyObj;
-import { IsCompoundPipe } from '../utils/is-compound.pipe';
 import { FieldLabelPipe, PaletteUtilsModule } from '../utils';
-import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
+import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { WriteAddressFieldComponent } from './write-address-field.component';
+
+import createSpyObj = jasmine.createSpyObj;
 
 describe('WriteAddressFieldComponent', () => {
 
