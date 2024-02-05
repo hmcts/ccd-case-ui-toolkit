@@ -8,8 +8,8 @@ import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig 
 import { MatLegacyTab as MatTab, MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
-import { RpxTranslatePipe } from 'rpx-xui-translation';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { RpxTranslationService } from 'rpx-xui-translation';
+import { Observable, Subject, Subscription, firstValueFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import {
   NotificationBannerConfig,
@@ -95,7 +95,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     private readonly location: Location,
     private readonly crf: ChangeDetectorRef,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly rpxTranslationPipe: RpxTranslatePipe
+    private readonly rpxTranslationService: RpxTranslationService
   ) {
   }
 
@@ -325,14 +325,15 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   // Refactored under EXUI-110 to address infinite tab loop to use tabIndexChanged instead
-  public tabChanged(tabIndexChanged: number): void {
+  public async tabChanged(tabIndexChanged: number): Promise<void> {
+    const hearingsInWelsh = await firstValueFrom(this.rpxTranslationService.getTranslation$(this.HEARINGS_TAB_LABEL));
     const matTab = this.tabGroup._tabs.find(tab => tab.isActive);
     const tabLabel = matTab.textLabel;
     // sortedTabs are fragments
-    // appended/prepepended tabs use router navigation
+    // appended/prepended tabs use router navigation
     if ((tabIndexChanged <= 1 && this.prependedTabs && this.prependedTabs.length) ||
       (this.appendedTabs?.length && (tabLabel === this.HEARINGS_TAB_LABEL
-        || tabLabel === this.rpxTranslationPipe.transform(this.HEARINGS_TAB_LABEL)))) {
+        || tabLabel === hearingsInWelsh))) {
       // Hack to get ID from tab as it's not easily achieved through Angular Material Tabs
       const tab = matTab['_viewContainerRef'] as ViewContainerRef;
       const id = (tab.element.nativeElement as HTMLElement).id;
@@ -360,37 +361,39 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
     const caseFlagsTab = this.caseDetails.tabs
       ? (this.caseDetails.tabs).filter(
-        tab => tab.fields && tab.fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
+        tab => tab.fields && tab.fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])))[0]
       : null;
 
     if (caseFlagsTab) {
       // Check whether the FlagLauncher CaseField is in external mode or not; the notification banner should not be
       // displayed for external users
       this.caseFlagsExternalUser = caseFlagsTab.fields.find(
-        caseField => FieldsUtils.isFlagLauncherCaseField(caseField)).display_context_parameter === this.caseFlagsReadExternalMode;
+        caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher'])).display_context_parameter === this.caseFlagsReadExternalMode;
 
       // Get the active case flags count
       // Cannot filter out anything other than to remove the FlagLauncher CaseField because Flags fields may be
       // contained in other CaseField instances, either as a sub-field of a Complex field, or fields in a collection
       // (or sub-fields of Complex fields in a collection)
       const activeCaseFlags = caseFlagsTab.fields
-        .filter(caseField => !FieldsUtils.isFlagLauncherCaseField(caseField) && caseField.value)
+        .filter(caseField => !FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']) && caseField.value)
         .reduce((active, caseFlag) => {
           return FieldsUtils.countActiveFlagsInCaseField(active, caseFlag);
         }, 0);
 
       if (activeCaseFlags > 0) {
         const description = activeCaseFlags > 1
-          ? `There are ${activeCaseFlags} active flags on this case.` : 'There is 1 active flag on this case.';
+          ? this.rpxTranslationService.getTranslationWithReplacements$(
+            `There are %activeCaseFlags% active flags on this case.`, { activeCaseFlags: '' + activeCaseFlags })
+          : this.rpxTranslationService.getTranslation$('There is 1 active flag on this case.');
         // Initialise and display notification banner
         this.notificationBannerConfig = {
           bannerType: NotificationBannerType.INFORMATION,
-          headingText: 'Important',
+          headingText: this.rpxTranslationService.getTranslation$('Important'),
           description,
           showLink: true,
-          linkText: 'View case flags',
+          linkText: this.rpxTranslationService.getTranslation$('View case flags'),
           triggerOutputEvent: true,
-          triggerOutputEventText: caseFlagsTab.label,
+          triggerOutputEventText: this.rpxTranslationService.getTranslation$(caseFlagsTab.label),
           headerClass: NotificationBannerHeaderClass.INFORMATION
         };
 
