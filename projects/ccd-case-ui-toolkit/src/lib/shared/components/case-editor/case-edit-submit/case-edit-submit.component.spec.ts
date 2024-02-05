@@ -512,7 +512,7 @@ describe('CaseEditSubmitComponent', () => {
       expect(eventNotes).not.toBeNull();
     });
 
-    it('should show event notes when not set in event trigger and showEventNotes is called', () => {
+    it('should not show event notes when not set in event trigger and showEventNotes is called', () => {
       fixture.detectChanges();
       comp.eventTrigger.show_event_notes = null;
       fixture.detectChanges();
@@ -524,7 +524,7 @@ describe('CaseEditSubmitComponent', () => {
       expect(eventNotes).toBeNull();
     });
 
-    it('should show event notes when not defined in event trigger and showEventNotes is called', () => {
+    it('should not show event notes when not defined in event trigger and showEventNotes is called', () => {
       fixture.detectChanges();
       comp.eventTrigger.show_event_notes = undefined;
       fixture.detectChanges();
@@ -548,9 +548,9 @@ describe('CaseEditSubmitComponent', () => {
       expect(eventNotes).toBeNull();
     });
 
-    it('should show event notes when set in event trigger and showEventNotes is called', () => {
+    it('should show event notes when set in event trigger and profile is solicitor and showEventNotes is called', () => {
       fixture.detectChanges();
-      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.profile.user.idam.roles = ['divorce-solicitor'];
       comp.eventTrigger.show_event_notes = true;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -559,18 +559,7 @@ describe('CaseEditSubmitComponent', () => {
       expect(eventNotes).not.toBeNull();
     });
 
-    it('should hide event notes when set in event trigger and profile is solicitor and showEventNotes is called', () => {
-      fixture.detectChanges();
-      comp.profile.user.idam.roles = ['divorce-solicitor'];
-      comp.eventTrigger.show_event_notes = true;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-      const result = comp.showEventNotes();
-      expect(result).toEqual(false);
-      expect(eventNotes).toBeNull();
-    });
-
-    it('should hide event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
+    it('should show event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
       fixture.detectChanges();
       comp.profile.user.idam.roles = ['caseworker-divorce'];
       comp.caseEdit.isCaseFlagSubmission = true;
@@ -578,28 +567,8 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
       const result = comp.showEventNotes();
-      expect(result).toEqual(false);
-      expect(eventNotes).toBeNull();
-    });
-
-    it('should hide event notes when not set in event trigger and showEventNotes is called', () => {
-      fixture.detectChanges();
-      comp.eventTrigger.show_event_notes = null;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-      const result = comp.showEventNotes();
-      expect(result).toEqual(false);
-      expect(eventNotes).toBeNull();
-    });
-
-    it('should hide event notes when not defined in event trigger and showEventNotes is called', () => {
-      fixture.detectChanges();
-      comp.eventTrigger.show_event_notes = undefined;
-      fixture.detectChanges();
-      const eventNotes = de.query($EVENT_NOTES);
-      const result = comp.showEventNotes();
-      expect(result).toEqual(false);
-      expect(eventNotes).toBeNull();
+      expect(result).toEqual(true);
+      expect(eventNotes).not.toBeNull();
     });
 
     it('should set correct page title', () => {

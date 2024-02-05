@@ -1,5 +1,6 @@
 ## RELEASE NOTES
 ### Version 7.0.7-welsh-translation-fixes
+**EUI-9129** Fix conditional display of "Event summary" and "Event description" fields to be dependent solely on the value of `show_event_notes` as set for a given case event via a CCD Definition file
 **EUI-9164** Fix non-translation of "Event summary" label and hint text, and "Event description" label, displayed on the "Check your answers" page
 
 ### Version 7.0.7-welsh-translation-yes-no-field-fix
