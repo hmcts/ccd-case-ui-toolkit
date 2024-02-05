@@ -60,16 +60,19 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private getReadOnlyAndFormFields(): object {
+    let hiddenFields;
+    let hiddenFieldValues;
     const formFields: object = this.getFormFieldsValuesIncludingDisabled();
     if (this.triggeredFromEvent) {
-      const hiddenFields = this.listofHiddenCaseFields(this.formGroup, this.eventTrigger);
+      hiddenFields = this.listOfHiddenCaseFields(this.formGroup, this.eventTrigger);
+      hiddenFieldValues = this.getHiddenFieldFromEventTrigger(hiddenFields, this.eventTrigger.case_fields)
     }
     // TODO: Delete following line when @Input contextFields is fixed - https://tools.hmcts.net/jira/browse/RDM-3504
     const uniqueContextFields: CaseField[] = this.removeDuplicates(this.contextFields);
     return this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(uniqueContextFields, formFields);
   }
 
-  private listofHiddenCaseFields(form: FormGroup, eventTrigger: CaseEventTrigger): string[] {
+  private listOfHiddenCaseFields(form: FormGroup, eventTrigger: CaseEventTrigger): string[] {
     const currentEventState = this.fieldsUtils.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.getRawValue());
     const hiddenCaseFieldsId: string[] = [];
     eventTrigger.wizard_pages.forEach(wp => {
@@ -85,8 +88,16 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     return hiddenCaseFieldsId;
   }
 
-  private findCommonCaseField(arr1, arr2) {
-
+  private getHiddenFieldFromEventTrigger(hiddenFields, case_fields): any {
+    let commonFields = {};
+    for (const item1 of hiddenFields) {
+      for (const item2 of case_fields) {
+        if (item1 === item2.id) {
+          commonFields[item2.id] = item2.value;
+        }
+      }
+    }
+    return commonFields;
   }
 
   private hasShowConditionPage(wizardPage: WizardPage, formFields: any): boolean {
