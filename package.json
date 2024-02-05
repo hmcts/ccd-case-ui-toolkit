@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.6-address-validation-fix",
+  "version": "7.0.10-address-validation-fix",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -64,7 +64,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.0.2",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "2.10.1-RC.1",
+    "@hmcts/media-viewer": "3.0.2",
     "@ngrx/effects": "^11.1.1",
     "@ngrx/store": "^15.2.1",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
@@ -74,6 +74,7 @@
     "govuk-elements-sass": "^3.1.2",
     "govuk-frontend": "^4.2.0",
     "json-server": "^0.15.1",
+    "lz-string": "^1.5.0",
     "marked": "^0.7.0",
     "mem": "^6.0.0",
     "minimist": "1.2.3",
