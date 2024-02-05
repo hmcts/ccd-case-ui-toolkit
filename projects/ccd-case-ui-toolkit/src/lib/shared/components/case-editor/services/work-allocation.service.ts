@@ -4,7 +4,7 @@ import { catchError, map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../../app.config';
 import { TaskSearchParameter, WAFeatureConfig } from '../../../domain';
 import { UserDetails } from '../../../domain/user/user-details.model';
-import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
+import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { AlertService, HttpErrorService, HttpService, SessionStorageService } from '../../../services';
 
@@ -222,7 +222,7 @@ export class WorkAllocationService {
  /**
   * Call the API to get a task
   */
- public getTask(taskId: string): Observable<TaskRespone> {
+ public getTask(taskId: string): Observable<TaskResponse> {
   if (!this.isWAEnabled()) {
     return of({task: null});
   }

@@ -139,7 +139,7 @@ export class AlertService {
     return message;
   }
 
-  public setPreserveAlerts(preserve: boolean, urlInfo?: string[]) {
+  public setPreserveAlerts(preserve: boolean, urlInfo?: string[]): void {
     // if there is no url setting then just preserve the messages
     if (!urlInfo) {
       this.preserveAlerts = preserve;
@@ -175,7 +175,7 @@ export class AlertService {
   }
 
   // TODO: Remove
-  public push(msgObject) {
+  public push(msgObject): void {
     this.message = msgObject.message;
     this.level = msgObject.level;
 

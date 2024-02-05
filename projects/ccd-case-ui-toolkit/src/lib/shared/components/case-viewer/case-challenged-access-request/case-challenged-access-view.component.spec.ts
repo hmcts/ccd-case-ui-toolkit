@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { AlertModule } from '../../../../components/banners/alert';
-import { CaseView, ChallengedAccessRequest } from '../../../domain';
+import { CaseView, ChallengedAccessRequest, RoleAssignmentResponse } from '../../../domain';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier } from '../../case-editor';
 import { CasesService } from '../../case-editor/services/cases.service';
@@ -31,13 +31,17 @@ describe('CaseChallengedAccessRequestComponent', () => {
         cid: caseId
       }
     }
-  };
+  } as unknown as ActivatedRoute;
   let router: Router;
   let location: Location;
   beforeEach(waitForAsync(() => {
+    const roleAssignmentResponse: RoleAssignmentResponse = {
+      roleRequest: null,
+      requestedRoles: []
+    };
     casesService = createSpyObj<CasesService>('casesService', ['createChallengedAccessRequest']);
     casesNotifier = createSpyObj<CaseNotifier>('caseNotifier', ['fetchAndRefresh']);
-    casesService.createChallengedAccessRequest.and.returnValue(of(true));
+    casesService.createChallengedAccessRequest.and.returnValue(of(roleAssignmentResponse));
     casesNotifier.fetchAndRefresh.and.returnValue(of(new CaseView()));
     TestBed.configureTestingModule({
       imports: [

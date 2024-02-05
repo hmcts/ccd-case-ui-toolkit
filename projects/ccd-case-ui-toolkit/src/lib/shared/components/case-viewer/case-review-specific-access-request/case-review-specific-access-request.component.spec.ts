@@ -86,7 +86,7 @@ describe('CaseSpecificAccessRequestComponent', () => {
         },
       },
     },
-  };
+  } as unknown as ActivatedRoute;
   const mockActivatedRoute = new MockActivatedRoute();
   const mockAppConfig = createSpyObj('AbstractAppConfig', [
     'getAccessManagementMode',

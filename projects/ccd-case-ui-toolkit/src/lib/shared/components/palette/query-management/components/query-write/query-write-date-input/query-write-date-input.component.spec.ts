@@ -53,7 +53,7 @@ describe('QueryWriteDateInputComponent', () => {
   describe('updateDate', () => {
     it('should invoke onChange and onTouched when updateDate is called with a valid date input', () => {
       // @ts-expect-error - private method
-      const onChangeSpy = spyOn(component, 'onChange');
+      spyOn(component, 'onChange');
       // @ts-expect-error - private method
       const onTouchedSpy = spyOn(component, 'onTouched');
       component.day = 7;
@@ -62,13 +62,13 @@ describe('QueryWriteDateInputComponent', () => {
 
       component.updateDate();
 
-      expect(onChangeSpy).toHaveBeenCalledWith(new Date(2023, 5, 7));
+      expect(component['onChange']).toHaveBeenCalledWith(new Date(2023, 5, 7));
       expect(onTouchedSpy).toHaveBeenCalled();
     });
 
     it('should invoke onChange with null when updateDate is called with an invalid date input', () => {
       // @ts-expect-error - private method
-      const onChangeSpy = spyOn(component, 'onChange');
+      spyOn(component, 'onChange');
       // @ts-expect-error - private method
       const onTouchedSpy = spyOn(component, 'onTouched');
       component.day = 35;
@@ -77,7 +77,7 @@ describe('QueryWriteDateInputComponent', () => {
 
       component.updateDate();
 
-      expect(onChangeSpy).toHaveBeenCalledWith(null);
+      expect(component['onChange']).toHaveBeenCalledWith(null);
       expect(onTouchedSpy).toHaveBeenCalled();
     });
   });

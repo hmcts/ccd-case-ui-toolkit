@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { AlertModule } from '../../../../components/banners/alert';
+import { RoleAssignmentResponse } from '../../../domain';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier } from '../../case-editor';
 import { CasesService } from '../../case-editor/services/cases.service';
@@ -36,8 +37,12 @@ describe('CaseSpecificAccessRequestComponent', () => {
   let location: Location;
 
   beforeEach(waitForAsync(() => {
+    const roleAssignmentResponse: RoleAssignmentResponse = {
+      roleRequest: null,
+      requestedRoles: []
+    };
     casesService = createSpyObj<CasesService>('casesService', ['createSpecificAccessRequest']);
-    casesService.createSpecificAccessRequest.and.returnValue(of(true));
+    casesService.createSpecificAccessRequest.and.returnValue(of(roleAssignmentResponse));
     TestBed.configureTestingModule({
       declarations: [CaseSpecificAccessRequestComponent, ErrorMessageComponent, MockRpxTranslatePipe,
         StubComponent],

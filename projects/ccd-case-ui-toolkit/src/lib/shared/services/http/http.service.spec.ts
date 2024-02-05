@@ -114,7 +114,7 @@ describe('HttpService', () => {
 
       httpService.get(URL, options);
 
-      const headers = httpMock.get.calls.mostRecent().args[1].headers;
+      const headers = httpMock.get.calls.mostRecent().args[1].headers as HttpHeaders;
       expect(headers.get('Content-Type')).toEqual(CONTENT_TYPE_HEADER_VALUE);
       expect(headers.get('Accept')).toEqual(ACCEPT_HEADER_VALUE);
     }));
@@ -140,7 +140,7 @@ describe('HttpService', () => {
 
       httpService.get(URL, options);
 
-      const headers = httpMock.get.calls.mostRecent().args[1].headers;
+      const headers = httpMock.get.calls.mostRecent().args[1].headers as HttpHeaders;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
     }));
@@ -220,7 +220,7 @@ describe('HttpService', () => {
 
       httpService.post(URL, BODY, options);
 
-      const headers = httpMock.post.calls.mostRecent().args[2].headers;
+      const headers = httpMock.post.calls.mostRecent().args[2].headers as HttpHeaders;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
     }));
@@ -284,7 +284,7 @@ describe('HttpService', () => {
 
       httpService.put(URL, BODY, options);
 
-      const headers = httpMock.put.calls.mostRecent().args[2].headers;
+      const headers = httpMock.put.calls.mostRecent().args[2].headers as HttpHeaders;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
     }));
@@ -348,7 +348,7 @@ describe('HttpService', () => {
 
       httpService.delete(URL, options);
 
-      const headers = httpMock.delete.calls.mostRecent().args[1].headers;
+      const headers = httpMock.delete.calls.mostRecent().args[1].headers as HttpHeaders;
       expect(headers.get('Content-Type')).toEqual('application/json');
       expect(headers.get('Accept')).toEqual('application/json');
     }));

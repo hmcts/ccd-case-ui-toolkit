@@ -1,3 +1,4 @@
+import { of } from 'rxjs';
 import { CaseField, CaseTab, CaseView } from '../../../domain';
 import { CaseNotifier } from './case.notifier';
 import { CasesService } from './cases.service';
@@ -74,7 +75,7 @@ describe('setBasicFields', () => {
 
   xit ('should call getCaseV2 on refresh', () => {
     const csv: jasmine.SpyObj<CasesService> = jasmine.createSpyObj<CasesService>('CasesService', ['getCaseViewV2']);
-    csv.getCaseViewV2.and.returnValue(CASE_VIEW_2);
+    csv.getCaseViewV2.and.returnValue(of(CASE_VIEW_2));
     const cNote = new CaseNotifier(csv);
     cNote.fetchAndRefresh('1');
     expect(csv.getCaseViewV2).toHaveBeenCalled();

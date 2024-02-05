@@ -44,7 +44,7 @@ describe('LinkCasesToTableComponent', () => {
     caseId: '1682374819203471',
     linkedCases: mocklinkedCases,
     getAllLinkedCaseInformation() { },
-    getCaseName() { },
+    getCaseName(): string { return 'Case Name'; },
     jurisdictionsResponse: [
       {
         id: 'SSCS',

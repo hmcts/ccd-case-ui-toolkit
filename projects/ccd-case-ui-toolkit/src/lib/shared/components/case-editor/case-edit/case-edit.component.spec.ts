@@ -863,7 +863,7 @@ describe('CaseEditComponent', () => {
 
         it('should check page is not refreshed', () => {
           mockSessionStorageService.getItem.and.returnValue(component.initialUrl = null);
-          mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = false);
+          mockSessionStorageService.getItem.and.returnValue((component.isPageRefreshed = false).toString());
 
           fixture.detectChanges();
           expect(component.checkPageRefresh()).toBe(false);
@@ -871,7 +871,7 @@ describe('CaseEditComponent', () => {
 
         it('should check page is refreshed', () => {
           mockSessionStorageService.getItem.and.returnValue(component.initialUrl = 'test');
-          mockSessionStorageService.getItem.and.returnValue(component.isPageRefreshed = true);
+          mockSessionStorageService.getItem.and.returnValue((component.isPageRefreshed = true).toString());
 
           fixture.detectChanges();
           expect(component.checkPageRefresh()).toBe(true);

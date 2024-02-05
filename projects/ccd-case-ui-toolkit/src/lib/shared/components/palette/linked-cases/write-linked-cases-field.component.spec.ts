@@ -185,7 +185,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     linkedCases,
     caseFieldValue: linkedCases,
     getAllLinkedCaseInformation() { },
-    getCaseName() { }
+    getCaseName(): string { return 'Case name'; }
   };
 
   const linkCaseReasons: LovRefDataByServiceModel = {
@@ -285,7 +285,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     fixture = TestBed.createComponent(WriteLinkedCasesFieldComponent);
     casesService.getCaseViewV2.and.returnValue(of(caseInfo));
     component = fixture.componentInstance;
-    spyOn(caseEditPageComponent, 'getCaseId').and.returnValue(of('1111222233334444'));
+    spyOn(caseEditPageComponent, 'getCaseId').and.returnValue('1111222233334444');
     spyOn(caseEditDataService, 'clearFormValidationErrors').and.callThrough();
     component.formGroup = FORM_GROUP;
     fixture.detectChanges();
@@ -298,7 +298,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
   });
 
   it('should initialise get OrgService', () => {
-   spyOn(component, 'getLinkedCaseReasons').and.returnValue(of([]));
+    spyOn(component, 'getLinkedCaseReasons');
     component.getOrgService();
     expect(component.getLinkedCaseReasons).toHaveBeenCalled();
   });
@@ -330,7 +330,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
 
   it('should validate linked cases state emitter when navigate to next page is true', () => {
     spyOn(component, 'proceedToNextPage');
-    spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
+    linkedCasesService.isLinkedCasesEventTrigger = true;
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     const linkedCasesState: LinkedCasesState = {
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
@@ -343,12 +343,12 @@ describe('WriteLinkedCasesFieldComponent', () => {
 
   it('should validate linked cases state emitter when navigate to next page is false', () => {
     spyOn(component, 'proceedToNextPage');
-    spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
+    linkedCasesService.isLinkedCasesEventTrigger = true;
     spyOn(caseEditDataService, 'addFormValidationError').and.callThrough();
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     const linkedCasesState: LinkedCasesState = {
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
-      errorMessages: [{ title: 'Error title', description: 'Error descriptiom' }],
+      errorMessages: [{ title: 'Error title', description: 'Error description' }],
       navigateToNextPage: false
     };
     component.onLinkedCasesStateEmitted(linkedCasesState);
