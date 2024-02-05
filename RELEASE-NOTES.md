@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.10-welsh-translation-fixes
+**EUI-9146/EUI-9129/EUI-9164** Re-tag for re-release of fixes, following merge conflict resolution with latest from `master`
+
 ### Version 7.0.7-welsh-translation-fixes
 **EUI-9146** Fix "View case flags" link in banner to work when the Case Flags tab label is translated to Welsh
 **EUI-9129** Fix conditional display of "Event summary" and "Event description" fields to be dependent solely on the value of `show_event_notes` as set for a given case event via a CCD Definition file
