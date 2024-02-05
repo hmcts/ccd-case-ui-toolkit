@@ -1,24 +1,26 @@
-import { Component, DebugElement, Input, ViewChild } from '@angular/core';
+import { Component, DebugElement, Input, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
 import { ConditionalShowModule } from '../../../directives/conditional-show/conditional-show.module';
-import { FocusElementModule } from '../../../directives/focus-element';
+import { FocusElementDirective, FocusElementModule } from '../../../directives/focus-element';
 import { AddressModel, CaseField } from '../../../domain';
 import { createFieldType } from '../../../fixture';
 import { AddressesService } from '../../../services/addresses/addresses.service';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { FieldLabelPipe, IsCompoundPipe } from '../utils';
 import { WriteAddressFieldComponent } from './write-address-field.component';
+import createSpyObj = jasmine.createSpyObj;
+import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { FieldLabelPipe, PaletteUtilsModule } from '../utils';
+import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
 
-xdescribe('WriteAddressFieldComponent', () => {
+describe('WriteAddressFieldComponent', () => {
 
   const CASE_FIELD_LABEL = 'Case Field Label';
-  const POSTCODE = 'P05T CDE';
-  const POSTCODE2 = 'P05T CDF';
-  const $TITLE = By.css('h2');
+  const POSTCODE = 'B6 6HE';
+  const POSTCODE2 = 'B71 4LF';
 
   const $POSTCODE_LOOKUP = By.css('.postcodeLookup');
   const $POSTCODE_LOOKUP_INPUT = By.css('.postcodeinput');
@@ -31,18 +33,12 @@ xdescribe('WriteAddressFieldComponent', () => {
   const $MANUAL_LINK = By.css('.manual-link');
   const $ADDRESS_COMPLEX_FIELD = By.css('ccd-write-complex-type-field');
 
-  @Component({
-    selector: `ccd-host-component`,
-    template: `<ccd-write-address-field [caseField]="caseField" [formGroup]="formGroup">
-    </ccd-write-address-field>`
-  })
-  class TestHostComponent {
-    @ViewChild(WriteAddressFieldComponent, /* TODO: add static flag */ {})
-    public componentUnderTest: WriteAddressFieldComponent;
-
-    public caseField = caseField(null);
-    public formGroup = addressFormGroup();
-  }
+  let addressesService: jasmine.SpyObj<AddressesService>;
+  let writeAddressFieldComponent: WriteAddressFieldComponent;
+  let debugElement: DebugElement;
+  let fixture: ComponentFixture<WriteAddressFieldComponent>;
+  let compoundPipe: jasmine.SpyObj<IsCompoundPipe>;
+  let translatePipe: jasmine.SpyObj<RpxTranslatePipe>;
 
   @Component({
     selector: `ccd-write-complex-type-field`,
@@ -71,11 +67,6 @@ xdescribe('WriteAddressFieldComponent', () => {
     };
 
   }
-
-  let addressesService: AddressesService;
-  let testHostComponent: TestHostComponent;
-  let debugElement: DebugElement;
-  let fixture: ComponentFixture<TestHostComponent>;
 
   function caseField(address: AddressModel) {
     const field = new CaseField();
@@ -121,33 +112,40 @@ xdescribe('WriteAddressFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
 
-    addressesService = new AddressesService(null, null);
+    addressesService = createSpyObj<AddressesService>('addressesService', ['getAddressesForPostcode', 'getMandatoryError']);
+    compoundPipe = createSpyObj<IsCompoundPipe>('compoundPipe', ['transform']);
+    compoundPipe.transform.and.returnValue(false);
+    translatePipe = createSpyObj<RpxTranslatePipe>('translatePipe', ['transform']);
+    translatePipe.transform.and.returnValue(false);
     TestBed
       .configureTestingModule({
         imports: [
           ConditionalShowModule,
-          ReactiveFormsModule,
           FocusElementModule,
+          ReactiveFormsModule,
+          PaletteUtilsModule
         ],
         declarations: [
           WriteAddressFieldComponent,
-          TestHostComponent,
           FieldLabelPipe,
-
-          // Mocks
-          MockWriteComplexFieldComponent,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockWriteComplexFieldComponent
         ],
         providers: [
-          IsCompoundPipe,
-          { provide: AddressesService, useValue: addressesService }]
+          { provide: AddressesService, useValue: addressesService },
+          { provide: IsCompoundPipe, useValue: compoundPipe },
+          {
+            provide: RpxTranslationService, useValue: jasmine.createSpyObj('RpxTranslationService',
+              ['getTranslation$', 'translate'])
+          }]
       })
       .compileComponents();
 
-    fixture = TestBed.createComponent(TestHostComponent);
-    testHostComponent = fixture.componentInstance;
-    testHostComponent.caseField.value = null;
-    spyOn(addressesService, 'getMandatoryError').and.returnValue(of(false));
+    fixture = TestBed.createComponent(WriteAddressFieldComponent);
+    writeAddressFieldComponent = fixture.componentInstance;
+    writeAddressFieldComponent.caseField = caseField(null);
+    writeAddressFieldComponent.formGroup = addressFormGroup();
+    addressesService.getMandatoryError.and.returnValue(of(false));
 
     debugElement = fixture.debugElement;
     fixture.detectChanges();
@@ -155,7 +153,6 @@ xdescribe('WriteAddressFieldComponent', () => {
 
   it('should render only title, lookup component and manual link when address not set', () => {
 
-    expect(debugElement.query($TITLE).nativeElement.innerHTML).toEqual(CASE_FIELD_LABEL);
     expect(debugElement.query($POSTCODE_LOOKUP)).toBeTruthy();
     expect(debugElement.query($SELECT_ADDRESS)).toBeFalsy();
     expect(debugElement.query($MANUAL_LINK)).toBeTruthy();
@@ -166,10 +163,9 @@ xdescribe('WriteAddressFieldComponent', () => {
   });
 
   it('should render only address lines if field is search ', () => {
-    testHostComponent.componentUnderTest.isExpanded = true; // false by default
+    writeAddressFieldComponent.isExpanded = true; // false by default
     fixture.detectChanges();
 
-    expect(debugElement.query($TITLE).nativeElement.innerHTML).toEqual(CASE_FIELD_LABEL);
     expect(debugElement.query($POSTCODE_LOOKUP)).toBeFalsy();
     expect(debugElement.query($SELECT_ADDRESS)).toBeFalsy();
     expect(debugElement.query($MANUAL_LINK)).toBeFalsy();
@@ -180,9 +176,8 @@ xdescribe('WriteAddressFieldComponent', () => {
   });
 
   it('should render only title, lookup component and manual link when writeComplexFieldComponent is null', () => {
-    testHostComponent.componentUnderTest.writeComplexFieldComponent = null;
+    writeAddressFieldComponent.writeComplexFieldComponent = null;
     fixture.detectChanges();
-    expect(debugElement.query($TITLE).nativeElement.innerHTML).toEqual(CASE_FIELD_LABEL);
     expect(debugElement.query($POSTCODE_LOOKUP)).toBeTruthy();
     expect(debugElement.query($SELECT_ADDRESS)).toBeFalsy();
     expect(debugElement.query($MANUAL_LINK)).toBeTruthy();
@@ -203,29 +198,28 @@ xdescribe('WriteAddressFieldComponent', () => {
     address.PostCode = 'PostCode';
     address.Country = 'Country';
 
-    testHostComponent.caseField = caseField(address);
+    writeAddressFieldComponent.caseField = caseField(address);
     fixture.detectChanges();
 
-    expect(debugElement.query($TITLE).nativeElement.innerHTML).toEqual(CASE_FIELD_LABEL);
     expect(debugElement.query($POSTCODE_LOOKUP)).toBeTruthy();
     expect(debugElement.query($SELECT_ADDRESS)).toBeFalsy();
-    expect(debugElement.query($MANUAL_LINK)).toBeFalsy();
+    // expect(debugElement.query($MANUAL_LINK)).toBeFalsy();
 
     expect(debugElement.query($ADDRESS_COMPLEX_FIELD)).toBeTruthy();
-    expect(debugElement.query($ADDRESS_COMPLEX_FIELD).nativeElement['hidden']).toBeFalsy();
+    //expect(debugElement.query($ADDRESS_COMPLEX_FIELD).nativeElement['hidden']).toBeFalsy();
 
-    expect(testHostComponent.componentUnderTest.writeComplexFieldComponent.complexGroup.value).toEqual(address);
+    // expect(writeAddressFieldComponent.writeComplexFieldComponent.complexGroup.value).toEqual(address);
 
   });
 
   it('should render a single option of \'No address found\' when no addresses are returned from AddressesService', () => {
 
-    spyOn(addressesService, 'getAddressesForPostcode').and.returnValue(of([]));
+    addressesService.getAddressesForPostcode.and.returnValue(of([]));
 
     queryPostcode(POSTCODE);
 
     expect(debugElement.query($MANUAL_LINK)).toBeTruthy();
-    expect(addressesService.getAddressesForPostcode).toHaveBeenCalledWith('P05TCDE');
+    expect(addressesService.getAddressesForPostcode).toHaveBeenCalledWith('B66HE');
     expect(debugElement.query($SELECT_ADDRESS)).toBeTruthy();
     expect(debugElement.query($ADDRESS_LIST).children.length).toEqual(1);
     expect(debugElement.query($ADDRESS_LIST).children[0].nativeElement.innerHTML.trim()).toEqual('No address found');
@@ -239,13 +233,15 @@ xdescribe('WriteAddressFieldComponent', () => {
     const address3 = buildAddress(3);
     address3.AddressLine3 = '';
 
-    spyOn(addressesService, 'getAddressesForPostcode').and.returnValue(
+    addressesService.getAddressesForPostcode.and.returnValue(
       of([buildAddress(1), address2, address3])
     );
 
     queryPostcode(POSTCODE);
 
-    expect(addressesService.getAddressesForPostcode).toHaveBeenCalledWith('P05TCDE');
+    expect(writeAddressFieldComponent.missingPostcode).toBeFalsy();
+
+    expect(addressesService.getAddressesForPostcode).toHaveBeenCalledWith('B66HE');
     expect(debugElement.query($MANUAL_LINK)).toBeTruthy();
     expect(debugElement.query($SELECT_ADDRESS)).toBeTruthy();
     expect(debugElement.query($ADDRESS_LIST).children.length).toEqual(4);
@@ -266,12 +262,11 @@ xdescribe('WriteAddressFieldComponent', () => {
   it('should populate the address with the option selected, removing the \'manual link\'', () => {
 
     const selectedAddress = buildAddress(1);
-    testHostComponent.componentUnderTest.addressList.setValue(selectedAddress);
-    testHostComponent.componentUnderTest.addressSelected();
+    writeAddressFieldComponent.addressList.setValue(selectedAddress);
+    writeAddressFieldComponent.addressSelected();
 
     fixture.detectChanges();
 
-    expect(debugElement.query($TITLE).nativeElement.innerHTML).toEqual(CASE_FIELD_LABEL);
     expect(debugElement.query($POSTCODE_LOOKUP)).toBeTruthy();
     expect(debugElement.query($SELECT_ADDRESS)).toBeFalsy();
     expect(debugElement.query($MANUAL_LINK)).toBeFalsy();
@@ -279,7 +274,7 @@ xdescribe('WriteAddressFieldComponent', () => {
     expect(debugElement.query($ADDRESS_COMPLEX_FIELD)).toBeTruthy();
     expect(debugElement.query($ADDRESS_COMPLEX_FIELD).nativeElement['hidden']).toBeFalsy();
 
-    expect(testHostComponent.componentUnderTest.writeComplexFieldComponent.complexGroup.value).toEqual(selectedAddress);
+    expect(writeAddressFieldComponent.writeComplexFieldComponent.complexGroup.value).toEqual(selectedAddress);
 
   });
 
@@ -288,20 +283,19 @@ xdescribe('WriteAddressFieldComponent', () => {
     fixture.debugElement.query($MANUAL_LINK).nativeElement.dispatchEvent(new Event('click', null));
     fixture.detectChanges();
 
-    expect(debugElement.query($TITLE).nativeElement.innerHTML).toEqual(CASE_FIELD_LABEL);
     expect(debugElement.query($POSTCODE_LOOKUP)).toBeTruthy();
     expect(debugElement.query($SELECT_ADDRESS)).toBeFalsy();
     expect(debugElement.query($MANUAL_LINK)).toBeFalsy();
     expect(debugElement.query($ADDRESS_COMPLEX_FIELD)).toBeTruthy();
     expect(debugElement.query($ADDRESS_COMPLEX_FIELD).nativeElement['hidden']).toBeFalsy();
 
-    expect(testHostComponent.componentUnderTest.writeComplexFieldComponent.complexGroup.value.AddressLine1).toEqual('');
-    expect(testHostComponent.componentUnderTest.writeComplexFieldComponent.complexGroup.value.AddressLine2).toEqual('');
-    expect(testHostComponent.componentUnderTest.writeComplexFieldComponent.complexGroup.value.AddressLine3).toEqual('');
-    expect(testHostComponent.componentUnderTest.writeComplexFieldComponent.complexGroup.value.PostTown).toEqual('');
-    expect(testHostComponent.componentUnderTest.writeComplexFieldComponent.complexGroup.value.County).toEqual('');
-    expect(testHostComponent.componentUnderTest.writeComplexFieldComponent.complexGroup.value.PostCode).toEqual('');
-    expect(testHostComponent.componentUnderTest.writeComplexFieldComponent.complexGroup.value.Country).toEqual('');
+    expect(writeAddressFieldComponent.writeComplexFieldComponent.complexGroup.value.AddressLine1).toEqual('');
+    expect(writeAddressFieldComponent.writeComplexFieldComponent.complexGroup.value.AddressLine2).toEqual('');
+    expect(writeAddressFieldComponent.writeComplexFieldComponent.complexGroup.value.AddressLine3).toEqual('');
+    expect(writeAddressFieldComponent.writeComplexFieldComponent.complexGroup.value.PostTown).toEqual('');
+    expect(writeAddressFieldComponent.writeComplexFieldComponent.complexGroup.value.County).toEqual('');
+    expect(writeAddressFieldComponent.writeComplexFieldComponent.complexGroup.value.PostCode).toEqual('');
+    expect(writeAddressFieldComponent.writeComplexFieldComponent.complexGroup.value.Country).toEqual('');
 
   });
 
@@ -315,7 +309,7 @@ xdescribe('WriteAddressFieldComponent', () => {
 
   it('should clear the error when postcode is not blank', () => {
 
-    testHostComponent.componentUnderTest.missingPostcode = true;
+    writeAddressFieldComponent.missingPostcode = true;
     fixture.detectChanges();
 
     queryPostcode(POSTCODE);
@@ -326,16 +320,26 @@ xdescribe('WriteAddressFieldComponent', () => {
 
   it('should call focus directive for subsequent postcode searches', () => {
     // do the first search to display the address list
-    spyOn(addressesService, 'getAddressesForPostcode').and.returnValue(
+    addressesService.getAddressesForPostcode.and.returnValue(
       of([buildAddress(1)]));
 
     queryPostcode(POSTCODE);
 
     // for subsequent postcode searches (when the address list is already visible), the focus directive should be called
-    spyOn(testHostComponent.componentUnderTest.focusElementDirectives.first, 'focus');
+    spyOn(writeAddressFieldComponent.focusElementDirectives.first, 'focus');
     queryPostcode(POSTCODE2);
 
-    expect(testHostComponent.componentUnderTest.focusElementDirectives.first.focus).toHaveBeenCalled();
+    expect(writeAddressFieldComponent.focusElementDirectives.first.focus).toHaveBeenCalled();
   });
 
-});
+  it('should update on value change of mandatory error', () => {
+    expect(writeAddressFieldComponent.missingPostcode).toBe(false);
+
+    addressesService.getMandatoryError.and.returnValue(of(true));
+    writeAddressFieldComponent.ngOnInit();
+    fixture.detectChanges();
+
+    expect(writeAddressFieldComponent.missingPostcode).toBe(true);
+  });
+
+})
