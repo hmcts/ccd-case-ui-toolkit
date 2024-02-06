@@ -767,9 +767,9 @@ describe('FormValueService', () => {
       fieldType2.type = 'FixedRadioList';
       caseField2.field_type = fieldType2;
       caseField2.id = 'typeOfDocumentAttached';
-      caseField1.hidden = true;
-      caseField1.display_context = 'MANDATORY';
-      caseField2.retain_hidden_value = true;
+      caseField2.hidden = false;
+      caseField2.display_context = 'MANDATORY';
+      caseField2.retain_hidden_value = false;
 
       formValueService.removeUnnecessaryFields(data, [caseField1, caseField2]);
       const actual = {
@@ -1017,7 +1017,8 @@ describe('FormValueService', () => {
           } as FieldType,
           value: {
             a: 'Aa',
-            b: 'Bb'
+            b: 'Bb',
+            d: 'Dd'
           }
         } as CaseField,
         {
@@ -1070,7 +1071,9 @@ describe('FormValueService', () => {
         three: '3'
       });
       expect(data.hasOwnProperty('punctuation')).toBe(false);
-      expect(data.currency).toEqual({});
+      expect(data.currency).toEqual({
+        dollar: '$'
+      });
     });
   });
 });
