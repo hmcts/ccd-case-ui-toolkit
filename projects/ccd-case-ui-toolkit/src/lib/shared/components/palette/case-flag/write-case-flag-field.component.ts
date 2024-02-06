@@ -109,7 +109,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
     if (this.route.snapshot.data.eventTrigger) {
       // Get the HMCTSServiceId from supplementary data, if it exists (required for retrieving the available flag types in
-      // the first instance, only falling back on case type ID or jurisidiction if it's not present)
+      // the first instance, only falling back on case type ID or jurisdiction if it's not present)
       if (this.route.snapshot.data.eventTrigger.supplementary_data
         && this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId) {
         this.hmctsServiceId = this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId;
@@ -484,13 +484,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     const otherDesc = this.caseFlagParentFormGroup?.value['otherDescription'];
     const formValues = this.caseFlagParentFormGroup?.value;
     return {
-      name: this.flagName,
+      name: this.flagType?.name,
       name_cy: flagType?.name_cy,
-      // Currently, subTypeValue and subTypeKey are applicable only to language flag types
-      subTypeValue: langSearchTerm
-        ? langSearchTerm.value
-        : manualLangEntry
-          ? manualLangEntry
       // Currently, subTypeValue, subTypeValue_cy and subTypeKey are applicable only to language flag types
       subTypeValue: langSearchTerm && this.rpxTranslationService.language === 'en'
         ? langSearchTerm.value
@@ -508,7 +503,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         : null,
       otherDescription: flagType?.flagCode === this.otherFlagTypeCode &&
         otherDesc && this.rpxTranslationService.language === 'en'
-        ? otherDesc,
+        ? otherDesc
+          : null,
       otherDescription_cy: flagType?.flagCode === this.otherFlagTypeCode &&
         otherDesc && this.rpxTranslationService.language === 'cy'
         ? otherDesc
