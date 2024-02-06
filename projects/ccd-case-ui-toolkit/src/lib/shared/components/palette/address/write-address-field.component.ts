@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AddressValidationConstants } from '../../../commons/address-validation-constants';
 import { FocusElementDirective } from '../../../directives/focus-element';
 import { AddressModel } from '../../../domain/addresses/address.model';
 import { AddressesService } from '../../../services/addresses/addresses.service';
@@ -62,7 +63,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     if (!this.postcode.value) {
       this.errorMessage = WriteAddressFieldComponent.REQUIRED_ERROR_MESSAGE;
       this.missingPostcode = true;
-    } else if (!this.postcode.value.match(/^(([A-Za-z]{1,2}\d[A-Za-z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?\d[A-Za-z]{2}|BFPO ?\d{1,4}|(KY\d|MSR|VG|AI)[ -]?\d{4}|[A-Za-z]{2} ?\d{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)$/)) {
+    } else if (!this.postcode.value.match(AddressValidationConstants.REGEX_POSTCODE)) {
       this.errorMessage = WriteAddressFieldComponent.INVALID_ERROR_MESSAGE;
       this.missingPostcode = true;
     } else {

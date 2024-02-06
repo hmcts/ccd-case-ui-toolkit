@@ -22,6 +22,7 @@ describe('WriteAddressFieldComponent', () => {
   const CASE_FIELD_LABEL = 'Case Field Label';
   const POSTCODE = 'B6 6HE';
   const POSTCODE2 = 'B71 4LF';
+  const INVALID_POSTCODE = '1234567890@';
 
   const $POSTCODE_LOOKUP = By.css('.postcodeLookup');
   const $POSTCODE_LOOKUP_INPUT = By.css('.postcodeinput');
@@ -341,6 +342,14 @@ describe('WriteAddressFieldComponent', () => {
     fixture.detectChanges();
 
     expect(writeAddressFieldComponent.missingPostcode).toBe(true);
+  });
+
+  it('should render an error when postcode is invalid', () => {
+
+    queryPostcode(INVALID_POSTCODE);
+
+    expect(debugElement.query($POSTCODE_LOOKUP_ERROR_MESSAGE)).toBeTruthy();
+    expect(writeAddressFieldComponent.missingPostcode).toBeTruthy();
   });
 
 })
