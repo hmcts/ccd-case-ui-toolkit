@@ -1,6 +1,6 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -156,9 +156,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     return this.caseEdit.first();
   }
 
-  public currentPageIsNotValid(): boolean {
-    return !this.pageValidationService.isPageValid(this.currentPage, this.editForm) ||
-      (this.isLinkedCasesJourney() && !this.isLinkedCasesJourneyAtFinalStep);
+  public currentPageIsValid(): boolean {
+    return this.pageValidationService.isPageValid(this.currentPage, this.editForm) &&
+      (!this.isLinkedCasesJourney() || (this.isLinkedCasesJourney() && this.isLinkedCasesJourneyAtFinalStep));
   }
 
   public isLinkedCasesJourney(): boolean {
@@ -180,10 +180,22 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     CaseEditPageComponent.setFocusToTop();
   }
 
+  public navigateToErrorElement(elementId: string): void {
+    /* istanbul ignore else */
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      /* istanbul ignore else */
+      if (htmlElement) {
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        htmlElement.focus();
+      }
+    }
+  }
+
   // Adding validation message to show it as Error Summary
   public generateErrorMessage(fields: CaseField[], container?: AbstractControl, path?: string): void {
     const group: AbstractControl = container || this.editForm.controls['data'];
-    fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+    fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield) )
       .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path))
       .forEach(casefield => {
         const fieldElement = FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])
@@ -207,16 +219,21 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             if (FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])) {
               fieldElement['component'].errors = { required: true };
             }
-          } else if (fieldElement.hasError('pattern')) {
+          }
+          if (fieldElement.hasError('pattern')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is not valid`, label });
             fieldElement.markAsDirty();
-          } else if (fieldElement.hasError('minlength')) {
+          }
+          if (fieldElement.hasError('minlength')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is below the minimum length`, label });
             fieldElement.markAsDirty();
-          } else if (fieldElement.hasError('maxlength')) {
+          }
+          if (fieldElement.hasError('maxlength')) {
             this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% exceeds the maximum length`, label });
             fieldElement.markAsDirty();
-          } else if (fieldElement.invalid) {
+          }
+
+          if (fieldElement.invalid) {
             if (casefield.isComplex()) {
               this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
@@ -241,31 +258,35 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
                 message: `Please select Next to complete the ${action} of the ${action === 'update' ? 'selected ' : ''}case flag`
               });
             } else {
-              this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
-              fieldElement.markAsDirty();
+              if (!fieldElement.hasError('maxlength') && !fieldElement.hasError('minlength')
+                && !fieldElement.hasError('pattern') && !fieldElement.hasError('required')) {
+                console.log('What could be wrong again...');
+                this.getFormValidationErrors(fieldElement);
+                fieldElement.markAsDirty();
+              }
             }
           }
         }
       });
     CaseEditPageComponent.scrollToTop();
   }
-
-  public navigateToErrorElement(elementId: string): void {
-    /* istanbul ignore else */
-    if (elementId) {
-      const htmlElement = document.getElementById(elementId);
-      /* istanbul ignore else */
-      if (htmlElement) {
-        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        htmlElement.focus();
+  public getFormValidationErrors(form) {
+    let errMsg = '';
+   Object.keys(form).forEach(key => {
+      const controlErrors = form.errors;
+      if (controlErrors != null) {
+        Object.keys(controlErrors).forEach(keyError => {
+        return errMsg = `'KeyError: ' ${keyError} ', Err value: ', ${controlErrors[keyError]} ',  Label: ' ${form.caseField.label}`;
+        });
       }
-    }
-  }
+    });
+   return console.log(errMsg)
+}
 
   public submit(): void {
     this.caseEditDataService.clearFormValidationErrors();
-    console.log('Page submit event fired!')
-    if (this.currentPageIsNotValid()) {
+    console.log('Page submit event fired!');
+    if (!this.currentPageIsValid()) {
       // The generateErrorMessage method filters out the hidden fields.
       // The error message for LinkedCases journey will never get displayed because the
       // LinkedCases is configured with ComponentLauncher field as visible and caseLinks field as hidden.
@@ -274,12 +295,16 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         CaseEditPageComponent.scrollToTop();
       } else {
         this.generateErrorMessage(this.currentPage.case_fields);
+
       }
+      // newly added - 02/02
+     //this.generateErrorMessage(this.currentPage.case_fields);
+      console.log('Page error detected');
     }
 
-    if (!this.caseEdit.isSubmitting && !this.currentPageIsNotValid()) {
-      console.log('Case Edit Error', this.caseEdit.error);
-      if (this.caseEdit.validPageList.findIndex(page=> page.id === this.currentPage.id) === -1) {
+    if (!this.caseEdit.isSubmitting && this.currentPageIsValid()) {
+      console.log('this  page is submitting alright...');
+      if (this.caseEdit.validPageList.findIndex(page => page.id === this.currentPage.id) === -1) {
         this.caseEdit.validPageList.push(this.currentPage);
       }
       this.caseEdit.isSubmitting = true;
@@ -308,6 +333,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       // purposes)
       this.removeAllJudicialUserFormControls(this.currentPage, this.editForm);
     }
+    // newly added - 02/02
     CaseEditPageComponent.setFocusToTop();
   }
 
