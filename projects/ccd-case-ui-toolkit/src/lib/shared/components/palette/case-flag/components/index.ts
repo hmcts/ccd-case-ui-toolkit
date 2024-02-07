@@ -6,4 +6,6 @@ export * from './search-language-interpreter/search-language-interpreter.compone
 export * from './select-flag-location/select-flag-location.component';
 export * from './select-flag-type/select-flag-type.component';
 export * from './update-flag/update-flag.component';
-
+export * from './update-flag/update-flag-add-translation-form/update-flag-add-translation-form.component';
+export * from './case-flag-summary-list/case-flag-summary-list.component';
+export * from './confirm-flag-status/confirm-flag-status.component';

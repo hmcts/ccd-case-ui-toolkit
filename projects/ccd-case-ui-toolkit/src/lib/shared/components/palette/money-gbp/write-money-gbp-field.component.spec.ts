@@ -4,6 +4,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils';
 import { MoneyGbpInputComponent } from './money-gbp-input.component';
@@ -42,7 +43,8 @@ describe('WriteMoneyGbpFieldComponent', () => {
         declarations: [
           WriteMoneyGbpFieldComponent,
           MoneyGbpInputComponent,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: CaseFieldService, useValue: caseFieldService },
@@ -108,7 +110,8 @@ describe('WriteMoneyGbpFieldComponent with negative value', () => {
         declarations: [
           WriteMoneyGbpFieldComponent,
           MoneyGbpInputComponent,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: CaseFieldService, useValue: caseFieldService },
