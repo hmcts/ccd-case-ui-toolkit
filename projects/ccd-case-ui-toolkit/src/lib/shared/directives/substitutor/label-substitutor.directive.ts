@@ -1,12 +1,9 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+
 import { CaseField } from '../../domain/definition/case-field.model';
 import { FieldsUtils } from '../../services/fields/fields.utils';
 import { PlaceholderService } from './services/placeholder.service';
-import { CaseEventTrigger } from '../../domain';
-import { WizardPage } from '../../components/case-editor/domain/wizard-page.model';
-import { ShowCondition } from '../conditional-show';
-import { SessionStorageService } from '../../services';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**
@@ -18,16 +15,13 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   @Input() public contextFields: CaseField[] = [];
   @Input() public formGroup: FormGroup;
   @Input() public elementsToSubstitute: string[] = ['label', 'hint_text'];
-  @Input() public eventTrigger: CaseEventTrigger;
-  @Input() public triggeredFromEvent: boolean;
 
   private initialLabel: string;
   private initialHintText: string;
 
   constructor(
     private readonly fieldsUtils: FieldsUtils,
-    private readonly placeholderService: PlaceholderService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly placeholderService: PlaceholderService
   ) { }
 
   public ngOnInit(): void {
@@ -62,62 +56,10 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
   }
 
   private getReadOnlyAndFormFields(): object {
-    let hiddenFields;
-    let hiddenFieldValues: object;
-    const eventUrl = this.sessionStorageService.getItem('eventUrl');
     const formFields: object = this.getFormFieldsValuesIncludingDisabled();
-    if (eventUrl && Object.keys(formFields).length > 0 && this.eventTrigger) {
-      hiddenFields = this.listOfHiddenCaseFields(this.formGroup, this.eventTrigger);
-      hiddenFieldValues = this.getHiddenFieldFromEventTrigger(hiddenFields, this.eventTrigger.case_fields)
-      Object.keys(formFields).forEach(function(key) {
-        if (hiddenFieldValues.hasOwnProperty(key)) {
-          formFields[key] = hiddenFieldValues[key];
-        }
-      });
-    }
     // TODO: Delete following line when @Input contextFields is fixed - https://tools.hmcts.net/jira/browse/RDM-3504
     const uniqueContextFields: CaseField[] = this.removeDuplicates(this.contextFields);
     return this.fieldsUtils.mergeLabelCaseFieldsAndFormFields(uniqueContextFields, formFields);
-  }
-
-  private listOfHiddenCaseFields(form: FormGroup, eventTrigger: CaseEventTrigger): string[] {
-    const currentEventState = this.fieldsUtils.mergeCaseFieldsAndFormFields(eventTrigger.case_fields, form.getRawValue());
-    const hiddenCaseFieldsId: string[] = [];
-    eventTrigger.wizard_pages.forEach(wp => {
-      if (this.hasShowConditionPage(wp, currentEventState)) {
-        const condition = new ShowCondition(wp.show_condition);
-        if (this.isHidden(condition, currentEventState)) {
-          wp.wizard_page_fields.forEach(wpf => {
-            hiddenCaseFieldsId.push(wpf.case_field_id);
-          });
-        }
-      }
-    });
-    return hiddenCaseFieldsId;
-  }
-
-  private getHiddenFieldFromEventTrigger(hiddenFields, case_fields): object {
-    let commonFields = {};
-    for (const hiddenField of hiddenFields) {
-      for (const case_field of case_fields) {
-        if (hiddenField === case_field.id) {
-          commonFields[case_field.id] = case_field.value;
-        }
-      }
-    }
-    return commonFields;
-  }
-
-  private hasShowConditionPage(wizardPage: WizardPage, formFields: any): boolean {
-    return wizardPage.show_condition && formFields[this.getShowConditionKey(wizardPage.show_condition)];
-  }
-
-  private getShowConditionKey(showCondition: string): string {
-    return showCondition.split(/!=|=|CONTAINS/)[0];
-  }
-
-  private isHidden(condition: ShowCondition, formFields: any): boolean {
-    return !condition.match(formFields);
   }
 
   private removeDuplicates(original: CaseField[]): CaseField[] {

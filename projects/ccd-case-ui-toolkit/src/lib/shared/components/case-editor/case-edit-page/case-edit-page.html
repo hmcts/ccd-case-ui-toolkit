@@ -53,11 +53,11 @@
       <div *ngIf="currentPage.isMultiColumn()" class="grid-row">
         <div class="column-two-thirds rightBorderSeparator">
           <ccd-case-edit-form id='caseEditForm1' [fields]="currentPage.getCol1Fields()"
-                              [formGroup]="editForm.controls['data']" [caseFields]="caseFields" [eventTrigger]="eventTrigger"></ccd-case-edit-form>
+                              [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
         </div>
         <div class="column-one-third">
           <ccd-case-edit-form id='caseEditForm2' [fields]="currentPage.getCol2Fields()"
-                              [formGroup]="editForm.controls['data']" [caseFields]="caseFields" [eventTrigger]="eventTrigger"></ccd-case-edit-form>
+                              [formGroup]="editForm.controls['data']" [caseFields]="caseFields"></ccd-case-edit-form>
         </div>
       </div>
     </fieldset>
