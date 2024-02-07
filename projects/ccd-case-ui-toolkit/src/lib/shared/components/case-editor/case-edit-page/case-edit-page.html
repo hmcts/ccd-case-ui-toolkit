@@ -47,7 +47,6 @@
       <ccd-case-edit-form id='caseEditForm' *ngIf="!currentPage.isMultiColumn()" [fields]="currentPage.getCol1Fields()"
                           [formGroup]="editForm.controls['data']" [caseFields]="caseFields"
                           [pageChangeSubject]="pageChangeSubject"
-                          [eventTrigger]="eventTrigger"
                           (valuesChanged)="applyValuesChanged($event)"></ccd-case-edit-form>
       <!-- two columns -->
       <div *ngIf="currentPage.isMultiColumn()" class="grid-row">
