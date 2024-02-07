@@ -6,6 +6,7 @@ import { PlaceholderService } from './services/placeholder.service';
 import { CaseEventTrigger } from '../../domain';
 import { WizardPage } from '../../components/case-editor/domain/wizard-page.model';
 import { ShowCondition } from '../conditional-show';
+import { SessionStorageService } from '../../services';
 
 @Directive({ selector: '[ccdLabelSubstitutor]' })
 /**
@@ -25,7 +26,8 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   constructor(
     private readonly fieldsUtils: FieldsUtils,
-    private readonly placeholderService: PlaceholderService
+    private readonly placeholderService: PlaceholderService,
+    private readonly sessionStorageService: SessionStorageService
   ) { }
 
   public ngOnInit(): void {
@@ -61,11 +63,17 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
 
   private getReadOnlyAndFormFields(): object {
     let hiddenFields;
-    let hiddenFieldValues;
+    let hiddenFieldValues: object;
+    const eventUrl = this.sessionStorageService.getItem('eventUrl');
     const formFields: object = this.getFormFieldsValuesIncludingDisabled();
-    if (this.triggeredFromEvent) {
+    if (eventUrl && Object.keys(formFields).length > 0 && this.eventTrigger) {
       hiddenFields = this.listOfHiddenCaseFields(this.formGroup, this.eventTrigger);
       hiddenFieldValues = this.getHiddenFieldFromEventTrigger(hiddenFields, this.eventTrigger.case_fields)
+      Object.keys(formFields).forEach(function(key) {
+        if (hiddenFieldValues.hasOwnProperty(key)) {
+          formFields[key] = hiddenFieldValues[key];
+        }
+      });
     }
     // TODO: Delete following line when @Input contextFields is fixed - https://tools.hmcts.net/jira/browse/RDM-3504
     const uniqueContextFields: CaseField[] = this.removeDuplicates(this.contextFields);
@@ -88,12 +96,12 @@ export class LabelSubstitutorDirective implements OnInit, OnDestroy {
     return hiddenCaseFieldsId;
   }
 
-  private getHiddenFieldFromEventTrigger(hiddenFields, case_fields): any {
+  private getHiddenFieldFromEventTrigger(hiddenFields, case_fields): object {
     let commonFields = {};
-    for (const item1 of hiddenFields) {
-      for (const item2 of case_fields) {
-        if (item1 === item2.id) {
-          commonFields[item2.id] = item2.value;
+    for (const hiddenField of hiddenFields) {
+      for (const case_field of case_fields) {
+        if (hiddenField === case_field.id) {
+          commonFields[case_field.id] = case_field.value;
         }
       }
     }
