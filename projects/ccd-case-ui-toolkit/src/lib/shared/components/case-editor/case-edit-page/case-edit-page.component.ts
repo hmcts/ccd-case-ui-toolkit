@@ -234,9 +234,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           }
 
           if (fieldElement.invalid) {
-            if (casefield.isComplex()) {
+            if (casefield.isComplex) {
               this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
-            } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
+            } else if (casefield.isCollection && casefield.field_type.collection_field_type.type === 'Complex') {
               const fieldArray = fieldElement as FormArray;
               if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
                 id = `${fieldArray['component']['collItems'][0].prefix}`;

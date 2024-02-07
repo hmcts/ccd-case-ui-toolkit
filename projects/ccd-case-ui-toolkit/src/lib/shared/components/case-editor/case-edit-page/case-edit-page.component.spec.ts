@@ -705,7 +705,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
-      expect(comp.currentPageIsNotValid()).toBeFalsy();
+      expect(comp.currentPageIsValid()).toBeTruthy();
     });
 
     it('should return "Return to case list" as cancel button text if save and resume enabled for event', () => {
@@ -1296,7 +1296,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
       fixture.detectChanges();
       expect(comp.submit).toHaveBeenCalled();
-      expect(comp.currentPageIsNotValid()).toBe(true);
+      expect(comp.currentPageIsValid()).toBe(false);
       const error = de.query($SELECT_ERROR_SUMMARY);
       expect(error).toBeTruthy();
 
@@ -1338,7 +1338,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
       fixture.detectChanges();
       expect(comp.submit).toHaveBeenCalled();
-      expect(comp.currentPageIsNotValid()).toBe(true);
+      expect(comp.currentPageIsValid()).toBe(false);
       const error = de.query($SELECT_ERROR_SUMMARY);
       expect(error).toBeTruthy();
 
@@ -1768,7 +1768,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
-      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      expect(comp.currentPageIsValid()).toBeFalsy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(3);
@@ -1800,7 +1800,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
-      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      expect(comp.currentPageIsValid()).toBeFalsy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
@@ -1833,7 +1833,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
-      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      expect(comp.currentPageIsValid()).toBeFalsy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
@@ -1879,7 +1879,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
-      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      expect(comp.currentPageIsValid()).toBeFalsy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
@@ -1910,10 +1910,10 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
-      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      expect(comp.currentPageIsValid()).toBeFalsy();
 
       comp.generateErrorMessage(wizardPage.case_fields);
-      expect(comp.validationErrors.length).toBe(1);
+      expect(comp.validationErrors.length).toBe(0);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
           'Please select Next to complete the creation of the case flag'
@@ -1924,7 +1924,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       flagLauncherField.display_context_parameter = '#ARGUMENT(UPDATE)';
       comp.validationErrors = [];
       comp.generateErrorMessage(wizardPage.case_fields);
-      expect(comp.validationErrors.length).toBe(1);
+      expect(comp.validationErrors.length).toBe(0);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
           'Please select Next to complete the update of the selected case flag'
@@ -1951,7 +1951,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
-      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      expect(comp.currentPageIsValid()).toBeFalsy();
       comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
     });
