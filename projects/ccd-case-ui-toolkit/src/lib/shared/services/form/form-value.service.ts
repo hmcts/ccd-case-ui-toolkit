@@ -389,7 +389,7 @@ export class FormValueService {
    * @param clearNonCase Whether or not we should clear out non-case fields at the top level.
    */
   public removeUnnecessaryFields(data: object, caseFields: CaseField[], clearEmpty = false, clearNonCase = false,
-    fromPreviousPage = false, currentPageCaseFields = [], isCalledFromSubmit = false): void {
+    fromPreviousPage = false, currentPageCaseFields = []): void {
     if (data && caseFields && caseFields.length > 0) {
       // check if there is any data at the top level of the form that's not in the caseFields
       if (clearNonCase) {
@@ -400,13 +400,11 @@ export class FormValueService {
           // Retain anything that is readonly and not a label.
           continue;
         }
-        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.display_context !== 'HIDDEN_TEMP' && field.id !== 'caseLinks') {
+        if (field.hidden === true && field.display_context !== 'HIDDEN' && field.display_context !== 'HIDDEN_TEMP' && field.id !== 'caseLinks' && !field.retain_hidden_value) {
           // Delete anything that is hidden (that is NOT readonly), and that
           // hasn't had its display_context overridden to make it hidden.
           // in event submission check for field's retain_hidden_value defore deletion
-          if((isCalledFromSubmit && !field.retain_hidden_value) || !isCalledFromSubmit) {
-            delete data[field.id];
-          }
+          delete data[field.id];
         } else if (field.field_type) {
           switch (field.field_type.type) {
             case 'Label':
@@ -419,7 +417,7 @@ export class FormValueService {
               }
               break;
             case 'Complex':
-              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty, false, false, [], isCalledFromSubmit);
+              this.removeUnnecessaryFields(data[field.id], field.field_type.complex_fields, clearEmpty);
               // Also remove any optional complex objects that are completely empty.
               // EUI-4244: Ritesh's fix, passing true instead of clearEmpty.
               if (FormValueService.clearOptionalEmpty(true, data[field.id], field)) {
@@ -442,8 +440,8 @@ export class FormValueService {
                 if (field.field_type.collection_field_type.type === 'Complex') {
                   // Iterate through the elements and remove any unnecessary fields within.
                   for (const item of collection) {
-                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty, false, false, [], isCalledFromSubmit);
-                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, false, false, false, [], isCalledFromSubmit);
+                    this.removeUnnecessaryFields(item, field.field_type.collection_field_type.complex_fields, clearEmpty);
+                    this.removeUnnecessaryFields(item.value, field.field_type.collection_field_type.complex_fields, false);
                   }
                 }
               }
