@@ -252,8 +252,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             } else {
               if (!fieldElement.hasError('maxlength') && !fieldElement.hasError('minlength')
                 && !fieldElement.hasError('pattern') && !fieldElement.hasError('required')) {
-                console.log('What could be wrong again...');
-                this.getFormValidationErrors(fieldElement);
+                const xtraErrors = this.getFormValidationErrors(fieldElement);
+                console.log('What could be wrong again...', xtraErrors);
                 fieldElement.markAsDirty();
               }
             }
@@ -272,7 +272,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         });
       }
     });
-   return console.log(errMsg)
+   return errMsg
 }
 
   public submit(): void {
@@ -290,8 +290,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
       }
       // newly added - 02/02
-     //this.generateErrorMessage(this.currentPage.case_fields);
-      console.log('Page error detected');
+      console.log('Page is not Valid');
+      this.generateErrorMessage(this.currentPage.case_fields);
+      
     }
 
     if (!this.caseEdit.isSubmitting && this.currentPageIsValid()) {
