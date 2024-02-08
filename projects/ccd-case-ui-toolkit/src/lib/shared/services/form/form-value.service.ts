@@ -403,7 +403,6 @@ export class FormValueService {
         if (field.hidden === true && field.display_context !== 'HIDDEN' && field.display_context !== 'HIDDEN_TEMP' && field.id !== 'caseLinks' && !field.retain_hidden_value) {
           // Delete anything that is hidden (that is NOT readonly), and that
           // hasn't had its display_context overridden to make it hidden.
-          // in event submission check for field's retain_hidden_value defore deletion
           delete data[field.id];
         } else if (field.field_type) {
           switch (field.field_type.type) {
