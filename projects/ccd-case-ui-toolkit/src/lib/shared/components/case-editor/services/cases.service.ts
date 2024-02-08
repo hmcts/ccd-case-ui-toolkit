@@ -137,6 +137,11 @@ export class CasesService {
     console.info(`finalizeGetCaseViewWith finished for ${caseId}.`);
   }
 
+  public syncWait(seconds) {
+    const end = Date.now() + seconds * 1000;
+    while (Date.now() < end) continue;
+  }
+
   public getEventTrigger(caseTypeId: string,
     eventTriggerId: string,
     caseId?: string,

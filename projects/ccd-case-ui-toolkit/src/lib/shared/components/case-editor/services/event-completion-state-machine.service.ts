@@ -130,21 +130,9 @@ export class EventCompletionStateMachineService {
 
     const taskStr = context.sessionStorageService.getItem('taskToComplete');
     if (taskStr) {
-      // Task is in session storage
-      const task: Task = JSON.parse(taskStr);
-
-      // Task already assigned to current user, just complete task
-      context.workAllocationService.completeTask(task.id).subscribe(
-        response => {
-          // Emit event can be completed event
-          context.component.eventCanBeCompleted.emit(true);
-        },
-        error => {
-          // Emit event cannot be completed event
-          context.component.eventCanBeCompleted.emit(false);
-          context.alertService.error(error.message);
-          return throwError(error);
-        });
+      context.sessionStorageService.setItem('assignNeeded', 'false');
+      // just set event can be completed
+      context.component.eventCanBeCompleted.emit(true);
     } else {
       // Emit event cannot be completed event
       context.component.eventCanBeCompleted.emit(false);
@@ -165,21 +153,8 @@ export class EventCompletionStateMachineService {
     // Get task details
     const taskStr = context.sessionStorageService.getItem('taskToComplete');
     if (taskStr) {
-      // Task is in session storage
-      const task: Task = JSON.parse(taskStr);
-
-      // Assign and complete task
-      context.workAllocationService.assignAndCompleteTask(task.id).subscribe(
-        response => {
-          // Emit event can be completed event
-          context.component.eventCanBeCompleted.emit(true);
-        },
-        error => {
-          // Emit event cannot be completed event
-          context.component.eventCanBeCompleted.emit(false);
-          context.alertService.error(error.message);
-          return throwError(error);
-        });
+      context.sessionStorageService.setItem('assignNeeded', 'true');
+      context.component.eventCanBeCompleted.emit(true);
     } else {
       // Emit event cannot be completed event
       context.component.eventCanBeCompleted.emit(false);
