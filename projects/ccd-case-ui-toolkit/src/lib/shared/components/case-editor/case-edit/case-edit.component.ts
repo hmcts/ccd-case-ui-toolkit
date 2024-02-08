@@ -434,10 +434,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       .subscribe(
         () => {
           this.finishEventCompletionLogic(eventResponse);
-          /* NOTE: Uncomment this to test event confirmation page display of error
-            Replicates lines 458-459
-          this.alertService.setPreserveAlerts(true);
-          this.alertService.error({phrase: 'The associated task for this event failed to complete automatically. Please complete the task manually in the Tasks tab on the case'}); */
         },
         error => {
           if (!eventResponse) {
@@ -511,7 +507,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
   }
 
-
   public getStatus(response: object): any {
     return this.hasCallbackFailed(response) ? response['callback_response_status'] : response['delete_draft_response_status'];
   }
@@ -519,5 +514,4 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   private hasCallbackFailed(response: object): boolean {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
   }
-
 }

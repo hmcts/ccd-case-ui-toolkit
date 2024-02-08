@@ -9,6 +9,7 @@ import { HmctsServiceDetail } from '../../../domain/case-flag';
 import { CaseField, CaseTypeLite, FieldType, Jurisdiction } from '../../../domain/definition';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
 import { CaseFlagRefdataService, FieldsUtils, FormValidatorsService, JurisdictionService, SessionStorageService } from '../../../services';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { FirstErrorPipe, IsCompoundPipe, PaletteUtilsModule } from '../utils';
 import { WriteJudicialUserFieldComponent } from './write-judicial-user-field.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -160,7 +161,7 @@ describe('WriteJudicialUserFieldComponent', () => {
         MatAutocompleteModule,
         PaletteUtilsModule
       ],
-      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe],
+      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe, MockFieldLabelPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: JurisdictionService, useValue: jurisdictionService },

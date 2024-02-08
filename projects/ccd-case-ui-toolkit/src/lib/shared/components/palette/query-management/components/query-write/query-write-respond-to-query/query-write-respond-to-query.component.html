@@ -1,0 +1,41 @@
+<div class="govuk-!-margin-bottom-6">
+  <div class="govuk-!-margin-bottom-6">
+    <div class="govuk-caption-l">{{ 'Respond to a query' | rpxTranslate }}</div>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ 'Query details' | rpxTranslate }}</h1>
+  </div>
+
+  <div class="govuk-!-margin-bottom-4">
+    <ccd-query-case-details-header></ccd-query-case-details-header>
+  </div>
+
+  <div>
+    <ccd-query-details [query]="queryItem"></ccd-query-details>
+  </div>
+</div>
+
+<div class="query-respond">
+  <div>
+    <h1 class="govuk-heading-m">
+      {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Respond to a query' : 'Ask a follow-up question' | rpxTranslate }}
+    </h1>
+
+    <div [formGroup]="formGroup">
+      <div class="govuk-form-group body-textarea"
+           [class.govuk-form-group--error]="submitted && formGroup.get('body')?.hasError('required')">
+        <div class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--m govuk-!-font-weight-bold" for="body">
+            {{ queryCreateContext === queryCreateContextEnum.RESPOND ? 'Response detail' : 'Query Body' | rpxTranslate }}
+          </label>
+        </div>
+        <p id="body-error" class="govuk-error-message"
+           *ngIf="submitted && formGroup.get('body')?.hasError('required')">
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }} </span>{{ queryCreateContext === queryCreateContextEnum.RESPOND ? raiseQueryErrorMessages.RESPOND_QUERY_BODY : raiseQueryErrorMessages.QUERY_BODY | rpxTranslate }}
+        </p>
+        <textarea [formControlName]="'body'" class="govuk-textarea"
+                  [class.govuk-textarea--error]="submitted && formGroup.get('body')?.hasError('required')" id="body"
+                  name="body" rows="5" aria-describedby="body-hint body-error">
+      </textarea>
+      </div>
+    </div>
+  </div>
+</div>

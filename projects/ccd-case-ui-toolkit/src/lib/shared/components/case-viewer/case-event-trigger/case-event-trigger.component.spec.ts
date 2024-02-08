@@ -3,10 +3,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { MockComponent } from 'ng2-mock-component';
 import { Observable, of } from 'rxjs';
-import { CaseEventData, CaseEventTrigger, CaseField, CaseTab, CaseView, FieldType, HttpError } from '../../../domain';
+import { CaseEventData, CaseEventTrigger, CaseField, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, SessionStorageService } from '../../../services';
+import { ActivityPollingService, AlertService, FieldsUtils, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -35,13 +35,19 @@ describe('CaseEventTriggerComponent', () => {
       ({
         id: 'PersonFirstName',
         label: 'First name',
-        field_type: null,
+        field_type: {
+          id: 'Text',
+          type: 'Text'
+        } as FieldType,
         display_context: 'READONLY'
       }) as CaseField,
       ({
         id: 'PersonLastName',
         label: 'Last name',
-        field_type: null,
+        field_type: {
+          id: 'Text',
+          type: 'Text'
+        } as FieldType,
         display_context: 'OPTIONAL'
       }) as CaseField
     ]
@@ -131,15 +137,15 @@ describe('CaseEventTriggerComponent', () => {
   beforeEach(waitForAsync(() => {
     caseNotifier = createSpyObj<CaseNotifier>('caseService', ['announceCase']);
     casesService = createSpyObj<CasesService>('casesService', ['createEvent', 'validateCase']);
-    casesService.createEvent.and.returnValue(of());
-    casesService.validateCase.and.returnValue(of());
+    casesService.createEvent.and.returnValue(of(true));
+    casesService.validateCase.and.returnValue(of(true));
 
     casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
 
     alertService = createSpyObj<AlertService>('alertService', ['success', 'warning', 'setPreserveAlerts']);
     activityPollingService = createSpyObj<ActivityPollingService>('activityPollingService', ['postEditActivity']);
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
-    activityPollingService.postEditActivity.and.returnValue(of());
+    activityPollingService.postEditActivity.and.returnValue(of(true));
     router = {
       navigate: jasmine.createSpy('navigate'),
       url: ''
@@ -250,22 +256,29 @@ describe('CaseEventTriggerComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444'], { fragment: 'Linked cases' });
   });
 
-  it('should bypass validation if the CaseEventData data object contains a FlagLauncher field', (done) => {
-    CASE_DETAILS.tabs = [
-      {
-        id: 'caseFlagTab',
-        label: 'Tab for Case Flags',
-        fields: [
-          {
-            id: 'caseFlagLauncherField1',
-            field_type: {
-              id: 'FlagLauncher',
-              type: 'FlagLauncher'
-            } as FieldType
-          }
-        ]
-      } as CaseTab
-    ];
+  it('should bypass validation if the eventTrigger case fields contain a FlagLauncher field', (done) => {
+    spyOn(FieldsUtils, 'isCaseFieldOfType').and.callThrough();
+    component.eventTrigger = {
+      id: 'event',
+      name: 'Dummy event',
+      case_fields: [
+        {
+          id: 'caseFlagLauncherField1',
+          field_type: {
+            id: 'FlagLauncher',
+            type: 'FlagLauncher'
+          } as FieldType
+        } as CaseField
+      ],
+      event_token: 'abc',
+      wizard_pages: [],
+      hasFields(): boolean {
+        return true;
+      },
+      hasPages(): boolean {
+        return false;
+      },
+    };
     SANITISED_EDIT_FORM.data = {
       caseFlagLauncherField1: null
     };
@@ -274,7 +287,82 @@ describe('CaseEventTriggerComponent', () => {
       expect(result).toBeNull();
       done();
     });
+    expect(FieldsUtils.isCaseFieldOfType).toHaveBeenCalledWith(component.eventTrigger.case_fields[0], ['FlagLauncher']);
     expect(casesService.validateCase).not.toHaveBeenCalled();
+  });
+
+  it('should not bypass validation if the eventTrigger case fields do not contain a FlagLauncher field', (done) => {
+    spyOn(FieldsUtils, 'isCaseFieldOfType').and.callThrough();
+    component.eventTrigger = {
+      id: 'event',
+      name: 'Dummy event',
+      case_fields: [
+        {
+          id: 'textField1',
+          field_type: {
+            id: 'Text',
+            type: 'Text'
+          } as FieldType
+        } as CaseField
+      ],
+      event_token: 'abc',
+      wizard_pages: [],
+      hasFields(): boolean {
+        return true;
+      },
+      hasPages(): boolean {
+        return false;
+      },
+    };
+    SANITISED_EDIT_FORM.data = {
+      caseFlagLauncherField1: null
+    };
+
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+      expect(result).not.toBeNull();
+      done();
+    });
+    expect(FieldsUtils.isCaseFieldOfType).toHaveBeenCalledWith(component.eventTrigger.case_fields[0], ['FlagLauncher']);
+    expect(casesService.validateCase).toHaveBeenCalled();
+  });
+
+  it('should not bypass validation if the eventTrigger has no case fields', (done) => {
+    spyOn(FieldsUtils, 'isCaseFieldOfType').and.callThrough();
+    component.eventTrigger = {
+      id: 'event',
+      name: 'Dummy event',
+      case_fields: null,
+      event_token: 'abc',
+      wizard_pages: [],
+      hasFields(): boolean {
+        return true;
+      },
+      hasPages(): boolean {
+        return false;
+      },
+    };
+    SANITISED_EDIT_FORM.data = {
+      caseFlagLauncherField1: null
+    };
+
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+      expect(result).not.toBeNull();
+      done();
+    });
+    expect(FieldsUtils.isCaseFieldOfType).not.toHaveBeenCalled();
+    expect(casesService.validateCase).toHaveBeenCalled();
+  });
+
+  it('should not bypass validation if the eventTrigger is falsy', (done) => {
+    spyOn(FieldsUtils, 'isCaseFieldOfType').and.callThrough();
+    component.eventTrigger = null;
+
+    component.validate()(SANITISED_EDIT_FORM, PAGE_ID).subscribe(result => {
+      expect(result).not.toBeNull();
+      done();
+    });
+    expect(FieldsUtils.isCaseFieldOfType).not.toHaveBeenCalled();
+    expect(casesService.validateCase).toHaveBeenCalled();
   });
 
   it('should cancel navigate to linked cases tab', () => {

@@ -1,7 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, of } from 'rxjs';
-import { Activity, CaseEventData, CaseEventTrigger, CaseField, CaseView, DisplayMode } from '../../../domain';
+import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
@@ -76,23 +76,9 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
 
   public validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
     return (sanitizedEditForm: CaseEventData, pageId: string) => {
-      // Bypass validation if the CaseEventData data object contains a FlagLauncher field; this field type cannot be
-      // validated like regular fields. Need to match this field id against that of the defined FlagLauncher CaseField
-      // (if it exists on any CaseTab)
-      let flagLauncherCaseField: CaseField;
-      if (this.caseDetails.tabs) {
-        for (const tab of this.caseDetails.tabs) {
-          if (tab.fields) {
-            flagLauncherCaseField = tab.fields.find(caseField => FieldsUtils.isFlagLauncherCaseField(caseField));
-            // Stop searching for a FlagLauncher field as soon as it is found
-            if (flagLauncherCaseField) {
-              break;
-            }
-          }
-        }
-      }
-
-      return flagLauncherCaseField && sanitizedEditForm.data.hasOwnProperty(flagLauncherCaseField.id)
+      // Bypass validation if the eventTrigger case fields contain a FlagLauncher field; this field type cannot be
+      // validated, unlike regular fields
+      return this.eventTrigger?.case_fields?.some((caseField) => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))
         ? of(null)
         : this.casesService.validateCase(this.caseDetails.case_type.id, sanitizedEditForm, pageId);
     };
