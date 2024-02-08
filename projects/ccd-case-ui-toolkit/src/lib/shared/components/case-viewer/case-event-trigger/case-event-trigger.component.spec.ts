@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 import { CaseEventData, CaseEventTrigger, CaseField, CaseView, FieldType, HttpError } from '../../../domain';
 import { createCaseEventTrigger } from '../../../fixture';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, FieldsUtils } from '../../../services';
+import { ActivityPollingService, AlertService, FieldsUtils, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
 import { CaseEventTriggerComponent } from './case-event-trigger.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -130,6 +130,7 @@ describe('CaseEventTriggerComponent', () => {
   let alertService: any;
   let caseNotifier: any;
   let casesService: any;
+  let sessionStorageService: any;
   let casesReferencePipe: any;
   let activityPollingService: any;
 
@@ -141,8 +142,9 @@ describe('CaseEventTriggerComponent', () => {
 
     casesReferencePipe = createSpyObj<CaseReferencePipe>('caseReference', ['transform']);
 
-    alertService = createSpyObj<AlertService>('alertService', ['success', 'warning']);
+    alertService = createSpyObj<AlertService>('alertService', ['success', 'warning', 'setPreserveAlerts']);
     activityPollingService = createSpyObj<ActivityPollingService>('activityPollingService', ['postEditActivity']);
+    sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
     activityPollingService.postEditActivity.and.returnValue(of(true));
     router = {
       navigate: jasmine.createSpy('navigate'),
@@ -175,7 +177,8 @@ describe('CaseEventTriggerComponent', () => {
           { provide: Router, useValue: router },
           { provide: AlertService, useValue: alertService },
           { provide: CaseReferencePipe, useValue: casesReferencePipe },
-          { provide: ActivityPollingService, useValue: activityPollingService }
+          { provide: ActivityPollingService, useValue: activityPollingService },
+          { provide: SessionStorageService, useValue: sessionStorageService }
         ]
       })
       .compileComponents();
@@ -220,6 +223,15 @@ describe('CaseEventTriggerComponent', () => {
     component.submitted({ caseId: 123, status: 'happy' });
 
     expect(alertService.success).toHaveBeenCalled();
+  });
+
+  it('should alert warning message after task completion error available and set to true in session storage', () => {
+    casesService.createEvent.and.returnValue(of({}));
+    sessionStorageService.getItem.and.returnValue('true')
+
+    component.submitted({ caseId: 123, status: 'happy' });
+
+    expect(alertService.warning).toHaveBeenCalled();
   });
 
   it('should alert warning message after navigation upon successful event creation but incomplete call back', () => {
