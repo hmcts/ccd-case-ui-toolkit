@@ -158,15 +158,13 @@ export class FieldsPurger {
           }
         }
       }
+    } else if (calledFromResetPage) {
+      // Delete the field from formGroup
+      const dataGroup = form.get('data') as FormGroup;
+      dataGroup.removeControl(field.id);
     } else {
-      if (calledFromResetPage) {
-        // Delete the field from formGroup
-        const dataGroup = form.get('data') as FormGroup;
-        dataGroup.removeControl(field.id);
-      } else {
-        // Delete the field value
-        this.deleteFieldValue(form.get('data') as FormGroup, field);
-      }
+      // Delete the field value
+      this.deleteFieldValue(form.get('data') as FormGroup, field);
     }
   }
 
