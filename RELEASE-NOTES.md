@@ -1,4 +1,7 @@
 ## RELEASE NOTES
+### Version 7.0.11
+**EUI-1274** Correctly display error messages on event completion when task fails to complete
+
 ### Version 7.0.10-welsh-translation-fixes
 **EUI-9146/EUI-9129/EUI-9164** Re-tag for re-release of fixes, following merge conflict resolution with latest from `master`
 
