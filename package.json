@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.10-address-validation-fix",
+  "version": "7.0.11-address-validation-fix",
   "engines": {
     "node": ">=18.17.0"
   },
