@@ -63,7 +63,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
     if (!this.postcode.value) {
       this.errorMessage = WriteAddressFieldComponent.REQUIRED_ERROR_MESSAGE;
       this.missingPostcode = true;
-    } else if (!this.postcode.value.match(AddressValidationConstants.REGEX_POSTCODE)) {
+    } else if (!this.postcode.value.trim().match(AddressValidationConstants.REGEX_POSTCODE)) {
       this.errorMessage = WriteAddressFieldComponent.INVALID_ERROR_MESSAGE;
       this.missingPostcode = true;
     } else {
