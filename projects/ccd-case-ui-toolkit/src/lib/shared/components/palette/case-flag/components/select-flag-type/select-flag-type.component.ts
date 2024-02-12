@@ -2,19 +2,20 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { FlagType } from '../../../../../domain/case-flag';
-import { CaseFlagRefdataService } from '../../../../../services';
+import { CaseFlagRefdataService, MultipageComponentStateService } from '../../../../../services';
 import { RefdataCaseFlagType } from '../../../../../services/case-flag/refdata-case-flag-type.enum';
 import { CaseFlagState } from '../../domain';
 import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagTypeErrorMessage } from '../../enums';
+import { AbstractJourneyComponent } from '../../../base-field/abstract-journey.component';
 
 @Component({
   selector: 'ccd-select-flag-type',
   templateUrl: './select-flag-type.component.html',
   styleUrls: ['./select-flag-type.component.scss']
 })
-export class SelectFlagTypeComponent implements OnInit, OnDestroy {
+export class SelectFlagTypeComponent extends AbstractJourneyComponent implements OnInit, OnDestroy, Journey {
 
   @Input()
   public formGroup: FormGroup;
@@ -54,7 +55,9 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     return CaseFlagWizardStepTitle;
   }
 
-  constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService) { }
+  constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService, pageStateService: MultipageComponentStateService) {
+    super(pageStateService);
+   }
 
   public ngOnInit(): void {
     this.flagTypes = [];
@@ -164,5 +167,13 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
     this.errorMessages.push({ title: '', description: error.message, fieldId: 'conditional-radios-list' });
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: this.errorMessages });
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
   }
 }

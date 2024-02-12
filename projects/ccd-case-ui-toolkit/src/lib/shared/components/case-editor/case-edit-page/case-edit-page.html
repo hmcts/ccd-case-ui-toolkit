@@ -40,7 +40,7 @@
   (callbackErrorsContext)="callbackErrorsNotify($event)">
 </ccd-callback-errors>
 <div class="width-50">
-  <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
+  <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="nextStep()">
     <fieldset id="fieldset-case-data">
       <legend style="display: none;"></legend>
       <!-- single column -->

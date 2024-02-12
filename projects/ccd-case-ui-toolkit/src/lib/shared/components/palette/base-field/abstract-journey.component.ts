@@ -1,0 +1,72 @@
+import { Directive, Input, ViewChild } from "@angular/core";
+import { Journey } from "../../../domain";
+import { MultipageComponentStateService } from "../../../services";
+
+@Directive()
+export abstract class AbstractJourneyComponent implements Journey {
+
+    public journeyStartPageNumber: number = 0;
+    public journeyEndPageNumber: number = 0;
+    public journeyPageNumber: number = 0;
+
+    @Input()
+    public journeyId: string = 'journey';
+
+    // todo...
+    @ViewChild('journeyChild')
+    public childJourney!: Journey;
+
+    public constructor(protected readonly pageStateService: MultipageComponentStateService) {
+        this.pageStateService.addTojourneyCollection(this);
+        this.journeyPageNumber = this.journeyStartPageNumber;
+    }
+
+    public next(): void {
+        if (!this.hasNext()) {
+            return;
+        }
+
+        this.childJourney.next();
+    }
+
+    public previous(): void {
+        if (!this.hasPrevious()) {
+            return;
+        }
+        this.previousPage();
+    }
+
+    protected previousPage(): void {
+        if (this.hasPrevious()) {
+            this.journeyPageNumber--;
+        }
+    }
+
+    public ngOnInit(): void {
+        this.journeyPageNumber = this.journeyStartPageNumber;
+
+        const state = this.pageStateService.getJourneyState(this);
+
+        if (state) {
+            const { journeyPageNumber, journeyStartPageNumber, journeyEndPageNumber } = state;
+
+            this.journeyPageNumber = journeyPageNumber;
+            this.journeyStartPageNumber = journeyStartPageNumber;
+            this.journeyEndPageNumber = journeyEndPageNumber;            
+        }
+    }
+
+    public ngOnDestroy(): void {
+        this.pageStateService.setJourneyState(this);    
+    }
+
+    public hasNext(): boolean { return this.journeyPageNumber < this.journeyEndPageNumber };
+
+    public hasPrevious(): boolean { return this.journeyPageNumber > this.journeyStartPageNumber };
+
+    public isFinished(): boolean { return this.journeyPageNumber === this.journeyEndPageNumber };
+
+    public isStart(): boolean { return this.journeyPageNumber === this.journeyStartPageNumber };
+
+    public getId(): string { return this.journeyId };
+}

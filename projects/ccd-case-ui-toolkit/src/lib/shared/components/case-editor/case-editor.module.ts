@@ -55,6 +55,7 @@ import {
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
 import { CaseworkerService } from './services/case-worker.service';
 import { ValidPageListCaseFieldsService } from './services/valid-page-list-caseFields.service';
+import { MultipageComponentStateService } from '../../services';
 
 @NgModule({
   imports: [
@@ -123,7 +124,8 @@ import { ValidPageListCaseFieldsService } from './services/valid-page-list-caseF
     CaseworkerService,
     SessionStorageService,
     EventCompletionStateMachineService,
-    ValidPageListCaseFieldsService
+    ValidPageListCaseFieldsService,
+    MultipageComponentStateService
   ]
 })
 export class CaseEditorModule { }

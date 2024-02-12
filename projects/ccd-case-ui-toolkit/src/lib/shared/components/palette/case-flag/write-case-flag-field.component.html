@@ -17,34 +17,61 @@
       {{createFlagCaption | rpxTranslate}}
     </div>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LOCATION">
-      <ccd-select-flag-location [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-select-flag-location>
+      <ccd-select-flag-location 
+        #journeyChild
+        [formGroup]="caseFlagParentFormGroup" 
+        [flagsData]="flagsData"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)">
+      </ccd-select-flag-location>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_TYPE">
-      <ccd-select-flag-type [formGroup]="caseFlagParentFormGroup" [jurisdiction]="jurisdiction" [caseTypeId]="caseTypeId"
+      <ccd-select-flag-type 
+        #journeyChild
+        [formGroup]="caseFlagParentFormGroup" 
+        [jurisdiction]="jurisdiction" 
+        [caseTypeId]="caseTypeId"
         [hmctsServiceId]="hmctsServiceId"
         (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"
-        (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)"></ccd-select-flag-type>
+        (flagCommentsOptionalEmitter)="onFlagCommentsOptionalEmitted($event)">
+      </ccd-select-flag-type>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_LANGUAGE_INTERPRETER">
-      <ccd-search-language-interpreter [formGroup]="caseFlagParentFormGroup" [languages]="listOfValues" [flagCode]="flagCode"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-search-language-interpreter>
+      <ccd-search-language-interpreter 
+        #journeyChild
+        [formGroup]="caseFlagParentFormGroup" 
+        [languages]="listOfValues" 
+        [flagCode]="flagCode"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)">
+      </ccd-search-language-interpreter>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_COMMENTS">
-      <ccd-add-comments [formGroup]="caseFlagParentFormGroup" [optional]="flagCommentsOptional"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-add-comments>
+      <ccd-add-comments 
+        #journeyChild
+        [formGroup]="caseFlagParentFormGroup" 
+        [optional]="flagCommentsOptional"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)">
+      </ccd-add-comments>
     </ng-container>
   </div>
 </div>
 <div *ngIf="isDisplayContextParameterUpdate" class="form-group" [formGroup]="formGroup">
   <div class="govuk-form-group" [ngSwitch]="fieldState">
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_MANAGE_CASE_FLAGS">
-      <ccd-manage-case-flags [formGroup]="caseFlagParentFormGroup" [flagsData]="flagsData" [caseTitle]="caseTitle"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-manage-case-flags>
+      <ccd-manage-case-flags 
+        #journeyChild
+        [formGroup]="caseFlagParentFormGroup" 
+        [flagsData]="flagsData" 
+        [caseTitle]="caseTitle"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)">
+      </ccd-manage-case-flags>
     </ng-container>
     <ng-container *ngSwitchCase="caseFlagFieldState.FLAG_UPDATE">
-      <ccd-update-flag [formGroup]="caseFlagParentFormGroup" [selectedFlag]="selectedFlag"
-        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)"></ccd-update-flag>
+      <ccd-update-flag 
+        #journeyChild
+        [formGroup]="caseFlagParentFormGroup" 
+        [selectedFlag]="selectedFlag"
+        (caseFlagStateEmitter)="onCaseFlagStateEmitted($event)">
+      </ccd-update-flag>
     </ng-container>
   </div>
 </div>

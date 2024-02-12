@@ -1,14 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { CaseFlagState } from '../../domain';
 import { AddCommentsErrorMessage, AddCommentsStep, CaseFlagFieldState, CaseFlagWizardStepTitle } from '../../enums';
+import { AbstractJourneyComponent } from '../../../base-field';
 
 @Component({
   selector: 'ccd-add-comments',
   templateUrl: './add-comments.component.html'
 })
-export class AddCommentsComponent implements OnInit {
+export class AddCommentsComponent extends AbstractJourneyComponent implements OnInit, Journey {
 
   @Input() public formGroup: FormGroup;
   @Input() public optional = false;
@@ -58,6 +59,14 @@ export class AddCommentsComponent implements OnInit {
         description: AddCommentsErrorMessage.FLAG_COMMENTS_CHAR_LIMIT_EXCEEDED,
         fieldId: this.flagCommentsControlName
       });
+    }
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
     }
   }
 }
