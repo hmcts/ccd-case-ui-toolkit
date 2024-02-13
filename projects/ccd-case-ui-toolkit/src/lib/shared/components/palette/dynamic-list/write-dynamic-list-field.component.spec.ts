@@ -4,6 +4,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDynamicListFieldComponent } from './write-dynamic-list-field.component';
@@ -59,7 +60,8 @@ describe('WriteDynamicListFieldComponent', () => {
         ],
         declarations: [
           WriteDynamicListFieldComponent,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
         ],
         providers: [],
         teardown: { destroyAfterEach: false }

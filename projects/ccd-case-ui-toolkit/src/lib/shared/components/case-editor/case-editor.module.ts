@@ -37,11 +37,6 @@ import { CaseEditGenericErrorsComponent } from './case-edit-generic-errors/case-
 import { CaseEditPageComponent } from './case-edit-page/case-edit-page.component';
 import { CaseEditSubmitComponent } from './case-edit-submit/case-edit-submit.component';
 import { CaseEditComponent } from './case-edit/case-edit.component';
-import {
-  CaseEventCompletionComponent,
-  CaseEventCompletionTaskCancelledComponent,
-  CaseEventCompletionTaskReassignedComponent
-} from './case-event-completion';
 import { CaseProgressComponent } from './case-progress/case-progress.component';
 import {
   CaseNotifier,
@@ -53,6 +48,7 @@ import {
   WorkAllocationService
 } from './services';
 import { CaseEditWizardGuard } from './services/case-edit-wizard.guard';
+import { CaseFlagStateService } from './services/case-flag-state.service';
 import { CaseworkerService } from './services/case-worker.service';
 import { ValidPageListCaseFieldsService } from './services/valid-page-list-caseFields.service';
 import { MultipageComponentStateService } from '../../services';
@@ -79,9 +75,6 @@ import { MultipageComponentStateService } from '../../services';
     CaseEditPageComponent,
     CaseEditFormComponent,
     CaseEditSubmitComponent,
-    CaseEventCompletionComponent,
-    CaseEventCompletionTaskCancelledComponent,
-    CaseEventCompletionTaskReassignedComponent,
     CaseCreateComponent,
     CaseProgressComponent,
     CaseEditGenericErrorsComponent
@@ -124,6 +117,7 @@ import { MultipageComponentStateService } from '../../services';
     CaseworkerService,
     SessionStorageService,
     EventCompletionStateMachineService,
+    CaseFlagStateService,  
     ValidPageListCaseFieldsService,
     MultipageComponentStateService
   ]

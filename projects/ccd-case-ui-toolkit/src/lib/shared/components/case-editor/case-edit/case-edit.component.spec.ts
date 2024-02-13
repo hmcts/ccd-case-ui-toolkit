@@ -11,11 +11,11 @@ import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.m
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
-import { FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, WindowService } from '../../../services';
+import { AlertService, FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, WindowService } from '../../../services';
 import { FormErrorService, FormValueService } from '../../../services/form';
 import { PaletteUtilsModule } from '../../palette';
 import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
-import { CaseNotifier } from '../services';
+import { CaseNotifier, WorkAllocationService } from '../services';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { CaseEditComponent } from './case-edit.component';
@@ -212,6 +212,8 @@ describe('CaseEditComponent', () => {
   const registrarService = new ConditionalShowRegistrarService();
   let route: any;
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
+  let mockWorkAllocationService: jasmine.SpyObj<WorkAllocationService>;
+  let mockAlertService: jasmine.SpyObj<AlertService>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
 
   describe('profile available in route', () => {
@@ -271,6 +273,8 @@ describe('CaseEditComponent', () => {
         'removeUnnecessaryFields'
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
+      mockWorkAllocationService = createSpyObj<WorkAllocationService>('WorkAllocationService', ['assignAndCompleteTask', 'completeTask']);
+      mockAlertService = createSpyObj<AlertService>('WorkAllocationService', ['error', 'setPreserveAlerts']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
       spyOn(validPageListCaseFieldsService, 'validPageListCaseFields');
 
@@ -320,7 +324,9 @@ describe('CaseEditComponent', () => {
             { provide: ConditionalShowRegistrarService, useValue: registrarService },
             { provide: Router, useValue: routerStub },
             { provide: ActivatedRoute, useValue: route },
-            SessionStorageService,
+            { provide: WorkAllocationService, useValue: mockWorkAllocationService},
+            { provide: SessionStorageService, useValue: mockSessionStorageService},
+            { provide: AlertService, useValue: mockAlertService },
             WindowService,
             { provide: LoadingService, loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
@@ -334,7 +340,7 @@ describe('CaseEditComponent', () => {
       component.eventTrigger = EVENT_TRIGGER;
       component.cancelled.subscribe(cancelHandler.applyFilters);
       component.submitted.subscribe(submitHandler.applyFilters);
-
+      mockSessionStorageService.getItem.and.returnValues('example url', 'true')
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
@@ -1269,6 +1275,78 @@ describe('CaseEditComponent', () => {
         expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
         expect(validPageListCaseFieldsService.validPageListCaseFields).toHaveBeenCalled();
         expect(formValueService.removeUnnecessaryFields).not.toHaveBeenCalled();
+      });
+
+      it('should submit the case and assign and complete task for an event submission', () => {
+        mockSessionStorageService.getItem.and.returnValues(`{"id": "12345"}`, 'true');
+        fixture.detectChanges();
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+
+        spyOn(component, 'confirm');
+
+        component.isCaseFlagSubmission = true;
+        component.confirmation = {} as unknown as Confirmation;
+
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        component.onEventCanBeCompleted({
+          eventTrigger: component.eventTrigger,
+          eventCanBeCompleted: true,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('12345');
+      });
+
+      it('should submit the case and complete task for an event submission', () => {
+        mockSessionStorageService.getItem.and.returnValues(`{"id": "12345"}`, 'false');
+        fixture.detectChanges();
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+
+        spyOn(component, 'confirm');
+
+        component.isCaseFlagSubmission = true;
+        component.confirmation = {} as unknown as Confirmation;
+
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        component.onEventCanBeCompleted({
+          eventTrigger: component.eventTrigger,
+          eventCanBeCompleted: true,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('12345');
       });
 
       it('should NOT submit the case due to error', () => {

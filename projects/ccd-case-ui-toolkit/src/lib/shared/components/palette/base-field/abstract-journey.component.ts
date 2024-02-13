@@ -16,8 +16,8 @@ export abstract class AbstractJourneyComponent implements Journey {
     @ViewChild('journeyChild')
     public childJourney!: Journey;
 
-    public constructor(protected readonly pageStateService: MultipageComponentStateService) {
-        this.pageStateService.addTojourneyCollection(this);
+    public constructor(protected readonly multipageComponentStateService: MultipageComponentStateService) {
+        this.multipageComponentStateService.addTojourneyCollection(this);
         this.journeyPageNumber = this.journeyStartPageNumber;
     }
 
@@ -45,7 +45,7 @@ export abstract class AbstractJourneyComponent implements Journey {
     public ngOnInit(): void {
         this.journeyPageNumber = this.journeyStartPageNumber;
 
-        const state = this.pageStateService.getJourneyState(this);
+        const state = this.multipageComponentStateService.getJourneyState(this);
 
         if (state) {
             const { journeyPageNumber, journeyStartPageNumber, journeyEndPageNumber } = state;
@@ -57,7 +57,7 @@ export abstract class AbstractJourneyComponent implements Journey {
     }
 
     public ngOnDestroy(): void {
-        this.pageStateService.setJourneyState(this);    
+        this.multipageComponentStateService.setJourneyState(this);    
     }
 
     public hasNext(): boolean { return this.journeyPageNumber < this.journeyEndPageNumber };

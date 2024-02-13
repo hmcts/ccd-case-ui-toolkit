@@ -54,6 +54,7 @@ export const aCaseField = (id: string,
       complex_fields: typeComplexFields || []
     },
     display_context: displayContext || 'OPTIONAL',
+    display_context_parameter: displayContext || 'OPTIONAL',
     label: label || 'First name',
     show_summary_content_option: showSummaryContentOption,
     retain_hidden_value: retainHiddenValue || false,

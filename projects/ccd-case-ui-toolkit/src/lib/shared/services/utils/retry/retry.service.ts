@@ -4,7 +4,7 @@ import { delayWhen, finalize, mergeMap, retryWhen, tap, timeout } from 'rxjs/ope
 
 class ArtificialDelayContext {
     private artificialDelayOn = true;
-    private selectedDelay = this.selectActualDelayTime();;
+    private selectedDelay = this.selectActualDelayTime();
     constructor(
         private preferredDelay: number
     ) {

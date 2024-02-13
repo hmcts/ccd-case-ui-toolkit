@@ -476,8 +476,8 @@ export class FormValueService {
   public removeEmptyCollectionsWithMinValidation(data: object, caseFields: CaseField[]): void {
     if (data && caseFields && caseFields.length > 0) {
       for (const field of caseFields) {
-        if (field.field_type.type === 'Collection' && field.field_type.min > 0 && data[field.id] &&
-          Array.isArray(data[field.id]) && data[field.id].length === 0) {
+        if (field.field_type.type === 'Collection' && typeof field.field_type.min === 'number' && field.field_type.min > 0 &&
+          data[field.id] && Array.isArray(data[field.id]) && data[field.id].length === 0) {
           delete data[field.id];
         }
       }
@@ -524,17 +524,19 @@ export class FormValueService {
           // See https://tools.hmcts.net/jira/browse/EUI-7377
           if (data.hasOwnProperty(caseField.id) && caseField.value) {
             // Create new object for the CaseField ID within the data object, if necessary (i.e. if the current value
-            // is falsy)
+            // is falsy); populate from the corresponding CaseField
             if (!data[caseField.id]) {
               data[caseField.id] = {};
+              Object.keys(caseField.value).forEach((key) => data[caseField.id][key] = caseField.value[key]);
+            } else {
+              // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
+              // Flags field within a Complex field or a collection of Complex fields) is copied across
+              Object.keys(data[caseField.id]).forEach((key) => {
+                if (caseField.value.hasOwnProperty(key)) {
+                  data[caseField.id][key] = caseField.value[key];
+                }
+              });
             }
-            // Copy all values from the corresponding CaseField; this ensures all nested flag data (for example, a
-            // Flags field within a Complex field or a collection of Complex fields) is copied across
-            Object.keys(data[caseField.id]).forEach(key => {
-              if (caseField.value.hasOwnProperty(key)) {
-                data[caseField.id][key] = caseField.value[key];
-              }
-            });
           }
         });
     }
