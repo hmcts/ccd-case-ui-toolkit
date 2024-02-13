@@ -11,7 +11,7 @@ import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.m
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
-import { FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, WindowService } from '../../../services';
+import { AlertService, FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, WindowService } from '../../../services';
 import { FormErrorService, FormValueService } from '../../../services/form';
 import { PaletteUtilsModule } from '../../palette';
 import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
@@ -213,6 +213,7 @@ describe('CaseEditComponent', () => {
   let route: any;
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
   let mockWorkAllocationService: jasmine.SpyObj<WorkAllocationService>;
+  let mockAlertService: jasmine.SpyObj<AlertService>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
 
   describe('profile available in route', () => {
@@ -273,6 +274,7 @@ describe('CaseEditComponent', () => {
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
       mockWorkAllocationService = createSpyObj<WorkAllocationService>('WorkAllocationService', ['assignAndCompleteTask', 'completeTask']);
+      mockAlertService = createSpyObj<AlertService>('WorkAllocationService', ['error', 'setPreserveAlerts']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
       spyOn(validPageListCaseFieldsService, 'validPageListCaseFields');
 
@@ -324,6 +326,7 @@ describe('CaseEditComponent', () => {
             { provide: ActivatedRoute, useValue: route },
             { provide: WorkAllocationService, useValue: mockWorkAllocationService},
             { provide: SessionStorageService, useValue: mockSessionStorageService},
+            { provide: AlertService, useValue: mockAlertService },
             WindowService,
             { provide: LoadingService, loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
