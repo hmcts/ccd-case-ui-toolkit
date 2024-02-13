@@ -108,4 +108,14 @@ export class MultipageComponentStateService {
             }
         }
     }
+
+    //isJourneyAtStart can be used to inform the instigator if we're at the start.
+    public isJourneyAtStart(): boolean {
+        return this.journeyCollection.every(j => j.isStart());
+    }
+
+    //isJourneyAtStart can be used to inform the instigator if we're at the end.
+    public isJourneyAtEnd(): boolean {
+        return this.journeyCollection.every(j => j.isFinished());
+    }
 }

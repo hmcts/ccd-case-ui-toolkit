@@ -98,6 +98,10 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     this.cancel();
   }
 
+  public isAtStart(): boolean {
+    return this.multipageComponentStateService.isJourneyAtStart();
+  }
+
   // This method will be triggered by the next button in the app component
   public nextStep(): void {
     // TODO: Debug why the state isn't persisting. 
@@ -198,11 +202,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
    */
   public toPreviousPage(): void {
     this.caseEditDataService.clearFormValidationErrors();
-
     const caseEventData: CaseEventData = this.buildCaseEventData(true);
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
     this.previous();
+    this.previousStep();
     CaseEditPageComponent.setFocusToTop();
   }
 

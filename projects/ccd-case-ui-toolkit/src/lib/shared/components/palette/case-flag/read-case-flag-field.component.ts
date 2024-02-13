@@ -151,6 +151,7 @@ export class ReadCaseFlagFieldComponent extends AbstractFieldReadComponent imple
   }
 
   public navigateBackToForm(fieldState: number): void {
+    console.log('yes i am here....');
     this.caseFlagStateService.fieldStateToNavigate = fieldState;
     this.router.navigate([`../${this.caseFlagStateService.pageLocation}`], { relativeTo: this.route });
   }

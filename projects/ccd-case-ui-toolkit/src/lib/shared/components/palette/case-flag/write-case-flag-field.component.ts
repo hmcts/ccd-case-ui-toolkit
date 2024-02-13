@@ -272,6 +272,16 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     }
   }
 
+  public previousPage(): void {
+    if (this.hasPrevious() && this.fieldState === CaseFlagFieldState.FLAG_COMMENTS && !this.flagType?.listOfValues) {
+      this.fieldState = CaseFlagFieldState.FLAG_TYPE;
+    } else if (this.hasPrevious()) {
+      this.fieldState--;
+    }
+    
+    super.previousPage();
+  }
+
   public addFlagToCollection(): void {
     // Ensure no more than one new flag is being added at a time, by iterating through each Flags case field and removing
     // any previous entry from the details array where that entry has no id (hence it is new - and there should be only
