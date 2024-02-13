@@ -4,12 +4,14 @@ import { ErrorMessage } from '../../../../../domain';
 import { LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
+import { AbstractJourneyComponent } from '../../../base-field';
+import { MultipageComponentStateService } from '../../../../../services';
 
 @Component({
   selector: 'ccd-linked-cases-before-you-start',
   templateUrl: './before-you-start.component.html'
 })
-export class BeforeYouStartComponent {
+export class BeforeYouStartComponent extends AbstractJourneyComponent {
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
@@ -19,7 +21,9 @@ export class BeforeYouStartComponent {
   public serverLinkedApiError: { id: string, message: string };
 
   constructor(private readonly router: Router,
-    private readonly linkedCasesService: LinkedCasesService) {
+    private readonly linkedCasesService: LinkedCasesService,
+    multipageComponentStateService: MultipageComponentStateService) {
+      super(multipageComponentStateService);
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
     this.serverLinkedApiError = this.linkedCasesService.serverLinkedApiError;
     // re-initiate the state based on the casefield value
@@ -35,6 +39,14 @@ export class BeforeYouStartComponent {
       errorMessages: this.errorMessages,
       navigateToNextPage: true
     });
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
   }
 
   public onBack(): void {

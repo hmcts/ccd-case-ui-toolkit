@@ -6,17 +6,18 @@ import { ErrorMessage } from '../../../domain';
 import { CaseView } from '../../../domain/case-view';
 import { CommonDataService } from '../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../case-editor/services/cases.service';
-import { AbstractFieldWriteComponent } from '../base-field';
+import { AbstractFieldWriteJourneyComponent } from '../base-field';
 import { CaseLink, LinkedCasesState } from './domain';
 import { LinkedCasesErrorMessages, LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
 import { LinkedCasesService } from './services';
 import { Subscription } from 'rxjs';
+import { MultipageComponentStateService } from '../../../services';
 
 @Component({
   selector: 'ccd-write-linked-cases-field',
   templateUrl: './write-linked-cases-field.component.html'
 })
-export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit, OnDestroy {
+export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyComponent implements OnInit, AfterViewInit, OnDestroy {
   public caseEditForm: FormGroup;
   public caseDetails: CaseView;
   public linkedCasesPage: number;
@@ -30,8 +31,9 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     private readonly commonDataService: CommonDataService,
     private readonly casesService: CasesService,
     private readonly linkedCasesService: LinkedCasesService,
-    private readonly caseEditDataService: CaseEditDataService) {
-    super();
+    private readonly caseEditDataService: CaseEditDataService,
+    multipageComponentStateService: MultipageComponentStateService) {
+    super(multipageComponentStateService);
   }
 
   public ngOnInit(): void {
@@ -53,6 +55,9 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     this.subscriptions.add(this.caseEditDataService.caseEditForm$.subscribe({
       next: editForm => this.caseEditForm = editForm
     }));
+
+    this.journeyPageNumber = this.journeyStartPageNumber = LinkedCasesPages.BEFORE_YOU_START;
+    this.journeyEndPageNumber = LinkedCasesPages.CHECK_YOUR_ANSWERS;
   }
 
   public initialiseCaseDetails(caseDetails: CaseView): void {
@@ -79,7 +84,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
     // Clear validation errors
     this.caseEditDataService.clearFormValidationErrors();
-
+    
     if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);
       this.proceedToNextPage();
@@ -128,6 +133,8 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
       // Continue button event must not be allowed if not in final page
       this.caseEditDataService.setLinkedCasesJourneyAtFinalStep(false);
     }
+
+    this.journeyPageNumber = this.linkedCasesPage;
   }
 
   public submitLinkedCases(): void {

@@ -66,7 +66,7 @@ export class MultipageComponentStateService {
         }
         
         const isAnyObjectNotFinished: boolean = this.journeyCollection.some(journey => !journey.isFinished());
-        
+
         if (!isAnyObjectNotFinished) {
             this.instigator?.onFinalNext();
             return;

@@ -87,7 +87,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
     private readonly multipageComponentStateService: MultipageComponentStateService
   ) {
-    //this.pageStateService.resetJourneyCollection();
     this.multipageComponentStateService.setInstigator(this);
   }
 
