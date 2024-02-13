@@ -68,6 +68,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   }
 
   public ngOnInit(): void {
+    let navigatedTo: boolean = false;
+
     // If it is start of the journey or navigation from check your answers page then fieldStateToNavigate property
     // in case flag state service will contain the field state to navigate based on create or manage journey
     this.fieldState = this.caseFlagStateService.fieldStateToNavigate;
@@ -77,7 +79,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
       const params = this.route.snapshot.params;
       // Clear the form group, field state to navigate and set the page location
       this.caseFlagStateService.resetCache(`../${params['eid']}/${params['page']}`);
+    } else {
+      navigatedTo = true;
     }
+
     // Reassign the form group from the case flag state service
     this.caseFlagParentFormGroup = this.caseFlagStateService.formGroup;
     // Clear form validation errors as a new page will be rendered based on field state
@@ -168,6 +173,12 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
 
     // Now that we've set the start page number, let's set the current page number. 
     this.journeyPageNumber = this.journeyStartPageNumber;
+
+    // If we've navigated to this page, then we know by default, we want to set the 
+    // journey page number to the field state. 
+    if (navigatedTo) {
+      this.journeyPageNumber = this.fieldState;
+    }
 
     // Provided we have some stored state, i.e. when going backwards, we want 
     // to get the last visited page, etc. 
