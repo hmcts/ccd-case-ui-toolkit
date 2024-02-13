@@ -160,10 +160,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     // It might help to take a look at the template file. 
     if (this.isDisplayContextParameterUpdate) {
       this.journeyStartPageNumber = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
-      this.journeyEndPageNumber = CaseFlagFieldState.FLAG_UPDATE;
+      this.journeyEndPageNumber = CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION;
     } else {  
       this.journeyStartPageNumber = CaseFlagFieldState.FLAG_LOCATION;
-      this.journeyEndPageNumber = CaseFlagFieldState.FLAG_COMMENTS;
+      this.journeyEndPageNumber = CaseFlagFieldState.FLAG_STATUS;
     }
 
     // Now that we've set the start page number, let's set the current page number. 
