@@ -6,12 +6,13 @@ import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { AbstractJourneyComponent } from '../../../base-field';
 import { MultipageComponentStateService } from '../../../../../services';
+import { Journey } from '../../../../../domain';
 
 @Component({
   selector: 'ccd-linked-cases-before-you-start',
   templateUrl: './before-you-start.component.html'
 })
-export class BeforeYouStartComponent extends AbstractJourneyComponent {
+export class BeforeYouStartComponent extends AbstractJourneyComponent implements Journey {
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
@@ -44,7 +45,11 @@ export class BeforeYouStartComponent extends AbstractJourneyComponent {
   public next() {
     this.onNext();
 
-    if (this.errorMessages.length === 0) {
+    const isAnArray: boolean = Array.isArray(this.errorMessages);
+    const isNotAnArray: boolean = !isAnArray;
+    const isValid: boolean = (isAnArray && this.errorMessages.length === 0) || isNotAnArray;
+
+    if (isValid) {
       super.next();
     }
   }
