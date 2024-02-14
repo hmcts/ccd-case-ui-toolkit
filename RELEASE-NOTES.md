@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.13
+**EUI-1275** Manual Language Entry in case flags - missing subTypeValue during form submission
+
 ### Version 7.0.11
 **EUI-1274** Correctly display error messages on event completion when task fails to complete
 
