@@ -5,7 +5,8 @@ import { Journey, JourneyInstigator } from '../../domain';
     providedIn: 'root'
 })
 export class MultipageComponentStateService {
-
+    //is journey at start will help keep track of the progress through the journey. 
+    private isJourneyAtStart: boolean = false;
     //journey collection references an upto date list of all the journey components currently rendered!!!!
     private journeyCollection: Journey[] = new Array<Journey>();
     //the instigator references the case-edit-page component that will invoke the next and previous methods
@@ -109,13 +110,13 @@ export class MultipageComponentStateService {
         }
     }
 
-    //isJourneyAtStart can be used to inform the instigator if we're at the start.
-    public isJourneyAtStart(): boolean {
-        return this.journeyCollection.every(j => j.isStart());
+    //isAtStart can be used to inform the instigator if we're at the start.
+    public get isAtStart(): boolean {
+        return this.isJourneyAtStart;
     }
 
-    //isJourneyAtStart can be used to inform the instigator if we're at the end.
-    public isJourneyAtEnd(): boolean {
-        return this.journeyCollection.every(j => j.isFinished());
+    //isAtStart can be used to update the value from a journey object, so the instigator knows. 
+    public set isAtStart(isAtStart: boolean) {
+        this.isJourneyAtStart = isAtStart;
     }
 }

@@ -5,6 +5,7 @@ export interface Journey {
     hasPrevious(): boolean;
     isFinished(): boolean;
     isStart(): boolean;
+    onPageChange(): void;
     journeyId: string;
     journeyPageNumber: number;
     journeyStartPageNumber: number;

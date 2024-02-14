@@ -69,4 +69,6 @@ export abstract class AbstractJourneyComponent implements Journey {
     public isStart(): boolean { return this.journeyPageNumber === this.journeyStartPageNumber };
 
     public getId(): string { return this.journeyId };
+
+    public onPageChange(): void { /* To be implemented by some child classes. */ };
 }

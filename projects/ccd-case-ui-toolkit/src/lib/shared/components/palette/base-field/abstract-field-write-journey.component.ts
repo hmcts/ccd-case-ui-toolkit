@@ -40,12 +40,14 @@ export abstract class AbstractFieldWriteJourneyComponent extends AbstractFieldWr
     protected previousPage(): void {
         if (this.hasPrevious()) {
             this.journeyPageNumber--;
+            this.onPageChange();
         }
     }
 
     protected nextPage(): void {
         if (this.hasNext()) {
             this.journeyPageNumber++;
+            this.onPageChange();
         }
     }
 
@@ -76,4 +78,6 @@ export abstract class AbstractFieldWriteJourneyComponent extends AbstractFieldWr
     public isStart(): boolean { return this.journeyPageNumber === this.journeyStartPageNumber };
 
     public getId(): string { return this.journeyId };
+
+    public onPageChange(): void { /* To be implemented by some child classes. */ };
 }

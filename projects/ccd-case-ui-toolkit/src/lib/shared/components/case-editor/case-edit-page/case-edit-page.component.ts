@@ -99,7 +99,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public isAtStart(): boolean {
-    return this.multipageComponentStateService.isJourneyAtStart();
+    return this.multipageComponentStateService.isAtStart;
   }
 
   // This method will be triggered by the next button in the app component
@@ -453,6 +453,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     this.caseEditDataService.clearFormValidationErrors();
     this.multipageComponentStateService.resetJourneyCollection();
     this.multipageComponentStateService.resetJourneyState();
+    this.multipageComponentStateService.isAtStart = false;
   }
 
   public submitting(): boolean {
