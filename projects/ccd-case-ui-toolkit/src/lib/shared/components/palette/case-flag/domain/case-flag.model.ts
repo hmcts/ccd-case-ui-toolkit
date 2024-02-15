@@ -8,16 +8,22 @@ export interface FlagPath {
 export interface FlagDetail {
   id?: string;
   name: string;
+  name_cy?: string;
   subTypeValue?: string;
+  subTypeValue_cy?: string;
   subTypeKey?: string;
   otherDescription?: string;
+  otherDescription_cy?: string;
   flagComment?: string;
+  flagComment_cy?: string;
+  flagUpdateComment?: string;
   dateTimeModified?: Date | string;
   dateTimeCreated: Date | string;
   path: FlagPath[];
   hearingRelevant: boolean | string;
   flagCode: string;
   status: string;
+  availableExternally?: boolean | string;
 }
 
 export interface Flags {
@@ -27,6 +33,8 @@ export interface Flags {
   partyName?: string;
   roleOnCase?: string;
   details?: FlagDetail[];
+  visibility?: string;
+  groupId?: string;
 }
 
 export interface FlagDetailDisplay {
@@ -35,6 +43,7 @@ export interface FlagDetailDisplay {
   // The flagsCaseFieldId property could be removed in future, given that the full path is now available through the
   // FlagDetailDisplayWithFormGroupPath interface
   flagsCaseFieldId: string;
+  visibility: string;
 }
 
 /**
@@ -47,7 +56,8 @@ export interface FlagsWithFormGroupPath {
 }
 
 /**
- * Wrapper interface for FlagDetailDisplay that adds the path to the corresponding FormGroup, and the CaseField
+ * Wrapper interface for FlagDetailDisplay that adds the path to the corresponding FormGroup, the CaseField, and the
+ * original flag status
  */
 export interface FlagDetailDisplayWithFormGroupPath {
   flagDetailDisplay: FlagDetailDisplay;
@@ -55,4 +65,5 @@ export interface FlagDetailDisplayWithFormGroupPath {
   caseField: CaseField;
   roleOnCase?: string;
   label?: string;
+  originalStatus?: string;
 }
