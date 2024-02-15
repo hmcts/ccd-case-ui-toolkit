@@ -196,7 +196,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private subscribeToCaseDetails(): void {
     this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe({
       next: (caseDetails: CaseView) => {
-        this.caseTypeId = caseDetails?.case_id;
+        this.caseTypeId = caseDetails?.case_type.id;
         this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
       }
     });
