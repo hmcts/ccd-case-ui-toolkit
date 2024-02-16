@@ -47,7 +47,7 @@ export class CheckYourAnswersComponent extends AbstractJourneyComponent implemen
       navigateToPreviousPage: false,
       navigateToNextPage: true
     });
-
+    
     super.next();
   }
 }

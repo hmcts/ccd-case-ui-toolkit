@@ -59,6 +59,14 @@ export class MultipageComponentStateService {
         this.journeyState.clear();
     }
 
+    //reset will be called to ensure that the entire state is reset
+    reset(): void {
+        this.isJourneyAtStart = false;
+        this.journeyState.clear();
+        this.instigator = null;
+        this.journeyCollection = [];
+    }
+
     //next will be called by the instigator that will invoke the next method of the journey component that will invoke the next method of the childpage component
     public next(): void {
         if (this.journeyCollection.length <= 0) {

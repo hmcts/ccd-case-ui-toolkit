@@ -116,8 +116,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public ngOnInit(): void {
-    this.multipageComponentStateService.resetJourneyCollection();
-    this.multipageComponentStateService.resetJourneyState();
     initDialog();
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.editForm = this.caseEdit.form;
@@ -176,6 +174,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     this.dialogRefAfterClosedSub?.unsubscribe();
     this.saveDraftSub?.unsubscribe();
     this.caseFormValidationErrorsSub?.unsubscribe();
+    this.multipageComponentStateService.reset();
   }
 
   public applyValuesChanged(valuesChanged: boolean): void {
@@ -451,9 +450,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     }
 
     this.caseEditDataService.clearFormValidationErrors();
-    this.multipageComponentStateService.resetJourneyCollection();
-    this.multipageComponentStateService.resetJourneyState();
-    this.multipageComponentStateService.isAtStart = false;
+    this.multipageComponentStateService.reset();
   }
 
   public submitting(): boolean {
