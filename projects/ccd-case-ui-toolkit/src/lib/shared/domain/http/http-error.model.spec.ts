@@ -41,6 +41,14 @@ describe('HttpError', () => {
       url: 'http://localhost:3000/data/internal/cases/1234123412341234'
     };
 
+    const ERROR_TOO_MANY_TIMES = {
+      status: 429,
+      error: 'Your request was rate limited. Please wait a few seconds before retrying your document upload',
+      message: 'Http failure response for http://localhost:3000/documentsv2: 429 Too Many Requests',
+      statusText: 'Too Many Requests',
+      url: 'http://localhost:3000/documentsv2'
+    };
+
     it('should return default error when given null', () => {
       const error = HttpError.from(null);
 
@@ -89,6 +97,17 @@ describe('HttpError', () => {
       const error = HttpError.from(new HttpErrorResponse({ error: { unknown: 'xxx' } }));
 
       expect(error).toEqual(new HttpError());
+    });
+    
+    it('should return the error properties for Too many requests', () => {
+      const error = HttpError.from(new HttpErrorResponse(ERROR_TOO_MANY_TIMES));
+
+      const expectedError = new HttpError();
+      expectedError.error = ERROR_TOO_MANY_TIMES.error;
+      expectedError.status = ERROR_TOO_MANY_TIMES.status;
+      expectedError.message = ERROR_TOO_MANY_TIMES.message;
+
+      expect(error).toEqual(expectedError);
     });
 
   });
