@@ -21,4 +21,11 @@
       }
     }
   }
+  .govuk-table__body {
+    .govuk-table__row {
+      .cell-flag-status {
+        white-space: nowrap;
+      }
+    }
+  }
 }
