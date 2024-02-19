@@ -1,5 +1,10 @@
 ## RELEASE NOTES
 
+### Version 7.0.14
+**EUI-1067** No error message is displayed when entering incorrect postcode
+**EUI-1194** Rate limit document uploads
+**EUI-1123** TextArea fields are not preloaded even the data is present in response intermittently
+
 ### Version 7.0.13
 **EUI-1275** Manual Language Entry in case flags - missing subTypeValue during form submission
 
