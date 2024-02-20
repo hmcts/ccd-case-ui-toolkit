@@ -48,9 +48,9 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   public ngOnInit(): void {
     if (!this.isComplexWithHiddenFields()) {
       this.postcode = new FormControl('', [Validators.required]);
-      this.formGroup.addControl('postcode', this.postcode);
+      this.addressFormGroup.addControl('postcode', this.postcode);
       this.addressList = new FormControl('');
-      this.formGroup.addControl('address', this.addressList);
+      this.addressFormGroup.addControl('address', this.addressList);
     }
 
     this.addressesService.getMandatoryError().subscribe((value: boolean) => {
