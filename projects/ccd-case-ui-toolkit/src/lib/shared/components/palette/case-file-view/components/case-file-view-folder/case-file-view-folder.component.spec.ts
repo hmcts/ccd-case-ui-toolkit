@@ -144,6 +144,7 @@ describe('CaseFileViewFolderComponent', () => {
     });
 
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyAsc);
+    console.log('com',component.nestedDataSource)
   });
 
   it('should call sortChildrenDescending on all children of nestedDataSource when calling sortDataSourceDescAlphabetically', () => {

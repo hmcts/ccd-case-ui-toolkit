@@ -35,9 +35,11 @@ export const whiskyHighland = {
     {
       name: 'Highland 1',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     }
-  ]
+  ],
+  category_order: 1
 };
 
 export const whiskyLowland1 = {
@@ -58,14 +60,17 @@ export const whiskyLowland = {
       type: DocumentTreeNodeType.FOLDER,
       children: [
         whiskyLowland1
-      ]
+      ],
+      category_order: 1
     },
     {
       name: 'Lowland 2',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 2
     }
-  ]
+  ],
+  category_order: 2
 };
 
 export const whiskyIslayDetails = {
@@ -89,13 +94,15 @@ export const whiskyIslayMoreInformation = {
 export const whiskySpeyside = {
   name: 'Speyside',
   type: DocumentTreeNodeType.FOLDER,
-  children: []
+  children: [],
+  category_order: 4
 };
 
 export const whiskyCampbelTown = {
   name: 'Campbeltown',
   type: DocumentTreeNodeType.FOLDER,
-  children: []
+  children: [],
+  category_order: 5
 };
 
 export const redWineItalian = {
@@ -141,17 +148,20 @@ export const beersAlphabeticallyAsc = {
     {
       name: 'Bitters',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     },
     {
       name: 'American',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 2
     },
     {
       name: 'Asian',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 3
     },
     aleEncyclopedia,
     beersEncyclopedia,
@@ -191,7 +201,8 @@ export const winesAlphabeticallyAsc = {
     {
       name: 'French',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     },
     {
       name: 'Italian',
@@ -201,7 +212,8 @@ export const winesAlphabeticallyAsc = {
         proseccoItalian,
         redWineItalian,
         whiteWineItalian
-      ]
+      ],
+      category_order: 2
     }
   ]
 };
@@ -244,13 +256,16 @@ export const spiritsAlphabeticallyAsc = {
           children: [
             whiskyIslayDetails,
             whiskyIslayMoreInformation
-          ]
+          ],
+          category_order: 3
         },
         whiskySpeyside,
         whiskyCampbelTown
-      ]
+      ],
+      category_order:  1
     }
-  ]
+  ],
+  category_order:  3
 };
 
 export const spiritsAlphabeticallyDesc = {
@@ -304,22 +319,26 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
       {
         name: 'Bitters',
         type: DocumentTreeNodeType.FOLDER,
-        children: []
+        children: [],
+        category_order: 1
       },
       {
         name: 'American',
         type: DocumentTreeNodeType.FOLDER,
-        children: []
+        children: [],
+        category_order: 2
       },
       {
         name: 'Asian',
         type: DocumentTreeNodeType.FOLDER,
-        children: []
+        children: [],
+        category_order: 3
       },
       lagerEncyclopedia,
       beersEncyclopedia,
       aleEncyclopedia
-    ]
+    ],
+    category_order: 1
   },
   {
     name: 'Wines',
@@ -328,7 +347,8 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
       {
         name: 'French',
         type: DocumentTreeNodeType.FOLDER,
-        children: []
+        children: [],
+        category_order: 1
       },
       {
         name: 'Italian',
@@ -338,9 +358,11 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
           whiteWineItalian,
           proseccoItalian,
           pinotGrigioItalian
-        ]
+        ],
+        category_order: 2
       }
-    ]
+    ],
+    category_order: 2
   },
   {
     name: 'Spirits',
@@ -358,13 +380,16 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
             children: [
               whiskyIslayDetails,
               whiskyIslayMoreInformation
-            ]
+            ],
+            category_order: 3
           },
           whiskySpeyside,
           whiskyCampbelTown
-        ]
+        ],
+        category_order: 1
       }
-    ]
+    ],
+    category_order:  3
   }
 ]);
 
