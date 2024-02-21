@@ -1,4 +1,8 @@
 ## RELEASE NOTES
+
+### Version 7.0.13-welsh-translation-fixes
+**CSFD-23** Fix case history label by adding translation pipe
+
 ### Version 7.0.13
 **EUI-1275** Manual Language Entry in case flags - missing subTypeValue during form submission
 
