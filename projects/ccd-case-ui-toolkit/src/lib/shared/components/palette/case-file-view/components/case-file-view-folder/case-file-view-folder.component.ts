@@ -114,7 +114,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       return [
         ...tree,
         newDocumentTreeNode,
-      ]//.sort((a,b) => a.category_order - b.category_order);
+      ].sort((a,b) => a.category_order - b.category_order);
     }, []);
   }
 
