@@ -13,6 +13,7 @@ export class DocumentTreeNode {
   public document_binary_url?: string;
   public attribute_path?: string;
   public upload_timestamp?: string;
+  public category_order?: number;
 
   @Expose()
   public get childDocumentCount() {
