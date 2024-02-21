@@ -176,17 +176,20 @@ export const beersAlphabeticallyDesc = {
     {
       name: 'Bitters',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     },
     {
       name: 'American',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 2
     },
     {
       name: 'Asian',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 3
     },
     lagerEncyclopedia,
     beersEncyclopedia,
@@ -225,7 +228,8 @@ export const winesAlphabeticallyDesc = {
     {
       name: 'French',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     },
     {
       name: 'Italian',
@@ -235,7 +239,8 @@ export const winesAlphabeticallyDesc = {
         redWineItalian,
         proseccoItalian,
         pinotGrigioItalian
-      ]
+      ],
+      category_order: 2
     }
   ]
 };
@@ -262,10 +267,10 @@ export const spiritsAlphabeticallyAsc = {
         whiskySpeyside,
         whiskyCampbelTown
       ],
-      category_order:  1
+      category_order: 1
     }
   ],
-  category_order:  3
+  // category_order:  3
 };
 
 export const spiritsAlphabeticallyDesc = {
@@ -284,11 +289,13 @@ export const spiritsAlphabeticallyDesc = {
           children: [
             whiskyIslayMoreInformation,
             whiskyIslayDetails,
-          ]
+          ],
+          category_order: 3
         },
         whiskySpeyside,
         whiskyCampbelTown
-      ]
+      ],
+      category_order: 1
     }
   ]
 };
@@ -389,7 +396,7 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
         category_order: 1
       }
     ],
-    category_order:  3
+    category_order: 3
   }
 ]);
 

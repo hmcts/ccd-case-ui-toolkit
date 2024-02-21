@@ -74,7 +74,7 @@ describe('CaseFileViewFolderComponent', () => {
         { provide: AbstractAppConfig, useValue: mockAppConfig }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CaseFileViewFolderComponent);
     component = fixture.componentInstance;
@@ -83,7 +83,7 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', async() => {
+  it('should create', async () => {
     spyOn(component, 'filter').and.returnValue(of([]));
     const documentFilterInputEl = nativeElement.querySelector('.document-search');
     documentFilterInputEl.dispatchEvent(new Event('focusin'));
@@ -133,7 +133,7 @@ describe('CaseFileViewFolderComponent', () => {
   it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
     const sortChildrenAscendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-      sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending').and.callThrough());
+      sortChildrenAscendingSpies.push(spyOn(item, 'sortChildrenAscending').and.callThrough());
     });
 
     component.sortDataSourceAscending(CaseFileViewSortColumns.DOCUMENT_NAME);
@@ -142,15 +142,13 @@ describe('CaseFileViewFolderComponent', () => {
     sortChildrenAscendingSpies.forEach((item) => {
       expect(item).toHaveBeenCalled();
     });
-
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyAsc);
-    console.log('com',component.nestedDataSource)
   });
 
   it('should call sortChildrenDescending on all children of nestedDataSource when calling sortDataSourceDescAlphabetically', () => {
     const sortChildrenDescendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-      sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending').and.callThrough());
+      sortChildrenDescendingSpies.push(spyOn(item, 'sortChildrenDescending').and.callThrough());
     });
     component.sortDataSourceDescending(CaseFileViewSortColumns.DOCUMENT_NAME);
     fixture.detectChanges();
@@ -164,22 +162,22 @@ describe('CaseFileViewFolderComponent', () => {
 
   it('should set mediaViewer localStorage' +
     'and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
-    const documentTreeNode = component.nestedDataSource[0].children[3];
-    component.triggerDocumentAction('openInANewTab', documentTreeNode);
+      const documentTreeNode = component.nestedDataSource[0].children[3];
+      component.triggerDocumentAction('openInANewTab', documentTreeNode);
 
-    // @ts-expect-error -- private method
-    expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
-      MEDIA_VIEWER_LOCALSTORAGE_KEY,
       // @ts-expect-error -- private method
-      component.documentManagementService.getMediaViewerInfo({
-        document_binary_url: documentTreeNode.document_binary_url,
-        document_filename: documentTreeNode.document_filename
-      })
-    );
+      expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
+        MEDIA_VIEWER_LOCALSTORAGE_KEY,
+        // @ts-expect-error -- private method
+        component.documentManagementService.getMediaViewerInfo({
+          document_binary_url: documentTreeNode.document_binary_url,
+          document_filename: documentTreeNode.document_filename
+        })
+      );
 
-    // @ts-expect-error -- private method
-    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
-  });
+      // @ts-expect-error -- private method
+      expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
+    });
 
   it('should display correct folder icons', () => {
     component.nestedDataSource = treeData;
@@ -296,7 +294,7 @@ describe('CaseFileViewFolderComponent', () => {
     });
   });
 
-  it('should filter documents verify UI', async() => {
+  it('should filter documents verify UI', async () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
     const documentFilterInputEl = nativeElement.querySelector('.document-search');
@@ -310,7 +308,7 @@ describe('CaseFileViewFolderComponent', () => {
     expect(documentTreeContainerEl.textContent).toContain('Beers encyclopedia');
   });
 
-  it('should filter documents no match verify UI', async() => {
+  it('should filter documents no match verify UI', async () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
     const documentFilterInputEl = nativeElement.querySelector('.document-search');
