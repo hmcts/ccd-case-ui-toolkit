@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.13-doc-upload-casetype-fix",
+  "version": "7.0.15",
   "engines": {
     "node": ">=18.17.0"
   },
