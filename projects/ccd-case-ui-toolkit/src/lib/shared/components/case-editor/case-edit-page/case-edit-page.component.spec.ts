@@ -485,7 +485,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
         spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
         spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
-        spyOn(pageValidationService, 'isPageValid').and.returnValue(true);
+        spyOn(pageValidationService, 'getInvalidFields').and.returnValue(true);
         comp = fixture.componentInstance;
         readOnly.display_context = 'READONLY';
         wizardPage = createWizardPage([
@@ -1286,7 +1286,11 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     it('should display generic error heading and message when form error is set but no callback errors, warnings, or error details', () => {
       // This tests CaseEditGenericErrorsComponent
-      spyOn(pageValidationService, 'isPageValid').and.returnValue(false);
+      spyOn(pageValidationService, 'getInvalidFields').and.returnValue([{
+        id: 'caseFieldIssue',
+        label: 'Case Field',
+        value: null
+      }]);
       comp.caseEdit.error = {
         status: 200,
         callbackErrors: null,
@@ -1318,7 +1322,11 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
       // This tests CaseEditGenericErrorsComponent
-      spyOn(pageValidationService, 'isPageValid').and.returnValue(false);
+      spyOn(pageValidationService, 'getInvalidFields').and.returnValue([{
+        id: 'caseFieldIssue',
+        label: 'Case Field',
+        value: null
+      }]);
       comp.caseEdit.error = {
         status: 422,
         callbackErrors: null,

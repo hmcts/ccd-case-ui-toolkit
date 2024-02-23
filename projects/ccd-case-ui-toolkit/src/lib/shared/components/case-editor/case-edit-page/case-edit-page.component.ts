@@ -48,6 +48,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public formValuesChanged = false;
   public pageChangeSubject: Subject<boolean> = new Subject();
   public caseFields: CaseField[];
+  public failingCaseFields: CaseField[];
   public validationErrors: CaseEditValidationError[] = [];
   public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public callbackErrorsSubject: Subject<any> = new Subject();
@@ -157,7 +158,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public currentPageIsNotValid(): boolean {
-    return !this.pageValidationService.isPageValid(this.currentPage, this.editForm) ||
+    this.failingCaseFields = this.pageValidationService.getInvalidFields(this.currentPage, this.editForm);
+    return this.failingCaseFields.length > 0 ||
       (this.isLinkedCasesJourney() && !this.isLinkedCasesJourneyAtFinalStep);
   }
 
@@ -181,11 +183,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   // Adding validation message to show it as Error Summary
-  public generateErrorMessage(fields: CaseField[], container?: AbstractControl, path?: string): void {
+  public generateErrorMessage(fields: CaseField[], container?: AbstractControl, path?: string): boolean {
     const group: AbstractControl = container || this.editForm.controls['data'];
-    fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
-      .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path))
+    let validErrorFieldFound = false;
+    let validationErrorAmount = this.validationErrors.length;
+    const failingFields = fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+    .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path));
+    // note that thougn these checks are on getinvalidfields they are needed for sub field checks
+    failingFields
       .forEach(casefield => {
+        let errorPresent = true;
+        validErrorFieldFound = true;
         const fieldElement = FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])
           ? group.get(`${casefield.id}_judicialUserControl`)
           : group.get(casefield.id);
@@ -218,14 +226,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             fieldElement.markAsDirty();
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
-              this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
+              errorPresent = this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
               const fieldArray = fieldElement as FormArray;
               if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
                 id = `${fieldArray['component']['collItems'][0].prefix}`;
               }
               fieldArray.controls.forEach((c: AbstractControl) => {
-                this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
+               errorPresent = this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
               });
             } else if (FieldsUtils.isCaseFieldOfType(casefield, ['FlagLauncher'])) {
               this.validationErrors.push({
@@ -237,9 +245,27 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
               fieldElement.markAsDirty();
             }
           }
+        } else {
+          validErrorFieldFound = false;
+        }
+        if (!errorPresent && this.validationErrors.length === validationErrorAmount) {
+          // if no error messages have been added in internal field despite parent field failing
+          this.validationErrors.push({ id: casefield.id, message: `A field that is causing an error is ${casefield.id} but it is not producing a valid error message. Please ensure all details are correct` });
         }
       });
+    if (!validErrorFieldFound) {
+      path ? this.validationErrors.push({ id: path, message: `There is an internal issue with ${path} fields. The field that is causing the error cannot be determined but there is an error present` })
+       : this.validationErrors.push({ id: null, message: `The field that is causing the error cannot be determined but there is an error present` });
+    } else if (this.validationErrors.length === validationErrorAmount) {
+      // if no error messages have been generated
+      if (path) {
+        return false;
+      } else {
+        this.validationErrors.push({ id: null, message: `The field that is causing the error cannot be determined but there is an error present. Please fill in more of the form` })
+      }
+    }
     CaseEditPageComponent.scrollToTop();
+    return true;
   }
 
   public navigateToErrorElement(elementId: string): void {
@@ -265,7 +291,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         this.validationErrors.push({ id: 'next-button', message: 'Please select Next to go to the next page' });
         CaseEditPageComponent.scrollToTop();
       } else {
-        this.generateErrorMessage(this.currentPage.case_fields);
+        this.generateErrorMessage(this.failingCaseFields);
       }
     }
 
