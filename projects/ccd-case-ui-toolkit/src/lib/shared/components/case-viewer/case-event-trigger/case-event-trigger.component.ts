@@ -3,14 +3,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, of } from 'rxjs';
 import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
-import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils } from '../../../services';
+import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
+import { Constants } from '../../../commons/constants';
 
 @Component({
   selector: 'ccd-case-event-trigger',
   templateUrl: './case-event-trigger.html'
 })
 export class CaseEventTriggerComponent implements OnInit, OnDestroy {
+  public static readonly EVENT_COMPLETION_MESSAGE = `Case #%CASEREFERENCE% has been updated with event: %NAME%`;
+  public static readonly CALLBACK_FAILED_MESSAGE = ' but the callback service cannot be completed';
+
   public BANNER = DisplayMode.BANNER;
   public eventTrigger: CaseEventTrigger;
   public caseDetails: CaseView;
@@ -26,7 +30,8 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly alertService: AlertService,
     private readonly route: ActivatedRoute,
     private readonly caseReferencePipe: CaseReferencePipe,
-    private readonly activityPollingService: ActivityPollingService
+    private readonly activityPollingService: ActivityPollingService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -81,20 +86,27 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
 
   public submitted(event: any): void {
     const eventStatus: string = event['status'];
+    const taskCompletionFailed = this.sessionStorageService.getItem('taskCompletionError') === 'true';
     this.router
       .navigate([this.parentUrl])
       .then(() => {
         const caseReference = this.caseReferencePipe.transform(this.caseDetails.case_id.toString());
         const replacements = { CASEREFERENCE: caseReference, NAME: this.eventTrigger.name };
-        if (EventStatusService.isIncomplete(eventStatus)) {
+        this.alertService.setPreserveAlerts(true);
+        if (taskCompletionFailed) {
+          // if task still present in session storage, we know that the task has not been correctly completed
           this.alertService.warning({
-            phrase: `Case #%CASEREFERENCE% has been updated with event: %NAME%
-            but the callback service cannot be completed`,
+            phrase: CaseEventTriggerComponent.EVENT_COMPLETION_MESSAGE + '. ' + Constants.TASK_COMPLETION_ERROR
+            , replacements});
+          this.sessionStorageService.removeItem('taskCompletionError');
+        } else if (EventStatusService.isIncomplete(eventStatus)) {
+          this.alertService.warning({
+            phrase: CaseEventTriggerComponent.EVENT_COMPLETION_MESSAGE + CaseEventTriggerComponent.CALLBACK_FAILED_MESSAGE,
             replacements
           });
         } else {
           this.alertService.success({
-            phrase: 'Case #%CASEREFERENCE% has been updated with event: %NAME%',
+            phrase: CaseEventTriggerComponent.EVENT_COMPLETION_MESSAGE,
             replacements,
             preserve: true
           });
