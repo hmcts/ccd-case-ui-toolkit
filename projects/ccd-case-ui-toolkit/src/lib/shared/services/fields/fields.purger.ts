@@ -93,7 +93,7 @@ export class FieldsPurger {
     return showCondition.split(/!=|=|CONTAINS/)[0];
   }
 
-  private resetField(form: FormGroup, field: CaseField, calledFromResetPage = false): void {
+  private resetField(form: FormGroup, field: CaseField): void {
     /**
      * If the hidden field's value is to be retained, do nothing (except if it is a Complex type or collection of
      * Complex types). This is a change to the previous behaviour (which used to clear the field value but remove it
@@ -158,20 +158,17 @@ export class FieldsPurger {
           }
         }
       }
-    } else if (calledFromResetPage) {
+    } else {
       // Delete the field from formGroup
       const dataGroup = form.get('data') as FormGroup;
       dataGroup.removeControl(field.id);
-    } else {
-      // Delete the field value
-      this.deleteFieldValue(form.get('data') as FormGroup, field);
     }
   }
 
   private resetPage(form: FormGroup, wizardPage: WizardPage): void {
     wizardPage.wizard_page_fields.forEach(wpf => {
       const caseField = this.findCaseFieldByWizardPageFieldId(wizardPage, wpf);
-      this.resetField(form, caseField, true);
+      this.resetField(form, caseField);
     });
   }
 
