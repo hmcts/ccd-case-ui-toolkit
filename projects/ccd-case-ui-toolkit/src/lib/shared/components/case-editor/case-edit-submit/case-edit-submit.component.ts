@@ -91,8 +91,6 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.getPageTitle();
-
-    console.log(this.multipageComponentStateService.getInstigator());
   }
 
   public ngOnDestroy(): void {

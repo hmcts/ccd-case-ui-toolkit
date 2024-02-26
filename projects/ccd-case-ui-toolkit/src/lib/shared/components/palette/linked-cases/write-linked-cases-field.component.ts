@@ -208,4 +208,12 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
 
     super.previousPage();
   }
+
+  public hasNext(): boolean {
+    return this.linkedCasesPage < LinkedCasesPages.CHECK_YOUR_ANSWERS || super.hasNext();  
+  }
+
+  public hasPrevious(): boolean {
+    return this.linkedCasesPage > LinkedCasesPages.BEFORE_YOU_START || super.hasPrevious();  
+  }
 }
