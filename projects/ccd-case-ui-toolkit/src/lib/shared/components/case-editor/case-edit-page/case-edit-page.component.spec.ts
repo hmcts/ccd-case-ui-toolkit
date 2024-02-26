@@ -1785,6 +1785,39 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
+    it('should correctly indicate there is no issue with the field if there is no error', () => {
+      const caseField = aCaseField(
+        'Invalidfield2',
+        'Invalidfield2',
+        'Text',
+        'MANDATORY',
+        null
+      );
+      wizardPage.case_fields.push(caseField);
+      wizardPage.isMultiColumn = () => false;
+      F_GROUP.setValue({
+        data: {
+          Invalidfield2: 'testing',
+          Invalidfield1: 'testing',
+          OrganisationField: '',
+          complexField1: '',
+          FlagLauncherField: null,
+          judicialUserField_judicialUserControl: null
+        },
+      });
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeFalsy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(
+          `The field that is causing the error cannot be determined but there is an error present. Please fill in more of the form`
+        );
+      });
+    });
+
     it('should validate minimum length field value and log error message', () => {
       const caseField = aCaseField(
         'Invalidfield2',
