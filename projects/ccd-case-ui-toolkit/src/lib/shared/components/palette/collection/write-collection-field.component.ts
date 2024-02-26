@@ -1,11 +1,10 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { plainToClassFromExist } from 'class-transformer';
 import { Subscription } from 'rxjs';
-import { finalize, take } from 'rxjs/operators';
 import { FieldType } from '../../../domain/definition/field-type.model';
 
 import { CaseField } from '../../../domain/definition/case-field.model';
@@ -47,7 +46,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   constructor(private readonly dialog: MatDialog,
     private readonly scrollToService: ScrollToService,
-    private readonly profileNotifier: ProfileNotifier
+    private readonly profileNotifier: ProfileNotifier,
+    private readonly cdRef: ChangeDetectorRef
   ) {
     super();
   }
@@ -157,9 +157,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
 
   public buildIdPrefix(index: number): string {
     const prefix = `${this.idPrefix}${this.caseField.id}_`;
-    if (this.caseField.field_type.collection_field_type.type === 'Complex') {
+    if (this.caseField.field_type.collection_field_type?.type === 'Complex') {
       return `${prefix}${index}_`;
     }
+
     return prefix;
   }
 
@@ -184,20 +185,19 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     const container = this.getContainer(index);
     this.collItems.push({ caseField, item, index, prefix, container });
 
-    // Timeout is required for the collection item to be rendered before it can be scrolled to or focused.
+    // Update DOM required after pushing a new item to do the next steps (i.e. scrolling and focusing)
+    this.cdRef.detectChanges();
+
     if (doScroll) {
-      setTimeout(() => {
-        this.scrollToService.scrollTo({
-          target: `${this.buildIdPrefix(index)}${index}`,
-          duration: 1000,
-          offset: -150,
-        })
-          .pipe(finalize(() => this.focusLastItem()))
-          .subscribe(() => { }, console.error);
-      });
-    } else {
-      setTimeout(() => this.focusLastItem());
+      this.scrollToService.scrollTo({
+        target: `${this.buildIdPrefix(index)}${index}`,
+        duration: 1000,
+        offset: -150,
+      })
+        .subscribe(() => { }, console.error);
     }
+
+    this.focusLastItem();
   }
 
   private isCollectionDynamic(): boolean {

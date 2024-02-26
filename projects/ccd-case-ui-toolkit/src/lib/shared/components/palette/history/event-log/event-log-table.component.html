@@ -13,12 +13,12 @@
       <ng-container [ngSwitch]="isPartOfCaseTimeline">
         <div id="case-timeline" *ngSwitchCase="true">
           <a (click)="caseHistoryClicked(event.id)"
-            *ngIf="event.state_id !== 'Draft'" class="text-16 event-link" attr.aria-label="{{getAriaLabelforLink(event)}}">{{event.event_name}}</a>
+            *ngIf="event.state_id !== 'Draft'" class="text-16 event-link" attr.aria-label="{{getAriaLabelforLink(event)}}">{{event.event_name | rpxTranslate}}</a>
           </div>
         <div *ngSwitchCase="false">
           <a [routerLink]="['./', 'event', event.id, 'history']"
               [target]="'_blank'"
-              *ngIf="event.state_id !== 'Draft'" class="text-16 event-link" attr.aria-label="{{getAriaLabelforLink(event)}}">{{event.event_name}}</a>
+              *ngIf="event.state_id !== 'Draft'" class="text-16 event-link" attr.aria-label="{{getAriaLabelforLink(event)}}">{{event.event_name | rpxTranslate}}</a>
         </div>
       </ng-container>
       <span *ngIf="event.state_id === 'Draft'">{{event.event_name}}</span>

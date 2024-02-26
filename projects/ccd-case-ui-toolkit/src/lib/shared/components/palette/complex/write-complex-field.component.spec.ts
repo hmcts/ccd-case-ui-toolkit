@@ -8,6 +8,7 @@ import { ConditionalShowModule } from '../../../directives/conditional-show/cond
 import { CaseField, FieldType } from '../../../domain/definition';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { IsCompoundPipe, IsReadOnlyPipe, PaletteUtilsModule } from '../utils';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
@@ -66,7 +67,8 @@ describe('WriteComplexFieldComponent', () => {
           fieldWriteComponentMock,
           fieldReadComponentMock,
           IsReadOnlyPipeMock,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
         ],
         providers: [
           IsCompoundPipe,
