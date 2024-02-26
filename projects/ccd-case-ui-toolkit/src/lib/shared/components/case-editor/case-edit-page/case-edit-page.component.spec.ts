@@ -10,6 +10,8 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
@@ -1589,6 +1591,15 @@ describe('CaseEditPageComponent - all other tests', () => {
   });
 
   describe('Check for Validation Error', () => {
+    function createMockValidator(): ValidatorFn {
+      return (control:AbstractControl) : ValidationErrors | null => {
+        const value = control.value;
+
+        if (!value) {
+          return {mockRequired:true};
+        }
+      }
+    }
     const F_GROUP = new FormGroup({
       data: new FormGroup({
         Invalidfield1: new FormControl(null, Validators.required),
@@ -1599,6 +1610,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         ]),
         OrganisationField: new FormControl(null, Validators.required),
         complexField1: new FormControl(null, Validators.required),
+        complexField2: new FormControl(null, createMockValidator()),
         FlagLauncherField: new FormControl(null, {
           validators: (
             _: AbstractControl
@@ -1801,6 +1813,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           Invalidfield1: 'testing',
           OrganisationField: '',
           complexField1: '',
+          complexField2: '',
           FlagLauncherField: null,
           judicialUserField_judicialUserControl: null
         },
@@ -1827,6 +1840,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         null
       );
 
+      wizardPage.case_fields.push(caseField);
       comp.editForm = F_GROUP;
 
       comp.generateErrorMessage(wizardPage.case_fields);
@@ -1853,6 +1867,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           Invalidfield1: 'test1',
           OrganisationField: '',
           complexField1: '',
+          complexField2: '',
           FlagLauncherField: null,
           judicialUserField_judicialUserControl: null
         },
@@ -1886,6 +1901,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           Invalidfield1: 'test1',
           OrganisationField: '',
           complexField1: '',
+          complexField2: '',
           FlagLauncherField: null,
           judicialUserField_judicialUserControl: null
         },
@@ -1945,6 +1961,51 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.validationErrors.length).toBe(1);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`%FIELDLABEL% is required`);
+      });
+    });
+
+    it('should validate complex type fields and log error message when no error messages given', () => {
+      const complexSubField1: CaseField = aCaseField(
+        'childField1',
+        'childField1',
+        'Text',
+        'OPTIONAL',
+        1,
+        null,
+        true,
+        true
+      );
+      const complexSubField2: CaseField = aCaseField(
+        'childField2',
+        'childField2',
+        'Text',
+        'OPTIONAL',
+        2,
+        null,
+        false,
+        true
+      );
+      const withoutSubFailureComplexField: CaseField = aCaseField(
+        'complexField2',
+        'complexField2',
+        'Complex',
+        'OPTIONAL',
+        1,
+        [complexSubField1, complexSubField2],
+        true,
+        true
+      );
+      withoutSubFailureComplexField.isComplex = () => true;
+      wizardPage.isMultiColumn = () => false;
+      wizardPage.case_fields.push(withoutSubFailureComplexField);
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(`There is an internal issue with complexField2 fields. The field that is causing the error cannot be determined but there is an error present`);
       });
     });
 
