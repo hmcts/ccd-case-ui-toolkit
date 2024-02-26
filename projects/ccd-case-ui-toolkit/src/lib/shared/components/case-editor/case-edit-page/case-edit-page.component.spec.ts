@@ -1818,6 +1818,25 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
+    it('should correctly indicate there is no issue with the field if there is no related form control', () => {
+      const caseField = aCaseField(
+        'NewField1',
+        'Field1',
+        'Text',
+        'MANDATORY',
+        null
+      );
+
+      comp.editForm = F_GROUP;
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(
+          `The field that is causing the error cannot be determined but there is an error present`
+        );
+      });
+    });
+
     it('should validate minimum length field value and log error message', () => {
       const caseField = aCaseField(
         'Invalidfield2',
