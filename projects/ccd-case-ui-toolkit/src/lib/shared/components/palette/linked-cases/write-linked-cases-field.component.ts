@@ -63,7 +63,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
 
   public onPageChange(): void {
     const isAtStart: boolean = this.journeyPageNumber === this.journeyStartPageNumber || this.linkedCasesPage === LinkedCasesPages.BEFORE_YOU_START;
-    this.multipageComponentStateService.isAtStart = isAtStart;  
+    this.multipageComponentStateService.isAtStart = isAtStart;
   }
 
   public initialiseCaseDetails(caseDetails: CaseView): void {
@@ -90,8 +90,12 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
     // Clear validation errors
     this.caseEditDataService.clearFormValidationErrors();
+
+    const changeAnswers: boolean = linkedCasesState.currentLinkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS && linkedCasesState.navigateToPreviousPage;
     
-    if (linkedCasesState.navigateToNextPage) {
+    if (changeAnswers) {
+      this.journeyPageNumber = this.linkedCasesPage = LinkedCasesPages.LINK_CASE;
+    } if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);
       this.proceedToNextPage();
     } else {
