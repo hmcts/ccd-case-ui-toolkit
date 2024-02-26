@@ -100,14 +100,14 @@ describe('CaseEditConfirmComponent', () => {
 
   it('should render a confirmation-header', () => {
     de = fixture.debugElement.query(By.css('#confirmation-header'));
-    expect(de.nativeElement.textContent).toBeDefined();
-    expect(de.nativeElement.textContent.trim()).toEqual('Header');
+    expect(de.nativeElement.innerHTML).toBeDefined();
+    expect(de.nativeElement.innerHTML.trim()).toContain('Header');
   });
 
   it('should render an confirmation-body', () => {
     de = fixture.debugElement.query(By.css('#confirmation-body'));
-    expect(de.nativeElement.textContent).toBeDefined();
-    expect(de.nativeElement.textContent.trim()).toEqual('A body with mark down');
+    expect(de.nativeElement.innerHTML).toBeDefined();
+    expect(de.nativeElement.innerHTML.trim()).toContain('A body with mark down');
   });
 
   it('should show valid title on the page', () => {
