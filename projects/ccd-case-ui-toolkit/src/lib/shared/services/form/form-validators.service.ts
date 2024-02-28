@@ -10,6 +10,8 @@ export class FormValidatorsService {
   private static readonly CUSTOM_VALIDATED_TYPES: FieldTypeEnum[] = [
     'Date', 'MoneyGBP', 'Label', 'JudicialUser'
   ];
+  private static readonly DEFAULT_INPUT_TEXT = 'text';
+  private static readonly DEFAULT_INPUT_TEXTAREA = 'textAreas';
 
   public static addValidators(caseField: CaseField, control: AbstractControl): AbstractControl {
     if (
@@ -62,9 +64,7 @@ export class FormValidatorsService {
 
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control?.value?.toString().trim();
-      return value && pattern.test(value)
-        ? { markDownPattern: {} }
-        : null;
+      return (value && pattern.test(value)) ? { markDownPattern: {} } : null;
     };
   }
 
