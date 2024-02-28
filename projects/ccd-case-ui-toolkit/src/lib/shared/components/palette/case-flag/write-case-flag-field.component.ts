@@ -109,7 +109,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
     if (this.route.snapshot.data.eventTrigger) {
       // Get the HMCTSServiceId from supplementary data, if it exists (required for retrieving the available flag types in
-      // the first instance, only falling back on case type ID or jurisidiction if it's not present)
+      // the first instance, only falling back on case type ID or jurisdiction if it's not present)
       if (this.route.snapshot.data.eventTrigger.supplementary_data
         && this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId) {
         this.hmctsServiceId = this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId;
@@ -478,32 +478,36 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public populateNewFlagDetailInstance(): FlagDetail {
+    const langSearchTerm = this.caseFlagParentFormGroup?.value['languageSearchTerm'];
+    const manualLangEntry = this.caseFlagParentFormGroup?.value['manualLanguageEntry'];
+    const flagType = this.caseFlagParentFormGroup?.value['flagType'];
+    const otherDesc = this.caseFlagParentFormGroup?.value['otherDescription'];
     const formValues = this.caseFlagParentFormGroup?.value;
     return {
-      name: formValues?.flagType?.name,
-      name_cy: formValues?.flagType?.name_cy,
+      name: this.flagType?.name,
+      name_cy: flagType?.name_cy,
       // Currently, subTypeValue, subTypeValue_cy and subTypeKey are applicable only to language flag types
-      subTypeValue: formValues?.languageSearchTerm && this.rpxTranslationService.language === 'en'
-        ? formValues?.languageSearchTerm.value
-        : formValues?.manualLanguageEntry && this.rpxTranslationService.language === 'en'
-          ? formValues?.manualLanguageEntry
+      subTypeValue: langSearchTerm && this.rpxTranslationService.language === 'en'
+        ? langSearchTerm.value
+        : manualLangEntry && this.rpxTranslationService.language === 'en'
+          ? manualLangEntry
           : null,
-      subTypeValue_cy: formValues?.languageSearchTerm && this.rpxTranslationService.language === 'cy'
-      ? formValues?.languageSearchTerm.value_cy
-      : formValues?.manualLanguageEntry && this.rpxTranslationService.language === 'cy'
-        ? formValues?.manualLanguageEntry
+      subTypeValue_cy: langSearchTerm && this.rpxTranslationService.language === 'cy'
+      ? langSearchTerm?.value_cy
+      : manualLangEntry && this.rpxTranslationService.language === 'cy'
+        ? manualLangEntry
         : null,
       // For user-entered (i.e. non-Reference Data) languages, there is no key
-      subTypeKey: formValues?.languageSearchTerm
-        ? formValues?.languageSearchTerm.key
+      subTypeKey: langSearchTerm
+        ? langSearchTerm.key
         : null,
-      otherDescription: formValues?.flagType?.flagCode === this.otherFlagTypeCode &&
-        formValues?.otherDescription && this.rpxTranslationService.language === 'en'
-        ? formValues?.otherDescription
-        : null,
-      otherDescription_cy: formValues?.flagType?.flagCode === this.otherFlagTypeCode &&
-        formValues?.otherDescription && this.rpxTranslationService.language === 'cy'
-        ? formValues?.otherDescription
+      otherDescription: flagType?.flagCode === this.otherFlagTypeCode &&
+        otherDesc && this.rpxTranslationService.language === 'en'
+        ? otherDesc
+          : null,
+      otherDescription_cy: flagType?.flagCode === this.otherFlagTypeCode &&
+        otherDesc && this.rpxTranslationService.language === 'cy'
+        ? otherDesc
         : null,
       flagComment: this.rpxTranslationService.language === 'en'
         ? formValues?.flagComments
@@ -513,18 +517,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         : null,
       flagUpdateComment: formValues?.statusReason,
       dateTimeCreated: new Date().toISOString(),
-      path: formValues?.flagType?.Path &&
-        formValues?.flagType?.Path.map(pathValue => Object.assign({ id: null, value: pathValue })),
-      hearingRelevant: formValues?.flagType?.hearingRelevant ? 'Yes' : 'No',
-      flagCode: formValues?.flagType?.flagCode,
+      path: flagType?.Path &&
+        flagType?.Path.map(pathValue => Object.assign({ id: null, value: pathValue })),
+      hearingRelevant: flagType?.hearingRelevant ? 'Yes' : 'No',
+      flagCode: flagType?.flagCode,
       // Status should be set to whatever the default is for this flag type, if flag is being created by an external
       // user, otherwise it should be set to "Active" if Case Flags v2.1 is NOT enabled, or the selected status if it is
       status: this.isDisplayContextParameterExternal
-        ? formValues?.flagType?.defaultStatus
+        ? flagType?.defaultStatus
         : !this.isDisplayContextParameter2Point1Enabled
           ? CaseFlagStatus.ACTIVE
           : CaseFlagStatus[formValues?.selectedStatus],
-      availableExternally: formValues?.flagType?.externallyAvailable ? 'Yes' : 'No'
+      availableExternally: flagType?.externallyAvailable ? 'Yes' : 'No'
     } as FlagDetail;
   }
 

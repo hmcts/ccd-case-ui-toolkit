@@ -1,7 +1,19 @@
 ## RELEASE NOTES
 
+### Version 7.0.13
+**EUI-1275** Manual Language Entry in case flags - missing subTypeValue during form submission
+
+### Version 7.0.11
+**EUI-1274** Correctly display error messages on event completion when task fails to complete
+
+### Version 7.0.7-welsh-translation-yes-no-field-fix
+**EUI-9165** Re-tag for re-release of fix, following merge conflict resolution with latest from `master`
+
 ### Version 7.0.7
 **EXUI-1287** MV Upgrade to v3.0.2
+
+### Version 7.0.6-welsh-translation-yes-no-field-fix
+**EUI-9165** Fix bug where nothing is shown for the yes/no field if there is no `caseField` label (should fall back on the field value)
 
 ### Version 7.0.6-case-flags-v2-1-release
 **EUI-9048** Re-tag for re-release of Case Flags v2.1, following merge conflict resolution with latest from `master`
