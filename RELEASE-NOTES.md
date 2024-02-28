@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.16-welsh-fixes
+**CSFD-50** Markdown component should not have trnaslate
+
 ### Version 7.0.16-welsh-event-trigger
 **CSFD-48** Fix the width of the event trigger to accomodate the Welsh labels which are large
 
