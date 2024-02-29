@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.17
+**EUI-1295** Performance Testing - PerfTest - Cache Timeout Error
+
 ### Version 7.0.13
 **EUI-1275** Manual Language Entry in case flags - missing subTypeValue during form submission
 
