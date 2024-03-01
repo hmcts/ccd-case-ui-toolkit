@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.14-address-field-check",
+  "version": "7.0.18",
   "engines": {
     "node": ">=18.17.0"
   },
