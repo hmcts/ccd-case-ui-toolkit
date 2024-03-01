@@ -110,6 +110,18 @@ describe('HttpError', () => {
       expect(error).toEqual(expectedError);
     });
 
+
+    it('should return the error properties for Too many requests', () => {
+      const error = HttpError.from(new HttpErrorResponse(ERROR_TOO_MANY_TIMES));
+
+      const expectedError = new HttpError();
+      expectedError.error = ERROR_TOO_MANY_TIMES.error;
+      expectedError.status = ERROR_TOO_MANY_TIMES.status;
+      expectedError.message = ERROR_TOO_MANY_TIMES.message;
+
+      expect(error).toEqual(expectedError);
+    });
+
   });
 
 });
