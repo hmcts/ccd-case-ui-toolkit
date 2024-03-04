@@ -282,7 +282,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private getErrorMessage(error: HttpError): string {
     switch (error.status) {
       case 0:
-        return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
       case 502:
         return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
       case 422:
