@@ -1,5 +1,5 @@
 <form *ngIf="triggers && triggers.length" class="event-trigger" (ngSubmit)="triggerSubmit()" [formGroup]="triggerForm">
-  <div class="form-group">
+  <div class="form-group" style="width: 350px !important;">
     <label class="form-label" for="next-step">{{'Next step' | rpxTranslate}}</label>
     <select class="form-control ccd-dropdown" id="next-step" (change)="triggerChange()" formControlName="trigger" [ngClass]="{
           'EventTrigger-empty': !triggerForm.value['trigger']
