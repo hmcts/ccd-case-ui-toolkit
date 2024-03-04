@@ -1,7 +1,9 @@
 ## RELEASE NOTES
 
-### Version 7.0.16-welsh-event-trigger
+### Version 7.0.17-welsh-event-trigger
 **CSFD-48** Fix the width of the event trigger to accomodate the Welsh labels which are large
+### Version 7.0.17
+**EUI-1295** Performance Testing - PerfTest - Cache Timeout Error
 
 ### Version 7.0.13
 **EUI-1275** Manual Language Entry in case flags - missing subTypeValue during form submission
