@@ -285,20 +285,20 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     }
 
-    let errorMsg = 'Error uploading file';
-    if (error?.error) {
-      const fullError = error.error;
-      const start = fullError.indexOf('{');
-      if (start >= 0) {
-        const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
-        const obj = JSON.parse(json);
-        if (obj?.error) {
-          errorMsg = obj.error;
-        }
+    // let errorMsg = 'Error uploading file';
+    // if (error?.error) {
+    //   const fullError = error.error;
+    //   const start = fullError.indexOf('{');
+    //   if (start >= 0) {
+    //     const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
+    //     const obj = JSON.parse(json);
+    //     if (obj?.error) {
+    //       errorMsg = obj.error;
+    //     }
 
-      }
-    }
-    return errorMsg;
+    //   }
+    // }
+    return error.error;
   }
 
   private buildDocumentUploadData(selectedFile: File): FormData {
