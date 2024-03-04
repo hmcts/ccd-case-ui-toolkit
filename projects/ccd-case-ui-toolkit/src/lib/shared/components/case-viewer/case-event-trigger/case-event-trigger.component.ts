@@ -115,8 +115,10 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   public cancel(): Promise<boolean> {
-    if (this.router.url && this.router.url.includes('linkCases')) {
+    if (this.router.url?.toLowerCase().includes('linkcases')) {
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: 'Linked cases' });
+    } else if (this.router.url?.toLowerCase().includes('caseflags')) {
+      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: 'Case flags' });
     } else {
       return this.router.navigate([this.parentUrl]);
     }

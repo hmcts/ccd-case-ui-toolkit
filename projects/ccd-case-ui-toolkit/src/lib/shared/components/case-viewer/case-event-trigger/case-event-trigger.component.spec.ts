@@ -256,6 +256,14 @@ describe('CaseEventTriggerComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444'], { fragment: 'Linked cases' });
   });
 
+  it('should cancel navigate to case flags tab', () => {
+    const routerWithModifiedUrl = TestBed.get(Router);
+    routerWithModifiedUrl.url = 'caseFlags';
+    component.caseDetails.case_id = '1111-2222-3333-4444';
+    component.cancel();
+    expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444'], { fragment: 'Case flags' });
+  });
+
   it('should bypass validation if the eventTrigger case fields contain a FlagLauncher field', (done) => {
     spyOn(FieldsUtils, 'isCaseFieldOfType').and.callThrough();
     component.eventTrigger = {
