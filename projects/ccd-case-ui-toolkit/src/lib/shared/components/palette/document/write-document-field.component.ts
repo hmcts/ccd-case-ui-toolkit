@@ -280,25 +280,30 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private getErrorMessage(error: HttpError): string {
-    // Document Management unavailable
-    if (0 === error.status || 502 === error.status) {
-      return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
-    }
-
-    let errorMsg = 'Error uploading file';
-    if (error?.error) {
-      const fullError = error.error;
-      const start = fullError.indexOf('{');
-      if (start >= 0) {
-        const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
-        const obj = JSON.parse(json);
-        if (obj?.error) {
-          errorMsg = obj.error;
+    switch (error.status) {
+      case 0:
+        return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+      case 502:
+        return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+      case 422:
+        let errorMsg = 'Error uploading file';
+        if (error?.error) {
+          const fullError = error.error;
+          const start = fullError.indexOf('{');
+          if (start >= 0) {
+            const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
+            const obj = JSON.parse(json);
+            if (obj?.error) {
+              errorMsg = obj.error;
+            }
+          }
         }
-
-      }
+        return errorMsg;
+      case 429:
+        return error.message;
+      default:
+        return "Error Uploading File";
     }
-    return errorMsg;
   }
 
   private buildDocumentUploadData(selectedFile: File): FormData {
