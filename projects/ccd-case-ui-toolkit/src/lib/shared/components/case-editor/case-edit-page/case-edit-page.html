@@ -40,7 +40,7 @@
   (callbackErrorsContext)="callbackErrorsNotify($event)">
 </ccd-callback-errors>
 <div class="width-50">
-  <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="submit()">
+  <form *ngIf="currentPage" class="form" [formGroup]="editForm" (submit)="nextStep()">
     <fieldset id="fieldset-case-data">
       <legend style="display: none;"></legend>
       <!-- single column -->
@@ -62,7 +62,7 @@
     </fieldset>
 
     <div class="form-group form-group-related">
-      <button class="button button-secondary" type="button" [disabled]="!(hasPreviousPage$ | async)" (click)="toPreviousPage()">
+      <button class="button button-secondary" type="button" (click)="toPreviousPage()" [disabled]="isAtStart()">
         {{'Previous' | rpxTranslate}}
       </button>
       <button class="button" type="submit" [disabled]="submitting()">{{triggerText | rpxTranslate}}</button>

@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { FieldsUtils } from '../../../../../services/fields';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, Flags, FlagsWithFormGroupPath } from '../../domain';
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, CaseFlagWizardStepTitle, SelectFlagErrorMessage } from '../../enums';
+import { AbstractJourneyComponent } from '../../../base-field';
 
 @Component({
   selector: 'ccd-manage-case-flags',
@@ -11,7 +12,7 @@ import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus, Ca
   styleUrls: ['./manage-case-flags.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ManageCaseFlagsComponent implements OnInit {
+export class ManageCaseFlagsComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Input() public formGroup: FormGroup;
   @Input() public flagsData: FlagsWithFormGroupPath[];
   @Input() public caseTitle: string;
@@ -153,5 +154,13 @@ export class ManageCaseFlagsComponent implements OnInit {
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
       errorMessages: this.errorMessages
     });
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
   }
 }

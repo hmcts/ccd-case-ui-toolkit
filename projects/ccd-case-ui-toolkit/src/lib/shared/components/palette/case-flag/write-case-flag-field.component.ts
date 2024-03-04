@@ -4,12 +4,13 @@ import { ActivatedRoute } from '@angular/router';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 import { CaseEditDataService } from '../../../commons/case-edit-data/case-edit-data.service';
-import { CaseField, ErrorMessage } from '../../../domain';
+import { CaseField, ErrorMessage, Journey } from '../../../domain';
 import { FlagType } from '../../../domain/case-flag';
 import { FieldsUtils } from '../../../services/fields';
-import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
-import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
 import { CaseFlagState, FlagDetail, FlagDetailDisplayWithFormGroupPath, FlagsWithFormGroupPath } from './domain';
+import { MultipageComponentStateService } from '../../../services';
+import { AbstractFieldWriteJourneyComponent } from '../base-field/abstract-field-write-journey.component';
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 import { CaseFlagDisplayContextParameter, CaseFlagErrorMessage, CaseFlagFieldState, CaseFlagFormFields, CaseFlagStatus } from './enums';
 
 @Component({
@@ -17,7 +18,7 @@ import { CaseFlagDisplayContextParameter, CaseFlagErrorMessage, CaseFlagFieldSta
   templateUrl: './write-case-flag-field.component.html',
   styleUrls: ['./write-case-flag-field.component.scss']
 })
-export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
+export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyComponent implements OnInit, OnDestroy, Journey {
   public formGroup: FormGroup;
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
@@ -60,12 +61,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     private readonly route: ActivatedRoute,
     private readonly caseEditDataService: CaseEditDataService,
     private readonly caseFlagStateService: CaseFlagStateService,
-    private readonly rpxTranslationService: RpxTranslationService
+    private readonly rpxTranslationService: RpxTranslationService,
+    multipageComponentStateService: MultipageComponentStateService
   ) {
-    super();
+    super(multipageComponentStateService);
   }
 
   public ngOnInit(): void {
+    let navigatedTo: boolean = false;
+
     // If it is start of the journey or navigation from check your answers page then fieldStateToNavigate property
     // in case flag state service will contain the field state to navigate based on create or manage journey
     this.fieldState = this.caseFlagStateService.fieldStateToNavigate;
@@ -75,7 +79,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       const params = this.route.snapshot.params;
       // Clear the form group, field state to navigate and set the page location
       this.caseFlagStateService.resetCache(`../${params['eid']}/${params['page']}`);
+    } else {
+      navigatedTo = true;
     }
+
     // Reassign the form group from the case flag state service
     this.caseFlagParentFormGroup = this.caseFlagStateService.formGroup;
     // Clear form validation errors as a new page will be rendered based on field state
@@ -145,6 +152,51 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         });
       }
     }
+
+    // CSFD-16.
+    // Setup the page number to initially be the same value as 
+    // the start page number. Provided that some state exists within 
+    // the page state service, use that instaead.
+    //
+    // If isDisplayContextParameterUpdate is true, then the starting page must be 
+    // the value of 4. Otherwise, it's 0. However, we're using an enum to simplify
+    // this process.
+    //
+    // It might help to take a look at the template file. 
+    if (this.isDisplayContextParameterUpdate) {
+      this.journeyStartPageNumber = CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS;
+      this.journeyEndPageNumber = CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION;
+    } else {  
+      this.journeyStartPageNumber = CaseFlagFieldState.FLAG_LOCATION;
+      this.journeyEndPageNumber = CaseFlagFieldState.FLAG_STATUS;
+    }
+
+    // Now that we've set the start page number, let's set the current page number. 
+    this.journeyPageNumber = this.journeyStartPageNumber;
+
+    // If we've navigated to this page, then we know by default, we want to set the 
+    // journey page number to the field state. 
+    if (navigatedTo) {
+      this.journeyPageNumber = this.fieldState;
+    }
+
+    // Provided we have some stored state, i.e. when going backwards, we want 
+    // to get the last visited page, etc. 
+    const state = this.multipageComponentStateService.getJourneyState(this);
+
+    if (state) {
+      const { journeyPageNumber, journeyStartPageNumber, journeyEndPageNumber } = state;
+
+      this.journeyPageNumber = journeyPageNumber;
+      this.journeyStartPageNumber = journeyStartPageNumber;
+      this.journeyEndPageNumber = journeyEndPageNumber;
+    }
+
+    this.multipageComponentStateService.isAtStart = this.journeyPageNumber === this.journeyStartPageNumber;
+  }
+
+  public onPageChange(): void {
+    this.multipageComponentStateService.isAtStart = this.journeyPageNumber === this.journeyStartPageNumber;
   }
 
   public setDisplayContextParameterUpdate(displayContextParameter: string): boolean {
@@ -215,6 +267,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       } else {
         this.fieldState++;
       }
+
+      this.nextPage();
     }
   }
 
@@ -233,6 +287,16 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         this.updateFlagInCollection();
         break;
     }
+  }
+
+  public previousPage(): void {
+    if (this.hasPrevious() && this.fieldState === CaseFlagFieldState.FLAG_COMMENTS && !this.flagType?.listOfValues) {
+      this.fieldState = CaseFlagFieldState.FLAG_TYPE;
+    } else if (this.hasPrevious()) {
+      this.fieldState--;
+    }
+    
+    super.previousPage();
   }
 
   public addFlagToCollection(): void {
@@ -548,6 +612,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public ngOnDestroy(): void {
+    this.multipageComponentStateService.setJourneyState(this);   
     // Reset the fieldstateToNavigate as the write journey completes at this point
     this.caseFlagStateService.fieldStateToNavigate = undefined;
     this.caseTitleSubscription?.unsubscribe();
