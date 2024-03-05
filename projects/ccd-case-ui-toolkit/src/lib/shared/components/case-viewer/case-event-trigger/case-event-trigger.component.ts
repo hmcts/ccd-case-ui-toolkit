@@ -118,7 +118,6 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
 
   public cancel(): Promise<boolean> {
     const previousUrl = this.routerCurrentNavigation?.previousNavigation?.finalUrl?.toString();
-    console.log('PREVIOUS URL', previousUrl);
     if (previousUrl) {
       if (previousUrl.indexOf('#') > -1) {
         const url = previousUrl.split('#')[0];

@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.0.18-event-flow-cancel-navigation
+### Version 7.0.18-event-flow-cancel-navigation-v2
 **CSFD-18** Ungrey back button - event flow cancel navigation
 
 ### Version 7.0.17-welsh-event-trigger
