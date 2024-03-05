@@ -22,6 +22,8 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   public caseSubscription: Subscription;
   public parentUrl: string;
 
+  private routerCurrentNavigation: Navigation;
+
   constructor(
     private readonly ngZone: NgZone,
     private readonly casesService: CasesService,
@@ -33,6 +35,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
     private readonly activityPollingService: ActivityPollingService,
     private readonly sessionStorageService: SessionStorageService
   ) {
+    this.routerCurrentNavigation = this.router.getCurrentNavigation();
   }
 
   public ngOnInit(): void {
@@ -115,8 +118,15 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   }
 
   public cancel(): Promise<boolean> {
-    if (this.router.url && this.router.url.includes('linkCases')) {
-      this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: 'Linked cases' });
+    const previousUrl = this.routerCurrentNavigation?.previousNavigation?.finalUrl?.toString();
+    if (previousUrl) {
+      if (previousUrl.indexOf('#') > -1) {
+        const url = previousUrl.split('#')[0];
+        const fragment = previousUrl.split('#')[1].replace('%20', ' ');
+        return this.router.navigate([url], { fragment: fragment });
+      } else {
+        return this.router.navigate([previousUrl]);
+      }
     } else {
       return this.router.navigate([this.parentUrl]);
     }

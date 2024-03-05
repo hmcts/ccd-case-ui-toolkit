@@ -372,4 +372,17 @@ describe('CaseEventTriggerComponent', () => {
     component.cancel();
     expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', '1111-2222-3333-4444'], { fragment: 'Linked cases' });
   });
+
+  describe('cancel workflow - should navigate to the tab from where event was triggered', () => {
+    it('should verify with fragment', () => {
+      router.getCurrentNavigation.and.returnValue({
+        previousNavigation: {
+          finalUrl: '/cases/case-details/1707912713167104#Claim%20details'
+        }
+      });
+      fixture.detectChanges();
+      component.cancel();
+      expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/1707912713167104'], { fragment: 'Case details' });
+    });
+  });
 });
