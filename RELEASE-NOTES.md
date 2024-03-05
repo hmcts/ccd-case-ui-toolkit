@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.18-event-flow-cancel-navigation
+**CSFD-18** Ungrey back button - event flow cancel navigation
+
 ### Version 7.0.17-welsh-event-trigger
 **CSFD-48** Fix the width of the event trigger to accomodate the Welsh labels which are large
 ### Version 7.0.17
