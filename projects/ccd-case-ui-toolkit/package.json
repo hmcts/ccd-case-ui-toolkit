@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.17-rework-on-file-upload-error",
+  "version": "7.0.17-rework-on-file-upload-error2",
   "engines": {
     "node": ">=18.17.0"
   },
