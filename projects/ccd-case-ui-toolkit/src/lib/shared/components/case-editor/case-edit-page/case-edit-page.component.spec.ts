@@ -40,6 +40,7 @@ import {
   FormErrorService,
   FormValueService,
   LoadingService,
+  MultipageComponentStateService,
 } from '../../../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -77,7 +78,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService = {},
     caseEditDataService = {},
     loadingService = {},
-    validPageListCaseFieldsService = {}
+    validPageListCaseFieldsService = {},
+    multipageComponentStateService = {}
   }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -90,7 +92,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService as CaseFieldService,
     caseEditDataService as CaseEditDataService,
     loadingService as LoadingService,
-    validPageListCaseFieldsService as ValidPageListCaseFieldsService
+    validPageListCaseFieldsService as ValidPageListCaseFieldsService,
+    multipageComponentStateService as MultipageComponentStateService
   );
 
   it('should create', () => {

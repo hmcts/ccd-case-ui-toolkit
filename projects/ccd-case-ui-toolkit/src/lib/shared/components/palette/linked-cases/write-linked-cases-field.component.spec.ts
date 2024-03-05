@@ -10,7 +10,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseView } from '../../../domain/case-view';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { Draft } from '../../../domain/draft.model';
-import { FieldsUtils, LoadingService } from '../../../services';
+import { FieldsUtils, LoadingService, MultipageComponentStateService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
@@ -88,8 +88,19 @@ describe('WriteLinkedCasesFieldComponent', () => {
   const pageValidationService = new PageValidationService(caseFieldService);
   const fieldUtils = new FieldsUtils();
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldUtils);
+  const multipageComponentStateService = new MultipageComponentStateService();
   caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
-    route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, new CaseEditDataService(), new LoadingService(), validPageListCaseFieldsService);
+    route, 
+    formValueService, 
+    formErrorService, 
+    null, 
+    pageValidationService, 
+    dialog, 
+    caseFieldService, 
+    new CaseEditDataService(), 
+    new LoadingService(), 
+    validPageListCaseFieldsService,
+    multipageComponentStateService);
 
   const caseInfo = {
     case_id: '1682374819203471',

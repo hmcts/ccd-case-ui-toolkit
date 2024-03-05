@@ -43,7 +43,8 @@ describe('PageStateService', () => {
       hasPrevious: () => true,
       isFinished: () => false,
       isStart: () => false,
-      childJourney: undefined
+      childJourney: undefined,
+      onPageChange: () => { }
     };
 
     service.setJourneyState(journey);
@@ -62,7 +63,8 @@ describe('PageStateService', () => {
       hasPrevious: () => true,
       isFinished: () => false,
       isStart: () => false,
-      childJourney: undefined
+      childJourney: undefined,
+      onPageChange: () => { }
     };
 
     service.setJourneyState(journey);
@@ -82,7 +84,8 @@ describe('PageStateService', () => {
       hasPrevious: () => true,
       isFinished: () => false,
       isStart: () => false,
-      childJourney: undefined
+      childJourney: undefined,
+      onPageChange: () => { }
     };
 
     service.setJourneyCollection([journey]);
@@ -103,7 +106,8 @@ describe('PageStateService', () => {
       hasPrevious: () => true,
       isFinished: () => false,
       isStart: () => false,
-      childJourney: undefined
+      childJourney: undefined,
+      onPageChange: () => { }
     };
 
     service.setJourneyCollection([journey]);
