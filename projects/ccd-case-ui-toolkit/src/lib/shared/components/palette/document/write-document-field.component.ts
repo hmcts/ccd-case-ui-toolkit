@@ -28,6 +28,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   public static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
+  public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
 
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
@@ -285,7 +286,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       case 502:
         return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
       case 422:
-        let errorMsg = 'Error uploading file';
+        let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
         if (error?.error) {
           const fullError = error.error;
           const start = fullError.indexOf('{');
@@ -301,7 +302,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       case 429:
         return error.error;
       default:
-        return "Error Uploading File";
+        return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
     }
   }
 
