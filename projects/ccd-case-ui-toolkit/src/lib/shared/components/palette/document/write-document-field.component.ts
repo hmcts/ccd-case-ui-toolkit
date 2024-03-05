@@ -300,7 +300,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         }
         return errorMsg;
       case 429:
-        return error.error;
+        return error?.error;
       default:
         return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
     }
