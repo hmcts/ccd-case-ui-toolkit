@@ -1,11 +1,11 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { Observable, Subscription, of } from 'rxjs';
+import { Constants } from '../../../commons/constants';
 import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
 import { CaseReferencePipe } from '../../../pipes';
 import { ActivityPollingService, AlertService, EventStatusService, FieldsUtils, SessionStorageService } from '../../../services';
 import { CaseNotifier, CasesService } from '../../case-editor';
-import { Constants } from '../../../commons/constants';
 
 @Component({
   selector: 'ccd-case-event-trigger',
@@ -21,8 +21,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
   public activitySubscription: Subscription;
   public caseSubscription: Subscription;
   public parentUrl: string;
-
-  private routerCurrentNavigation: Navigation;
+  public routerCurrentNavigation: Navigation;
 
   constructor(
     private readonly ngZone: NgZone,
@@ -119,6 +118,7 @@ export class CaseEventTriggerComponent implements OnInit, OnDestroy {
 
   public cancel(): Promise<boolean> {
     const previousUrl = this.routerCurrentNavigation?.previousNavigation?.finalUrl?.toString();
+    console.log('PREVIOUS URL', previousUrl);
     if (previousUrl) {
       if (previousUrl.indexOf('#') > -1) {
         const url = previousUrl.split('#')[0];
