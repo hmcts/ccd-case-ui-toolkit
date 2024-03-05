@@ -299,7 +299,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
         }
         return errorMsg;
       case 429:
-        return error.message;
+        return error.error;
       default:
         return "Error Uploading File";
     }
