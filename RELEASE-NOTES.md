@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.0.18-rc2
+### Version 7.0.19
 **EUI-1067** No error message is displayed when entering incorrect postcode
 **EUI-1123** TextArea fields are not preloaded even the data is present in response intermittently
 
