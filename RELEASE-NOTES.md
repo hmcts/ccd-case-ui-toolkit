@@ -1,9 +1,15 @@
 ## RELEASE NOTES
 
+### Version 7.0.19
+**EUI-1067** No error message is displayed when entering incorrect postcode
+**EUI-1123** TextArea fields are not preloaded even the data is present in response intermittently
+
 ### Version 7.0.17-welsh-event-trigger
 **CSFD-48** Fix the width of the event trigger to accomodate the Welsh labels which are large
+
 ### Version 7.0.17
 **EUI-1295** Performance Testing - PerfTest - Cache Timeout Error
+
 
 ### Version 7.0.13
 **EUI-1275** Manual Language Entry in case flags - missing subTypeValue during form submission
