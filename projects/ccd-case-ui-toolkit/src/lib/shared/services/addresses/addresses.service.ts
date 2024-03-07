@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AbstractAppConfig } from '../../../app.config';
 import { AddressModel } from '../../domain/addresses';
@@ -9,6 +9,8 @@ import { AddressType } from './address-type.enum';
 
 @Injectable()
 export class AddressesService {
+
+  private mandatoryError: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private readonly http: HttpService, private readonly appConfig: AbstractAppConfig) {
   }
@@ -24,6 +26,14 @@ export class AddressesService {
           this.format(new AddressParser().parse(addresses[AddressType.DPA]))
         ))
       );
+  }
+
+  public getMandatoryError(): Observable<boolean> {
+    return this.mandatoryError.asObservable();
+  }
+
+  public setMandatoryError(value: boolean): void {
+    this.mandatoryError.next(value);
   }
 
   private format(addressModel: AddressModel) {
