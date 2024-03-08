@@ -48,7 +48,7 @@
           </tr>
         </table>
       </th>
-      <th *ngIf="activityEnabled()" style="width: 110px;"></th>
+      <th *ngIf="activityEnabled()" style="width: 110px;">&#x200b;</th>
     </tr>
   </thead>
 
@@ -140,7 +140,7 @@
   [screenReaderPageLabel]="page"
   [screenReaderCurrentLabel]="'You\'re on page'"></ccd-pagination>
 
-<div *ngIf="!(hasResults() || hasDrafts())" class="notification"
-[attr.aria-describedby]="'No cases found. Try using different filters.' | rpxTranslate">
+<div id="no_case_found" *ngIf="!(hasResults() || hasDrafts())" class="notification">
 {{'No cases found. Try using different filters.' | rpxTranslate}}
 </div>
+<span *ngIf="!(hasResults() || hasDrafts())" aria-describedby="no_case_found">&#x200b;</span>
