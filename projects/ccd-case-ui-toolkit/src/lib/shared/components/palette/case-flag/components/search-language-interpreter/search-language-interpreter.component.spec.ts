@@ -24,12 +24,12 @@ describe('SearchLanguageInterpreterComponent', () => {
     let currentLanguage: RpxLanguage = 'en';
     mockRpxTranslationService = {
       language$: source.asObservable(),
+      get language() {
+        return currentLanguage;
+      },
       set language(lang: RpxLanguage) {
         currentLanguage = lang;
         source.next(lang);
-      },
-      get language() {
-        return currentLanguage;
       }
     };
     TestBed.configureTestingModule({
@@ -69,7 +69,7 @@ describe('SearchLanguageInterpreterComponent', () => {
         { key: 'GB', value: 'English', value_cy: '' }
       ],
       defaultStatus: 'Active',
-      externallyAvailable: false,
+      externallyAvailable: false
     };
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 80-character text input
@@ -241,6 +241,11 @@ describe('SearchLanguageInterpreterComponent', () => {
   it('should show an error message on clicking "Next" if no language has been selected', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
+    component.selectedLanguage = <any>{
+      key: 'spa',
+      value: 'Spanish',
+      value_cy: ''
+    };
     nextButton.click();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
@@ -255,6 +260,26 @@ describe('SearchLanguageInterpreterComponent', () => {
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('#language-not-selected-error-message');
     expect(errorMessageElement.textContent).toContain(SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED);
+  });
+
+  it('should show an error message on clicking "Next" if language not selected from the list after search', () => {
+    spyOn(component, 'onNext').and.callThrough();
+    spyOn(component.caseFlagStateEmitter, 'emit');
+    component.selectedLanguage = undefined;
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
+      errorMessages: component.errorMessages
+    });
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_SELECTED,
+      fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
+    });
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('#language-not-selected-error-message');
+    expect(errorMessageElement.textContent).toContain(SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_SELECTED);
   });
 
   it('should show an error message on clicking "Next" if "Enter the language manually" is checked and no language is entered', () => {
