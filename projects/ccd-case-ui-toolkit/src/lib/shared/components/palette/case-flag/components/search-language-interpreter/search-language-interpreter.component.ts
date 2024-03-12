@@ -6,7 +6,7 @@ import { RpxTranslationService } from 'rpx-xui-translation';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../../domain';
-import { FlagType, LanguageInterpreterListOfValuesType } from '../../../../../domain/case-flag';
+import { FlagType } from '../../../../../domain/case-flag';
 import { CaseFlagState, Language } from '../../domain';
 import { CaseFlagFieldState, SearchLanguageInterpreterErrorMessage, SearchLanguageInterpreterStep } from '../../enums';
 import { SearchLanguageInterpreterControlNames } from './search-language-interpreter-control-names.enum';

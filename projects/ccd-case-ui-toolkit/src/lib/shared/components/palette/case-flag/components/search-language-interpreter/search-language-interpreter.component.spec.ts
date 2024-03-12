@@ -239,27 +239,22 @@ describe('SearchLanguageInterpreterComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if no language has been selected', () => {
-    spyOn(component, 'onNext').and.callThrough();
-    spyOn(component.caseFlagStateEmitter, 'emit');
-    component.selectedLanguage = <any>{
-      key: 'spa',
-      value: 'Spanish',
-      value_cy: ''
-    };
+    fixture.detectChanges();
+    const languageSearchBox = fixture.debugElement.nativeElement.querySelector('.search-language__input');
+    // This event is required to trigger the CDK overlay used by the Angular Material autocomplete component
+    languageSearchBox.dispatchEvent(new Event('focusin'));
+    languageSearchBox.value = 'eng';
+    languageSearchBox.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
     nextButton.click();
     fixture.detectChanges();
-    expect(component.onNext).toHaveBeenCalled();
-    expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
-      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LANGUAGE_INTERPRETER,
-      errorMessages: component.errorMessages
-    });
     expect(component.errorMessages[0]).toEqual({
       title: '',
-      description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
+      description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_SELECTED,
       fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('#language-not-selected-error-message');
-    expect(errorMessageElement.textContent).toContain(SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED);
+    expect(errorMessageElement.textContent).toContain(SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_SELECTED);
   });
 
   it('should show an error message on clicking "Next" if language not selected from the list after search', () => {

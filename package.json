@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.21-case-flags-language-search-validation",
+  "version": "7.0.21-case-flags-language-search-validation-v2",
   "engines": {
     "node": ">=18.17.0"
   },
