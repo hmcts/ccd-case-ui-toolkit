@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.0.21-case-flags-language-search-validation-v2
+### Version 7.0.21-case-flags-language-search-validation-v3
 **CSFD-75** Case flags language search validation
 
 ### Version 7.0.20
