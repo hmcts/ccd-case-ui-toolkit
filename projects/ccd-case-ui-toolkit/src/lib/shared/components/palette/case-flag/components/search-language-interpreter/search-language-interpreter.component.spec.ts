@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
@@ -416,6 +417,37 @@ describe('SearchLanguageInterpreterComponent', () => {
     hintTextElement = nativeElement.querySelector('#language-search-box-hint');
     expect(titleElement.textContent).toContain(component.flagType.name);
     expect(hintTextElement.textContent).toContain(SearchLanguageInterpreterStep.SIGN_HINT_TEXT);
+  });
+
+  it('should "selectOption" set the selected language', () => {
+    const event = {
+      option: {
+        value: {
+          key: 'GB',
+          value: 'English',
+          value_cy: ''
+        }
+      }
+    } as MatAutocompleteSelectedEvent;
+    component.selectedOption(event);
+    expect(component.selectedLanguage).toEqual(event.option.value);
+  });
+
+  it('should display valid message for language term not entered', () => {
+    component.isCheckboxEnabled = false;
+    const optionValue = { key: 'GB', value: 'English', value_cy: '' };
+    const event = {
+      option: {
+        value: optionValue
+      }
+    } as MatAutocompleteSelectedEvent;
+    component.selectedOption(event);
+    component.onNext();
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
+      fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
+    });
   });
 
   it('should show the page title (i.e. flag type name) using the stored Welsh value if the selected language is Welsh', () => {
