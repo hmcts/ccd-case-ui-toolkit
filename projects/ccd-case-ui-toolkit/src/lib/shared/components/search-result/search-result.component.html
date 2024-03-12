@@ -48,7 +48,7 @@
           </tr>
         </table>
       </th>
-      <th *ngIf="activityEnabled()" style="width: 110px;">&#x200b;</th>
+      <th *ngIf="activityEnabled()" style="width: 110px;">&ZeroWidthSpace;</th>
     </tr>
   </thead>
 
@@ -143,4 +143,4 @@
 <div id="no_case_found" *ngIf="!(hasResults() || hasDrafts())" class="notification">
 {{'No cases found. Try using different filters.' | rpxTranslate}}
 </div>
-<span *ngIf="!(hasResults() || hasDrafts())" aria-describedby="no_case_found">&#x200b;</span>
+<span *ngIf="!(hasResults() || hasDrafts())" aria-describedby="no_case_found">&ZeroWidthSpace;</span>
