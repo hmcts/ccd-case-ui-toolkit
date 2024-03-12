@@ -92,8 +92,8 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     }
   }
 
-  public getLinkedCaseReasons(serviceId: number): void {
-    const reasonCodeAPIurl = `${this.appConfig.getRDCommonDataApiUrl()}/lov/categories/CaseLinkingReasonCode?serviceId=${serviceId}`;
+  public getLinkedCaseReasons(serviceCode: string): void {
+    const reasonCodeAPIurl = `${this.appConfig.getRDCommonDataApiUrl()}/lov/categories/CaseLinkingReasonCode?serviceId=${serviceCode}`;
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
       next: reasons => {
         // Sort in ascending order
@@ -110,7 +110,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     const servicesApiUrl = `refdata/location/orgServices?ccdCaseType=${this.caseDetails?.case_type?.id}`;
     this.commonDataService.getServiceOrgData(servicesApiUrl).subscribe(result => {
       result.forEach(ids => {
-        this.getLinkedCaseReasons(ids.service_id);
+        this.getLinkedCaseReasons(ids.service_code);
       })
 
     })
