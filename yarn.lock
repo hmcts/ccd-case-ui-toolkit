@@ -3299,7 +3299,7 @@ __metadata:
     "@storybook/builder-webpack4": ^6.5.10
     "@storybook/manager-webpack4": ^6.5.10
     "@storybook/preset-scss": ^1.0.3
-    "@storybook/testing-library": ^0.0.13
+    "@storybook/testing-library": ^0.2.0
     "@types/jasmine": ~2.8.0
     "@types/jasminewd2": ^2.0.3
     "@types/node": ^18.17.0
@@ -5479,7 +5479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/client-logger@npm:6.5.16, @storybook/client-logger@npm:^6.4.0":
+"@storybook/client-logger@npm:6.5.16":
   version: 6.5.16
   resolution: "@storybook/client-logger@npm:6.5.16"
   dependencies:
@@ -5751,7 +5751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/instrumenter@npm:6.5.16, @storybook/instrumenter@npm:^6.4.0":
+"@storybook/instrumenter@npm:6.5.16":
   version: 6.5.16
   resolution: "@storybook/instrumenter@npm:6.5.16"
   dependencies:
@@ -5987,16 +5987,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/testing-library@npm:^0.0.13":
-  version: 0.0.13
-  resolution: "@storybook/testing-library@npm:0.0.13"
+"@storybook/testing-library@npm:^0.2.0":
+  version: 0.2.2
+  resolution: "@storybook/testing-library@npm:0.2.2"
   dependencies:
-    "@storybook/client-logger": ^6.4.0
-    "@storybook/instrumenter": ^6.4.0
-    "@testing-library/dom": ^8.3.0
-    "@testing-library/user-event": ^13.2.1
+    "@testing-library/dom": ^9.0.0
+    "@testing-library/user-event": ^14.4.0
     ts-dedent: ^2.2.0
-  checksum: 759361ad3fbc89bdfddfa6d5a15eef06ed6fa9110bfa40c08fcf2497e7acd85e8d5c73c26ea4a46934168b21db294256befb55755fee4292d3d277c576284a1c
+  checksum: 8ccdc1fbbb3472264c56b0aaf2f1c5d273f1ae9b230a53adf9cf82bf82c1a555550894f0e8869c206fa07b1fe8423da4d56590377756c58de3ec560b35a96c46
   languageName: node
   linkType: hard
 
@@ -6063,9 +6061,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^8.3.0":
-  version: 8.20.1
-  resolution: "@testing-library/dom@npm:8.20.1"
+"@testing-library/dom@npm:^9.0.0":
+  version: 9.3.4
+  resolution: "@testing-library/dom@npm:9.3.4"
   dependencies:
     "@babel/code-frame": ^7.10.4
     "@babel/runtime": ^7.12.5
@@ -6075,18 +6073,16 @@ __metadata:
     dom-accessibility-api: ^0.5.9
     lz-string: ^1.5.0
     pretty-format: ^27.0.2
-  checksum: 06fc8dc67849aadb726cbbad0e7546afdf8923bd39acb64c576d706249bd7d0d05f08e08a31913fb621162e3b9c2bd0dce15964437f030f9fa4476326fdd3007
+  checksum: dfd6fb0d6c7b4dd716ba3c47309bc9541b4a55772cb61758b4f396b3785efe2dbc75dc63423545c039078c7ffcc5e4b8c67c2db1b6af4799580466036f70026f
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:^13.2.1":
-  version: 13.5.0
-  resolution: "@testing-library/user-event@npm:13.5.0"
-  dependencies:
-    "@babel/runtime": ^7.12.5
+"@testing-library/user-event@npm:^14.4.0":
+  version: 14.5.2
+  resolution: "@testing-library/user-event@npm:14.5.2"
   peerDependencies:
     "@testing-library/dom": ">=7.21.4"
-  checksum: 16319de685fbb7008f1ba667928f458b2d08196918002daca56996de80ef35e6d9de26e9e1ece7d00a004692b95a597cf9142fff0dc53f2f51606a776584f549
+  checksum: d76937dffcf0082fbf3bb89eb2b81a31bf5448048dd61c33928c5f10e33a58e035321d39145cefd469bb5a499c68a5b4086b22f1a44e3e7c7e817dc5f6782867
   languageName: node
   linkType: hard
 
