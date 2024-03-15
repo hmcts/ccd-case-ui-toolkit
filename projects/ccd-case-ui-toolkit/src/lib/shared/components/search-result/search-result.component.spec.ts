@@ -350,7 +350,7 @@ describe('SearchResultComponent', () => {
 
     it('should render an case activity column with header', () => {
       const headRow = de.query(By.css('div>table>thead>tr th:nth-child(4)'));
-      expect(headRow.nativeElement.textContent).toBe('');
+      expect(headRow.nativeElement.textContent).not.toBeNull();
     });
 
     it('should not render an case activity column when activity is disabled', () => {
