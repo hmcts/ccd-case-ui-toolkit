@@ -19,7 +19,7 @@
       </div>
       <input aria-label="Language search box" matInput [formControlName]="SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM" [matAutocomplete]="autoSearchLanguage"
         class="govuk-input search-language__input" type="text">
-      <mat-autocomplete class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLanguage="matAutocomplete"
+      <mat-autocomplete (optionSelected)="selectedOption($event)" class="mat-autocomplete-panel-extend" autoActiveFirstOption #autoSearchLanguage="matAutocomplete"
         [displayWith]="displayLanguage">
         <mat-option *ngFor="let language of filteredLanguages$ | async" [value]="language">
           {{language | languageInterpreterDisplay}}
