@@ -28,4 +28,5 @@ export class FormDocument {
   public document_binary_url: string;
   public document_filename: string;
   public document_hash?: string;
+  public upload_timestamp?: Date | string;
 }
