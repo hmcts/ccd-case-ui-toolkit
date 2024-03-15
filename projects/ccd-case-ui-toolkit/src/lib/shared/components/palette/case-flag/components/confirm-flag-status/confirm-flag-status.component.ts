@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { CaseFlagState } from '../../domain';
 import {
   CaseFlagFieldState,
@@ -9,12 +9,13 @@ import {
   ConfirmStatusErrorMessage,
   ConfirmStatusStep
 } from '../../enums';
+import { AbstractJourneyComponent } from '../../../base-field';
 
 @Component({
   selector: 'ccd-confirm-flag-status',
   templateUrl: './confirm-flag-status.component.html'
 })
-export class ConfirmFlagStatusComponent implements OnInit {
+export class ConfirmFlagStatusComponent extends AbstractJourneyComponent implements OnInit, Journey {
 
   @Input() public formGroup: FormGroup;
   @Input() public defaultStatus: string;
@@ -48,6 +49,14 @@ export class ConfirmFlagStatusComponent implements OnInit {
     this.validateTextEntry();
     // Return case flag field state and error messages to the parent
     this.caseFlagStateEmitter.emit({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_STATUS, errorMessages: this.errorMessages });
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
   }
 
   private validateTextEntry(): void {

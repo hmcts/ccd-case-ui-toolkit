@@ -7,6 +7,7 @@ import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
   FieldsUtils,
+  MultipageComponentStateService,
   OrderService,
   ProfileNotifier,
 } from '../../../services';
@@ -67,6 +68,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly orderService: OrderService,
     private readonly profileNotifier: ProfileNotifier,
+    private readonly multipageComponentStateService: MultipageComponentStateService
   ) {
   }
 
@@ -89,6 +91,8 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.getPageTitle();
+
+    console.log(this.multipageComponentStateService.getInstigator());
   }
 
   public ngOnDestroy(): void {

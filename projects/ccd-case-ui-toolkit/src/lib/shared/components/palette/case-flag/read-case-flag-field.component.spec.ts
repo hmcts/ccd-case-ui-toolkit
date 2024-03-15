@@ -12,6 +12,7 @@ import { FlagDetail, FlagDetailDisplay, FlagsWithFormGroupPath } from './domain'
 import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagStatus } from './enums';
 import { ReadCaseFlagFieldComponent } from './read-case-flag-field.component';
 import { WriteCaseFlagFieldComponent } from './write-case-flag-field.component';
+import { MultipageComponentStateService } from '../../../services';
 
 describe('ReadCaseFlagFieldComponent', () => {
   let component: ReadCaseFlagFieldComponent;
@@ -501,7 +502,7 @@ describe('ReadCaseFlagFieldComponent', () => {
       [flagLauncher1CaseField.id]: {
         controls: {},
         caseField: flagLauncher1CaseField,
-        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), new CaseFlagStateService(), null)
+        component: new WriteCaseFlagFieldComponent(null, new CaseEditDataService(), new CaseFlagStateService(), null, new MultipageComponentStateService())
       }
     },
     get: (controlName: string) => {

@@ -9,7 +9,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
 import { DRAFT_PREFIX } from '../../../domain/draft.model';
-import { LoadingService } from '../../../services';
+import { AddressesService, LoadingService, MultipageComponentStateService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FieldsUtils } from '../../../services/fields';
 import { FormErrorService } from '../../../services/form/form-error.service';
@@ -22,13 +22,14 @@ import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
+import { JourneyInstigator } from '../../../domain/journey';
 
 @Component({
   selector: 'ccd-case-edit-page',
   templateUrl: 'case-edit-page.html',
   styleUrls: ['./case-edit-page.scss']
 })
-export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestroy, JourneyInstigator {
   public static readonly RESUMED_FORM_DISCARD = 'RESUMED_FORM_DISCARD';
   public static readonly NEW_FORM_DISCARD = 'NEW_FORM_DISCARD';
   public static readonly NEW_FORM_SAVE = 'NEW_FORM_CHANGED_SAVE';
@@ -83,8 +84,36 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly caseFieldService: CaseFieldService,
     private readonly caseEditDataService: CaseEditDataService,
     private readonly loadingService: LoadingService,
-    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
+    private readonly multipageComponentStateService: MultipageComponentStateService,
+    private readonly addressService: AddressesService
   ) {
+    this.multipageComponentStateService.setInstigator(this);
+  }
+
+  public onFinalNext(): void {
+    this.submit();
+  }
+
+  public onFinalPrevious(): void {
+    this.cancel();
+  }
+
+  public isAtStart(): boolean {
+    return this.multipageComponentStateService.isAtStart;
+  }
+
+  // This method will be triggered by the next button in the app component
+  public nextStep(): void {
+    // TODO: Debug why the state isn't persisting. 
+    // - Check the AbstractJourneyComponent for more details.
+    // - Compare to prototype.
+    this.multipageComponentStateService.next();
+  }
+
+  // This method will be triggered by the previous button in the app component
+  public previousStep(): void {
+    this.multipageComponentStateService.previous();
   }
 
   public ngOnInit(): void {
@@ -146,6 +175,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     this.dialogRefAfterClosedSub?.unsubscribe();
     this.saveDraftSub?.unsubscribe();
     this.caseFormValidationErrorsSub?.unsubscribe();
+    this.multipageComponentStateService.reset();
   }
 
   public applyValuesChanged(valuesChanged: boolean): void {
@@ -172,11 +202,11 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
    */
   public toPreviousPage(): void {
     this.caseEditDataService.clearFormValidationErrors();
-
     const caseEventData: CaseEventData = this.buildCaseEventData(true);
     caseEventData.data = caseEventData.event_data;
     this.updateFormData(caseEventData);
     this.previous();
+    this.previousStep();
     CaseEditPageComponent.setFocusToTop();
   }
 
@@ -200,7 +230,13 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             }
           }
           if (fieldElement.hasError('required')) {
-            this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
+            if (casefield.id === 'AddressLine1') {
+              // EUI-1067 - Display more relevant error message to user and correctly navigate to the field
+              this.addressService.setMandatoryError(true);
+              this.caseEditDataService.addFormValidationError({ id: `${path}_${path}`, message: `An address is required` });
+            } else {
+              this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
+            }
             fieldElement.markAsDirty();
             // For the JudicialUser field type, an error needs to be set on the component so that an error message
             // can be displayed at field level
@@ -270,6 +306,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     }
 
     if (!this.caseEdit.isSubmitting && !this.currentPageIsNotValid()) {
+      this.addressService.setMandatoryError(false);
       console.log('Case Edit Error', this.caseEdit.error);
       if (this.caseEdit.validPageList.findIndex(page=> page.id === this.currentPage.id) === -1) {
         this.caseEdit.validPageList.push(this.currentPage);
@@ -421,6 +458,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     }
 
     this.caseEditDataService.clearFormValidationErrors();
+    this.multipageComponentStateService.reset();
   }
 
   public submitting(): boolean {

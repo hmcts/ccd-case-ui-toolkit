@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import moment from 'moment';
 import { throwError } from 'rxjs';
-import { CaseView, ErrorMessage, HttpError } from '../../../../../domain';
+import { CaseView, ErrorMessage, HttpError, Journey } from '../../../../../domain';
 import { LovRefDataModel } from '../../../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { LinkedCasesState } from '../../domain';
@@ -15,13 +15,15 @@ import {
 import { LinkedCasesErrorMessages, LinkedCasesPages, Patterns } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { ValidatorsUtils } from '../../utils/validators.utils';
+import { AbstractJourneyComponent } from '../../../base-field';
+import { MultipageComponentStateService } from '../../../../../services';
 
 @Component({
   selector: 'ccd-link-cases',
   styleUrls: ['./link-cases.component.scss'],
   templateUrl: './link-cases.component.html',
 })
-export class LinkCasesComponent implements OnInit {
+export class LinkCasesComponent extends AbstractJourneyComponent implements OnInit, Journey {
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
 
@@ -43,7 +45,11 @@ export class LinkCasesComponent implements OnInit {
     private readonly casesService: CasesService,
     private readonly fb: FormBuilder,
     private readonly validatorsUtils: ValidatorsUtils,
-    private readonly linkedCasesService: LinkedCasesService) { }
+    private readonly linkedCasesService: LinkedCasesService,
+    multipageComponentStateService: MultipageComponentStateService
+  ) {
+    super(multipageComponentStateService);
+  }
 
   public ngOnInit(): void {
     this.caseId = this.linkedCasesService.caseId;
@@ -310,5 +316,13 @@ export class LinkCasesComponent implements OnInit {
       navigateToNextPage = false;
     }
     this.emitLinkedCasesState(navigateToNextPage);
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
   }
 }

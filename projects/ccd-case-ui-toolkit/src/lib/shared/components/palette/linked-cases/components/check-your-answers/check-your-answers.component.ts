@@ -2,13 +2,16 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CaseLink, LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
+import { AbstractJourneyComponent } from '../../../base-field';
+import { MultipageComponentStateService } from '../../../../../services';
+import { Journey } from '../../../../../domain';
 
 @Component({
   selector: 'ccd-linked-cases-check-your-answers',
   templateUrl: './check-your-answers.component.html',
   styleUrls: ['./check-your-answers.component.scss']
 })
-export class CheckYourAnswersComponent implements OnInit {
+export class CheckYourAnswersComponent extends AbstractJourneyComponent implements OnInit, Journey {
 
   @Output()
   public linkedCasesStateEmitter: EventEmitter<LinkedCasesState> = new EventEmitter<LinkedCasesState>();
@@ -18,7 +21,8 @@ export class CheckYourAnswersComponent implements OnInit {
   public isLinkCasesJourney: boolean;
   public linkedCasesTableCaption: string;
 
-  constructor(private linkedCasesService: LinkedCasesService) {
+  constructor(private linkedCasesService: LinkedCasesService, multipageComponentStateService: MultipageComponentStateService) {
+    super(multipageComponentStateService);
   }
 
   public ngOnInit(): void {
@@ -35,5 +39,15 @@ export class CheckYourAnswersComponent implements OnInit {
       navigateToPreviousPage: true,
       navigateToNextPage: true
     });
+  }
+
+  public next() {
+    this.linkedCasesStateEmitter.emit({
+      currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS,
+      navigateToPreviousPage: false,
+      navigateToNextPage: true
+    });
+    
+    super.next();
   }
 }
