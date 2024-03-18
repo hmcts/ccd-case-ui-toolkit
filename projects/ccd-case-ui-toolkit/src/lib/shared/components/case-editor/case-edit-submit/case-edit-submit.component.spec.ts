@@ -24,12 +24,14 @@ import {
   ProfileNotifier,
   SessionStorageService
 } from '../../../services';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
 import { CaseEditPageText } from '../case-edit-page/case-edit-page-text.enum';
 import { aWizardPage } from '../case-edit.spec';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { Wizard, WizardPage } from '../domain';
 import { CaseNotifier } from '../services';
+import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
 
 import createSpyObj = jasmine.createSpyObj;
@@ -82,7 +84,7 @@ describe('CaseEditSubmitComponent', () => {
   const $EVENT_NOTES = By.css('#fieldset-event');
   const fieldsUtils = new FieldsUtils();
   const FORM_GROUP = new FormGroup({
-    data: new FormGroup({PersonLastName: new FormControl('Khaleesi')})
+    data: new FormGroup({ PersonLastName: new FormControl('Khaleesi') })
   });
   const COMPLEX_SUBFIELD_2_VALUE_NOT_RETAINED = '2nd child field of complex type (do not retain)';
   const COMPLEX_SUBFIELD_1_VALUE_EMPTY = '';
@@ -106,6 +108,162 @@ describe('CaseEditSubmitComponent', () => {
   const caseField2: CaseField = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', 3, null, false, true);
   const caseField3: CaseField = aCaseField('field3', 'field3', 'Text', 'OPTIONAL', 2);
   let cancelled: any;
+  const METADATA: CaseField[] = [
+    Object.assign(new CaseField(), {
+      id: '[CASE_REFERENCE]',
+      label: 'Case Reference',
+      value: 1533032330714079,
+      hint_text: null,
+      field_type: {
+        id: 'Number',
+        type: 'Number',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[CASE_TYPE]',
+      label: 'Case Type',
+      value: 'DIVORCE',
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[CREATED_DATE]',
+      label: 'Created Date',
+      value: '2018-07-31T10:18:50.737',
+      hint_text: null,
+      field_type: {
+        id: 'Date',
+        type: 'Date',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[JURISDICTION]',
+      label: 'Jurisdiction',
+      value: 'DIVORCE',
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[LAST_MODIFIED_DATE]',
+      label: 'Last Modified Date',
+      value: '2018-07-31T10:18:50.737',
+      hint_text: null,
+      field_type: {
+        id: 'Date',
+        type: 'Date',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[SECURITY_CLASSIFICATION]',
+      label: 'Security Classification',
+      value: 'PUBLIC',
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    }),
+    Object.assign(new CaseField(), {
+      id: '[SECURITY_CLASSIFICATION]',
+      label: 'Security Classification',
+      value: 'PUBLIC',
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null
+      },
+      security_label: 'PUBLIC',
+      order: null,
+      display_context: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null
+    })
+  ];
 
   const USER = {
     idam: {
@@ -168,13 +326,14 @@ describe('CaseEditSubmitComponent', () => {
         form: FORM_GROUP,
         data: '',
         eventTrigger:
-          {case_fields: [caseField1, caseField2, caseField3], end_button_label: END_BUTTON_LABEL, can_save_draft: false},
+          { case_fields: [caseField1, caseField2, caseField3], end_button_label: END_BUTTON_LABEL, can_save_draft: false },
         wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         cancel: () => undefined,
         cancelled,
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: METADATA, state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
         ignoreWarning: false,
         isEventCompletionChecksRequired: false,
         isSubmitting: false,
@@ -204,23 +363,24 @@ describe('CaseEditSubmitComponent', () => {
           CcdCYAPageLabelFilterPipe,
           CcdPageFieldsPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
-          {provide: CaseEditComponent, useValue: caseEditComponent},
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: FieldsUtils, useValue: fieldsUtils},
-          {provide: CaseReferencePipe, useValue: casesReferencePipe},
-          {provide: ActivatedRoute, useValue: mockRoute},
-          {provide: OrderService, useValue: orderService},
-          {provide: ProfileNotifier, useValue: profileNotifier},
-          {provide: SessionStorageService, useValue: sessionStorageService},
-          {provide: Router, useValue: mockRouter},
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: SessionStorageService, useValue: sessionStorageService },
+          { provide: Router, useValue: mockRouter },
           PlaceholderService,
-          {provide: CaseNotifier, useValue: mockCaseNotifier},
+          { provide: CaseNotifier, useValue: mockCaseNotifier },
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -229,10 +389,10 @@ describe('CaseEditSubmitComponent', () => {
 
       comp.ngOnInit();
       comp.wizard.pages[0].case_fields = [caseField1];
-      fixture.detectChanges();
     });
 
     it('must render correct button label', () => {
+      fixture.detectChanges();
       const buttons = de.queryAll(By.css('div>button'));
       expect(buttons[1].nativeElement.textContent.trim()).toEqual(END_BUTTON_LABEL);
     });
@@ -341,6 +501,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should show event notes when set in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
       comp.eventTrigger.show_event_notes = true;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -352,6 +513,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should show event notes when not set in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
       comp.eventTrigger.show_event_notes = null;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -363,6 +525,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should show event notes when not defined in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
       comp.eventTrigger.show_event_notes = undefined;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -374,6 +537,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should not show event notes when set to false in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
       comp.eventTrigger.show_event_notes = false;
       fixture.detectChanges();
       const eventNotes = de.query($EVENT_NOTES);
@@ -382,6 +546,111 @@ describe('CaseEditSubmitComponent', () => {
 
       expect(result).toBeFalsy();
       expect(eventNotes).toBeNull();
+    });
+
+    it('should show event notes when set in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(true);
+      expect(eventNotes).not.toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and profile is solicitor and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.profile.user.idam.roles = ['divorce-solicitor'];
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when set in event trigger and is case flag journey and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.profile.user.idam.roles = ['caseworker-divorce'];
+      comp.caseEdit.isCaseFlagSubmission = true;
+      comp.eventTrigger.show_event_notes = true;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not set in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.eventTrigger.show_event_notes = null;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should hide event notes when not defined in event trigger and showEventNotes is called', () => {
+      fixture.detectChanges();
+      comp.eventTrigger.show_event_notes = undefined;
+      fixture.detectChanges();
+      const eventNotes = de.query($EVENT_NOTES);
+      const result = comp.showEventNotes();
+      expect(result).toEqual(false);
+      expect(eventNotes).toBeNull();
+    });
+
+    it('should set correct page title', () => {
+      const caseFieldCaseFlagCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE)', 2);
+      const caseFieldCaseFlagUpdate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE)', 2);
+      const caseFieldCaseFlagExternalCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE,EXTERNAL)', 2);
+      const caseFieldCaseFlagExternalUpdate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE,EXTERNAL)', 2);
+      const caseFieldCaseFlagCreate2Point1: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE,VERSION2.1)', 2);
+      const caseFieldCaseFlagUpdate2Point1: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(UPDATE,VERSION2.1)', 2);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagExternalUpdate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_SUPPORT_REQUEST);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagCreate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagUpdate
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagCreate2Point1
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagUpdate2Point1
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.REVIEW_FLAG_DETAILS);
+
+      comp.eventTrigger.case_fields = [
+        caseField1
+      ];
+      comp.ngOnInit();
+      expect(comp.pageTitle).toEqual(CaseEditSubmitTitles.CHECK_YOUR_ANSWERS);
     });
 
     it('should return false when no field exists and readOnlySummaryFieldsToDisplayExists is called', () => {
@@ -422,6 +691,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should disable submit button, previous button and cancel link when isSubmitting is set to true', () => {
+      fixture.detectChanges();
       caseEditComponent.isSubmitting = true;
       fixture.detectChanges();
 
@@ -439,6 +709,7 @@ describe('CaseEditSubmitComponent', () => {
     });
 
     it('should enable submit button, previous button and cancel link when isSubmitting is set to false', () => {
+      fixture.detectChanges();
       caseEditComponent.isSubmitting = false;
       fixture.detectChanges();
 
@@ -453,6 +724,25 @@ describe('CaseEditSubmitComponent', () => {
 
       const cancelLink = de.query(By.css('a[class=disabled]'));
       expect(cancelLink).toBeNull();
+    });
+
+    it('should not display the "Previous" button if submission is for a Case Flag', () => {
+      const caseFieldCaseFlagCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE)', 2);
+      comp.eventTrigger.case_fields = [
+        caseFieldCaseFlagCreate
+      ];
+      fixture.detectChanges();
+      expect(comp.caseEdit.isCaseFlagSubmission).toBe(true);
+      const previousButton = de.query(By.css('.button-secondary'));
+      expect(previousButton).toBeNull();
+    });
+
+    it('should display the "Previous" button if submission is not for a Case Flag', () => {
+      comp.eventTrigger.case_fields = [];
+      fixture.detectChanges();
+      expect(comp.caseEdit.isCaseFlagSubmission).toBe(false);
+      const previousButton = de.query(By.css('.button-secondary'));
+      expect(previousButton.nativeElement.textContent).toContain('Previous');
     });
   });
 
@@ -486,7 +776,7 @@ describe('CaseEditSubmitComponent', () => {
       queryParamMap: queryParamMapNoProfile,
     };
     const mockRouteNoProfile = {
-      params: of({id: 123}),
+      params: of({ id: 123 }),
       snapshot: snapshotNoProfile
     };
     beforeEach(() => {
@@ -497,14 +787,14 @@ describe('CaseEditSubmitComponent', () => {
       caseEditComponent = {
         form: FORM_GROUP,
         data: '',
-        eventTrigger: {case_fields: [], can_save_draft: true},
+        eventTrigger: { case_fields: [], can_save_draft: true },
         wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         cancel: () => undefined,
         cancelled,
-        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [], state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: METADATA, state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
         ignoreWarning: false,
         isEventCompletionChecksRequired: false,
         isSubmitting: false,
@@ -532,23 +822,24 @@ describe('CaseEditSubmitComponent', () => {
           CcdPageFieldsPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
-          {provide: CaseEditComponent, useValue: caseEditComponent},
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: FieldsUtils, useValue: fieldsUtils},
-          {provide: CaseReferencePipe, useValue: casesReferencePipe},
-          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
-          {provide: OrderService, useValue: orderService},
-          {provide: ProfileNotifier, useValue: profileNotifier},
-          {provide: SessionStorageService, useValue: sessionStorageService},
-          {provide: Router, useValue: mockRouter},
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: SessionStorageService, useValue: sessionStorageService },
+          { provide: Router, useValue: mockRouter },
           PlaceholderService,
-          {provide: CaseNotifier, useValue: mockCaseNotifier},
+          { provide: CaseNotifier, useValue: mockCaseNotifier },
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -573,8 +864,8 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
 
       comp.cancel();
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageText.RESUMED_FORM_DISCARD });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageText.NEW_FORM_DISCARD });
     });
 
     it('should emit NEW_FORM_DISCARD on create event if cancel triggered and originated from create case', () => {
@@ -588,13 +879,19 @@ describe('CaseEditSubmitComponent', () => {
       fixture.detectChanges();
 
       comp.cancel();
-      expect(cancelled.emit).toHaveBeenCalledWith({status: CaseEditPageText.NEW_FORM_DISCARD});
-      expect(cancelled.emit).not.toHaveBeenCalledWith({status: CaseEditPageText.RESUMED_FORM_DISCARD});
+      expect(cancelled.emit).toHaveBeenCalledWith({ status: CaseEditPageText.NEW_FORM_DISCARD });
+      expect(cancelled.emit).not.toHaveBeenCalledWith({ status: CaseEditPageText.RESUMED_FORM_DISCARD });
     });
 
     it('should return "Return to case list" text label for cancel button when save and resume enabled', () => {
       const result = comp.getCancelText();
       expect(result).toBe('Return to case list');
+    });
+
+    it('should have metadata Fields along with other fields', () => {
+      expect(comp.metadataFieldsObject).toBeDefined();
+      expect(comp.allFieldsValues).toBeDefined();
+      expect(comp.allFieldsValues['[CASE_TYPE]']).toBe('DIVORCE');
     });
 
     it('should show valid title on the page', () => {
@@ -633,7 +930,7 @@ describe('CaseEditSubmitComponent', () => {
       queryParamMap: queryParamMapNoProfile,
     };
     const mockRouteNoProfile = {
-      params: of({id: 123}),
+      params: of({ id: 123 }),
       snapshot: snapshotNoProfile
     };
     beforeEach(() => {
@@ -644,14 +941,14 @@ describe('CaseEditSubmitComponent', () => {
       caseEditComponent = {
         form: FORM_GROUP,
         data: '',
-        eventTrigger: {case_fields: [], can_save_draft: true},
+        eventTrigger: { case_fields: [], can_save_draft: true },
         wizard,
         hasPrevious: () => true,
         getPage: () => firstPage,
         navigateToPage: () => undefined,
         cancel: () => undefined,
         cancelled,
-        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [], state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
+        caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: METADATA, state: {id: 'incompleteApplication', name: 'Incomplete Application', title_display: '# 12345678123456: west'}},
         ignoreWarning: false,
         isEventCompletionChecksRequired: false,
         isSubmitting: false,
@@ -683,23 +980,24 @@ describe('CaseEditSubmitComponent', () => {
           CcdPageFieldsPipe,
           CcdCYAPageLabelFilterPipe,
           CaseReferencePipe,
-          CcdCaseTitlePipe
+          CcdCaseTitlePipe,
+          MockRpxTranslatePipe
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
-          {provide: CaseEditComponent, useValue: caseEditComponent},
-          {provide: FormValueService, useValue: formValueService},
-          {provide: FormErrorService, useValue: formErrorService},
-          {provide: CaseFieldService, useValue: caseFieldService},
-          {provide: FieldsUtils, useValue: fieldsUtils},
-          {provide: CaseReferencePipe, useValue: casesReferencePipe},
-          {provide: ActivatedRoute, useValue: mockRouteNoProfile},
-          {provide: OrderService, useValue: orderService},
-          {provide: ProfileNotifier, useValue: profileNotifier},
-          {provide: SessionStorageService, useValue: sessionStorageService},
-          {provide: Router, useValue: mockRouter},
+          { provide: CaseEditComponent, useValue: caseEditComponent },
+          { provide: FormValueService, useValue: formValueService },
+          { provide: FormErrorService, useValue: formErrorService },
+          { provide: CaseFieldService, useValue: caseFieldService },
+          { provide: FieldsUtils, useValue: fieldsUtils },
+          { provide: CaseReferencePipe, useValue: casesReferencePipe },
+          { provide: ActivatedRoute, useValue: mockRouteNoProfile },
+          { provide: OrderService, useValue: orderService },
+          { provide: ProfileNotifier, useValue: profileNotifier },
+          { provide: SessionStorageService, useValue: sessionStorageService },
+          { provide: Router, useValue: mockRouter },
           PlaceholderService,
-          {provide: CaseNotifier, useValue: mockCaseNotifier},
+          { provide: CaseNotifier, useValue: mockCaseNotifier },
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);

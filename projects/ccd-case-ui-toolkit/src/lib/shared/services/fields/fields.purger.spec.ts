@@ -75,7 +75,7 @@ describe('deleteFieldValue() tests', () => {
     display_context: 'READONLY'
   }) as CaseField;
 
-  const COUNTRIES: FixedListItem[] = [{code: 'UK', label: 'United Kingdom'}, {code: 'US', label: 'United States'}];
+  const COUNTRIES: FixedListItem[] = [{ code: 'UK', label: 'United Kingdom' }, { code: 'US', label: 'United States' }];
   const COUNTRY_MULTI_SELECT_FIELD_TYPE: FieldType = createMultiSelectListFieldType('countryCodes', COUNTRIES);
   const COUNTRY_MULTI_SELECT_FIELD: CaseField = createCaseField('CountrySelection', 'Country selection', '',
     COUNTRY_MULTI_SELECT_FIELD_TYPE, 'OPTIONAL', 1, null, null);
@@ -89,9 +89,9 @@ describe('deleteFieldValue() tests', () => {
   };
 
   const COURT_LIST = [
-    {code: '305', label: 'Reading County Court'},
-    {code: '474', label: 'Guildford Crown Court'},
-    {code: '2732', label: 'Croydon Magistrates\' Court'}
+    { code: '305', label: 'Reading County Court' },
+    { code: '474', label: 'Guildford Crown Court' },
+    { code: '2732', label: 'Croydon Magistrates\' Court' }
   ];
 
   const COURT_SELECTION_FIELD: CaseField = ({
@@ -227,8 +227,9 @@ describe('deleteFieldValue() tests', () => {
       CourtSelection: new FormControl({
         value: {
           list_items: COURT_LIST,
-          value: {code: '305', label: 'Reading County Court'}
-        }
+          value: { code: '305', label: 'Reading County Court' }
+        },
+        disabled: false,
       })
     });
 
@@ -251,5 +252,10 @@ describe('deleteFieldValue() tests', () => {
       },
       null
     ]);
+  });
+
+  it('should not map array values to null when array is empty', () => {
+    const array = [];
+    expect(fieldsPurger.mapArrayValuesToNull(array)).toEqual([]);
   });
 });

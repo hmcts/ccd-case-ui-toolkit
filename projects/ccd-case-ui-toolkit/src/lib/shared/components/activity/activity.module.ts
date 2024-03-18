@@ -28,7 +28,7 @@ import { ActivityComponent } from './activity.component';
     providers: [
         ActivityService,
         ActivityPollingService,
-        SessionStorageService
+        SessionStorageService,
     ]
 })
 export class ActivityModule {}

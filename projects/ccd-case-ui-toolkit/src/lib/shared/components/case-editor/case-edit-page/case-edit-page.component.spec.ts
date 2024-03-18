@@ -12,7 +12,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, of, Subject } from 'rxjs';
@@ -35,6 +35,7 @@ import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import {
+  AddressesService,
   CaseFieldService,
   FieldTypeSanitiser,
   FormErrorService,
@@ -77,7 +78,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService = {},
     caseEditDataService = {},
     loadingService = {},
-    validPageListCaseFieldsService = {}
+    validPageListCaseFieldsService = {},
+    addressesService = {}
   }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -90,7 +92,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService as CaseFieldService,
     caseEditDataService as CaseEditDataService,
     loadingService as LoadingService,
-    validPageListCaseFieldsService as ValidPageListCaseFieldsService
+    validPageListCaseFieldsService as ValidPageListCaseFieldsService,
+    addressesService as AddressesService
   );
 
   it('should create', () => {
@@ -216,7 +219,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
         data: {
           bothDefendants: {
             people: {
-            list: ['sample', 'sample']
+              list: ['sample', 'sample']
             }
           }
         }
@@ -239,9 +242,9 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
-          people: {
-            value: true
-          }
+        people: {
+          value: true
+        }
       };
       const jsonDataMock = {
         data: {
@@ -256,7 +259,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
             value: {
               people: {
                 value: true
-                }
+              }
             }
           }
         ],
@@ -452,6 +455,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           imports: [FormsModule, ReactiveFormsModule],
@@ -475,16 +479,17 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
-        spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+        spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
         spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-        spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => {});
+        spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
         spyOn(pageValidationService, 'isPageValid').and.returnValue(true);
         comp = fixture.componentInstance;
         readOnly.display_context = 'READONLY';
@@ -848,6 +853,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
 
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -870,6 +876,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -877,12 +884,12 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage(
@@ -1009,6 +1016,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
 
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -1031,6 +1039,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1044,12 +1053,12 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
       comp.wizard = new Wizard([wizardPage]);
       comp.editForm = FORM_GROUP;
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
       fixture.detectChanges();
     });
 
@@ -1084,6 +1093,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
   describe('submit the form', () => {
     const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+    const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
     beforeEach(
       waitForAsync(() => {
@@ -1200,6 +1210,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1425,6 +1436,7 @@ describe('CaseEditPageComponent - all other tests', () => {
     beforeEach(
       waitForAsync(() => {
         const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
         firstPage.id = 'first page';
         cancelled = createSpyObj('cancelled', ['emit']);
         const caseFields: CaseField[] = [
@@ -1534,6 +1546,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock}
           ],
         }).compileComponents();
       })
@@ -1547,12 +1560,12 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
 
       de = fixture.debugElement;
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
       spyOn(comp, 'buildCaseEventData').and.callThrough();
       fixture.detectChanges();
     });
@@ -1627,9 +1640,18 @@ describe('CaseEditPageComponent - all other tests', () => {
       value: '',
     } as CaseField;
 
+    const ADDRESS_FIELD: CaseField = {
+      id: 'AddressLine1',
+      label: 'AddressLine1',
+      display_context: 'MANDATORY',
+      field_type: {id: 'Text', type: 'Text'},
+      value: '',
+    } as CaseField;
+
     beforeEach(
       waitForAsync(() => {
         const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
         firstPage.id = 'first page';
         cancelled = createSpyObj('cancelled', ['emit']);
 
@@ -1730,6 +1752,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1737,10 +1760,10 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       spyOn(caseEditDataService, 'addFormValidationError').and.callFake((validationError: CaseEditValidationError) => {
         caseEditDataService.caseFormValidationErrors$.next(

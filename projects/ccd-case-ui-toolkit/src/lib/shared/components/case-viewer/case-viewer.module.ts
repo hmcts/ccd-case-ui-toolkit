@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { RouterModule } from '@angular/router';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { AlertModule } from '../../../components/banners/alert/alert.module';
@@ -57,6 +57,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     MatTabsModule,
     ReactiveFormsModule,
     AlertModule,
+    LabelSubstitutorModule,
     RpxTranslationModule.forChild(),
     BannersModule,
     LabelSubstitutorModule,
@@ -94,7 +95,7 @@ import { CaseResolver, EventTriggerResolver } from './services';
     DraftService,
     HttpService,
     CaseResolver,
-    ErrorNotifierService,
+    ErrorNotifierService
   ]
 })
 export class CaseViewerModule {

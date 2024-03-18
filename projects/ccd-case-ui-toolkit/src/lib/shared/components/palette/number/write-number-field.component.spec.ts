@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteNumberFieldComponent } from './write-number-field.component';
@@ -29,10 +30,12 @@ describe('WriteNumberFieldComponent', () => {
   const $INPUT = By.css('.form-group input');
 
   // Input is mocked so that one-way bound inputs can be tested
-  const inputComponentMock: any = MockComponent({ selector: 'input', inputs: [
-    'type',
-    'formControl'
-  ]});
+  const inputComponentMock: any = MockComponent({
+    selector: 'input', inputs: [
+      'type',
+      'formControl'
+    ]
+  });
 
   let fixture: ComponentFixture<WriteNumberFieldComponent>;
   let component: WriteNumberFieldComponent;
@@ -50,6 +53,7 @@ describe('WriteNumberFieldComponent', () => {
 
           // Mocks
           MockRpxTranslatePipe,
+          MockFieldLabelPipe,
           inputComponentMock
         ],
         providers: []

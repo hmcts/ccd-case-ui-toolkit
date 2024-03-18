@@ -11,11 +11,11 @@ import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.m
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { createCaseEventTrigger } from '../../../fixture/shared.test.fixture';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
-import { FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, WindowService } from '../../../services';
+import { AlertService, FieldsPurger, FieldsUtils, LoadingService, SessionStorageService, WindowService } from '../../../services';
 import { FormErrorService, FormValueService } from '../../../services/form';
 import { PaletteUtilsModule } from '../../palette';
 import { Confirmation, Wizard, WizardPage, WizardPageField } from '../domain';
-import { CaseNotifier } from '../services';
+import { CaseNotifier, WorkAllocationService } from '../services';
 import { WizardFactoryService } from '../services/wizard-factory.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { CaseEditComponent } from './case-edit.component';
@@ -212,6 +212,8 @@ describe('CaseEditComponent', () => {
   const registrarService = new ConditionalShowRegistrarService();
   let route: any;
   let mockSessionStorageService: jasmine.SpyObj<SessionStorageService>;
+  let mockWorkAllocationService: jasmine.SpyObj<WorkAllocationService>;
+  let mockAlertService: jasmine.SpyObj<AlertService>;
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
 
   describe('profile available in route', () => {
@@ -271,10 +273,13 @@ describe('CaseEditComponent', () => {
         'removeUnnecessaryFields'
       ]);
       mockSessionStorageService = createSpyObj<SessionStorageService>('SessionStorageService', ['getItem', 'removeItem', 'setItem']);
+      mockWorkAllocationService = createSpyObj<WorkAllocationService>('WorkAllocationService', ['assignAndCompleteTask', 'completeTask']);
+      mockAlertService = createSpyObj<AlertService>('WorkAllocationService', ['error', 'setPreserveAlerts']);
       spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
+      spyOn(validPageListCaseFieldsService, 'validPageListCaseFields');
 
       route = {
-        queryParams: of({Origin: 'viewDraft'}),
+        queryParams: of({ Origin: 'viewDraft' }),
         snapshot: {
           data: {},
           params: {},
@@ -311,15 +316,17 @@ describe('CaseEditComponent', () => {
           ],
           providers: [
             WizardFactoryService,
-            {provide: CaseNotifier, useValue: { cachedCaseView: null}},
-            {provide: FormErrorService, useValue: formErrorService},
-            {provide: FormValueService, useValue: formValueService},
-            {provide: FieldsUtils, useValue: fieldsUtils},
-            {provide: FieldsPurger, useValue: fieldsPurger},
-            {provide: ConditionalShowRegistrarService, useValue: registrarService},
-            {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: route},
-            SessionStorageService,
+            { provide: CaseNotifier, useValue: { cachedCaseView: null } },
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FieldsUtils, useValue: fieldsUtils },
+            { provide: FieldsPurger, useValue: fieldsPurger },
+            { provide: ConditionalShowRegistrarService, useValue: registrarService },
+            { provide: Router, useValue: routerStub },
+            { provide: ActivatedRoute, useValue: route },
+            { provide: WorkAllocationService, useValue: mockWorkAllocationService},
+            { provide: SessionStorageService, useValue: mockSessionStorageService},
+            { provide: AlertService, useValue: mockAlertService },
             WindowService,
             { provide: LoadingService, loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
@@ -333,7 +340,7 @@ describe('CaseEditComponent', () => {
       component.eventTrigger = EVENT_TRIGGER;
       component.cancelled.subscribe(cancelHandler.applyFilters);
       component.submitted.subscribe(submitHandler.applyFilters);
-
+      mockSessionStorageService.getItem.and.returnValues('example url', 'true')
       de = fixture.debugElement;
       fixture.detectChanges();
     }));
@@ -436,7 +443,7 @@ describe('CaseEditComponent', () => {
           wizard.nextPage.and.returnValue(new WizardPage());
           component.form = new FormGroup({
             data: new FormGroup({
-              PersonFirstName: new FormGroup({PersonMiddleName: new FormControl('John')}),
+              PersonFirstName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -459,7 +466,7 @@ describe('CaseEditComponent', () => {
           wizard.nextPage.and.returnValue(new WizardPage());
           component.form = new FormGroup({
             data: new FormGroup({
-              PersonFirstName: new FormArray([new FormGroup({PersonMiddleName: new FormControl('John')})]),
+              PersonFirstName: new FormArray([new FormGroup({ PersonMiddleName: new FormControl('John') })]),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -553,7 +560,7 @@ describe('CaseEditComponent', () => {
           wizard.previousPage.and.returnValue(new WizardPage());
           component.form = new FormGroup({
             data: new FormGroup({
-              PersonFirstName: new FormGroup({PersonMiddleName: new FormControl('John')}),
+              PersonFirstName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -576,7 +583,7 @@ describe('CaseEditComponent', () => {
           wizard.previousPage.and.returnValue(new WizardPage());
           component.form = new FormGroup({
             data: new FormGroup({
-              PersonFirstName: new FormArray([new FormGroup({PersonMiddleName: new FormControl('John')})]),
+              PersonFirstName: new FormArray([new FormGroup({ PersonMiddleName: new FormControl('John') })]),
               PersonLastName: new FormControl('Other')
             })
           });
@@ -672,8 +679,8 @@ describe('CaseEditComponent', () => {
           component.form = new FormGroup({
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonLastName: new FormGroup({PersonMiddleName: new FormControl('John')}),
-              Address: new FormGroup({AddressLine1: new FormControl('Street')})
+              PersonLastName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
+              Address: new FormGroup({ AddressLine1: new FormControl('Street') })
             })
           });
           fixture.detectChanges();
@@ -711,10 +718,10 @@ describe('CaseEditComponent', () => {
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               PersonLastNameCollection: new FormArray([new FormGroup({
-                value: new FormGroup({PersonMiddleName: new FormControl('John')})
+                value: new FormGroup({ PersonMiddleName: new FormControl('John') })
               })]),
               AddressCollection: new FormArray([new FormGroup({
-                value: new FormGroup({AddressLine1: new FormControl('Street')})
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -756,7 +763,7 @@ describe('CaseEditComponent', () => {
           component.form = new FormGroup({
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonFamilyName: new FormGroup({PersonMiddleName: new FormControl('John')})
+              PersonFamilyName: new FormGroup({ PersonMiddleName: new FormControl('John') })
             })
           });
           fixture.detectChanges();
@@ -786,7 +793,7 @@ describe('CaseEditComponent', () => {
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               AddressList: new FormArray([new FormGroup({
-                value: new FormGroup({AddressLine1: new FormControl('Street')})
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -799,7 +806,7 @@ describe('CaseEditComponent', () => {
           expect(fieldsPurger.deleteFieldValue).not.toHaveBeenCalled();
         });
 
-        describe('next submitForm call', ()=> {
+        describe('next submitForm call', () => {
           beforeEach(() => {
             spyOn(fieldsPurger, 'deleteFieldValue');
             component.wizard = wizard;
@@ -817,7 +824,7 @@ describe('CaseEditComponent', () => {
               data: new FormGroup({
                 PersonFirstName: new FormControl('Other'),
                 AddressList: new FormArray([new FormGroup({
-                  value: new FormGroup({AddressLine1: new FormControl('Street')})
+                  value: new FormGroup({ AddressLine1: new FormControl('Street') })
                 })])
               })
             });
@@ -828,7 +835,7 @@ describe('CaseEditComponent', () => {
             spyObj.getNextPage.and.returnValue(undefined);
             component.eventTrigger.show_event_notes = false;
             component.eventTrigger.show_event_notes = false;
-            spyOn(component, 'submitForm').and.callFake(()=>{});
+            spyOn(component, 'submitForm').and.callFake(() => { });
             fixture.detectChanges();
             component.next('somePage');
             expect(component.submitForm).toHaveBeenCalled();
@@ -839,7 +846,7 @@ describe('CaseEditComponent', () => {
             spyObj.getNextPage.and.returnValue(undefined);
             component.eventTrigger.show_event_notes = true;
             component.eventTrigger.show_event_notes = true;
-            spyOn(component, 'submitForm').and.callFake(()=>{});
+            spyOn(component, 'submitForm').and.callFake(() => { });
             fixture.detectChanges();
             component.next('somePage');
             expect(component.submitForm).not.toHaveBeenCalled();
@@ -847,10 +854,10 @@ describe('CaseEditComponent', () => {
 
           it('should call submit form if next page is something, show event note is null, show summary is null', () => {
             const spyObj = jasmine.createSpyObj(['getNextPage']);
-            spyObj.getNextPage.and.returnValue({something:'something'});
+            spyObj.getNextPage.and.returnValue({ something: 'something' });
             component.eventTrigger.show_event_notes = null;
             component.eventTrigger.show_event_notes = null;
-            spyOn(component, 'submitForm').and.callFake(()=>{});
+            spyOn(component, 'submitForm').and.callFake(() => { });
             fixture.detectChanges();
             component.next('somePage');
             expect(component.submitForm).toHaveBeenCalled();
@@ -953,8 +960,8 @@ describe('CaseEditComponent', () => {
           component.form = new FormGroup({
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonLastName: new FormGroup({PersonMiddleName: new FormControl('John')}),
-              Address: new FormGroup({AddressLine1: new FormControl('Street')})
+              PersonLastName: new FormGroup({ PersonMiddleName: new FormControl('John') }),
+              Address: new FormGroup({ AddressLine1: new FormControl('Street') })
             })
           });
           fixture.detectChanges();
@@ -992,10 +999,10 @@ describe('CaseEditComponent', () => {
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               PersonLastNameCollection: new FormArray([new FormGroup({
-                value: new FormGroup({PersonMiddleName: new FormControl('John')})
+                value: new FormGroup({ PersonMiddleName: new FormControl('John') })
               })]),
               AddressCollection: new FormArray([new FormGroup({
-                value: new FormGroup({AddressLine1: new FormControl('Street')})
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -1037,7 +1044,7 @@ describe('CaseEditComponent', () => {
           component.form = new FormGroup({
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
-              PersonFamilyName: new FormGroup({PersonMiddleName: new FormControl('John')})
+              PersonFamilyName: new FormGroup({ PersonMiddleName: new FormControl('John') })
             })
           });
           fixture.detectChanges();
@@ -1067,7 +1074,7 @@ describe('CaseEditComponent', () => {
             data: new FormGroup({
               PersonFirstName: new FormControl('Other'),
               AddressList: new FormArray([new FormGroup({
-                value: new FormGroup({AddressLine1: new FormControl('Street')})
+                value: new FormGroup({ AddressLine1: new FormControl('Street') })
               })])
             })
           });
@@ -1166,13 +1173,13 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
 
         fixture.detectChanges();
 
@@ -1199,9 +1206,9 @@ describe('CaseEditComponent', () => {
           'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
           /* tslint:disable:object-literal-key-quotes */
           'after_submit_callback_response': {
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_header': 'confirmation_header',
-          /* tslint:disable:object-literal-key-quotes */
+            /* tslint:disable:object-literal-key-quotes */
             'confirmation_body': 'confirmation_body'
           }
         }));
@@ -1210,7 +1217,7 @@ describe('CaseEditComponent', () => {
 
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1225,6 +1232,7 @@ describe('CaseEditComponent', () => {
           .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
         expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
         expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
+        expect(validPageListCaseFieldsService.validPageListCaseFields).toHaveBeenCalled();
         expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
       });
 
@@ -1265,7 +1273,80 @@ describe('CaseEditComponent', () => {
           .toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Array), ['FlagLauncher', 'ComponentLauncher']);
         expect(formValueService.repopulateFormDataFromCaseFieldValues).toHaveBeenCalled();
         expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
+        expect(validPageListCaseFieldsService.validPageListCaseFields).toHaveBeenCalled();
         expect(formValueService.removeUnnecessaryFields).not.toHaveBeenCalled();
+      });
+
+      it('should submit the case and assign and complete task for an event submission', () => {
+        mockSessionStorageService.getItem.and.returnValues(`{"id": "12345"}`, 'true');
+        fixture.detectChanges();
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+
+        spyOn(component, 'confirm');
+
+        component.isCaseFlagSubmission = true;
+        component.confirmation = {} as unknown as Confirmation;
+
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        component.onEventCanBeCompleted({
+          eventTrigger: component.eventTrigger,
+          eventCanBeCompleted: true,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('12345');
+      });
+
+      it('should submit the case and complete task for an event submission', () => {
+        mockSessionStorageService.getItem.and.returnValues(`{"id": "12345"}`, 'false');
+        fixture.detectChanges();
+        const mockClass = {
+          submit: () => of({})
+        };
+        spyOn(mockClass, 'submit').and.returnValue(of({
+          id: 'id',
+          /* tslint:disable:object-literal-key-quotes */
+          'callback_response_status': 'CALLBACK_HASNOT_COMPLETED',
+          /* tslint:disable:object-literal-key-quotes */
+          'after_submit_callback_response': {
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_header': 'confirmation_header',
+          /* tslint:disable:object-literal-key-quotes */
+            'confirmation_body': 'confirmation_body'
+          }
+        }));
+
+        spyOn(component, 'confirm');
+
+        component.isCaseFlagSubmission = true;
+        component.confirmation = {} as unknown as Confirmation;
+
+        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        component.onEventCanBeCompleted({
+          eventTrigger: component.eventTrigger,
+          eventCanBeCompleted: true,
+          caseDetails: component.caseDetails,
+          form: component.form,
+          submit: mockClass.submit,
+        });
+
+        expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('12345');
       });
 
       it('should NOT submit the case due to error', () => {
@@ -1279,7 +1360,7 @@ describe('CaseEditComponent', () => {
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1305,7 +1386,7 @@ describe('CaseEditComponent', () => {
         component.isLinkedCasesSubmission = true;
         component.confirmation = {} as unknown as Confirmation;
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: false,
@@ -1332,7 +1413,7 @@ describe('CaseEditComponent', () => {
         spyOn(component, 'confirm');
         spyOn(component, 'emitSubmitted');
 
-        formValueService.sanitise.and.returnValue({name: 'sweet'});
+        formValueService.sanitise.and.returnValue({ name: 'sweet' });
         component.onEventCanBeCompleted({
           eventTrigger: component.eventTrigger,
           eventCanBeCompleted: true,
@@ -1411,8 +1492,8 @@ describe('CaseEditComponent', () => {
         ]
       };
       const mockRouteNoProfile = {
-        queryParams: of({Origin: 'viewDraft'}),
-        params: of({id: 123}),
+        queryParams: of({ Origin: 'viewDraft' }),
+        params: of({ id: 123 }),
         snapshot: snapshotNoProfile
       };
 
@@ -1434,13 +1515,13 @@ describe('CaseEditComponent', () => {
           ],
           providers: [
             WizardFactoryService,
-            {provide: FormErrorService, useValue: formErrorService},
-            {provide: FormValueService, useValue: formValueService},
-            {provide: FieldsUtils, useValue: fieldsUtils},
-            {provide: FieldsPurger, useValue: fieldsPurger},
-            {provide: ConditionalShowRegistrarService, useValue: registrarService},
-            {provide: Router, useValue: routerStub},
-            {provide: ActivatedRoute, useValue: mockRouteNoProfile},
+            { provide: FormErrorService, useValue: formErrorService },
+            { provide: FormValueService, useValue: formValueService },
+            { provide: FieldsUtils, useValue: fieldsUtils },
+            { provide: FieldsPurger, useValue: fieldsPurger },
+            { provide: ConditionalShowRegistrarService, useValue: registrarService },
+            { provide: Router, useValue: routerStub },
+            { provide: ActivatedRoute, useValue: mockRouteNoProfile },
             SessionStorageService,
             WindowService,
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},

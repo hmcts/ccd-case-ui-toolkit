@@ -1,94 +1,118 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MockRpxTranslatePipe } from '../../../utils/first-error.pipe.spec';
+import { MockRpxTranslatePipe } from '../../../../../../shared/test/mock-rpx-translate.pipe';
 import { FlagDetail, FlagsWithFormGroupPath } from '../../domain';
-import { CaseFlagFieldState, SelectFlagLocationErrorMessage } from '../../enums';
+import { CaseFlagFieldState, CaseFlagWizardStepTitle, SelectFlagLocationErrorMessage } from '../../enums';
 import { SelectFlagLocationComponent } from './select-flag-location.component';
 
 describe('SelectFlagLocationComponent', () => {
   let component: SelectFlagLocationComponent;
   let fixture: ComponentFixture<SelectFlagLocationComponent>;
-  const flagsData = [
-    {
-      flags: {
-        flagsCaseFieldId: 'Party1Flags',
-        partyName: 'Rose Bank',
-        details: [
-          {
-            name: 'Flag 1',
-            flagComment: 'First flag',
-            dateTimeCreated: new Date(),
-            path: [{ id: null, value: 'Reasonable adjustment' }],
-            hearingRelevant: false,
-            flagCode: 'FL1',
-            status: 'Active'
-          },
-          {
-            name: 'Flag 2',
-            flagComment: 'Rose\'s second flag',
-            dateTimeCreated: new Date(),
-            path: [{ id: null, value: 'Reasonable adjustment' }],
-            hearingRelevant: false,
-            flagCode: 'FL2',
-            status: 'Inactive'
-          }
-        ] as FlagDetail[]
-      },
-      pathToFlagsFormGroup: ''
-    },
-    {
-      flags: {
-        flagsCaseFieldId: 'Party2Flags',
-        partyName: 'Tom Atin',
-        roleOnCase: 'Claimant',
-        details: [
-          {
-            name: 'Flag 3',
-            flagComment: 'First flag',
-            dateTimeCreated: new Date(),
-            path: [{ id: null, value: 'Reasonable adjustment' }],
-            hearingRelevant: false,
-            flagCode: 'FL1',
-            status: 'Active'
-          }
-        ] as FlagDetail[]
-      },
-      pathToFlagsFormGroup: ''
-    },
-    {
-      flags: {
-        flagsCaseFieldId: 'caseFlags',
-        partyName: null,
-        details: [
-          {
-            name: 'Flag 4',
-            flagComment: 'Case-level flag',
-            dateTimeCreated: new Date(),
-            path: [{ id: null, value: 'Reasonable adjustment' }],
-            hearingRelevant: false,
-            flagCode: 'FL1',
-            status: 'Active'
-          }
-        ] as FlagDetail[]
-      },
-      pathToFlagsFormGroup: 'caseFlags'
-    }
-  ] as FlagsWithFormGroupPath[];
+  let flagsData: FlagsWithFormGroupPath[];
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ SelectFlagLocationComponent, MockRpxTranslatePipe ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [SelectFlagLocationComponent, MockRpxTranslatePipe]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectFlagLocationComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({});
+    flagsData = [
+      {
+        flags: {
+          flagsCaseFieldId: 'Party1Flags',
+          partyName: 'Rose Bank',
+          details: [
+            {
+              name: 'Flag 1',
+              flagComment: 'First flag',
+              dateTimeCreated: new Date(),
+              path: [{ id: null, value: 'Reasonable adjustment' }],
+              hearingRelevant: false,
+              flagCode: 'FL1',
+              status: 'Active'
+            },
+            {
+              name: 'Flag 2',
+              flagComment: 'Rose\'s second flag',
+              dateTimeCreated: new Date(),
+              path: [{ id: null, value: 'Reasonable adjustment' }],
+              hearingRelevant: false,
+              flagCode: 'FL2',
+              status: 'Inactive'
+            }
+          ] as FlagDetail[]
+        },
+        pathToFlagsFormGroup: ''
+      },
+      {
+        flags: {
+          flagsCaseFieldId: 'Party2FlagsInternal',
+          partyName: 'Tom Atin',
+          roleOnCase: 'Claimant',
+          details: [
+            {
+              name: 'Flag 3 - internal',
+              flagComment: 'First flag',
+              dateTimeCreated: new Date(),
+              path: [{ id: null, value: 'Reasonable adjustment' }],
+              hearingRelevant: false,
+              flagCode: 'FL1',
+              status: 'Active'
+            }
+          ] as FlagDetail[],
+          groupId: 'e8f29388-633b-416b-a32c-814635d42dd6',
+          visibility: null
+        },
+        pathToFlagsFormGroup: ''
+      },
+      {
+        flags: {
+          flagsCaseFieldId: 'Party2FlagsExternal',
+          partyName: 'Tom Atin',
+          roleOnCase: 'Claimant',
+          details: [
+            {
+              name: 'Flag 3 - external',
+              flagComment: 'First flag',
+              dateTimeCreated: new Date(),
+              path: [{ id: null, value: 'Reasonable adjustment' }],
+              hearingRelevant: false,
+              flagCode: 'FL1',
+              status: 'Active'
+            }
+          ] as FlagDetail[],
+          groupId: 'e8f29388-633b-416b-a32c-814635d42dd6',
+          visibility: 'External'
+        },
+        pathToFlagsFormGroup: ''
+      },
+      {
+        flags: {
+          flagsCaseFieldId: 'caseFlags',
+          partyName: null,
+          details: [
+            {
+              name: 'Flag 4',
+              flagComment: 'Case-level flag',
+              dateTimeCreated: new Date(),
+              path: [{ id: null, value: 'Reasonable adjustment' }],
+              hearingRelevant: false,
+              flagCode: 'FL1',
+              status: 'Active'
+            }
+          ] as FlagDetail[]
+        },
+        pathToFlagsFormGroup: 'caseFlags'
+      }
+    ] as FlagsWithFormGroupPath[];
     component.flagsData = flagsData;
     fixture.detectChanges();
   });
@@ -117,8 +141,8 @@ describe('SelectFlagLocationComponent', () => {
     expect(nextButtonElement).toBeNull();
   });
 
-  it('should display a radio button for each party and one for case level', () => {
-    component.ngOnInit();
+  it('should display a radio button for each party (no duplicates) and one for case level', () => {
+    // Original data has 4 Flags objects, so the filtered result should be 3 because the duplicate party has been removed
     expect(component.filteredFlagsData.length).toBe(3);
     const nativeElement = fixture.debugElement.nativeElement;
     const radioButtonElements = nativeElement.querySelectorAll('.govuk-radios__input');
@@ -130,7 +154,8 @@ describe('SelectFlagLocationComponent', () => {
     radioButtonElements[1].click();
     expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[1]);
     radioButtonElements[2].click();
-    expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[2]);
+    // Duplicate party removed, so this radio button should be for the case-level flags data
+    expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[3]);
     const radioButtonLabelElements = nativeElement.querySelectorAll('.govuk-radios__label');
     expect(radioButtonLabelElements.length).toBe(3);
     expect(radioButtonLabelElements[0].textContent).toContain(flagsData[0].flags.partyName);
@@ -149,7 +174,6 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
       errorMessages: component.errorMessages,
-      selectedFlagsLocation: flagsData[0]
     });
     expect(component.errorMessages.length).toBe(0);
   });
@@ -166,7 +190,6 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
       errorMessages: component.errorMessages,
-      selectedFlagsLocation: null
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -175,5 +198,15 @@ describe('SelectFlagLocationComponent', () => {
     });
     const flagNotSelectedErrorMessageElement = nativeElement.querySelector('#flag-location-not-selected-error-message');
     expect(flagNotSelectedErrorMessageElement.textContent).toContain(SelectFlagLocationErrorMessage.FLAG_LOCATION_NOT_SELECTED);
+  });
+
+  it('should set correct title', () => {
+    expect(component.isDisplayContextParameterExternal).toEqual(false);
+    expect(component.flagLocationTitle).toEqual(CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION);
+
+    component.isDisplayContextParameterExternal = true;
+    component.ngOnInit();
+    expect(component.isDisplayContextParameterExternal).toEqual(true);
+    expect(component.flagLocationTitle).toEqual(CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION_EXTERNAL);
   });
 });

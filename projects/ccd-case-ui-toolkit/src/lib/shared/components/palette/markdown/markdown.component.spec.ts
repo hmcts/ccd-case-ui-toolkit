@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NgxMdComponent, NgxMdModule } from 'ngx-md';
 import { PipesModule } from '../../../pipes/pipes.module';
+import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ConvertHrefToRouterService } from '../../case-editor';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 
@@ -58,6 +59,7 @@ describe('MarkdownComponent - Table', () => {
         ],
         declarations: [
           CCDMarkDownComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           NgxMdComponent
@@ -101,6 +103,7 @@ describe('MarkdownComponent - Anchor', () => {
         ],
         declarations: [
           CCDMarkDownComponent,
+          MockRpxTranslatePipe
         ],
         providers: [
           NgxMdComponent,

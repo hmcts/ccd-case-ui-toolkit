@@ -35,7 +35,7 @@ describe('ReadMultiSelectListFieldComponent', () => {
       }
     ]
   };
-  const VALUES = [ 'P', 'PA', 'J' ];
+  const VALUES = ['P', 'PA', 'J'];
 
   describe('Non-persistable readonly multi-select-list field', () => {
     const CASE_FIELD = new CaseField();
@@ -60,7 +60,6 @@ describe('ReadMultiSelectListFieldComponent', () => {
           declarations: [
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
-
             // Mocks
             MockRpxTranslatePipe,
             fieldReadComponentMock
@@ -137,7 +136,6 @@ describe('ReadMultiSelectListFieldComponent', () => {
           declarations: [
             ReadMultiSelectListFieldComponent,
             FixedListPipe,
-
             // Mocks
             MockRpxTranslatePipe,
             fieldReadComponentMock

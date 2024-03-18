@@ -10,7 +10,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseView } from '../../../domain/case-view';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { Draft } from '../../../domain/draft.model';
-import { FieldsUtils, LoadingService } from '../../../services';
+import { AddressesService, FieldsUtils, LoadingService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
@@ -28,6 +28,7 @@ import { LinkedCasesService } from './services';
 import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { ServiceOrg } from '../../../domain/case-view/service-org-response.model';
 import { ValidPageListCaseFieldsService } from '../../case-editor/services/valid-page-list-caseFields.service';
 
 describe('WriteLinkedCasesFieldComponent', () => {
@@ -52,7 +53,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
   const caseField2 = new CaseField();
   const cancelled = createSpyObj('cancelled', ['emit']);
   const FORM_GROUP = new FormGroup({
-    data: new FormGroup({field1: new FormControl('SOME_VALUE')})
+    data: new FormGroup({ field1: new FormControl('SOME_VALUE') })
   });
   const wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], false, 0);
   const WIZARD = new Wizard([wizardPage]);
@@ -62,7 +63,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     form: FORM_GROUP,
     wizard: WIZARD,
     data: '',
-    eventTrigger: {case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true},
+    eventTrigger: { case_fields: [caseField1], name: 'Test event trigger name', can_save_draft: true },
     hasPrevious: () => true,
     getPage: () => firstPage,
     first: () => true,
@@ -72,10 +73,10 @@ describe('WriteLinkedCasesFieldComponent', () => {
     cancelled,
     validate: (caseEventData: CaseEventData) => of(caseEventData),
     saveDraft: (_: CaseEventData) => of(someObservable),
-    caseDetails: {case_id: '1234567812345678', tabs: [], metadataFields: [caseField2]},
+    caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] },
   };
   route = {
-    params: of({id: 123}),
+    params: of({ id: 123 }),
     snapshot: {
       queryParamMap: createSpyObj('queryParamMap', ['get'])
     }
@@ -88,7 +89,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
   const fieldUtils = new FieldsUtils();
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldUtils);
   caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
-    route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, new CaseEditDataService(), new LoadingService(), validPageListCaseFieldsService);
+    route, formValueService, formErrorService, null, pageValidationService, dialog, caseFieldService, new CaseEditDataService(), new LoadingService(), validPageListCaseFieldsService, new AddressesService(null, null));
 
   const caseInfo = {
     case_id: '1682374819203471',
@@ -183,59 +184,77 @@ describe('WriteLinkedCasesFieldComponent', () => {
     isLinkedCasesEventTrigger: true,
     linkedCases,
     caseFieldValue: linkedCases,
-    getAllLinkedCaseInformation() {},
-    getCaseName() {}
+    getAllLinkedCaseInformation() { },
+    getCaseName() { }
   };
 
   const linkCaseReasons: LovRefDataByServiceModel = {
     list_of_values: [
+      {
+        key: 'progressed',
+        value_en: 'Progressed as part of this lead case',
+        value_cy: '',
+        hint_text_en: 'Progressed as part of this lead case',
+        hint_text_cy: '',
+        lov_order: 1,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+      {
+        key: 'bail',
+        value_en: 'Bail',
+        value_cy: '',
+        hint_text_en: 'Bail',
+        hint_text_cy: '',
+        lov_order: 2,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+      {
+        key: 'other',
+        value_en: 'Other',
+        value_cy: '',
+        hint_text_en: 'Other',
+        hint_text_cy: '',
+        lov_order: 3,
+        parent_key: null,
+        category_key: 'caseLinkReason',
+        parent_category: '',
+        active_flag: 'Y',
+        child_nodes: null,
+        from: 'exui-default',
+      },
+    ]
+  };
+
+  const serviceOrgData: ServiceOrg[] = [
     {
-      key: 'progressed',
-      value_en: 'Progressed as part of this lead case',
-      value_cy: '',
-      hint_text_en: 'Progressed as part of this lead case',
-      hint_text_cy: '',
-      lov_order: 1,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-    {
-      key: 'bail',
-      value_en: 'Bail',
-      value_cy: '',
-      hint_text_en: 'Bail',
-      hint_text_cy: '',
-      lov_order: 2,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-    {
-      key: 'other',
-      value_en: 'Other',
-      value_cy: '',
-      hint_text_en: 'Other',
-      hint_text_cy: '',
-      lov_order: 3,
-      parent_key: null,
-      category_key: 'caseLinkReason',
-      parent_category: '',
-      active_flag: 'Y',
-      child_nodes: null,
-      from: 'exui-default',
-    },
-  ]};
+      business_are: 'area',
+      ccd_case_types: 'case Type',
+      ccd_service_name: 'case name',
+      jurisdiction: 'Civil',
+      last_update: '22/08/1999',
+      org_unit: 'unit',
+      service_code: 'code',
+      service_description: 'description',
+      service_id: 39,
+      service_short_description: 'short descr',
+      sub_business_area: 'buss area'
+
+    }
+  ]
 
   beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
-    commonDataService = createSpyObj('commonDataService', ['getRefData']);
+    commonDataService = createSpyObj('commonDataService', ['getRefData', 'getServiceOrgData']);
     casesService = createSpyObj('CasesService', ['getCaseViewV2']);
     caseEditDataService = new CaseEditDataService();
     TestBed.configureTestingModule({
@@ -257,8 +276,9 @@ describe('WriteLinkedCasesFieldComponent', () => {
         { provide: AbstractAppConfig, useValue: appConfig }
       ]
     })
-    .compileComponents();
+      .compileComponents();
     commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
+    commonDataService.getServiceOrgData.and.returnValue(of(serviceOrgData));
   }));
 
   beforeEach(() => {
@@ -277,6 +297,12 @@ describe('WriteLinkedCasesFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should initialise get OrgService', () => {
+   spyOn(component, 'getLinkedCaseReasons').and.returnValue(of([]));
+    component.getOrgService();
+    expect(component.getLinkedCaseReasons).toHaveBeenCalled();
+  });
+
   it('should initialise case details', () => {
     spyOn(component, 'getLinkedCases');
     spyOn(linkedCasesService, 'getCaseName').and.returnValue('case name');
@@ -288,6 +314,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
 
   it('should have called pre-required data', () => {
     commonDataService.getRefData.and.returnValue(of(linkCaseReasons));
+    commonDataService.getServiceOrgData.and.returnValue(of(serviceOrgData));
     casesService.getCaseViewV2.and.returnValue(of(caseInfo));
     expect(component.ngOnInit).toBeTruthy();
     expect(linkedCasesService.linkedCases.length).not.toBeNull();
@@ -321,7 +348,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
     const linkedCasesState: LinkedCasesState = {
       currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START,
-      errorMessages: [{title: 'Error title', description: 'Error descriptiom'}],
+      errorMessages: [{ title: 'Error title', description: 'Error descriptiom' }],
       navigateToNextPage: false
     };
     component.onLinkedCasesStateEmitted(linkedCasesState);
@@ -387,11 +414,11 @@ describe('WriteLinkedCasesFieldComponent', () => {
     expect(component.getNextPage(linkedCasesState2)).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
   });
 
-  function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
+  function createCaseField(id: string, value: any, displayContext = 'READONLY'): CaseField {
     const cf = new CaseField();
     cf.id = id;
     cf.value = value;
-    cf.display_context = display_context;
+    cf.display_context = displayContext;
     return cf;
   }
 
