@@ -2,7 +2,7 @@ import { waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { HttpError, TaskSearchParameter } from '../../../domain';
-import { TaskRespone } from '../../../domain/work-allocation/task-response.model';
+import { TaskResponse } from '../../../domain/work-allocation/task-response.model';
 import { HttpErrorService, HttpService } from '../../../services';
 import { MULTIPLE_TASKS_FOUND, WorkAllocationService } from './work-allocation.service';
 
@@ -64,7 +64,7 @@ function getExampleUserDetails(): UserDetails[] {
   }];
 }
 
-function getExampleTask(): TaskRespone {
+function getExampleTask(): TaskResponse {
   return {
     task: {
       assignee: '1234-1234-1234-1234',

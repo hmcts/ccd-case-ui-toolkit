@@ -1,5 +1,6 @@
 ## RELEASE NOTES
 
+
 ### Version 7.0.20
 **EUI-1300** accessibility change
 
@@ -13,12 +14,22 @@
 ### Version 7.0.17
 **EUI-1295** Performance Testing - PerfTest - Cache Timeout Error
 
+### Version 7.0.13-welsh-translation-fixes
+**CSFD-23** Fix case history label by adding translation pipe
 
 ### Version 7.0.13
 **EUI-1275** Manual Language Entry in case flags - missing subTypeValue during form submission
 
 ### Version 7.0.11
 **EUI-1274** Correctly display error messages on event completion when task fails to complete
+
+### Version 7.0.10-welsh-translation-fixes
+**EUI-9146/EUI-9129/EUI-9164** Re-tag for re-release of fixes, following merge conflict resolution with latest from `master`
+
+### Version 7.0.7-welsh-translation-fixes
+**EUI-9146** Fix "View case flags" link in banner to work when the Case Flags tab label is translated to Welsh
+**EUI-9129** Fix conditional display of "Event summary" and "Event description" fields to be dependent solely on the value of `show_event_notes` as set for a given case event via a CCD Definition file
+**EUI-9164** Fix non-translation of "Event summary" label and hint text, and "Event description" label, displayed on the "Check your answers" page
 
 ### Version 7.0.7-welsh-translation-yes-no-field-fix
 **EUI-9165** Re-tag for re-release of fix, following merge conflict resolution with latest from `master`

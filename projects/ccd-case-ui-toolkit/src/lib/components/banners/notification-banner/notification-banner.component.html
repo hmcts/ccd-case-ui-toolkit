@@ -7,7 +7,7 @@
 
   <div class="govuk-notification-banner__header">
     <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-      {{notificationBannerConfig.headingText}}
+      {{notificationBannerConfig.headingText | async}}
     </h2>
   </div>
   <div class="govuk-notification-banner__content">
@@ -39,14 +39,16 @@
           </svg>
         </ng-container>
       </ng-container>
-      {{notificationBannerConfig.description}}
+      {{notificationBannerConfig.description | async}}
       <a *ngIf="notificationBannerConfig.showLink && !notificationBannerConfig.triggerOutputEvent"
         class="govuk-notification-banner__link"
-        href="{{notificationBannerConfig.linkUrl}}">{{notificationBannerConfig.linkText}}</a>
-      <a *ngIf="notificationBannerConfig.showLink && notificationBannerConfig.triggerOutputEvent"
-        class="govuk-notification-banner__link"
+        href="{{notificationBannerConfig.linkUrl | async}}">{{notificationBannerConfig.linkText | async}}</a>
+      <ng-container *ngIf="notificationBannerConfig.showLink && notificationBannerConfig.triggerOutputEvent">
+        <input #triggerOutputEventText style="display: none" type="text" value="{{notificationBannerConfig.triggerOutputEventText | async}}">
+        <a class="govuk-notification-banner__link"
         href="javascript:void(0)"
-        (click)="onLinkClick(notificationBannerConfig.triggerOutputEventText)">{{notificationBannerConfig.linkText}}</a>
+        (click)="onLinkClick(triggerOutputEventText.value)">{{notificationBannerConfig.linkText | async}}</a>
+      </ng-container>
     </p>
   </div>
 </div>

@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { NotificationBannerType } from './enums';
 import { NotificationBannerComponent } from './notification-banner.component';
 
@@ -28,11 +29,11 @@ describe('NotificationBannerComponent', () => {
   it('should display information banner', () => {
     component.notificationBannerConfig = {
       bannerType: NotificationBannerType.INFORMATION,
-      headingText: 'Important',
-      description: 'There are 4 active flags on this case.',
+      headingText: of('Important'),
+      description: of('There are 4 active flags on this case.'),
       showLink: true,
-      linkText: 'View case flags',
-      linkUrl: '/case/ddd',
+      linkText: of('View case flags'),
+      linkUrl: of('/case/ddd'),
       headerClass: 'notification-banner-information'
     };
     fixture.detectChanges();
@@ -44,8 +45,8 @@ describe('NotificationBannerComponent', () => {
   it('should display warning banner', () => {
     component.notificationBannerConfig = {
       bannerType: NotificationBannerType.WARNING,
-      headingText: 'Warning',
-      description: 'There are 4 active flags on this case.',
+      headingText: of('Warning'),
+      description: of('There are 4 active flags on this case.'),
       showLink: false,
       headerClass: 'notification-banner-warning'
     };
@@ -58,8 +59,8 @@ describe('NotificationBannerComponent', () => {
   it('should display error banner', () => {
     component.notificationBannerConfig = {
       bannerType: NotificationBannerType.ERROR,
-      headingText: 'Error',
-      description: 'There are 4 active flags on this case.',
+      headingText: of('Error'),
+      description: of('There are 4 active flags on this case.'),
       showLink: false,
       headerClass: 'notification-banner-error'
     };
@@ -72,11 +73,11 @@ describe('NotificationBannerComponent', () => {
   it('should display success banner', () => {
     component.notificationBannerConfig = {
       bannerType: NotificationBannerType.SUCCESS,
-      headingText: 'Success',
-      description: 'There are 4 active flags on this case.',
+      headingText: of('Success'),
+      description: of('There are 4 active flags on this case.'),
       showLink: true,
-      linkText: 'View case flags',
-      linkUrl: '/case/ddd',
+      linkText: of('View case flags'),
+      linkUrl: of('/case/ddd'),
       headerClass: 'notification-banner-success'
     };
     fixture.detectChanges();

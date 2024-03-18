@@ -1,5 +1,5 @@
 import { Task } from './Task';
 
-export interface TaskRespone {
+export interface TaskResponse {
   task: Task;
 }

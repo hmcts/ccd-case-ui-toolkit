@@ -627,9 +627,6 @@ describe('CaseFullAccessViewComponent', () => {
     caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(of({}));
-    alertService.success.and.returnValue(of({}));
-    alertService.warning.and.returnValue(of({}));
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
@@ -643,10 +640,10 @@ describe('CaseFullAccessViewComponent', () => {
 
     mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
 
-    convertHrefToRouterMockService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterMockService = createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterMockService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
 
-    sessionStorageMockService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
+    sessionStorageMockService = createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
 
     TestBed
       .configureTestingModule({
@@ -689,7 +686,7 @@ describe('CaseFullAccessViewComponent', () => {
           DeleteOrCancelDialogComponent,
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterMockService },
           { provide: SessionStorageService, useValue: sessionStorageMockService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['getTranslation$']) }
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
@@ -1108,9 +1105,6 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
     caseNotifier = createSpyObj('caseService', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(of({}));
-    alertService.success.and.returnValue(of({}));
-    alertService.warning.and.returnValue(of({}));
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
@@ -1164,7 +1158,7 @@ xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ActivityPollingService, useValue: activityService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['getTranslation$']) },
           DeleteOrCancelDialogComponent
         ]
       })
@@ -1195,9 +1189,6 @@ xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () 
     caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(of({}));
-    alertService.success.and.returnValue(of({}));
-    alertService.warning.and.returnValue(of({}));
 
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
@@ -1282,7 +1273,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   let convertHrefToRouterService: jasmine.SpyObj<ConvertHrefToRouterService>;
 
   beforeEach((() => {
-    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService = createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
     TestBed
       .configureTestingModule({
@@ -1358,7 +1349,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['getTranslation$']) },
           DeleteOrCancelDialogComponent
         ],
         teardown: { destroyAfterEach: false }
@@ -1408,11 +1399,19 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
-  let convertHrefToRouterService;
+  let convertHrefToRouterService: jasmine.SpyObj<ConvertHrefToRouterService>;
+  let rpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
 
   beforeEach((() => {
-    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService = createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
+    rpxTranslationService = createSpyObj('RpxTranslationService', ['getTranslation$', 'getTranslationWithReplacements$']);
+    rpxTranslationService.getTranslationWithReplacements$.and.returnValue(of('Welsh: There are 2 active flags on this case.'));
+    rpxTranslationService.getTranslation$.withArgs('There is 1 active flag on this case.').and.returnValue(of('Welsh: There is 1 active flag on this case.'));
+    rpxTranslationService.getTranslation$.withArgs('Important').and.returnValue(of('Pwysig'));
+    rpxTranslationService.getTranslation$.withArgs('View case flags').and.returnValue(of('Gweld fflagiau\'r achos'));
+    rpxTranslationService.getTranslation$.withArgs('Case flags').and.returnValue(of('Fflagiau\'r achos'));
+    rpxTranslationService.getTranslation$.withArgs('Hearings').and.returnValue(of('Gwrandawiadau'));
     TestBed
       .configureTestingModule({
         imports: [
@@ -1487,7 +1486,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          { provide: RpxTranslationService, useValue: rpxTranslationService },
           DeleteOrCancelDialogComponent
         ],
         teardown: { destroyAfterEach: false }
@@ -1543,8 +1542,14 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     comp.ngOnInit();
 
     expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    expect(rpxTranslationService.getTranslation$).toHaveBeenCalledWith('There is 1 active flag on this case.');
+    expect(rpxTranslationService.getTranslation$).toHaveBeenCalledWith('Important');
+    expect(rpxTranslationService.getTranslation$).toHaveBeenCalledWith('View case flags');
+    expect(rpxTranslationService.getTranslation$).toHaveBeenCalledWith('Case flags');
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
-    expect(bannerElement.textContent).toContain('There is 1 active flag on this case');
+    // Expect the banner to contain the translated text
+    expect(bannerElement.textContent).toContain('Welsh: There is 1 active flag on this case.');
+    expect(bannerElement.textContent).toContain('Gweld fflagiau\'r achos');
     expect(comp.activeCaseFlags).toBe(true);
   });
 
@@ -1578,13 +1583,24 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     f.detectChanges();
 
     expect(comp.hasActiveCaseFlags).toHaveBeenCalledTimes(1);
+    expect(rpxTranslationService.getTranslationWithReplacements$).toHaveBeenCalledWith(
+      `There are %activeCaseFlags% active flags on this case.`, { activeCaseFlags: '2' });
+    expect(rpxTranslationService.getTranslation$).toHaveBeenCalledWith('Important');
+    expect(rpxTranslationService.getTranslation$).toHaveBeenCalledWith('View case flags');
+    expect(rpxTranslationService.getTranslation$).toHaveBeenCalledWith('Case flags');
     const bannerElement = d.nativeElement.querySelector('.govuk-notification-banner');
-    expect(bannerElement.textContent).toContain('There are 2 active flags on this case');
+    // Expect the banner to contain the translated text
+    expect(bannerElement.textContent).toContain('Welsh: There are 2 active flags on this case.');
+    expect(bannerElement.textContent).toContain('Gweld fflagiau\'r achos');
     expect(comp.activeCaseFlags).toBe(true);
   });
 
   it('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
     const viewCaseFlagsLink = d.nativeElement.querySelector('.govuk-notification-banner__link');
+    // The (normally translated) tab label needs to match the triggerOutputEventText (which is the translated tab label text)
+    // emitted by the NotificationBannerComponent, so this needs to be simulated
+    const caseFlagsMatTab = comp.tabGroup._tabs.toArray().find((tab) => tab.textLabel === 'Case flags');
+    caseFlagsMatTab.textLabel = 'Fflagiau\'r achos';
     // Case Flags tab is expected to be the sixth tab (i.e. index 5)
     const caseFlagsTab = d.nativeElement.querySelector('.mat-tab-labels').children[5] as HTMLElement;
     expect(caseFlagsTab.getAttribute('aria-selected')).toEqual('false');
@@ -1627,10 +1643,10 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
   let comp: CaseFullAccessViewComponent;
   let compFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
-  let convertHrefToRouterService;
+  let convertHrefToRouterService: jasmine.SpyObj<ConvertHrefToRouterService>;
 
   beforeEach((() => {
-    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService = createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
     TestBed
       .configureTestingModule({
@@ -1717,7 +1733,10 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           FieldTypeSanitiser,
           PageValidationService,
           CaseFieldService,
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          {
+            provide: RpxTranslationService,
+            useValue: createSpyObj('RpxTranslationService', ['getTranslation$', 'getTranslationWithReplacements$'])
+          }
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -1750,7 +1769,8 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   let caseViewerComponent: CaseFullAccessViewComponent;
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
-  let convertHrefToRouterService;
+  let convertHrefToRouterService: jasmine.SpyObj<ConvertHrefToRouterService>;
+  let rpxTranslationService: jasmine.SpyObj<RpxTranslationService>;
   let router: Router;
   const prependedTabsList = [
     {
@@ -1768,8 +1788,10 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
   ];
 
   beforeEach(waitForAsync(() => {
-    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService = createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('/case/IA/Asylum/1641014744613435/trigger/sendDirection'));
+    rpxTranslationService = createSpyObj('RpxTranslationService', ['getTranslation$']);
+    rpxTranslationService.getTranslation$.withArgs('Hearings').and.returnValue(of('Gwrandawiadau'));
     navigationNotifierService = new NavigationNotifierService();
     spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
     mockLocation = createSpyObj('location', ['path']);
@@ -1846,7 +1868,7 @@ describe('CaseFullAccessViewComponent - Overview with prepended Tabs', () => {
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
+          { provide: RpxTranslationService, useValue: rpxTranslationService },
           DeleteOrCancelDialogComponent
         ],
         teardown: { destroyAfterEach: false }
@@ -2051,21 +2073,18 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
   let caseViewerComponent: CaseFullAccessViewComponent;
   let componentFixture: ComponentFixture<CaseFullAccessViewComponent>;
   let debugElement: DebugElement;
-  let convertHrefToRouterService;
+  let convertHrefToRouterService: jasmine.SpyObj<ConvertHrefToRouterService>;
   let subscribeSpy: jasmine.Spy;
   let subscriptionMock: Subscription = new Subscription();
 
   beforeEach(waitForAsync(() => {
-    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService = createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
     mockLocation = createSpyObj('location', ['path']);
     mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
     alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(of({}));
-    alertService.success.and.returnValue(of({}));
-    alertService.warning.and.returnValue(of({}));
 
     TestBed
       .configureTestingModule({
@@ -2138,7 +2157,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['getTranslation$']) },
           DeleteOrCancelDialogComponent
         ],
         teardown: { destroyAfterEach: false }
@@ -2170,7 +2189,7 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
   });
 
   it('should not call callAngularRouter() on initial (default) value', (done) => {
-    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService = createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
     componentFixture.detectChanges();
     convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {

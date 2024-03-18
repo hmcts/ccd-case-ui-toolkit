@@ -7,7 +7,7 @@ describe('JurisdictionService', () => {
   describe('searchJudicialUsers', () => {
     it('should make a http post', () => {
       const mockHttpService = {
-        post: () => { }
+        post: (_endpoint: string, _request: object) => { }
       };
 
       service = new JurisdictionService(mockHttpService as unknown as HttpService);
@@ -21,7 +21,7 @@ describe('JurisdictionService', () => {
   describe('searchJudicialUsersByPersonalCodes', () => {
     it('should make a http post', () => {
       const mockHttpService = {
-        post: () => { }
+        post: (_endpoint: string, _request: object) => { }
       };
       const result = ['example'];
 

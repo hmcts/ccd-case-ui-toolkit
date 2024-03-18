@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { CaseField } from '../../../domain';
-import { DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
+import { CategoriesAndDocuments, DocumentTreeNode, DocumentTreeNodeType } from '../../../domain/case-file-view';
 import { CaseFileViewService, DocumentManagementService, LoadingService } from '../../../services';
 import { mockDocumentManagementService } from '../../../services/document-management/document-management.service.mock';
 import { SessionStorageService } from '../../../services/session/session-storage.service';
@@ -181,7 +181,12 @@ describe('CaseFileViewFieldComponent', () => {
       newCategory: 'newCategoryId'
     };
 
-    mockCaseFileViewService.updateDocumentCategory.and.returnValue(of({ response: true }));
+    const categoriesAndDocuments: CategoriesAndDocuments = {
+      case_version: 1,
+      categories: [],
+      uncategorised_documents: []
+    };
+    mockCaseFileViewService.updateDocumentCategory.and.returnValue(of(categoriesAndDocuments));
     component.reloadPage = () => {};
     spyOn(component, 'reloadPage').and.callThrough();
     spyOn(component, 'resetErrorMessages').and.callThrough();

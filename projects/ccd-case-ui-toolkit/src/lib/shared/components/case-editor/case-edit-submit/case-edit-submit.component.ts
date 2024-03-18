@@ -201,15 +201,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public showEventNotes(): boolean {
-    // Display event notes related controls only if the following conditions are met
-    // 1. show_event_notes flag is set to true
-    // 2. profile is not a solicitor
-    // 3. is not a case flags journey, as it uses a custom check your answers component
-    if (this.eventTrigger.show_event_notes) {
-      return !this.profile?.isSolicitor()
-        && !this.caseEdit.isCaseFlagSubmission;
-    }
-    return false;
+    return !!this.eventTrigger.show_event_notes;
   }
 
   private getLastPageShown(): WizardPage {
