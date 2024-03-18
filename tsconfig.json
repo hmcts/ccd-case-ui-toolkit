@@ -6,7 +6,7 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "es2015",
+    "module": "es2020",
     "moduleResolution": "node",
     "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
@@ -30,5 +30,8 @@
         "dist/ccd-case-ui-toolkit/*"
       ]
     }
+  },
+  "angularCompilerOptions": {
+    "enableIvy": true
   }
 }

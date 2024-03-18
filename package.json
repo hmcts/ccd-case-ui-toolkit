@@ -17,7 +17,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "npm run build:library",
+    "build": "npm run build:library --verbose",
     "build:library": "ng build ccd-case-ui-toolkit-lib",
     "build:library:watch": "npm run build:library -- --watch",
     "build:watch": "concurrently --raw \"npm run build:umd:watch\"",
