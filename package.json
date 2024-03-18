@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.21-CVE-fix-02",
+  "version": "7.0.21-CVE-fix-03",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -163,7 +163,7 @@
     "mocha": "^8.1.1",
     "multidep": "2.0.2",
     "ng-mocks": "^14.1.1",
-    "ng-packagr": "15.2.2",
+    "ng-packagr": "^17.3.0",
     "ng2-mock-component": "^0.1.1",
     "ngx-device-detector": "^1.3.0",
     "nyc": "^13.0.1",
