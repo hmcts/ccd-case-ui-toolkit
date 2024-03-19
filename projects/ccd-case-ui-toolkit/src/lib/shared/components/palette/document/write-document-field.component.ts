@@ -257,10 +257,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename, Validators.required)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' || document.upload_timestamp instanceof Date) ){
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
       documentFormGroup = {
         ...documentFormGroup,
-        ...{ upload_timestamp: new FormControl(new Date(document.upload_timestamp)) }
+        ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
       }
     }
 
@@ -279,10 +279,10 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename)
     };
 
-    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' || document.upload_timestamp instanceof Date) ){
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
       documentFormGroup = {
         ...documentFormGroup,
-        ...{ upload_timestamp: new FormControl(new Date(document.upload_timestamp)) }
+        ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
       }
     }
 
