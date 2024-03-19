@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.21-media-viewer-update",
+  "version": "7.0.21-media-viewer-update-01",
   "engines": {
     "node": ">=18.17.0"
   },
