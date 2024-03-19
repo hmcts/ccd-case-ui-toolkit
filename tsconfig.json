@@ -30,8 +30,5 @@
         "dist/ccd-case-ui-toolkit/*"
       ]
     }
-  },
-  "angularCompilerOptions": {
-    "enableIvy": true
   }
 }
