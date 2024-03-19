@@ -248,6 +248,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (documentHash) {
       this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).setValue(documentHash);
     }
+    if(this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)){
+      this.uploadedDocument.removeControl(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP);
+    }
   }
 
   private createDocumentFormWithValidator(document: FormDocument): void {
