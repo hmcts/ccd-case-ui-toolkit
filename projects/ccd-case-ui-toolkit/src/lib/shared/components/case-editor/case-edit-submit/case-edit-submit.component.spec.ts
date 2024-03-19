@@ -344,7 +344,7 @@ describe('CaseEditSubmitComponent', () => {
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
-      formValidatorsService = createSpyObj<FormValidatorsService>('ormValidatorsService', ['addMarkDownValidators']);
+      formValidatorsService = createSpyObj<FormValidatorsService>('formValidatorsService', ['addMarkDownValidators']);
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
       spyOn(caseEditComponent, 'submitForm');
@@ -806,7 +806,7 @@ describe('CaseEditSubmitComponent', () => {
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
-      formValidatorsService = createSpyObj<FormValidatorsService>('ormValidatorsService', ['addMarkDownValidators']);
+      formValidatorsService = createSpyObj<FormValidatorsService>('formValidatorsService', ['addMarkDownValidators']);
 
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
@@ -964,7 +964,7 @@ describe('CaseEditSubmitComponent', () => {
       };
       formErrorService = createSpyObj<FormErrorService>('formErrorService', ['mapFieldErrors']);
       formValueService = createSpyObj<FormValueService>('formValueService', ['sanitise']);
-      formValidatorsService = createSpyObj<FormValidatorsService>('ormValidatorsService', ['addMarkDownValidators']);
+      formValidatorsService = createSpyObj<FormValidatorsService>('formValidatorsService', ['addMarkDownValidators']);
 
       spyOn(caseEditComponent, 'navigateToPage');
       spyOn(caseEditComponent, 'cancel');
