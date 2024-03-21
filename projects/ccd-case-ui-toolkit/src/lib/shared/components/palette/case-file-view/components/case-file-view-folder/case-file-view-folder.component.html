@@ -35,7 +35,7 @@
           <span class="node__name node-name-document">
             {{node.name}}
             <br>
-            <span class="node__document-upload-timestamp">{{node.upload_timestamp}}</span>
+            <span *ngIf="node.upload_timestamp" class="node__document-upload-timestamp">{{node.upload_timestamp | date:"dd MMM YYYY"}}</span>
           </span>
           <div class="node__document-options">
             <ccd-case-file-view-folder-document-actions
