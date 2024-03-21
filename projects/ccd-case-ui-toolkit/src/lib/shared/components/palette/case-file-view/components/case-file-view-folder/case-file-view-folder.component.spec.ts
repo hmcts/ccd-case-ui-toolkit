@@ -34,7 +34,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Lager encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '11 May 2023'
+      upload_timestamp: '11 May 2023 00:00:00'
     },
     {
       name: 'Beers encyclopedia',
@@ -42,7 +42,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Beers encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '14 Apr 2023'
+      upload_timestamp: '14 Apr 2023 00:00:00'
     },
     {
       name: 'Ale encyclopedia',
@@ -50,7 +50,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Ale encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '12 Mar 2023'
+      upload_timestamp: '12 Mar 2023 00:00:00'
     }
   ]);
 
@@ -116,18 +116,18 @@ describe('CaseFileViewFolderComponent', () => {
     const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl).toBeDefined();
     const timestampElements = nativeElement.querySelectorAll('.node__document-upload-timestamp');
-    expect(timestampElements[0].textContent).toEqual('11 May 2023');
-    expect(timestampElements[1].textContent).toEqual('14 Apr 2023');
-    expect(timestampElements[2].textContent).toEqual('12 Mar 2023');
+    expect(timestampElements[0].textContent).toEqual('11 May 2023 00:00:00');
+    expect(timestampElements[1].textContent).toEqual('14 Apr 2023 00:00:00');
+    expect(timestampElements[2].textContent).toEqual('12 Mar 2023 00:00:00');
     expect(timestampElements[3].textContent).toEqual('');
-    expect(timestampElements[4].textContent).toEqual('10 Feb 2023');
-    expect(timestampElements[5].textContent).toEqual('12 Apr 2023');
-    expect(timestampElements[6].textContent).toEqual('16 Mar 2023');
-    expect(timestampElements[7].textContent).toEqual('21 Jun 2022');
-    expect(timestampElements[8].textContent).toEqual('04 Nov 2022');
-    expect(timestampElements[9].textContent).toEqual('28 Dec 2022');
-    expect(timestampElements[10].textContent).toEqual('17 Nov 2022');
-    expect(timestampElements[11].textContent).toEqual('23 Feb 2023');
+    expect(timestampElements[4].textContent).toEqual('10 Feb 2023 00:00:00');
+    expect(timestampElements[5].textContent).toEqual('12 Apr 2023 00:00:00');
+    expect(timestampElements[6].textContent).toEqual('16 Mar 2023 00:00:00');
+    expect(timestampElements[7].textContent).toEqual('21 Jun 2022 00:00:00');
+    expect(timestampElements[8].textContent).toEqual('04 Nov 2022 00:00:00');
+    expect(timestampElements[9].textContent).toEqual('28 Dec 2022 00:00:00');
+    expect(timestampElements[10].textContent).toEqual('17 Nov 2022 00:00:00');
+    expect(timestampElements[11].textContent).toEqual('23 Feb 2023 00:00:00');
   });
 
   it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
