@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.22-upload-timestamp",
+  "version": "7.0.23-upload-timestamp",
   "engines": {
     "node": ">=18.17.0"
   },
