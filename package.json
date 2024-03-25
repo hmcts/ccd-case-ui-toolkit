@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.21-CVE-fix-03",
+  "version": "7.0.21-ng-packageManagr-update",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -55,7 +55,7 @@
     "@angular/compiler": "^15.2.9",
     "@angular/core": "^15.2.9",
     "@angular/forms": "^15.2.9",
-    "@angular/localize": "15.0.4",
+    "@angular/localize": "15.2.9",
     "@angular/material": "15.2.9",
     "@angular/platform-browser": "^15.2.9",
     "@angular/platform-browser-dynamic": "^15.2.9",
