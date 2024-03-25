@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.21-markdown-pre-release-02",
+  "version": "7.0.21-markdown-pre-release-01",
   "engines": {
     "node": ">=18.17.0"
   },
