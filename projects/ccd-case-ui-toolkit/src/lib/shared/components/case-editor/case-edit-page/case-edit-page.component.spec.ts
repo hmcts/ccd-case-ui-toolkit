@@ -37,6 +37,7 @@ import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import {
+  AddressesService,
   CaseFieldService,
   FieldTypeSanitiser,
   FormErrorService,
@@ -79,7 +80,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService = {},
     caseEditDataService = {},
     loadingService = {},
-    validPageListCaseFieldsService = {}
+    validPageListCaseFieldsService = {},
+    addressesService = {}
   }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -92,7 +94,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService as CaseFieldService,
     caseEditDataService as CaseEditDataService,
     loadingService as LoadingService,
-    validPageListCaseFieldsService as ValidPageListCaseFieldsService
+    validPageListCaseFieldsService as ValidPageListCaseFieldsService,
+    addressesService as AddressesService
   );
 
   it('should create', () => {
@@ -454,6 +457,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           imports: [FormsModule, ReactiveFormsModule],
@@ -477,6 +481,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -850,6 +855,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
 
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -872,6 +878,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1011,6 +1018,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
 
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -1033,6 +1041,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1086,6 +1095,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
   describe('submit the form', () => {
     const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+    const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
     beforeEach(
       waitForAsync(() => {
@@ -1202,6 +1212,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1435,6 +1446,7 @@ describe('CaseEditPageComponent - all other tests', () => {
     beforeEach(
       waitForAsync(() => {
         const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
         firstPage.id = 'first page';
         cancelled = createSpyObj('cancelled', ['emit']);
         const caseFields: CaseField[] = [
@@ -1544,6 +1556,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock}
           ],
         }).compileComponents();
       })
@@ -1647,9 +1660,18 @@ describe('CaseEditPageComponent - all other tests', () => {
       value: '',
     } as CaseField;
 
+    const ADDRESS_FIELD: CaseField = {
+      id: 'AddressLine1',
+      label: 'AddressLine1',
+      display_context: 'MANDATORY',
+      field_type: {id: 'Text', type: 'Text'},
+      value: '',
+    } as CaseField;
+
     beforeEach(
       waitForAsync(() => {
         const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
         firstPage.id = 'first page';
         cancelled = createSpyObj('cancelled', ['emit']);
 
@@ -1750,6 +1772,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
