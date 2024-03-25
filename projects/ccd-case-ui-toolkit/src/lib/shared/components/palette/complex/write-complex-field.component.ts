@@ -22,9 +22,6 @@ export class WriteComplexFieldComponent extends AbstractFieldWriteComponent impl
   @Input()
   public caseFields: CaseField[] = [];
 
-  @Input()
-  public formGroup: FormGroup;
-
   public complexGroup: FormGroup;
 
   @Input()
