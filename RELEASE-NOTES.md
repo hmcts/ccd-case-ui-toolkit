@@ -1,6 +1,8 @@
 ## RELEASE NOTES
 
-### Version 7.0.22-rc1
+### Version 7.0.22-rc2
+**EXUI-330** Sanitise markdown links on input QA/TEST
+**EXUI-707** Clone- HTML Injection QA/TEST
 **EXUI-706** Clone - Insufficient Anti-Automation Mechanisms 
 **EXUI-724** Remove support for WA versions
 **EXUI-830** Screen freezes when submitting event
