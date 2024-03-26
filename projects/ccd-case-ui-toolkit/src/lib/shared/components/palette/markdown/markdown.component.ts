@@ -1,4 +1,5 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
+import * as marked from 'marked';
 
 @Component({
   selector: 'ccd-markdown',
@@ -9,11 +10,16 @@ export class MarkdownComponent implements OnInit {
   public content: string;
   @Input()
   public markdownUseHrefAsRouterLink!: boolean;
+  @Input()
+  public renderUrlToTextFeature?: boolean = true;
 
   constructor() {}
 
   public ngOnInit(): void {
     this.content = this.content.replace(/  \n/g, '<br>');
+    if (this.renderUrlToTextFeature) {
+      this.renderUrlToText();
+    }
   }
 
   @HostListener('click', ['$event'])
@@ -23,5 +29,17 @@ export class MarkdownComponent implements OnInit {
       return;
     }
     return true;
+  }
+
+  private renderUrlToText() : void {
+    const renderer = new marked.Renderer();
+
+    renderer.link = (href, title, text) => {
+      return text;  // Return the text without turning it into a link
+    };
+
+    marked.setOptions({
+      renderer: renderer
+    });
   }
 }
