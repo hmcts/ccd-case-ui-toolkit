@@ -28,6 +28,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   public static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
+  public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
 
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
@@ -280,25 +281,31 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private getErrorMessage(error: HttpError): string {
-    // Document Management unavailable
-    if (0 === error.status || 502 === error.status) {
-      return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
-    }
-
-    let errorMsg = 'Error uploading file';
-    if (error?.error) {
-      const fullError = error.error;
-      const start = fullError.indexOf('{');
-      if (start >= 0) {
-        const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
-        const obj = JSON.parse(json);
-        if (obj?.error) {
-          errorMsg = obj.error;
+    switch (error.status) {
+      case 0:
+      case 502:
+        return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+      case 422:
+        {
+          let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+          if (error?.error) {
+            const fullError = error.error;
+            const start = fullError.indexOf('{');
+            if (start >= 0) {
+              const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
+              const obj = JSON.parse(json);
+              if (obj?.error) {
+                errorMsg = obj.error;
+              }
+            }
+          }
+          return errorMsg;
         }
-
-      }
+      case 429:
+        return error?.error;
+      default:
+        return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
     }
-    return errorMsg;
   }
 
   private buildDocumentUploadData(selectedFile: File): FormData {

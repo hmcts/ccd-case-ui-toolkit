@@ -91,10 +91,9 @@ describe('MarkdownComponent - Anchor', () => {
   let de: DebugElement;
   let convertHrefToRouterService: ConvertHrefToRouterService;
 
-  beforeEach((async () => {
-    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
+  beforeEach(waitForAsync(() => {
 
-    await TestBed
+    TestBed
       .configureTestingModule({
         imports: [
           HttpClientTestingModule,
@@ -107,31 +106,41 @@ describe('MarkdownComponent - Anchor', () => {
         ],
         providers: [
           NgxMdComponent,
-          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService }
+          ConvertHrefToRouterService
         ]
       })
       .compileComponents();
+    }));
 
-    fixture = TestBed.createComponent(CCDMarkDownComponent);
-    component = fixture.componentInstance;
-    component.content = CONTENT;
-    component.markdownUseHrefAsRouterLink = true;
-    de = fixture.debugElement;
-    fixture.detectChanges();
-  }));
-
-  it('Should render an anchor and paragraph elements', () => {
-    expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
-  });
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CCDMarkDownComponent);
+      component = fixture.componentInstance;
+      de = fixture.debugElement;
+      convertHrefToRouterService = TestBed.inject(ConvertHrefToRouterService);
+    });
 
   it('should invoke onMarkdownClick() on markdown click', (done) => {
+    component.content = CONTENT;
     const spyMarkdownClick = spyOn(component, 'onMarkdownClick').and.callThrough();
-    const markdown = de.query(By.css('markdown')).nativeElement;
+    const markdown = de.query($MARKDOWN).nativeElement;
     markdown.click();
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       expect(spyMarkdownClick).toHaveBeenCalled();
       done();
     });
+  });
+
+  it('should render URLs to text without turning them into links', () => {
+    component.content = CONTENT;
+    fixture.detectChanges();
+    expect(de.query($MARKDOWN).nativeElement.innerHTML).not.toBe(EXPECTED_CONTENT);
+  });
+
+  it('should render URLs into links when renderUrlToTextFeature is set false', () => {
+    component.content = CONTENT;
+    component.renderUrlToTextFeature = false;
+    fixture.detectChanges();
+    expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
   });
 });

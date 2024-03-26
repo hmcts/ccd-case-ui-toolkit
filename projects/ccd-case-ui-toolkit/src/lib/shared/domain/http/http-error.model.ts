@@ -17,6 +17,8 @@ export class HttpError {
   private static readonly DEFAULT_MESSAGE = 'Something unexpected happened, our technical staff have been automatically notified';
   private static readonly DEFAULT_STATUS = 500;
 
+  private static readonly MESSAGE_ERROR_429 ='Your request was rate limited. Please wait a few seconds before retrying your document upload';
+
   public timestamp: string;
   public status: number;
   public error: string;
@@ -29,6 +31,12 @@ export class HttpError {
 
   public static from(response: HttpErrorResponse): HttpError {
     const error = new HttpError();
+
+    if (response?.status === 429) {
+      error.error = HttpError.MESSAGE_ERROR_429;
+      error.status = response.status;
+      error.message = response.message;
+    }
 
     // Check that the HttpErrorResponse contains an "error" object before mapping the error properties
     if (!!(response && response.error)) {

@@ -15,6 +15,6 @@ export class WriteTextFieldComponent extends AbstractFieldWriteComponent impleme
   }
 
   public onBlur($event) {
-     $event.target.value = $event.target.value.trim();
+    $event.target.value = $event.target.value.trim();
   }
 }
