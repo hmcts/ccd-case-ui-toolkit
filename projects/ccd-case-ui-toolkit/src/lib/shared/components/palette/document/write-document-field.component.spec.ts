@@ -7,7 +7,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseField, DocumentData, FieldType } from '../../../domain';
+import { CaseField, DocumentData, FieldType, HttpError } from '../../../domain';
 import { DocumentManagementService, JurisdictionService } from '../../../services';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -19,6 +19,7 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
 
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { HttpErrorResponse } from '@angular/common/http';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -130,7 +131,7 @@ describe('WriteDocumentFieldComponent', () => {
       of(RESPONSE_SECOND_DOCUMENT)
     );
     mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
-    mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed','close']);
+    mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed', 'close']);
     casesService = createSpyObj('casesService', ['getCaseViewV2']);
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
       'setUploadInProgress',
@@ -388,6 +389,70 @@ describe('WriteDocumentFieldComponent', () => {
     expect(fileUploadSubscriptionSpy).toHaveBeenCalled();
     expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
     expect(component.valid).toBeTruthy();
+  });
+
+  it('should get error message', () => {
+    const error = new HttpError();
+    error.error = 'Unknown error';
+    error.status = 422;
+    const errorMsgSpy = spyOn<any>(component, 'getErrorMessage');
+    component['handleDocumentUploadError'](error);;
+
+    expect(errorMsgSpy).toHaveBeenCalledWith(error);
+  });
+
+  it('should call fileValidationsOnTab', () => {
+    const fileValidationsOnTabSpy = spyOn<any>(component, 'fileValidationsOnTab').and.callThrough();
+    component['fileValidationsOnTab']();
+    expect(fileValidationsOnTabSpy).toHaveBeenCalled();
+  });
+
+
+  it('should cover the 429 status code', () => {
+    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const status = {
+      status: 429,
+      error: 'Unknown error'
+    } as HttpError
+
+    component['handleDocumentUploadError'](status);
+    fixture.detectChanges();
+
+    expect(errorMsg).toEqual(WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE);
+  });
+
+  it('should cover the 422 status code', () => {
+    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const status = {
+      status: 422,
+      error: 'Unknown error'
+    } as HttpError
+
+    component['handleDocumentUploadError'](status);
+    fixture.detectChanges();
+
+    expect(errorMsg).toEqual(WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE);
+  });
+
+  it('should cover the 502 status code', () => {
+    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const status = {
+      status: 502,
+      error: 'Unknown error'
+    } as HttpError
+
+    component['handleDocumentUploadError'](status);
+    fixture.detectChanges();
+
+    expect(errorMsg).toEqual(errorMsg);
+  });
+
+  it('should call isUploadAFile', () => {
+    component.fileUploadMessages = undefined;
+    const result = component['isUpLoadingAFile']();
+    fixture.detectChanges();
+
+    expect(result).toBeFalsy();
   });
 });
 

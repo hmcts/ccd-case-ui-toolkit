@@ -11,16 +11,20 @@ import { WizardPage } from '../domain/wizard-page.model';
 export class PageValidationService {
   constructor(private readonly caseFieldService: CaseFieldService) { }
 
-  public isPageValid(page: WizardPage, editForm: FormGroup): boolean {
-    return page.case_fields
+  public getInvalidFields(page: WizardPage, editForm: FormGroup): CaseField[] {
+    const failingCaseFields = [];
+    page.case_fields
       .filter(caseField => !this.caseFieldService.isReadOnly(caseField))
       .filter(caseField => !this.isHidden(caseField, editForm))
-      .every(caseField => {
+      .map(caseField => {
         const theControl = FieldsUtils.isCaseFieldOfType(caseField, ['JudicialUser'])
           ? editForm.controls['data'].get(`${caseField.id}_judicialUserControl`)
           : editForm.controls['data'].get(caseField.id);
-        return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
+        if (!(this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl))) {
+          failingCaseFields.push(caseField);
+        };
       });
+    return failingCaseFields;
   }
 
   public isHidden(caseField: CaseField, editForm: FormGroup, path?: string): boolean {
