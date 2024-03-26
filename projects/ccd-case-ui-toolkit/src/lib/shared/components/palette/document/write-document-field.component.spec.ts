@@ -94,7 +94,7 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
   }]
 };
 
-fdescribe('WriteDocumentFieldComponent', () => {
+describe('WriteDocumentFieldComponent', () => {
 
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
@@ -411,7 +411,8 @@ fdescribe('WriteDocumentFieldComponent', () => {
   it('should cover the 429 status code', () => {
     let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     const status = {
-      status: 429
+      status: 429,
+      error: 'Unknown error'
     } as HttpError
 
     component['handleDocumentUploadError'](status);
@@ -423,7 +424,8 @@ fdescribe('WriteDocumentFieldComponent', () => {
   it('should cover the 422 status code', () => {
     let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     const status = {
-      status: 422
+      status: 422,
+      error: 'Unknown error'
     } as HttpError
 
     component['handleDocumentUploadError'](status);
@@ -435,7 +437,8 @@ fdescribe('WriteDocumentFieldComponent', () => {
   it('should cover the 502 status code', () => {
     let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
     const status = {
-      status: 502
+      status: 502,
+      error: 'Unknown error'
     } as HttpError
 
     component['handleDocumentUploadError'](status);
@@ -453,7 +456,7 @@ fdescribe('WriteDocumentFieldComponent', () => {
   });
 });
 
-fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
+describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   const FIELD_TYPE_MANDATORY: FieldType = {
     id: 'Document',
     type: 'Document'
