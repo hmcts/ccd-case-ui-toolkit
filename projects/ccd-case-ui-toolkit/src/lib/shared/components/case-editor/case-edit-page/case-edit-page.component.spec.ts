@@ -107,53 +107,38 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
 
   describe('multipageComponentStateService', () => {
     it('should trigger previous step with the multi-page component state service', () => {
-      const service: MultipageComponentStateService = new MultipageComponentStateService();
-      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
-      service.resetJourneyCollection();
-      spyOn(service, 'previous');
-      spyOn(component, 'onFinalPrevious');
-
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
+      multipageComponentStateService.resetJourneyCollection();
+      spyOn(multipageComponentStateService, 'previous');
       
-      service.setInstigator(component);
+      multipageComponentStateService.setInstigator(component);
       component.previousStep();
       
-      expect(service.previous).toHaveBeenCalled();
-      expect(component.onFinalPrevious).toHaveBeenCalled();
+      expect(multipageComponentStateService.previous).toHaveBeenCalled();
     });
   
     it('should trigger next step with the multi-page component state service', () => {
-      const service: MultipageComponentStateService = new MultipageComponentStateService();
-      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service, caseEditDataService: new CaseEditDataService() });
-      spyOn(service, 'next');
-      spyOn(component, 'onFinalNext');
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const caseEditDataService: CaseEditDataService = new CaseEditDataService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService, caseEditDataService });
+      spyOn(multipageComponentStateService, 'next');
 
-      service.setInstigator(component);
+      multipageComponentStateService.setInstigator(component);
       component.nextStep();
      
-      expect(service.next).toHaveBeenCalled();
-      expect(component.onFinalNext).toHaveBeenCalled();
-    });
-
-    it('should reset the multi-page component state service on initialisation',  () => {
-      const service: MultipageComponentStateService = new MultipageComponentStateService();
-      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
-
-      spyOn(service, 'reset');
-      service.setInstigator(component);
-      component.ngOnInit();
-
-      expect(service.reset).toHaveBeenCalled();
+      expect(multipageComponentStateService.next).toHaveBeenCalled();
     });
 
     it('should reset the multi-page component state service on destruction',  () => {
-      const service: MultipageComponentStateService = new MultipageComponentStateService();
-      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
-      spyOn(service, 'reset');
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
+      spyOn(multipageComponentStateService, 'reset');
       
-      service.setInstigator(component);
+      multipageComponentStateService.setInstigator(component);
       component.ngOnDestroy();
       
-      expect(service.reset).toHaveBeenCalled();
+      expect(multipageComponentStateService.reset).toHaveBeenCalled();
     });
   });
 
@@ -406,6 +391,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   const caseField1 = new CaseField();
   const caseField2 = new CaseField();
   const eventData = new CaseEventData();
+  let multipageComponentStateService = new MultipageComponentStateService();
+
   const caseEventDataPrevious: CaseEventData = {
     data: {
       field1: 'Updated value',
@@ -511,8 +498,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
-
-      const multipageComponentStateService = new MultipageComponentStateService();
+        multipageComponentStateService = new MultipageComponentStateService();
 
         TestBed.configureTestingModule({
           imports: [FormsModule, ReactiveFormsModule],

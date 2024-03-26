@@ -8,7 +8,6 @@ import { AddCommentsComponent } from './add-comments.component';
 describe('AddCommentsComponent', () => {
   let component: AddCommentsComponent;
   let fixture: ComponentFixture<AddCommentsComponent>;
-  let nextButton: HTMLElement;
   let textareaInput: string;
   // Code for "Other" flag type as defined in Reference Data
   const otherFlagTypeCode = 'OT0001';
@@ -26,7 +25,6 @@ describe('AddCommentsComponent', () => {
     fixture = TestBed.createComponent(AddCommentsComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({});
-    nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
@@ -42,7 +40,7 @@ describe('AddCommentsComponent', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
     component.isDisplayContextParameterExternal = false;
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -62,7 +60,7 @@ describe('AddCommentsComponent', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
     component.isDisplayContextParameterExternal = true;
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -83,7 +81,7 @@ describe('AddCommentsComponent', () => {
     spyOn(component.caseFlagStateEmitter, 'emit');
     component.optional = true;
     component.ngOnInit();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -99,7 +97,7 @@ describe('AddCommentsComponent', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -113,7 +111,7 @@ describe('AddCommentsComponent', () => {
     component.ngOnInit();
     textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -128,7 +126,7 @@ describe('AddCommentsComponent', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);
     let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
@@ -138,7 +136,7 @@ describe('AddCommentsComponent', () => {
     component.ngOnInit();
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);
     errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');

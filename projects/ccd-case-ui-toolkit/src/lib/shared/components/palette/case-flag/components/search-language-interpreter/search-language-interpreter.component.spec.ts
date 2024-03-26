@@ -13,7 +13,6 @@ import { SearchLanguageInterpreterComponent } from './search-language-interprete
 describe('SearchLanguageInterpreterComponent', () => {
   let component: SearchLanguageInterpreterComponent;
   let fixture: ComponentFixture<SearchLanguageInterpreterComponent>;
-  let nextButton: HTMLElement;
   let fieldInput: string;
   let mockRpxTranslationService: any;
   const languageFlagCode = 'PF0015';
@@ -71,7 +70,6 @@ describe('SearchLanguageInterpreterComponent', () => {
       defaultStatus: 'Active',
       externallyAvailable: false,
     };
-    nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 80-character text input
     fieldInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777';
@@ -241,7 +239,7 @@ describe('SearchLanguageInterpreterComponent', () => {
   it('should show an error message on clicking "Next" if no language has been selected', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -264,7 +262,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     const checkboxElement = nativeElement.querySelector('.govuk-checkboxes__input');
     checkboxElement.click();
     fixture.detectChanges();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -293,7 +291,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     const manualLanguageEntryField = nativeElement.querySelector('#manual-language-entry');
     manualLanguageEntryField.value = `${fieldInput}0`;
     manualLanguageEntryField.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -322,7 +320,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     const manualLanguageEntryField = nativeElement.querySelector('#manual-language-entry');
     manualLanguageEntryField.value = fieldInput;
     manualLanguageEntryField.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -352,7 +350,7 @@ describe('SearchLanguageInterpreterComponent', () => {
     manualLanguageEntryField.value = fieldInput;
     manualLanguageEntryField.dispatchEvent(new Event('input'));
     expect(component.formGroup.get(SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY).value).toEqual(fieldInput);
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({

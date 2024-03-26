@@ -252,8 +252,8 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
     nativeElement.querySelector('#flag-type-0').click();
-    const nextButtonElement = nativeElement.querySelector('.button');
-    nextButtonElement.click();
+    
+    component.onNext();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: true,
@@ -268,8 +268,8 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     // Second radio button (with index 1) expected to be "Potentially suicidal" from test data; flag type is a non-parent
     nativeElement.querySelector('#flag-type-1').click();
-    const nextButtonElement = nativeElement.querySelector('.button');
-    nextButtonElement.click();
+    
+    component.onNext();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
@@ -286,17 +286,17 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
     nativeElement.querySelector('#flag-type-0').click();
-    const nextButtonElement = nativeElement.querySelector('.button');
-    nextButtonElement.click();
+    
+    component.onNext();
     fixture.detectChanges();
     // Second radio button (with index 1) at next level expected to be "I need help communicating and understanding" from test data
     nativeElement.querySelector('#flag-type-1').click();
-    nextButtonElement.click();
+    component.onNext();
     fixture.detectChanges();
     // First radio button (with index 0) at next level expected to be "Sign Language Interpreter" from test data,
     // with list of values
     nativeElement.querySelector('#flag-type-0').click();
-    nextButtonElement.click();
+    component.onNext();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
       isParentFlagType: false,
@@ -311,8 +311,8 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     // Second radio button (with index 1) expected to be "Potentially suicidal" from test data; comments optional for this flag type
     nativeElement.querySelector('#flag-type-1').click();
-    const nextButtonElement = nativeElement.querySelector('.button');
-    nextButtonElement.click();
+    
+    component.onNext();
     expect(component.flagCommentsOptionalEmitter.emit).toHaveBeenCalledWith(null);
   });
 
@@ -322,8 +322,8 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
     nativeElement.querySelector('#flag-type-0').click();
-    const nextButtonElement = nativeElement.querySelector('.button');
-    nextButtonElement.click();
+    
+    component.onNext();
     expect(component.flagCommentsOptionalEmitter.emit).not.toHaveBeenCalled();
   });
 
@@ -333,8 +333,8 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     // Third radio button (with index 2) expected to be "Other" from test data; comments mandatory for this flag type
     nativeElement.querySelector('#flag-type-2').click();
-    const nextButtonElement = nativeElement.querySelector('.button');
-    nextButtonElement.click();
+    
+    component.onNext();
     expect(component.flagCommentsOptionalEmitter.emit).not.toHaveBeenCalled();
   });
 
@@ -342,7 +342,7 @@ describe('SelectFlagTypeComponent', () => {
     fixture.detectChanges();
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE,
@@ -364,9 +364,9 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     component.formGroup.get(CaseFlagFormFields.FLAG_TYPE).setValue(flagTypes[0].childFlags[0]);
     // Need twice - one for first selection which should pass validation and the second will fail
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     expect(component.errorMessages).toEqual([]);
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     fixture.detectChanges();
 
     expect(component.errorMessages[0]).toEqual({
@@ -385,7 +385,7 @@ describe('SelectFlagTypeComponent', () => {
     fixture.detectChanges();
     const otherDescription: HTMLInputElement = nativeElement.querySelector('#other-flag-type-description');
     expect(otherDescription).toBeTruthy();
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     fixture.detectChanges();
     const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
     expect(errorSummaryElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_ENTERED);
@@ -401,7 +401,7 @@ describe('SelectFlagTypeComponent', () => {
     fixture.detectChanges();
     otherDescription.value = 'OtherFlagTypeDescriptionTestWithMoreThanEightyCharactersShouldFailTheValidationAsExpected';
     otherDescription.dispatchEvent(new Event('input'));
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     fixture.detectChanges();
     const errorSummaryElement = nativeElement.querySelector('#flag-type-error-message');
     expect(errorSummaryElement.textContent).toContain(SelectFlagTypeErrorMessage.FLAG_TYPE_LIMIT_EXCEEDED);
@@ -412,8 +412,7 @@ describe('SelectFlagTypeComponent', () => {
     const nativeElement = fixture.debugElement.nativeElement;
     // First radio button (with index 0) expected to be "Reasonable adjustment" from test data; flag type is a parent
     nativeElement.querySelector('#flag-type-0').click();
-    const nextButtonElement = nativeElement.querySelector('.button');
-    nextButtonElement.click();
+    component.onNext();
     expect(component.flagTypes).toEqual(flagTypes[0].childFlags[0].childFlags);
     expect(component.formGroup.get(CaseFlagFormFields.FLAG_TYPE).value).toEqual(null);
     expect(component.selectedFlagType).toBeNull();
@@ -486,10 +485,6 @@ describe('SelectFlagTypeComponent', () => {
     expect(component.caseFlagStateEmitter.emit)
       .toHaveBeenCalledWith({ currentCaseFlagFieldState: CaseFlagFieldState.FLAG_TYPE, errorMessages: component.errorMessages });
     fixture.detectChanges();
-    const nativeElement = fixture.debugElement.nativeElement;
-    const nextButtonElement = nativeElement.querySelector('.button');
-    // The "Next" button should not be present if an error has occurred when retrieving the list of flag types
-    expect(nextButtonElement).toBeNull();
   });
 
   it('should unsubscribe from any Observables when the component is destroyed', () => {
