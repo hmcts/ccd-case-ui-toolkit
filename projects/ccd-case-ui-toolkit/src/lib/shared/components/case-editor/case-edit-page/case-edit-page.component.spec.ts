@@ -80,7 +80,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseEditDataService = {},
     loadingService = {},
     validPageListCaseFieldsService = {},
-    multipageComponentStateService = {},
+    multipageComponentStateService = new MultipageComponentStateService(),
     addressesService = {}
   }) =>
   new CaseEditPageComponent(
