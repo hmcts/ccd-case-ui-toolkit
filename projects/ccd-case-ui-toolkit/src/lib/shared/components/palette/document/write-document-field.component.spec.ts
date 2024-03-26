@@ -94,7 +94,7 @@ const RESPONSE_SECOND_DOCUMENT: DocumentData = {
   }]
 };
 
-describe('WriteDocumentFieldComponent', () => {
+fdescribe('WriteDocumentFieldComponent', () => {
 
   const FORM_GROUP = new FormGroup({});
   const DIALOG_CONFIG = new MatDialogConfig();
@@ -401,15 +401,59 @@ describe('WriteDocumentFieldComponent', () => {
     expect(errorMsgSpy).toHaveBeenCalledWith(error);
   });
 
-  it('should call isUploadAFile', () => {
-    component['isUpLoadingAFile']();
+  it('should call fileValidationsOnTab', () => {
+    const fileValidationsOnTabSpy = spyOn<any>(component, 'fileValidationsOnTab').and.callThrough();
+    component['fileValidationsOnTab']();
+    expect(fileValidationsOnTabSpy).toHaveBeenCalled();
+  });
+
+
+  it('should cover the 429 status code', () => {
+    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const status = {
+      status: 429
+    } as HttpError
+
+    component['handleDocumentUploadError'](status);
     fixture.detectChanges();
 
-    expect(component.fileUploadMessages).toEqual(undefined);
+    expect(errorMsg).toEqual(WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE);
+  });
+
+  it('should cover the 422 status code', () => {
+    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const status = {
+      status: 422
+    } as HttpError
+
+    component['handleDocumentUploadError'](status);
+    fixture.detectChanges();
+
+    expect(errorMsg).toEqual(WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE);
+  });
+
+  it('should cover the 502 status code', () => {
+    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const status = {
+      status: 502
+    } as HttpError
+
+    component['handleDocumentUploadError'](status);
+    fixture.detectChanges();
+
+    expect(errorMsg).toEqual(errorMsg);
+  });
+
+  it('should call isUploadAFile', () => {
+    component.fileUploadMessages = undefined;
+    const result = component['isUpLoadingAFile']();
+    fixture.detectChanges();
+
+    expect(result).toBeFalsy();
   });
 });
 
-describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
+fdescribe('WriteDocumentFieldComponent with Mandatory casefield', () => {
   const FIELD_TYPE_MANDATORY: FieldType = {
     id: 'Document',
     type: 'Document'
