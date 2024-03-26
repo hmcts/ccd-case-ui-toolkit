@@ -286,19 +286,21 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       case 502:
         return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
       case 422:
-        let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
-        if (error?.error) {
-          const fullError = error.error;
-          const start = fullError.indexOf('{');
-          if (start >= 0) {
-            const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
-            const obj = JSON.parse(json);
-            if (obj?.error) {
-              errorMsg = obj.error;
+        {
+          let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+          if (error?.error) {
+            const fullError = error.error;
+            const start = fullError.indexOf('{');
+            if (start >= 0) {
+              const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
+              const obj = JSON.parse(json);
+              if (obj?.error) {
+                errorMsg = obj.error;
+              }
             }
           }
+          return errorMsg;
         }
-        return errorMsg;
       case 429:
         return error?.error;
       default:
