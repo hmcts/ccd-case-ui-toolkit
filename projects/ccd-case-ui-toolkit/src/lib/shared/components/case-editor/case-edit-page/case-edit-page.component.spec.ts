@@ -105,6 +105,42 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     expect(component).toBeTruthy();
   });
 
+  describe('multipageComponentStateService', () => {
+    it('should trigger previous step with the multi-page component state service', () => {
+      const service: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
+      service.setInstigator(component);
+      component.previousStep();
+      expect(service.previous).toHaveBeenCalled();
+      expect(component.onFinalPrevious).toHaveBeenCalled();
+    });
+  
+    it('should trigger next step with the multi-page component state service', () => {
+      const service: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
+      service.setInstigator(component);
+      component.nextStep();
+      expect(service.next).toHaveBeenCalled();
+      expect(component.onFinalNext).toHaveBeenCalled();
+    });
+
+    it('should reset the multi-page component state service on initialisation',  () => {
+      const service: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
+      service.setInstigator(component);
+      component.ngOnInit();
+      expect(service.reset).toHaveBeenCalled();
+    });
+
+    it('should reset the multi-page component state service on destruction',  () => {
+      const service: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
+      service.setInstigator(component);
+      component.ngOnDestroy();
+      expect(service.reset).toHaveBeenCalled();
+    });
+  });
+
   describe('updateEventTriggerCaseFields', () => {
     it(`should NOT update event trigger's case fields as eventTrigger is null`, () => {
       component = initializeComponent({});

@@ -105,9 +105,6 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   // This method will be triggered by the next button in the app component
   public nextStep(): void {
-    // TODO: Debug why the state isn't persisting. 
-    // - Check the AbstractJourneyComponent for more details.
-    // - Compare to prototype.
     this.multipageComponentStateService.next();
   }
 
