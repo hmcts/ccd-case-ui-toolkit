@@ -109,17 +109,27 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     it('should trigger previous step with the multi-page component state service', () => {
       const service: MultipageComponentStateService = new MultipageComponentStateService();
       const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
+      service.resetJourneyCollection();
+      spyOn(service, 'previous');
+      spyOn(component, 'onFinalPrevious');
+
+      
       service.setInstigator(component);
       component.previousStep();
+      
       expect(service.previous).toHaveBeenCalled();
       expect(component.onFinalPrevious).toHaveBeenCalled();
     });
   
     it('should trigger next step with the multi-page component state service', () => {
       const service: MultipageComponentStateService = new MultipageComponentStateService();
-      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service, caseEditDataService: new CaseEditDataService() });
+      spyOn(service, 'next');
+      spyOn(component, 'onFinalNext');
+
       service.setInstigator(component);
       component.nextStep();
+     
       expect(service.next).toHaveBeenCalled();
       expect(component.onFinalNext).toHaveBeenCalled();
     });
@@ -127,16 +137,22 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     it('should reset the multi-page component state service on initialisation',  () => {
       const service: MultipageComponentStateService = new MultipageComponentStateService();
       const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
+
+      spyOn(service, 'reset');
       service.setInstigator(component);
       component.ngOnInit();
+
       expect(service.reset).toHaveBeenCalled();
     });
 
     it('should reset the multi-page component state service on destruction',  () => {
       const service: MultipageComponentStateService = new MultipageComponentStateService();
       const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService: service });
+      spyOn(service, 'reset');
+      
       service.setInstigator(component);
       component.ngOnDestroy();
+      
       expect(service.reset).toHaveBeenCalled();
     });
   });
@@ -496,6 +512,8 @@ describe('CaseEditPageComponent - all other tests', () => {
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
+      const multipageComponentStateService = new MultipageComponentStateService();
+
         TestBed.configureTestingModule({
           imports: [FormsModule, ReactiveFormsModule],
           declarations: [
@@ -518,7 +536,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: MultipageComponentStateService, useValue: multipageComponentStateService }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
