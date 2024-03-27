@@ -25,6 +25,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
   public static readonly DOCUMENT_FILENAME = 'document_filename';
   public static readonly DOCUMENT_HASH = 'document_hash';
+  public static readonly UPLOAD_TIMESTAMP = 'upload_timestamp';
   public static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   public static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
@@ -247,6 +248,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (documentHash) {
       this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).setValue(documentHash);
     }
+    if(this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)){
+      this.uploadedDocument.removeControl(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP);
+    }
   }
 
   private createDocumentFormWithValidator(document: FormDocument): void {
@@ -255,6 +259,13 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_binary_url: new FormControl(document.document_binary_url, Validators.required),
       document_filename: new FormControl(document.document_filename, Validators.required)
     };
+
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
+      documentFormGroup = {
+        ...documentFormGroup,
+        ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
+      }
+    }
 
     documentFormGroup = this.secureModeOn ? {
       ...documentFormGroup,
@@ -270,6 +281,13 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_binary_url: new FormControl(document.document_binary_url),
       document_filename: new FormControl(document.document_filename)
     };
+
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
+      documentFormGroup = {
+        ...documentFormGroup,
+        ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
+      }
+    }
 
     documentFormGroup = this.secureModeOn ? {
       ...documentFormGroup,
