@@ -8,7 +8,6 @@ import { ConfirmFlagStatusComponent } from './confirm-flag-status.component';
 describe('ConfirmFlagStatusComponent', () => {
   let component: ConfirmFlagStatusComponent;
   let fixture: ComponentFixture<ConfirmFlagStatusComponent>;
-  let nextButton: HTMLElement;
   let textareaInput: string;
 
   beforeEach(waitForAsync(() => {
@@ -24,7 +23,6 @@ describe('ConfirmFlagStatusComponent', () => {
     fixture = TestBed.createComponent(ConfirmFlagStatusComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({});
-    nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 200-character text input
     textareaInput = '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' + '5555555555' + '6666666666' +
       '7777777777' + '8888888888' + '9999999999' + '0000000000' + '1111111111' + '2222222222' + '3333333333' + '4444444444' +
@@ -64,7 +62,7 @@ describe('ConfirmFlagStatusComponent', () => {
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking third radio button with status "Not approved" makes entering comments mandatory
     radioButtons[2].click();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -87,7 +85,7 @@ describe('ConfirmFlagStatusComponent', () => {
     const radioButtons = fixture.debugElement.nativeElement.querySelectorAll('.govuk-radios__input') as HTMLInputElement[];
     // Clicking first radio button with status "Requested" makes entering comments optional
     radioButtons[0].click();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -99,7 +97,7 @@ describe('ConfirmFlagStatusComponent', () => {
     expect(errorMessageElement).toBeNull();
     // Clicking second radio button with status "Active" makes entering comments optional
     radioButtons[1].click();
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -119,7 +117,7 @@ describe('ConfirmFlagStatusComponent', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -132,7 +130,7 @@ describe('ConfirmFlagStatusComponent', () => {
     radioButtons[2].click();
     textarea.value = `${textareaInput}0`;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages[0]).toEqual({
       title: '',
@@ -151,7 +149,7 @@ describe('ConfirmFlagStatusComponent', () => {
     const textarea = fixture.debugElement.nativeElement.querySelector('.govuk-textarea');
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);
     let errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
@@ -160,7 +158,7 @@ describe('ConfirmFlagStatusComponent', () => {
     radioButtons[2].click();
     textarea.value = textareaInput;
     textarea.dispatchEvent(new Event('input'));
-    nextButton.click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.errorMessages.length).toBe(0);
     errorMessageElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');

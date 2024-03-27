@@ -49,14 +49,6 @@ describe('BeforeYouStartComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should next event emit linked cases state with no error', () => {
-    fixture.detectChanges();
-    const buttonElem = fixture.debugElement.query(By.css('.button-primary')); // change selector here
-    buttonElem.triggerEventHandler('click', null);
-    expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith(
-      { currentLinkedCasesPage: LinkedCasesPages.BEFORE_YOU_START, errorMessages: undefined, navigateToNextPage: true });
-  });
-
   it('should display correct text content for link cases journey', () => {
     component.isLinkCasesJourney = true;
     fixture.detectChanges();

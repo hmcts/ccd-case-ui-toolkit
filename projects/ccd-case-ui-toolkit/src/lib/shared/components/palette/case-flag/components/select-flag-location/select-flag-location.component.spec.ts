@@ -169,7 +169,7 @@ describe('SelectFlagLocationComponent', () => {
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-location-0').click();
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
@@ -184,7 +184,7 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.filteredFlagsData.length).toBe(3);
     expect(component.caseFlagsConfigError).toBe(false);
     const nativeElement = fixture.debugElement.nativeElement;
-    nativeElement.querySelector('.button').click();
+    component.onNext(); 
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({

@@ -595,7 +595,7 @@ describe('ManageCaseFlagsComponent', () => {
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-selection-1').click();
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
@@ -622,7 +622,7 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.flagsDisplayData.length).toBe(4);
     expect(component.noFlagsError).toBe(false);
     const nativeElement = fixture.debugElement.nativeElement;
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({

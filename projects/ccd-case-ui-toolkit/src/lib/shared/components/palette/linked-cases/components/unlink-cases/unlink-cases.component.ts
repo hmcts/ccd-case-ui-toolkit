@@ -6,12 +6,15 @@ import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLink, LinkedCasesState } from '../../domain';
 import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
 import { LinkedCasesService } from '../../services/linked-cases.service';
+import { AbstractFieldWriteJourneyComponent } from '../../../base-field';
+import { Journey } from '../../../../../domain';
+import { MultipageComponentStateService } from '../../../../../services';
 
 @Component({
   selector: 'ccd-unlink-cases',
   templateUrl: './unlink-cases.component.html'
 })
-export class UnLinkCasesComponent implements OnInit {
+export class UnLinkCasesComponent extends AbstractFieldWriteJourneyComponent implements OnInit, Journey {
 
   private static readonly LINKED_CASES_TAB_ID = 'linked_cases_sscs';
   private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
@@ -31,7 +34,9 @@ export class UnLinkCasesComponent implements OnInit {
 
   constructor(private readonly fb: FormBuilder,
     private readonly casesService: CasesService,
-    private readonly linkedCasesService: LinkedCasesService) {
+    private readonly linkedCasesService: LinkedCasesService,
+    multipageComponentStateService: MultipageComponentStateService) {
+      super(multipageComponentStateService);
   }
 
   public ngOnInit(): void {
@@ -128,6 +133,14 @@ export class UnLinkCasesComponent implements OnInit {
     }
     // Return linked cases state and error messages to the parent
     this.emitLinkedCasesState(navigateToNextPage);
+  }
+
+  public next() {
+    this.onNext();
+
+    if (this.errorMessages.length === 0) {
+      super.next();
+    }
   }
 
   // Return linked cases state and error messages to the parent

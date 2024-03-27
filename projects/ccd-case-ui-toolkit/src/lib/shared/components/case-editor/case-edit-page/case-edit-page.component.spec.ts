@@ -41,6 +41,7 @@ import {
   FormErrorService,
   FormValueService,
   LoadingService,
+  MultipageComponentStateService,
 } from '../../../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -79,6 +80,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseEditDataService = {},
     loadingService = {},
     validPageListCaseFieldsService = {},
+    multipageComponentStateService = new MultipageComponentStateService(),
     addressesService = {}
   }) =>
   new CaseEditPageComponent(
@@ -93,6 +95,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseEditDataService as CaseEditDataService,
     loadingService as LoadingService,
     validPageListCaseFieldsService as ValidPageListCaseFieldsService,
+    multipageComponentStateService as MultipageComponentStateService,
     addressesService as AddressesService
   );
 
@@ -100,6 +103,43 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     component = initializeComponent({});
 
     expect(component).toBeTruthy();
+  });
+
+  describe('multipageComponentStateService', () => {
+    it('should trigger previous step with the multi-page component state service', () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
+      multipageComponentStateService.resetJourneyCollection();
+      spyOn(multipageComponentStateService, 'previous');
+      
+      multipageComponentStateService.setInstigator(component);
+      component.previousStep();
+      
+      expect(multipageComponentStateService.previous).toHaveBeenCalled();
+    });
+  
+    it('should trigger next step with the multi-page component state service', () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const caseEditDataService: CaseEditDataService = new CaseEditDataService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService, caseEditDataService });
+      spyOn(multipageComponentStateService, 'next');
+
+      multipageComponentStateService.setInstigator(component);
+      component.nextStep();
+     
+      expect(multipageComponentStateService.next).toHaveBeenCalled();
+    });
+
+    it('should reset the multi-page component state service on destruction',  () => {
+      const multipageComponentStateService: MultipageComponentStateService = new MultipageComponentStateService();
+      const component:CaseEditPageComponent = initializeComponent({ multipageComponentStateService });
+      spyOn(multipageComponentStateService, 'reset');
+      
+      multipageComponentStateService.setInstigator(component);
+      component.ngOnDestroy();
+      
+      expect(multipageComponentStateService.reset).toHaveBeenCalled();
+    });
   });
 
   describe('updateEventTriggerCaseFields', () => {
@@ -351,6 +391,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   const caseField1 = new CaseField();
   const caseField2 = new CaseField();
   const eventData = new CaseEventData();
+  let multipageComponentStateService = new MultipageComponentStateService();
+
   const caseEventDataPrevious: CaseEventData = {
     data: {
       field1: 'Updated value',
@@ -456,6 +498,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
         const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
+        multipageComponentStateService = new MultipageComponentStateService();
 
         TestBed.configureTestingModule({
           imports: [FormsModule, ReactiveFormsModule],
@@ -479,7 +522,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: MultipageComponentStateService, useValue: multipageComponentStateService }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
