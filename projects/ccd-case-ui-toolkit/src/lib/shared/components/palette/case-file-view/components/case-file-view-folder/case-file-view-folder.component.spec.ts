@@ -34,7 +34,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Lager encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '11 May 2023'
+      upload_timestamp: '11 May 2023 00:00:00'
     },
     {
       name: 'Beers encyclopedia',
@@ -42,7 +42,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Beers encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '14 Apr 2023'
+      upload_timestamp: '14 Apr 2023 00:00:00'
     },
     {
       name: 'Ale encyclopedia',
@@ -50,7 +50,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Ale encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '12 Mar 2023'
+      upload_timestamp: '12 Mar 2023 00:00:00'
     }
   ]);
 
@@ -93,6 +93,7 @@ describe('CaseFileViewFolderComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
+
     expect(component.documentTreeData).toEqual(treeData);
   });
 
