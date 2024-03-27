@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.0.22-upload-timestamp
+### Version 7.0.23
 **CSFD-95** If upload_timestamp is present on a case document pass it though to update case event. remove upload_timestamp if present on new file replacement
 
 ### Version 7.0.20
