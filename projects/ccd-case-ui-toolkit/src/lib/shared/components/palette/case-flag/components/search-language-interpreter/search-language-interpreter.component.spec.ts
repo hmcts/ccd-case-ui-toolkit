@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
@@ -24,12 +25,12 @@ describe('SearchLanguageInterpreterComponent', () => {
     let currentLanguage: RpxLanguage = 'en';
     mockRpxTranslationService = {
       language$: source.asObservable(),
+      get language() {
+        return currentLanguage;
+      },
       set language(lang: RpxLanguage) {
         currentLanguage = lang;
         source.next(lang);
-      },
-      get language() {
-        return currentLanguage;
       }
     };
     TestBed.configureTestingModule({
@@ -69,7 +70,7 @@ describe('SearchLanguageInterpreterComponent', () => {
         { key: 'GB', value: 'English', value_cy: '' }
       ],
       defaultStatus: 'Active',
-      externallyAvailable: false,
+      externallyAvailable: false
     };
     nextButton = fixture.debugElement.nativeElement.querySelector('button[type="button"]');
     // 80-character text input
@@ -239,8 +240,28 @@ describe('SearchLanguageInterpreterComponent', () => {
   });
 
   it('should show an error message on clicking "Next" if no language has been selected', () => {
+    fixture.detectChanges();
+    const languageSearchBox = fixture.debugElement.nativeElement.querySelector('.search-language__input');
+    // This event is required to trigger the CDK overlay used by the Angular Material autocomplete component
+    languageSearchBox.dispatchEvent(new Event('focusin'));
+    languageSearchBox.value = 'eng';
+    languageSearchBox.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    nextButton.click();
+    fixture.detectChanges();
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_SELECTED,
+      fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
+    });
+    const errorMessageElement = fixture.debugElement.nativeElement.querySelector('#language-not-selected-error-message');
+    expect(errorMessageElement.textContent).toContain(SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_SELECTED);
+  });
+
+  it('should show an error message on clicking "Next" if language not selected from the list after search', () => {
     spyOn(component, 'onNext').and.callThrough();
     spyOn(component.caseFlagStateEmitter, 'emit');
+    component.selectedLanguage = undefined;
     nextButton.click();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
@@ -250,11 +271,11 @@ describe('SearchLanguageInterpreterComponent', () => {
     });
     expect(component.errorMessages[0]).toEqual({
       title: '',
-      description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
+      description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_SELECTED,
       fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
     });
     const errorMessageElement = fixture.debugElement.nativeElement.querySelector('#language-not-selected-error-message');
-    expect(errorMessageElement.textContent).toContain(SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED);
+    expect(errorMessageElement.textContent).toContain(SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_SELECTED);
   });
 
   it('should show an error message on clicking "Next" if "Enter the language manually" is checked and no language is entered', () => {
@@ -396,6 +417,37 @@ describe('SearchLanguageInterpreterComponent', () => {
     hintTextElement = nativeElement.querySelector('#language-search-box-hint');
     expect(titleElement.textContent).toContain(component.flagType.name);
     expect(hintTextElement.textContent).toContain(SearchLanguageInterpreterStep.SIGN_HINT_TEXT);
+  });
+
+  it('should "selectOption" set the selected language', () => {
+    const event = {
+      option: {
+        value: {
+          key: 'GB',
+          value: 'English',
+          value_cy: ''
+        }
+      }
+    } as MatAutocompleteSelectedEvent;
+    component.selectedOption(event);
+    expect(component.selectedLanguage).toEqual(event.option.value);
+  });
+
+  it('should display valid message for language term not entered', () => {
+    component.isCheckboxEnabled = false;
+    const optionValue = { key: 'GB', value: 'English', value_cy: '' };
+    const event = {
+      option: {
+        value: optionValue
+      }
+    } as MatAutocompleteSelectedEvent;
+    component.selectedOption(event);
+    component.onNext();
+    expect(component.errorMessages[0]).toEqual({
+      title: '',
+      description: SearchLanguageInterpreterErrorMessage.LANGUAGE_NOT_ENTERED,
+      fieldId: SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM
+    });
   });
 
   it('should show the page title (i.e. flag type name) using the stored Welsh value if the selected language is Welsh', () => {

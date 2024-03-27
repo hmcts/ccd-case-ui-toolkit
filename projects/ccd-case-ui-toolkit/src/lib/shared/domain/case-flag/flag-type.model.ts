@@ -1,4 +1,5 @@
-// tslint:disable:variable-name
+import { LanguageInterpreterListOfValuesType } from './language-interpreter-list-of-values-type.model';
+
 /**
  * DTO to provide typing of the response from the Reference Data Common API for Case Flags data.
  *
@@ -18,7 +19,7 @@ export class FlagType {
   public Path: string[];
   public childFlags: FlagType[];
   public listOfValuesLength = 0;
-  public listOfValues: {key: string, value: string, value_cy: string}[] = [];
+  public listOfValues: LanguageInterpreterListOfValuesType[] = [];
 
   public static searchPathByFlagTypeObject(singleFlag: FlagType, flags: FlagType[], path: FlagType[] = []): [FlagType | false, FlagType[]] {
     for (const flag of flags) {

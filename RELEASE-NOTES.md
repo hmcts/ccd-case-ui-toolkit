@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.21-case-flags-language-search-validation-v5
+**CSFD-75** Case flags language search validation
+
 ### Version 7.0.23
 **CSFD-95** If upload_timestamp is present on a case document pass it though to update case event. remove upload_timestamp if present on new file replacement
 
