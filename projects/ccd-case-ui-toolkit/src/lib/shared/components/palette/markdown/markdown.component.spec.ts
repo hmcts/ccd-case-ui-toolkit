@@ -132,9 +132,16 @@ describe('MarkdownComponent - Anchor', () => {
   });
 
   it('should render URLs to text without turning them into links', () => {
-    component.content = CONTENT;
+    component.content =  `www.google.com`;
+    const EXPECTED_CONTENT = `<a href="www.google.com">www.google.com</a>`;
     fixture.detectChanges();
     expect(de.query($MARKDOWN).nativeElement.innerHTML).not.toBe(EXPECTED_CONTENT);
+  });
+
+  it('should render internal URLs into links', () => {
+    component.content = CONTENT;
+    fixture.detectChanges();
+    expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
   });
 
   it('should render URLs into links when renderUrlToTextFeature is set false', () => {

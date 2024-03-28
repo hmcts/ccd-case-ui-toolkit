@@ -35,11 +35,19 @@ export class MarkdownComponent implements OnInit {
     const renderer = new marked.Renderer();
 
     renderer.link = (href, title, text) => {
-      return text;  // Return the text without turning it into a link
+      // Return the text without turning it into a link if it's not an internal link
+      return this.isAllowedUrl(href) ? `<a href="${href}">${text}</a>` : text;
     };
 
     marked.setOptions({
       renderer: renderer
     });
+  }
+
+  private isAllowedUrl(url: string): boolean {
+    const currentOrigin = window.location.origin;
+    const urlOrigin = new URL(url, window.location.href).origin;
+
+    return urlOrigin === currentOrigin || url.startsWith('/'); // Check if same origin or relative
   }
 }
