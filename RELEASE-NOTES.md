@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.0.22-rc1
+### Version 7.0.22-rc3
 **EXUI-706** Clone - Insufficient Anti-Automation Mechanisms 
 **EXUI-724** Remove support for WA versions
 **EXUI-830** Screen freezes when submitting event
@@ -11,6 +11,8 @@
 **EXUI-1455** New EXUI manage-case PR has broken the POST /documentsv2 endpoint
 
 
+### Version 7.0.23
+**CSFD-95** If upload_timestamp is present on a case document pass it though to update case event. remove upload_timestamp if present on new file replacement
 
 ### Version 7.0.20
 **EUI-1300** accessibility change

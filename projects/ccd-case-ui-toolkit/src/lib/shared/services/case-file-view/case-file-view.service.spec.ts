@@ -27,7 +27,7 @@ describe('Case File View service', () => {
             document_filename: 'Test',
             document_binary_url: '/test/binary',
             attribute_path: '',
-            upload_timestamp: new Date(2022, 10, 17)
+            upload_timestamp: new Date(2022, 10, 17, 0, 0, 0, 0),
           } as CaseFileViewDocument
         ],
         sub_categories: [
@@ -56,7 +56,7 @@ describe('Case File View service', () => {
             document_filename: 'Test',
             document_binary_url: '/test/binary',
             attribute_path: '',
-            upload_timestamp: new Date(2022, 11, 28)
+            upload_timestamp: new Date(2022, 11, 28, 0, 0, 0, 0)
           } as CaseFileViewDocument
         ],
         sub_categories: [
