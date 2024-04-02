@@ -110,10 +110,10 @@ export class EventCompletionStateMachineService {
               break;
           }
         } else {
-          if (!taskResponse || !taskResponse.task) {
+          if (!taskResponse?.task) {
             context.alertService.setPreserveAlerts(true);
             context.alertService.warning({ phrase: 'Task statecheck : no task available for completion', replacements: {} });
-          } else if (!taskResponse.task.task_state) {
+          } else {
             context.alertService.setPreserveAlerts(true);
             context.alertService.warning({ phrase: 'Task statecheck : no task state available for completion', replacements: {} });
           }
