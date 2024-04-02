@@ -109,14 +109,12 @@ export class EventCompletionStateMachineService {
               state.trigger(EventCompletionStates.CompleteEventAndTask);
               break;
           }
-        } else {
-          if (!taskResponse?.task) {
+        } else if (!taskResponse?.task) {
             context.alertService.setPreserveAlerts(true);
             context.alertService.warning({ phrase: 'Task statecheck : no task available for completion', replacements: {} });
-          } else {
-            context.alertService.setPreserveAlerts(true);
-            context.alertService.warning({ phrase: 'Task statecheck : no task state available for completion', replacements: {} });
-          }
+        } else {
+          context.alertService.setPreserveAlerts(true);
+          context.alertService.warning({ phrase: 'Task statecheck : no task state available for completion', replacements: {} });
         }
       },
       error => {
