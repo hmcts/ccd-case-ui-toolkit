@@ -1,6 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialogConfig } from '@angular/material/dialog';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
@@ -575,4 +575,80 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
 
   });
+
+  it('createDocumentForm - should add upload_timestamp control to form group if document.upload_timestamp is string', () => {
+    // Mock document with upload_timestamp as string
+    const document = {
+      document_filename: 'Beers encyclopedia',
+      document_binary_url: '/test/binary',
+      document_url: '/test',
+      attribute_path: '',
+      upload_timestamp: '14 Apr 2023 00:00:00'
+    };
+
+    // Create a new form group
+    const initialFormGroup = new FormGroup({
+      document_url: new FormControl(),
+      document_binary_url: new FormControl(),
+      document_filename: new FormControl()
+    });
+
+    // Call the private method to test
+    component['createDocumentForm'](document);
+
+    expect(initialFormGroup.get('upload_timestamp')).toBeNull('upload_timestamp control should not exist before createDocumentForm is called');
+
+    expect(component['uploadedDocument'].get('upload_timestamp') instanceof FormControl).toBe(true);
+    expect(component['uploadedDocument'].get('upload_timestamp').value).toEqual(document.upload_timestamp);
+  });
+
+  it('createDocumentFormWithValidator - should add upload_timestamp control to form group if document.upload_timestamp is string', () => {
+    // Mock document with upload_timestamp as string
+    const document = {
+      document_filename: 'Beers encyclopedia',
+      document_binary_url: '/test/binary',
+      document_url: '/test',
+      attribute_path: '',
+      upload_timestamp: '14 Apr 2023 00:00:00'
+    };
+
+    // Create a new form group
+    const initialFormGroup = new FormGroup({
+      document_url: new FormControl(),
+      document_binary_url: new FormControl(),
+      document_filename: new FormControl()
+    });
+
+    // Call the private method to test
+    component['createDocumentFormWithValidator'](document);
+
+    expect(initialFormGroup.get('upload_timestamp')).toBeNull('upload_timestamp control should not exist before createDocumentForm is called');
+
+    expect(component['uploadedDocument'].get('upload_timestamp') instanceof FormControl).toBe(true);
+    expect(component['uploadedDocument'].get('upload_timestamp').value).toEqual(document.upload_timestamp);
+  });
+
+  it('should update form controls in uploadedDocument and remove UPLOAD_TIMESTAMP control', () => {
+    // Initialize uploadedDocument with some initial values
+    component['uploadedDocument'] = new FormGroup({
+      document_url: new FormControl('initial_url'),
+      document_binary_url: new FormControl('initial_binary_url'),
+      document_filename: new FormControl('initial_filename'),
+      document_hash: new FormControl('initial_document_hash'),
+      [WriteDocumentFieldComponent.UPLOAD_TIMESTAMP]: new FormControl('initial_timestamp')
+    });
+
+    // Call the method to test
+    component['updateDocumentForm']('new_url', 'new_binary_url', 'new_filename', 'new_document_hash');
+
+    // Expect the form controls to be updated with new values
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_URL).value).toEqual('new_url');
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).value).toEqual('new_binary_url');
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).value).toEqual('new_filename');
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_HASH).value).toEqual('new_document_hash');
+
+    // Expect the UPLOAD_TIMESTAMP control to be removed
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)).toBeNull('UPLOAD_TIMESTAMP control should be removed');
+  });
+
 });
