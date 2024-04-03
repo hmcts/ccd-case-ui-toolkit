@@ -44,6 +44,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   private readonly items: QueryList<ElementRef>;
   public readonly collItems: CollectionItem[] = [];
 
+  public allFieldsReadOnly: boolean;
+
   constructor(private readonly dialog: MatDialog,
     private readonly scrollToService: ScrollToService,
     private readonly profileNotifier: ProfileNotifier,
@@ -68,6 +70,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
       }
       this.collItems[index] = { caseField, item, prefix, index, container };
     });
+    this.allFieldsReadOnly = this.checkComplexFieldReadOnly();
   }
 
   public ngOnDestroy(): void {
@@ -330,6 +333,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     // Should be able to delete if creating a case even if "D" is absent, hence:
     const id = this.getControlIdAt(index);
     return !!id && !this.getCollectionPermission(this.caseField, 'allowDelete');
+  }
+
+  public checkComplexFieldReadOnly(): boolean {
+    return this.caseField.field_type.collection_field_type?.complex_fields.every((complexField) => {
+      const complexFieldContext = complexField.display_context;
+      return complexFieldContext === 'READONLY';
+    }) ?? true;
   }
 
   public openModal(i: number) {
