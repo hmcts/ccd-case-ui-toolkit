@@ -468,9 +468,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     } else if (taskStr) {
       const task: Task = JSON.parse(taskStr);
       return this.workAllocationService.completeTask(task.id);
-    } else {
-      this.alertService.setPreserveAlerts(true);
-      this.alertService.warning({phrase: 'PostCompleteTask: no task available for completion'});
     }
     return of(true);
   }
