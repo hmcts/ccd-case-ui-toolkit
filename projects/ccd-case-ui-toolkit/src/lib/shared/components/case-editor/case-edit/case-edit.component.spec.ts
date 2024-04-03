@@ -658,7 +658,7 @@ describe('CaseEditComponent', () => {
           expect(wizard.nextPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
           expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_2.id).value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_2.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_3.id).value).not.toBeNull();
         });
 
@@ -695,9 +695,7 @@ describe('CaseEditComponent', () => {
           // 'PersonMiddleName' value expected to be null because this sub-field does not have
           // retain_hidden_value = true, even though its parent Complex field does
           expect(component.form.get('data').get(`${CASE_FIELD_2_COMPLEX.id}.PersonMiddleName`).value).toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_3_COMPLEX.id)).not.toBeNull();
-          expect(component.form.get('data').get(`${CASE_FIELD_3_COMPLEX.id}.AddressLine1`)).not.toBeNull();
-          expect(component.form.get('data').get(`${CASE_FIELD_3_COMPLEX.id}.AddressLine1`).value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_3_COMPLEX.id)).toBeNull();
         });
 
         it('should navigate to next page when next is called and clear hidden collection form field', () => {
@@ -739,11 +737,7 @@ describe('CaseEditComponent', () => {
           // retain_hidden_value = true, even though its top-level collection field does
           expect((component.form.get('data').get(CASE_FIELD_2_COLLECTION.id) as FormArray).at(0)
             .get('value.PersonMiddleName').value).toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_3_COLLECTION.id)).not.toBeNull();
-          expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
-            .get('value.AddressLine1')).not.toBeNull();
-          expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
-            .get('value.AddressLine1').value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_3_COLLECTION.id)).toBeNull();
         });
 
         it('should not delete sub-field value if the FormGroup for the parent Complex hidden field cannot be determined', () => {
@@ -939,7 +933,7 @@ describe('CaseEditComponent', () => {
           expect(wizard.previousPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
           expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_2.id).value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_2.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_3.id).value).not.toBeNull();
         });
 
@@ -976,9 +970,7 @@ describe('CaseEditComponent', () => {
           // 'PersonMiddleName' value expected to be null because this sub-field does not have
           // retain_hidden_value = true, even though its parent Complex field does
           expect(component.form.get('data').get(`${CASE_FIELD_2_COMPLEX.id}.PersonMiddleName`).value).toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_3_COMPLEX.id)).not.toBeNull();
-          expect(component.form.get('data').get(`${CASE_FIELD_3_COMPLEX.id}.AddressLine1`)).not.toBeNull();
-          expect(component.form.get('data').get(`${CASE_FIELD_3_COMPLEX.id}.AddressLine1`).value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_3_COMPLEX.id)).toBeNull();
         });
 
         it('should navigate to previous page when previous is called and clear hidden collection form field', () => {
@@ -1020,11 +1012,7 @@ describe('CaseEditComponent', () => {
           // retain_hidden_value = true, even though its top-level collection field does
           expect((component.form.get('data').get(CASE_FIELD_2_COLLECTION.id) as FormArray).at(0)
             .get('value.PersonMiddleName').value).toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_3_COLLECTION.id)).not.toBeNull();
-          expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
-            .get('value.AddressLine1')).not.toBeNull();
-          expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
-            .get('value.AddressLine1').value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_3_COLLECTION.id)).toBeNull();
         });
 
         it('should not delete sub-field value if the FormGroup for the parent Complex hidden field cannot be determined', () => {
