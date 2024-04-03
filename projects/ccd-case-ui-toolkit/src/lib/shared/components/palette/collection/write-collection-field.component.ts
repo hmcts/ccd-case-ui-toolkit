@@ -336,10 +336,10 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   public checkComplexFieldReadOnly(): boolean {
-    return this.caseField.field_type.collection_field_type?.complex_fields.every((complexField) => {
+    return this.caseField?.field_type?.collection_field_type?.complex_fields?.every((complexField) => {
       const complexFieldContext = complexField.display_context;
       return complexFieldContext === 'READONLY';
-    }) ?? true;
+    }) ?? false;
   }
 
   public openModal(i: number) {
