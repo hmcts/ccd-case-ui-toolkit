@@ -44,7 +44,7 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   private readonly items: QueryList<ElementRef>;
   public readonly collItems: CollectionItem[] = [];
 
-  public allFieldsReadOnly: boolean;
+  public allFieldsReadOnly: boolean = false;
 
   constructor(private readonly dialog: MatDialog,
     private readonly scrollToService: ScrollToService,
@@ -336,10 +336,26 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   }
 
   public checkComplexFieldReadOnly(): boolean {
-    return this.caseField?.field_type?.collection_field_type?.complex_fields?.every((complexField) => {
-      const complexFieldContext = complexField.display_context;
-      return complexFieldContext === 'READONLY';
-    }) ?? false;
+    return this.checkComplexFieldsReadOnly(this.caseField);
+  }
+
+  checkFieldType(caseField: CaseField): CaseField[] {
+    return caseField?.field_type?.type === 'Collection'
+      ? caseField.field_type.collection_field_type?.complex_fields || []
+      : caseField?.field_type?.complex_fields || [];
+  }
+
+  checkComplexFieldsReadOnly(caseField: CaseField): boolean {
+    const children = this.checkFieldType(caseField);
+    if (children.length === 0) {
+      return caseField.display_context === 'READONLY';
+    }
+    return children.every((child) => {
+      if (!['Collection', 'Complex'].includes(child.field_type.type)) {
+        return child.display_context === 'READONLY';
+      }
+      return this.checkComplexFieldsReadOnly(child);
+    });
   }
 
   public openModal(i: number) {
