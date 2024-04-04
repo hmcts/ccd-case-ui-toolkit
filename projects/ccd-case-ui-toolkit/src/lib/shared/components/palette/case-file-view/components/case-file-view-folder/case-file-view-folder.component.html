@@ -5,7 +5,8 @@
       id="document-search"
       name="documentSearchFormControl"
       formControlName="documentSearchFormControl"
-      placeholder="Search by document name">
+      placeholder="Search by document name"
+      aria-label="Search by document name">
   </div>
 </div>
 
@@ -35,7 +36,7 @@
           <span class="node__name node-name-document">
             {{node.name}}
             <br>
-            <span class="node__document-upload-timestamp">{{node.upload_timestamp}}</span>
+            <span class="node__document-upload-timestamp">{{node.upload_timestamp | date:"dd MMM YYYY"}}</span>
           </span>
           <div class="node__document-options">
             <ccd-case-file-view-folder-document-actions

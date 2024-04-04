@@ -36,7 +36,7 @@ describe('PageValidationService', () => {
   it('should allow empty values when field is OPTIONAL', () => {
     wizardPage.case_fields.push(aCaseField('fieldX', 'fieldX', 'Text', 'OPTIONAL', null));
     wizardPage.isMultiColumn = () => false;
-    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeTruthy();
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([]);
   });
 
   it('should be invalid with empty document field when field is MANDATORY and not hidden', () => {
@@ -46,7 +46,7 @@ describe('PageValidationService', () => {
     wizardPage.case_fields.push(field1, field2);
     wizardPage.isMultiColumn = () => false;
 
-    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeFalsy();
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([field2]);
   });
 
   it('should allow empty document fields when MANDATORY and field is hidden', () => {
@@ -55,7 +55,7 @@ describe('PageValidationService', () => {
     field2.show_condition = 'field1="SOME_OTHER_VALUE"';
     wizardPage.case_fields.push(field1, field2);
     wizardPage.isMultiColumn = () => false;
-    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeTruthy();
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([]);
   });
 
   it('should allow empty document fields when OPTIONAL and field is not hidden', () => {
@@ -64,7 +64,7 @@ describe('PageValidationService', () => {
     field2.show_condition = 'field1="SOME_VALUE"';
     wizardPage.case_fields.push(field1, field2);
     wizardPage.isMultiColumn = () => false;
-    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeTruthy();
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([]);
   });
 
   it('should allow empty document fields when OPTIONAL and field is hidden', () => {
@@ -73,19 +73,20 @@ describe('PageValidationService', () => {
     field2.show_condition = 'field1="SOME_OTHER_VALUE"';
     wizardPage.case_fields.push(field1, field2);
     wizardPage.isMultiColumn = () => false;
-    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeTruthy();
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([]);
   });
 
   it('should allow empty document fields when OPTIONAL', () => {
     wizardPage.case_fields.push(aCaseField('fieldX', 'fieldX', 'Document', 'OPTIONAL', null));
     wizardPage.isMultiColumn = () => false;
-    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeTruthy();
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([]);
   });
 
   it('should not allow empty document fields when MANDATORY', () => {
-    wizardPage.case_fields.push(aCaseField('fieldX', 'fieldX', 'Document', 'MANDATORY', null));
+    const caseField = aCaseField('fieldX', 'fieldX', 'Document', 'MANDATORY', null);
+    wizardPage.case_fields.push(caseField);
     wizardPage.isMultiColumn = () => false;
-    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeFalsy();
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([caseField]);
   });
 
   it('should allow empty JudicialUser field when OPTIONAL', () => {
@@ -93,7 +94,7 @@ describe('PageValidationService', () => {
     judicialUserCaseField.field_type.type = 'Complex';
     wizardPage.case_fields.push(judicialUserCaseField);
     wizardPage.isMultiColumn = () => false;
-    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeTruthy();
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([]);
   });
 
   it('should not allow empty JudicialUser field when MANDATORY', () => {
@@ -106,6 +107,6 @@ describe('PageValidationService', () => {
     const judicialUserFormControl = FORM_GROUP.get('data.judicialUserField_judicialUserControl');
     judicialUserFormControl.setValidators(Validators.required);
     judicialUserFormControl.updateValueAndValidity();
-    expect(service.isPageValid(wizardPage, FORM_GROUP)).toBeFalsy();
+    expect(service.getInvalidFields(wizardPage, FORM_GROUP)).toEqual([judicialUserCaseField]);
   });
 });
