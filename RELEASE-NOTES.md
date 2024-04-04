@@ -1,9 +1,31 @@
 ## RELEASE NOTES
 
+### Version 7.0.24
+**EXUI-706** Clone - Insufficient Anti-Automation Mechanisms 
+**EXUI-724** Remove support for WA versions
+**EXUI-830** Screen freezes when submitting event
+**EXUI-1184** Data going missing when using the continue and previous buttons
+**EXUI-1194** Rate limit document uploads
+**EXUI-1304** Accessibilty issues
+**EXUI-1453** Rework On Uploading a Unsupported File type error
+**EXUI-1455** New EXUI manage-case PR has broken the POST /documentsv2 endpoint
+
+### Version 7.0.23
+**CSFD-95** If upload_timestamp is present on a case document pass it though to update case event. remove upload_timestamp if present on new file replacement
+
+### Version 7.0.20
+**EUI-1300** accessibility change
+
+### Version 7.0.19
+**EUI-1067** No error message is displayed when entering incorrect postcode
+**EUI-1123** TextArea fields are not preloaded even the data is present in response intermittently
+
 ### Version 7.0.17-welsh-event-trigger
 **CSFD-48** Fix the width of the event trigger to accomodate the Welsh labels which are large
+
 ### Version 7.0.17
 **EUI-1295** Performance Testing - PerfTest - Cache Timeout Error
+
 
 ### Version 7.0.13
 **EUI-1275** Manual Language Entry in case flags - missing subTypeValue during form submission

@@ -10,6 +10,8 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
@@ -35,6 +37,7 @@ import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import {
+  AddressesService,
   CaseFieldService,
   FieldTypeSanitiser,
   FormErrorService,
@@ -77,7 +80,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService = {},
     caseEditDataService = {},
     loadingService = {},
-    validPageListCaseFieldsService = {}
+    validPageListCaseFieldsService = {},
+    addressesService = {}
   }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -90,7 +94,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService as CaseFieldService,
     caseEditDataService as CaseEditDataService,
     loadingService as LoadingService,
-    validPageListCaseFieldsService as ValidPageListCaseFieldsService
+    validPageListCaseFieldsService as ValidPageListCaseFieldsService,
+    addressesService as AddressesService
   );
 
   it('should create', () => {
@@ -452,6 +457,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           imports: [FormsModule, ReactiveFormsModule],
@@ -475,6 +481,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -485,7 +492,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
         spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
         spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
-        spyOn(pageValidationService, 'isPageValid').and.returnValue(true);
+        spyOn(pageValidationService, 'getInvalidFields').and.returnValue(true);
         comp = fixture.componentInstance;
         readOnly.display_context = 'READONLY';
         wizardPage = createWizardPage([
@@ -848,6 +855,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
 
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -870,6 +878,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1009,6 +1018,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
 
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -1031,6 +1041,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1084,6 +1095,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
   describe('submit the form', () => {
     const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+    const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
     beforeEach(
       waitForAsync(() => {
@@ -1200,6 +1212,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1286,7 +1299,11 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     it('should display generic error heading and message when form error is set but no callback errors, warnings, or error details', () => {
       // This tests CaseEditGenericErrorsComponent
-      spyOn(pageValidationService, 'isPageValid').and.returnValue(false);
+      spyOn(pageValidationService, 'getInvalidFields').and.returnValue([{
+        id: 'caseFieldIssue',
+        label: 'Case Field',
+        value: null
+      }]);
       comp.caseEdit.error = {
         status: 200,
         callbackErrors: null,
@@ -1318,7 +1335,11 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
       // This tests CaseEditGenericErrorsComponent
-      spyOn(pageValidationService, 'isPageValid').and.returnValue(false);
+      spyOn(pageValidationService, 'getInvalidFields').and.returnValue([{
+        id: 'caseFieldIssue',
+        label: 'Case Field',
+        value: null
+      }]);
       comp.caseEdit.error = {
         status: 422,
         callbackErrors: null,
@@ -1425,6 +1446,7 @@ describe('CaseEditPageComponent - all other tests', () => {
     beforeEach(
       waitForAsync(() => {
         const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
         firstPage.id = 'first page';
         cancelled = createSpyObj('cancelled', ['emit']);
         const caseFields: CaseField[] = [
@@ -1534,6 +1556,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock}
           ],
         }).compileComponents();
       })
@@ -1581,6 +1604,15 @@ describe('CaseEditPageComponent - all other tests', () => {
   });
 
   describe('Check for Validation Error', () => {
+    function createMockValidator(): ValidatorFn {
+      return (control:AbstractControl) : ValidationErrors | null => {
+        const value = control.value;
+
+        if (!value) {
+          return {mockRequired:true};
+        }
+      }
+    }
     const F_GROUP = new FormGroup({
       data: new FormGroup({
         Invalidfield1: new FormControl(null, Validators.required),
@@ -1591,6 +1623,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         ]),
         OrganisationField: new FormControl(null, Validators.required),
         complexField1: new FormControl(null, Validators.required),
+        complexField2: new FormControl(null, createMockValidator()),
         FlagLauncherField: new FormControl(null, {
           validators: (
             _: AbstractControl
@@ -1627,9 +1660,18 @@ describe('CaseEditPageComponent - all other tests', () => {
       value: '',
     } as CaseField;
 
+    const ADDRESS_FIELD: CaseField = {
+      id: 'AddressLine1',
+      label: 'AddressLine1',
+      display_context: 'MANDATORY',
+      field_type: {id: 'Text', type: 'Text'},
+      value: '',
+    } as CaseField;
+
     beforeEach(
       waitForAsync(() => {
         const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
         firstPage.id = 'first page';
         cancelled = createSpyObj('cancelled', ['emit']);
 
@@ -1730,6 +1772,7 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1777,6 +1820,60 @@ describe('CaseEditPageComponent - all other tests', () => {
       });
     });
 
+    it('should correctly indicate there is no issue with the field if there is no error', () => {
+      const caseField = aCaseField(
+        'Invalidfield2',
+        'Invalidfield2',
+        'Text',
+        'MANDATORY',
+        null
+      );
+      wizardPage.case_fields.push(caseField);
+      wizardPage.isMultiColumn = () => false;
+      F_GROUP.setValue({
+        data: {
+          Invalidfield2: 'testing',
+          Invalidfield1: 'testing',
+          OrganisationField: '',
+          complexField1: '',
+          complexField2: '',
+          FlagLauncherField: null,
+          judicialUserField_judicialUserControl: null
+        },
+      });
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeFalsy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(
+          `The field that is causing the error cannot be determined but there is an error present. Please fill in more of the form`
+        );
+      });
+    });
+
+    it('should correctly indicate there is no issue with the field if there is no related form control', () => {
+      const caseField = aCaseField(
+        'NewField1',
+        'Field1',
+        'Text',
+        'MANDATORY',
+        null
+      );
+
+      wizardPage.case_fields.push(caseField);
+      comp.editForm = F_GROUP;
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(
+          `The field that is causing the error cannot be determined but there is an error present`
+        );
+      });
+    });
+
     it('should validate minimum length field value and log error message', () => {
       const caseField = aCaseField(
         'Invalidfield2',
@@ -1793,6 +1890,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           Invalidfield1: 'test1',
           OrganisationField: '',
           complexField1: '',
+          complexField2: '',
           FlagLauncherField: null,
           judicialUserField_judicialUserControl: null
         },
@@ -1826,6 +1924,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           Invalidfield1: 'test1',
           OrganisationField: '',
           complexField1: '',
+          complexField2: '',
           FlagLauncherField: null,
           judicialUserField_judicialUserControl: null
         },
@@ -1885,6 +1984,51 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(comp.validationErrors.length).toBe(1);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`%FIELDLABEL% is required`);
+      });
+    });
+
+    it('should validate complex type fields and log error message when no error messages given', () => {
+      const complexSubField1: CaseField = aCaseField(
+        'childField1',
+        'childField1',
+        'Text',
+        'OPTIONAL',
+        1,
+        null,
+        true,
+        true
+      );
+      const complexSubField2: CaseField = aCaseField(
+        'childField2',
+        'childField2',
+        'Text',
+        'OPTIONAL',
+        2,
+        null,
+        false,
+        true
+      );
+      const withoutSubFailureComplexField: CaseField = aCaseField(
+        'complexField2',
+        'complexField2',
+        'Complex',
+        'OPTIONAL',
+        1,
+        [complexSubField1, complexSubField2],
+        true,
+        true
+      );
+      withoutSubFailureComplexField.isComplex = () => true;
+      wizardPage.isMultiColumn = () => false;
+      wizardPage.case_fields.push(withoutSubFailureComplexField);
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      comp.generateErrorMessage(wizardPage.case_fields);
+      expect(comp.validationErrors.length).toBe(1);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(`There is an internal issue with complexField2 fields. The field that is causing the error cannot be determined but there is an error present`);
       });
     });
 
