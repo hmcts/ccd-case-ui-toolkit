@@ -339,13 +339,13 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     return this.checkComplexFieldsReadOnly(this.caseField);
   }
 
-  checkFieldType(caseField: CaseField): CaseField[] {
+  private checkFieldType(caseField: CaseField): CaseField[] {
     return caseField?.field_type?.type === 'Collection'
       ? caseField.field_type.collection_field_type?.complex_fields || []
       : caseField?.field_type?.complex_fields || [];
   }
 
-  checkComplexFieldsReadOnly(caseField: CaseField): boolean {
+  private checkComplexFieldsReadOnly(caseField: CaseField): boolean {
     const children = this.checkFieldType(caseField);
     if (children.length === 0) {
       return caseField.display_context === 'READONLY';
