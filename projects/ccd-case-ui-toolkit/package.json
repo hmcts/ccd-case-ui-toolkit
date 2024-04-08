@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.24-disable-buttons-readonly",
+  "version": "7.0.25-disable-buttons-readonly",
   "engines": {
     "node": ">=18.17.0"
   },
