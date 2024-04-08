@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.14-caseview-ordering",
+  "version": "7.0.27",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -64,7 +64,7 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccpay-web-component": "6.1.0",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "3.0.2",
+    "@hmcts/media-viewer": "3.0.4",
     "@ngrx/effects": "^11.1.1",
     "@ngrx/store": "^15.2.1",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
