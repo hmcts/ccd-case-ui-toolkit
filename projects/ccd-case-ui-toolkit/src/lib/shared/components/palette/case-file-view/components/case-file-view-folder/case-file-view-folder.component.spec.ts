@@ -73,8 +73,7 @@ describe('CaseFileViewFolderComponent', () => {
         { provide: DocumentManagementService, useValue: mockDocumentManagementService },
         { provide: AbstractAppConfig, useValue: mockAppConfig }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CaseFileViewFolderComponent);
     component = fixture.componentInstance;
@@ -83,7 +82,7 @@ describe('CaseFileViewFolderComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', async () => {
+  it('should create', async() => {
     spyOn(component, 'filter').and.returnValue(of([]));
     const documentFilterInputEl = nativeElement.querySelector('.document-search');
     documentFilterInputEl.dispatchEvent(new Event('focusin'));
@@ -295,7 +294,7 @@ describe('CaseFileViewFolderComponent', () => {
     });
   });
 
-  it('should filter documents verify UI', async () => {
+  it('should filter documents verify UI', async() => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
     const documentFilterInputEl = nativeElement.querySelector('.document-search');
@@ -309,7 +308,7 @@ describe('CaseFileViewFolderComponent', () => {
     expect(documentTreeContainerEl.textContent).toContain('Beers encyclopedia');
   });
 
-  it('should filter documents no match verify UI', async () => {
+  it('should filter documents no match verify UI', async() => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
     const documentFilterInputEl = nativeElement.querySelector('.document-search');
