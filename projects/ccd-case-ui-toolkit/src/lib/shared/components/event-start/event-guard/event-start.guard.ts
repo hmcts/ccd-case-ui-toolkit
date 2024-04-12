@@ -18,15 +18,10 @@ export class EventStartGuard implements CanActivate {
     const eventId = route.params['eid'];
     const taskId = route.queryParams['tid'];
 
-    // TODO: NavigationExtras should be used once Angular upgrade changes have been incorporated
-    const isComplete = route.queryParams['isComplete'];
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       if (caseInfo && caseInfo.cid === caseId) {
-        if (isComplete) {
-          return of(true);
-        }
         return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction).pipe(
           switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
         );

@@ -186,7 +186,7 @@ export class EventStartStateMachineService {
     context.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
-      { queryParams: { isComplete: true }, relativeTo: context.route });
+      { relativeTo: context.route });
   }
 
   public entryActionForStateMultipleTasksAssignedToUser(state: State, context: EventStartStateMachineContext): void {
