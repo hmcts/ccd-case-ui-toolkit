@@ -2,7 +2,6 @@ import { CaseField } from '../../domain/definition';
 import { FieldTypeSanitiser } from './field-type-sanitiser';
 
 describe('FieldTypeSanitiser', () => {
-
   const VALUE_DYNAMIC_LIST = JSON.parse(`{
             "value": {
               "code": "F",
@@ -138,4 +137,100 @@ describe('FieldTypeSanitiser', () => {
     expect(editForm.data.dynamicList).toEqual(EXPECTED_VALUE_DYNAMIC_LIST);
   });
 
+  describe('ensureDynamicMultiSelectListPopulated', () => {
+    let fieldTypeSanitiser: FieldTypeSanitiser;
+    let mockCaseFields: CaseField[];
+
+    beforeEach(() => {
+      fieldTypeSanitiser = new FieldTypeSanitiser();
+      mockCaseFields = [
+        {
+          id: 'sendingMessagesHint',
+          label: 'Send a message.',
+          field_type: {
+            id: 'Label',
+            type: 'Label',
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null
+          },
+          security_label: 'PUBLIC',
+          order: 2,
+          formatted_value: null,
+          display_context: 'READONLY',
+          wizardProps: {
+            case_field_id: 'sendingMessagesHint',
+            order: 2,
+            page_column_no: null,
+            complex_field_overrides: []
+          },
+          hiddenCannotChange: true
+        },
+        {
+          id: 'sendMessageObject',
+          _value: {
+            externalMessageWhoToSendTo: {
+              value: null,
+              list_items: [
+                { code: '123', label: 'John Doe' },
+                { code: '456', label: 'Jane Doe' },
+                { code: '789', label: 'Peter Piper' },
+                { code: '192', label: 'Peter Pan' }
+              ]
+            }
+          },
+          field_type: {
+            id: 'Message',
+            type: 'Complex',
+            complex_fields: [{
+              id: 'externalMessageWhoToSendTo',
+              field_type: {
+                id: 'DynamicMultiSelectList',
+                type: 'DynamicMultiSelectList'
+              },
+              display_context: 'MANDATORY'
+            },
+            {
+              id: 'internalOrExternalMessage',
+              label: 'internalMessage',
+              field_type: {
+                id: 'FixedRadioList-InternalExternalMessageEnum',
+                type: 'FixedRadioList',
+                fixed_list_items: [
+                  {
+                    code: 'INTERNAL',
+                    label: 'Internal message',
+                    order: '1'
+                  },
+                  {
+                    code: 'EXTERNAL',
+                    label: 'External message',
+                    order: '2'
+                  }
+                ],
+                complex_fields: []
+              },
+              display_context: 'MANDATORY'
+            }]
+          }
+        }
+      ] as unknown as CaseField[];
+    });
+
+    it('should populate list_items for DynamicMultiSelectList within complex fields', () => {
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      const updatedField = result.find((field) => field.id === 'sendMessageObject');
+      const complexField = updatedField.field_type.complex_fields.find((field) => field.id === 'externalMessageWhoToSendTo');
+
+      expect(complexField.list_items).toEqual([
+        { code: '123', label: 'John Doe' },
+        { code: '456', label: 'Jane Doe' },
+        { code: '789', label: 'Peter Piper' },
+        { code: '192', label: 'Peter Pan' }
+      ]);
+    });
+  });
 });
