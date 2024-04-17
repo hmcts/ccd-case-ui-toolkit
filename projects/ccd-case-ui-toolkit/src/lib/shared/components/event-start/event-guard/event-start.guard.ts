@@ -86,7 +86,7 @@ export class EventStartGuard implements CanActivate {
       // Clear taskToComplete from session as we will be starting the process for new task
       console.log(`Removing taskToComplete from session storage for case:event:task ${caseId}:${eventId}:${taskId}`);
       this.sessionStorageService.removeItem('taskToComplete');
-      console.log("checkForTasks: no task required for event")
+      console.log("checkForTasks: no task required for event");
       return of(this.checkTaskInEventNotRequired(payload, caseId, taskId));
     }
   }
