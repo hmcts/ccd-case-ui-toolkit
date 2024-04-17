@@ -98,6 +98,7 @@ export class WorkAllocationService {
     if (!this.isWAEnabled()) {
       return of(null);
     }
+    console.log(`completeTask: completing ${taskId}`);
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {})

@@ -31,10 +31,12 @@ export class EventStartGuard implements CanActivate {
   }
 
   public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string): boolean {
+    console.log('checkTaskInEventNotRequired: start');
     if (!payload || !payload.tasks) {
       return true;
     }
     const taskNumber = payload.tasks.length;
+    console.log(`checkTaskInEventNotRequired: found ${taskNumber} tasks`);
     if (taskNumber === 0) {
       // if there are no tasks just carry on
       return true;
@@ -45,11 +47,12 @@ export class EventStartGuard implements CanActivate {
     const tasksAssignedToUser = payload.tasks.filter(x =>
       x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
     );
-
+    console.log(`checkTaskInEventNotRequired: ${tasksAssignedToUser} tasks assigned to user`)
     if (tasksAssignedToUser.length === 0) {
       // if no tasks assigned to user carry on
       return true;
     } else if (tasksAssignedToUser.length > 1 && !taskId) {
+      console.log(`checkTaskInEventNotRequired: more than one task assigned, taskId: ${taskId}`)
       // if more than one task assigned to the user then give multiple tasks error
       this.router.navigate([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
       return false;
@@ -60,6 +63,7 @@ export class EventStartGuard implements CanActivate {
       } else {
         task = tasksAssignedToUser[0];
       }
+      console.log(`checkTaskInEventNotRequired: storing task ${task} in session`)
       // if one task assigned to user, allow user to complete event
       this.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
       return true;
@@ -67,19 +71,22 @@ export class EventStartGuard implements CanActivate {
   }
 
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
-    // Clear taskToComplete from session as we will be starting the process for new task
-    this.sessionStorageService.removeItem('taskToComplete');
     if (payload.task_required_for_event) {
       // There are some issues in EventTriggerResolver/CaseService and/or CCD for some events
       // which triggers the CanActivate guard again.
       // If event start is initiated again, then we do not need to perform state machine processing again.
       // https://tools.hmcts.net/jira/browse/EUI-5489
       if (this.router && this.router.url && this.router.url.includes('event-start')) {
+        console.log(`checkForTasks: event-start again check is true: ${this.router.url} : taskId = ${taskId}`);
         return of(true);
       }
       this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
     } else {
+      // Clear taskToComplete from session as we will be starting the process for new task
+      console.log(`Removing taskToComplete from session storage for case:event:task ${caseId}:${eventId}:${taskId}`);
+      this.sessionStorageService.removeItem('taskToComplete');
+      console.log("checkForTasks: no task required for event")
       return of(this.checkTaskInEventNotRequired(payload, caseId, taskId));
     }
   }
