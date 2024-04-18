@@ -17,6 +17,7 @@ export class EventStartGuard implements CanActivate {
     const caseId = route.params['cid'];
     const eventId = route.params['eid'];
     const taskId = route.queryParams['tid'];
+    console.log(`in canActivate for tid ${taskId}`);
 
     // TODO: NavigationExtras should be used once Angular upgrade changes have been incorporated
     const isComplete = route.queryParams['isComplete'];
@@ -28,7 +29,10 @@ export class EventStartGuard implements CanActivate {
           return of(true);
         }
         return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction).pipe(
-          switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
+          switchMap((payload: TaskPayload) => {
+            console.log(`getTasksByCaseIdAndEventId payload - ${payload}`);
+            return this.checkForTasks(payload, caseId, eventId, taskId)
+          })
         );
       }
     }
