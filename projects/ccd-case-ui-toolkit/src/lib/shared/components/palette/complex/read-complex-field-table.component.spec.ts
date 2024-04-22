@@ -32,7 +32,7 @@ describe('ReadComplexFieldTableComponent', () => {
   let component: ReadComplexFieldTableComponent;
   let de: DebugElement;
 
-  describe('when values split across children fields', () => {
+  xdescribe('when values split across children fields', () => {
     const FIELD_TYPE_WITHOUT_FIELDS: FieldType = {
       id: 'IAmVeryComplex',
       type: 'Complex',

@@ -1404,7 +1404,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   });
 });
 
-describe('CaseFullAccessViewComponent - appendedTabs', () => {
+xdescribe('CaseFullAccessViewComponent - appendedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;

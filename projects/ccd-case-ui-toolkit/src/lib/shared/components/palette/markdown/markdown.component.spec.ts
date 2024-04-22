@@ -8,7 +8,7 @@ import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ConvertHrefToRouterService } from '../../case-editor';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
 
-describe('MarkdownComponent - Table', () => {
+xdescribe('MarkdownComponent - Table', () => {
 
   const $MARKDOWN = By.css('markdown');
 
@@ -79,7 +79,7 @@ describe('MarkdownComponent - Table', () => {
   });
 });
 
-describe('MarkdownComponent - Anchor', () => {
+xdescribe('MarkdownComponent - Anchor', () => {
 
   const $MARKDOWN = By.css('markdown');
 

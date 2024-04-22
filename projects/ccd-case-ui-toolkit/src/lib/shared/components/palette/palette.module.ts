@@ -12,7 +12,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
-import { MediaViewerModule } from '@hmcts/media-viewer';
+// import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxMdModule } from 'ngx-md';
 import { RpxTranslationModule } from 'rpx-xui-translation';
@@ -306,7 +306,7 @@ const PALETTE_COMPONENTS = [
     CdkTreeModule,
     OverlayModule,
     MatDialogModule,
-    MediaViewerModule,
+    // MediaViewerModule,
     LoadingModule,
     RpxTranslationModule.forChild(),
     MarkdownComponentModule
