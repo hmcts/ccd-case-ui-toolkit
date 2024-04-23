@@ -4388,8 +4388,8 @@ __metadata:
     "@edium/fsm": ^2.1.2
     "@hmcts/ccpay-web-component": 6.1.0
     "@hmcts/frontend": 0.0.50-alpha
-    "@ngrx/effects": 16.3.0
-    "@ngrx/store": ^16.3.0
+    "@ngrx/effects": 17.2.0
+    "@ngrx/store": ^17.2.0
     "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     "@storybook/addon-actions": ^6.5.10
     "@storybook/addon-essentials": ^6.5.10
@@ -5661,28 +5661,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/effects@npm:16.3.0":
-  version: 16.3.0
-  resolution: "@ngrx/effects@npm:16.3.0"
+"@ngrx/effects@npm:17.2.0":
+  version: 17.2.0
+  resolution: "@ngrx/effects@npm:17.2.0"
   dependencies:
+    "@ngrx/operators": 17.0.0-beta.0
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/core": ^16.0.0
-    "@ngrx/store": 16.3.0
+    "@angular/core": ^17.0.0
+    "@ngrx/store": 17.2.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: 2774395929c91dfc0c289542d7960bbee61feed4305548af579b4ecb68da0f433356fd4b2a812856872d448410e7a2d7ec9a3c31bf14c57e31d45a13f2ddaed8
+  checksum: 090c009f63641890c9bcf6864dc3945da93664c099d5ac1138bcc369d8c65c09b4bcf8754a44de350ec0596cdbf885a3e790b0a652bcf6a369210e0fd1cbb55a
   languageName: node
   linkType: hard
 
-"@ngrx/store@npm:^16.3.0":
-  version: 16.3.0
-  resolution: "@ngrx/store@npm:16.3.0"
+"@ngrx/operators@npm:17.0.0-beta.0":
+  version: 17.0.0-beta.0
+  resolution: "@ngrx/operators@npm:17.0.0-beta.0"
+  dependencies:
+    tslib: ^2.3.0
+  peerDependencies:
+    rxjs: ^6.5.3 || ^7.4.0
+  checksum: e814a18baa1e84e161825d409afd54d7c1eed2ed05215302bd4870827bae83b2bff039398029e38aedec5c12694deb1c5bc67570531142c4fe7ac6e10a5b566d
+  languageName: node
+  linkType: hard
+
+"@ngrx/store@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@ngrx/store@npm:17.2.0"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/core": ^16.0.0
+    "@angular/core": ^17.0.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: e31319f2e072a8145bb5093a38a1f6bfc4b723286128ca46bb1e571c7efe25114bc7c6ca8b96c7544030f28847bf1c116880aa8f32af9e8a8659e0083fb9fbc0
+  checksum: 82cb77c42ae5149c98fd5c2104023d6606c62daba0180babdc1c1306f604bc39fed4ccaeba86bb3d90949b92c864a01ad3865953597f092f6138ed54ab560a9e
   languageName: node
   linkType: hard
 
