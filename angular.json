@@ -51,18 +51,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ccd-case-ui-toolkit:build"
+            "buildTarget": "ccd-case-ui-toolkit:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ccd-case-ui-toolkit:build:production"
+              "buildTarget": "ccd-case-ui-toolkit:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ccd-case-ui-toolkit:build"
+            "buildTarget": "ccd-case-ui-toolkit:build"
           }
         },
         "lint": {
