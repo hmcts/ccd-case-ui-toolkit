@@ -8,7 +8,6 @@ export class OrderService {
   /**
    * @deprecated Use `sort` function instead or `compareAsc`
    */
-  public sortAsc: (a:Orderable, b:Orderable)=> number = OrderService.DEFAULT_COMPARE_FUNCTION;
   private static readonly DEFAULT_COMPARE_FUNCTION = (a: Orderable, b: Orderable) => {
     const aOrdered = a.order === 0 || a.order;
     const bOrdered = b.order === 0 || b.order;
@@ -21,9 +20,10 @@ export class OrderService {
       return -1;
     }
 
-    return a.order - b.order;
+    return a.order - b?.order;
   }
 
+  public sortAsc: (a:Orderable, b:Orderable)=> number = OrderService.DEFAULT_COMPARE_FUNCTION;
   /**
    * Clone and sort array. Ascending order used by default.
    *
