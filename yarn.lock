@@ -324,9 +324,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:16.2.12":
-  version: 16.2.12
-  resolution: "@angular/cdk@npm:16.2.12"
+"@angular/cdk@npm:16.2.14":
+  version: 16.2.14
+  resolution: "@angular/cdk@npm:16.2.14"
   dependencies:
     parse5: ^7.1.2
     tslib: ^2.3.0
@@ -337,7 +337,7 @@ __metadata:
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: a0075e4886ed01145edebe2e2b6c4c234386ba42eb9e9caa4535c874a800d1e7716d89a64cc2575ad84170d665ae0fd2979bdac7e14a02c2190d672a0bcea6a1
+  checksum: 1767db605c4f3cf1fc04fe2b72d34479f04730ec7357388bfc415ce6bf8a0a129042cba723d93c31bc642583063c22fa0664b0748db2599697a770e48dac62fd
   languageName: node
   linkType: hard
 
@@ -482,9 +482,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:16.2.12":
-  version: 16.2.12
-  resolution: "@angular/material@npm:16.2.12"
+"@angular/material@npm:16.2.14":
+  version: 16.2.14
+  resolution: "@angular/material@npm:16.2.14"
   dependencies:
     "@material/animation": 15.0.0-canary.bc9ae6c9c.0
     "@material/auto-init": 15.0.0-canary.bc9ae6c9c.0
@@ -536,13 +536,13 @@ __metadata:
     tslib: ^2.3.0
   peerDependencies:
     "@angular/animations": ^16.0.0 || ^17.0.0
-    "@angular/cdk": 16.2.12
+    "@angular/cdk": 16.2.14
     "@angular/common": ^16.0.0 || ^17.0.0
     "@angular/core": ^16.0.0 || ^17.0.0
     "@angular/forms": ^16.0.0 || ^17.0.0
     "@angular/platform-browser": ^16.0.0 || ^17.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 8cdc028b817b23b9baf8a56cc5db9d376fb9540895c9993547459596e7ce09df3772be79bf3db7d7e6f931e048be531763adda30af40edc7b860496bfab1fa9d
+  checksum: e90edd413f4fa57abd64895352418545b944cfa2887114ff7306640efffaf13e14e6ca357b959020471a9a377ca95bc41a56ac96624aa820f00310b6a3a519ab
   languageName: node
   linkType: hard
 
@@ -3380,7 +3380,7 @@ __metadata:
     "@angular-material-components/datetime-picker": 16.0.1
     "@angular-material-components/moment-adapter": 16.0.1
     "@angular/animations": ~16.2.12
-    "@angular/cdk": 16.2.12
+    "@angular/cdk": 16.2.14
     "@angular/cli": 16.2.14
     "@angular/common": 16.2.12
     "@angular/compiler": 16.2.12
@@ -3388,7 +3388,7 @@ __metadata:
     "@angular/core": 16.2.12
     "@angular/forms": 16.2.12
     "@angular/localize": 16.2.12
-    "@angular/material": 16.2.12
+    "@angular/material": 16.2.14
     "@angular/platform-browser": 16.2.12
     "@angular/platform-browser-dynamic": 16.2.12
     "@angular/router": 16.2.12
