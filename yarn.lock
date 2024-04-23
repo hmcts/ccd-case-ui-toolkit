@@ -3469,7 +3469,7 @@ __metadata:
     moment: ^2.29.1
     moment-timezone: ^0.5.31
     multidep: 2.0.2
-    ng-mocks: ^14.1.1
+    ng-mocks: ^14.12.2
     ng-packagr: 16.2.3
     ng2-mock-component: ^0.1.1
     ngx-chips: 2.1.0
@@ -20684,15 +20684,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ng-mocks@npm:^14.1.1":
-  version: 14.12.1
-  resolution: "ng-mocks@npm:14.12.1"
+"ng-mocks@npm:^14.12.2":
+  version: 14.12.2
+  resolution: "ng-mocks@npm:14.12.2"
   peerDependencies:
     "@angular/common": 5.0.0-alpha - 5 || 6.0.0-alpha - 6 || 7.0.0-alpha - 7 || 8.0.0-alpha - 8 || 9.0.0-alpha - 9 || 10.0.0-alpha - 10 || 11.0.0-alpha - 11 || 12.0.0-alpha - 12 || 13.0.0-alpha - 13 || 14.0.0-alpha - 14 || 15.0.0-alpha - 15 || 16.0.0-alpha - 16 || 17.0.0-alpha - 17
     "@angular/core": 5.0.0-alpha - 5 || 6.0.0-alpha - 6 || 7.0.0-alpha - 7 || 8.0.0-alpha - 8 || 9.0.0-alpha - 9 || 10.0.0-alpha - 10 || 11.0.0-alpha - 11 || 12.0.0-alpha - 12 || 13.0.0-alpha - 13 || 14.0.0-alpha - 14 || 15.0.0-alpha - 15 || 16.0.0-alpha - 16 || 17.0.0-alpha - 17
     "@angular/forms": 5.0.0-alpha - 5 || 6.0.0-alpha - 6 || 7.0.0-alpha - 7 || 8.0.0-alpha - 8 || 9.0.0-alpha - 9 || 10.0.0-alpha - 10 || 11.0.0-alpha - 11 || 12.0.0-alpha - 12 || 13.0.0-alpha - 13 || 14.0.0-alpha - 14 || 15.0.0-alpha - 15 || 16.0.0-alpha - 16 || 17.0.0-alpha - 17
     "@angular/platform-browser": 5.0.0-alpha - 5 || 6.0.0-alpha - 6 || 7.0.0-alpha - 7 || 8.0.0-alpha - 8 || 9.0.0-alpha - 9 || 10.0.0-alpha - 10 || 11.0.0-alpha - 11 || 12.0.0-alpha - 12 || 13.0.0-alpha - 13 || 14.0.0-alpha - 14 || 15.0.0-alpha - 15 || 16.0.0-alpha - 16 || 17.0.0-alpha - 17
-  checksum: 5a6ea5c94c71c1c2781e2ce214294002107d8ca09940d34867b8a86efce45367540c18b21c9e5ce65b58c423da20bbb808fbbba1717cb393aefbc6cc0136b21c
+  checksum: 6be1351fd8f5023bb962fd43743c752de46b45cba270bd50b0ca3d1fb08aa8488eff8f4f3202bfb4b433665e97cb926a0c525dfd86d7f43d3cdaa7de25a42da4
   languageName: node
   linkType: hard
 
