@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.26",
+  "version": "7.0.29",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -66,7 +66,7 @@
     "@hmcts/frontend": "0.0.50-alpha",
     "@ngrx/effects": "16.3.0",
     "@ngrx/store": "^16.3.0",
-    "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
+    "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "braces": "^2.3.1",
     "enhanced-resolve": "3.3.0",
     "file-saver": "^2.0.2",
@@ -82,7 +82,7 @@
     "ngx-chips": "^3.0.0",
     "ngx-markdown": "^17.2.0",
     "ngx-md": "^14.0.9",
-    "ngx-pagination": "5.1.1",
+    "ngx-pagination": "6.0.3",
     "npm-registry-fetch": "^4.0.5",
     "pegjs": "^0.10.0",
     "prism": "^4.1.2",
@@ -165,7 +165,7 @@
     "mocha": "^8.1.1",
     "multidep": "2.0.2",
     "ng-mocks": "^14.12.2",
-    "ng-packagr": "^17.3.0",
+    "ng-packagr": "16.2.3",
     "ng2-mock-component": "^0.1.1",
     "ngx-device-detector": "^7.0.0",
     "nyc": "^13.0.1",
