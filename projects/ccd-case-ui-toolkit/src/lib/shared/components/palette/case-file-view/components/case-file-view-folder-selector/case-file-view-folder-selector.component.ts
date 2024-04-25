@@ -62,7 +62,8 @@ export class CaseFileViewFolderSelectorComponent implements AfterViewInit {
   }
 
   private containsDocument(cat: CaseFileViewCategory, document: DocumentTreeNode): string[] | null {
-    if (cat.documents.findIndex((doc) => doc.document_binary_url === document.document_binary_url) > -1) {
+    if (cat.documents.findIndex((doc) => (doc.document_binary_url === document.document_binary_url)
+        && (doc.attribute_path === document.attribute_path)) > -1) {
       return [cat.category_id];
     }
     for (const c of cat.sub_categories) {
