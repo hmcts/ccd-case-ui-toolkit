@@ -20,7 +20,7 @@ export class OrderService {
       return -1;
     }
 
-    return a.order - b?.order;
+    return a.order - b.order;
   }
 
   public sortAsc: (a:Orderable, b:Orderable)=> number = OrderService.DEFAULT_COMPARE_FUNCTION;

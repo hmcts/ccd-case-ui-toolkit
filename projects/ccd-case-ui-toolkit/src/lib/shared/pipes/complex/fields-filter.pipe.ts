@@ -24,11 +24,9 @@ export class FieldsFilterPipe implements PipeTransform {
    * Complex type should have at least on simple field descendant with a value.
    */
   private static isValidComplex(field: CaseField, values?: object): boolean {
-    console.log('isValidComplexxxxxx', field);
     values = values || {};
     const type = field.field_type;
     const value = FieldsFilterPipe.getValue(field, values);
-    console.log('field.field_type------', field.field_type, type.complex_fields);
     const hasChildrenWithValue = type.complex_fields.find(f => {
       return FieldsFilterPipe.keepField(f, value);
     });
