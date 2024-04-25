@@ -205,7 +205,7 @@
     "https-proxy-agent": "^2.2.3",
     "lodash": "^4.17.21",
     "marked": "^0.7.0",
-    "minimatch": "^9.0.4",
+    "minimatch": "^8.0.4",
     "minimist": "^1.2.3",
     "node-fetch": "^2.6.7",
     "node-forge": "^0.10.0",
