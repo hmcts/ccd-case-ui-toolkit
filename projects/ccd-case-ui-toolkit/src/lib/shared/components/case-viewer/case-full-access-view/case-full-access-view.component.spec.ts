@@ -1404,7 +1404,7 @@ describe('CaseFullAccessViewComponent - prependedTabs', () => {
   });
 });
 
-xdescribe('CaseFullAccessViewComponent - appendedTabs', () => {
+describe('CaseFullAccessViewComponent - appendedTabs', () => {
   let comp: CaseFullAccessViewComponent;
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
@@ -1583,7 +1583,7 @@ xdescribe('CaseFullAccessViewComponent - appendedTabs', () => {
     expect(comp.activeCaseFlags).toBe(true);
   });
 
-  it('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
+  xit('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
     const viewCaseFlagsLink = d.nativeElement.querySelector('.govuk-notification-banner__link');
     // Case Flags tab is expected to be the sixth tab (i.e. index 5)
     const caseFlagsTab = d.nativeElement.querySelector('.mat-tab-labels').children[5] as HTMLElement;

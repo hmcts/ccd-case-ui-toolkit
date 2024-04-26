@@ -60,6 +60,10 @@ import createSpyObj = jasmine.createSpyObj;
 import { CaseEditFormComponent } from '../case-edit-form/case-edit-form.component';
 import { IsReadOnlyAndNotCollectionPipe } from '../../palette/utils/is-read-only-and-not-collection.pipe';
 import { IsCompoundPipe } from '../../palette/utils/is-compound.pipe';
+import { CaseEditSubmitComponent } from '../case-edit-submit';
+import { CaseEditConfirmComponent } from '../case-edit-confirm';
+import { CaseCreateComponent } from '../case-create';
+import { CaseProgressComponent } from '../case-progress';
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
@@ -470,7 +474,12 @@ xdescribe('CaseEditPageComponent - all other tests', () => {
             CcdCaseTitlePipe,
             MockRpxTranslatePipe,
             IsReadOnlyAndNotCollectionPipe,
-            IsCompoundPipe
+            IsCompoundPipe,
+            CaseEditConfirmComponent,
+            CaseEditSubmitComponent,
+            CaseCreateComponent,
+            CaseProgressComponent,
+            CaseEditGenericErrorsComponent
           ],
           providers: [
             { provide: FormValueService, useValue: formValueService },
@@ -869,7 +878,12 @@ xdescribe('CaseEditPageComponent - all other tests', () => {
             CcdCaseTitlePipe,
             MockRpxTranslatePipe,
             IsReadOnlyAndNotCollectionPipe,
-            IsCompoundPipe
+            IsCompoundPipe,
+            CaseEditConfirmComponent,
+            CaseEditSubmitComponent,
+            CaseCreateComponent,
+            CaseProgressComponent,
+            CaseEditGenericErrorsComponent
           ],
           providers: [
             { provide: FormValueService, useValue: formValueService },
@@ -1034,7 +1048,12 @@ xdescribe('CaseEditPageComponent - all other tests', () => {
             CcdCaseTitlePipe,
             MockRpxTranslatePipe,
             IsReadOnlyAndNotCollectionPipe,
-            IsCompoundPipe
+            IsCompoundPipe,
+            CaseEditConfirmComponent,
+            CaseEditSubmitComponent,
+            CaseCreateComponent,
+            CaseProgressComponent,
+            CaseEditGenericErrorsComponent
           ],
           providers: [
             { provide: FormValueService, useValue: formValueService },
@@ -1207,7 +1226,11 @@ xdescribe('CaseEditPageComponent - all other tests', () => {
             CaseEditGenericErrorsComponent,
             MockRpxTranslatePipe,
             IsReadOnlyAndNotCollectionPipe,
-            IsCompoundPipe
+            IsCompoundPipe,
+            CaseEditConfirmComponent,
+            CaseEditSubmitComponent,
+            CaseCreateComponent,
+            CaseProgressComponent
           ],
           providers: [
             { provide: FormValueService, useValue: formValueService },
@@ -1553,7 +1576,12 @@ xdescribe('CaseEditPageComponent - all other tests', () => {
             CcdCaseTitlePipe,
             MockRpxTranslatePipe,
             IsReadOnlyAndNotCollectionPipe,
-            IsCompoundPipe
+            IsCompoundPipe,
+            CaseEditConfirmComponent,
+            CaseEditSubmitComponent,
+            CaseCreateComponent,
+            CaseProgressComponent,
+            CaseEditGenericErrorsComponent
           ],
           providers: [
             { provide: FormValueService, useValue: formValueService },
@@ -1771,7 +1799,12 @@ xdescribe('CaseEditPageComponent - all other tests', () => {
             CcdCaseTitlePipe,
             MockRpxTranslatePipe,
             IsReadOnlyAndNotCollectionPipe,
-            IsCompoundPipe
+            IsCompoundPipe,
+            CaseEditConfirmComponent,
+            CaseEditSubmitComponent,
+            CaseCreateComponent,
+            CaseProgressComponent,
+            CaseEditGenericErrorsComponent
           ],
           providers: [
             { provide: FormValueService, useValue: formValueService },
