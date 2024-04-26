@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NgxMdComponent, NgxMdModule } from 'ngx-md';
+import { MarkdownModule } from 'ngx-markdown';
 import { PipesModule } from '../../../pipes/pipes.module';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ConvertHrefToRouterService } from '../../case-editor';
@@ -53,7 +53,7 @@ xdescribe('MarkdownComponent - Table', () => {
       .configureTestingModule({
         imports: [
           HttpClientTestingModule,
-          NgxMdModule.forRoot(),
+          MarkdownModule.forRoot(),
           PipesModule,
           HttpClientTestingModule
         ],
@@ -62,7 +62,6 @@ xdescribe('MarkdownComponent - Table', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          NgxMdComponent
         ]
       })
       .compileComponents();
@@ -98,7 +97,7 @@ xdescribe('MarkdownComponent - Anchor', () => {
       .configureTestingModule({
         imports: [
           HttpClientTestingModule,
-          NgxMdModule.forRoot(),
+          MarkdownModule.forRoot(),
           PipesModule
         ],
         declarations: [
@@ -106,7 +105,6 @@ xdescribe('MarkdownComponent - Anchor', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          NgxMdComponent,
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService }
         ]
       })
