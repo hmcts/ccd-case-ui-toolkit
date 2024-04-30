@@ -3704,7 +3704,7 @@ __metadata:
     merge-stream: ^1.0.0
     minimist: 1.2.3
     mocha: ^8.1.1
-    moment: ^2.29.1
+    moment: ^2.30.1
     moment-timezone: ^0.5.31
     multidep: 2.0.2
     ng-mocks: ^14.12.2
@@ -3712,7 +3712,7 @@ __metadata:
     ng2-mock-component: ^0.1.1
     ngx-chips: ^3.0.0
     ngx-device-detector: ^7.0.0
-    ngx-markdown: ^17.2.0
+    ngx-markdown: ^17.2.1
     ngx-pagination: 6.0.3
     npm-registry-fetch: ^4.0.5
     nyc: ^13.0.1
@@ -12107,9 +12107,9 @@ __metadata:
   linkType: hard
 
 "cytoscape@npm:^3.28.1":
-  version: 3.29.1
-  resolution: "cytoscape@npm:3.29.1"
-  checksum: 54cac9cf5ef11e1226f1e5da8595c1831773ee56da021d275b446d58a5e6a7a7e693a8e1086958d2e3b0ba99a1f7477dd937cc34f37f880435c3a72708eb08ab
+  version: 3.29.2
+  resolution: "cytoscape@npm:3.29.2"
+  checksum: f42d9dc4e0791b1909d617c0f62fc9a982967362af8d585d4a42b9933887bea697be73d5d94d7bbaae5edccad2ac665dc46a2489271408d64b4fb2dc4ece3c15
   languageName: node
   linkType: hard
 
@@ -12560,7 +12560,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:^1.11.7, dayjs@npm:^1.8.34":
+"dayjs@npm:^1.11.7":
+  version: 1.11.11
+  resolution: "dayjs@npm:1.11.11"
+  checksum: 84788275aad8a87fee4f1ce4be08861df29687aae6b7b43dd65350118a37dda56772a3902f802cb2dc651dfed447a5a8df62d88f0fb900dba8333e411190a5d5
+  languageName: node
+  linkType: hard
+
+"dayjs@npm:^1.8.34":
   version: 1.11.10
   resolution: "dayjs@npm:1.11.10"
   checksum: a6b5a3813b8884f5cd557e2e6b7fa569f4c5d0c97aca9558e38534af4f2d60daafd3ff8c2000fed3435cfcec9e805bcebd99f90130c6d1c5ef524084ced588c4
@@ -13224,9 +13231,9 @@ __metadata:
   linkType: hard
 
 "dompurify@npm:^3.0.5":
-  version: 3.1.0
-  resolution: "dompurify@npm:3.1.0"
-  checksum: 06fc76607cd076e394b2ea5479ab6f0407b8fedb6877ae95e94207b878365e5e1cd914055dacce152a5f419818afb8d4cd284b780246cf35363f0747c179a0ba
+  version: 3.1.1
+  resolution: "dompurify@npm:3.1.1"
+  checksum: a6077018b2f86c3dbb77326a978b32dbd169492d3835c6b990140f67805ffd23e223f30222c888cb7a8fa10db1154be6cfd213beb6c38e3270ecba5b2a97ab5c
   languageName: node
   linkType: hard
 
@@ -21230,7 +21237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.29.1, moment@npm:^2.29.4":
+"moment@npm:^2.29.4, moment@npm:^2.30.1":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
   checksum: 859236bab1e88c3e5802afcf797fc801acdbd0ee509d34ea3df6eea21eb6bcc2abd4ae4e4e64aa7c986aa6cba563c6e62806218e6412a765010712e5fa121ba6
@@ -21570,7 +21577,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-markdown@npm:^17.2.0":
+"ngx-markdown@npm:^17.2.1":
   version: 17.2.1
   resolution: "ngx-markdown@npm:17.2.1"
   dependencies:

@@ -78,7 +78,7 @@ xdescribe('MarkdownComponent - Table', () => {
   });
 });
 
-xdescribe('MarkdownComponent - Anchor', () => {
+describe('MarkdownComponent - Anchor', () => {
 
   const $MARKDOWN = By.css('markdown');
 
@@ -118,7 +118,7 @@ xdescribe('MarkdownComponent - Anchor', () => {
     fixture.detectChanges();
   }));
 
-  it('Should render an anchor and paragraph elements', () => {
+  xit('Should render an anchor and paragraph elements', () => {
     expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
   });
 

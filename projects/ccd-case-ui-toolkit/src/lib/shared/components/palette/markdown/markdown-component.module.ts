@@ -15,7 +15,7 @@ import { MarkdownComponent } from './markdown.component';
     ReactiveFormsModule,
     RpxTranslationModule.forChild(),
     PipesModule,
-    MarkdownModule.forChild()
+    MarkdownModule.forRoot()
   ],
   exports: [
     MarkdownComponent
