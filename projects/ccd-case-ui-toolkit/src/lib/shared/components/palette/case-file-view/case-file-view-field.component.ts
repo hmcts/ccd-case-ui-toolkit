@@ -6,6 +6,8 @@ import { CaseField } from '../../../domain';
 import { CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '../../../domain/case-file-view';
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
+import { AbstractAppConfig } from '../../../../app.config';
+import { CaseNotifier } from '../../case-editor';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -28,7 +30,9 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     private caseFileViewService: CaseFileViewService,
     private documentManagementService: DocumentManagementService,
     private readonly loadingService: LoadingService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly caseNotifier: CaseNotifier,
+    private readonly abstractConfig: AbstractAppConfig,
   ) { }
 
   public ngOnInit(): void {
@@ -68,7 +72,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
               documentTreeContainerWidth
             };
           }),
-          takeUntil(mouseup$));
+            takeUntil(mouseup$));
         }
       )
     );
@@ -105,7 +109,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
           this.resetErrorMessages();
           this.reloadPage();
         }
-    });
+      });
   }
 
   public reloadPage(): void {
@@ -120,5 +124,13 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     if (this.categoriesAndDocumentsSubscription) {
       this.categoriesAndDocumentsSubscription.unsubscribe();
     }
+  }
+
+  public isIcpEnabled() {
+    const icp_jurisdictions = this.abstractConfig.getIcpJurisdictions();
+    const isIcpEnabled = this.abstractConfig.getICPEnable();
+    return isIcpEnabled && icp_jurisdictions.includes(
+      this.caseNotifier.cachedCaseView.case_type.jurisdiction.id
+    );
   }
 }
