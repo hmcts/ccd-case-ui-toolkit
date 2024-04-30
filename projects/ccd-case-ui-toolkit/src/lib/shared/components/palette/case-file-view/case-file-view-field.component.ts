@@ -128,7 +128,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
 
   public isIcpEnabled() {
     const icp_jurisdictions = this.abstractConfig.getIcpJurisdictions();
-    const isIcpEnabled = this.abstractConfig.getICPEnable();
+    const isIcpEnabled = this.abstractConfig.getIcpEnable();
     return isIcpEnabled && icp_jurisdictions.includes(
       this.caseNotifier.cachedCaseView.case_type.jurisdiction.id
     );

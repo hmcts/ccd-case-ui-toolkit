@@ -51,7 +51,7 @@ export abstract class AbstractAppConfig {
   public abstract getActivityMaxRequestPerBatch(): number;
   public abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
   public abstract getPrintServiceUrl(): string;
-  public abstract getICPEnable(): boolean;
+  public abstract getIcpEnable(): boolean;
   public abstract getIcpJurisdictions(): string[];
 
   /**
