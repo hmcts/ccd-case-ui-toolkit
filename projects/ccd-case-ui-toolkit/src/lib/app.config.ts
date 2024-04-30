@@ -1,7 +1,5 @@
 /* istanbul ignore file */
 
-import { Injectable } from "@angular/core";
-
 // tslint:disable:variable-name
 export interface AccessManagementBasicViewMockModel {
   active?: boolean;
