@@ -32,6 +32,11 @@ export class EventLogTableComponent implements OnInit {
     this.onSelect.emit(event);
   }
 
+  public handleKeyUp(event: KeyboardEvent): void {
+    console.log('Key up:', event.key);
+    // Add your logic here
+  }
+
   public significantItemExist(event: CaseViewEvent): boolean {
     return (event.significant_item &&
         event.significant_item.type === 'DOCUMENT' &&

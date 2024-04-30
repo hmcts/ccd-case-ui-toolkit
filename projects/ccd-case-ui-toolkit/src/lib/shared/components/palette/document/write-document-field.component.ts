@@ -148,6 +148,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
+  public handleKeyUp(event: KeyboardEvent): void {
+    console.log('Key up:', event.key);
+    // Add your logic here
+  }
+
   public triggerReplace(): boolean {
     if (this.confirmReplaceResult === 'Replace') {
       this.openFileDialog();

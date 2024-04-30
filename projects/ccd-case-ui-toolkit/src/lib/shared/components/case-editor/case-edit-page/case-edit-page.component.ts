@@ -486,7 +486,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   private getTriggerText(): string {
-    const textBasedOnCanSaveDraft = this.eventTrigger && this.eventTrigger.can_save_draft
+    const textBasedOnCanSaveDraft = this.eventTrigger?.can_save_draft
       ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
       : CaseEditPageComponent.TRIGGER_TEXT_START;
 
