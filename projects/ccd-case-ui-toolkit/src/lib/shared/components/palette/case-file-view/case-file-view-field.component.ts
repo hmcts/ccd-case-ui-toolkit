@@ -126,7 +126,7 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-  public isIcpEnabled() {
+  public isIcpEnabled():boolean {
     const icp_jurisdictions = this.abstractConfig.getIcpJurisdictions();
     const isIcpEnabled = this.abstractConfig.getIcpEnable();
     return isIcpEnabled && icp_jurisdictions.includes(
