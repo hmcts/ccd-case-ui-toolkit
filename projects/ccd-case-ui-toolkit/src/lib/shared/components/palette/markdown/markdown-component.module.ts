@@ -5,20 +5,25 @@ import { NgxMdModule } from 'ngx-md';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { PipesModule } from '../../../pipes';
 import { MarkdownComponent } from './markdown.component';
+import { RouterLinkComponent } from './routerlink.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
-    MarkdownComponent
+    MarkdownComponent,
+    RouterLinkComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     RpxTranslationModule.forChild(),
     PipesModule,
-    NgxMdModule
+    NgxMdModule,
+    RouterModule
   ],
   exports: [
-    MarkdownComponent
+    MarkdownComponent,
+    RouterLinkComponent
   ],
 })
 export class MarkdownComponentModule {}

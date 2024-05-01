@@ -8,6 +8,8 @@ import { WorkAllocationService } from '../../case-editor';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
+  public static TASK_TO_COMPLETE = 'taskToComplete';
+
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService) {
@@ -22,7 +24,9 @@ export class EventStartGuard implements CanActivate {
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       if (caseInfo && caseInfo.cid === caseId) {
-        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction).pipe(
+        console.log(`canActivate: fetching task data for eventId="${eventId}" caseId=${caseId}`);
+        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction)
+          .pipe(
           switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
         );
       }
@@ -36,7 +40,7 @@ export class EventStartGuard implements CanActivate {
       return true;
     }
     const taskNumber = payload.tasks.length;
-    console.log(`checkTaskInEventNotRequired: found ${taskNumber} tasks`);
+    console.log(`checkTaskInEventNotRequired: found ${taskNumber} tasks in payload`);
     if (taskNumber === 0) {
       // if there are no tasks just carry on
       return true;
@@ -45,7 +49,7 @@ export class EventStartGuard implements CanActivate {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
     const tasksAssignedToUser = payload.tasks.filter(x =>
-      x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
+      x.task_state !== 'unassigned' && (x.assignee === userInfo.id || x.assignee === userInfo.uid)
     );
     console.log(`checkTaskInEventNotRequired: ${tasksAssignedToUser} tasks assigned to user`)
     if (tasksAssignedToUser.length === 0) {
@@ -62,15 +66,29 @@ export class EventStartGuard implements CanActivate {
         task = payload.tasks.find(x => x.id === taskId);
       } else {
         task = tasksAssignedToUser[0];
+        console.log(`no taskId so picking task ${task.id}`)
       }
       console.log(`checkTaskInEventNotRequired: storing task ${task} in session`)
       // if one task assigned to user, allow user to complete event
-      this.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
+      this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
       return true;
     }
   }
 
+  private removeTaskFromSessionStorage(): void {
+    this.sessionStorageService.removeItem(EventStartGuard.TASK_TO_COMPLETE);
+  }
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
+    if (taskId && payload?.tasks?.length > 0) {
+      const task = payload.tasks.find((t) => t.id == taskId);
+      if (task) {
+        console.log('checkForTasks: Storing task in session storage for taskId: ' + taskId);
+        this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
+      } else {
+        console.log(`checkForTasks: ${taskId} not found in task payload `);
+        this.removeTaskFromSessionStorage();
+      }
+    }
     if (payload.task_required_for_event) {
       // There are some issues in EventTriggerResolver/CaseService and/or CCD for some events
       // which triggers the CanActivate guard again.
@@ -83,9 +101,6 @@ export class EventStartGuard implements CanActivate {
       this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
     } else {
-      // Clear taskToComplete from session as we will be starting the process for new task
-      console.log(`Removing taskToComplete from session storage for case:event:task ${caseId}:${eventId}:${taskId}`);
-      this.sessionStorageService.removeItem('taskToComplete');
       console.log("checkForTasks: no task required for event");
       return of(this.checkTaskInEventNotRequired(payload, caseId, taskId));
     }
