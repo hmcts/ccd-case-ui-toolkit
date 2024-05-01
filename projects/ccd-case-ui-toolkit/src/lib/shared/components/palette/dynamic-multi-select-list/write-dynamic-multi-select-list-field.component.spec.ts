@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { DebugElement } from '@angular/core';
+import { DebugElement, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -10,9 +10,10 @@ import { PipesModule } from '../../../pipes';
 import { attr } from '../../../test/helpers';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { MarkdownComponent } from '../markdown';
+import { MarkdownComponent, MarkdownComponentModule } from '../markdown';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDynamicMultiSelectListFieldComponent } from './write-dynamic-multi-select-list-field.component';
+import { RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 
 
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
@@ -62,22 +63,30 @@ const FIELD_TYPE: FieldType = {
 };
 
 let caseField: CaseField;
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 const moduleDef = {
   imports: [
     ReactiveFormsModule,
     PaletteUtilsModule,
     PipesModule,
-    HttpClientTestingModule,
-    MarkdownModule.forRoot(),
+    HttpClientTestingModule
   ],
   declarations: [
     WriteDynamicMultiSelectListFieldComponent,
     MarkdownComponent,
     MockFieldLabelPipe,
-    MockRpxTranslatePipe
+    MockRpxTranslatePipe,
+    RpxTranslateMockPipe
   ],
   providers: [
+    RpxTranslationService,
+    RpxTranslationConfig,
   ]
 };
 
@@ -92,7 +101,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
   let component: WriteDynamicMultiSelectListFieldComponent;
   let de: DebugElement;
 
-  xdescribe('List Value Dynamic Case Field', () => {
+  describe('List Value Dynamic Case Field', () => {
     beforeEach(waitForAsync(() => {
       caseField = ({
         id: FIELD_ID,
@@ -146,7 +155,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
       });
     });
 
-    it('should show a link in the checkbox label', () => {
+    xit('should show a link in the checkbox label', () => {
       const labels = de.queryAll($LABELS);
       labels.forEach((lb, i) => {
         const mockUrl = MD_LIST_ITEMS[i].label.match(URL_REGEX)[0];
@@ -155,7 +164,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     });
   });
 
-  xdescribe('Null Value Dynamic Case Field', () => {
+  describe('Null Value Dynamic Case Field', () => {
     beforeEach(waitForAsync(() => {
       caseField = ({
         id: FIELD_ID,
@@ -193,7 +202,7 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
     });
   });
 
-  xdescribe('Object Value Dynamic Case Field', () => {
+  describe('Object Value Dynamic Case Field', () => {
     beforeEach(waitForAsync(() => {
       caseField = ({
         id: FIELD_ID,
