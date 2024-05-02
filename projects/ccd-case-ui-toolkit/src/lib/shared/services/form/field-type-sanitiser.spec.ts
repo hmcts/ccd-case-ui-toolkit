@@ -232,5 +232,47 @@ describe('FieldTypeSanitiser', () => {
         { code: '192', label: 'Peter Pan' }
       ]);
     });
+
+    it('should update list_items with empty list_items in _value', () => {
+      mockCaseFields[1]._value.externalMessageWhoToSendTo.list_items = [];
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      const updatedField = result.find((field) => field.id === 'sendMessageObject');
+      const complexField = updatedField.field_type.complex_fields.find((field) => field.id === 'externalMessageWhoToSendTo');
+
+      expect(complexField.list_items).toEqual([]);
+    });
+
+    it('should handle no DynamicMultiSelectList fields in object', () => {
+      mockCaseFields[1].field_type.complex_fields = mockCaseFields[1].field_type.complex_fields.filter((field) => field.id !== 'externalMessageWhoToSendTo');
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      const updatedField = result.find((field) => field.id === 'sendMessageObject');
+
+      expect(updatedField).not.toBeNull();
+      expect(updatedField.field_type.complex_fields).not.toContain(jasmine.objectContaining({ id: 'externalMessageWhoToSendTo' }));
+    });
+
+    it('should not ammend list items if display_context is HIDDEN', () => {
+      mockCaseFields[1].field_type.complex_fields[0].display_context = 'HIDDEN';
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      console.log(JSON.stringify(result));
+      expect(result[1].field_type.complex_fields[0].list_items).toBeUndefined();
+    });
+
+    it('should only add list_items to type DynamicMultiSelectList', () => {
+      mockCaseFields[1].field_type.complex_fields[0].field_type.type = 'MultiSelectList';
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      expect(result[1].field_type.complex_fields[0].list_items).toBeUndefined();
+    });
+
+    it('should replace list_items if list_items is null', () => {
+      mockCaseFields[1].field_type.complex_fields[0].list_items = null;
+      const result = fieldTypeSanitiser.ensureDynamicMultiSelectListPopulated(mockCaseFields);
+      expect(result[1].field_type.complex_fields[0].list_items).toEqual([
+        { code: '123', label: 'John Doe' },
+        { code: '456', label: 'Jane Doe' },
+        { code: '789', label: 'Peter Piper' },
+        { code: '192', label: 'Peter Pan' }
+      ]);
+    });
   });
 });

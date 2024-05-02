@@ -165,3 +165,49 @@ describe('CaseField', () => {
     expect(component.dateTimeDisplayFormat).toBeNull();
   });
 });
+
+describe('CaseField - set list_items when dynamic', () => {
+  let component: CaseField;
+
+  beforeEach(waitForAsync(() => {
+    component = new CaseField();
+    component.field_type = new FieldType();
+    component.field_type.type = 'DynamicMultiSelectList';
+  }));
+
+  it('should set list_items when initially empty', () => {
+    const items = [{ code: 'Code1', label: 'Label 1' }];
+    component.list_items = items;
+    expect(component.list_items).toEqual(items);
+  });
+
+  it('should update list_items if new list is longer', () => {
+    const initialItems = [{ code: 'Code1', label: 'Label 1' }];
+    const newItems = [{ code: 'Code1', label: 'Label 1' }, { code: 'Code2', label: 'Label 2' }];
+    component.list_items = initialItems;
+    component.list_items = newItems;
+    expect(component.list_items).toEqual(newItems);
+  });
+
+  it('should not update list_items if new list is not longer', () => {
+    const initialItems = [{ code: 'Code1', label: 'Label 1' }, { code: 'Code2', label: 'Label 2' }];
+    const newItems = [{ code: 'Code1', label: 'Label 1' }];
+    component.list_items = initialItems;
+    component.list_items = newItems;
+    expect(component.list_items).toEqual(initialItems);
+  });
+
+  it('should handle setting list_items to null', () => {
+    const items = [{ code: 'Code1', label: 'Label 1' }];
+    component.list_items = items;
+    component.list_items = null;
+    expect(component.list_items).toEqual(items);
+  });
+
+  it('should handle setting list_items to undefined', () => {
+    const items = [{ code: 'Code1', label: 'Label 1' }];
+    component.list_items = items;
+    component.list_items = undefined;
+    expect(component.list_items).toEqual(items);
+  });
+});

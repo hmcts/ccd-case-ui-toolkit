@@ -60,8 +60,8 @@ export class FieldTypeSanitiser {
         return field;
       }
       const complexFieldsUpdated = field.field_type.complex_fields.map((complexField) =>
-        complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST && complexField.display_context !== 'HIDDEN' && field._value && field._value[complexField.id]
-          ? { ...complexField, list_items: field._value[complexField.id].list_items } : complexField
+        complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST && complexField.display_context !== 'HIDDEN' && field._value?.[complexField.id]
+          ? { ...complexField, list_items: field._value[complexField.id]?.list_items } : complexField
       );
       return { ...field, field_type: { ...field.field_type, complex_fields: complexFieldsUpdated } } as CaseField;
     });
