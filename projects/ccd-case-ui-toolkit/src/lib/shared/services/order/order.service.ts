@@ -6,7 +6,7 @@ import { Orderable } from '../../domain/order/orderable.model';
 export class OrderService {
 
   /**
-   * @deprecated Use `sort` function instead or `compareAsc`
+   * Use `sort` function instead or `compareAsc`
    */
   private static readonly DEFAULT_COMPARE_FUNCTION = (a: Orderable, b: Orderable) => {
     const aOrdered = a.order === 0 || a.order;
