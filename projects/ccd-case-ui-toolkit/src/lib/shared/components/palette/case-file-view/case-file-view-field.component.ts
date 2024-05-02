@@ -7,7 +7,7 @@ import { CaseFileViewDocument, CategoriesAndDocuments, DocumentTreeNode } from '
 import { UserInfo } from '../../../domain/user/user-info.model';
 import { CaseFileViewService, DocumentManagementService, LoadingService, SessionStorageService } from '../../../services';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseNotifier } from '../../case-editor';
+import { CaseNotifier } from '../../case-editor/services';
 
 @Component({
   selector: 'ccd-case-file-view-field',
@@ -24,6 +24,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public errorMessages = [] as string[];
   private caseVersion: number;
   public caseField: CaseField;
+  public icp_jurisdictions:string[] = [];
+  public icpEnabled:boolean = false;
 
   constructor(private readonly elementRef: ElementRef,
     private readonly route: ActivatedRoute,
@@ -51,6 +53,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     const acls = this.caseField.acls.filter(acl => userInfo.roles.includes(acl.role));
     // As there can be more than one intersecting role, if any acls are update: true
     this.allowMoving = acls.some(acl => acl.update);
+    this.icp_jurisdictions = this.abstractConfig.getIcpJurisdictions();
+    this.icpEnabled = this.abstractConfig.getIcpEnable();
   }
 
   public ngAfterViewInit(): void {
@@ -126,11 +130,9 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-  public isIcpEnabled():boolean {
-    const icp_jurisdictions = this.abstractConfig.getIcpJurisdictions();
-    const isIcpEnabled = this.abstractConfig.getIcpEnable();
-    return isIcpEnabled && icp_jurisdictions.includes(
-      this.caseNotifier.cachedCaseView.case_type.jurisdiction.id
+  public isIcpEnabled(icpEnabled:boolean, icp_jurisdictions:string[]): boolean {
+    return icpEnabled && icp_jurisdictions.includes(
+      this.caseNotifier?.cachedCaseView?.case_type?.jurisdiction.id
     );
   }
 }
