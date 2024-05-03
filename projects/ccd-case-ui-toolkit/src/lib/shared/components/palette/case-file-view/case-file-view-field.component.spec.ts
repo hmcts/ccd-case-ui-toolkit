@@ -243,22 +243,24 @@ fdescribe('CaseFileViewFieldComponent', () => {
     expect(component.errorMessages).toEqual(errorMessagesFromElements);
   });
 
-  it('should return false when icp-enabled is false and jurisdiction is empty', () => {
-   const callIcpEnabled = component.isIcpEnabled();
-   expect(callIcpEnabled).toBeFalsy()
+  it('should enable icp with test config', () => {
+    fixture.detectChanges();
+    component.isIcpEnabled();
+    expect(component.icpEnabled).toBeTruthy();
   });
 
-  it('should return true when icp-enabled is true and jurisdiction is empty', () => {
-    component.icpEnabled = true;
-    fixture.autoDetectChanges();
+  it('should disable icp with disabled config', () => {
+    mockabstractConfig.getIcpEnable.and.returnValue(false);
+    fixture.detectChanges();
     const callIcpEnabled = component.isIcpEnabled();
-    expect(callIcpEnabled).toBeTruthy();
-   });
+    expect(callIcpEnabled).toBeFalsy();
+    expect(component.icpEnabled).toBeFalsy();
+  });
 
-   it('should return true when jurisdiction is not empty', () => {
-    component.icp_jurisdictions = ['ST_CIC'];
-    fixture.autoDetectChanges();
+  it('should return false if jurisdiction value is not present', () => {
+    mockabstractConfig.getIcpJurisdictions.and.returnValue(['FAKE']);
+    fixture.detectChanges();
     const callIcpEnabled = component.isIcpEnabled();
-    expect(callIcpEnabled).toBeTruthy();
-   });
+    expect(callIcpEnabled).toBeFalsy();
+  });
 });
