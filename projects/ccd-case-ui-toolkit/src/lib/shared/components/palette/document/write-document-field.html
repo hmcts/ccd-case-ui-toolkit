@@ -14,7 +14,8 @@
 
     <div
       [id]="createElementId('fileInputWrapper')"
-      (click)="fileSelectEvent()">
+      (click)="fileSelectEvent()"
+      (keyup)="fileSelectEvent()">
     </div>
 
     <input class="form-control bottom-30" [id]="id()" type="file" (keydown.Tab)="fileValidationsOnTab()" (change)="fileChangeEvent($event)"
