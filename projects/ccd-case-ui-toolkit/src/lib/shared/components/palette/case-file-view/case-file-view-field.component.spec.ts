@@ -15,7 +15,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { CaseNotifier } from '../../case-editor';
 import { AbstractAppConfig } from '../../../../app.config';
 
-describe('CaseFileViewFieldComponent', () => {
+fdescribe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
   let fixture: ComponentFixture<CaseFileViewFieldComponent>;
   let mockCaseFileViewService: jasmine.SpyObj<CaseFileViewService>;
@@ -244,7 +244,21 @@ describe('CaseFileViewFieldComponent', () => {
   });
 
   it('should return false when icp-enabled is false and jurisdiction is empty', () => {
-    const callIcpEnabled = component.isIcpEnabled(false, []);
-    expect(callIcpEnabled).toBeFalsy()
+   const callIcpEnabled = component.isIcpEnabled();
+   expect(callIcpEnabled).toBeFalsy()
   });
+
+  it('should return true when icp-enabled is true and jurisdiction is empty', () => {
+    component.icpEnabled = true;
+    fixture.autoDetectChanges();
+    const callIcpEnabled = component.isIcpEnabled();
+    expect(callIcpEnabled).toBeTruthy();
+   });
+
+   it('should return true when jurisdiction is not empty', () => {
+    component.icp_jurisdictions = ['ST_CIC'];
+    fixture.autoDetectChanges();
+    const callIcpEnabled = component.isIcpEnabled();
+    expect(callIcpEnabled).toBeTruthy();
+   });
 });

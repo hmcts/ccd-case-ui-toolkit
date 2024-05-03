@@ -130,8 +130,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-  public isIcpEnabled(icpEnabled:boolean, icp_jurisdictions:string[]): boolean {
-    return icpEnabled && icp_jurisdictions.includes(
+  public isIcpEnabled(): boolean {
+    return this.icpEnabled && !(this.icp_jurisdictions?.length < 1) || this.icp_jurisdictions.includes(
       this.caseNotifier?.cachedCaseView?.case_type?.jurisdiction.id
     );
   }
