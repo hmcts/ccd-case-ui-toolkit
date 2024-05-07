@@ -15,7 +15,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { CaseNotifier } from '../../case-editor';
 import { AbstractAppConfig } from '../../../../app.config';
 
-fdescribe('CaseFileViewFieldComponent', () => {
+describe('CaseFileViewFieldComponent', () => {
   let component: CaseFileViewFieldComponent;
   let fixture: ComponentFixture<CaseFileViewFieldComponent>;
   let mockCaseFileViewService: jasmine.SpyObj<CaseFileViewService>;
