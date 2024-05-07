@@ -24,8 +24,8 @@ export class CaseFileViewFieldComponent implements OnInit, AfterViewInit, OnDest
   public errorMessages = [] as string[];
   private caseVersion: number;
   public caseField: CaseField;
-  public icp_jurisdictions:string[] = [];
-  public icpEnabled:boolean = false;
+  public icp_jurisdictions: string[] = [];
+  public icpEnabled: boolean = false;
 
   constructor(private readonly elementRef: ElementRef,
     private readonly route: ActivatedRoute,
