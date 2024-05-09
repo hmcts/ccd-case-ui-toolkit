@@ -57,6 +57,7 @@ import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CaseFlagStatus, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
 @Component({
   // tslint:disable-next-line
@@ -1487,8 +1488,9 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-          DeleteOrCancelDialogComponent
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
+          DeleteOrCancelDialogComponent,
+          CaseFlagStateService
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -1717,7 +1719,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           FieldTypeSanitiser,
           PageValidationService,
           CaseFieldService,
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
         ],
         teardown: { destroyAfterEach: false }
       })
