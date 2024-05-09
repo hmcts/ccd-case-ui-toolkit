@@ -430,7 +430,7 @@ describe('FieldsFilterPipe', () => {
         }
       }}]
     }) as CaseField;
-    xit('should NOT filter out Complex, even though Complex value itself is undefined but children have values', () => {
+    it('should NOT filter out Complex, even though Complex value itself is undefined but children have values', () => {
       const filteredFields = fieldsFilter.transform(caseBuilder(COMPLEX_WITH_CHILDREN));
       expect(filteredFields).toEqual(COMPLEX_WITH_CHILDREN);
     });
