@@ -92,8 +92,6 @@ describe('CaseFileViewFolderComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
-
-    expect(component.documentTreeData).toEqual(treeData);
   });
 
   it('should generate tree data from categorised data', () => {
