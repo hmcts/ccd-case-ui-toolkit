@@ -109,11 +109,12 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       newDocumentTreeNode.name = node.category_name;
       newDocumentTreeNode.type = DocumentTreeNodeType.FOLDER;
       newDocumentTreeNode.children = [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)];
+      newDocumentTreeNode.category_order = node.category_order;
 
       return [
         ...tree,
         newDocumentTreeNode,
-      ];
+      ].sort((a,b) => a.category_order - b.category_order);
     }, []);
   }
 

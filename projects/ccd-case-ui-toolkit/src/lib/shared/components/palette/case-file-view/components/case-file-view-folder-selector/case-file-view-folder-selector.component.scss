@@ -65,7 +65,7 @@ button {
 
 .cdk-overlay-pane {
   overflow: auto;
-
+  background: #fff;
   &::-webkit-scrollbar {
     width: 7px;
   }
