@@ -243,18 +243,16 @@ describe('CaseFileViewFieldComponent', () => {
     expect(component.errorMessages).toEqual(errorMessagesFromElements);
   });
 
-  it('should enable icp with test config', () => {
-    fixture.detectChanges();
-    component.isIcpEnabled();
-    expect(component.icpEnabled).toBeTruthy();
-  });
-
-  it('should disable icp with disabled config', () => {
+  it('should disable icp when config contains false', () => {
     mockabstractConfig.getIcpEnable.and.returnValue(false);
     fixture.detectChanges();
-    const callIcpEnabled = component.isIcpEnabled();
-    expect(callIcpEnabled).toBeFalsy();
     expect(component.icpEnabled).toBeFalsy();
+  });
+
+  it('should enable icp when config contains true', () => {
+    mockabstractConfig.getIcpEnable.and.returnValue(true);
+    fixture.detectChanges();
+    expect(component.icpEnabled).toBeTruthy();
   });
 
   it('should return false if jurisdiction value is not present', () => {
