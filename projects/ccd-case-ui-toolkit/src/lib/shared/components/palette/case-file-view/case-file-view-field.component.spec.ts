@@ -263,4 +263,11 @@ describe('CaseFileViewFieldComponent', () => {
     const callIcpEnabled = component.isIcpEnabled();
     expect(callIcpEnabled).toBeFalsy();
   });
+
+  it('should return true if jurisdiction is empty', () => {
+    mockabstractConfig.getIcpJurisdictions.and.returnValue([]);
+    fixture.detectChanges();
+    const callIcpEnabled = component.isIcpEnabled();
+    expect(callIcpEnabled).toBeTruthy();
+  });
 });
