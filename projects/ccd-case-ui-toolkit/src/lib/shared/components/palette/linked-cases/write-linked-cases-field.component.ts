@@ -92,28 +92,27 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     }
   }
 
-  public getLinkedCaseReasons(serviceId: number): void {
+  public getLinkedCaseReasons(serviceId: number | string): void {
     const reasonCodeAPIurl = `${this.appConfig.getRDCommonDataApiUrl()}/lov/categories/CaseLinkingReasonCode?serviceId=${serviceId}`;
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
-      next: reasons => {
+      next: (reasons) => {
         // Sort in ascending order
         const linkCaseReasons = reasons.list_of_values.sort((a, b) => (a.value_en > b.value_en) ? 1 : -1);
 
-        this.linkedCasesService.linkCaseReasons = linkCaseReasons?.filter(reason => reason.value_en !== 'Other');
+        this.linkedCasesService.linkCaseReasons = linkCaseReasons?.filter((reason) => reason.value_en !== 'Other');
         // Move Other option to the end of the list
-        this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find(reason => reason.value_en === 'Other'));
+        this.linkedCasesService.linkCaseReasons.push(linkCaseReasons?.find((reason) => reason.value_en === 'Other'));
       }
     });
   }
 
   getOrgService(): void {
     const servicesApiUrl = `refdata/location/orgServices?ccdCaseType=${this.caseDetails?.case_type?.id}`;
-    this.commonDataService.getServiceOrgData(servicesApiUrl).subscribe(result => {
-      result.forEach(ids => {
-        this.getLinkedCaseReasons(ids.service_id);
-      })
-
-    })
+    this.commonDataService.getServiceOrgData(servicesApiUrl).subscribe((result) => {
+      result.forEach((ids) => {
+        this.getLinkedCaseReasons(ids.service_code);
+      });
+    });
   }
 
   public proceedToNextPage(): void {
