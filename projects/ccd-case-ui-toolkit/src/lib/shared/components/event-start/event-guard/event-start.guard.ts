@@ -24,7 +24,6 @@ export class EventStartGuard implements CanActivate {
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       if (caseInfo && caseInfo.cid === caseId) {
-        console.log(`canActivate: fetching task data for eventId="${eventId}" caseId=${caseId}`);
         return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction)
           .pipe(
           switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
@@ -35,12 +34,10 @@ export class EventStartGuard implements CanActivate {
   }
 
   public checkTaskInEventNotRequired(payload: TaskPayload, caseId: string, taskId: string): boolean {
-    console.log('checkTaskInEventNotRequired: start');
     if (!payload || !payload.tasks) {
       return true;
     }
     const taskNumber = payload.tasks.length;
-    console.log(`checkTaskInEventNotRequired: found ${taskNumber} tasks in payload`);
     if (taskNumber === 0) {
       // if there are no tasks just carry on
       return true;
@@ -51,12 +48,10 @@ export class EventStartGuard implements CanActivate {
     const tasksAssignedToUser = payload.tasks.filter(x =>
       x.task_state !== 'unassigned' && (x.assignee === userInfo.id || x.assignee === userInfo.uid)
     );
-    console.log(`checkTaskInEventNotRequired: ${tasksAssignedToUser} tasks assigned to user`)
     if (tasksAssignedToUser.length === 0) {
       // if no tasks assigned to user carry on
       return true;
     } else if (tasksAssignedToUser.length > 1 && !taskId) {
-      console.log(`checkTaskInEventNotRequired: more than one task assigned, taskId: ${taskId}`)
       // if more than one task assigned to the user then give multiple tasks error
       this.router.navigate([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
       return false;
@@ -66,9 +61,7 @@ export class EventStartGuard implements CanActivate {
         task = payload.tasks.find(x => x.id === taskId);
       } else {
         task = tasksAssignedToUser[0];
-        console.log(`no taskId so picking task ${task.id}`)
       }
-      console.log(`checkTaskInEventNotRequired: storing task ${task} in session`)
       // if one task assigned to user, allow user to complete event
       this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
       return true;
@@ -82,10 +75,8 @@ export class EventStartGuard implements CanActivate {
     if (taskId && payload?.tasks?.length > 0) {
       const task = payload.tasks.find((t) => t.id == taskId);
       if (task) {
-        console.log('checkForTasks: Storing task in session storage for taskId: ' + taskId);
         this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
       } else {
-        console.log(`checkForTasks: ${taskId} not found in task payload `);
         this.removeTaskFromSessionStorage();
       }
     }
@@ -95,13 +86,11 @@ export class EventStartGuard implements CanActivate {
       // If event start is initiated again, then we do not need to perform state machine processing again.
       // https://tools.hmcts.net/jira/browse/EUI-5489
       if (this.router && this.router.url && this.router.url.includes('event-start')) {
-        console.log(`checkForTasks: event-start again check is true: ${this.router.url} : taskId = ${taskId}`);
         return of(true);
       }
       this.router.navigate([`/cases/case-details/${caseId}/event-start`], { queryParams: { caseId, eventId, taskId } });
       return of(false);
     } else {
-      console.log("checkForTasks: no task required for event");
       return of(this.checkTaskInEventNotRequired(payload, caseId, taskId));
     }
   }
