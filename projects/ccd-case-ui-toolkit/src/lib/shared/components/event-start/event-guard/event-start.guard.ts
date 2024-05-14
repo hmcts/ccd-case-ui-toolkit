@@ -8,7 +8,7 @@ import { WorkAllocationService } from '../../case-editor';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
-  public static TASK_TO_COMPLETE = 'taskToComplete';
+  public static readonly TASK_TO_COMPLETE = 'taskToComplete';
 
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
