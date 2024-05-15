@@ -92,7 +92,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteComponent 
     }
   }
 
-  public getLinkedCaseReasons(serviceId: number | string): void {
+  public getLinkedCaseReasons(serviceId: string): void {
     const reasonCodeAPIurl = `${this.appConfig.getRDCommonDataApiUrl()}/lov/categories/CaseLinkingReasonCode?serviceId=${serviceId}`;
     this.commonDataService.getRefData(reasonCodeAPIurl).subscribe({
       next: (reasons) => {
