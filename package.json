@@ -62,7 +62,7 @@
     "@angular/router": "17.3.5",
     "@angular/upgrade": "17.3.5",
     "@edium/fsm": "^2.1.2",
-    "@hmcts/ccpay-web-component": "6.1.9",
+    "@hmcts/ccpay-web-component": "6.2.1-beta01",
     "@hmcts/frontend": "0.0.50-alpha",
     "@ngrx/effects": "17.2.0",
     "@ngrx/store": "^17.2.0",
