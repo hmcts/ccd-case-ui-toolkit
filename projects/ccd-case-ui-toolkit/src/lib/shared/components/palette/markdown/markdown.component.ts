@@ -1,4 +1,6 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit, Renderer2 } from '@angular/core';
+import { NgxMdService } from 'ngx-md';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ccd-markdown',
@@ -10,18 +12,9 @@ export class MarkdownComponent implements OnInit {
   @Input()
   public markdownUseHrefAsRouterLink!: boolean;
 
-  constructor() {}
+  constructor(private _markdown: NgxMdService, private router: Router, private renderer: Renderer2) {}
 
   public ngOnInit(): void {
     this.content = this.content.replace(/  \n/g, '<br>');
-  }
-
-  @HostListener('click', ['$event'])
-  public onMarkdownClick(event: MouseEvent) {
-    // If we don't have an anchor tag, we don't need to do anything.
-    if (event.target instanceof HTMLAnchorElement === false) {
-      return;
-    }
-    return true;
   }
 }
