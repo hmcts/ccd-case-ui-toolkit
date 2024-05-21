@@ -20,7 +20,6 @@ export class JurisdictionService {
   }
 
   public announceSelectedJurisdiction(jurisdiction: Jurisdiction): void {
-    console.info ('Announcing selected jurisdiction = ' + jurisdiction?.id);
     this.selectedJurisdictionSource.next(jurisdiction);
     this.selectedJurisdictionBS.next(jurisdiction);
   }
