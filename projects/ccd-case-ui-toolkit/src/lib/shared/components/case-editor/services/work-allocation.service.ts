@@ -53,6 +53,8 @@ export class WorkAllocationService {
 
   private isWAEnabled(jurisdiction?: string, caseType?: string): boolean {
     this.features = this.appConfig.getWAServiceConfig();
+    const ftstr = JSON.stringify(this.features);
+    console.log(`isWAEnabled: ${ftstr}`)
     let enabled = false;
     if (!jurisdiction || !caseType) {
       const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo'));
@@ -60,6 +62,7 @@ export class WorkAllocationService {
       caseType = caseInfo.caseType;
     }
     if (!this.features || !this.features.configurations) {
+      console.log('isWAEnabled: no features');
       return false;
     }
     this.features.configurations.forEach(serviceConfig => {
@@ -67,6 +70,7 @@ export class WorkAllocationService {
           enabled = true;
       }
     });
+    console.log(`isWAEnabled: returning ${enabled}`);
     return enabled;
   }
 
@@ -98,6 +102,7 @@ export class WorkAllocationService {
     if (!this.isWAEnabled()) {
       return of(null);
     }
+    console.log(`completeTask: completing ${taskId}`);
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
       .post(url, {})
