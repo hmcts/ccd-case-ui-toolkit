@@ -381,7 +381,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
       // both null and undefined are equal to *neither false nor true*)
       if (caseField && caseField.retain_hidden_value &&
-        (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
+        (caseField.hidden || (caseField.hidden !== false && parentField?.hidden))) {
         if (caseField.field_type.type === 'Complex') {
           // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
           // handle both null and undefined values
