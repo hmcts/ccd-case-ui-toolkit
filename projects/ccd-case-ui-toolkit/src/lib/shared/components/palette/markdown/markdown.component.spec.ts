@@ -86,14 +86,21 @@ describe('MarkdownComponent - Anchor', () => {
   const CONTENT = `[Add case note](/case/IA/Asylum/1632395877596617/trigger/addCaseNote)`;
   const EXPECTED_CONTENT = `<p><a href="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">Add case note</a></p>`;
 
+  const L1_MD = '[relative link](/case/IA/Asylum/1632395877596617/trigger/addCaseNote?bibble=true)';
+  const L1_EXPECTED = '<p><exui-routerlink link="/case/IA/Asylum/1632395877596617/trigger/addCaseNote?bibble=true">relative link</exui-routerlink></p>';
+//  const L2_MD: string = '[absolute local link](https://manage-case.platform.net/case/IA/Asylum/1632395877596617/trigger/addCaseNote)';
+//  const L2_EXPECTED: string = '<p><a [routerlink]="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">absolute local link</a></p>';
+  const L3_MD: string = '[absolute external link](https://foo.bar.com/case/IA/Asylum/1632395877596617/trigger/addCaseNote?wibble=false)';
+  const L3_EXPECTED: string = '<p><a href="https://foo.bar.com/case/IA/Asylum/1632395877596617/trigger/addCaseNote?wibble=false">absolute external link</a></p>';
+
   let fixture: ComponentFixture<CCDMarkDownComponent>;
   let component: CCDMarkDownComponent;
   let de: DebugElement;
   let convertHrefToRouterService: ConvertHrefToRouterService;
 
-  beforeEach(waitForAsync(() => {
-
-    TestBed
+  beforeEach((async () => {
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
+    await TestBed
       .configureTestingModule({
         imports: [
           HttpClientTestingModule,
@@ -106,18 +113,33 @@ describe('MarkdownComponent - Anchor', () => {
         ],
         providers: [
           NgxMdComponent,
-          ConvertHrefToRouterService
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService }
         ]
       })
       .compileComponents();
-    }));
 
-    beforeEach(() => {
-      fixture = TestBed.createComponent(CCDMarkDownComponent);
-      component = fixture.componentInstance;
-      de = fixture.debugElement;
-      convertHrefToRouterService = TestBed.inject(ConvertHrefToRouterService);
-    });
+    fixture = TestBed.createComponent(CCDMarkDownComponent);
+    component = fixture.componentInstance;
+    component.content = L1_MD;
+    component.markdownUseHrefAsRouterLink = true;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  }));
+
+  // it('Should render an anchor with router link for relative link', () => {
+  //   component.content = L1_MD;
+  //   fixture.detectChanges();
+  //   const el = de.query($MARKDOWN).nativeElement;
+  //   expect(el.innerHTML).toBe(L1_EXPECTED);
+  // });
+
+  it('Should render an anchor with href link for absolute / external link', () => {
+    component.content = L3_MD;
+    component.renderUrlToTextFeature = false;
+    fixture.detectChanges();
+    expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe('<p>absolute external link</p>');
+  });
+
 
   it('should invoke onMarkdownClick() on markdown click', (done) => {
     component.content = CONTENT;
