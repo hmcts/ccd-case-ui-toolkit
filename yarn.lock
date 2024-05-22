@@ -3630,7 +3630,7 @@ __metadata:
     karma-spec-reporter: 0.0.34
     local-storage: ^2.0.0
     lz-string: ^1.5.0
-    marked: ^0.7.0
+    marked: ^12.0.0
     mem: ^6.0.0
     merge-stream: ^1.0.0
     minimist: 1.2.3
