@@ -37,8 +37,10 @@ export class MarkdownComponent implements OnInit {
     const renderer = new marked.Renderer();
 
     renderer.link = (href, title, text) => {
-      // Return the text without turning it into a link if it's not an internal link
-      return this.isAllowedUrl(href) ? `<a href="${href}">${text}</a>` : text;
+      if (!text || text === href) {
+        return this.isAllowedUrl(href) ? `<a href="${href}">${href}</a>` : href;
+      }
+      return this.detectMarkdownLinks(this.content) ? `<a href="${href}">${text}</a>` : text;
     };
 
     marked.setOptions({
@@ -51,5 +53,10 @@ export class MarkdownComponent implements OnInit {
     const urlOrigin = new URL(url, window.location.href).origin;
 
     return urlOrigin === currentOrigin || url.startsWith('/'); // Check if same origin or relative
+  }
+
+  private detectMarkdownLinks(inputString) {
+    const markdownLinkRegex = /\[([^\]]+)\]\(([^ )]+)\)/g;
+    return markdownLinkRegex.test(inputString);
   }
 }
