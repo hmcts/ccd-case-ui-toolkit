@@ -56,7 +56,7 @@ export class MarkdownComponent implements OnInit {
   }
 
   private detectMarkdownLinks(inputString) {
-    const markdownLinkRegex = /\[([^\]]+)\]\(([^ )]+)\)/g;
+    const markdownLinkRegex = /\[([^\]]+)\]\(?([^ )]+)\)/g;
     return markdownLinkRegex.test(inputString);
   }
 }
