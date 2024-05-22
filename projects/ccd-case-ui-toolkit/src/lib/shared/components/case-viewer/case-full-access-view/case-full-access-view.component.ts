@@ -292,8 +292,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       } else {
         // sort with the order of CCD predefined tabs
         this.caseDetails.tabs.sort((aTab, bTab) => aTab.order > bTab.order ? 1 : (bTab.order > aTab.order ? -1 : 0));
-        // preselect the 1st order of CCD predefined tabs
-        const preSelectTab: CaseTab = this.caseDetails.tabs[0];
+        // select the first tab checking if the tab is visible
+        const preSelectTab: CaseTab = this.findPreSelectedActiveTab();
         this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: preSelectTab.label }).then(() => {
           matTab = this.tabGroup._tabs.find((x) => x.textLabel === preSelectTab.label);
           // Update selectedIndex only if matTab.position is a non-zero number (positive or negative); this means the
@@ -322,6 +322,12 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
         this.tabGroup.selectedIndex = matTab.position;
       }
     }
+  }
+
+  public findPreSelectedActiveTab(): CaseTab {
+    const unOrderedTabsInSortedTabs = this.caseDetails.tabs
+      .filter((tab) => !tab.order && this.sortedTabs.some((sortedTab) => sortedTab.id === tab.id));
+    return unOrderedTabsInSortedTabs.length ? unOrderedTabsInSortedTabs[0] : this.sortedTabs[0];
   }
 
   // Refactored under EXUI-110 to address infinite tab loop to use tabIndexChanged instead
