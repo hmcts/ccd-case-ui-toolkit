@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.36-angular-upgrade",
+  "version": "7.0.37-angular-upgrade",
   "engines": {
     "node": ">=18.19.0"
   },
