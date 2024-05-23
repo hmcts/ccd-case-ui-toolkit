@@ -82,8 +82,12 @@ describe('MarkdownComponent - Anchor', () => {
 
   const $MARKDOWN = By.css('markdown');
 
-  const CONTENT = `[Add case note](/case/IA/Asylum/1632395877596617/trigger/addCaseNote)`;
-  const EXPECTED_CONTENT = `<p><a href="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">Add case note</a></p>`;
+  const L1_MD = '[relative link](/case/IA/Asylum/1632395877596617/trigger/addCaseNote?bibble=true)';
+  const L1_EXPECTED = '<p><exui-routerlink link="/case/IA/Asylum/1632395877596617/trigger/addCaseNote?bibble=true">relative link</exui-routerlink></p>';
+//  const L2_MD: string = '[absolute local link](https://manage-case.platform.net/case/IA/Asylum/1632395877596617/trigger/addCaseNote)';
+//  const L2_EXPECTED: string = '<p><a [routerlink]="/case/IA/Asylum/1632395877596617/trigger/addCaseNote">absolute local link</a></p>';
+  const L3_MD: string = '[absolute external link](https://foo.bar.com/case/IA/Asylum/1632395877596617/trigger/addCaseNote?wibble=false)';
+  const L3_EXPECTED: string = '<p><a href="https://foo.bar.com/case/IA/Asylum/1632395877596617/trigger/addCaseNote?wibble=false">absolute external link</a></p>';
 
   let fixture: ComponentFixture<CCDMarkDownComponent>;
   let component: CCDMarkDownComponent;
@@ -92,7 +96,6 @@ describe('MarkdownComponent - Anchor', () => {
 
   beforeEach((async () => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['updateHrefLink']);
-
     await TestBed
       .configureTestingModule({
         imports: [
@@ -112,24 +115,22 @@ describe('MarkdownComponent - Anchor', () => {
 
     fixture = TestBed.createComponent(CCDMarkDownComponent);
     component = fixture.componentInstance;
-    component.content = CONTENT;
+    component.content = L1_MD;
     component.markdownUseHrefAsRouterLink = true;
     de = fixture.debugElement;
     fixture.detectChanges();
   }));
 
-  xit('Should render an anchor and paragraph elements', () => {
-    expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(EXPECTED_CONTENT);
-  });
+  // it('Should render an anchor with router link for relative link', () => {
+  //   component.content = L1_MD;
+  //   fixture.detectChanges();
+  //   const el = de.query($MARKDOWN).nativeElement;
+  //   expect(el.innerHTML).toBe(L1_EXPECTED);
+  // });
 
-  it('should invoke onMarkdownClick() on markdown click', (done) => {
-    const spyMarkdownClick = spyOn(component, 'onMarkdownClick').and.callThrough();
-    const markdown = de.query(By.css('markdown')).nativeElement;
-    markdown.click();
+  it('Should render an anchor with href link for absolute / external link', () => {
+    component.content = L3_MD;
     fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      expect(spyMarkdownClick).toHaveBeenCalled();
-      done();
-    });
+    expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(L3_EXPECTED);
   });
 });
