@@ -43,9 +43,11 @@ export class FormValidatorsService {
         validators.push(control.validator);
       }
       control.setValidators(validators);
-    } else if (caseField.display_context === 'OPTIONAL' && (caseField.field_type.type === 'Text' || caseField.field_type.type === 'TextArea')) {
+    } else if (caseField.display_context === 'OPTIONAL' && (caseField.field_type.type === 'Text' || caseField.field_type.type === 'TextArea')
+    || (caseField.display_context === 'COMPLEX' && caseField.field_type.type === 'Complex')) {
       control.setValidators(this.markDownPatternValidator());
     }
+
     return control;
   }
 
