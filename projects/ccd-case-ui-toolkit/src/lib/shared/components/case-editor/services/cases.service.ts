@@ -81,7 +81,6 @@ export class CasesService {
     caseTypeId: string,
     caseId: string): Observable<CaseView> {
     const url = `${this.appConfig.getApiUrl()}/caseworkers/:uid/jurisdictions/${jurisdictionId}/case-types/${caseTypeId}/cases/${caseId}`;
-
     const loadingToken = this.loadingService.register();
     return this.http
       .get(url)
@@ -100,7 +99,6 @@ export class CasesService {
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
       .set('Content-Type', 'application/json');
-
     const loadingToken = this.loadingService.register();
 
     let http$ = this.http.get(url, { headers, observe: 'body' });
@@ -147,12 +145,12 @@ export class CasesService {
     caseId?: string,
     ignoreWarning?: string): Observable<CaseEventTrigger> {
     ignoreWarning = undefined !== ignoreWarning ? ignoreWarning : 'false';
-
     const url = this.buildEventTriggerUrl(caseTypeId, eventTriggerId, caseId, ignoreWarning);
 
     let headers = new HttpHeaders();
     headers = headers.set('experimental', 'true');
     headers = headers.set('Content-Type', 'application/json');
+    headers = this.addClientContextHeader(headers);
 
     if (Draft.isDraft(caseId)) {
       headers = headers.set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
@@ -163,10 +161,12 @@ export class CasesService {
     }
 
     return this.http
-      .get(url, { headers, observe: 'body' })
+      .get(url, { headers, observe: 'response' as 'body'})
       .pipe(
-        map(body => {
-          return FieldsUtils.handleNestedDynamicLists(body);
+        map((response) => {
+          console.log('response barking mad', response)
+          this.updateClientContextStorage(response.headers);
+          return FieldsUtils.handleNestedDynamicLists(response.body);
         }),
         catchError(error => {
           this.errorService.setError(error);
@@ -180,15 +180,18 @@ export class CasesService {
   public createEvent(caseDetails: CaseView, eventData: CaseEventData): Observable<{}> {
     const caseId = caseDetails.case_id;
     const url = `${this.appConfig.getCaseDataUrl()}/cases/${caseId}/events`;
-
-    const headers = new HttpHeaders()
+    let headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CREATE_EVENT)
       .set('Content-Type', 'application/json');
-
+    headers = this.addClientContextHeader(headers);
     return this.http
-      .post(url, eventData, { headers, observe: 'body' })
+      .post(url, eventData, { headers, observe: 'response' as 'body' })
       .pipe(
+        map((response) => {
+          this.updateClientContextStorage(response.headers);
+          return response.body;
+        }),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -199,15 +202,18 @@ export class CasesService {
   public validateCase(ctid: string, eventData: CaseEventData, pageId: string): Observable<object> {
     const pageIdString = pageId ? `?pageId=${pageId}` : '';
     const url = `${this.appConfig.getCaseDataUrl()}/case-types/${ctid}/validate${pageIdString}`;
-
-    const headers = new HttpHeaders()
+    let headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
       .set('Content-Type', 'application/json');
-
+    headers = this.addClientContextHeader(headers);
     return this.http
-      .post(url, eventData, { headers, observe: 'body' })
+      .post(url, eventData, { headers, observe: 'response' as 'body' })
       .pipe(
+        map((response) => {
+          this.updateClientContextStorage(response.headers);
+          return response.body;
+        }),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -217,20 +223,23 @@ export class CasesService {
 
   public createCase(ctid: string, eventData: CaseEventData): Observable<object> {
     let ignoreWarning = 'false';
-
     if (eventData.ignore_warning) {
       ignoreWarning = 'true';
     }
     const url = `${this.appConfig.getCaseDataUrl()}/case-types/${ctid}/cases?ignore-warning=${ignoreWarning}`;
 
-    const headers = new HttpHeaders()
+    let headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CREATE_CASE)
       .set('Content-Type', 'application/json');
-
+    headers = this.addClientContextHeader(headers);
     return this.http
-      .post(url, eventData, { headers, observe: 'body' })
+      .post(url, eventData, { headers, observe: 'response' as 'body' })
       .pipe(
+        map((response) => {
+          this.updateClientContextStorage(response.headers);
+          return response.body;
+        }),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -240,16 +249,18 @@ export class CasesService {
 
   public getPrintDocuments(caseId: string): Observable<CasePrintDocument[]> {
     const url = `${this.appConfig.getCaseDataUrl()}/cases/${caseId}/documents`;
-
-    const headers = new HttpHeaders()
+    let headers = new HttpHeaders()
       .set('experimental', 'true')
       .set('Accept', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS)
       .set('Content-Type', 'application/json');
-
+    headers = this.addClientContextHeader(headers);
     return this.http
-      .get(url, { headers, observe: 'body' })
+      .get(url, { headers, observe: 'response' as 'body' })
       .pipe(
-        map(body => body.documentResources),
+        map((response) => {
+          this.updateClientContextStorage(response.headers);
+          return response.body.documentResources;
+        }),
         catchError(error => {
           this.errorService.setError(error);
           return throwError(error);
@@ -262,7 +273,6 @@ export class CasesService {
     caseId?: string,
     ignoreWarning?: string): string {
     let url = `${this.appConfig.getCaseDataUrl()}/internal`;
-
     if (Draft.isDraft(caseId)) {
       url += `/drafts/${caseId}`
         + `/event-trigger`
@@ -292,18 +302,6 @@ export class CasesService {
     });
   }
 
-  /*
-  Checks if the user has role of pui-case-manager and returns true or false
-  */
-  private isPuiCaseManager(): boolean {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return userInfo && userInfo.roles && (userInfo.roles.indexOf(CasesService.PUI_CASE_MANAGER) !== -1);
-    }
-    return false;
-  }
-
   public getCourtOrHearingCentreName(locationId: number): Observable<any> {
     return this.http.post(`/api/locations/getLocationsById`, { locations: [{ locationId }] });
   }
@@ -311,7 +309,6 @@ export class CasesService {
   public createChallengedAccessRequest(caseId: string, request: ChallengedAccessRequest): Observable<RoleAssignmentResponse> {
     // Assignment API endpoint
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
-
     const camUtils = new CaseAccessUtils();
     let userInfo: UserInfo;
     if (userInfoStr) {
@@ -397,5 +394,78 @@ export class CasesService {
     return this.http
       .get(url)
       .pipe(catchError(error => throwError(error)));
+  }
+
+  private addClientContextHeader(headers: HttpHeaders): HttpHeaders {
+    const clientContextDetails = this.sessionStorageService.getItem('clientContext');
+    if (clientContextDetails) {
+      // may require URI encoding in certain circumstances
+      const clientContext = window.btoa(clientContextDetails);
+      if (!window.atob(clientContext)) {
+        // log issue if present - could give error message?
+        console.log('Encoding issue with client context');
+      }
+      if (clientContext) {
+        headers = headers.set('Client-Context', clientContext);
+      }
+    }
+    return headers;
+  }
+
+  private updateClientContextStorage(headers: HttpHeaders): void {
+    // for mocking - TODO: Remove/Uncomment for testing
+    // headers = this.setMockClientContextHeader(headers);
+    if (headers && headers.get('Client-Context')) {
+      const clientContextString = window.atob(headers.get('Client-Context'));
+      this.sessionStorageService.setItem('clientContext', clientContextString);
+    }
+  }
+
+  // for mocking - TODO: Remove
+  private setMockClientContextHeader(headers: HttpHeaders): HttpHeaders {
+    const mockClientContext = { client_context: {
+      user_task: {
+        task_data: {
+          // Replace with relevant task id to complete other/current task
+          id: "2c7e03cc-18e8-11ef-bfd0-763319b21cea",
+          // Can edit other details to check they update
+          name: "Review the appeal - Test mocked",
+          assignee: "dfd4c2d1-67b1-40f9-8680-c9551632f5d9",
+          type: "reviewTheAppeal",
+          task_state: "assigned",
+          task_system: "SELF",
+          security_classification: "PUBLIC",
+          task_title: "Review the appeal",
+          created_date: "2024-05-23T09:38:12+0000",
+          due_date: "2024-05-28T09:39:00+0000",
+          location_name: "Taylor House",
+          location: "765324",
+          execution_type: "Case Management Task",
+          jurisdiction: "IA",
+          region: "1",
+          case_type_id: "Asylum",
+          case_id: "1716456926502698",
+          case_category: "Protection",
+          case_name: "Aipp Check",
+          auto_assigned: false,
+          warnings: false,
+          warning_list: { values: [] },
+          case_management_category: "Protection",
+          work_type_id: "decision_making_work",
+          work_type_label: "Decision-making work",
+          permissions: { values : ["Read","Own","Manage","Execute","Cancel","Complete","Claim","Assign","Unassign"] },
+          description: "[Request respondent evidence](/case/IA/Asylum/${[CASE_REFERENCE]}/trigger/requestRespondentEvidence)",
+          role_category: "LEGAL_OPERATIONS",
+          minor_priority: 500,
+          major_priority: 5000,
+          priority_date: "2024-05-28T09:39:00+0000"
+        },
+        // determines whether task will be completed - sets default to true via EXUI
+        complete_task: true
+      }
+    }};
+    const encodedMockedClientContext = window.btoa(JSON.stringify(mockClientContext));
+    headers = headers.set('Client-Context', encodedMockedClientContext);
+    return headers;
   }
 }

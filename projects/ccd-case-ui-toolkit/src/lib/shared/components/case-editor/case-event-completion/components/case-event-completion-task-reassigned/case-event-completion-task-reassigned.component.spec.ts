@@ -82,6 +82,18 @@ describe('TaskReassignedComponent', () => {
     }
   };
 
+  const CLIENT_CONTEXT = { client_context: {
+    user_task: {
+      task_data: {
+        id: '1',
+        name: 'Example task',
+        case_id: '1234567890'
+      },
+      complete_task: true
+    }
+  }};
+
+
   appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getApiUrl', 'getCaseDataUrl', 'getWorkAllocationApiUrl', 'getCamRoleAssignmentsApiUrl']);
   appConfig.getApiUrl.and.returnValue(API_URL);
   appConfig.getCaseDataUrl.and.returnValue(API_URL);
@@ -104,7 +116,7 @@ describe('TaskReassignedComponent', () => {
 
   beforeEach(async () => {
     mockSessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'setItem']);
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify(task));
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify(CLIENT_CONTEXT));
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [CaseEventCompletionTaskReassignedComponent, MockRpxTranslatePipe],

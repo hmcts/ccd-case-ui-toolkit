@@ -183,7 +183,15 @@ export class EventStartStateMachineService {
     }
 
     // Store task to session
-    context.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
+    const clientContext = {
+      client_context: {
+        user_task: {
+          task_data: task,
+          complete_task: true
+        }
+      }
+    };
+    context.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { queryParams: { isComplete: true }, relativeTo: context.route });

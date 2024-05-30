@@ -5,6 +5,7 @@ import { Task, TaskState } from '../../../domain/work-allocation/Task';
 import { EventCompletionPortalTypes } from '../domain/event-completion-portal-types.model';
 import { EventCompletionStateMachineContext } from '../domain/event-completion-state-machine-context.model';
 import { EventCompletionStates } from '../domain/event-completion-states.enum.model';
+import { FieldsUtils } from '../../../services';
 
 const EVENT_COMPLETION_STATE_MACHINE = 'EVENT COMPLETION STATE MACHINE';
 
@@ -128,8 +129,10 @@ export class EventCompletionStateMachineService {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
 
-    const taskStr = context.sessionStorageService.getItem('taskToComplete');
-    if (taskStr) {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    const task = userTask ? userTask.task_data : null;
+    if (task) {
       context.sessionStorageService.setItem('assignNeeded', 'false');
       // just set event can be completed
       context.component.eventCanBeCompleted.emit(true);
@@ -151,8 +154,10 @@ export class EventCompletionStateMachineService {
     state.trigger(EventCompletionStates.Final);
 
     // Get task details
-    const taskStr = context.sessionStorageService.getItem('taskToComplete');
-    if (taskStr) {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    const task = userTask ? userTask.task_data : null;
+    if (task) {
       context.sessionStorageService.setItem('assignNeeded', 'true');
       context.component.eventCanBeCompleted.emit(true);
     } else {

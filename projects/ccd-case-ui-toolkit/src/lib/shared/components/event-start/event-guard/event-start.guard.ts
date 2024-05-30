@@ -66,14 +66,22 @@ export class EventStartGuard implements CanActivate {
         task = tasksAssignedToUser[0];
       }
       // if one task assigned to user, allow user to complete event
-      this.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
+      const storeClientContext = {
+        client_context: {
+          user_task: {
+            task_data: task,
+            complete_task: true
+          }
+        }
+      };
+      this.sessionStorageService.setItem('clientContext', JSON.stringify(storeClientContext));
       return true;
     }
   }
 
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
-    // Clear taskToComplete from session as we will be starting the process for new task
-    this.sessionStorageService.removeItem('taskToComplete');
+    // Clear clientContext from session as we will be starting the process for new task
+    this.sessionStorageService.removeItem('clientContext');
     if (payload.task_required_for_event) {
       // There are some issues in EventTriggerResolver/CaseService and/or CCD for some events
       // which triggers the CanActivate guard again.

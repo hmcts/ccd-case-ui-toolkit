@@ -11,7 +11,6 @@ import {
   CaseEventData, CaseEventTrigger, CaseField,
   CaseView, Draft, HttpError, Profile
 } from '../../../domain';
-import { Task } from '../../../domain/work-allocation/Task';
 import {
   AlertService,
   FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
@@ -239,11 +238,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
-    let taskInSessionStorage: Task;
-    const taskStr = this.sessionStorageService.getItem('taskToComplete');
-    if (taskStr) {
-      taskInSessionStorage = JSON.parse(taskStr);
-    }
+    const clientContextStr = this.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    const taskInSessionStorage = userTask ? userTask.task_data : null;
 
     if (taskInSessionStorage && taskInSessionStorage.case_id === this.getCaseId(caseDetails)) {
       // Show event completion component to perform event completion checks
@@ -460,13 +457,15 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   private postCompleteTaskIfRequired(): Observable<any> {
-    const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    const clientContextStr = this.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    const [task, taskToBeCompleted] = userTask ? [userTask.task_data, userTask.complete_task] : [null, false];
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
-    if (taskStr && assignNeeded) {
-      const task: Task = JSON.parse(taskStr);
+    if (task && assignNeeded && taskToBeCompleted) {
+      // const task: Task = JSON.parse(taskStr);
       return this.workAllocationService.assignAndCompleteTask(task.id);
-    } else if (taskStr) {
-      const task: Task = JSON.parse(taskStr);
+    } else if (task && taskToBeCompleted) {
+      // const task: Task = JSON.parse(taskStr);
       return this.workAllocationService.completeTask(task.id);
     }
     return of(true);
