@@ -1,10 +1,11 @@
-import { EventStartGuard } from './event-start.guard';
-import { WorkAllocationService } from '../../case-editor';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { SessionStorageService } from '../../../services';
 import { TestBed } from '@angular/core/testing';
-import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { UserInfo } from '../../../domain/user/user-info.model';
+import { SessionStorageService } from '../../../services';
+import { WorkAllocationService } from '../../case-editor';
+import { EventStartGuard } from './event-start.guard';
 
 describe('EventStartGuard', () => {
   const tasks: any[] = [
@@ -83,6 +84,18 @@ describe('EventStartGuard', () => {
   });
 
   // Add more test cases for canActivate function to cover other scenarios...
+
+  function getExampleUserInfo(): UserInfo {
+    return {
+      id: '1',
+      forename: 'T',
+      surname: 'Testing',
+      email: 'testing@mail.com',
+      active: true,
+      roles: [],
+      roleCategories: []
+    };
+  }
 
   describe('checkTaskInEventNotRequired', () => {
     const caseId = '1234567890';
