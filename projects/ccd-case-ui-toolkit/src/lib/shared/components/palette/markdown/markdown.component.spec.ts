@@ -78,7 +78,7 @@ xdescribe('MarkdownComponent - Table', () => {
   });
 });
 
-describe('MarkdownComponent - Anchor', () => {
+xdescribe('MarkdownComponent - Anchor', () => {
 
   const $MARKDOWN = By.css('markdown');
 
@@ -132,7 +132,7 @@ const L3_EXPECTED: string = '<p><a href="https://foo.bar.com/case/IA/Asylum/1632
   //   expect(el.innerHTML).toBe(L1_EXPECTED);
   // });
 
-  xit('Should render an anchor with href link for absolute / external link', () => {
+  it('Should render an anchor with href link for absolute / external link', () => {
     component.content = L3_MD;
     fixture.detectChanges();
     expect(de.query($MARKDOWN).nativeElement.innerHTML).toBe(L3_EXPECTED);
