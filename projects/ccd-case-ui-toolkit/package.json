@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.32-add-present-button-to-case--viewer-file-updated",
+  "version": "7.0.38-exui-1856-rc1",
   "engines": {
     "node": ">=18.17.0"
   },
