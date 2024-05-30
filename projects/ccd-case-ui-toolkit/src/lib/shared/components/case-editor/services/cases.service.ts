@@ -399,10 +399,6 @@ export class CasesService {
     if (clientContextDetails) {
       // may require URI encoding in certain circumstances
       const clientContext = window.btoa(clientContextDetails);
-      if (!window.atob(clientContext)) {
-        // log issue if present - could give error message?
-        console.log('Encoding issue with client context');
-      }
       if (clientContext) {
         headers = headers.set('Client-Context', clientContext);
       }
@@ -411,7 +407,7 @@ export class CasesService {
   }
 
   private updateClientContextStorage(headers: HttpHeaders): void {
-    // for mocking - TODO: Remove/Uncomment for testing
+    // for mocking - TODO: Kasi Remove/Uncomment for testing
     // headers = this.setMockClientContextHeader(headers);
     if (headers && headers.get('Client-Context')) {
       const clientContextString = window.atob(headers.get('Client-Context'));
@@ -419,8 +415,8 @@ export class CasesService {
     }
   }
 
-  // for mocking - TODO: Remove
-  private setMockClientContextHeader(headers: HttpHeaders): HttpHeaders {
+  // for mocking - TODO: Kasi Remove/Uncomment for testing
+  /* private setMockClientContextHeader(headers: HttpHeaders): HttpHeaders {
     const mockClientContext = { client_context: {
       user_task: {
         task_data: {
@@ -465,5 +461,5 @@ export class CasesService {
     const encodedMockedClientContext = window.btoa(JSON.stringify(mockClientContext));
     headers = headers.set('Client-Context', encodedMockedClientContext);
     return headers;
-  }
+  } */
 }
