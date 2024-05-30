@@ -73,7 +73,9 @@ export class CaseField implements Orderable {
   }
 
   public set list_items(items: any) {
-    this._list_items = items;
+    if ((items && !this._list_items) || (items?.length > this._list_items?.length)){
+      this._list_items = items;
+    }
   }
 
   @Expose()
