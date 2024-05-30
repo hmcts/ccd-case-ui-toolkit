@@ -17,9 +17,9 @@ export class CaseworkerService {
   }
 
   public getCaseworkers(serviceId): Observable<CaseworkersByService[]> {
-    const url = `${this.appConfig.getWorkAllocationApiUrl()}/retrieveCaseWorkersForServices`;
+    const url = `${this.appConfig.getWorkAllocationApiUrl()}/caseworker/getUsersByServiceName`;
     return this.http
-      .post(url, { serviceIds: [serviceId]})
+      .post(url, { services: [serviceId]})
       .pipe(
         catchError(error => {
           this.errorService.setError(error);

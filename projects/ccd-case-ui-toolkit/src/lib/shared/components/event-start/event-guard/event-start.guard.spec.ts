@@ -1,14 +1,12 @@
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { of } from 'rxjs';
-import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
 import { EventStartGuard } from './event-start.guard';
-
-import createSpyObj = jasmine.createSpyObj;
-import { AbstractAppConfig } from '../../../../app.config';
-import { UserInfo } from '../../../domain/user/user-info.model';
+import { WorkAllocationService } from '../../case-editor';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { SessionStorageService } from '../../../services';
+import { TestBed } from '@angular/core/testing';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { of } from 'rxjs';
 
 describe('EventStartGuard', () => {
-  const WORK_ALLOCATION_API_URL = 'workallocation2';
   const tasks: any[] = [
     {
       assignee: null,
@@ -25,67 +23,72 @@ describe('EventStartGuard', () => {
       permissions: [],
     }
   ];
-  const route = {} as ActivatedRouteSnapshot;
-  route.params = {};
-  route.params.cid = '1620409659381330';
-  route.params.eid = 'start';
-  route.queryParams = {};
-  const router = createSpyObj('router', ['navigate']);
-  const service = createSpyObj('service', ['getTasksByCaseIdAndEventId']);
-  const appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getWorkAllocationApiUrl', 'getWAServiceConfig']);
-  const sessionStorageService = createSpyObj('sessionStorageService', ['getItem', 'removeItem', 'setItem']);
-  sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1620409659381330', caseType: 'caseType', jurisdiction: 'IA'}));
-  appConfig.getWAServiceConfig.and.returnValue({configurations: [{serviceName: 'IA', caseTypes: ['caseType'], release: '3.0'}]});
 
-  it('canActivate should return false', () => {
-    appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
-    const guard = new EventStartGuard(service, router, sessionStorageService);
-    const payload: TaskPayload = {
-      task_required_for_event: true,
-      tasks
-    };
-    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
-    const canActivate$ = guard.canActivate(route);
-    canActivate$.subscribe(canActivate => {
-      expect(canActivate).toEqual(false);
+  let guard: EventStartGuard;
+  let service: jasmine.SpyObj<WorkAllocationService>;
+  let router: jasmine.SpyObj<Router>;
+  let sessionStorageService: jasmine.SpyObj<SessionStorageService>;
+
+  beforeEach(() => {
+    service = jasmine.createSpyObj('WorkAllocationService', ['getTasksByCaseIdAndEventId']);
+    router = jasmine.createSpyObj('Router', ['navigate']);
+    sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
+
+    TestBed.configureTestingModule({
+      providers: [
+        EventStartGuard,
+        { provide: WorkAllocationService, useValue: service },
+        { provide: Router, useValue: router },
+        { provide: SessionStorageService, useValue: sessionStorageService }
+      ]
+    });
+
+    guard = TestBed.inject(EventStartGuard);
+  });
+
+  it('should be created', () => {
+    expect(guard).toBeTruthy();
+  });
+
+  it('canActivate should return false if case info is not found in session storage', () => {
+    sessionStorageService.getItem.and.returnValue(null);
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const result$ = guard.canActivate(route);
+    result$.subscribe(result => {
+      expect(result).toEqual(false);
     });
   });
 
-  it('canActivate should return true', () => {
-    appConfig.getWorkAllocationApiUrl.and.returnValue(WORK_ALLOCATION_API_URL);
-    const guard = new EventStartGuard(service, router, sessionStorageService);
-    const payload: TaskPayload = {
-      task_required_for_event: false,
-      tasks: []
-    };
+  it('canActivate should navigate to event-start if task is required for event', () => {
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId' }));
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const payload: TaskPayload = { task_required_for_event: true } as TaskPayload;
     service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
-    const canActivate$ = guard.canActivate(route);
-    canActivate$.subscribe(canActivate => {
-      expect(canActivate).toEqual(true);
+    const result$ = guard.canActivate(route);
+    result$.subscribe(result => {
+      expect(result).toEqual(false);
+      expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/caseId/event-start'], { queryParams: { caseId: 'caseId', eventId: 'eventId', taskId: undefined } });
     });
   });
 
-  function getExampleUserInfo(): UserInfo {
-    return {
-      id: '1',
-      forename: 'T',
-      surname: 'Testing',
-      email: 'testing@mail.com',
-      active: true,
-      roles: [],
-      roleCategories: []
-    };
-  }
+  it('canActivate should return true if task is not required for event', () => {
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId' }));
+    const route = createActivatedRouteSnapshot('caseId', 'eventId');
+    const payload: TaskPayload = { task_required_for_event: false, tasks: tasks } as TaskPayload;
+    service.getTasksByCaseIdAndEventId.and.returnValue(of(payload));
+    const result$ = guard.canActivate(route);
+    result$.subscribe(result => {
+      expect(result).toEqual(true);
+    });
+  });
+
+  // Add more test cases for canActivate function to cover other scenarios...
 
   describe('checkTaskInEventNotRequired', () => {
-
     const caseId = '1234567890';
-    const eventId = 'testEvent';
-
-    const guard = new EventStartGuard(service, router, sessionStorageService);
 
     it('should return true if there are no tasks in the payload', () => {
-      const mockEmptyPayload: TaskPayload = {task_required_for_event: false, tasks: []};
+      const mockEmptyPayload: TaskPayload = { task_required_for_event: false, tasks: [] };
       expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null)).toBe(true);
     });
 
@@ -138,4 +141,22 @@ describe('EventStartGuard', () => {
     });
 
   });
+
+  describe('checkForTasks', () => {
+    it('should return true and store task if taskId is provided and task is found in payload', () => {
+      const payload: TaskPayload = { task_required_for_event: false, tasks: tasks };
+      sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: 'caseId' }));
+      const result$ = guard['checkForTasks'](payload, 'caseId', 'eventId', 'taskId');
+      result$.subscribe(result => {
+        expect(result).toBe(true);
+      });
+    });
+  });
+
+  function createActivatedRouteSnapshot(cid: string, eid: string): ActivatedRouteSnapshot {
+    const route = {} as ActivatedRouteSnapshot;
+    route.params = { cid: cid, eid: eid };
+    route.queryParams = {};
+    return route;
+  }
 });

@@ -182,6 +182,8 @@ export class EventStartStateMachineService {
       task = context.tasks[0];
     }
 
+    const taskStr= JSON.stringify(task);
+    console.log('entryActionForStateOneTaskAssignedToUser: setting client context task_data to ' + taskStr);
     // Store task to session
     const clientContext = {
       client_context: {
@@ -194,7 +196,7 @@ export class EventStartStateMachineService {
     context.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
-      { queryParams: { isComplete: true }, relativeTo: context.route });
+      { relativeTo: context.route });
   }
 
   public entryActionForStateMultipleTasksAssignedToUser(state: State, context: EventStartStateMachineContext): void {
