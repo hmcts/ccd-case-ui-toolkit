@@ -154,6 +154,15 @@ describe('TaskReassignedComponent', () => {
     spyOn(mockWorkAllocationService, 'assignAndCompleteTask').and.returnValue({subscribe: () => {}});
     component.onContinue();
     expect(mockSessionStorageService.getItem).toHaveBeenCalledTimes(1);
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true');
+  });
+
+  it('should  task on continue event', () => {
+    mockSessionStorageService.getItem.and.returnValue('');
+    spyOn(mockWorkAllocationService, 'assignAndCompleteTask').and.returnValue({subscribe: () => {}});
+    component.onContinue();
+    expect(mockSessionStorageService.getItem).toHaveBeenCalledTimes(1);
+    expect(mockSessionStorageService.setItem).not.toHaveBeenCalled();
   });
 
   it('should unsubscribe subscriptions', () => {
