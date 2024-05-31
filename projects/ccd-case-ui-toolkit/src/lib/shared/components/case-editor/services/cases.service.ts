@@ -162,7 +162,6 @@ export class CasesService {
       .get(url, { headers, observe: 'response' as 'body'})
       .pipe(
         map((response) => {
-          console.log('response barking mad', response)
           this.updateClientContextStorage(response.headers);
           return FieldsUtils.handleNestedDynamicLists(response.body);
         }),

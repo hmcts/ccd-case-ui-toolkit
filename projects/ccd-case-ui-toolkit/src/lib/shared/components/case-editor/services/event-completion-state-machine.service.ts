@@ -128,8 +128,9 @@ export class EventCompletionStateMachineService {
   public entryActionForStateCompleteEventAndTask(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-
-    if (this.getTaskFromClientContext(context)) {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    if (!!userTask.task_data) {
       context.sessionStorageService.setItem('assignNeeded', 'false');
       // just set event can be completed
       context.component.eventCanBeCompleted.emit(true);
@@ -149,8 +150,9 @@ export class EventCompletionStateMachineService {
   public entryActionForStateTaskUnassigned(state: State, context: EventCompletionStateMachineContext): void {
     // Trigger final state to complete processing of state machine
     state.trigger(EventCompletionStates.Final);
-
-    if (this.getTaskFromClientContext(context)) {
+    const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
+    if (!!userTask.task_data) {
       context.sessionStorageService.setItem('assignNeeded', 'true');
       context.component.eventCanBeCompleted.emit(true);
     } else {
@@ -215,9 +217,10 @@ export class EventCompletionStateMachineService {
     );
   }
 
-  private getTaskFromClientContext(context: EventCompletionStateMachineContext): Task {
+  public taskPresentInSessionStorage(context: EventCompletionStateMachineContext): boolean {
     const clientContextStr = context.sessionStorageService.getItem('clientContext');
+    console.log('clienht cintedt ', clientContextStr)
     const userTask = FieldsUtils.getUserTaskFromClientContext(clientContextStr);
-    return userTask ? userTask.task_data : null;
+    return !!userTask.task_data;
   }
 }
