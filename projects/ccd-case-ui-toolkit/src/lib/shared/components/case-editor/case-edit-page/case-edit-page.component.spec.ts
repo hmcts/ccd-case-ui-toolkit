@@ -1599,7 +1599,6 @@ describe('CaseEditPageComponent - all other tests', () => {
         // The call to buildCaseEventData() removes the additional JudicialUser FormControls before returning the
         // CaseEventData to be submitted
         expect(comp.buildCaseEventData).toHaveBeenCalled();
-        // expect(caseEventDataPrevious.event_data).toEqual(FORM_GROUP_NO_JUDICIAL_USERS.value.data);
         expect(caseEventDataPrevious.ignore_warning).toEqual(
           comp.caseEdit.ignoreWarning
         );
