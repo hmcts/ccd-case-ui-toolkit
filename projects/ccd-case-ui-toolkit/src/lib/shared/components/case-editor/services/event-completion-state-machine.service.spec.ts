@@ -252,7 +252,15 @@ describe('EventCompletionStateMachineService', () => {
     service.createStates(stateMachine);
     const state = createSpyObj<State>('state', ['trigger']);
     service.entryActionForStateCompleteEventAndTask(state, context);
-    expect(mockSessionStorageService.setItem).toHaveBeenCalled();
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'false');
+  });
+
+  it('should correctly set assignNeeded when checking unassigned task', () => {
+    stateMachine = service.initialiseStateMachine(context);
+    service.createStates(stateMachine);
+    const state = createSpyObj<State>('state', ['trigger']);
+    service.entryActionForStateTaskUnassigned(state, context);
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('assignNeeded', 'true');
   });
 
   afterAll(() => {
