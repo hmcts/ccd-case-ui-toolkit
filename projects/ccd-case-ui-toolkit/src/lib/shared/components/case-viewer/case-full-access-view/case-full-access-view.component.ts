@@ -77,7 +77,13 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
   private subs: Subscription[] = [];
 
-  public callbackErrorsSubject: Subject<any> = new Subject();
+  public callbackErrorsSubject:   Observable<any> = this.errorNotifierService.errorSource.pipe(filter((x) => {
+    if(x && x.status !== 401 && x.status !== 403) {
+      this.error = x;
+      return true;
+    }
+    return false;
+  }));
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
 
   constructor(
@@ -102,15 +108,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public ngOnInit(): void {
     initDialog();
     this.init();
-    this.callbackErrorsSubject.subscribe(errorEvent => {
-      this.error = errorEvent;
-    });
-    this.errorSubscription = this.errorNotifierService.error.subscribe(error => {
-      if (error && error.status !== 401 && error.status !== 403) {
-        this.error = error;
-        this.callbackErrorsSubject.next(this.error);
-      }
-    });
     this.markdownUseHrefAsRouterLink = true;
 
     this.sessionStorageService.removeItem('eventUrl');
@@ -194,8 +191,8 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
-    this.error = null;
-
+    // this.error = null;
+    this.errorNotifierService.announceError(null);
     const theQueryParams: Params = {};
 
     if (this.ignoreWarning) {
@@ -252,6 +249,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     return Draft.isDraft(this.caseDetails.case_id);
   }
 
+  // TODO
   public isTriggerButtonDisabled(): boolean {
     return (this.error
       && this.error.callbackErrors
@@ -458,7 +456,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   private resetErrors(): void {
     this.error = null;
-    this.callbackErrorsSubject.next(null);
+    this.errorNotifierService.announceError(null);
     this.alertService.clear();
   }
 
