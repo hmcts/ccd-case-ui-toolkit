@@ -71,8 +71,9 @@ describe('EventTriggerResolver', () => {
 
   beforeEach(() => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
-    alertService = createSpyObj('alertService', ['error']);
+    alertService = createSpyObj('alertService', ['error', 'setPreserveAlerts']);
     orderService = createSpyObj('orderService', ['sort']);
+    errorNotifier = createSpyObj('errorNotifierService', ['announceError']);
     profileService = createSpyObj<ProfileService>('profileService', ['get']);
     profileNotifier = new ProfileNotifier();
     errorNotifier = new ErrorNotifierService();
@@ -202,8 +203,11 @@ describe('EventTriggerResolver', () => {
       .then(data => {
         fail(data);
       }, err => {
-        expect(err).toBeTruthy();
-       expect(alertService.error).not.toHaveBeenCalledWith(ERROR.message);
+      err.details = { eventId: 'createBundle', ...err.details };
+       expect(err).toBeTruthy();
+       expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(true);
+       expect(alertService.error).toHaveBeenCalledWith(ERROR.message);
+       expect(router.navigate).toHaveBeenCalled();
         done();
       });
     expect(profileService.get).toHaveBeenCalledWith();
