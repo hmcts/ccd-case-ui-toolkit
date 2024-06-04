@@ -23,6 +23,12 @@ describe('EventTriggerComponent', () => {
       name: 'Hold',
       description: 'Put case on hold',
       order: 2
+    },
+    {
+      id: 'createBundle',
+      name: 'Create a bundle',
+      description: 'Create a bundle',
+      order: 3
     }
   ];
 
@@ -75,6 +81,7 @@ describe('EventTriggerComponent', () => {
       component = fixture.componentInstance;
 
       component.triggers = TRIGGERS;
+      component.eventId = 'createBundle'
       spyOn(component.onTriggerSubmit, 'emit');
       spyOn(component.onTriggerChange, 'emit');
 

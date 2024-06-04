@@ -54,14 +54,6 @@ export class EventTriggerComponent implements OnChanges, OnInit {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
 
-
-  setSelectedEvent() {
-    if(this.eventId){
-      const eventBundle = this.triggers.find(ev => ev.id === this.eventId);
-      return eventBundle.name;
-    }
-  }
-
   public isButtonDisabled(): boolean {
     return !this.triggerForm.valid || this.isDisabled;
   }
