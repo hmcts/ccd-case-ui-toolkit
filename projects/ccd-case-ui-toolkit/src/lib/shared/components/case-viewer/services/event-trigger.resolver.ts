@@ -64,8 +64,9 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
       .pipe(
         map(eventTrigger => this.cachedEventTrigger = eventTrigger),
         catchError(error => {
+          error.details = { eventId: eventTriggerId, ...error.details };
           this.alertService.setPreserveAlerts(true);
-          this.alertService.error(error.message)
+          this.alertService.error(error.message);
           this.errorNotifier.announceError(error);
           this.router.navigate([`/cases/case-details/${cid}/tasks`]);
           return throwError(error);

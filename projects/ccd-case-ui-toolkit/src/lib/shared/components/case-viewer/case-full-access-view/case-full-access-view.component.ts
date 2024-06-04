@@ -76,13 +76,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public caseFlagsExternalUser = false;
   private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
   private subs: Subscription[] = [];
+  public eventId: string;
 
   public callbackErrorsSubject:   Observable<any> = this.errorNotifierService.errorSource.pipe(filter((x) => {
     if(x && x.status !== 401 && x.status !== 403) {
       this.error = x;
       return true;
     }
-    return false;
+   // return false;
   }));
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
 
@@ -243,6 +244,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
     this.ignoreWarning = callbackErrorsContext.ignoreWarning;
     this.triggerText = callbackErrorsContext.triggerText;
+    this.eventId = callbackErrorsContext.eventId;
   }
 
   public isDraft(): boolean {
@@ -455,7 +457,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private resetErrors(): void {
-    this.error = null;
     this.errorNotifierService.announceError(null);
     this.alertService.clear();
   }
