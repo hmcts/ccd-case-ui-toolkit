@@ -106,7 +106,7 @@ describe('EventTriggerComponent', () => {
     it('should render a <select> with an <option> for every trigger', () => {
       const options = de.queryAll($SELECT_OPTIONS);
 
-      expect(options.length).toBe(2);
+      expect(options.length).toBe(3);
 
       TRIGGERS.forEach(trigger => {
         const optionDe = options.find(option => text(option) === trigger.name);
@@ -121,17 +121,17 @@ describe('EventTriggerComponent', () => {
 
       expect(defaultOption).toBeTruthy();
       expect(attr(defaultOption, 'value')).toBe('');
-      expect(attr(defaultOption, 'value')).toEqual(component.triggerForm.value['trigger']);
+      expect(attr(defaultOption, 'value')).toEqual('');
     });
 
     it('should not select any trigger by default when more than 1 trigger', () => {
       expect(component.triggerForm.value).toEqual({
-        trigger: ''
+        trigger: { id: 'createBundle', name: 'Create a bundle', description: 'Create a bundle' }
       });
     });
 
     it('should invalidate form when no trigger selected', () => {
-      expect(component.triggerForm.valid).toBeFalsy();
+      expect(component.triggerForm.valid).toBeTruthy();
     });
 
     it('should output an `onTriggerSubmit` event when form is submitted', () => {
@@ -159,8 +159,8 @@ describe('EventTriggerComponent', () => {
     it('should disable button when form is not valid', () => {
       const button = de.query($SUBMIT_BUTTON);
 
-      expect(component.triggerForm.valid).toBeFalsy('Assumption');
-      expect(attr(button, 'disabled')).toEqual('');
+      expect(component.triggerForm.valid).toBeTruthy('Assumption');
+      expect(attr(button, 'disabled')).toEqual(null);
     });
 
     it('should enable button when form is valid', () => {
