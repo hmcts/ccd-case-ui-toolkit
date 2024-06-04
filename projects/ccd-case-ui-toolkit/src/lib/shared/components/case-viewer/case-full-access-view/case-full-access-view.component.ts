@@ -9,7 +9,7 @@ import { MatLegacyTab as MatTab, MatLegacyTabGroup as MatTabGroup } from '@angul
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import {
   NotificationBannerConfig,
@@ -83,7 +83,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       this.error = x;
       return true;
     }
-   // return false;
+   return false;
   }));
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
 
@@ -251,7 +251,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     return Draft.isDraft(this.caseDetails.case_id);
   }
 
-  // TODO
   public isTriggerButtonDisabled(): boolean {
     return (this.error
       && this.error.callbackErrors
