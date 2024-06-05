@@ -78,13 +78,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   private subs: Subscription[] = [];
   public eventId: string;
 
-  public callbackErrorsSubject:   Observable<any> = this.errorNotifierService.errorSource.pipe(filter((x) => {
-    if(x && x.status !== 401 && x.status !== 403) {
-      this.error = x;
-      return true;
-    }
-   return false;
-  }));
+  public callbackErrorsSubject:   Observable<any>;
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
 
   constructor(
@@ -107,6 +101,14 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public ngOnInit(): void {
+    this.callbackErrorsSubject = this.errorNotifierService.errorSource.pipe(filter((x) => {
+      if(x && x.status !== 401 && x.status !== 403) {
+        this.error = x;
+        return true;
+      }
+     return false;
+    }));
+    
     initDialog();
     this.init();
     this.markdownUseHrefAsRouterLink = true;
