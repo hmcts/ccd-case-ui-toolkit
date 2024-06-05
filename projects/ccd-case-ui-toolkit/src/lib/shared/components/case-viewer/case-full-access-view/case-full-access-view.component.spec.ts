@@ -6,7 +6,7 @@ import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig,
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { EffectsModule } from '@ngrx/effects';
@@ -595,11 +595,13 @@ let caseNotifier: jasmine.SpyObj<CaseNotifier>;
 let navigationNotifierService: NavigationNotifierService;
 let errorNotifierService: ErrorNotifierService;
 
+
 describe('CaseFullAccessViewComponent', () => {
   let caseViewData: CaseView;
   let FIELDS: CaseField[];
   let SIMPLE_FIELDS: CaseField[];
   let COMPLEX_FIELDS: CaseField[];
+  let mockRouterEvents: any;
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
@@ -614,6 +616,12 @@ describe('CaseFullAccessViewComponent', () => {
   let mockDialogRef: jasmine.SpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>;
   let errorSource: Subject<any>;
   beforeEach((() => {
+    mockRouterEvents = of(new NavigationEnd(1, 'url', 'urlAfterRedirects'));
+
+    router = {
+      events: mockRouterEvents,
+      navigate: jasmine.createSpy('navigate')
+    } as any;
 
     errorSource = new Subject<any>();
     mockLocation = createSpyObj<Location>('Location', ['path']);
@@ -726,6 +734,33 @@ describe('CaseFullAccessViewComponent', () => {
     fixture.detectChanges();
   }));
   
+it('should set case view tab based on navigation end event', () => {
+    // Mock tabGroup._tabs with some dummy values for testing
+    component.tabGroup = { _tabs: [{ textLabel: 'Tab1' }, { textLabel: 'Tab2' }] } as any;
+
+    component['checkRouteAndSetCaseViewTab()'];
+
+    // Since we're using mockRouterEvents, the navigation end event should trigger the subscription
+    expect(component.tabGroup._tabs[0].textLabel).toEqual('Tab1');
+
+    // Trigger the NavigationEnd event
+    mockRouterEvents.subscribe((event: NavigationEnd) => {
+      component['checkRouteAndSetCaseViewTab()'];
+      expect(component.tabGroup._tabs[0].textLabel).toEqual('Tab1');
+    });
+
+    // Now simulate a URL with a tab name
+    const urlWithTab = 'http://example.com#Tab2';
+    mockRouterEvents = of(new NavigationEnd(1, urlWithTab, urlWithTab));
+
+    mockRouterEvents.subscribe((event: NavigationEnd) => {
+      component['checkRouteAndSetCaseViewTab()'];
+
+      // Expect the second tab to be active now
+      expect(component.tabGroup._tabs[0].textLabel).toEqual('Tab1');
+      expect(component.tabGroup._tabs[1].textLabel).toEqual('Tab2');
+    });
+  })
 
   it('should unsubscribe from all subscriptions on destroy', () => {
     const sub = new Subscription();
