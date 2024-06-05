@@ -186,6 +186,35 @@ describe('EventTriggerComponent', () => {
       expect(attr(button, 'disabled')).toEqual('');
     });
 
+    it('should return true if ids of both triggers match', () => {
+      const trigger1 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
+      const trigger2 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
+  
+      const result = component.compareFn(trigger1, trigger2);
+  
+      expect(result).toBe(true);
+    });
+  
+    it('should return false if ids of triggers do not match', () => {
+      const trigger1 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
+      const trigger2 = { id: 'HOLD', name: 'Hold', description: 'Put case on hold', order: 2 };
+  
+      const result = component.compareFn(trigger1, trigger2);
+  
+      expect(result).toBe(false);
+    });
+  
+    it('should return false if one or both triggers are null or undefined', () => {
+      const trigger1 = null;
+      const trigger2 = { id: 'HOLD', name: 'Hold', description: 'Put case on hold', order: 2 };
+  
+      const result1 = component.compareFn(trigger1, trigger2);
+      const result2 = component.compareFn(trigger2, trigger1);
+  
+      expect(result1).toBe(false);
+      expect(result2).toBe(false);
+    });
+
   });
 
   describe('with a single trigger', () => {
