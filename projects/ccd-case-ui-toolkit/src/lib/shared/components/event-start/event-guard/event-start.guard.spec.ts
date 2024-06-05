@@ -1,10 +1,11 @@
-import { EventStartGuard } from './event-start.guard';
-import { WorkAllocationService } from '../../case-editor';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { SessionStorageService } from '../../../services';
 import { TestBed } from '@angular/core/testing';
-import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { TaskPayload } from '../../../domain/work-allocation/TaskPayload';
+import { UserInfo } from '../../../domain/user/user-info.model';
+import { SessionStorageService } from '../../../services';
+import { WorkAllocationService } from '../../case-editor';
+import { EventStartGuard } from './event-start.guard';
 
 describe('EventStartGuard', () => {
   const tasks: any[] = [
@@ -84,6 +85,18 @@ describe('EventStartGuard', () => {
 
   // Add more test cases for canActivate function to cover other scenarios...
 
+  function getExampleUserInfo(): UserInfo {
+    return {
+      id: '1',
+      forename: 'T',
+      surname: 'Testing',
+      email: 'testing@mail.com',
+      active: true,
+      roles: [],
+      roleCategories: []
+    };
+  }
+
   describe('checkTaskInEventNotRequired', () => {
     const caseId = '1234567890';
 
@@ -92,7 +105,53 @@ describe('EventStartGuard', () => {
       expect(guard.checkTaskInEventNotRequired(mockEmptyPayload, caseId, null)).toBe(true);
     });
 
-    // Add more test cases for checkTaskInEventNotRequired function...
+    it('should return true if there are no tasks assigned to the user', () => {
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
+    });
+
+    it('should return true and navigate to event trigger if one task is assigned to user', () => {
+      const clientContext = {
+        client_context: {
+          user_task: {
+            task_data: tasks[0],
+            complete_task: true
+          }
+        }
+      }
+      tasks[0].assignee = '1';
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(true);
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
+    });
+
+    it('should return false with error navigation if there are more than 1 tasks assigned to the user', () => {
+      tasks[0].assignee = '1';
+      tasks.push(tasks[0]);
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, null)).toBe(false);
+      expect(router.navigate).toHaveBeenCalledWith([`/cases/case-details/${caseId}/multiple-tasks-exist`]);
+    });
+
+    it('should return true and navigate to event trigger if navigated to via task next steps', () => {
+      const clientContext = {
+        client_context: {
+          user_task: {
+            task_data: tasks[0],
+            complete_task: true
+          }
+        }
+      }
+      tasks[0].assignee = '1';
+      tasks.push(tasks[0]);
+      const mockPayload: TaskPayload = {task_required_for_event: false, tasks};
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(getExampleUserInfo()));
+      expect(guard.checkTaskInEventNotRequired(mockPayload, caseId, '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6')).toBe(true);
+      expect(sessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(clientContext));
+    });
 
   });
 

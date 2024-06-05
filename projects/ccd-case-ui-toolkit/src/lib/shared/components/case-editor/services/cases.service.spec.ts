@@ -49,6 +49,16 @@ describe('CasesService', () => {
     triggers: [],
     events: []
   };
+  const CLIENT_CONTEXT = { client_context: {
+    user_task: {
+      task_data: {
+        id: '1',
+        name: 'Example task',
+        case_id: '1234567890'
+      },
+      complete_task: true
+    }
+  }};
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
@@ -170,7 +180,7 @@ describe('CasesService', () => {
           .set('experimental', 'true')
           .set('Accept', CasesService.V2_MEDIATYPE_CASE_VIEW)
           .set('Content-Type', 'application/json'),
-        observe: 'body'
+        observe: 'response'
       });
     });
 
@@ -219,7 +229,8 @@ describe('CasesService', () => {
     const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger('', '', '', false, []);
 
     beforeEach(() => {
-      httpService.get.and.returnValue(of(EVENT_TRIGGER));
+      httpService.get.and.returnValue(of({ body: EVENT_TRIGGER }));
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(CLIENT_CONTEXT));
     });
 
     it('should use HttpService::get with correct url for create case', () => {
@@ -230,32 +241,33 @@ describe('CasesService', () => {
       const headers = new HttpHeaders()
         .set('experimental', 'true')
         .set('Content-Type', 'application/json')
+        .set('Client-Context', window.btoa(JSON.stringify(CLIENT_CONTEXT)))
         .set('Accept', CasesService.V2_MEDIATYPE_START_CASE_TRIGGER);
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_TYPE_URL, { headers, observe: 'body' });
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_TYPE_URL, { headers, observe: 'response' });
     });
 
     it('should use HttpService::get with correct url for create event', () => {
       casesService
         .getEventTrigger(CTID_UNDEFINED, EVENT_TRIGGER_ID, CASE_ID, 'true')
         .subscribe();
-
       const headers = new HttpHeaders()
         .set('experimental', 'true')
         .set('Content-Type', 'application/json')
+        .set('Client-Context', window.btoa(JSON.stringify(CLIENT_CONTEXT)))
         .set('Accept', CasesService.V2_MEDIATYPE_START_EVENT_TRIGGER);
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_URL, { headers, observe: 'body' });
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_FOR_CASE_URL, { headers, observe: 'response' as 'body' });
     });
 
     it('should use HttpService::get with correct url for DRAFTS', () => {
       casesService
         .getEventTrigger(CTID, EVENT_TRIGGER_ID, DRAFT_ID, 'true')
         .subscribe();
-
       const headers = new HttpHeaders()
         .set('experimental', 'true')
         .set('Content-Type', 'application/json')
+        .set('Client-Context', window.btoa(JSON.stringify(CLIENT_CONTEXT)))
         .set('Accept', CasesService.V2_MEDIATYPE_START_DRAFT_TRIGGER);
-      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_DRAFT_URL, { headers, observe: 'body' });
+      expect(httpService.get).toHaveBeenCalledWith(EVENT_TRIGGER_DRAFT_URL, { headers, observe: 'response' });
     });
 
     it('should retrieve event trigger from server by case id', () => {
@@ -328,6 +340,7 @@ describe('CasesService', () => {
         headers: HEADERS,
         body: EVENT_RESPONSE
       }));
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(CLIENT_CONTEXT));
     }));
 
     it('should use HttpService::post with correct url', () => {
@@ -337,16 +350,17 @@ describe('CasesService', () => {
       const headers = new HttpHeaders()
         .set('experimental', 'true')
         .set('Accept', CasesService.V2_MEDIATYPE_CREATE_EVENT)
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('Client-Context', window.btoa(JSON.stringify(CLIENT_CONTEXT)));
 
-      expect(httpService.post).toHaveBeenCalledWith(CREATE_EVENT_URL, CASE_EVENT_DATA, { headers, observe: 'body' });
+      expect(httpService.post).toHaveBeenCalledWith(CREATE_EVENT_URL, CASE_EVENT_DATA, { headers, observe: 'response' as 'body' });
     });
 
     it('should create event on server', () => {
       casesService
         .createEvent(CASE_DETAILS, CASE_EVENT_DATA)
         .subscribe(
-          data => expect((data as any).body).toEqual(EVENT_RESPONSE)
+          data => expect((data as any)).toEqual(EVENT_RESPONSE)
         );
     });
 
@@ -378,7 +392,8 @@ describe('CasesService', () => {
     const EVENT_RESPONSE = { id: 5 };
 
     beforeEach(waitForAsync(() => {
-      httpService.post.and.returnValue(of(EVENT_RESPONSE));
+      httpService.post.and.returnValue(of({ body: EVENT_RESPONSE }));
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(CLIENT_CONTEXT));
     }));
 
     it('should use HttpService::post with correct url', () => {
@@ -389,9 +404,10 @@ describe('CasesService', () => {
       const headers = new HttpHeaders()
         .set('experimental', 'true')
         .set('Accept', CasesService.V2_MEDIATYPE_CASE_DATA_VALIDATE)
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('Client-Context', window.btoa(JSON.stringify(CLIENT_CONTEXT)));
 
-      expect(httpService.post).toHaveBeenCalledWith(VALIDATE_CASE_URL, CASE_EVENT_DATA, { headers, observe: 'body' });
+      expect(httpService.post).toHaveBeenCalledWith(VALIDATE_CASE_URL, CASE_EVENT_DATA, { headers, observe: 'response' as 'body' });
     });
 
     it('should validate case on server', () => {
@@ -436,6 +452,7 @@ describe('CasesService', () => {
         headers: HEADERS,
         body: CASE_RESPONSE
       }));
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(CLIENT_CONTEXT));
     });
 
     it('should use HttpService::post with correct url', () => {
@@ -446,16 +463,17 @@ describe('CasesService', () => {
       const headers = new HttpHeaders()
         .set('experimental', 'true')
         .set('Accept', CasesService.V2_MEDIATYPE_CREATE_CASE)
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('Client-Context', window.btoa(JSON.stringify(CLIENT_CONTEXT)));
 
-      expect(httpService.post).toHaveBeenCalledWith(CREATE_CASE_URL, CASE_EVENT_DATA, { headers, observe: 'body' });
+      expect(httpService.post).toHaveBeenCalledWith(CREATE_CASE_URL, CASE_EVENT_DATA, { headers, observe: 'response' as 'body' });
     });
 
     it('should create case on server', () => {
       casesService
         .createCase(CTID, CASE_EVENT_DATA)
         .subscribe(
-          data => expect((data as any).body).toEqual(CASE_RESPONSE)
+          data => expect((data as any)).toEqual(CASE_RESPONSE)
         );
     });
 
@@ -475,37 +493,41 @@ describe('CasesService', () => {
 
   describe('getPrintDocuments()', () => {
     const DOCUMENTS = {
-      documentResources: [
-        {
-          name: 'Doc1',
-          type: 'application/pdf',
-          url: 'https://test.service.reform.hmcts.net/doc1'
-        }
-      ]
+      body: {
+        documentResources: [
+          {
+            name: 'Doc1',
+            type: 'application/pdf',
+            url: 'https://test.service.reform.hmcts.net/doc1'
+          }
+        ]
+      }
     };
 
     beforeEach(() => {
       httpService.get.and.returnValue(of(DOCUMENTS));
+      sessionStorageService.getItem.and.returnValue(JSON.stringify(CLIENT_CONTEXT));
     });
 
     it('should use HttpService::get with correct url', () => {
       const headers = new HttpHeaders()
         .set('experimental', 'true')
         .set('Accept', CasesService.V2_MEDIATYPE_CASE_DOCUMENTS)
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('Client-Context', window.btoa(JSON.stringify(CLIENT_CONTEXT)));
 
       casesService
         .getPrintDocuments(CASE_ID)
         .subscribe();
 
-      expect(httpService.get).toHaveBeenCalledWith(PRINT_DOCUMENTS_URL, { headers, observe: 'body' });
+      expect(httpService.get).toHaveBeenCalledWith(PRINT_DOCUMENTS_URL, { headers, observe: 'response' as 'body' });
     });
 
     it('should retrieve document list from server', () => {
       casesService
         .getPrintDocuments(CASE_ID)
         .subscribe(
-          eventTrigger => expect(eventTrigger).toEqual(DOCUMENTS.documentResources)
+          eventTrigger => expect(eventTrigger).toEqual(DOCUMENTS.body.documentResources)
         );
     });
 
@@ -515,7 +537,7 @@ describe('CasesService', () => {
       casesService
         .getPrintDocuments(CASE_ID)
         .subscribe(data => {
-          expect(data).toEqual(DOCUMENTS.documentResources);
+          expect(data).toEqual(DOCUMENTS.body.documentResources);
         }, err => {
           expect(err).toEqual(ERROR);
           expect(errorService.setError).toHaveBeenCalledWith(ERROR);

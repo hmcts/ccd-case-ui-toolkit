@@ -22,7 +22,7 @@ export class ProfileService {
       .set('experimental', 'true')
       .set('Accept', ProfileService.V2_MEDIATYPE_USER_PROFILE)
       .set('Content-Type', 'application/json');
-
+    // Not adding client context header because header is added to call immediately afterwards
     return this.httpService
       .get(url, {headers, observe: 'body'})
       .pipe(
