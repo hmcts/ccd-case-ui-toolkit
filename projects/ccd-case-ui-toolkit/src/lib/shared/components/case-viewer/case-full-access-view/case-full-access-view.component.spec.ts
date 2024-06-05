@@ -609,8 +609,13 @@ describe('CaseFullAccessViewComponent', () => {
   let convertHrefToRouterMockService: jasmine.SpyObj<ConvertHrefToRouterService>;
   let sessionStorageMockService: jasmine.SpyObj<SessionStorageService>;
   let router: Router;
+  let mockDialog: jasmine.SpyObj<MatDialog>;
+  let mockLocation: jasmine.SpyObj<Location>;
+  let mockDialogRef: jasmine.SpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>;
 
   beforeEach((() => {
+    mockLocation = createSpyObj<Location>('Location', ['path']);
+    mockDialog = createSpyObj<MatDialog>('MatDialog', ['open']);
     // Clone
     caseViewData = clone(CASE_VIEW);
     caseViewData.metadataFields = caseViewData.metadataFields.map(field => Object.assign(new CaseField(), field));
@@ -648,7 +653,7 @@ describe('CaseFullAccessViewComponent', () => {
     convertHrefToRouterMockService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
 
     sessionStorageMockService = jasmine.createSpyObj('SessionStorageService', ['getItem', 'setItem', 'removeItem']);
-
+    mockDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('MatDialogRef', ['afterClosed']);
     TestBed
       .configureTestingModule({
         imports: [
@@ -718,6 +723,29 @@ describe('CaseFullAccessViewComponent', () => {
     router = TestBed.inject(Router);
     fixture.detectChanges();
   }));
+  
+
+  it('should unsubscribe from all subscriptions on destroy', () => {
+    const sub = new Subscription();
+    component['sub'] = [sub];
+    spyOn(sub, 'unsubscribe');
+    component.ngOnDestroy();
+    expect(sub.unsubscribe).not.toHaveBeenCalled();
+  });
+
+  it('should clear errors and reset trigger text', () => {
+    component.clearErrorsAndWarnings();
+    expect(component.ignoreWarning).toBeFalsy();
+    expect(component.triggerText).toBe(CaseFullAccessViewComponent.TRIGGER_TEXT_START);
+  });
+
+  it('should notify errors when callbackErrorsNotify is called', () => {
+    const context = { ignoreWarning: true, triggerText: 'New Text', eventId: '123' } as CallbackErrorsContext;
+    component.callbackErrorsNotify(context);
+    expect(component.ignoreWarning).toBeTruthy();
+    expect(component.triggerText).toBe('New Text');
+    expect(component.eventId).toBe('123');
+  });
 
   it('should render a case header', () => {
     const header = de.query(By.directive(caseHeaderComponentMock));
@@ -1096,184 +1124,6 @@ describe('CaseFullAccessViewComponent', () => {
     fixture.detectChanges();
 
     expect(alertService.clear).not.toHaveBeenCalled();
-  });
-});
-
-xdescribe('CaseFullAccessViewComponent - no tabs available', () => {
-  beforeEach((() => {
-    orderService = new OrderService();
-    spyOn(orderService, 'sort').and.callThrough();
-
-    draftService = createSpyObj('draftService', ['deleteDraft']);
-    draftService.deleteDraft.and.returnValue(of({}));
-
-    caseNotifier = createSpyObj('caseService', ['announceCase']);
-
-    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(of({}));
-    alertService.success.and.returnValue(of({}));
-    alertService.warning.and.returnValue(of({}));
-
-    navigationNotifierService = new NavigationNotifierService();
-    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
-    errorNotifierService = new ErrorNotifierService();
-    spyOn(errorNotifierService, 'announceError').and.callThrough();
-
-    dialog = createSpyObj<MatDialog>('dialog', ['open']);
-    matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
-
-    activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity']);
-    activityService.postViewActivity.and.returnValue(of());
-
-    mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
-
-    CASE_VIEW.tabs = [];
-
-    TestBed
-      .configureTestingModule({
-        imports: [
-          PaletteUtilsModule,
-          PaymentLibModule
-        ],
-        declarations: [
-          CaseFullAccessViewComponent,
-          LabelSubstitutorDirective,
-          DeleteOrCancelDialogComponent,
-          EventTriggerComponent,
-          CallbackErrorsComponent,
-          TabsComponent,
-          TabComponent,
-          // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
-          caseHeaderComponentMock,
-          linkComponentMock,
-          markdownComponentMock,
-          MockRpxTranslatePipe
-        ],
-        providers: [
-          FieldsUtils,
-          PlaceholderService,
-          CaseReferencePipe,
-          { provide: NavigationNotifierService, useValue: navigationNotifierService },
-          { provide: ErrorNotifierService, useValue: errorNotifierService },
-          { provide: CaseNotifier, useValue: caseNotifier },
-          { provide: ActivatedRoute, useValue: mockRoute },
-          { provide: OrderService, useValue: orderService },
-          { provide: DraftService, useValue: draftService },
-          { provide: AlertService, useValue: alertService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: MatDialogRef, useValue: matDialogRef },
-          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
-          { provide: ActivityPollingService, useValue: activityService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-          DeleteOrCancelDialogComponent
-        ]
-      })
-      .compileComponents();
-
-    fixture = TestBed.createComponent(CaseFullAccessViewComponent);
-    component = fixture.componentInstance;
-
-    component.callbackErrorsSubject = mockCallbackErrorSubject;
-    de = fixture.debugElement;
-    fixture.detectChanges();
-  }));
-
-  it('should not display any tabs if unavailable', () => {
-    const tabHeaders = de.queryAll($ALL_TAB_HEADERS);
-    expect(tabHeaders.length).toBe(0);
-  });
-});
-
-xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () => {
-  beforeEach((() => {
-    orderService = new OrderService();
-    spyOn(orderService, 'sort').and.callThrough();
-
-    draftService = createSpyObj('draftService', ['deleteDraft']);
-    draftService.deleteDraft.and.returnValue(of({}));
-
-    caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
-
-    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
-    alertService.setPreserveAlerts.and.returnValue(of({}));
-    alertService.success.and.returnValue(of({}));
-    alertService.warning.and.returnValue(of({}));
-
-    navigationNotifierService = new NavigationNotifierService();
-    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
-    errorNotifierService = new ErrorNotifierService();
-    spyOn(errorNotifierService, 'announceError').and.callThrough();
-
-    dialog = createSpyObj<MatDialog>('dialog', ['open']);
-    matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
-
-    activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity', 'isEnabled']);
-    activityService.postViewActivity.and.returnValue(of());
-
-    mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
-
-    CASE_VIEW.tabs = [];
-
-    TestBed
-      .configureTestingModule({
-        imports: [
-          PaletteUtilsModule,
-          PaymentLibModule
-        ],
-        declarations: [
-          CaseFullAccessViewComponent,
-          LabelSubstitutorDirective,
-          DeleteOrCancelDialogComponent,
-          EventTriggerComponent,
-          CallbackErrorsComponent,
-          TabsComponent,
-          TabComponent,
-          // Mocks
-          caseActivityComponentMock,
-          fieldReadComponentMock,
-          caseHeaderComponentMock,
-          linkComponentMock,
-          markdownComponentMock,
-          MockRpxTranslatePipe
-        ],
-        providers: [
-          FieldsUtils,
-          PlaceholderService,
-          CaseReferencePipe,
-          { provide: NavigationNotifierService, useValue: navigationNotifierService },
-          { provide: ErrorNotifierService, useValue: errorNotifierService },
-          { provide: CaseNotifier, useValue: caseNotifier },
-          { provide: ActivatedRoute, useValue: mockRoute },
-          { provide: OrderService, useValue: orderService },
-          { provide: ActivityPollingService, useValue: activityService },
-          { provide: DraftService, useValue: draftService },
-          { provide: AlertService, useValue: alertService },
-          { provide: MatDialog, useValue: dialog },
-          { provide: MatDialogRef, useValue: matDialogRef },
-          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
-          DeleteOrCancelDialogComponent
-        ]
-      })
-      .compileComponents();
-
-    fixture = TestBed.createComponent(CaseFullAccessViewComponent);
-    component = fixture.componentInstance;
-    component.hasPrint = false;
-    component.hasEventSelector = false;
-
-    component.callbackErrorsSubject = mockCallbackErrorSubject;
-    de = fixture.debugElement;
-    fixture.detectChanges();
-  }));
-
-  it('should not display print and event selector if disabled via inputs', () => {
-    const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
-    const printLink = de.query($PRINT_LINK);
-
-    expect(eventTriggerElement).toBeFalsy();
-    expect(printLink).toBeFalsy();
   });
 });
 
@@ -2226,3 +2076,98 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     expect(subscribeSpy).not.toHaveBeenCalled();
   });
 });
+xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () => {
+  beforeEach((() => {
+    orderService = new OrderService();
+    spyOn(orderService, 'sort').and.callThrough();
+    let convertHrefToRouterMockService: jasmine.SpyObj<ConvertHrefToRouterService>;
+  let sessionStorageMockService: jasmine.SpyObj<SessionStorageService>;
+
+    draftService = createSpyObj('draftService', ['deleteDraft']);
+    draftService.deleteDraft.and.returnValue(of({}));
+
+    caseNotifier = createSpyObj('caseNotifier', ['announceCase']);
+
+    alertService = createSpyObj('alertService', ['setPreserveAlerts', 'success', 'warning', 'clear']);
+    alertService.setPreserveAlerts.and.returnValue(of({}));
+    alertService.success.and.returnValue(of({}));
+    alertService.warning.and.returnValue(of({}));
+
+    navigationNotifierService = new NavigationNotifierService();
+    spyOn(navigationNotifierService, 'announceNavigation').and.callThrough();
+    errorNotifierService = new ErrorNotifierService();
+    spyOn(errorNotifierService, 'announceError').and.callThrough();
+
+    dialog = createSpyObj<MatDialog>('dialog', ['open']);
+    matDialogRef = createSpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>('matDialogRef', ['afterClosed', 'close']);
+
+    activityService = createSpyObj<ActivityPollingService>('activityPollingService', ['postViewActivity', 'isEnabled']);
+    activityService.postViewActivity.and.returnValue(of());
+
+    mockCallbackErrorSubject = createSpyObj<any>('callbackErrorSubject', ['next', 'subscribe', 'unsubscribe']);
+
+    CASE_VIEW.tabs = [];
+
+    TestBed
+      .configureTestingModule({
+        imports: [
+          PaletteUtilsModule,
+          PaymentLibModule
+        ],
+        declarations: [
+          CaseFullAccessViewComponent,
+          LabelSubstitutorDirective,
+          DeleteOrCancelDialogComponent,
+          EventTriggerComponent,
+          CallbackErrorsComponent,
+          TabsComponent,
+          TabComponent,
+          // Mocks
+          caseActivityComponentMock,
+          fieldReadComponentMock,
+          caseHeaderComponentMock,
+          linkComponentMock,
+          markdownComponentMock,
+          MockRpxTranslatePipe
+        ],
+        providers: [
+          FieldsUtils,
+          PlaceholderService,
+          CaseReferencePipe,
+          { provide: NavigationNotifierService, useValue: navigationNotifierService },
+          { provide: ErrorNotifierService, useValue: errorNotifierService },
+          { provide: CaseNotifier, useValue: caseNotifier },
+          { provide: ActivatedRoute, useValue: mockRoute },
+          { provide: OrderService, useValue: orderService },
+          { provide: ActivityPollingService, useValue: activityService },
+          { provide: DraftService, useValue: draftService },
+          { provide: AlertService, useValue: alertService },
+          { provide: MatDialog, useValue: dialog },
+          { provide: MatDialogRef, useValue: matDialogRef },
+          { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+          { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterMockService },
+          { provide: SessionStorageService, useValue: sessionStorageMockService },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          DeleteOrCancelDialogComponent
+        ]
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(CaseFullAccessViewComponent);
+    component = fixture.componentInstance;
+    component.hasPrint = false;
+    component.hasEventSelector = false;
+
+    component.callbackErrorsSubject = mockCallbackErrorSubject;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  }));
+
+  it('should not display print and event selector if disabled via inputs', () => {
+    const eventTriggerElement = de.query(By.directive(EventTriggerComponent));
+    const printLink = de.query($PRINT_LINK);
+
+    expect(eventTriggerElement).toBeFalsy();
+    expect(printLink).toBeFalsy();
+  });
+})

@@ -111,9 +111,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.init();
     this.markdownUseHrefAsRouterLink = true;
 
-    this.sessionStorageService.removeItem('eventUrl');
+    this.sessionStorageService?.removeItem('eventUrl');
 
-    this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
+    this.subscription = this.convertHrefToRouterService?.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
       // do not convert router with initial default value; convert to router only on updated link content
       if (hrefMarkdownLinkContent !== 'Default') {
         this.convertHrefToRouterService.callAngularRouter(hrefMarkdownLinkContent);
@@ -182,7 +182,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public postViewActivity(): Observable<Activity[]> {
-    return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
+    return this.activityPollingService.postViewActivity(this.caseDetails?.case_id);
   }
 
   public clearErrorsAndWarnings(): void {
@@ -356,7 +356,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public hasActiveCaseFlags(): boolean {
     // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
-    const caseFlagsTab = this.caseDetails.tabs
+    const caseFlagsTab = this.caseDetails?.tabs
       ? (this.caseDetails.tabs).filter(
         tab => tab.fields && tab.fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
       : null;
@@ -412,27 +412,26 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   private init(): void {
     // Clone and sort tabs array
-    this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
+    this.sortedTabs = this.orderService.sort(this.caseDetails?.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
-    if (this.caseDetails.triggers && this.error) {
+    if (this.caseDetails?.triggers && this.error) {
       this.resetErrors();
     }
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs
-      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
+    return tabs?.map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
       .filter(tab => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
   private getTabFields(): CaseField[] {
-    const caseDataFields = this.sortedTabs.reduce((acc, tab) => {
+    const caseDataFields = this.sortedTabs?.reduce((acc, tab) => {
       return acc.concat(plainToClass(CaseField, tab.fields));
     }, []);
 
-    return caseDataFields.concat(this.caseDetails.metadataFields);
+    return caseDataFields?.concat(this.caseDetails.metadataFields);
   }
 
   /**
