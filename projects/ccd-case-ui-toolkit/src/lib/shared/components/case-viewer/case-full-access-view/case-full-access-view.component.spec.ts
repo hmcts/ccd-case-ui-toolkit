@@ -846,6 +846,7 @@ describe('CaseFullAccessViewComponent', () => {
       expect(component.subscription.unsubscribe).toHaveBeenCalled();
       component['subs'].forEach(sub => expect(sub.unsubscribe).toHaveBeenCalled());
     });
+    
   
     
 
@@ -893,6 +894,12 @@ describe('CaseFullAccessViewComponent', () => {
       expect(headers[0].nativeElement.textContent.trim()).toBe(FIELDS[1].label);
       expect(orderService.sort).toHaveBeenCalledWith(FIELDS);
     });
+  });
+
+  it('should handle route changes and set case view tab', () => {
+    spyOn<any>(component, 'checkRouteAndSetCaseViewTab');
+    component.ngOnInit();
+    expect(component['checkRouteAndSetCaseViewTab']).toHaveBeenCalled();
   });
 
 
