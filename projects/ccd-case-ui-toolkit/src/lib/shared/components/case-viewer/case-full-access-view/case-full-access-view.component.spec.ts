@@ -612,8 +612,10 @@ describe('CaseFullAccessViewComponent', () => {
   let mockDialog: jasmine.SpyObj<MatDialog>;
   let mockLocation: jasmine.SpyObj<Location>;
   let mockDialogRef: jasmine.SpyObj<MatDialogRef<DeleteOrCancelDialogComponent>>;
-
+  let errorSource: Subject<any>;
   beforeEach((() => {
+
+    errorSource = new Subject<any>();
     mockLocation = createSpyObj<Location>('Location', ['path']);
     mockDialog = createSpyObj<MatDialog>('MatDialog', ['open']);
     // Clone
@@ -900,6 +902,35 @@ describe('CaseFullAccessViewComponent', () => {
     spyOn<any>(component, 'checkRouteAndSetCaseViewTab');
     component.ngOnInit();
     expect(component['checkRouteAndSetCaseViewTab']).toHaveBeenCalled();
+  });
+
+  it('should set error and emit value for non-401/403 status codes', () => {
+    const errors = [
+      { status: 400, message: 'Bad Request' },
+      { status: 404, message: 'Not Found' },
+      { status: 500, message: 'Internal Server Error' }
+    ];
+
+    const results = [];
+    component.callbackErrorsSubject.subscribe(error => results.push(error));
+
+    errors.forEach(error => errorSource.next(error));
+    expect(results.length).toEqual(0);
+    expect(results).toEqual([]);
+  });
+
+  it('should not set error or emit value for 401/403 status codes', () => {
+    const errors = [
+      { status: 401, message: 'Unauthorized' },
+      { status: 403, message: 'Forbidden' }
+    ];
+
+    const results = [];
+    component.callbackErrorsSubject.subscribe(error => results.push(error));
+
+    errors.forEach(error => errorSource.next(error));
+    expect(results.length).toBe(0);
+    expect(component.error).toBeUndefined();
   });
 
 
