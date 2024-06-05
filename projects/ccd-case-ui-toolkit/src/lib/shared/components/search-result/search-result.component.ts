@@ -388,8 +388,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
 
   public isSortAscending(column: SearchResultViewColumn): boolean {
     const currentSortOrder = this.currentSortOrder(column);
-
-    return currentSortOrder === SortOrder.UNSORTED || currentSortOrder === SortOrder.DESCENDING;
+    return currentSortOrder === SortOrder.UNSORTED ? null : currentSortOrder === SortOrder.DESCENDING;
   }
 
   private currentSortOrder(column: SearchResultViewColumn): SortOrder {
