@@ -192,7 +192,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
-    // this.error = null;
     this.errorNotifierService.announceError(null);
     const theQueryParams: Params = {};
 
