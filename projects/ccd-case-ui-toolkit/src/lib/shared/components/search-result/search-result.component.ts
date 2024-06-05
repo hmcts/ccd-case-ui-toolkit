@@ -456,4 +456,7 @@ export class SearchResultComponent implements OnChanges, OnInit {
       }
     }
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  noop(): void {}
 }

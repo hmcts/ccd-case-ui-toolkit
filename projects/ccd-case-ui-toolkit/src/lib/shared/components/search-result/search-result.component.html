@@ -10,9 +10,9 @@
       </strong>
     </div>
 
-    <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top"
-        [attr.aria-label]="getTotalResults() + ' results have been found' | rpxTranslate" role="status">
-      <span class="text-16" id="search-result-summary__text">{{'Showing' | rpxTranslate}}
+    <div *ngIf="(hasResults() || hasDrafts())" class="pagination-top">
+      <output [attr.aria-label]="getTotalResults() + ' results have been found' | rpxTranslate"></output>
+          <span class="text-16" id="search-result-summary__text">{{'Showing' | rpxTranslate}}
         <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
         {{'to' | rpxTranslate}}
         <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
@@ -39,7 +39,7 @@
           [attr.aria-sort]="isSortAscending(col) === null ? null : (isSortAscending(col) ? 'ascending' : 'descending')">
           <tr>
             <th>
-              <div class="search-result-column-label" (click)="sort(col)">
+              <div class="search-result-column-label" (click)="sort(col)" (keyup)="noop()">
                 {{col.label | rpxTranslate}}
               </div>
               <div *ngIf="comparator(col)" class="search-result-column-sort">
