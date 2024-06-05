@@ -407,7 +407,7 @@ describe('CasesService', () => {
         .set('Content-Type', 'application/json')
         .set('Client-Context', window.btoa(JSON.stringify(CLIENT_CONTEXT)));
 
-      expect(httpService.post).toHaveBeenCalledWith(VALIDATE_CASE_URL, CASE_EVENT_DATA, { headers, observe: 'response' as 'bodu' });
+      expect(httpService.post).toHaveBeenCalledWith(VALIDATE_CASE_URL, CASE_EVENT_DATA, { headers, observe: 'response' as 'body' });
     });
 
     it('should validate case on server', () => {
