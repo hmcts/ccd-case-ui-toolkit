@@ -816,6 +816,38 @@ describe('CaseFullAccessViewComponent', () => {
           .toBeTruthy(`Could not find row with label ${field.label}`);
       });
     });
+    it('should unsubscribe from subscriptions on destroy', () => {
+      component.activitySubscription = new Subscription();
+      component.caseSubscription = new Subscription();
+      component.callbackErrorsSubject = new Subject<any>();
+      component.errorSubscription = new Subscription();
+      component.subscription = new Subscription();
+      component['subs'] = [new Subscription(), new Subscription()];
+  
+      spyOn(component.activitySubscription, 'unsubscribe');
+      spyOn(component.caseSubscription, 'unsubscribe');
+      spyOn(component.errorSubscription, 'unsubscribe');
+      spyOn(component.subscription, 'unsubscribe');
+      component['subs'].forEach(sub => spyOn(sub, 'unsubscribe'));
+  
+      component.ngOnDestroy();
+      component['activityPollingService'].isEnabled
+      if (component['activityPollingService'].isEnabled) {
+        expect(component.activitySubscription.unsubscribe).toHaveBeenCalled();
+      } else {
+        expect(component.activitySubscription.unsubscribe).not.toHaveBeenCalled();
+      }
+      if (!component['route'].snapshot.data.case) {
+        expect(component.caseSubscription.unsubscribe).toHaveBeenCalled();
+      } else {
+        expect(component.caseSubscription.unsubscribe).not.toHaveBeenCalled();
+      }
+      expect(component.errorSubscription.unsubscribe).toHaveBeenCalled();
+      expect(component.subscription.unsubscribe).toHaveBeenCalled();
+      component['subs'].forEach(sub => expect(sub.unsubscribe).toHaveBeenCalled());
+    });
+  
+    
 
     xit('should render each compound field without label as a cell spanning 2 columns', () => {
       const headers = de
