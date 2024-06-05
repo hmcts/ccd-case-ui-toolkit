@@ -31,7 +31,8 @@ export class OrderService {
    * @returns Orderable[] Sorted clone array.
    */
   public sort<T extends Orderable>(array: T[], sortingFunction = this.sortAsc): T[] {
-    return array?.slice()
+    return array
+      .slice()
       .sort(sortingFunction);
   }
 }

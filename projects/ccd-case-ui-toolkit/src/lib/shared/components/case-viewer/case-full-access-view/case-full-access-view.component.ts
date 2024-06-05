@@ -457,12 +457,4 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.errorNotifierService.announceError(null);
     this.alertService.clear();
   }
-
-  private getUrlFragment(url: string) {
-    return url.split('#')[url.split('#').length - 1];
-  }
-
-  private getTabIndexByTabLabel(tabGroup: MatTabGroup, tabLabel) {
-    return tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tabLabel.toLowerCase());
-  }
 }
