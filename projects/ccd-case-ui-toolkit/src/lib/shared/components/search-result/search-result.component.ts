@@ -387,27 +387,11 @@ export class SearchResultComponent implements OnChanges, OnInit {
   }
 
   public isSortAscending(column: SearchResultViewColumn): boolean {
-    const currentSortOrder = this.currentSortOrder(column);
-    return currentSortOrder === SortOrder.UNSORTED ? null : currentSortOrder === SortOrder.DESCENDING;
-  }
-
-  private currentSortOrder(column: SearchResultViewColumn): SortOrder {
-
-    let isAscending = true;
-    let isDescending = true;
-
-    if (this.comparator(column) === undefined) {
-      return SortOrder.UNSORTED;
+    // simple way to determine if the column param is sorted and if its asc/desc
+    if (this.consumerSortParameters.column === column.case_field_id) {
+      return this.consumerSortParameters.order === SortOrder.ASCENDING;
     }
-    for (let i = 0; i < this.resultView.results.length - 1; i++) {
-      const comparison = this.comparator(column).compare(this.resultView.results[i], this.resultView.results[i + 1]);
-      isDescending = isDescending && comparison <= 0;
-      isAscending = isAscending && comparison >= 0;
-      if (!isAscending && !isDescending) {
-        break;
-      }
-    }
-    return isAscending ? SortOrder.ASCENDING : isDescending ? SortOrder.DESCENDING : SortOrder.UNSORTED;
+    return null;
   }
 
   public getFirstResult(): number {
