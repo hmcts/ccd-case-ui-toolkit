@@ -34,10 +34,9 @@
         </div>
       </th>
       <th *ngFor="let col of resultView.columns">
-        <table class="search-result-column-header"
-          [attr.aria-sort]="isSortAscending(col) === null ? null : (isSortAscending(col) ? 'ascending' : 'descending')">
+        <table class="search-result-column-header">
           <tr>
-            <th>
+            <th [attr.aria-sort]="isSortAscending(col) === null ? null : (isSortAscending(col) ? 'ascending' : 'descending')">
               <div class="search-result-column-label" (click)="sort(col)" (keyup)="noop()">
                 {{col.label | rpxTranslate}}
               </div>
