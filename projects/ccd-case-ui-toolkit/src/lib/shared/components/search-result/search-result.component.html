@@ -29,8 +29,9 @@
       <th *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
+          <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="canAnyBeShared()" />
           <label class="govuk-label govuk-checkboxes__label" for="select-all">
-            Select All
+            Select all
           </label>
         </div>
       </th>
@@ -60,9 +61,9 @@
         <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
-              type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
+              type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="canBeShared(result)" />
             <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
-              Select Case Reference {{ result.case_id }}
+              Select case {{ result.case_id }}
             </label>
           </div>
         </td>
@@ -97,9 +98,9 @@
         <td *ngIf="selectionEnabled" class="govuk-table__checkbox" scope="col">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
-              type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" (keyup)="onKeyUp($event, result)" />
+              type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="canBeShared(result)" (keyup)="onKeyUp($event, result)" />
             <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
-              Select Case Reference {{ result.case_id }}
+              Select case {{ result.case_id }}
             </label>
           </div>
         </td>
