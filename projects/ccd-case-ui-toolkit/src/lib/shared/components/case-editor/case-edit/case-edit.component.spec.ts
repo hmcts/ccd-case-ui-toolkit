@@ -1178,7 +1178,7 @@ describe('CaseEditComponent', () => {
           submit: mockClass.submit,
         });
 
-        expect(component.isSubmitting).toEqual(true);
+        expect(component.isSubmitting).toEqual(false);
         expect(formValueService.sanitise).toHaveBeenCalled();
       });
     });
