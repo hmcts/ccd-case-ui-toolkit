@@ -366,7 +366,7 @@ describe('PaginationComponent:', () => {
                            <ul>
                                <li *ngFor="let item of collection | paginate: config" class="list-item">{{ item }}</li>
                            </ul>
-                           <pagination-controls screenReaderPaginationLabel="${TEST_LABEL}" id="test"></pagination-controls>`);
+                           <ccd-pagination screenReaderPaginationLabel="${TEST_LABEL}" id="test"></ccd-pagination>`);
       const fixture = TestBed.createComponent(ComponentTestComponent);
       fixture.detectChanges();
 

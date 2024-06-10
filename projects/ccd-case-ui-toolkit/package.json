@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.37-default-tab-fix",
+  "version": "7.0.38-default-tab-fix",
   "engines": {
     "node": ">=18.17.0"
   },
