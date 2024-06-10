@@ -1,10 +1,9 @@
-import { AbstractControl, FormControl } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { CaseField } from '../../domain/definition/case-field.model';
 import { aCaseField } from '../../fixture/shared.test.fixture';
 import { FormValidatorsService } from './form-validators.service';
 
 describe('FormValidatorsService', () => {
-
   const formValidatorsService: FormValidatorsService = new FormValidatorsService();
 
   it('should not add REQUIRED validator for OPTIONAL fields', () => {
@@ -108,5 +107,61 @@ describe('FormValidatorsService', () => {
     result.markAsTouched();
     result.updateValueAndValidity();
     expect(result.invalid).toBeFalsy();
+  });
+
+  it('should return add Markdown validator for MANDATORY fields', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'Text', 'MANDATORY', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('[Test](www.google.com)');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should return add Markdown validator for OPTIONAL fields', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'Text', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('[Test](www.google.com)');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should return add Markdown validator for OPTIONAL fields - TextArea', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'TextArea', 'OPTIONAL', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('[Test](www.google.com)');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should return add Markdown validator for MANDATORY fields - TextArea', () => {
+    const formControl: FormControl = new FormControl();
+    const caseField: CaseField = aCaseField('id', 'Label', 'TextArea', 'MANDATORY', null);
+    const result: AbstractControl = formValidatorsService.addValidators(caseField, formControl);
+    result.setValue('[Test](www.google.com)');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+    expect(result.valid).toBeFalsy();
+  });
+
+  it('should add Markdown validator for the specified control path', () => {
+    const formGroup = new FormGroup({
+      summary: new FormControl(),
+      description: new FormControl()
+    });
+
+    const controlPath = 'summary';
+    const result = formValidatorsService.addMarkDownValidators(formGroup, controlPath);
+
+    result.setValue('[Test](www.google.com)');
+    result.markAsTouched();
+    result.updateValueAndValidity();
+
+    expect(result.valid).toBeFalsy();
   });
 });

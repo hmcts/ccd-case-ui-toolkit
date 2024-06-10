@@ -8,6 +8,8 @@ import { WorkAllocationService } from '../../case-editor';
 
 @Injectable()
 export class EventStartGuard implements CanActivate {
+  public static readonly TASK_TO_COMPLETE = 'taskToComplete';
+
   constructor(private readonly workAllocationService: WorkAllocationService,
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService) {
@@ -18,16 +20,12 @@ export class EventStartGuard implements CanActivate {
     const eventId = route.params['eid'];
     const taskId = route.queryParams['tid'];
 
-    // TODO: NavigationExtras should be used once Angular upgrade changes have been incorporated
-    const isComplete = route.queryParams['isComplete'];
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     if (caseInfoStr) {
       const caseInfo = JSON.parse(caseInfoStr);
       if (caseInfo && caseInfo.cid === caseId) {
-        if (isComplete) {
-          return of(true);
-        }
-        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction).pipe(
+        return this.workAllocationService.getTasksByCaseIdAndEventId(eventId, caseId, caseInfo.caseType, caseInfo.jurisdiction)
+          .pipe(
           switchMap((payload: TaskPayload) => this.checkForTasks(payload, caseId, eventId, taskId))
         );
       }
@@ -48,9 +46,8 @@ export class EventStartGuard implements CanActivate {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     const userInfo = JSON.parse(userInfoStr);
     const tasksAssignedToUser = payload.tasks.filter(x =>
-      x.task_state !== 'unassigned' && x.assignee === userInfo.id || x.assignee === userInfo.uid
+      x.task_state !== 'unassigned' && (x.assignee === userInfo.id || x.assignee === userInfo.uid)
     );
-
     if (tasksAssignedToUser.length === 0) {
       // if no tasks assigned to user carry on
       return true;
@@ -66,14 +63,23 @@ export class EventStartGuard implements CanActivate {
         task = tasksAssignedToUser[0];
       }
       // if one task assigned to user, allow user to complete event
-      this.sessionStorageService.setItem('taskToComplete', JSON.stringify(task));
+      this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
       return true;
     }
   }
 
+  private removeTaskFromSessionStorage(): void {
+    this.sessionStorageService.removeItem(EventStartGuard.TASK_TO_COMPLETE);
+  }
   private checkForTasks(payload: TaskPayload, caseId: string, eventId: string, taskId: string): Observable<boolean> {
-    // Clear taskToComplete from session as we will be starting the process for new task
-    this.sessionStorageService.removeItem('taskToComplete');
+    if (taskId && payload?.tasks?.length > 0) {
+      const task = payload.tasks.find((t) => t.id == taskId);
+      if (task) {
+        this.sessionStorageService.setItem(EventStartGuard.TASK_TO_COMPLETE, JSON.stringify(task));
+      } else {
+        this.removeTaskFromSessionStorage();
+      }
+    }
     if (payload.task_required_for_event) {
       // There are some issues in EventTriggerResolver/CaseService and/or CCD for some events
       // which triggers the CanActivate guard again.
