@@ -7,7 +7,6 @@ import { PipesModule } from '../../../pipes/pipes.module';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { ConvertHrefToRouterService } from '../../case-editor';
 import { MarkdownComponent as CCDMarkDownComponent } from './markdown.component';
-import { MarkdownService } from 'ngx-markdown';
 
 xdescribe('MarkdownComponent - Table', () => {
 
@@ -62,7 +61,7 @@ xdescribe('MarkdownComponent - Table', () => {
           CCDMarkDownComponent,
           MockRpxTranslatePipe
         ],
-        providers: [MarkdownService]
+        providers: []
       })
       .compileComponents();
 
@@ -111,7 +110,6 @@ const L3_EXPECTED: string = '<p><a href="https://foo.bar.com/case/IA/Asylum/1632
           MockRpxTranslatePipe
         ],
         providers: [
-          MarkdownService,
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService }
         ]
       })

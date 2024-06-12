@@ -1813,21 +1813,19 @@ describe('CaseEditPageComponent - all other tests', () => {
     });
 
     it('should validate mandatory fields and log error message', () => {
-      wizardPage.case_fields.push(
-        aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null)
-      );
-      wizardPage.case_fields.push(
-        aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null)
-      );
-      wizardPage.case_fields.push(CASE_FIELD);
+      wizardPage.case_fields = [
+        aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null),
+        aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null),
+        CASE_FIELD
+      ];
       wizardPage.isMultiColumn = () => false;
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
+      expect(comp.validationErrors.length).toBe(3);
       comp.generateErrorMessage(wizardPage.case_fields);
-      expect(comp.validationErrors.length).toBe(6);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`%FIELDLABEL% is required`);
       });
@@ -1993,8 +1991,9 @@ describe('CaseEditPageComponent - all other tests', () => {
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
+      expect(comp.validationErrors.length).toBe(1);
       comp.generateErrorMessage(wizardPage.case_fields);
-      expect(comp.validationErrors.length).toBe(2);
+
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`%FIELDLABEL% is required`);
       });
@@ -2038,8 +2037,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
+      expect(comp.validationErrors.length).toBe(1);
       comp.generateErrorMessage(wizardPage.case_fields);
-      expect(comp.validationErrors.length).toBe(2);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`There is an internal issue with complexField2 fields. The field that is causing the error cannot be determined but there is an error present`);
       });
@@ -2069,8 +2068,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
+      expect(comp.validationErrors.length).toBe(1);
       comp.generateErrorMessage(wizardPage.case_fields);
-      expect(comp.validationErrors.length).toBe(2);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
           'Please select Next to complete the creation of the case flag'
@@ -2109,8 +2108,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
+      expect(comp.validationErrors.length).toBe(1);
       comp.generateErrorMessage(wizardPage.case_fields);
-      expect(comp.validationErrors.length).toBe(2);
     });
   });
 
