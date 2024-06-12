@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.39-callback-event-errors-rework",
+  "version": "7.0.39-callback-event-errors-rework_C1",
   "engines": {
     "node": ">=18.17.0"
   },
