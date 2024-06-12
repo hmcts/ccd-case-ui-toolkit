@@ -1,12 +1,12 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, SimpleChange } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { EffectsModule } from '@ngrx/effects';
@@ -1410,10 +1410,15 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
   let convertHrefToRouterService;
+  let mockLocation: any;
 
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
+
+    mockLocation = createSpyObj('location', ['path', 'go', 'isCurrentPathEqualTo']);
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -1465,12 +1470,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           PlaceholderService,
           CaseReferencePipe,
           OrderService,
-          {
-            provide: Location,
-            useClass: class MockLocation {
-              public path = (_: string) => 'cases/case-details/1234567890123456/tasks';
-            }
-          },
+          { provide: Location, useValue: mockLocation },
           ErrorNotifierService,
           { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
@@ -1585,7 +1585,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
     expect(comp.activeCaseFlags).toBe(true);
   });
 
-  xit('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
+  it('should select the tab containing Case Flags data when the "View case flags" link in the banner message is clicked', () => {
     const viewCaseFlagsLink = d.nativeElement.querySelector('.govuk-notification-banner__link');
     // Case Flags tab is expected to be the sixth tab (i.e. index 5)
     const caseFlagsTab = d.nativeElement.querySelector('.mat-tab-labels').children[5] as HTMLElement;
