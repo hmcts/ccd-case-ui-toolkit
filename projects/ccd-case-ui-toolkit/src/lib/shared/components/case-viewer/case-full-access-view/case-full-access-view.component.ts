@@ -9,7 +9,7 @@ import { MatLegacyTab as MatTab, MatLegacyTabGroup as MatTabGroup } from '@angul
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { plainToClass } from 'class-transformer';
 import { RpxTranslatePipe } from 'rpx-xui-translation';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import {
   NotificationBannerConfig,
@@ -76,8 +76,9 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public caseFlagsExternalUser = false;
   private readonly caseFlagsReadExternalMode = '#ARGUMENT(READ,EXTERNAL)';
   private subs: Subscription[] = [];
+  public eventId: string;
 
-  public callbackErrorsSubject: Subject<any> = new Subject();
+  public callbackErrorsSubject:   Observable<any>;
   @ViewChild('tabGroup', { static: false }) public tabGroup: MatTabGroup;
 
   constructor(
@@ -100,22 +101,21 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public ngOnInit(): void {
+    this.callbackErrorsSubject = this.errorNotifierService.errorSource.pipe(filter((x) => {
+      if(x && x.status !== 401 && x.status !== 403) {
+        this.error = x;
+        return true;
+      }
+     return false;
+    }));
+    
     initDialog();
     this.init();
-    this.callbackErrorsSubject.subscribe(errorEvent => {
-      this.error = errorEvent;
-    });
-    this.errorSubscription = this.errorNotifierService.error.subscribe(error => {
-      if (error && error.status !== 401 && error.status !== 403) {
-        this.error = error;
-        this.callbackErrorsSubject.next(this.error);
-      }
-    });
     this.markdownUseHrefAsRouterLink = true;
 
-    this.sessionStorageService.removeItem('eventUrl');
+    this.sessionStorageService?.removeItem('eventUrl');
 
-    this.subscription = this.convertHrefToRouterService.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
+    this.subscription = this.convertHrefToRouterService?.getHrefMarkdownLinkContent().subscribe((hrefMarkdownLinkContent: string) => {
       // do not convert router with initial default value; convert to router only on updated link content
       if (hrefMarkdownLinkContent !== 'Default') {
         this.convertHrefToRouterService.callAngularRouter(hrefMarkdownLinkContent);
@@ -184,7 +184,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public postViewActivity(): Observable<Activity[]> {
-    return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
+    return this.activityPollingService.postViewActivity(this.caseDetails?.case_id);
   }
 
   public clearErrorsAndWarnings(): void {
@@ -194,8 +194,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public async applyTrigger(trigger: CaseViewTrigger): Promise<void> {
-    this.error = null;
-
+    this.errorNotifierService.announceError(null);
     const theQueryParams: Params = {};
 
     if (this.ignoreWarning) {
@@ -246,6 +245,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   public callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext): void {
     this.ignoreWarning = callbackErrorsContext.ignoreWarning;
     this.triggerText = callbackErrorsContext.triggerText;
+    this.eventId = callbackErrorsContext.eventId;
   }
 
   public isDraft(): boolean {
@@ -358,7 +358,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   public hasActiveCaseFlags(): boolean {
     // Determine which tab contains the FlagLauncher CaseField type, from the CaseView object in the snapshot data
-    const caseFlagsTab = this.caseDetails.tabs
+    const caseFlagsTab = this.caseDetails?.tabs
       ? (this.caseDetails.tabs).filter(
         tab => tab.fields && tab.fields.some(caseField => FieldsUtils.isFlagLauncherCaseField(caseField)))[0]
       : null;
@@ -414,27 +414,26 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
   private init(): void {
     // Clone and sort tabs array
-    this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
+    this.sortedTabs = this.orderService.sort(this.caseDetails?.tabs);
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
-    if (this.caseDetails.triggers && this.error) {
+    if (this.caseDetails?.triggers && this.error) {
       this.resetErrors();
     }
   }
 
   private sortTabFieldsAndFilterTabs(tabs: CaseTab[]): CaseTab[] {
-    return tabs
-      .map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
+    return tabs?.map(tab => Object.assign({}, tab, { fields: this.orderService.sort(tab.fields) }))
       .filter(tab => ShowCondition.getInstance(tab.show_condition).matchByContextFields(this.caseFields));
   }
 
   private getTabFields(): CaseField[] {
-    const caseDataFields = this.sortedTabs.reduce((acc, tab) => {
+    const caseDataFields = this.sortedTabs?.reduce((acc, tab) => {
       return acc.concat(plainToClass(CaseField, tab.fields));
     }, []);
 
-    return caseDataFields.concat(this.caseDetails.metadataFields);
+    return caseDataFields?.concat(this.caseDetails.metadataFields);
   }
 
   /**
@@ -457,16 +456,7 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private resetErrors(): void {
-    this.error = null;
-    this.callbackErrorsSubject.next(null);
+    this.errorNotifierService.announceError(null);
     this.alertService.clear();
-  }
-
-  private getUrlFragment(url: string) {
-    return url.split('#')[url.split('#').length - 1];
-  }
-
-  private getTabIndexByTabLabel(tabGroup: MatTabGroup, tabLabel) {
-    return tabGroup._tabs.toArray().findIndex((t) => t.textLabel.toLowerCase() === tabLabel.toLowerCase());
   }
 }

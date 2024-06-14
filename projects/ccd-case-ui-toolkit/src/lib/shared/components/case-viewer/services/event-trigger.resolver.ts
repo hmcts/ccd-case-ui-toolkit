@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
@@ -8,6 +8,8 @@ import { AlertService } from '../../../services/alert/alert.service';
 import { ProfileNotifier } from '../../../services/profile/profile.notifier';
 import { ProfileService } from '../../../services/profile/profile.service';
 import { CasesService } from '../../case-editor/services/cases.service';
+import { AbstractAppConfig } from '../../../../app.config';
+import { ErrorNotifierService } from '../../../services/error/error-notifier.service';
 
 @Injectable()
 export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
@@ -22,6 +24,9 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
     private readonly alertService: AlertService,
     private readonly profileService: ProfileService,
     private readonly profileNotifier: ProfileNotifier,
+    private router: Router,
+    private appConfig: AbstractAppConfig,
+    private errorNotifier: ErrorNotifierService,
     ) {}
 
   public resolve(route: ActivatedRouteSnapshot): Promise<CaseEventTrigger> {
@@ -59,7 +64,11 @@ export class EventTriggerResolver implements Resolve<CaseEventTrigger> {
       .pipe(
         map(eventTrigger => this.cachedEventTrigger = eventTrigger),
         catchError(error => {
+          error.details = { eventId: eventTriggerId, ...error.details };
+          this.alertService.setPreserveAlerts(true);
           this.alertService.error(error.message);
+          this.errorNotifier.announceError(error);
+          this.router.navigate([`/cases/case-details/${cid}/tasks`]);
           return throwError(error);
         })
       ).toPromise();
