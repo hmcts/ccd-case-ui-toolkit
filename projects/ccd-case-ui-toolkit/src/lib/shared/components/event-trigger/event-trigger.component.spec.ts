@@ -23,6 +23,12 @@ describe('EventTriggerComponent', () => {
       name: 'Hold',
       description: 'Put case on hold',
       order: 2
+    },
+    {
+      id: 'createBundle',
+      name: 'Create a bundle',
+      description: 'Create a bundle',
+      order: 3
     }
   ];
 
@@ -75,6 +81,7 @@ describe('EventTriggerComponent', () => {
       component = fixture.componentInstance;
 
       component.triggers = TRIGGERS;
+      component.eventId = 'createBundle'
       spyOn(component.onTriggerSubmit, 'emit');
       spyOn(component.onTriggerChange, 'emit');
 
@@ -99,7 +106,7 @@ describe('EventTriggerComponent', () => {
     it('should render a <select> with an <option> for every trigger', () => {
       const options = de.queryAll($SELECT_OPTIONS);
 
-      expect(options.length).toBe(2);
+      expect(options.length).toBe(3);
 
       TRIGGERS.forEach(trigger => {
         const optionDe = options.find(option => text(option) === trigger.name);
@@ -114,17 +121,17 @@ describe('EventTriggerComponent', () => {
 
       expect(defaultOption).toBeTruthy();
       expect(attr(defaultOption, 'value')).toBe('');
-      expect(attr(defaultOption, 'value')).toEqual(component.triggerForm.value['trigger']);
+      expect(attr(defaultOption, 'value')).toEqual('');
     });
 
     it('should not select any trigger by default when more than 1 trigger', () => {
       expect(component.triggerForm.value).toEqual({
-        trigger: ''
+        trigger: { id: 'createBundle', name: 'Create a bundle', description: 'Create a bundle' }
       });
     });
 
     it('should invalidate form when no trigger selected', () => {
-      expect(component.triggerForm.valid).toBeFalsy();
+      expect(component.triggerForm.valid).toBeTruthy();
     });
 
     it('should output an `onTriggerSubmit` event when form is submitted', () => {
@@ -152,8 +159,8 @@ describe('EventTriggerComponent', () => {
     it('should disable button when form is not valid', () => {
       const button = de.query($SUBMIT_BUTTON);
 
-      expect(component.triggerForm.valid).toBeFalsy('Assumption');
-      expect(attr(button, 'disabled')).toEqual('');
+      expect(component.triggerForm.valid).toBeTruthy('Assumption');
+      expect(attr(button, 'disabled')).toEqual(null);
     });
 
     it('should enable button when form is valid', () => {
@@ -177,6 +184,35 @@ describe('EventTriggerComponent', () => {
       fixture.detectChanges();
 
       expect(attr(button, 'disabled')).toEqual('');
+    });
+
+    it('should return true if ids of both triggers match', () => {
+      const trigger1 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
+      const trigger2 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
+  
+      const result = component.compareFn(trigger1, trigger2);
+  
+      expect(result).toBe(true);
+    });
+  
+    it('should return false if ids of triggers do not match', () => {
+      const trigger1 = { id: 'EDIT', name: 'Edit', description: 'Edit the current case', order: 1 };
+      const trigger2 = { id: 'HOLD', name: 'Hold', description: 'Put case on hold', order: 2 };
+  
+      const result = component.compareFn(trigger1, trigger2);
+  
+      expect(result).toBe(false);
+    });
+  
+    it('should return false if one or both triggers are null or undefined', () => {
+      const trigger1 = null;
+      const trigger2 = { id: 'HOLD', name: 'Hold', description: 'Put case on hold', order: 2 };
+  
+      const result1 = component.compareFn(trigger1, trigger2);
+      const result2 = component.compareFn(trigger2, trigger1);
+  
+      expect(result1).toBe(false);
+      expect(result2).toBe(false);
     });
 
   });

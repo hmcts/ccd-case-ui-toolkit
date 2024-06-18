@@ -14,12 +14,19 @@ describe('CallbackErrorsComponent', () => {
 
   const VALID_WARNING = {
     callbackErrors: [],
-    callbackWarnings: ['callbackWarning1', 'callbackWarning2']
+    callbackWarnings: ['callbackWarning1', 'callbackWarning2'],
+    eventId: undefined
   };
 
   const VALID_ERROR = {
     callbackErrors: ['callbackError1', 'callbackError2'],
     callbackWarnings: []
+  };
+
+  const VALID_INVALID_DATA = {
+    details: {
+      field_errors: ['fieldError1', 'fieldError2']
+    }
   };
 
   const $ERROR_SUMMARY = By.css('.error-summary');
@@ -66,6 +73,7 @@ describe('CallbackErrorsComponent', () => {
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignoreWarning = true;
     expectedCallbackErrorsContext.triggerText = triggerTextIgnore;
+    expectedCallbackErrorsContext.eventId = undefined;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -77,6 +85,7 @@ describe('CallbackErrorsComponent', () => {
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignoreWarning = false;
     expectedCallbackErrorsContext.triggerText = triggerTextContinue;
+    expectedCallbackErrorsContext.eventId = undefined;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -87,6 +96,7 @@ describe('CallbackErrorsComponent', () => {
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignoreWarning = false;
     expectedCallbackErrorsContext.triggerText = triggerTextContinue;
+    expectedCallbackErrorsContext.eventId = undefined;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
@@ -134,7 +144,48 @@ describe('CallbackErrorsComponent', () => {
     const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
     expectedCallbackErrorsContext.ignoreWarning = false;
     expectedCallbackErrorsContext.triggerText = triggerTextContinue;
+    expectedCallbackErrorsContext.eventId = undefined;
     expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
   });
 
+  it('should build callback errors context with eventId if available', () => {
+    const VALID_ERROR_WITH_EVENT_ID = {
+      callbackErrors: ['callbackError1'],
+      callbackWarnings: [],
+      details: {
+        eventId: '1234'
+      }
+    };
+
+    const error = HttpError.from(new HttpErrorResponse({ error: VALID_ERROR_WITH_EVENT_ID }));
+    callbackErrorsSubject.next(error);
+
+    const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    expectedCallbackErrorsContext.ignoreWarning = false;
+    expectedCallbackErrorsContext.triggerText = triggerTextContinue;
+    expectedCallbackErrorsContext.eventId = '1234';
+    expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
+  });
+
+  it('should handle errors with invalid data', () => {
+    const error = HttpError.from(new HttpErrorResponse({ error: VALID_INVALID_DATA }));
+    callbackErrorsSubject.next(error);
+
+    const expectedCallbackErrorsContext: CallbackErrorsContext = new CallbackErrorsContext();
+    expectedCallbackErrorsContext.ignoreWarning = false;
+    expectedCallbackErrorsContext.triggerText = triggerTextContinue;
+    expectedCallbackErrorsContext.eventId = undefined;
+    expect(mockCallbackErrorsContext.emit).toHaveBeenCalledWith(expectedCallbackErrorsContext);
+  });
+
+  it('should handle errors with no callbackErrors, callbackWarnings, or field_errors', () => {
+    const EMPTY_ERROR = {
+      details: {}
+    };
+
+    const error = HttpError.from(new HttpErrorResponse({ error: EMPTY_ERROR }));
+    callbackErrorsSubject.next(error);
+
+    expect(component.error).toEqual(error);
+  });
 });

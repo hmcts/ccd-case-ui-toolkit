@@ -9,7 +9,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseworkerService', () => {
   const API_URL = 'http://aggregated.ccd.reform';
-  const CASE_WORKER_URL = `${API_URL}/retrieveCaseWorkersForServices`;
+  const CASE_WORKER_URL = `${API_URL}/caseworker/getUsersByServiceName`;
   const CASE_WORKER_1: Caseworker = {
     idamId: '4321-4321-4321-4321',
     firstName: 'Test',
@@ -41,7 +41,7 @@ describe('CaseworkerService', () => {
     caseworkerService.getCaseworkers(serviceId)
       .subscribe()
       .add(() => {
-        expect(httpService.post).toHaveBeenCalledWith(CASE_WORKER_URL, {serviceIds: [serviceId]});
+        expect(httpService.post).toHaveBeenCalledWith(CASE_WORKER_URL, {services: [serviceId]});
       });
   }));
 
