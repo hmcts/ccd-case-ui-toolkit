@@ -130,8 +130,6 @@ const TEST_SEARCH_INPUTS: SearchInput[] = createSearchInputs();
 
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
-  @Input()
-  public formGroup: FormGroup;
 }
 
 function createObservableFrom<T>(param: T): Observable<T> {

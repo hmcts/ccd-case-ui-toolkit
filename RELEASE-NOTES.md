@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.40
+**EXUI-1808** Angular 17 update
+
 ### Version 7.0.24
 **EXUI-706** Clone - Insufficient Anti-Automation Mechanisms 
 **EXUI-724** Remove support for WA versions
