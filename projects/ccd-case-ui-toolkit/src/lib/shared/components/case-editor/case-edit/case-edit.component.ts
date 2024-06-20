@@ -240,18 +240,26 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
     let taskInSessionStorage: Task;
+    let taskEventInSessionStorage: any;
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    const taskEventStr = this.sessionStorageService.getItem('taskEvent');
     if (taskStr) {
       taskInSessionStorage = JSON.parse(taskStr);
     }
-
-    if (taskInSessionStorage && taskInSessionStorage.case_id === this.getCaseId(caseDetails)) {
+    if (taskEventStr) {
+      taskEventInSessionStorage = JSON.parse(taskEventStr);
+    }
+    const eventId = this.getEventId(form);
+    if (taskInSessionStorage && taskInSessionStorage.case_id === this.getCaseId(caseDetails)
+        && this.taskForThisEvent(taskEventInSessionStorage, eventId, taskInSessionStorage.id)) {
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
         caseId: this.getCaseId(caseDetails),
-        eventId: this.getEventId(form),
+        eventId,
         task: taskInSessionStorage
       });
+      const taskEvent = {eventId, taskId: taskInSessionStorage.id};
+      this.sessionStorageService.setItem('taskEvent', JSON.stringify(taskEvent));
       this.isEventCompletionChecksRequired = true;
     } else {
       // Task not in session storage, proceed to submit
@@ -430,6 +438,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       return this.postCompleteTaskIfRequired();
     }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
+        // on event completion ensure the previous event taskToComplete/taskEvent removed
+        this.sessionStorageService.removeItem('taskToComplete');
+        this.sessionStorageService.removeItem('taskEvent')
       }))
       .subscribe(
         () => {
@@ -513,5 +524,20 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   private hasCallbackFailed(response: object): boolean {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
+  }
+
+  // checks whether current taskToComplete relevant for the event
+  private taskForThisEvent(taskEvent, eventId, taskId): boolean {
+    if (!taskEvent) {
+      return true;
+    } else {
+      if (taskEvent.taskId === taskId && taskEvent.eventId !== eventId) {
+        // if the session storage not related to event, ignore it
+        this.sessionStorageService.removeItem('taskToComplete');
+        this.sessionStorageService.removeItem('taskEvent');
+        return false;
+      }
+      return true;
+    }
   }
 }
