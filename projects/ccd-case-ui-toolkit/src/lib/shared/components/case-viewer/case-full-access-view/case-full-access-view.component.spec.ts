@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, Output, SimpleChange } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, EventEmitter, Input, NO_ERRORS_SCHEMA, Output, SimpleChange } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
@@ -57,6 +57,7 @@ import { DeleteOrCancelDialogComponent } from '../../dialogs';
 import { CaseFlagStatus, PaletteModule } from '../../palette';
 import { CaseFullAccessViewComponent } from './case-full-access-view.component';
 import createSpyObj = jasmine.createSpyObj;
+import { CaseFlagStateService } from '../../case-editor/services/case-flag-state.service';
 
 @Component({
   // tslint:disable-next-line
@@ -1366,10 +1367,15 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
   let f: ComponentFixture<CaseFullAccessViewComponent>;
   let d: DebugElement;
   let convertHrefToRouterService;
+  let mockLocation: any;
 
   beforeEach((() => {
     convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
     convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('[Send a new direction](/case/IA/Asylum/1641014744613435/trigger/sendDirection)'));
+
+    mockLocation = createSpyObj('location', ['path', 'go', 'isCurrentPathEqualTo']);
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330#caseNotes');
+
     TestBed
       .configureTestingModule({
         imports: [
@@ -1421,12 +1427,7 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           PlaceholderService,
           CaseReferencePipe,
           OrderService,
-          {
-            provide: Location,
-            useClass: class MockLocation {
-              public path = (_: string) => 'cases/case-details/1234567890123456/tasks';
-            }
-          },
+          { provide: Location, useValue: mockLocation },
           ErrorNotifierService,
           { provide: AbstractAppConfig, useClass: AppMockConfig },
           NavigationNotifierService,
@@ -1444,8 +1445,9 @@ describe('CaseFullAccessViewComponent - appendedTabs', () => {
           { provide: MatDialogRef, useValue: matDialogRef },
           { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
           { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
-          DeleteOrCancelDialogComponent
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
+          DeleteOrCancelDialogComponent,
+          CaseFlagStateService
         ],
         teardown: { destroyAfterEach: false }
       })
@@ -1674,7 +1676,7 @@ describe('CaseFullAccessViewComponent - ends with caseID', () => {
           FieldTypeSanitiser,
           PageValidationService,
           CaseFieldService,
-          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+          { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']) },
         ],
         teardown: { destroyAfterEach: false }
       })

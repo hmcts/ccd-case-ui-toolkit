@@ -1,5 +1,4 @@
 import { Component, HostListener, Input, OnInit, Renderer2 } from '@angular/core';
-import { NgxMdService } from 'ngx-md';
 import * as marked from 'marked';
 import { Router } from '@angular/router';
 
@@ -15,7 +14,7 @@ export class MarkdownComponent implements OnInit {
   @Input()
   public renderUrlToTextFeature?: boolean = true;
 
-  constructor(private _markdown: NgxMdService, private router: Router, private renderer: Renderer2) {}
+  constructor(private router: Router, private renderer: Renderer2) {}
 
   public ngOnInit(): void {
     this.content = this.content.replace(/  \n/g, '<br>');

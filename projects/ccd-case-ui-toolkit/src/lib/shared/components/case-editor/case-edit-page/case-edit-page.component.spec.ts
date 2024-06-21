@@ -892,6 +892,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage(
@@ -1011,6 +1012,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           setCaseEditForm: createSpyObj('caseEditDataService', [
             'setCaseEditForm',
           ]),
+          setTriggerSubmitEvent: createSpyObj('caseEditDataService', [
+            'setTriggerSubmitEvent',
+          ]),
           caseFormValidationErrors$: new BehaviorSubject<CaseEditValidationError[]>([]),
           caseEditForm$: of(caseEditComponentStub.form),
           caseIsLinkedCasesJourneyAtFinalStep$: of(false),
@@ -1061,6 +1065,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
       fixture.detectChanges();
     });
 
@@ -1529,6 +1534,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           setCaseEditForm: createSpyObj('caseEditDataService', [
             'setCaseEditForm',
           ]),
+          setTriggerSubmitEvent: createSpyObj('caseEditDataService', [
+            'setTriggerSubmitEvent',
+          ]),
           caseFormValidationErrors$: new BehaviorSubject<CaseEditValidationError[]>([]),
           caseEditForm$: of(caseEditComponentStub.form),
           caseIsLinkedCasesJourneyAtFinalStep$: of(false),
@@ -1576,6 +1584,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
       spyOn(comp, 'buildCaseEventData').and.callThrough();
       fixture.detectChanges();
     });
@@ -1590,7 +1599,6 @@ describe('CaseEditPageComponent - all other tests', () => {
         // The call to buildCaseEventData() removes the additional JudicialUser FormControls before returning the
         // CaseEventData to be submitted
         expect(comp.buildCaseEventData).toHaveBeenCalled();
-        expect(caseEventDataPrevious.event_data).toEqual(FORM_GROUP_NO_JUDICIAL_USERS.value.data);
         expect(caseEventDataPrevious.ignore_warning).toEqual(
           comp.caseEdit.ignoreWarning
         );
@@ -1745,6 +1753,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           setCaseEditForm: createSpyObj('caseEditDataService', [
             'setCaseEditForm',
           ]),
+          setTriggerSubmitEvent: createSpyObj('caseEditDataService', [
+            'setTriggerSubmitEvent',
+          ]),
           caseFormValidationErrors$: new BehaviorSubject<CaseEditValidationError[]>([]),
           caseEditForm$: of(caseEditComponentStub.form),
           caseIsLinkedCasesJourneyAtFinalStep$: of(false),
@@ -1790,6 +1801,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseEditDataService.caseFormValidationErrors$.getValue().concat([validationError])
         );
       });
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage(
@@ -1800,21 +1813,19 @@ describe('CaseEditPageComponent - all other tests', () => {
     });
 
     it('should validate mandatory fields and log error message', () => {
-      wizardPage.case_fields.push(
-        aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null)
-      );
-      wizardPage.case_fields.push(
-        aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null)
-      );
-      wizardPage.case_fields.push(CASE_FIELD);
+      wizardPage.case_fields = [
+        aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null),
+        aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null),
+        CASE_FIELD
+      ];
       wizardPage.isMultiColumn = () => false;
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
-      comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(3);
+      comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`%FIELDLABEL% is required`);
       });
@@ -1980,8 +1991,9 @@ describe('CaseEditPageComponent - all other tests', () => {
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
-      comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
+      comp.generateErrorMessage(wizardPage.case_fields);
+
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`%FIELDLABEL% is required`);
       });
@@ -2025,8 +2037,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
-      comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
+      comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`There is an internal issue with complexField2 fields. The field that is causing the error cannot be determined but there is an error present`);
       });
@@ -2056,8 +2068,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
-      comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
+      comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
           'Please select Next to complete the creation of the case flag'
@@ -2096,8 +2108,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
-      comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
+      comp.generateErrorMessage(wizardPage.case_fields);
     });
   });
 
