@@ -62,11 +62,15 @@ export class FormValidatorsService {
   }
 
   public static markDownPatternValidator(): ValidatorFn {
-    const pattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>|<script\b[^>]*>([\s\S]*?)<\/script>)/;
+    const markdownPattern = /(\[[^\]]{0,500}\]\([^)]{0,500}\)|!\[[^\]]{0,500}\]\([^)]{0,500}\)|<img[^>]{0,500}>|<a[^>]{0,500}>.*?<\/a>)/;
+    const scriptPattern = /<script\b[^>]*>([\s\S]*?)<\/script>/;
 
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control?.value?.toString().trim();
-      return (value && pattern.test(value)) ? { markDownPattern: {} } : null;
+
+      const markdownPatternMatch = value && markdownPattern.test(value);
+      const scriptPatternMatch = value && scriptPattern.test(value);
+      return (markdownPatternMatch || scriptPatternMatch) ? { markDownPattern: {} } : null;
     };
   }
 
