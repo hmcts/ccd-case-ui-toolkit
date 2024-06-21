@@ -250,8 +250,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       taskEventInSessionStorage = JSON.parse(taskEventStr);
     }
     const eventId = this.getEventId(form);
-    if (taskInSessionStorage && taskInSessionStorage.case_id === this.getCaseId(caseDetails)
-        && this.taskForThisEvent(taskEventInSessionStorage, eventId, taskInSessionStorage.id)) {
+    const caseId = this.getCaseId(caseDetails);
+    if (this.taskExistsForThisEventAndCase(taskInSessionStorage, taskEventInSessionStorage, eventId, caseId)) {
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
         caseId: this.getCaseId(caseDetails),
@@ -507,6 +507,25 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  // checks whether current taskToComplete relevant for the event
+  public taskExistsForThisEventAndCase(taskInSessionStorage, taskEvent, eventId, caseId): boolean {
+    if (!taskInSessionStorage || taskInSessionStorage.case_id !== caseId) {
+      return false;
+    }
+    if (!taskEvent) {
+      // if no task event present then there is no task to complete from previous event present
+      return true;
+    } else {
+      if (taskEvent.taskId === taskInSessionStorage.id && taskEvent.eventId !== eventId) {
+        // if the session storage not related to event, ignore it and remove
+        this.sessionStorageService.removeItem('taskToComplete');
+        this.sessionStorageService.removeItem('taskEvent');
+        return false;
+      }
+      return true;
+    }
+  }
+
   public onEventCanBeCompleted({ eventTrigger, eventCanBeCompleted, caseDetails, form, submit }: CaseEditonEventCanBeCompleted): void {
     if (eventCanBeCompleted) {
       // Submit
@@ -524,20 +543,5 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   private hasCallbackFailed(response: object): boolean {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
-  }
-
-  // checks whether current taskToComplete relevant for the event
-  private taskForThisEvent(taskEvent, eventId, taskId): boolean {
-    if (!taskEvent) {
-      return true;
-    } else {
-      if (taskEvent.taskId === taskId && taskEvent.eventId !== eventId) {
-        // if the session storage not related to event, ignore it
-        this.sessionStorageService.removeItem('taskToComplete');
-        this.sessionStorageService.removeItem('taskEvent');
-        return false;
-      }
-      return true;
-    }
   }
 }
