@@ -27,8 +27,6 @@ import createSpyObj = jasmine.createSpyObj;
 
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
-  @Input()
-  public formGroup: FormGroup;
 }
 
 const JURISDICTION_1: Jurisdiction = {
