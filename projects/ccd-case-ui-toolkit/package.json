@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.40",
+  "version": "7.0.40-cfv-sort-order-upload-date-renewed",
   "engines": {
     "node": ">=18.19.0"
   },
