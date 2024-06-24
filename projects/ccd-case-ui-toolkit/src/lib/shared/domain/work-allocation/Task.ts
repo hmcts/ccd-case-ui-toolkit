@@ -26,6 +26,11 @@ export interface Task {
   work_type_id?: string;
 }
 
+export interface TaskEvent {
+  taskId: string;
+  eventId: string;
+}
+
 export enum Permissions {
   Own= 'OWN',
   Execute= 'EXECUTE',
