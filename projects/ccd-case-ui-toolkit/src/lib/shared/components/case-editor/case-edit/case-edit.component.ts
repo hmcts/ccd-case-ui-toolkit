@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject, of } from 'rxjs';
 import { finalize, switchMap } from 'rxjs/operators';
+
+import { Constants } from '../../../commons/constants';
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import {
   CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage,
@@ -11,18 +13,16 @@ import {
   CaseEventData, CaseEventTrigger, CaseField,
   CaseView, Draft, HttpError, Profile
 } from '../../../domain';
-import { Task } from '../../../domain/work-allocation/Task';
+import { Task, TaskEvent } from '../../../domain/work-allocation/Task';
 import {
   AlertService,
   FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
   SessionStorageService, WindowService
 } from '../../../services';
-import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
-import { Constants } from '../../../commons/constants';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -240,7 +240,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
     let taskInSessionStorage: Task;
-    let taskEventInSessionStorage: any;
+    let taskEventInSessionStorage: TaskEvent;
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
     const taskEventStr = this.sessionStorageService.getItem('taskEvent');
     if (taskStr) {
