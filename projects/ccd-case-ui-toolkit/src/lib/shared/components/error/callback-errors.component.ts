@@ -57,6 +57,7 @@ export class CallbackErrorsComponent implements OnInit {
       errorContext.ignoreWarning = false;
       errorContext.triggerText = this.triggerTextContinue;
     }
+    errorContext.eventId = this.error?.details?.eventId;
     return errorContext;
   }
 

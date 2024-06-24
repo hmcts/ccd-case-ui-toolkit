@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AddressValidationConstants } from '../../../commons/address-validation-constants';
 import { FocusElementDirective } from '../../../directives/focus-element';
