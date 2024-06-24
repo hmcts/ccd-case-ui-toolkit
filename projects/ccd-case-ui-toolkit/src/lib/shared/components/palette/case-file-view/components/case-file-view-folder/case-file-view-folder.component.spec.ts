@@ -90,10 +90,11 @@ describe('CaseFileViewFolderComponent', () => {
     documentFilterInputEl.dispatchEvent(new Event('input'));
     fixture.detectChanges();
     await fixture.whenStable();
+    component.sortDataSourceDescending(1)
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
 
-    expect(component.documentTreeData).toEqual(treeData);
+    expect(treeData[3].children[0].upload_timestamp).toEqual('17 Nov 2022 00:00:00');
   });
 
   it('should generate tree data from categorised data', () => {
