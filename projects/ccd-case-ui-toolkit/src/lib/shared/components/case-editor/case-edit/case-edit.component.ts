@@ -254,10 +254,11 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.taskExistsForThisEventAndCase(taskInSessionStorage, taskEventInSessionStorage, eventId, caseId)) {
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
-        caseId: this.getCaseId(caseDetails),
+        caseId,
         eventId,
         task: taskInSessionStorage
       });
+      // add taskEvent to link current event with task id
       const taskEvent = {eventId, taskId: taskInSessionStorage.id};
       this.sessionStorageService.setItem('taskEvent', JSON.stringify(taskEvent));
       this.isEventCompletionChecksRequired = true;
