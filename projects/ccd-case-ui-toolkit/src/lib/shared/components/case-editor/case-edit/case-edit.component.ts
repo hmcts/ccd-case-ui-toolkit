@@ -430,6 +430,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       return this.postCompleteTaskIfRequired();
     }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
+        this.isSubmitting = false;
       }))
       .subscribe(
         () => {
@@ -445,7 +446,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
               this.formErrorService
                 .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
             }
-            this.isSubmitting = false;
           } else {
             this.sessionStorageService.setItem('taskCompletionError', 'true');
             // task assignment/completion error - handled within workallocation service
