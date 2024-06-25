@@ -4,7 +4,7 @@ import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEventTrigger, HttpError, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { createCaseEventTrigger } from '../../../fixture';
-import { HttpService, ProfileNotifier, ProfileService } from '../../../services';
+import { ErrorNotifierService, HttpService, ProfileNotifier, ProfileService } from '../../../services';
 import { CaseResolver } from './case.resolver';
 import { EventTriggerResolver } from './event-trigger.resolver';
 
@@ -37,6 +37,7 @@ describe('EventTriggerResolver', () => {
   let router: any;
   let profileService: any;
   let profileNotifier: any;
+  let errorNotifier: any;
   let appConfig: any;
   let httpService: any;
   const MOCK_PROFILE: Profile = createAProfile();
@@ -70,10 +71,12 @@ describe('EventTriggerResolver', () => {
 
   beforeEach(() => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
-    alertService = createSpyObj('alertService', ['error']);
+    alertService = createSpyObj('alertService', ['error', 'setPreserveAlerts']);
     orderService = createSpyObj('orderService', ['sort']);
+    errorNotifier = createSpyObj('errorNotifierService', ['announceError']);
     profileService = createSpyObj<ProfileService>('profileService', ['get']);
     profileNotifier = new ProfileNotifier();
+    errorNotifier = new ErrorNotifierService();
 
     router = createSpyObj('router', ['navigate']);
 
@@ -83,7 +86,7 @@ describe('EventTriggerResolver', () => {
     httpService = createSpyObj<HttpService>('httpService', ['get']);
     httpService.get.and.returnValue(of(MOCK_PROFILE));
 
-    eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier);
+    eventTriggerResolver = new EventTriggerResolver(casesService, alertService, profileService, profileNotifier, router, appConfig, errorNotifier);
 
     route = {
       firstChild: {
@@ -200,8 +203,11 @@ describe('EventTriggerResolver', () => {
       .then(data => {
         fail(data);
       }, err => {
-        expect(err).toBeTruthy();
-        expect(alertService.error).toHaveBeenCalledWith(ERROR.message);
+      err.details = { eventId: 'createBundle', ...err.details };
+       expect(err).toBeTruthy();
+       expect(alertService.setPreserveAlerts).toHaveBeenCalledWith(true);
+       expect(alertService.error).toHaveBeenCalledWith(ERROR.message);
+       expect(router.navigate).toHaveBeenCalled();
         done();
       });
     expect(profileService.get).toHaveBeenCalledWith();
