@@ -1,5 +1,13 @@
 ## RELEASE NOTES
 
+### Version 7.0.41
+**EXUI-1856** Unable to see Present (PED) button
+**EXUI-1598** auto-redirect to tabs as expected
+**EXUI-1739** not passing service code for case linking
+
+### Version 7.0.40
+**EXUI-1808** Angular 17 update
+
 ### Version 7.0.24
 **EXUI-706** Clone - Insufficient Anti-Automation Mechanisms 
 **EXUI-724** Remove support for WA versions
