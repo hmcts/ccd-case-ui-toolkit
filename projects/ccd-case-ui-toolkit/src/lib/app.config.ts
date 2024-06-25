@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+
 // tslint:disable:variable-name
 export interface AccessManagementBasicViewMockModel {
   active?: boolean;
@@ -50,6 +51,8 @@ export abstract class AbstractAppConfig {
   public abstract getActivityMaxRequestPerBatch(): number;
   public abstract getCaseHistoryUrl(caseId: string, eventId: string): string;
   public abstract getPrintServiceUrl(): string;
+  public abstract getIcpEnable(): boolean;
+  public abstract getIcpJurisdictions(): string[];
 
   /**
    * Dummy version replacing deprecated `getRemotePrintServiceUrl()`, to be removed in next major release
@@ -101,6 +104,7 @@ export abstract class AbstractAppConfig {
     return 'prod';
   }
 
+
   public abstract getRefundsUrl(): string;
   public abstract getNotificationUrl(): string;
   public abstract getPaymentReturnUrl(): string;
@@ -116,7 +120,6 @@ export abstract class AbstractAppConfig {
   public abstract getEnableRestrictedCaseAccessConfig(): boolean;
   public abstract getEnableCaseFileViewVersion1_1(): boolean;
 }
-
 export class CaseEditorConfig {
   public api_url: string;
   public case_data_url: string;
@@ -140,6 +143,7 @@ export class CaseEditorConfig {
   public activity_url: string;
   public activity_max_request_per_batch: number;
   public print_service_url: string;
+
   /**
    * remote_print_service_url marked as optional since deprecation, ahead of removal in next major release
    * @deprecated
@@ -187,4 +191,6 @@ export class CaseEditorConfig {
   public case_data_store_api_url: string;
   public enable_restricted_case_access: boolean;
   public enable_case_file_view_version_1_1: boolean;
+  public icp_enabled: boolean;
+  public icp_jurisdictions: string[];
 }

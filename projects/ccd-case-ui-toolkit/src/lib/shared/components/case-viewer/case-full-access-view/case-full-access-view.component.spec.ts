@@ -23,7 +23,7 @@ import { PaletteUtilsModule } from '../../../components/palette/utils';
 import { ConditionalShowRegistrarService } from '../../../directives';
 import { LabelSubstitutorDirective } from '../../../directives/substitutor';
 import { PlaceholderService } from '../../../directives/substitutor/services';
-import { CaseView, CaseViewEvent, CaseViewTrigger } from '../../../domain/case-view';
+import { CaseTab, CaseView, CaseViewEvent, CaseViewTrigger } from '../../../domain/case-view';
 import { CaseViewEventIds } from '../../../domain/case-view/case-view-event-ids.enum';
 import { CaseField } from '../../../domain/definition';
 import { HttpError } from '../../../domain/http';
@@ -2181,6 +2181,483 @@ describe('CaseFullAccessViewComponent - get default hrefMarkdownLinkContent', ()
     subscriptionMock = null;
     caseViewerComponent.unsubscribe(subscriptionMock);
     expect(subscribeSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe('CaseFullAccessViewComponent - findPreSelectedActiveTab', () => {
+  let component: CaseFullAccessViewComponent;
+  let fixture: ComponentFixture<CaseFullAccessViewComponent>;
+  let mockLocation: any;
+  let convertHrefToRouterService;
+
+  beforeEach(async () => {
+    mockLocation = createSpyObj('location', ['path']);
+    mockLocation.path.and.returnValue('/cases/case-details/1620409659381330');
+    convertHrefToRouterService = jasmine.createSpyObj('ConvertHrefToRouterService', ['getHrefMarkdownLinkContent', 'callAngularRouter']);
+    convertHrefToRouterService.getHrefMarkdownLinkContent.and.returnValue(of('Default'));
+
+    await TestBed.configureTestingModule({
+      imports: [
+        PaletteUtilsModule,
+        MatTabsModule,
+        BrowserAnimationsModule,
+        PaletteModule,
+        PaymentLibModule,
+        RouterTestingModule.withRoutes([
+          {
+            path: 'cases',
+            children: [
+              {
+                path: 'case-details',
+                children: [
+                  {
+                    path: ':id#overview',
+                    children: [
+                      {
+                        path: 'tasks',
+                        component: TasksContainerComponent
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]),
+        StoreModule.forRoot({}),
+        EffectsModule.forRoot([])
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [
+        TasksContainerComponent,
+        CaseFullAccessViewComponent,
+        DeleteOrCancelDialogComponent,
+        EventTriggerComponent,
+        CallbackErrorsComponent,
+        // Mocks
+        caseActivityComponentMock,
+        caseHeaderComponentMock,
+        linkComponentMock,
+        MockRpxTranslatePipe
+      ],
+      providers: [
+        FieldsUtils,
+        PlaceholderService,
+        CaseReferencePipe,
+        OrderService,
+        {
+          provide: Location,
+          useValue: mockLocation
+        },
+        ErrorNotifierService,
+        { provide: AbstractAppConfig, useClass: AppMockConfig },
+        NavigationNotifierService,
+        { provide: CaseNotifier, useValue: caseNotifier },
+        { provide: ActivatedRoute, useValue: mockRoute },
+        ActivityPollingService,
+        ActivityService,
+        HttpService,
+        HttpErrorService,
+        AuthService,
+        SessionStorageService,
+        { provide: DraftService, useValue: draftService },
+        { provide: AlertService, useValue: alertService },
+        { provide: MatDialog, useValue: dialog },
+        { provide: MatDialogRef, useValue: matDialogRef },
+        { provide: MatDialogConfig, useValue: DIALOG_CONFIG },
+        { provide: ConvertHrefToRouterService, useValue: convertHrefToRouterService },
+        { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService', ['translate']) },
+        DeleteOrCancelDialogComponent
+      ],
+      teardown: { destroyAfterEach: false }
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CaseFullAccessViewComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('should return the first unsorted tab if it exists', () => {
+    component.caseDetails = clone(CASE_VIEW);
+    component.sortedTabs = [
+      {
+        id: 'HistoryTab',
+        label: 'History',
+        order: 1,
+        fields: [Object.assign(new CaseField(), {
+          id: 'CaseHistory',
+          label: 'Case History',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'CaseHistoryViewer',
+            type: 'CaseHistoryViewer'
+          },
+          order: 1,
+          value: EVENTS,
+          show_condition: '',
+          hint_text: ''
+        })],
+        show_condition: ''
+      },
+      {
+        id: 'NameTab',
+        label: 'Name',
+        order: 2,
+        fields: [
+          Object.assign(new CaseField(), {
+            id: 'PersonFirstName',
+            label: 'First name',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Text',
+              type: 'Text'
+            },
+            order: 2,
+            value: 'Janet',
+            show_condition: '',
+            hint_text: ''
+          }),
+          Object.assign(new CaseField(), {
+            id: 'PersonLastName',
+            label: 'Last name',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Text',
+              type: 'Text'
+            },
+            order: 1,
+            value: 'Parker',
+            show_condition: 'PersonFirstName="Jane*"',
+            hint_text: ''
+          }),
+          Object.assign(new CaseField(), {
+            id: 'PersonComplex',
+            label: 'Complex field',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Complex',
+              type: 'Complex',
+              complex_fields: []
+            },
+            order: 3,
+            show_condition: 'PersonFirstName="Park"',
+            hint_text: ''
+          })
+        ],
+        show_condition: 'PersonFirstName="Janet"'
+      },
+      {
+        id: 'SomeTab',
+        label: 'Some Tab',
+        order: 3,
+        fields: [],
+        show_condition: ''
+      },
+      {
+        id: 'CaseFlagsTab',
+        label: 'Case flags',
+        fields: [
+          Object.assign(new CaseField(), {
+            id: 'FlagLauncher1',
+            label: 'Flag launcher',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'FlagLauncher',
+              type: 'FlagLauncher'
+            },
+            order: 4,
+            value: null,
+            show_condition: '',
+            hint_text: ''
+          }),
+          Object.assign(new CaseField(), {
+            id: 'CaseFlag1',
+            label: 'First Case Flag',
+            display_context: null,
+            field_type: {
+              id: 'Flags',
+              type: 'Complex',
+              complex_fields: []
+            },
+            value: {
+              partyName: 'John Smith',
+              roleOnCase: '',
+              details: [
+                {
+                  id: '9c2129ba-3fc6-4bae-afc3-32808ffd9cbe',
+                  value: {
+                    name: 'Wheel chair access',
+                    subTypeValue: '',
+                    subTypeKey: '',
+                    otherDescription: '',
+                    flagComment: '',
+                    dateTimeModified: new Date('2021-09-09 00:00:00'),
+                    dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                    path: [],
+                    hearingRelevant: false,
+                    flagCode: '',
+                    status: CaseFlagStatus.ACTIVE
+                  }
+                },
+                {
+                  id: '9125aac8-1506-4753-b820-b3a3be451235',
+                  value: {
+                    name: 'Sign language',
+                    subTypeValue: 'British Sign Language (BSL)',
+                    subTypeKey: '',
+                    otherDescription: '',
+                    flagComment: '',
+                    dateTimeModified: new Date('2021-09-09 00:00:00'),
+                    dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                    path: [],
+                    hearingRelevant: false,
+                    flagCode: '',
+                    status: CaseFlagStatus.INACTIVE
+                  }
+                }
+              ]
+            }
+          })
+        ],
+        show_condition: null
+      }
+    ] as CaseTab[];
+
+    const selectedTab = component.findPreSelectedActiveTab();
+    expect(selectedTab.id).toEqual('CaseFlagsTab');
+  });
+
+  it('should return the first sorted tab if no unsorted tabs exist', () => {
+    component.caseDetails = clone(CASE_VIEW);
+    component.sortedTabs = [
+      {
+        id: 'HistoryTab',
+        label: 'History',
+        order: 1,
+        fields: [Object.assign(new CaseField(), {
+          id: 'CaseHistory',
+          label: 'Case History',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'CaseHistoryViewer',
+            type: 'CaseHistoryViewer'
+          },
+          order: 1,
+          value: EVENTS,
+          show_condition: '',
+          hint_text: ''
+        })],
+        show_condition: ''
+      },
+      {
+        id: 'NameTab',
+        label: 'Name',
+        order: 2,
+        fields: [
+          Object.assign(new CaseField(), {
+            id: 'PersonFirstName',
+            label: 'First name',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Text',
+              type: 'Text'
+            },
+            order: 2,
+            value: 'Janet',
+            show_condition: '',
+            hint_text: ''
+          }),
+          Object.assign(new CaseField(), {
+            id: 'PersonLastName',
+            label: 'Last name',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Text',
+              type: 'Text'
+            },
+            order: 1,
+            value: 'Parker',
+            show_condition: 'PersonFirstName="Jane*"',
+            hint_text: ''
+          }),
+          Object.assign(new CaseField(), {
+            id: 'PersonComplex',
+            label: 'Complex field',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Complex',
+              type: 'Complex',
+              complex_fields: []
+            },
+            order: 3,
+            show_condition: 'PersonFirstName="Park"',
+            hint_text: ''
+          })
+        ],
+        show_condition: 'PersonFirstName="Janet"'
+      },
+      {
+        id: 'SomeTab',
+        label: 'Some Tab',
+        order: 3,
+        fields: [],
+        show_condition: ''
+      }
+    ] as CaseTab[];
+
+    const selectedTab = component.findPreSelectedActiveTab();
+    expect(selectedTab.id).toEqual('HistoryTab');
+  });
+
+  it('should prioritize unsorted tabs over sorted ones', () => {
+    component.caseDetails = clone(CASE_VIEW);
+    component.caseDetails.tabs[1].order = null;
+    component.sortedTabs = [
+      {
+        id: 'NameTab',
+        label: 'Name',
+        order: 2,
+        fields: [
+          Object.assign(new CaseField(), {
+            id: 'PersonFirstName',
+            label: 'First name',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Text',
+              type: 'Text'
+            },
+            order: 2,
+            value: 'Janet',
+            show_condition: '',
+            hint_text: ''
+          }),
+          Object.assign(new CaseField(), {
+            id: 'PersonLastName',
+            label: 'Last name',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Text',
+              type: 'Text'
+            },
+            order: 1,
+            value: 'Parker',
+            show_condition: 'PersonFirstName="Jane*"',
+            hint_text: ''
+          }),
+          Object.assign(new CaseField(), {
+            id: 'PersonComplex',
+            label: 'Complex field',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'Complex',
+              type: 'Complex',
+              complex_fields: []
+            },
+            order: 3,
+            show_condition: 'PersonFirstName="Park"',
+            hint_text: ''
+          })
+        ],
+        show_condition: 'PersonFirstName="Janet"'
+      },
+      {
+        id: 'SomeTab',
+        label: 'Some Tab',
+        order: 3,
+        fields: [],
+        show_condition: ''
+      },
+      {
+        id: 'HistoryTab',
+        label: 'History',
+        order: null,
+        fields: [Object.assign(new CaseField(), {
+          id: 'CaseHistory',
+          label: 'Case History',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'CaseHistoryViewer',
+            type: 'CaseHistoryViewer'
+          },
+          order: 1,
+          value: EVENTS,
+          show_condition: '',
+          hint_text: ''
+        })],
+        show_condition: ''
+      },
+      {
+        id: 'CaseFlagsTab',
+        label: 'Case flags',
+        order: null,
+        fields: [
+          Object.assign(new CaseField(), {
+            id: 'FlagLauncher1',
+            label: 'Flag launcher',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'FlagLauncher',
+              type: 'FlagLauncher'
+            },
+            order: 4,
+            value: null,
+            show_condition: '',
+            hint_text: ''
+          }),
+          Object.assign(new CaseField(), {
+            id: 'CaseFlag1',
+            label: 'First Case Flag',
+            display_context: null,
+            field_type: {
+              id: 'Flags',
+              type: 'Complex',
+              complex_fields: []
+            },
+            value: {
+              partyName: 'John Smith',
+              roleOnCase: '',
+              details: [
+                {
+                  id: '9c2129ba-3fc6-4bae-afc3-32808ffd9cbe',
+                  value: {
+                    name: 'Wheel chair access',
+                    subTypeValue: '',
+                    subTypeKey: '',
+                    otherDescription: '',
+                    flagComment: '',
+                    dateTimeModified: new Date('2021-09-09 00:00:00'),
+                    dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                    path: [],
+                    hearingRelevant: false,
+                    flagCode: '',
+                    status: CaseFlagStatus.ACTIVE
+                  }
+                },
+                {
+                  id: '9125aac8-1506-4753-b820-b3a3be451235',
+                  value: {
+                    name: 'Sign language',
+                    subTypeValue: 'British Sign Language (BSL)',
+                    subTypeKey: '',
+                    otherDescription: '',
+                    flagComment: '',
+                    dateTimeModified: new Date('2021-09-09 00:00:00'),
+                    dateTimeCreated: new Date('2021-09-09 00:00:00'),
+                    path: [],
+                    hearingRelevant: false,
+                    flagCode: '',
+                    status: CaseFlagStatus.INACTIVE
+                  }
+                }
+              ]
+            },
+          })
+        ],
+        show_condition: null
+      }
+    ] as CaseTab[];
+
+    const selectedTab = component.findPreSelectedActiveTab();
+    expect(selectedTab.id).toEqual('HistoryTab');
   });
 });
 xdescribe('CaseFullAccessViewComponent - print and event selector disabled', () => {
