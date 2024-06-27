@@ -7,7 +7,7 @@ set -e
 if [[ "$result" != 0 ]]; then
   if [[ -f yarn-audit-known-issues ]]; then
     set +e
-    yarn audit --json | grep auditAdvisory > yarn-audit-issues
+    yarn npm audit --json --recursive --environment production --json > yarn-audit-known-issues
     set -e
     new_vulnerabilities=false
     while read -r line; do
