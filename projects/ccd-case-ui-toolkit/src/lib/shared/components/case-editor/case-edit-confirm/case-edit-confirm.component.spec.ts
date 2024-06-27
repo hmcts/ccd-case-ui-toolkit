@@ -28,7 +28,7 @@ describe('CaseEditConfirmComponent', () => {
   const firstPage = new WizardPage();
 
   const FORM_GROUP = new FormGroup({
-    data: new FormGroup({PersonLastName: new FormControl('Khaleesi')})
+    data: new FormGroup({ PersonLastName: new FormControl('Khaleesi') })
   });
   routerStub = {
     navigate: jasmine.createSpy('navigate'),
@@ -46,7 +46,7 @@ describe('CaseEditConfirmComponent', () => {
     caseEditComponentStub = {
       form: FORM_GROUP,
       data: '',
-      eventTrigger: {case_fields: [caseField1, caseField2, caseField3]},
+      eventTrigger: { case_fields: [caseField1, caseField2, caseField3] },
       hasPrevious: () => true,
       getPage: () => firstPage,
       confirmation: {
@@ -56,11 +56,15 @@ describe('CaseEditConfirmComponent', () => {
         getBody: () => 'A body with mark down'
       },
       submitted: {
-        emit: () => {}
+        emit: () => { }
       },
-      caseDetails: {case_id: '1234567812345678', tabs: [{id: 'tab1', label: 'tabLabel1',
-        fields: [caseField1, caseField2, caseField3]}], metadataFields: [],
-        state: {id: '1', name: 'Incomplete Application', title_display: '# 1234567812345678: test'}},
+      caseDetails: {
+        case_id: '1234567812345678', tabs: [{
+          id: 'tab1', label: 'tabLabel1',
+          fields: [caseField1, caseField2, caseField3]
+        }], metadataFields: [],
+        state: { id: '1', name: 'Incomplete Application', title_display: '# 1234567812345678: test' }
+      },
     };
     TestBed
       .configureTestingModule({
@@ -96,14 +100,14 @@ describe('CaseEditConfirmComponent', () => {
 
   it('should render a confirmation-header', () => {
     de = fixture.debugElement.query(By.css('#confirmation-header'));
-    expect(de.nativeElement.textContent).toBeDefined();
-    expect(de.nativeElement.textContent.trim()).toEqual('Header');
+    expect(de.nativeElement.innerHTML).toBeDefined();
+    expect(de.nativeElement.innerHTML.trim()).toContain('Header');
   });
 
   it('should render an confirmation-body', () => {
     de = fixture.debugElement.query(By.css('#confirmation-body'));
-    expect(de.nativeElement.textContent).toBeDefined();
-    expect(de.nativeElement.textContent.trim()).toEqual('A body with mark down');
+    expect(de.nativeElement.innerHTML).toBeDefined();
+    expect(de.nativeElement.innerHTML.trim()).toContain('A body with mark down');
   });
 
   it('should show valid title on the page', () => {
@@ -146,7 +150,7 @@ describe('CaseEditConfirmComponent', () => {
 
   beforeEach(waitForAsync(() => {
     caseEditCompStub = {
-      eventTrigger: {case_fields: []},
+      eventTrigger: { case_fields: [] },
     };
     TestBed
       .configureTestingModule({
@@ -162,8 +166,8 @@ describe('CaseEditConfirmComponent', () => {
           MockRpxTranslatePipe
         ],
         providers: [
-          {provide: CaseEditComponent, useValue: caseEditCompStub},
-          {provide: Router, useValue: routerStub},
+          { provide: CaseEditComponent, useValue: caseEditCompStub },
+          { provide: Router, useValue: routerStub },
           FieldsUtils,
           PlaceholderService
         ]

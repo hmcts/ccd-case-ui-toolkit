@@ -801,4 +801,67 @@ describe('FieldsUtils', () => {
       expect(FieldsUtils.isCaseFieldOfType(caseField, ['Flags'])).toBe(true);
     });
   });
+
+  describe('getValidationErrorMessageForFlagLauncherCaseField() function test', () => {
+    it('should return empty string if the display context parameter provided is incorrect', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', 'OPTIONAL', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual('');
+    });
+
+    it('should return correct validation error message when creating case flag', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(CREATE)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the creation of the case flag'
+      );
+    });
+
+    it('should return correct validation error message when updating case flag', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(UPDATE)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the update of the selected case flag'
+      );
+    });
+
+    it('should return correct validation error message when creating support request', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(CREATE,EXTERNAL)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the creation of the support request'
+      );
+    });
+
+    it('should return correct validation error message when updating support request', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(UPDATE,EXTERNAL)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the update of the selected support request'
+      );
+    });
+
+    it('should return correct validation error message when creating case flag, Case Flags v2.1 enabled', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(CREATE,VERSION2.1)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the creation of the case flag'
+      );
+    });
+
+    it('should return correct validation error message when updating case flag, Case Flags v2.1 enabled', () => {
+      const caseField = aCaseField('flagLauncher', 'flagLauncher', 'FlagLauncher', '#ARGUMENT(UPDATE,VERSION2.1)', null, null, false, true);
+      expect(FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(caseField)).toEqual(
+        'Please select Next to complete the update of the selected case flag'
+      );
+    });
+  });
+
+  describe('isValidDisplayContext() function test', () => {
+    it('should return false if display context is not one of the 5 allowed values', () => {
+      expect(FieldsUtils.isValidDisplayContext('BANANA')).toBe(false);
+    });
+
+    it('should return true for each of the 5 allowed values', () => {
+      expect(FieldsUtils.isValidDisplayContext('OPTIONAL')).toBe(true);
+      expect(FieldsUtils.isValidDisplayContext('MANDATORY')).toBe(true);
+      expect(FieldsUtils.isValidDisplayContext('READONLY')).toBe(true);
+      expect(FieldsUtils.isValidDisplayContext('COMPLEX')).toBe(true);
+      expect(FieldsUtils.isValidDisplayContext('HIDDEN')).toBe(true);
+    });
+  });
 });

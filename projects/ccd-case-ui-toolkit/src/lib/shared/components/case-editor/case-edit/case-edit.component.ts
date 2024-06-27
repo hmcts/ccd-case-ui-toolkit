@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { finalize, switchMap } from 'rxjs/operators';
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import {
   CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage,
@@ -13,12 +13,16 @@ import {
 } from '../../../domain';
 import { Task } from '../../../domain/work-allocation/Task';
 import {
+  AlertService,
   FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
   SessionStorageService, WindowService
 } from '../../../services';
+import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
-import { CaseNotifier, WizardFactoryService } from '../services';
+import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
+import { Constants } from '../../../commons/constants';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -81,6 +85,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public callbackErrorsSubject: Subject<any> = new Subject();
 
+  public validPageList: WizardPage[] = [];
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly caseNotifier: CaseNotifier,
@@ -94,7 +100,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     private readonly windowsService: WindowService,
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
+    private readonly workAllocationService: WorkAllocationService,
+    private readonly alertService: AlertService
   ) {}
 
   public ngOnInit(): void {
@@ -133,7 +142,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (this.isPageRefreshed && this.initialUrl) {
       this.sessionStorageService.removeItem('eventUrl');
       this.windowsService.alert(CaseEditComponent.ALERT_MESSAGE);
-      this.router.navigate([this.initialUrl], { relativeTo: this.route});
+      this.router.navigate([this.initialUrl], { relativeTo: this.route });
       return true;
     }
     return false;
@@ -168,7 +177,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     });
 
     /* istanbul ignore else */
-    if(!nextPage &&
+    if (!nextPage &&
       !(this.eventTrigger.show_summary || this.eventTrigger.show_summary === null) &&
       !this.eventTrigger.show_event_notes) {
       this.submitForm({
@@ -211,7 +220,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   public emitSubmitted(response: Record<string, any>): void {
-    this.submitted.emit({caseId: response['id'], status: this.getStatus(response)});
+    this.submitted.emit({ caseId: response['id'], status: this.getStatus(response) });
   }
 
   public getNextPage({ wizard, currentPageId, eventTrigger, form }: CaseEditGetNextPage): WizardPage {
@@ -223,10 +232,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   public confirm(confirmation: Confirmation): Promise<boolean> {
     this.confirmation = confirmation;
-    return this.router.navigate(['confirm'], {relativeTo: this.route});
+    return this.router.navigate(['confirm'], { relativeTo: this.route });
   }
 
-  public submitForm({ eventTrigger, form, caseDetails, submit }: CaseEditSubmitForm ): void {
+  public submitForm({ eventTrigger, form, caseDetails, submit }: CaseEditSubmitForm): void {
     this.isSubmitting = true;
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
@@ -263,172 +272,215 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   private getEventId(form: FormGroup): string {
     return form.value.event.id;
- }
-
- private generateCaseEventData({ eventTrigger, form }: CaseEditGenerateCaseEventData ): CaseEventData {
-  const caseEventData: CaseEventData = {
-    data: this.replaceEmptyComplexFieldValues(
-      this.formValueService.sanitise(
-        this.replaceHiddenFormValuesWithOriginalCaseData(
-          form.get('data') as FormGroup, eventTrigger.case_fields))),
-    event: form.value.event
-  } as CaseEventData;
-  this.formValueService.clearNonCaseFields(caseEventData.data, eventTrigger.case_fields);
-  this.formValueService.removeNullLabels(caseEventData.data, eventTrigger.case_fields);
-  this.formValueService.removeEmptyDocuments(caseEventData.data, eventTrigger.case_fields);
-  // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
-  // these will fail validation
-  this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, eventTrigger.case_fields);
-  // For Case Flag submissions (where a FlagLauncher field is present in the event trigger), the flag details data
-  // needs populating for each Flags field, then the FlagLauncher field needs removing
-  this.formValueService.repopulateFormDataFromCaseFieldValues(caseEventData.data, eventTrigger.case_fields);
-  // Data population step required for Linked Cases
-  this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
-  // Remove "Launcher"-type fields (these have no values and are not intended to be persisted)
-  this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
-  caseEventData.event_token = eventTrigger.event_token;
-  caseEventData.ignore_warning = this.ignoreWarning;
-  if (this.confirmation) {
-    caseEventData.data = {};
   }
 
-  return caseEventData;
-}
+  private generateCaseEventData({ eventTrigger, form }: CaseEditGenerateCaseEventData ): CaseEventData {
+    const caseEventData: CaseEventData = {
+      data: this.replaceEmptyComplexFieldValues(
+        this.formValueService.sanitise(
+          this.replaceHiddenFormValuesWithOriginalCaseData(
+            form.get('data') as FormGroup, eventTrigger.case_fields))),
+      event: form.value.event
+    } as CaseEventData;
+    this.formValueService.clearNonCaseFields(caseEventData.data, eventTrigger.case_fields);
+    this.formValueService.removeNullLabels(caseEventData.data, eventTrigger.case_fields);
+    this.formValueService.removeEmptyDocuments(caseEventData.data, eventTrigger.case_fields);
+    // Remove collection fields that have "min" validation of greater than zero set on the FieldType but are empty;
+    // these will fail validation
+    this.formValueService.removeEmptyCollectionsWithMinValidation(caseEventData.data, eventTrigger.case_fields);
+    // For Case Flag submissions (where a FlagLauncher field is present in the event trigger), the flag details data
+    // needs populating for each Flags field, then the FlagLauncher field needs removing
+    this.formValueService.repopulateFormDataFromCaseFieldValues(caseEventData.data, eventTrigger.case_fields);
+    // Data population step required for Linked Cases
+    this.formValueService.populateLinkedCasesDetailsFromCaseFields(caseEventData.data, eventTrigger.case_fields);
+    // Remove "Launcher"-type fields (these have no values and are not intended to be persisted)
+    this.formValueService.removeCaseFieldsOfType(caseEventData.data, eventTrigger.case_fields, ['FlagLauncher', 'ComponentLauncher']);
 
-/**
- * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
- * all its sub-fields and descendants are `null` or `undefined`.
- *
- * @param data The object tree representing all the form field data
- * @returns The form field data modified accordingly
- */
-private replaceEmptyComplexFieldValues(data: object): object {
-  Object.keys(data).forEach((key) => {
-    if (!Array.isArray(data[key]) && typeof data[key] === 'object' && !FieldsUtils.containsNonEmptyValues(data[key])) {
-      data[key] = null;
+    // delete fields which are not part of the case event journey wizard pages case fields
+    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.validPageList, caseEventData.data, eventTrigger.case_fields, false, form.controls['data'].value);
+    const pageListCaseFields = this.validPageListCaseFieldsService.validPageListCaseFields(this.validPageList, eventTrigger.case_fields, form.controls['data'].value);
+    // Remove unnecessary case fields which are hidden, only if the submission is *not* for Case Flags
+    if (!this.isCaseFlagSubmission) {
+      this.formValueService.removeUnnecessaryFields(caseEventData.data, pageListCaseFields, true, true);
     }
-  });
 
-  return data;
-}
+    caseEventData.event_token = eventTrigger.event_token;
+    caseEventData.ignore_warning = this.ignoreWarning;
+    if (this.confirmation) {
+      caseEventData.data = {};
+    }
 
-/**
- * Traverse *all* values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), replacing the
- * value of any that are hidden AND have `retain_hidden_value` set to `true` in the corresponding `CaseField`, with
- * the *original* value held in the `CaseField` object.
- *
- * This is as per design in EUI-3622, where any user-driven updates to hidden fields with `retain_hidden_value` =
- * `true` are ignored (thus retaining the value displayed originally).
- *
- * * For Complex field types, the replacement above is performed recursively for all hidden sub-fields with
- * `retain_hidden_value` = `true`.
- *
- * * For Collection field types, including collections of Complex and Document field types, the replacement is
- * performed for all fields in the collection.
- *
- * @param formGroup The `FormGroup` instance whose raw values are to be traversed
- * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `formGroup`
- * @param parentField Reference to the parent `CaseField`. Used for retrieving the sub-field values of a Complex field
- * to perform recursive replacement - the sub-field `CaseField`s themselves do *not* contain any values
- * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
- */
-private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFields: CaseField[], parentField?: CaseField): object {
-  // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
-  const rawFormValueData = formGroup.getRawValue();
-
-  // Place all case fields in a lookup object, so they can be retrieved by id
-  const caseFieldsLookup = {};
-  for (let i = 0, len = caseFields.length; i < len; i++) {
-    caseFieldsLookup[caseFields[i].id] = caseFields[i];
+    return caseEventData;
   }
 
   /**
-   * Replace any form value with the original, where its CaseField is hidden AND has the retain_hidden_value flag set
-   * to true.
+   * Replaces non-array value objects with `null` for any Complex-type fields whose value is effectively empty, i.e.
+   * all its sub-fields and descendants are `null` or `undefined`.
    *
-   * If the CaseField's `hidden` attribute is null or undefined, then check this attribute in the parent CaseField (if
-   * one exists). This is occurring (and is possibly a bug) when a CaseField is a sub-field of a Complex type, or an
-   * item in a Collection type.
-   *
-   * If the field is a Complex type with retain_hidden_value = true, perform a recursive replacement for all (hidden)
-   * sub-fields with retain_hidden_value = true, using their original CaseField values (from the `formatted_value`
-   * attribute).
-   *
-   * If the field is a Collection type with retain_hidden_value = true, the entire collection is replaced with the
-   * original from `formatted_value`. This applies to *all* types of Collections.
+   * @param data The object tree representing all the form field data
+   * @returns The form field data modified accordingly
    */
-  /* istanbul ignore next */
-  Object.keys(rawFormValueData).forEach((key) => {
-    const caseField: CaseField = caseFieldsLookup[key];
-    // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
-    // both null and undefined are equal to *neither false nor true*)
-    if (caseField && caseField.retain_hidden_value &&
-      (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
-      if (caseField.field_type.type === 'Complex') {
-        // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
-        // handle both null and undefined values
-        if (caseField.value != null) {
-          // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
-          // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
-          // parent)
-          // Update rawFormValueData for this field
-          // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
-          const form: FormGroup = new FormGroup({});
-          if (formGroup.controls[key].value) {
-            Object.keys(formGroup.controls[key].value).forEach((item) => {
-              form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
-            });
+  private replaceEmptyComplexFieldValues(data: object): object {
+    Object.keys(data).forEach((key) => {
+      if (!Array.isArray(data[key]) && typeof data[key] === 'object' && !FieldsUtils.containsNonEmptyValues(data[key])) {
+        data[key] = null;
+      }
+    });
+
+    return data;
+  }
+
+  /**
+   * Traverse *all* values of a {@link FormGroup}, including those for disabled fields (i.e. hidden ones), replacing the
+   * value of any that are hidden AND have `retain_hidden_value` set to `true` in the corresponding `CaseField`, with
+   * the *original* value held in the `CaseField` object.
+   *
+   * This is as per design in EUI-3622, where any user-driven updates to hidden fields with `retain_hidden_value` =
+   * `true` are ignored (thus retaining the value displayed originally).
+   *
+   * * For Complex field types, the replacement above is performed recursively for all hidden sub-fields with
+   * `retain_hidden_value` = `true`.
+   *
+   * * For Collection field types, including collections of Complex and Document field types, the replacement is
+   * performed for all fields in the collection.
+   *
+   * @param formGroup The `FormGroup` instance whose raw values are to be traversed
+   * @param caseFields The array of {@link CaseField} domain model objects corresponding to fields in `formGroup`
+   * @param parentField Reference to the parent `CaseField`. Used for retrieving the sub-field values of a Complex field
+   * to perform recursive replacement - the sub-field `CaseField`s themselves do *not* contain any values
+   * @returns An object with the *raw* form value data (as key-value pairs), with any value replacements as necessary
+   */
+  private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFields: CaseField[], parentField?: CaseField): object {
+    // Get the raw form value data, which includes the values of any disabled controls, as key-value pairs
+    const rawFormValueData = formGroup.getRawValue();
+
+    // Place all case fields in a lookup object, so they can be retrieved by id
+    const caseFieldsLookup = {};
+    for (let i = 0, len = caseFields.length; i < len; i++) {
+      caseFieldsLookup[caseFields[i].id] = caseFields[i];
+    }
+
+    /**
+     * Replace any form value with the original, where its CaseField is hidden AND has the retain_hidden_value flag set
+     * to true.
+     *
+     * If the CaseField's `hidden` attribute is null or undefined, then check this attribute in the parent CaseField (if
+     * one exists). This is occurring (and is possibly a bug) when a CaseField is a sub-field of a Complex type, or an
+     * item in a Collection type.
+     *
+     * If the field is a Complex type with retain_hidden_value = true, perform a recursive replacement for all (hidden)
+     * sub-fields with retain_hidden_value = true, using their original CaseField values (from the `formatted_value`
+     * attribute).
+     *
+     * If the field is a Collection type with retain_hidden_value = true, the entire collection is replaced with the
+     * original from `formatted_value`. This applies to *all* types of Collections.
+     */
+    /* istanbul ignore next */
+    Object.keys(rawFormValueData).forEach((key) => {
+      const caseField: CaseField = caseFieldsLookup[key];
+      // If caseField.hidden is NOT truthy and also NOT equal to false, then it must be null/undefined (remember that
+      // both null and undefined are equal to *neither false nor true*)
+      if (caseField && caseField.retain_hidden_value &&
+        (caseField.hidden || (caseField.hidden !== false && parentField && parentField.hidden))) {
+        if (caseField.field_type.type === 'Complex') {
+          // Note: Deliberate use of equality (==) and non-equality (!=) operators for null checks throughout, to
+          // handle both null and undefined values
+          if (caseField.value != null) {
+            // Call this function recursively to replace the Complex field's sub-fields as necessary, passing the
+            // CaseField itself (the sub-fields do not contain any values, so these need to be obtained from the
+            // parent)
+            // Update rawFormValueData for this field
+            // creating form group and adding control into it in case caseField is of complext type and and part of formGroup
+            const form: FormGroup = new FormGroup({});
+            if (formGroup.controls[key].value) {
+              Object.keys(formGroup.controls[key].value).forEach((item) => {
+                form.addControl(item, new FormControl(formGroup.controls[key].value[item]));
+              });
+            }
+            rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
+              form, caseField.field_type.complex_fields, caseField);
           }
-          rawFormValueData[key] = this.replaceHiddenFormValuesWithOriginalCaseData(
-            form, caseField.field_type.complex_fields, caseField);
-        }
-      } else {
-        // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
-        // replaced with the original from formatted_value
-        // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
-        // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
-        // from the CaseField itself.
-        if (parentField && parentField.formatted_value) {
-          rawFormValueData[key] = parentField.formatted_value[caseField.id];
         } else {
-          rawFormValueData[key] = caseField.formatted_value;
+          // Default case also handles collections of *all* types; the entire collection in rawFormValueData will be
+          // replaced with the original from formatted_value
+          // Use the CaseField's existing *formatted_value* from the parent, if available. (This is necessary for
+          // Complex fields, whose sub-fields do not hold any values in the model.) Otherwise, use formatted_value
+          // from the CaseField itself.
+          if (parentField && parentField.formatted_value) {
+            rawFormValueData[key] = parentField.formatted_value[caseField.id];
+          } else {
+            if (!(caseField.hidden && caseField.retain_hidden_value)) {
+              rawFormValueData[key] = caseField.formatted_value;
+            }
+          }
         }
       }
-    }
-  });
+    });
 
-  return rawFormValueData;
-}
+    return rawFormValueData;
+  }
 
-  private caseSubmit({form, caseEventData, submit}: CaseEditCaseSubmit): void {
+  private caseSubmit({ form, caseEventData, submit }: CaseEditCaseSubmit): void {
     const loadingSpinnerToken = this.loadingService.register();
-
-    submit(caseEventData)
-      .pipe(finalize(() => {
+    // keep the initial event response to finalise process after task completion
+    let eventResponse: object;
+    this.sessionStorageService.setItem('taskCompletionError', 'false');
+    submit(caseEventData).pipe(switchMap((response) => {
+      eventResponse = response;
+      return this.postCompleteTaskIfRequired();
+    }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
       }))
       .subscribe(
-        response => {
-          this.caseNotifier.cachedCaseView = null;
-          this.sessionStorageService.removeItem('eventUrl');
-          const confirmation: Confirmation = this.buildConfirmation(response);
-          if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
-            this.confirm(confirmation);
-          } else {
-            this.emitSubmitted(response);
-          }
+        () => {
+          this.finishEventCompletionLogic(eventResponse);
         },
         error => {
-          this.error = error;
-          this.callbackErrorsSubject.next(error);
-          /* istanbul ignore else */
-          if (this.error.details) {
-            this.formErrorService
-              .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
+          if (!eventResponse) {
+            // event submission error
+            this.error = error;
+            this.callbackErrorsSubject.next(error);
+            /* istanbul ignore else */
+            if (this.error.details) {
+              this.formErrorService
+                .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
+            }
+            this.isSubmitting = false;
+          } else {
+            this.sessionStorageService.setItem('taskCompletionError', 'true');
+            // task assignment/completion error - handled within workallocation service
+            // could set task to be deleted (or completed later)?
+            this.finishEventCompletionLogic(eventResponse);
+            // below allows error to be shown on navigation to confirmation page
+            this.alertService.setPreserveAlerts(true);
+            this.alertService.error({phrase: Constants.TASK_COMPLETION_ERROR});
           }
-          this.isSubmitting = false;
         }
       );
+  }
+
+  private postCompleteTaskIfRequired(): Observable<any> {
+    const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
+    if (taskStr && assignNeeded) {
+      const task: Task = JSON.parse(taskStr);
+      return this.workAllocationService.assignAndCompleteTask(task.id);
+    } else if (taskStr) {
+      const task: Task = JSON.parse(taskStr);
+      return this.workAllocationService.completeTask(task.id);
+    }
+    return of(true);
+  }
+
+  private finishEventCompletionLogic(eventResponse: any): void {
+    this.caseNotifier.cachedCaseView = null;
+    this.sessionStorageService.removeItem('eventUrl');
+    const confirmation: Confirmation = this.buildConfirmation(eventResponse);
+    if (confirmation && (confirmation.getHeader() || confirmation.getBody())) {
+      this.confirm(confirmation);
+    } else {
+      this.emitSubmitted(eventResponse);
+    }
   }
 
   private buildConfirmation(response: object): Confirmation {
@@ -444,7 +496,7 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
     }
   }
 
-  public onEventCanBeCompleted({ eventTrigger, eventCanBeCompleted, caseDetails, form, submit }: CaseEditonEventCanBeCompleted ): void {
+  public onEventCanBeCompleted({ eventTrigger, eventCanBeCompleted, caseDetails, form, submit }: CaseEditonEventCanBeCompleted): void {
     if (eventCanBeCompleted) {
       // Submit
       const caseEventData = this.generateCaseEventData({ eventTrigger, form });
@@ -455,7 +507,6 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
     }
   }
 
-
   public getStatus(response: object): any {
     return this.hasCallbackFailed(response) ? response['callback_response_status'] : response['delete_draft_response_status'];
   }
@@ -463,5 +514,4 @@ private replaceHiddenFormValuesWithOriginalCaseData(formGroup: FormGroup, caseFi
   private hasCallbackFailed(response: object): boolean {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
   }
-
 }

@@ -177,14 +177,14 @@ export class ConditionParser {
 
   private static findValueForComplexConditionInArray(fields: object, head: string, tail: string[], path?: string): any {
     // use the path to resolve which array element we refer to
-    if (path.startsWith(head)) {
+    if (path && path.startsWith(head)) {
       const [_, ...pathTail] = path.split(/[_]+/g);
       if (pathTail.length > 0) {
         try {
           const arrayIndex = Number.parseInt(pathTail[0], 10);
           const [__, ...dropNumberPath] = pathTail;
           return (fields[head][arrayIndex] !== undefined) ? this.findValueForComplexCondition(
-          fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
+            fields[head][arrayIndex]['value'], tail[0], tail.slice(1), dropNumberPath.join('_')) : null;
         } catch (e) {
           console.error('Error while parsing number', pathTail[0], e);
         }

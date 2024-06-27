@@ -21,27 +21,27 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   private static readonly ALWAYS_NULL_FIELDS = ['CasePaymentHistoryViewer', 'WaysToPay', 'FlagLauncher', 'ComponentLauncher'];
 
   private static readonly NESTED_TYPES = {
-    Complex: ReadFieldsFilterPipe.isValidComplex,
-    Collection: ReadFieldsFilterPipe.isValidCollection
+    Complex: ReadFieldsFilterPipe?.isValidComplex,
+    Collection: ReadFieldsFilterPipe?.isValidCollection
   };
 
   /**
    * Complex type should have at least on simple field descendant with a value.
    */
-  private static isValidComplex(field: CaseField, values?: object): boolean {
+  private static isValidComplex(field: CaseField, values?: object, checkConditionalShowAgainst?: object): boolean {
     values = values || {};
     const type = field.field_type;
     const value = ReadFieldsFilterPipe.getValue(field, values);
 
     const hasChildrenWithValue = type.complex_fields.find(f => {
-      const willKeep = ReadFieldsFilterPipe.keepField(f, value, true);
-      return willKeep && ReadFieldsFilterPipe.evaluateConditionalShow(f, value).hidden !== true;
+      const willKeep = ReadFieldsFilterPipe.keepField(f, value, true, checkConditionalShowAgainst);
+      return willKeep && ReadFieldsFilterPipe.evaluateConditionalShow(f, checkConditionalShowAgainst).hidden !== true;
     });
 
     return !!hasChildrenWithValue;
   }
 
-  private static isValidCollection(field: CaseField, values?: object): boolean {
+  private static isValidCollection(field: CaseField, values?: object, checkConditionalShowAgainst?: object): boolean {
     // if field is collection and it has complex/collection child field; parent field doesnt have value defined
     if (!Array.isArray(field.value) && values && values.hasOwnProperty(field.id)) {
       return true;
@@ -55,27 +55,28 @@ export class ReadFieldsFilterPipe implements PipeTransform {
           value: item.value,
           label: null,
         });
-        return ReadFieldsFilterPipe.isValidComplex(complexField);
+        return ReadFieldsFilterPipe.isValidComplex(complexField, undefined, checkConditionalShowAgainst);
       });
     }
     return isNotEmpty;
   }
 
   private static isEmpty(value: any): boolean {
-    return ReadFieldsFilterPipe.EMPTY_VALUES.indexOf(value) !== -1
-      || value.length === 0;
+    const fieldValue = value?.hasOwnProperty('list_items')  && value?.hasOwnProperty('value') ? value.value : value;
+    return  ReadFieldsFilterPipe.EMPTY_VALUES.indexOf(fieldValue) !== -1
+      || fieldValue.length === 0;
   }
 
   private static isCompound(field: CaseField): boolean {
     return ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type];
   }
 
-  private static isValidCompound(field: CaseField, value?: object): boolean {
+  private static isValidCompound(field: CaseField, value?: object, checkConditionalShowAgainst?: object): boolean {
     return ReadFieldsFilterPipe.isCompound(field)
-            && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value);
+            && ReadFieldsFilterPipe.NESTED_TYPES[field.field_type.type](field, value, checkConditionalShowAgainst);
   }
 
-  private static keepField(field: CaseField, value?: object, ignoreLabels = false): boolean {
+  private static keepField(field: CaseField, value?: object, ignoreLabels = false, checkConditionalShowAgainst?: object): boolean {
     // We shouldn't ditch labels.
     if (!ignoreLabels && field.field_type.type === 'Label' && (field.label || '').length > 0) {
       return true;
@@ -88,17 +89,17 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     value = value || {};
 
     if (ReadFieldsFilterPipe.isCompound(field)) {
-      return ReadFieldsFilterPipe.isValidCompound(field, value);
+      return ReadFieldsFilterPipe.isValidCompound(field, value, checkConditionalShowAgainst);
     }
 
     return !ReadFieldsFilterPipe.isEmpty(field.value)
-              || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
+      || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
   }
 
   private static getValue(field: CaseField, values: any, index?: number): any {
     if (ReadFieldsFilterPipe.isEmpty(field.value)) {
       let value: any;
-      if (index >= 0 ) {
+      if (index >= 0) {
         value = values[index].value[field.id];
       } else {
         value = values[field.id];
@@ -135,7 +136,7 @@ export class ReadFieldsFilterPipe implements PipeTransform {
    */
   public transform(
     complexField: CaseField, keepEmpty?: boolean, index?: number,
-    setupHidden = false, formGroup?: FormGroup | AbstractControl, path?: string): CaseField[] {
+    setupHidden = false, formGroup?: FormGroup | AbstractControl, path?: string, idPrefix?: string): CaseField[] {
     if (!complexField || !complexField.field_type) {
       return [];
     }
@@ -145,8 +146,20 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     let checkConditionalShowAgainst: any = values;
     let formGroupAvailable = false;
     if (formGroup) {
-      checkConditionalShowAgainst = formGroup.value;
+      checkConditionalShowAgainst = formGroup.value ? formGroup.parent.getRawValue().data : formGroup;
       formGroupAvailable = true;
+      if (idPrefix !== undefined) {
+        if (idPrefix !== '') {
+          const fieldId = idPrefix.substring(0, idPrefix.indexOf('_'));
+          if (checkConditionalShowAgainst[fieldId]) {
+            checkConditionalShowAgainst = values;
+            formGroupAvailable = false;
+          }
+        } else {
+          checkConditionalShowAgainst = Object.assign(checkConditionalShowAgainst, values);
+          formGroupAvailable = false;
+        }
+      }
     }
 
     return fields
@@ -160,13 +173,15 @@ export class ReadFieldsFilterPipe implements PipeTransform {
       })
       .map(f => {
         if (!f.display_context) {
-          f.display_context = complexField.display_context;
+          if (FieldsUtils.isValidDisplayContext(complexField.display_context)) {
+            f.display_context = complexField.display_context;
+          }
         }
         if (setupHidden) {
           ReadFieldsFilterPipe.evaluateConditionalShow(f, checkConditionalShowAgainst, path, formGroupAvailable, complexField.id);
         }
         return f;
       })
-      .filter(f => keepEmpty || ReadFieldsFilterPipe.keepField(f));
+      .filter(f => keepEmpty || ReadFieldsFilterPipe.keepField(f, undefined, false, checkConditionalShowAgainst));
   }
 }

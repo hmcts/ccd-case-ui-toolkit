@@ -1,7 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { MockComponent } from 'ng2-mock-component';
@@ -10,6 +10,7 @@ import { CaseField, FieldType } from '../../../domain/definition';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { ProfileNotifier } from '../../../services';
 import { FormValidatorsService } from '../../../services/form';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { RemoveDialogComponent } from '../../dialogs/remove-dialog';
 import { PaletteUtilsModule } from '../utils';
@@ -125,6 +126,7 @@ describe('WriteCollectionFieldComponent', () => {
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
+          MockFieldLabelPipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -374,6 +376,7 @@ describe('WriteCollectionFieldComponent CRUD impact', () => {
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
+          MockFieldLabelPipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -490,6 +493,7 @@ describe('WriteCollectionFieldComponent CRUD impact - Update False', () => {
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
+          MockFieldLabelPipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -579,6 +583,7 @@ describe('WriteCollectionFieldComponent remove component from collection', () =>
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
+          MockFieldLabelPipe,
           fieldWriteComponent,
           fieldReadComponent
         ],
@@ -685,9 +690,9 @@ describe('WriteCollectionFieldComponent', () => {
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
+          MockFieldLabelPipe,
           fieldWriteComponent,
-          fieldReadComponent,
-          MockRpxTranslatePipe,
+          fieldReadComponent
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },
@@ -788,9 +793,9 @@ describe('WriteCollectionFieldComponent', () => {
         declarations: [
           WriteCollectionFieldComponent,
           MockRpxTranslatePipe,
+          MockFieldLabelPipe,
           fieldWriteComponent,
-          fieldReadComponent,
-          MockRpxTranslatePipe,
+          fieldReadComponent
         ],
         providers: [
           { provide: FormValidatorsService, useValue: formValidatorService },

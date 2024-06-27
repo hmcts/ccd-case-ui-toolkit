@@ -119,44 +119,68 @@ describe('CaseFlagTableComponent', () => {
     expect(tableCellElements[5].textContent).toContain(flagData.flags.details[1].subTypeValue);
   });
 
-  it('should display the flag update comment for internal users if and only if the case flag status is "Not approved"', () => {
+  it('should display the flag update comment for internal users if the case flag status is "Not approved" or "Inactive"', () => {
     flagData.flags.details[1].status = CaseFlagStatus.NOT_APPROVED;
     component.flagData = flagData;
     fixture.detectChanges();
     let tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
     // Check that the second element of the second row of five (i.e. seventh element) contains the flag update comment
     expect(tableCellElements.length).toBe(10);
-    expect(tableCellElements[6].textContent).toContain(`Decision Reason: ${flagData.flags.details[1].flagUpdateComment}`);
-    // Change flag status to other than "Not approved", which should hide the flag update comment
+    expect(tableCellElements[6].textContent).toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+    // Change flag status to other than "Not approved" or "Inactive", which should hide the flag update comment
     flagData.flags.details[1].status = CaseFlagStatus.ACTIVE;
     component.flagData = flagData;
     fixture.detectChanges();
     tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
     // Check that the second element of the second row of five (i.e. seventh element) does not contain the flag update comment
     expect(tableCellElements.length).toBe(10);
-    expect(tableCellElements[6].textContent).not.toContain(`Decision Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+    expect(tableCellElements[6].textContent).not.toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+    // Change flag status to "Inactive", which should unhide the flag update comment
+    flagData.flags.details[1].status = CaseFlagStatus.INACTIVE;
+    component.flagData = flagData;
+    fixture.detectChanges();
+    tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) contains the flag update comment
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[6].textContent).toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
   });
 
-  it('should not display the flag update comment for external users even if the case flag status is "Not approved"', () => {
+  it('should not display the flag update comment for external users even if the case flag status is "Not approved" or "Inactive"', () => {
     flagData.flags.details[1].status = CaseFlagStatus.NOT_APPROVED;
     component.flagData = flagData;
     component.caseFlagsExternalUser = true;
     fixture.detectChanges();
-    const tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    let tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
     // Check that the second element of the second row of five (i.e. seventh element) does not contain the flag update comment
     expect(tableCellElements.length).toBe(10);
-    expect(tableCellElements[6].textContent).not.toContain(`Decision Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+    expect(tableCellElements[6].textContent).not.toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
+    // Change flag status to "Inactive"
+    flagData.flags.details[1].status = CaseFlagStatus.INACTIVE;
+    component.flagData = flagData;
+    fixture.detectChanges();
+    tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) does not contain the flag update comment
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[6].textContent).not.toContain(`Update Reason: ${flagData.flags.details[1].flagUpdateComment}`);
   });
 
-  it('should not display "Decision Reason: " for internal users if there is no flag update comment for a "Not approved" flag', () => {
+  it('should not display "Update Reason: " for internal users if no flag update comment for "Not approved" or "Inactive" flag', () => {
     flagData.flags.details[1].status = CaseFlagStatus.NOT_APPROVED;
     flagData.flags.details[1].flagUpdateComment = null;
     component.flagData = flagData;
     fixture.detectChanges();
-    const tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
-    // Check that the second element of the second row of five (i.e. seventh element) does not contain "Decision Reason: "
+    let tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) does not contain "Update Reason: "
     expect(tableCellElements.length).toBe(10);
-    expect(tableCellElements[6].textContent).not.toContain('Decision Reason: ');
+    expect(tableCellElements[6].textContent).not.toContain('Update Reason: ');
+    // Change flag status to "Inactive"
+    flagData.flags.details[1].status = CaseFlagStatus.INACTIVE;
+    component.flagData = flagData;
+    fixture.detectChanges();
+    tableCellElements = fixture.debugElement.nativeElement.querySelectorAll('.govuk-table__cell');
+    // Check that the second element of the second row of five (i.e. seventh element) does not contain "Update Reason: "
+    expect(tableCellElements.length).toBe(10);
+    expect(tableCellElements[6].textContent).not.toContain('Update Reason: ');
   });
 
   it('should display English values for flag name, "Other" description, sub-type value, and comments if in default language', () => {

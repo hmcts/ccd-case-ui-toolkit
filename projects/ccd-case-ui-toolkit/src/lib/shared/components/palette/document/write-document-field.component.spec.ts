@@ -1,13 +1,15 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { FormGroup, FormControl } from '@angular/forms';
+import { MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
-import { of, Subscription, throwError } from 'rxjs';
+import { Subscription, of, throwError } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
-import { CaseField, DocumentData, FieldType } from '../../../domain';
+import { CaseField, DocumentData, FieldType, HttpError } from '../../../domain';
 import { DocumentManagementService, JurisdictionService } from '../../../services';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { CaseNotifier, CasesService, EventTriggerService } from '../../case-editor';
 import { DocumentDialogComponent } from '../../dialogs';
@@ -17,6 +19,7 @@ import { WriteDocumentFieldComponent } from './write-document-field.component';
 
 import createSpyObj = jasmine.createSpyObj;
 import any = jasmine.any;
+import { HttpErrorResponse } from '@angular/common/http';
 
 const FIELD_TYPE: FieldType = {
   id: 'Document',
@@ -128,7 +131,7 @@ describe('WriteDocumentFieldComponent', () => {
       of(RESPONSE_SECOND_DOCUMENT)
     );
     mockDialog = createSpyObj<MatDialog>('dialog', ['open']);
-    mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed','close']);
+    mockMatDialogRef = createSpyObj<MatDialogRef<DocumentDialogComponent>>('matDialogRef', ['beforeClosed', 'close']);
     casesService = createSpyObj('casesService', ['getCaseViewV2']);
     mockFileUploadStateService = createSpyObj<FileUploadStateService>('fileUploadStateService', [
       'setUploadInProgress',
@@ -146,7 +149,8 @@ describe('WriteDocumentFieldComponent', () => {
           DocumentDialogComponent,
           // Mocks
           readDocumentComponentMock,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: DocumentManagementService, useValue: mockDocumentManagementService },
@@ -299,7 +303,7 @@ describe('WriteDocumentFieldComponent', () => {
       '"message": "But really really terrible thing!", "status": 502}'));
 
     const blobParts: BlobPart[] = ['some contents for blob'];
-    const file: File = new File(blobParts, 'test.pdf');
+    const file: File = new File(blobParts, 'test.foo');
     component.fileChangeEvent({
       target: {
         files: [
@@ -385,6 +389,70 @@ describe('WriteDocumentFieldComponent', () => {
     expect(fileUploadSubscriptionSpy).toHaveBeenCalled();
     expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
     expect(component.valid).toBeTruthy();
+  });
+
+  it('should get error message', () => {
+    const error = new HttpError();
+    error.error = 'Unknown error';
+    error.status = 422;
+    const errorMsgSpy = spyOn<any>(component, 'getErrorMessage');
+    component['handleDocumentUploadError'](error);;
+
+    expect(errorMsgSpy).toHaveBeenCalledWith(error);
+  });
+
+  it('should call fileValidationsOnTab', () => {
+    const fileValidationsOnTabSpy = spyOn<any>(component, 'fileValidationsOnTab').and.callThrough();
+    component['fileValidationsOnTab']();
+    expect(fileValidationsOnTabSpy).toHaveBeenCalled();
+  });
+
+
+  it('should cover the 429 status code', () => {
+    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const status = {
+      status: 429,
+      error: 'Unknown error'
+    } as HttpError
+
+    component['handleDocumentUploadError'](status);
+    fixture.detectChanges();
+
+    expect(errorMsg).toEqual(WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE);
+  });
+
+  it('should cover the 422 status code', () => {
+    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const status = {
+      status: 422,
+      error: 'Unknown error'
+    } as HttpError
+
+    component['handleDocumentUploadError'](status);
+    fixture.detectChanges();
+
+    expect(errorMsg).toEqual(WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE);
+  });
+
+  it('should cover the 502 status code', () => {
+    let errorMsg = WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    const status = {
+      status: 502,
+      error: 'Unknown error'
+    } as HttpError
+
+    component['handleDocumentUploadError'](status);
+    fixture.detectChanges();
+
+    expect(errorMsg).toEqual(errorMsg);
+  });
+
+  it('should call isUploadAFile', () => {
+    component.fileUploadMessages = undefined;
+    const result = component['isUpLoadingAFile']();
+    fixture.detectChanges();
+
+    expect(result).toBeFalsy();
   });
 });
 
@@ -505,7 +573,8 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
           DocumentDialogComponent,
           // Mocks
           readDocumentComponentMock,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
         ],
         providers: [
           { provide: DocumentManagementService, useValue: mockDocumentManagementService },
@@ -571,4 +640,80 @@ describe('WriteDocumentFieldComponent with Mandatory casefield', () => {
     expect(mockFileUploadStateService.setUploadInProgress).toHaveBeenCalledWith(false);
 
   });
+
+  it('createDocumentForm - should add upload_timestamp control to form group if document.upload_timestamp is string', () => {
+    // Mock document with upload_timestamp as string
+    const document = {
+      document_filename: 'Beers encyclopedia',
+      document_binary_url: '/test/binary',
+      document_url: '/test',
+      attribute_path: '',
+      upload_timestamp: '14 Apr 2023 00:00:00'
+    };
+
+    // Create a new form group
+    const initialFormGroup = new FormGroup({
+      document_url: new FormControl(),
+      document_binary_url: new FormControl(),
+      document_filename: new FormControl()
+    });
+
+    // Call the private method to test
+    component['createDocumentForm'](document);
+
+    expect(initialFormGroup.get('upload_timestamp')).toBeNull('upload_timestamp control should not exist before createDocumentForm is called');
+
+    expect(component['uploadedDocument'].get('upload_timestamp') instanceof FormControl).toBe(true);
+    expect(component['uploadedDocument'].get('upload_timestamp').value).toEqual(document.upload_timestamp);
+  });
+
+  it('createDocumentFormWithValidator - should add upload_timestamp control to form group if document.upload_timestamp is string', () => {
+    // Mock document with upload_timestamp as string
+    const document = {
+      document_filename: 'Beers encyclopedia',
+      document_binary_url: '/test/binary',
+      document_url: '/test',
+      attribute_path: '',
+      upload_timestamp: '14 Apr 2023 00:00:00'
+    };
+
+    // Create a new form group
+    const initialFormGroup = new FormGroup({
+      document_url: new FormControl(),
+      document_binary_url: new FormControl(),
+      document_filename: new FormControl()
+    });
+
+    // Call the private method to test
+    component['createDocumentFormWithValidator'](document);
+
+    expect(initialFormGroup.get('upload_timestamp')).toBeNull('upload_timestamp control should not exist before createDocumentForm is called');
+
+    expect(component['uploadedDocument'].get('upload_timestamp') instanceof FormControl).toBe(true);
+    expect(component['uploadedDocument'].get('upload_timestamp').value).toEqual(document.upload_timestamp);
+  });
+
+  it('should update form controls in uploadedDocument and remove UPLOAD_TIMESTAMP control', () => {
+    // Initialize uploadedDocument with some initial values
+    component['uploadedDocument'] = new FormGroup({
+      document_url: new FormControl('initial_url'),
+      document_binary_url: new FormControl('initial_binary_url'),
+      document_filename: new FormControl('initial_filename'),
+      document_hash: new FormControl('initial_document_hash'),
+      [WriteDocumentFieldComponent.UPLOAD_TIMESTAMP]: new FormControl('initial_timestamp')
+    });
+
+    // Call the method to test
+    component['updateDocumentForm']('new_url', 'new_binary_url', 'new_filename', 'new_document_hash');
+
+    // Expect the form controls to be updated with new values
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_URL).value).toEqual('new_url');
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_BINARY_URL).value).toEqual('new_binary_url');
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_FILENAME).value).toEqual('new_filename');
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.DOCUMENT_HASH).value).toEqual('new_document_hash');
+
+    // Expect the UPLOAD_TIMESTAMP control to be removed
+    expect(component['uploadedDocument'].get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)).toBeNull('UPLOAD_TIMESTAMP control should be removed');
+  });
+
 });

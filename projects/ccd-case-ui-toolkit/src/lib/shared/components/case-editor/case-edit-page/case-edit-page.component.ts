@@ -1,6 +1,6 @@
 import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseEventTrigger } from '../../../domain/case-view/case-event-trigger.model';
 import { CaseField } from '../../../domain/definition';
 import { DRAFT_PREFIX } from '../../../domain/draft.model';
-import { LoadingService } from '../../../services';
+import { AddressesService, LoadingService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { FieldsUtils } from '../../../services/fields';
 import { FormErrorService } from '../../../services/form/form-error.service';
@@ -21,6 +21,7 @@ import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { WizardPage } from '../domain/wizard-page.model';
 import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -47,6 +48,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   public formValuesChanged = false;
   public pageChangeSubject: Subject<boolean> = new Subject();
   public caseFields: CaseField[];
+  public failingCaseFields: CaseField[];
   public validationErrors: CaseEditValidationError[] = [];
   public hasPreviousPage$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public callbackErrorsSubject: Subject<any> = new Subject();
@@ -72,7 +74,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   constructor(
-    public readonly caseEdit: CaseEditComponent,
+    public caseEdit: CaseEditComponent,
     private readonly route: ActivatedRoute,
     private readonly formValueService: FormValueService,
     private readonly formErrorService: FormErrorService,
@@ -81,7 +83,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly dialog: MatDialog,
     private readonly caseFieldService: CaseFieldService,
     private readonly caseEditDataService: CaseEditDataService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
+    private readonly addressService: AddressesService
   ) {
   }
 
@@ -118,9 +122,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       next: editForm => this.editForm = editForm
     });
     this.caseIsLinkedCasesJourneyAtFinalStepSub =
-    this.caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$.subscribe({
-      next: isLinkedCasesJourneyAtFinalStep => this.isLinkedCasesJourneyAtFinalStep = isLinkedCasesJourneyAtFinalStep
-    });
+      this.caseEditDataService.caseIsLinkedCasesJourneyAtFinalStep$.subscribe({
+        next: isLinkedCasesJourneyAtFinalStep => this.isLinkedCasesJourneyAtFinalStep = isLinkedCasesJourneyAtFinalStep
+      });
     this.caseTriggerSubmitEventSub = this.caseEditDataService.caseTriggerSubmitEvent$.subscribe({
       next: state => {
         if (state) {
@@ -155,7 +159,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public currentPageIsNotValid(): boolean {
-    return !this.pageValidationService.isPageValid(this.currentPage, this.editForm) ||
+    this.failingCaseFields = this.pageValidationService.getInvalidFields(this.currentPage, this.editForm);
+    return this.failingCaseFields.length > 0 ||
       (this.isLinkedCasesJourney() && !this.isLinkedCasesJourneyAtFinalStep);
   }
 
@@ -179,11 +184,17 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   // Adding validation message to show it as Error Summary
-  public generateErrorMessage(fields: CaseField[], container?: AbstractControl, path?: string): void {
+  public generateErrorMessage(fields: CaseField[], container?: AbstractControl, path?: string): boolean {
     const group: AbstractControl = container || this.editForm.controls['data'];
-    fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
-      .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path))
+    let validErrorFieldFound = false;
+    let validationErrorAmount = this.validationErrors.length;
+    const failingFields = fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
+    .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path));
+    // note that thougn these checks are on getinvalidfields they are needed for sub field checks
+    failingFields
       .forEach(casefield => {
+        let errorPresent = true;
+        validErrorFieldFound = true;
         const fieldElement = FieldsUtils.isCaseFieldOfType(casefield, ['JudicialUser'])
           ? group.get(`${casefield.id}_judicialUserControl`)
           : group.get(casefield.id);
@@ -198,7 +209,13 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             }
           }
           if (fieldElement.hasError('required')) {
-            this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
+            if (casefield.id === 'AddressLine1') {
+              // EUI-1067 - Display more relevant error message to user and correctly navigate to the field
+              this.addressService.setMandatoryError(true);
+              this.caseEditDataService.addFormValidationError({ id: `${path}_${path}`, message: `An address is required` });
+            } else {
+              this.caseEditDataService.addFormValidationError({ id, message: `%FIELDLABEL% is required`, label });
+            }
             fieldElement.markAsDirty();
             // For the JudicialUser field type, an error needs to be set on the component so that an error message
             // can be displayed at field level
@@ -216,36 +233,46 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
             fieldElement.markAsDirty();
           } else if (fieldElement.invalid) {
             if (casefield.isComplex()) {
-              this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
+              errorPresent = this.generateErrorMessage(casefield.field_type.complex_fields, fieldElement, id);
             } else if (casefield.isCollection() && casefield.field_type.collection_field_type.type === 'Complex') {
               const fieldArray = fieldElement as FormArray;
               if (fieldArray['component'] && fieldArray['component']['collItems'] && fieldArray['component']['collItems'].length > 0) {
                 id = `${fieldArray['component']['collItems'][0].prefix}`;
               }
               fieldArray.controls.forEach((c: AbstractControl) => {
-                this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
+               errorPresent = this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
               });
             } else if (FieldsUtils.isCaseFieldOfType(casefield, ['FlagLauncher'])) {
-              // Check whether the case field DisplayContextParameter is signalling "create" mode or "update" mode
-              // (expected always to be one of the two), to set the correct error message
-              let action = '';
-              if (casefield.display_context_parameter === '#ARGUMENT(CREATE)') {
-                action = 'creation';
-              } else if (casefield.display_context_parameter === '#ARGUMENT(UPDATE)') {
-                action = 'update';
-              }
               this.validationErrors.push({
                 id,
-                message: `Please select Next to complete the ${action} of the ${action === 'update' ? 'selected ' : ''}case flag`
+                message: FieldsUtils.getValidationErrorMessageForFlagLauncherCaseField(casefield)
               });
             } else {
-              this.validationErrors.push({id, message: `Select or fill the required ${casefield.label} field`});
+              this.validationErrors.push({ id, message: `Select or fill the required ${casefield.label} field` });
               fieldElement.markAsDirty();
             }
           }
+        } else {
+          validErrorFieldFound = false;
+        }
+        if (!errorPresent && this.validationErrors.length === validationErrorAmount) {
+          // if no error messages have been added in internal field despite parent field failing
+          this.validationErrors.push({ id: casefield.id, message: `A field that is causing an error is ${casefield.id} but it is not producing a valid error message. Please ensure all details are correct` });
         }
       });
+    if (!validErrorFieldFound) {
+      path ? this.validationErrors.push({ id: path, message: `There is an internal issue with ${path} fields. The field that is causing the error cannot be determined but there is an error present` })
+       : this.validationErrors.push({ id: null, message: `The field that is causing the error cannot be determined but there is an error present` });
+    } else if (this.validationErrors.length === validationErrorAmount) {
+      // if no error messages have been generated
+      if (path) {
+        return false;
+      } else {
+        this.validationErrors.push({ id: null, message: `The field that is causing the error cannot be determined but there is an error present. Please fill in more of the form` })
+      }
+    }
     CaseEditPageComponent.scrollToTop();
+    return true;
   }
 
   public navigateToErrorElement(elementId: string): void {
@@ -254,7 +281,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       const htmlElement = document.getElementById(elementId);
       /* istanbul ignore else */
       if (htmlElement) {
-        htmlElement.scrollIntoView({behavior: 'smooth', block: 'center'});
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         htmlElement.focus();
       }
     }
@@ -262,7 +289,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   public submit(): void {
     this.caseEditDataService.clearFormValidationErrors();
-
+    console.log('Page submit event fired!')
     if (this.currentPageIsNotValid()) {
       // The generateErrorMessage method filters out the hidden fields.
       // The error message for LinkedCases journey will never get displayed because the
@@ -271,11 +298,16 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
         this.validationErrors.push({ id: 'next-button', message: 'Please select Next to go to the next page' });
         CaseEditPageComponent.scrollToTop();
       } else {
-        this.generateErrorMessage(this.currentPage.case_fields);
+        this.generateErrorMessage(this.failingCaseFields);
       }
     }
 
     if (!this.caseEdit.isSubmitting && !this.currentPageIsNotValid()) {
+      this.addressService.setMandatoryError(false);
+      console.log('Case Edit Error', this.caseEdit.error);
+      if (this.caseEdit.validPageList.findIndex(page=> page.id === this.currentPage.id) === -1) {
+        this.caseEdit.validPageList.push(this.currentPage);
+      }
       this.caseEdit.isSubmitting = true;
       this.caseEdit.error = null;
       const caseEventData: CaseEventData = this.buildCaseEventData();
@@ -409,9 +441,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
           } else if (result === 'Save') {
             const draftCaseEventData: CaseEventData = this.formValueService.sanitise(this.editForm.value) as CaseEventData;
             if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData});
+              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_SAVE, data: draftCaseEventData });
             } else {
-              this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData});
+              this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_SAVE, data: draftCaseEventData });
             }
           }
         });
@@ -435,7 +467,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   public getCaseTitle(): string {
     return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
-    this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
+      this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
   }
 
   public getCancelText(): string {
@@ -454,7 +486,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   private getTriggerText(): string {
-    const textBasedOnCanSaveDraft = this.eventTrigger && this.eventTrigger.can_save_draft
+    const textBasedOnCanSaveDraft = this.eventTrigger?.can_save_draft
       ? CaseEditPageComponent.TRIGGER_TEXT_SAVE
       : CaseEditPageComponent.TRIGGER_TEXT_START;
 
@@ -465,9 +497,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
   private discard(): void {
     if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-      this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+      this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
     } else {
-      this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+      this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
     }
   }
 
@@ -481,13 +513,16 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       this.formErrorService
         .mapFieldErrors(this.caseEdit.error.details.field_errors, this.editForm?.controls?.['data'] as FormGroup, 'validation');
     }
+    console.log('handleError ', error);
   }
 
   private resetErrors(): void {
     this.caseEdit.error = null;
     this.caseEdit.ignoreWarning = false;
     this.triggerText = this.getTriggerText();
-    this.caseEdit.callbackErrorsSubject.next(null);
+    if (this.caseEdit.callbackErrorsSubject) {
+      this.caseEdit.callbackErrorsSubject.next(null);
+    }
   }
 
   private saveDraft() {
@@ -556,7 +591,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
    * @returns CaseEventData for the specified parameters.
    */
   private getFilteredCaseEventData(caseFields: CaseField[], formValue: object, clearEmpty = false,
-                                   clearNonCase = false, fromPreviousPage = false): CaseEventData {
+    clearNonCase = false, fromPreviousPage = false): CaseEventData {
     // Get the data for the fields specified.
     const formFields = this.formValueService.filterCurrentPageFields(caseFields, formValue);
 
@@ -565,6 +600,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
 
     // Get hold of the CaseEventData.
     const caseEventData: CaseEventData = this.formValueService.sanitise(formFields) as CaseEventData;
+
+    // delete fields which are not part of the case event journey wizard pages case fields
+    this.validPageListCaseFieldsService.deleteNonValidatedFields(this.caseEdit.validPageList, caseEventData.data, this.eventTrigger.case_fields, fromPreviousPage, this.editForm.controls['data'].value);
 
     // Tidy it up before we return it.
     this.formValueService.removeUnnecessaryFields(caseEventData.data, caseFields, clearEmpty, clearNonCase,

@@ -744,6 +744,39 @@ describe('FormValueService', () => {
       const actual = {collection1: [{id: '123'}]};
       expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
     });
+    it('should keep the field if it contains only id', () => {
+      const data = {
+        applicationType :  'jointApplication',
+        typeOfDocumentAttached : 'D10'
+      };
+      const caseField1 = new CaseField();
+      const fieldType1 = new FieldType();
+      fieldType1.id = 'FixedRadioList-ApplicationType';
+      fieldType1.min = null;
+      fieldType1.type = 'FixedRadioList';
+      caseField1.field_type = fieldType1;
+      caseField1.id = 'applicationType';
+      caseField1.hidden = true;
+      caseField1.display_context = 'MANDATORY';
+      caseField1.retain_hidden_value = null;
+
+      const caseField2 = new CaseField();
+      const fieldType2 = new FieldType();
+      fieldType2.id = 'FixedRadioList-OfflineDocumentReceived';
+      fieldType2.min = null;
+      fieldType2.type = 'FixedRadioList';
+      caseField2.field_type = fieldType2;
+      caseField2.id = 'typeOfDocumentAttached';
+      caseField2.hidden = false;
+      caseField2.display_context = 'MANDATORY';
+      caseField2.retain_hidden_value = false;
+
+      formValueService.removeUnnecessaryFields(data, [caseField1, caseField2]);
+      const actual = {
+        typeOfDocumentAttached : 'D10'
+      };
+      expect(JSON.stringify(data)).toEqual(JSON.stringify(actual));
+    });
   });
   describe('removeInvalidCollectionData', () => {
     it('should empty the collection field if it contains only id', () => {
@@ -984,7 +1017,8 @@ describe('FormValueService', () => {
           } as FieldType,
           value: {
             a: 'Aa',
-            b: 'Bb'
+            b: 'Bb',
+            d: 'Dd'
           }
         } as CaseField,
         {
@@ -1037,7 +1071,9 @@ describe('FormValueService', () => {
         three: '3'
       });
       expect(data.hasOwnProperty('punctuation')).toBe(false);
-      expect(data.currency).toEqual({});
+      expect(data.currency).toEqual({
+        dollar: '$'
+      });
     });
   });
 });

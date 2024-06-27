@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { MockComponent } from 'ng2-mock-component';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteTextAreaFieldComponent } from './write-text-area-field.component';
@@ -29,9 +30,11 @@ describe('WriteTextAreaFieldComponent', () => {
   const $INPUT = By.css('.form-group textarea');
 
   // Textarea input is mocked so that one-way bound inputs can be tested
-  const textareaComponentMock: any = MockComponent({ selector: 'textarea', inputs: [
-    'formControl'
-  ]});
+  const textareaComponentMock: any = MockComponent({
+    selector: 'textarea', inputs: [
+      'formControl'
+    ]
+  });
 
   let fixture: ComponentFixture<WriteTextAreaFieldComponent>;
   let component: WriteTextAreaFieldComponent;
@@ -48,6 +51,7 @@ describe('WriteTextAreaFieldComponent', () => {
           WriteTextAreaFieldComponent,
           // Mocks
           MockRpxTranslatePipe,
+          MockFieldLabelPipe,
           textareaComponentMock
         ],
         providers: []

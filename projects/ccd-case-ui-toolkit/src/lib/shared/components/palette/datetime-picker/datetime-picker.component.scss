@@ -1,7 +1,31 @@
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+@import 'govuk_frontend_toolkit/stylesheets/_shims';
+@import 'govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'govuk_frontend_toolkit/stylesheets/_measurements';
+@import 'govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+
+@mixin mat-button-style {
+  background-color: #00823b;
+  position: relative;
+  display: -moz-inline-stack;
+  display: inline-block;
+  padding: .526315em .789473em .263157em;
+  border: none;
+  border-radius: 0;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  -webkit-appearance: none;
+  box-shadow: 0 2px 0 #003618;
+  font-size: 1em;
+  line-height: 1.25;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  color: #fff;
+  box-sizing: border-box;
+  vertical-align: top;
+  width: 80px;
+  cursor: pointer;
+}
 
 /* datepicker-container ensure no leakage of css via view encapsulation
 Details inside it are for the actual component first shown on page */
@@ -56,6 +80,17 @@ Details inside it are for the actual component first shown on page */
   .mat-datepicker-toggle {
     position: absolute;
     right: 0;
+  }
+
+  // styling for newer version datetimepicker which has new classes
+  .mat-mdc-icon-button.mat-mdc-button-base {
+    width: 32px;
+    height: 32px;
+    padding: 5px 0 0;
+
+    &:focus {
+      outline: 1px solid #fd0;
+    }
   }
 }
 
@@ -222,7 +257,7 @@ Details inside it are for the actual component first shown on page */
       .mat-calendar-body-active {
         background-color:	#5694ca;
       }
-
+      .mat-calendar-body-active
       .mat-calendar-body-today {
         border: none;
         box-shadow: none;
@@ -231,7 +266,8 @@ Details inside it are for the actual component first shown on page */
       .mat-calendar-body-cell {
         border: 1px ridge #bfc1c3;
 
-        &[aria-selected="true"] {
+        &[aria-selected="true"],
+        &[aria-pressed="true"] {
           background-color: #1d70b8;
           outline: 3px solid #ffdd00;
           border: 2px solid black;
@@ -326,7 +362,7 @@ Details inside it are for the actual component first shown on page */
 
           tr {
 
-
+            mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base
             .mat-icon-button {
 
               .mat-button-wrapper {
@@ -599,26 +635,7 @@ Details inside it are for the actual component first shown on page */
       justify-content: flex-start;
 
       .mat-button {
-        background-color: #00823b;
-        position: relative;
-        display: -moz-inline-stack;
-        display: inline-block;
-        padding: .526315em .789473em .263157em;
-        border: none;
-        border-radius: 0;
-        outline: 1px solid transparent;
-        outline-offset: -1px;
-        -webkit-appearance: none;
-        box-shadow: 0 2px 0 #003618;
-        font-size: 1em;
-        line-height: 1.25;
-        text-decoration: none;
-        -webkit-font-smoothing: antialiased;
-        color: #fff;
-        box-sizing: border-box;
-        vertical-align: top;
-        width: 80px;
-        cursor: pointer;
+        @include mat-button-style;
 
         &:focus {
           outline: 2px solid #ffdd00;
@@ -641,5 +658,18 @@ Details inside it are for the actual component first shown on page */
         }
       }
     }
+
+    // styling for confirm button which has newer version datetimepicker which has new classes
+    .mat-datepicker-actions {
+      margin-top: 120px;
+      padding: 8px 8px 28px;
+      justify-content: flex-start;
+
+      button {
+        @include mat-button-style;
+      }
+    }
   }
 }
+
+

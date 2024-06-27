@@ -18,7 +18,6 @@ import { CaseFlagDisplayContextParameter, CaseFlagErrorMessage, CaseFlagFieldSta
   styleUrls: ['./write-case-flag-field.component.scss']
 })
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnDestroy {
-  public formGroup: FormGroup;
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];
@@ -31,6 +30,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public hmctsServiceId: string;
   public isDisplayContextParameterUpdate: boolean;
   public isDisplayContextParameterExternal: boolean;
+  public isDisplayContextParameter2Point1Enabled: boolean;
   public caseTitle: string;
   public caseTitleSubscription: Subscription;
   public displayContextParameter: string;
@@ -87,10 +87,10 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     }
     // From this point, this.formGroup refers to the FormGroup for the FlagLauncher field, not the parent FormGroup
     this.formGroup = this.registerControl(new FormGroup({}, {
-      validators: (_: AbstractControl): {[key: string]: boolean} | null => {
+      validators: (_: AbstractControl): { [key: string]: boolean } | null => {
         if (!this.allCaseFlagStagesCompleted) {
           // Return an error to mark the FormGroup as invalid if not all Case Flag stages have been completed
-          return {notAllCaseFlagStagesCompleted: true};
+          return { notAllCaseFlagStagesCompleted: true };
         }
         return null;
       }
@@ -108,7 +108,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // Extract all flags-related data from the CaseEventTrigger object in the snapshot data
     if (this.route.snapshot.data.eventTrigger) {
       // Get the HMCTSServiceId from supplementary data, if it exists (required for retrieving the available flag types in
-      // the first instance, only falling back on case type ID or jurisidiction if it's not present)
+      // the first instance, only falling back on case type ID or jurisdiction if it's not present)
       if (this.route.snapshot.data.eventTrigger.supplementary_data
         && this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId) {
         this.hmctsServiceId = this.route.snapshot.data.eventTrigger.supplementary_data.HMCTSServiceId;
@@ -116,9 +116,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
       if (this.route.snapshot.data.eventTrigger.case_fields) {
         this.flagsData = ((this.route.snapshot.data.eventTrigger.case_fields) as CaseField[])
-          .reduce((flags, caseField) => {
-            return FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField);
-          }, []);
+          .reduce((flags, caseField) => FieldsUtils.extractFlagsDataFromCaseField(flags, caseField, caseField.id, caseField), []);
 
         // Set displayContextParameter (to be passed as an input to ManageCaseFlagsComponent for setting correct title)
         this.displayContextParameter =
@@ -129,6 +127,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
         // Set boolean indicating the display_context_parameter is "external"
         this.isDisplayContextParameterExternal = this.setDisplayContextParameterExternal(this.displayContextParameter);
+
+        // Set boolean indicating the display_context_parameter is Case Flags v2.1 enabled
+        this.isDisplayContextParameter2Point1Enabled = this.setDisplayContextParameter2Point1Enabled(this.displayContextParameter);
 
         // Set starting field state if fieldState not the right value
         if (!this.fieldState) {
@@ -147,12 +148,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
 
   public setDisplayContextParameterUpdate(displayContextParameter: string): boolean {
     return displayContextParameter === CaseFlagDisplayContextParameter.UPDATE ||
-      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ||
+      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
   }
 
   public setDisplayContextParameterExternal(displayContextParameter: string): boolean {
     return displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
       displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
+  }
+
+  public setDisplayContextParameter2Point1Enabled(displayContextParameter: string): boolean {
+    return displayContextParameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
+      displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
   }
 
   public onCaseFlagStateEmitted(caseFlagState: CaseFlagState): void {
@@ -180,14 +187,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     // then move to final review stage
     if (this.isDisplayContextParameterExternal) {
       return caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_COMMENTS ||
-          caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE;
+        caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE;
     }
     // If the current state is one of:
-    // * CaseFlagFieldState.FLAG_STATUS
+    // * CaseFlagFieldState.FLAG_STATUS AND Case Flags v2.1 is enabled
+    // * CaseFlagFieldState.FLAG_COMMENTS AND Case Flags v2.1 is not enabled
     // * CaseFlagFieldState.FLAG_UPDATE and Welsh translation checkbox is not selected
     // * CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION
     // then move to final review stage
-    return caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_STATUS ||
+    return (caseFlagState.currentCaseFlagFieldState ===
+      CaseFlagFieldState.FLAG_STATUS && this.isDisplayContextParameter2Point1Enabled) ||
+      (caseFlagState.currentCaseFlagFieldState ===
+        CaseFlagFieldState.FLAG_COMMENTS && !this.isDisplayContextParameter2Point1Enabled) ||
       (caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE &&
         !this.caseFlagParentFormGroup.get(CaseFlagFormFields.IS_WELSH_TRANSLATION_NEEDED)?.value) ||
       caseFlagState.currentCaseFlagFieldState === CaseFlagFieldState.FLAG_UPDATE_WELSH_TRANSLATION;
@@ -213,7 +224,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         this.addFlagToCollection();
         break;
       case CaseFlagFieldState.FLAG_COMMENTS:
-        if (this.isDisplayContextParameterExternal) {
+        if (this.isDisplayContextParameterExternal || !this.isDisplayContextParameter2Point1Enabled) {
           this.addFlagToCollection();
         }
         break;
@@ -231,13 +242,13 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.flagsData.forEach(instance => {
       // Use the pathToFlagsFormGroup property for each Flags case field to drill down to the correct part of the
       // CaseField value to remove the new value from
-      let value = instance.caseField.value;
+      let value = instance.caseField?.value;
       const pathToValue = instance.pathToFlagsFormGroup;
       // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
       if (pathToValue.indexOf('.') > -1) {
         pathToValue.slice(pathToValue.indexOf('.') + 1).split('.').forEach(part => value = value[part]);
       }
-      if (value && value.details && value.details.length > 0) {
+      if (value?.details?.length > 0) {
         const indexOfNewFlagDetail = value.details.findIndex(element => !element.hasOwnProperty('id'));
         if (indexOfNewFlagDetail > -1) {
           value.details.splice(indexOfNewFlagDetail, 1);
@@ -257,7 +268,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     if (this.determinedLocation) {
       const path = this.determinedLocation.pathToFlagsFormGroup;
       const flagDataRef = this.flagsData.find(item => item.pathToFlagsFormGroup === path);
-      let flagsCaseFieldValue = flagDataRef.caseField.value;
+      let flagsCaseFieldValue = flagDataRef.caseField?.value;
       // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
       // CaseField value to apply changes to
       // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
@@ -360,8 +371,8 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     this.flagsData.forEach(instance => {
       // Use the pathToFlagsFormGroup property for each Flags case field to drill down to the correct part of the
       // CaseField value for which to restore the original values
-      let value = instance.caseField.value;
-      let formattedValue = instance.caseField.formatted_value;
+      let value = instance.caseField?.value;
+      let formattedValue = instance.caseField?.formatted_value;
       const pathToValue = instance.pathToFlagsFormGroup;
       // Root-level Flags CaseFields don't have a dot-delimited path - just the CaseField ID itself - so don't drill down
       if (pathToValue.indexOf('.') > -1) {
@@ -374,15 +385,15 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       }
       if (value?.details?.length > 0 && formattedValue && FieldsUtils.isNonEmptyObject(formattedValue)) {
         value.details.forEach(flagDetail => {
-          const originalFlagDetail = formattedValue.details.find(detail => detail.id === flagDetail.id);
+          const originalFlagDetail = formattedValue.details?.find(detail => detail.id === flagDetail.id);
           if (originalFlagDetail) {
-            flagDetail.value.otherDescription = originalFlagDetail.value.otherDescription || null;
-            flagDetail.value.otherDescription_cy = originalFlagDetail.value.otherDescription_cy || null;
-            flagDetail.value.flagComment = originalFlagDetail.value.flagComment || null;
-            flagDetail.value.flagComment_cy = originalFlagDetail.value.flagComment_cy || null;
-            flagDetail.value.flagUpdateComment = originalFlagDetail.value.flagUpdateComment || null;
-            flagDetail.value.status = originalFlagDetail.value.status;
-            flagDetail.value.dateTimeModified = originalFlagDetail.value.dateTimeModified || null;
+            flagDetail.value.otherDescription = originalFlagDetail.value?.otherDescription || null;
+            flagDetail.value.otherDescription_cy = originalFlagDetail.value?.otherDescription_cy || null;
+            flagDetail.value.flagComment = originalFlagDetail.value?.flagComment || null;
+            flagDetail.value.flagComment_cy = originalFlagDetail.value?.flagComment_cy || null;
+            flagDetail.value.flagUpdateComment = originalFlagDetail.value?.flagUpdateComment || null;
+            flagDetail.value.status = originalFlagDetail.value?.status;
+            flagDetail.value.dateTimeModified = originalFlagDetail.value?.dateTimeModified || null;
           }
         });
       }
@@ -390,7 +401,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
     if (!this.selectedFlag) {
       this.selectedFlag = this.formGroup.get(this.selectedManageCaseLocation).value as FlagDetailDisplayWithFormGroupPath;
     }
-    let flagsCaseFieldValue = this.selectedFlag.caseField.value;
+    let flagsCaseFieldValue = this.selectedFlag.caseField?.value;
     // Use the pathToFlagsFormGroup property from the selected flag location to drill down to the correct part of the
     // CaseField value to apply changes to
     const path = this.selectedFlag.pathToFlagsFormGroup;
@@ -399,29 +410,43 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
       path.slice(path.indexOf('.') + 1).split('.').forEach(part => flagsCaseFieldValue = flagsCaseFieldValue[part]);
     }
     if (flagsCaseFieldValue) {
-      const flagDetailToUpdate = flagsCaseFieldValue.details.find(
-        detail => detail.id === this.selectedFlag.flagDetailDisplay.flagDetail.id);
+      const flagDetailToUpdate = flagsCaseFieldValue.details?.find(
+        detail => detail.id === this.selectedFlag.flagDetailDisplay?.flagDetail?.id);
       if (flagDetailToUpdate) {
+        // Cache the *original* status of the flag before it is modified. This is needed if the user changes the flag status
+        // then decides to return to any part of the flag update journey. The ManageCaseFlagsComponent and UpdateFlagComponent
+        // should refer to a flag's original status, not the one set via the UI because this hasn't been persisted yet
+        this.selectedFlag.originalStatus = flagDetailToUpdate.value?.status;
         // Update description fields only if flag type is "Other" (flag code OT0001); these fields apply only to that flag type
-        flagDetailToUpdate.value.otherDescription = flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode
-          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.value
-          : null,
-        flagDetailToUpdate.value.otherDescription_cy = flagDetailToUpdate.value.flagCode === this.otherFlagTypeCode
-          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)?.value
-          : null,
+        // If their FormControls don't exist, it means these fields weren't visited as part of the "Update Flag" journey, so do
+        // *not* update their values (otherwise they will become undefined)
+        if (flagDetailToUpdate.value?.flagCode === this.otherFlagTypeCode) {
+          if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)) {
+            flagDetailToUpdate.value.otherDescription = this.caseFlagParentFormGroup.get(
+              CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).value;
+          }
+          if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH)) {
+            flagDetailToUpdate.value.otherDescription_cy = this.caseFlagParentFormGroup.get(
+              CaseFlagFormFields.OTHER_FLAG_DESCRIPTION_WELSH).value;
+          }
+        }
         // Ensure that any comments entered with language set to Welsh do not end up in the English comments field
-        flagDetailToUpdate.value.flagComment = this.rpxTranslationService.language !== 'cy'
-          ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
-          : null,
+        if (this.rpxTranslationService.language !== 'cy') {
+          flagDetailToUpdate.value.flagComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value;
+        }
         // Populate from the *English* comments field if:
         // * The Welsh comments field has no value (Welsh comments field acquires a value only when an HMCTS internal user has
         // gone through the "add translation" step for Manage Case Flags), AND
         // * The language is set to Welsh
-        flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
+        // If the FormControl doesn't exist, it means this field wasn't visited as part of the "Update Flag" journey, so do
+        // *not* update its value (otherwise it will be overridden) - unless the user is external AND working in Welsh
+        if (this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH) || this.rpxTranslationService.language === 'cy') {
+          flagDetailToUpdate.value.flagComment_cy = this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
           ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS_WELSH)?.value
           : this.rpxTranslationService.language === 'cy'
             ? this.caseFlagParentFormGroup.get(CaseFlagFormFields.COMMENTS)?.value
-            : null,
+            : null;
+        }
         flagDetailToUpdate.value.flagUpdateComment = this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS_CHANGE_REASON)?.value;
         flagDetailToUpdate.value.status = CaseFlagStatus[this.caseFlagParentFormGroup.get(CaseFlagFormFields.STATUS)?.value];
         flagDetailToUpdate.value.dateTimeModified = new Date().toISOString();
@@ -432,7 +457,9 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   public isAtFinalState(): boolean {
     return this.isDisplayContextParameterUpdate
       ? this.fieldState === this.manageFlagFinalState
-      : this.fieldState === CaseFlagFieldState.FLAG_STATUS;
+      : !this.isDisplayContextParameter2Point1Enabled
+        ? this.fieldState === CaseFlagFieldState.FLAG_COMMENTS
+        : this.fieldState === CaseFlagFieldState.FLAG_STATUS;
   }
 
   public navigateToErrorElement(elementId: string): void {
@@ -450,32 +477,36 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public populateNewFlagDetailInstance(): FlagDetail {
+    const langSearchTerm = this.caseFlagParentFormGroup?.value['languageSearchTerm'];
+    const manualLangEntry = this.caseFlagParentFormGroup?.value['manualLanguageEntry'];
+    const flagType = this.caseFlagParentFormGroup?.value['flagType'];
+    const otherDesc = this.caseFlagParentFormGroup?.value['otherDescription'];
     const formValues = this.caseFlagParentFormGroup?.value;
     return {
-      name: formValues?.flagType?.name,
-      name_cy: formValues?.flagType?.name_cy,
+      name: this.flagType?.name,
+      name_cy: flagType?.name_cy,
       // Currently, subTypeValue, subTypeValue_cy and subTypeKey are applicable only to language flag types
-      subTypeValue: formValues?.languageSearchTerm && this.rpxTranslationService.language === 'en'
-        ? formValues?.languageSearchTerm.value
-        : formValues?.manualLanguageEntry && this.rpxTranslationService.language === 'en'
-          ? formValues?.manualLanguageEntry
+      subTypeValue: langSearchTerm && this.rpxTranslationService.language === 'en'
+        ? langSearchTerm.value
+        : manualLangEntry && this.rpxTranslationService.language === 'en'
+          ? manualLangEntry
           : null,
-      subTypeValue_cy: formValues?.languageSearchTerm && this.rpxTranslationService.language === 'cy'
-      ? formValues?.languageSearchTerm.value_cy
-      : formValues?.manualLanguageEntry && this.rpxTranslationService.language === 'cy'
-        ? formValues?.manualLanguageEntry
+      subTypeValue_cy: langSearchTerm && this.rpxTranslationService.language === 'cy'
+      ? langSearchTerm?.value_cy
+      : manualLangEntry && this.rpxTranslationService.language === 'cy'
+        ? manualLangEntry
         : null,
       // For user-entered (i.e. non-Reference Data) languages, there is no key
-      subTypeKey: formValues?.languageSearchTerm
-        ? formValues?.languageSearchTerm.key
+      subTypeKey: langSearchTerm
+        ? langSearchTerm.key
         : null,
-      otherDescription: formValues?.flagType?.flagCode === this.otherFlagTypeCode &&
-        formValues?.otherDescription && this.rpxTranslationService.language === 'en'
-        ? formValues?.otherDescription
-        : null,
-      otherDescription_cy: formValues?.flagType?.flagCode === this.otherFlagTypeCode &&
-        formValues?.otherDescription && this.rpxTranslationService.language === 'cy'
-        ? formValues?.otherDescription
+      otherDescription: flagType?.flagCode === this.otherFlagTypeCode &&
+        otherDesc && this.rpxTranslationService.language === 'en'
+        ? otherDesc
+          : null,
+      otherDescription_cy: flagType?.flagCode === this.otherFlagTypeCode &&
+        otherDesc && this.rpxTranslationService.language === 'cy'
+        ? otherDesc
         : null,
       flagComment: this.rpxTranslationService.language === 'en'
         ? formValues?.flagComments
@@ -485,13 +516,18 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
         : null,
       flagUpdateComment: formValues?.statusReason,
       dateTimeCreated: new Date().toISOString(),
-      path: formValues?.flagType?.Path &&
-        formValues?.flagType?.Path.map(pathValue => Object.assign({ id: null, value: pathValue })),
-      hearingRelevant: formValues?.flagType?.hearingRelevant ? 'Yes' : 'No',
-      flagCode: formValues?.flagType?.flagCode,
-      // Status should be set to whatever the default is for this flag type, if flag is being created by an external user
-      status: this.isDisplayContextParameterExternal ? formValues?.flagType?.defaultStatus : CaseFlagStatus[formValues?.selectedStatus],
-      availableExternally: formValues?.flagType?.externallyAvailable ? 'Yes' : 'No'
+      path: flagType?.Path &&
+        flagType?.Path.map(pathValue => Object.assign({ id: null, value: pathValue })),
+      hearingRelevant: flagType?.hearingRelevant ? 'Yes' : 'No',
+      flagCode: flagType?.flagCode,
+      // Status should be set to whatever the default is for this flag type, if flag is being created by an external
+      // user, otherwise it should be set to "Active" if Case Flags v2.1 is NOT enabled, or the selected status if it is
+      status: this.isDisplayContextParameterExternal
+        ? flagType?.defaultStatus
+        : !this.isDisplayContextParameter2Point1Enabled
+          ? CaseFlagStatus.ACTIVE
+          : CaseFlagStatus[formValues?.selectedStatus],
+      availableExternally: flagType?.externallyAvailable ? 'Yes' : 'No'
     } as FlagDetail;
   }
 
@@ -522,6 +558,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   public setDisplayContextParameter(caseFields: CaseField[]): string {
-    return caseFields.find(caseField => FieldsUtils.isFlagLauncherCaseField(caseField))?.display_context_parameter;
+    return caseFields.find(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']))?.display_context_parameter;
   }
 }

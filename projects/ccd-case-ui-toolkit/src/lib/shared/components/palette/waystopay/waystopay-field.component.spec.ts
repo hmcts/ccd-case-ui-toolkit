@@ -74,7 +74,11 @@ const APP_CONFIG: AbstractAppConfig = {
   getRDCommonDataApiUrl: () => 'rd_common_data_api_url',
   getCaseDataStoreApiUrl: () => 'case_data_store_api_url',
   getWAServiceConfig: () => 'waServiceConfig',
-  getEventsToHide: () => []
+  getEventsToHide: () => [],
+  getEnableRestrictedCaseAccessConfig: () => true,
+  getEnableCaseFileViewVersion1_1: () => true,
+  getIcpJurisdictions: () => ['IA'],
+  getIcpEnable: () => true,
 };
 
 let paymentWebComponentMock;

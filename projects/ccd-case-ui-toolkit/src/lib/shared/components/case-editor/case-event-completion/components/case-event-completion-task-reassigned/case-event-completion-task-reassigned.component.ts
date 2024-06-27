@@ -79,21 +79,9 @@ export class CaseEventCompletionTaskReassignedComponent implements OnInit, OnDes
     // Get task details
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
     if (taskStr) {
-      // Task is in session storage
-      const task: Task = JSON.parse(taskStr);
-
-      // Assign and complete task
-      this.subscription = this.workAllocationService.assignAndCompleteTask(task.id).subscribe(
-        response => {
-          // Emit event can be completed event
-          this.parentComponent.eventCanBeCompleted.emit(true);
-        },
-        error => {
-          // Emit event cannot be completed event
-          this.parentComponent.eventCanBeCompleted.emit(false);
-          this.alertService.error(error.message);
-          return throwError(error);
-        });
+      this.sessionStorageService.setItem('assignNeeded', 'true');
+      // set event can be completed to true
+      this.parentComponent.eventCanBeCompleted.emit(true);
     } else {
       // Emit event cannot be completed event
       this.parentComponent.eventCanBeCompleted.emit(false);

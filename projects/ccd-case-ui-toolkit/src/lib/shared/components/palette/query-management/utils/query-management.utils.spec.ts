@@ -46,6 +46,7 @@ describe('QueryManagementUtils', () => {
         attachments: new FormControl([])
       });
       const caseMessage = {
+        id: 'test',
         subject: 'Review attached document',
         name: 'Stuart Smith',
         body: 'Please review attached document and advise if hearing should proceed?',
@@ -86,6 +87,7 @@ describe('QueryManagementUtils', () => {
         attachments: new FormControl([])
       });
       const caseMessage = {
+        id: 'test',
         subject: 'Review attached document',
         name: 'Stuart Smith',
         body: 'Please review attached document and advise if hearing should proceed?',

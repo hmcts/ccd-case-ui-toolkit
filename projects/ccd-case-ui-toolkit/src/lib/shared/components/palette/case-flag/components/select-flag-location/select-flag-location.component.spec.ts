@@ -13,11 +13,11 @@ describe('SelectFlagLocationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ SelectFlagLocationComponent, MockRpxTranslatePipe ]
+      imports: [ReactiveFormsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [SelectFlagLocationComponent, MockRpxTranslatePipe]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -54,12 +54,12 @@ describe('SelectFlagLocationComponent', () => {
       },
       {
         flags: {
-          flagsCaseFieldId: 'Party2Flags',
+          flagsCaseFieldId: 'Party2FlagsInternal',
           partyName: 'Tom Atin',
           roleOnCase: 'Claimant',
           details: [
             {
-              name: 'Flag 3',
+              name: 'Flag 3 - internal',
               flagComment: 'First flag',
               dateTimeCreated: new Date(),
               path: [{ id: null, value: 'Reasonable adjustment' }],
@@ -67,7 +67,30 @@ describe('SelectFlagLocationComponent', () => {
               flagCode: 'FL1',
               status: 'Active'
             }
-          ] as FlagDetail[]
+          ] as FlagDetail[],
+          groupId: 'e8f29388-633b-416b-a32c-814635d42dd6',
+          visibility: null
+        },
+        pathToFlagsFormGroup: ''
+      },
+      {
+        flags: {
+          flagsCaseFieldId: 'Party2FlagsExternal',
+          partyName: 'Tom Atin',
+          roleOnCase: 'Claimant',
+          details: [
+            {
+              name: 'Flag 3 - external',
+              flagComment: 'First flag',
+              dateTimeCreated: new Date(),
+              path: [{ id: null, value: 'Reasonable adjustment' }],
+              hearingRelevant: false,
+              flagCode: 'FL1',
+              status: 'Active'
+            }
+          ] as FlagDetail[],
+          groupId: 'e8f29388-633b-416b-a32c-814635d42dd6',
+          visibility: 'External'
         },
         pathToFlagsFormGroup: ''
       },
@@ -118,7 +141,8 @@ describe('SelectFlagLocationComponent', () => {
     expect(nextButtonElement).toBeNull();
   });
 
-  it('should display a radio button for each party and one for case level', () => {
+  it('should display a radio button for each party (no duplicates) and one for case level', () => {
+    // Original data has 4 Flags objects, so the filtered result should be 3 because the duplicate party has been removed
     expect(component.filteredFlagsData.length).toBe(3);
     const nativeElement = fixture.debugElement.nativeElement;
     const radioButtonElements = nativeElement.querySelectorAll('.govuk-radios__input');
@@ -130,7 +154,8 @@ describe('SelectFlagLocationComponent', () => {
     radioButtonElements[1].click();
     expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[1]);
     radioButtonElements[2].click();
-    expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[2]);
+    // Duplicate party removed, so this radio button should be for the case-level flags data
+    expect(component.formGroup.get(component.selectedLocationControlName).value).toEqual(flagsData[3]);
     const radioButtonLabelElements = nativeElement.querySelectorAll('.govuk-radios__label');
     expect(radioButtonLabelElements.length).toBe(3);
     expect(radioButtonLabelElements[0].textContent).toContain(flagsData[0].flags.partyName);

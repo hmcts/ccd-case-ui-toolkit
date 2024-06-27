@@ -22,10 +22,10 @@ class RpxTranslateMockPipe implements PipeTransform {
 describe('QueryCheckYourAnswersComponent', () => {
   let component: QueryCheckYourAnswersComponent;
   let fixture: ComponentFixture<QueryCheckYourAnswersComponent>;
-  let router: Router;
   let nativeElement: any;
   let casesService: any;
   let caseNotifier: any;
+  let router: Router;
   let workAllocationService: any;
   let sessionStorageService: any;
 
@@ -189,7 +189,7 @@ describe('QueryCheckYourAnswersComponent', () => {
     workAllocationService.searchTasks.and.returnValue(of(response));
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
     sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
-    casesService = jasmine.createSpyObj('casesService', ['getEventTrigger', 'createEvent']);
+    casesService = jasmine.createSpyObj('casesService', ['getEventTrigger', 'createEvent', 'getCaseViewV2']);
     casesService.getEventTrigger.and.returnValue(of(eventTrigger));
     casesService.createEvent.and.returnValue(of({status: 200}));
     caseNotifier = new CaseNotifier(casesService);
@@ -197,11 +197,11 @@ describe('QueryCheckYourAnswersComponent', () => {
 
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule],
       declarations: [
         QueryCheckYourAnswersComponent,
         RpxTranslateMockPipe
       ],
-      imports: [RouterTestingModule],
       providers: [
         { provide: ActivatedRoute, useValue: snapshotActivatedRoute },
         { provide: CaseNotifier, useValue: caseNotifier },
@@ -216,13 +216,11 @@ describe('QueryCheckYourAnswersComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(QueryCheckYourAnswersComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
     component.queryItem = queryListItem;
     component.formGroup = new FormGroup({
-      subject: new FormControl('', Validators.required),
+      name: new FormControl('', Validators.required),
       body: new FormControl('', Validators.required),
       isHearingRelated: new FormControl('', Validators.required),
-      hearingDate: new FormControl(''),
       attachments: new FormControl([])
     });
     component.formGroup.get('isHearingRelated').setValue(true);
@@ -290,17 +288,23 @@ describe('QueryCheckYourAnswersComponent', () => {
     it('should call search task', () => {
       component.queryCreateContext = QueryCreateContext.NEW_QUERY;
       component.searchAndCompleteTask();
+    });
+  });
+
+  describe('submit', () => {
+    it('should call search task', () => {
+      component.submit();
       fixture.detectChanges();
       const searchParameter = { ccdId: '1' } as TaskSearchParameter;
       expect(workAllocationService.searchTasks).toHaveBeenCalledWith(searchParameter);
     });
 
     it('should trigger event completion', () => {
-      component.searchAndCompleteTask();
+      component.submit();
       fixture.detectChanges();
       const eventCompletionParams: EventCompletionParams = {
         caseId: '1',
-        eventId: 'queryManagementRespondQuery',
+        eventId: 'respondToQuery',
         task: response.tasks[0]
       };
       expect(component.eventCompletionParams).toEqual(eventCompletionParams);

@@ -10,9 +10,11 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, of, Subject } from 'rxjs';
@@ -35,12 +37,14 @@ import { CcdCaseTitlePipe } from '../../../pipes/case-title';
 import { CcdCYAPageLabelFilterPipe } from '../../../pipes/complex/ccd-cyapage-label-filter.pipe';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import {
+  AddressesService,
   CaseFieldService,
   FieldTypeSanitiser,
   FormErrorService,
   FormValueService,
   LoadingService,
 } from '../../../services';
+import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
 import { text } from '../../../test/helpers';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -52,7 +56,7 @@ import { Wizard, WizardPage } from '../domain';
 import { PageValidationService } from '../services';
 import { CaseEditPageText } from './case-edit-page-text.enum';
 import { CaseEditPageComponent } from './case-edit-page.component';
-
+import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
@@ -76,6 +80,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     caseFieldService = {},
     caseEditDataService = {},
     loadingService = {},
+    validPageListCaseFieldsService = {},
+    addressesService = {}
   }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -87,7 +93,9 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     dialog as MatDialog,
     caseFieldService as CaseFieldService,
     caseEditDataService as CaseEditDataService,
-    loadingService as LoadingService
+    loadingService as LoadingService,
+    validPageListCaseFieldsService as ValidPageListCaseFieldsService,
+    addressesService as AddressesService
   );
 
   it('should create', () => {
@@ -213,7 +221,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
         data: {
           bothDefendants: {
             people: {
-            list: ['sample', 'sample']
+              list: ['sample', 'sample']
             }
           }
         }
@@ -236,9 +244,9 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
       component = initializeComponent({});
       const caseFieldIdMock = 'bothDefendants';
       const result = {
-          people: {
-            value: true
-          }
+        people: {
+          value: true
+        }
       };
       const jsonDataMock = {
         data: {
@@ -253,7 +261,7 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
             value: {
               people: {
                 value: true
-                }
+              }
             }
           }
         ],
@@ -294,8 +302,24 @@ describe('CaseEditPageComponent - all other tests', () => {
   let wizardPage = createWizardPage(
     [createCaseField('field1', 'field1Value')],
     false,
-    0
+    0,
+    1
   );
+  const wizardPage1 = createWizardPage(
+    [createCaseField('field1', 'field1Value')],
+    false,
+    0,
+    2
+  );
+  const wizardPage2 = createWizardPage(
+    [createCaseField('field3', 'field3Value')],
+    false,
+    0,
+    3
+  );
+  wizardPage1.parsedShowCondition = ShowCondition.getInstance(null);
+  wizardPage2.parsedShowCondition = ShowCondition.getInstance(null);
+  const pageList = [wizardPage1, wizardPage2];
   const readOnly = new CaseField();
   const fieldTypeSanitiser = new FieldTypeSanitiser();
   const formValueService = new FormValueService(fieldTypeSanitiser);
@@ -303,6 +327,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   const firstPage = new WizardPage();
   const caseFieldService = new CaseFieldService();
   const pageValidationService = new PageValidationService(caseFieldService);
+  const fieldsUtils = new FieldsUtils();
+  const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldsUtils);
   let route: any;
   let snapshot: any;
   const FORM_GROUP_NO_JUDICIAL_USERS = new FormGroup({
@@ -352,6 +378,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         firstPage.case_fields = [
           createCaseField('field1', 'SOME_VALUE')
         ];
+        firstPage.parsedShowCondition = ShowCondition.getInstance(null);
         cancelled = createSpyObj('cancelled', ['emit']);
         caseEditComponentStub = {
           form: FORM_GROUP,
@@ -373,7 +400,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             metadataFields: [caseField2],
           },
           getNextPage: () => null,
-          callbackErrorsSubject: new Subject<any>()
+          callbackErrorsSubject: new Subject<any>(),
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -429,6 +457,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           caseTriggerSubmitEvent$: of(true)
         };
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           imports: [FormsModule, ReactiveFormsModule],
@@ -448,20 +477,22 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
-            { provide: LoadingService, useValue: loadingServiceMock }
+            { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
-        spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+        spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
         spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-        spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
-        spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => {});
-        spyOn(pageValidationService, 'isPageValid').and.returnValue(true);
+        spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+        spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
+        spyOn(pageValidationService, 'getInvalidFields').and.returnValue(true);
         comp = fixture.componentInstance;
         readOnly.display_context = 'READONLY';
         wizardPage = createWizardPage([
@@ -766,7 +797,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             metadataFields: [],
           },
           getNextPage: () => null,
-          callbackErrorsSubject: new Subject<any>()
+          callbackErrorsSubject: new Subject<any>(),
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -823,6 +855,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
 
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -841,9 +874,11 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -851,12 +886,13 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage(
@@ -941,7 +977,8 @@ describe('CaseEditPageComponent - all other tests', () => {
               title_display: '# 1234567812345678: test',
             },
           },
-          getNextPage: () => null
+          getNextPage: () => null,
+          validPageList: pageList
         };
 
         route = {
@@ -975,6 +1012,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           setCaseEditForm: createSpyObj('caseEditDataService', [
             'setCaseEditForm',
           ]),
+          setTriggerSubmitEvent: createSpyObj('caseEditDataService', [
+            'setTriggerSubmitEvent',
+          ]),
           caseFormValidationErrors$: new BehaviorSubject<CaseEditValidationError[]>([]),
           caseEditForm$: of(caseEditComponentStub.form),
           caseIsLinkedCasesJourneyAtFinalStep$: of(false),
@@ -982,6 +1022,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         };
 
         loadingServiceMock = createSpyObj<LoadingService>('LoadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
         TestBed.configureTestingModule({
           declarations: [
@@ -1000,9 +1041,11 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1016,12 +1059,13 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
       comp.wizard = new Wizard([wizardPage]);
       comp.editForm = FORM_GROUP;
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
       fixture.detectChanges();
     });
 
@@ -1056,6 +1100,7 @@ describe('CaseEditPageComponent - all other tests', () => {
 
   describe('submit the form', () => {
     const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+    const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
 
     beforeEach(
       waitForAsync(() => {
@@ -1097,7 +1142,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           },
           getNextPage: () => null,
           callbackErrorsSubject: new Subject<any>(),
-          ignoreWarning: true
+          ignoreWarning: true,
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1125,6 +1171,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           eventData
         );
         spyOn(formValueService, 'removeUnnecessaryFields');
+        spyOn(validPageListCaseFieldsService, 'deleteNonValidatedFields');
 
         caseEditDataService = createSpyObj('caseEditDataService',
           [
@@ -1166,9 +1213,11 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1185,7 +1234,8 @@ describe('CaseEditPageComponent - all other tests', () => {
           aCaseField('judicialUserField2', 'judicialUser2', 'JudicialUser', 'OPTIONAL', null),
         ],
         false,
-        0
+        0,
+        2
       );
       comp.wizard = new Wizard([wizardPage]);
       // Rebuild the FORM_GROUP object before use because it gets modified by the "should call validate" test
@@ -1219,6 +1269,7 @@ describe('CaseEditPageComponent - all other tests', () => {
       expect(formValueService.sanitise).toHaveBeenCalled();
       expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
       expect(loadingServiceMock.register).toHaveBeenCalled();
+      expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
 
       fixture.whenStable().then(() => {
         expect(comp.caseEdit.eventTrigger.case_id).toEqual(DRAFT_PREFIX + draft.id);
@@ -1253,7 +1304,11 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     it('should display generic error heading and message when form error is set but no callback errors, warnings, or error details', () => {
       // This tests CaseEditGenericErrorsComponent
-      spyOn(pageValidationService, 'isPageValid').and.returnValue(false);
+      spyOn(pageValidationService, 'getInvalidFields').and.returnValue([{
+        id: 'caseFieldIssue',
+        label: 'Case Field',
+        value: null
+      }]);
       comp.caseEdit.error = {
         status: 200,
         callbackErrors: null,
@@ -1285,7 +1340,11 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     it('should display specific error heading and message, and callback data field validation errors (if any)', () => {
       // This tests CaseEditGenericErrorsComponent
-      spyOn(pageValidationService, 'isPageValid').and.returnValue(false);
+      spyOn(pageValidationService, 'getInvalidFields').and.returnValue([{
+        id: 'caseFieldIssue',
+        label: 'Case Field',
+        value: null
+      }]);
       comp.caseEdit.error = {
         status: 422,
         callbackErrors: null,
@@ -1392,6 +1451,7 @@ describe('CaseEditPageComponent - all other tests', () => {
     beforeEach(
       waitForAsync(() => {
         const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
         firstPage.id = 'first page';
         cancelled = createSpyObj('cancelled', ['emit']);
         const caseFields: CaseField[] = [
@@ -1422,7 +1482,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             metadataFields: [caseField2],
           },
           getNextPage: () => null,
-          callbackErrorsSubject: new Subject<any>()
+          callbackErrorsSubject: new Subject<any>(),
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1473,6 +1534,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           setCaseEditForm: createSpyObj('caseEditDataService', [
             'setCaseEditForm',
           ]),
+          setTriggerSubmitEvent: createSpyObj('caseEditDataService', [
+            'setTriggerSubmitEvent',
+          ]),
           caseFormValidationErrors$: new BehaviorSubject<CaseEditValidationError[]>([]),
           caseEditForm$: of(caseEditComponentStub.form),
           caseIsLinkedCasesJourneyAtFinalStep$: of(false),
@@ -1496,9 +1560,11 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
-            { provide: LoadingService, useValue: loadingServiceMock }
+            { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock}
           ],
         }).compileComponents();
       })
@@ -1512,12 +1578,13 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
 
       de = fixture.debugElement;
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
-      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => {});
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
       spyOn(comp, 'buildCaseEventData').and.callThrough();
       fixture.detectChanges();
     });
@@ -1532,7 +1599,6 @@ describe('CaseEditPageComponent - all other tests', () => {
         // The call to buildCaseEventData() removes the additional JudicialUser FormControls before returning the
         // CaseEventData to be submitted
         expect(comp.buildCaseEventData).toHaveBeenCalled();
-        expect(caseEventDataPrevious.event_data).toEqual(FORM_GROUP_NO_JUDICIAL_USERS.value.data);
         expect(caseEventDataPrevious.ignore_warning).toEqual(
           comp.caseEdit.ignoreWarning
         );
@@ -1546,6 +1612,15 @@ describe('CaseEditPageComponent - all other tests', () => {
   });
 
   describe('Check for Validation Error', () => {
+    function createMockValidator(): ValidatorFn {
+      return (control:AbstractControl) : ValidationErrors | null => {
+        const value = control.value;
+
+        if (!value) {
+          return {mockRequired:true};
+        }
+      }
+    }
     const F_GROUP = new FormGroup({
       data: new FormGroup({
         Invalidfield1: new FormControl(null, Validators.required),
@@ -1556,6 +1631,7 @@ describe('CaseEditPageComponent - all other tests', () => {
         ]),
         OrganisationField: new FormControl(null, Validators.required),
         complexField1: new FormControl(null, Validators.required),
+        complexField2: new FormControl(null, createMockValidator()),
         FlagLauncherField: new FormControl(null, {
           validators: (
             _: AbstractControl
@@ -1592,9 +1668,18 @@ describe('CaseEditPageComponent - all other tests', () => {
       value: '',
     } as CaseField;
 
+    const ADDRESS_FIELD: CaseField = {
+      id: 'AddressLine1',
+      label: 'AddressLine1',
+      display_context: 'MANDATORY',
+      field_type: {id: 'Text', type: 'Text'},
+      value: '',
+    } as CaseField;
+
     beforeEach(
       waitForAsync(() => {
         const loadingServiceMock = jasmine.createSpyObj('loadingService', ['register', 'unregister']);
+        const addressesServiceMock = jasmine.createSpyObj('addressesService', ['setMandatoryError']);
         firstPage.id = 'first page';
         cancelled = createSpyObj('cancelled', ['emit']);
 
@@ -1621,7 +1706,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             tabs: [],
             metadataFields: [],
           },
-          getNextPage: () => null
+          getNextPage: () => null,
+          validPageList: pageList
         };
         snapshot = {
           queryParamMap: createSpyObj('queryParamMap', ['get']),
@@ -1667,6 +1753,9 @@ describe('CaseEditPageComponent - all other tests', () => {
           setCaseEditForm: createSpyObj('caseEditDataService', [
             'setCaseEditForm',
           ]),
+          setTriggerSubmitEvent: createSpyObj('caseEditDataService', [
+            'setTriggerSubmitEvent',
+          ]),
           caseFormValidationErrors$: new BehaviorSubject<CaseEditValidationError[]>([]),
           caseEditForm$: of(caseEditComponentStub.form),
           caseIsLinkedCasesJourneyAtFinalStep$: of(false),
@@ -1690,9 +1779,11 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: MatDialog, useValue: dialog },
             { provide: CaseFieldService, useValue: caseFieldService },
             { provide: CaseEditDataService, useValue: caseEditDataService },
-            FieldsUtils,
+            { provide: FieldsUtils, useValue: fieldsUtils },
             PlaceholderService,
-            { provide: LoadingService, useValue: loadingServiceMock }
+            { provide: LoadingService, useValue: loadingServiceMock },
+            { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            { provide: AddressesService, useValue: addressesServiceMock }
           ],
         }).compileComponents();
       })
@@ -1700,16 +1791,18 @@ describe('CaseEditPageComponent - all other tests', () => {
 
     beforeEach(() => {
       fixture = TestBed.createComponent(CaseEditPageComponent);
-      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => {});
-      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => {});
+      spyOn(caseEditDataService, 'setCaseEventTriggerName').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseDetails').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseTitle').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setCaseEditForm').and.callFake(() => { });
       spyOn(caseEditDataService, 'setCaseLinkError').and.callThrough();
       spyOn(caseEditDataService, 'addFormValidationError').and.callFake((validationError: CaseEditValidationError) => {
         caseEditDataService.caseFormValidationErrors$.next(
           caseEditDataService.caseFormValidationErrors$.getValue().concat([validationError])
         );
       });
+      spyOn(caseEditDataService, 'clearFormValidationErrors').and.callFake(() => { });
+      spyOn(caseEditDataService, 'setTriggerSubmitEvent').and.callFake(() => { });
       comp = fixture.componentInstance;
       readOnly.display_context = 'READONLY';
       wizardPage = createWizardPage(
@@ -1720,23 +1813,75 @@ describe('CaseEditPageComponent - all other tests', () => {
     });
 
     it('should validate mandatory fields and log error message', () => {
-      wizardPage.case_fields.push(
-        aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null)
-      );
-      wizardPage.case_fields.push(
-        aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null)
-      );
-      wizardPage.case_fields.push(CASE_FIELD);
+      wizardPage.case_fields = [
+        aCaseField('Invalidfield1', 'Invalidfield1', 'Text', 'MANDATORY', null),
+        aCaseField('Invalidfield2', 'Invalidfield2', 'Text', 'MANDATORY', null),
+        CASE_FIELD
+      ];
       wizardPage.isMultiColumn = () => false;
       comp.editForm = F_GROUP;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
-      comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(3);
+      comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`%FIELDLABEL% is required`);
+      });
+    });
+
+    it('should correctly indicate there is no issue with the field if there is no error', () => {
+      const caseField = aCaseField(
+        'Invalidfield2',
+        'Invalidfield2',
+        'Text',
+        'MANDATORY',
+        null
+      );
+      wizardPage.case_fields.push(caseField);
+      wizardPage.isMultiColumn = () => false;
+      F_GROUP.setValue({
+        data: {
+          Invalidfield2: 'testing',
+          Invalidfield1: 'testing',
+          OrganisationField: '',
+          complexField1: '',
+          complexField2: '',
+          FlagLauncherField: null,
+          judicialUserField_judicialUserControl: null
+        },
+      });
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeFalsy();
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(
+          `The field that is causing the error cannot be determined but there is an error present. Please fill in more of the form`
+        );
+      });
+    });
+
+    it('should correctly indicate there is no issue with the field if there is no related form control', () => {
+      const caseField = aCaseField(
+        'NewField1',
+        'Field1',
+        'Text',
+        'MANDATORY',
+        null
+      );
+
+      wizardPage.case_fields.push(caseField);
+      comp.editForm = F_GROUP;
+
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(
+          `The field that is causing the error cannot be determined but there is an error present`
+        );
       });
     });
 
@@ -1756,6 +1901,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           Invalidfield1: 'test1',
           OrganisationField: '',
           complexField1: '',
+          complexField2: '',
           FlagLauncherField: null,
           judicialUserField_judicialUserControl: null
         },
@@ -1789,6 +1935,7 @@ describe('CaseEditPageComponent - all other tests', () => {
           Invalidfield1: 'test1',
           OrganisationField: '',
           complexField1: '',
+          complexField2: '',
           FlagLauncherField: null,
           judicialUserField_judicialUserControl: null
         },
@@ -1844,10 +1991,56 @@ describe('CaseEditPageComponent - all other tests', () => {
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
-      comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
+      comp.generateErrorMessage(wizardPage.case_fields);
+
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(`%FIELDLABEL% is required`);
+      });
+    });
+
+    it('should validate complex type fields and log error message when no error messages given', () => {
+      const complexSubField1: CaseField = aCaseField(
+        'childField1',
+        'childField1',
+        'Text',
+        'OPTIONAL',
+        1,
+        null,
+        true,
+        true
+      );
+      const complexSubField2: CaseField = aCaseField(
+        'childField2',
+        'childField2',
+        'Text',
+        'OPTIONAL',
+        2,
+        null,
+        false,
+        true
+      );
+      const withoutSubFailureComplexField: CaseField = aCaseField(
+        'complexField2',
+        'complexField2',
+        'Complex',
+        'OPTIONAL',
+        1,
+        [complexSubField1, complexSubField2],
+        true,
+        true
+      );
+      withoutSubFailureComplexField.isComplex = () => true;
+      wizardPage.isMultiColumn = () => false;
+      wizardPage.case_fields.push(withoutSubFailureComplexField);
+      comp.editForm = F_GROUP;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      expect(comp.validationErrors.length).toBe(1);
+      comp.generateErrorMessage(wizardPage.case_fields);
+      comp.validationErrors.forEach((error) => {
+        expect(error.message).toEqual(`There is an internal issue with complexField2 fields. The field that is causing the error cannot be determined but there is an error present`);
       });
     });
 
@@ -1875,8 +2068,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
 
-      comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
+      comp.generateErrorMessage(wizardPage.case_fields);
       comp.validationErrors.forEach((error) => {
         expect(error.message).toEqual(
           'Please select Next to complete the creation of the case flag'
@@ -1915,8 +2108,8 @@ describe('CaseEditPageComponent - all other tests', () => {
       comp.currentPage = wizardPage;
       fixture.detectChanges();
       expect(comp.currentPageIsNotValid()).toBeTruthy();
-      comp.generateErrorMessage(wizardPage.case_fields);
       expect(comp.validationErrors.length).toBe(1);
+      comp.generateErrorMessage(wizardPage.case_fields);
     });
   });
 
@@ -1939,7 +2132,8 @@ describe('CaseEditPageComponent - all other tests', () => {
   function createWizardPage(
     fields: CaseField[] = [],
     isMultiColumn = false,
-    order = 0
+    order = 0,
+    id = 1
   ): WizardPage {
     const wp: WizardPage = new WizardPage();
     wp.case_fields = fields;

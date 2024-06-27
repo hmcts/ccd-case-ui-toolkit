@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { BehaviorSubject } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../../test/mock-rpx-translate.pipe';
@@ -43,14 +43,14 @@ describe('SearchLanguageInterpreterComponent', () => {
         { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchLanguageInterpreterComponent);
     component = fixture.componentInstance;
     component.formGroup = new FormGroup({
-      [SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM] : new FormControl('')
+      [SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM]: new FormControl('')
     });
     component.flagType = {
       name: 'Language Interpreter',
@@ -66,7 +66,7 @@ describe('SearchLanguageInterpreterComponent', () => {
         { key: 'FRA1', value: 'French1', value_cy: 'Ffrangeg1' },
         { key: 'FRA2', value: 'French2', value_cy: 'Ffrangeg2' },
         { key: 'FRA3', value: 'French3', value_cy: 'Ffrangeg3' },
-        { key: 'GB', value: 'English', value_cy: ''}
+        { key: 'GB', value: 'English', value_cy: '' }
       ],
       defaultStatus: 'Active',
       externallyAvailable: false,

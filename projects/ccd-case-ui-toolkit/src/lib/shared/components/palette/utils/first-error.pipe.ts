@@ -1,15 +1,22 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectorRef, Injector, OnDestroy, Pipe, PipeTransform } from '@angular/core';
 import { ValidationErrors } from '@angular/forms';
-import { RpxTranslatePipe } from 'rpx-xui-translation';
+import { RpxTranslationService } from 'rpx-xui-translation';
+import { switchMap } from 'rxjs/operators';
 
 @Pipe({
   name: 'ccdFirstError',
   pure: false
 })
-export class FirstErrorPipe implements PipeTransform {
+export class FirstErrorPipe implements PipeTransform, OnDestroy {
+  private asyncPipe: AsyncPipe;
+
   constructor(
-    private readonly rpxTranslationPipe: RpxTranslatePipe,
-  ) {}
+    private readonly rpxTranslationService: RpxTranslationService,
+    private readonly injector: Injector
+  ) {
+    this.asyncPipe = new AsyncPipe(this.injector.get(ChangeDetectorRef));
+  }
 
   public transform(value: ValidationErrors, args?: string): string {
     if (!value) {
@@ -26,13 +33,13 @@ export class FirstErrorPipe implements PipeTransform {
       return '';
     }
 
-    const fieldLabel = this.rpxTranslationPipe.transform(args);
-
     let errorMessage: string;
     if (keys[0] === 'required') {
       errorMessage = '%FIELDLABEL% is required';
     } else if (keys[0] === 'pattern') {
       errorMessage = 'The data entered is not valid for %FIELDLABEL%';
+    } else if (keys[0] === 'markDownPattern') {
+      errorMessage = 'The data entered is not valid for %FIELDLABEL%. Link mark up characters are not allowed in this field';
     } else if (keys[0] === 'minlength') {
       errorMessage = '%FIELDLABEL% is below the minimum length';
     } else if (keys[0] === 'maxlength') {
@@ -43,6 +50,14 @@ export class FirstErrorPipe implements PipeTransform {
       errorMessage = value[keys[0]];
     }
 
-    return this.rpxTranslationPipe.transform(errorMessage, { FIELDLABEL: fieldLabel });
+    const o = this.rpxTranslationService.getTranslation$(args).pipe(
+      switchMap(fieldLabel => this.rpxTranslationService.getTranslationWithReplacements$(errorMessage, { FIELDLABEL: fieldLabel }))
+    );
+
+    return this.asyncPipe.transform(o);
+  }
+
+  public ngOnDestroy(): void {
+    this.asyncPipe.ngOnDestroy();
   }
 }

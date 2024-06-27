@@ -1,7 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { FlagDetail, FlagDetailDisplay } from '../../domain';
-import { CaseFlagDisplayContextParameter, CaseFlagFieldState, CaseFlagSummaryListDisplayMode } from '../../enums';
+import {
+  CaseFlagCheckYourAnswersPageStep,
+  CaseFlagDisplayContextParameter,
+  CaseFlagFieldState,
+  CaseFlagSummaryListDisplayMode
+} from '../../enums';
 
 @Component({
   selector: 'ccd-case-flag-summary-list',
@@ -19,14 +24,15 @@ export class CaseFlagSummaryListComponent implements OnInit {
   public flagCommentsWelsh: string;
   public otherDescription: string;
   public otherDescriptionWelsh: string;
+  public flagUpdateComments: string;
   public summaryListDisplayMode: CaseFlagSummaryListDisplayMode;
   public addUpdateFlagHeaderText: string;
   public caseFlagFieldState = CaseFlagFieldState;
-  public readonly caseLevelLocation = 'Case level';
-  private readonly updateFlagHeaderText = 'Update flag for';
-  private readonly addFlagHeaderText = 'Add flag to';
   public displayMode = CaseFlagSummaryListDisplayMode;
-  public canDisplayStatus = false;
+  public flagTypeHeaderText: string;
+  public caseFlagCheckYourAnswersPageStep = CaseFlagCheckYourAnswersPageStep;
+  public is2Point1Enabled = false;
+  public externalUserUpdate = false;
 
   constructor(private readonly rpxTranslationService: RpxTranslationService) { }
 
@@ -37,10 +43,15 @@ export class CaseFlagSummaryListComponent implements OnInit {
       this.flagDescriptionWelsh = flagDetail.otherDescription_cy;
       this.flagComments = flagDetail.flagComment;
       this.flagCommentsWelsh = flagDetail.flagComment_cy;
+      // Flag update comments will be coming from the flagStatusReasonChange property instead of flagUpdateComment
+      // because these haven't been persisted yet
+      this.flagUpdateComments = flagDetail['flagStatusReasonChange'];
       this.flagStatus = flagDetail.status;
-      this.addUpdateFlagHeaderText = this.getHeaderText();
+      this.addUpdateFlagHeaderText = this.getAddUpdateFlagHeaderText();
+      this.flagTypeHeaderText = this.getFlagTypeHeaderText();
       this.summaryListDisplayMode = this.getSummaryListDisplayMode();
-      this.canDisplayStatus = this.getCanDisplayStatus();
+      this.is2Point1Enabled = this.getDisplayContextParameter2Point1Enabled();
+      this.externalUserUpdate = this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL;
     }
   }
 
@@ -60,29 +71,49 @@ export class CaseFlagSummaryListComponent implements OnInit {
     return `${flagName}${otherDescription}${subTypeValueForDisplay}`;
   }
 
-  private getHeaderText(): string {
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE ||
-      this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) {
-      return this.addFlagHeaderText;
+  private getAddUpdateFlagHeaderText(): string {
+    switch(this.displayContextParameter) {
+      case CaseFlagDisplayContextParameter.CREATE:
+      case CaseFlagDisplayContextParameter.CREATE_2_POINT_1:
+        return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT;
+      case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
+        return CaseFlagCheckYourAnswersPageStep.ADD_FLAG_HEADER_TEXT_EXTERNAL;
+      case CaseFlagDisplayContextParameter.UPDATE:
+      case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
+        return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT;
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
+        return CaseFlagCheckYourAnswersPageStep.UPDATE_FLAG_HEADER_TEXT_EXTERNAL;
+      default:
+        return CaseFlagCheckYourAnswersPageStep.NONE;
     }
-    if (this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE ||
-      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL) {
-      return this.updateFlagHeaderText;
+  }
+
+  private getFlagTypeHeaderText(): string {
+    switch(this.displayContextParameter) {
+      case CaseFlagDisplayContextParameter.CREATE:
+      case CaseFlagDisplayContextParameter.CREATE_2_POINT_1:
+      case CaseFlagDisplayContextParameter.UPDATE:
+      case CaseFlagDisplayContextParameter.UPDATE_2_POINT_1:
+        return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT;
+      case CaseFlagDisplayContextParameter.CREATE_EXTERNAL:
+      case CaseFlagDisplayContextParameter.UPDATE_EXTERNAL:
+        return CaseFlagCheckYourAnswersPageStep.FLAG_TYPE_HEADER_TEXT_EXTERNAL;
+      default:
+        return CaseFlagCheckYourAnswersPageStep.NONE;
     }
-    return '';
   }
 
   private getSummaryListDisplayMode(): number {
     if (this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE ||
-        this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL) {
+        this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
+        this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1) {
       return CaseFlagSummaryListDisplayMode.CREATE;
     }
     return CaseFlagSummaryListDisplayMode.MANAGE;
   }
 
-  private getCanDisplayStatus(): boolean {
-    return !(this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_EXTERNAL ||
-      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_EXTERNAL ||
-      this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE);
+  private getDisplayContextParameter2Point1Enabled(): boolean {
+    return this.displayContextParameter === CaseFlagDisplayContextParameter.CREATE_2_POINT_1 ||
+      this.displayContextParameter === CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
   }
 }
