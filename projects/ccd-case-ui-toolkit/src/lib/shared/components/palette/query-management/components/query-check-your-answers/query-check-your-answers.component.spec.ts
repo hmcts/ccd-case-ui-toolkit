@@ -223,7 +223,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       isHearingRelated: new FormControl('', Validators.required),
       attachments: new FormControl([])
     });
-    component.formGroup.get('isHearingRelated').setValue(true);
+    component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });

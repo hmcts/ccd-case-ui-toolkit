@@ -36,7 +36,7 @@ describe('EventTriggerComponent', () => {
       name: 'QueryManagementRespondQuery',
       description: 'Query Management Respond to a query',
       order: 4
-    },
+    }
   ];
 
   const trigersChangeDummy = (triggers) => {

@@ -15,7 +15,6 @@ import { EventCompletionParams } from '../../../../case-editor/domain/event-comp
 import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { CaseQueriesCollection, QueryCreateContext, QueryListItem } from '../../models';
 import { QueryManagementUtils } from '../../utils/query-management.utils';
-
 @Component({
   selector: 'ccd-query-check-your-answers',
   templateUrl: './query-check-your-answers.component.html',
@@ -66,6 +65,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         // Initialise getEventTrigger observable, will be used when submitting the query
         this.getEventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
       }
+
+      // To be set after integration
+      this.eventId = 'respondToQuery';
     });
   }
 

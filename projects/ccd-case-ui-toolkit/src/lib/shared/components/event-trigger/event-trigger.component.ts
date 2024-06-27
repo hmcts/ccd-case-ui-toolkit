@@ -37,16 +37,16 @@ export class EventTriggerComponent implements OnChanges, OnInit {
 
   public ngOnInit(): void {
     this.triggers = this.orderService.sort(this.triggers);
-   if(this.eventId){
-    const eventBundle = this.triggers.find(ev => ev.id === this.eventId);
-      this.triggerForm.controls['trigger'].patchValue(
-        {id : eventBundle.id, name: eventBundle.name, description: eventBundle.description}
-     )
-   } 
-  
+    if(this.eventId){
+      const eventBundle = this.triggers.find(ev => ev.id === this.eventId);
+        this.triggerForm.controls['trigger'].patchValue(
+          {id : eventBundle?.id, name: eventBundle?.name, description: eventBundle?.description}
+      )
+    }
+
   }
   public ngOnChanges(changes?: SimpleChanges): void {
-    if (changes.triggers && changes.triggers.currentValue) {
+    if (changes?.triggers?.currentValue) {
       const eventsToHide = this.appConfig.getEventsToHide();
       this.triggers = this.triggers?.filter((event) => !eventsToHide.includes(event.id));
       this.triggers = this.orderService.sort(this.triggers);
@@ -56,7 +56,7 @@ export class EventTriggerComponent implements OnChanges, OnInit {
     }
   }
 
-  compareFn(c1: CaseViewTrigger, c2:CaseViewTrigger): boolean {     
+  compareFn(c1: CaseViewTrigger, c2:CaseViewTrigger): boolean {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
 
