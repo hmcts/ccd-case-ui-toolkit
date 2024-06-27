@@ -65,9 +65,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         // Initialise getEventTrigger observable, will be used when submitting the query
         this.getEventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
       }
-
-      // To be set after integration
-      this.eventId = 'respondToQuery';
     });
   }
 
