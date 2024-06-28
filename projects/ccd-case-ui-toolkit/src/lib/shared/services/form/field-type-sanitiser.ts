@@ -23,11 +23,12 @@ export class FieldTypeSanitiser {
    * @param caseFields The CaseFields to assess.
    * @param data The data in the form.
    */
-   public sanitiseLists(caseFields: CaseField[], data: any) {
+  public sanitiseLists(caseFields: CaseField[], data: any) {
     if (!data || !caseFields) {
       return;
     }
-    caseFields.forEach(caseField => {
+    caseFields = this.ensureDynamicMultiSelectListPopulated(caseFields);
+    caseFields.forEach((caseField) => {
       // tslint:disable-next-line:switch-default
       switch (caseField.field_type.type) {
         case FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST:
@@ -50,7 +51,19 @@ export class FieldTypeSanitiser {
           }
           break;
       }
+    });
+  }
 
+  public ensureDynamicMultiSelectListPopulated(caseFields: CaseField[]): CaseField[] {
+    return caseFields.map((field) => {
+      if (field.field_type.type !== 'Complex') {
+        return field;
+      }
+      const complexFieldsUpdated = field.field_type.complex_fields.map((complexField) =>
+        complexField.field_type.type === FieldTypeSanitiser.FIELD_TYPE_DYNAMIC_MULTISELECT_LIST && complexField.display_context !== 'HIDDEN' && field._value?.[complexField.id]
+          ? { ...complexField, list_items: field._value[complexField.id]?.list_items } : complexField
+      );
+      return { ...field, field_type: { ...field.field_type, complex_fields: complexFieldsUpdated } } as CaseField;
     });
   }
 
