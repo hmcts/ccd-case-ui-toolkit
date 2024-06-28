@@ -64,7 +64,7 @@
           <ng-template matTabContent>
             <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
               <tbody>
-              <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup.controls['data']">
+              <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup?.controls['data']">
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
@@ -74,7 +74,7 @@
                       </th>
                       <td [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
-                          <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
+                          <ccd-field-read [topLevelFormGroup]="formGroup?.controls['data']"
                                           [caseField]="field" [caseReference]="caseDetails.case_id"
                                           [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
                           </ccd-field-read>
