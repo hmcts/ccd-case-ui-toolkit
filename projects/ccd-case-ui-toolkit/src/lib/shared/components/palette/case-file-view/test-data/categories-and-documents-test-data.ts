@@ -29,7 +29,7 @@ export const categoriesAndDocumentsTestData: CategoriesAndDocuments = {
           document_filename: 'Ale encyclopedia',
           document_binary_url: '/test/binary',
           attribute_path: '',
-          upload_timestamp: new Date(2023, 2, 12, 0, 0, 0, 0),
+          upload_timestamp: new Date(2023, 2, 12, 1, 23, 1, 0),
           content_type: ''
         }
       ],
