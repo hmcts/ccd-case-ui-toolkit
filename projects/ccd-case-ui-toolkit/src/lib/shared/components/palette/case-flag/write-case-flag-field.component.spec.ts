@@ -929,7 +929,7 @@ describe('WriteCaseFlagFieldComponent', () => {
   it('should move to the final review stage if no validation errors and current state is FLAG_COMMENTS (v2.1 not enabled)', () => {
     component.isDisplayContextParameter2Point1Enabled = false;
     const caseFlagState: CaseFlagState = {
-      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_STATUS,
+      currentCaseFlagFieldState: CaseFlagFieldState.FLAG_COMMENTS,
       errorMessages: []
     };
     spyOn(component, 'moveToFinalReviewStage');
@@ -1071,7 +1071,7 @@ describe('WriteCaseFlagFieldComponent', () => {
     component.isDisplayContextParameter2Point1Enabled = false;
     component.fieldState = CaseFlagFieldState.FLAG_COMMENTS;
     component.proceedToNextState();
-    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_STATUS);
+    expect(component.fieldState).toBe(CaseFlagFieldState.FLAG_COMMENTS);
   });
 
   it('should not move to the next state if already at the final state for the Manage Case Flags journey', () => {

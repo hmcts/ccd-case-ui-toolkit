@@ -116,7 +116,7 @@ describe('EventTriggerComponent', () => {
     it('should render a <select> with an <option> for every trigger', () => {
       const options = de.queryAll($SELECT_OPTIONS);
 
-      expect(options.length).toBe(3);
+      expect(options.length).toBe(4);
 
       TRIGGERS.forEach(trigger => {
         const optionDe = options.find(option => text(option) === trigger.name);
@@ -320,7 +320,7 @@ describe('EventTriggerComponent', () => {
       fixture.detectChanges();
       const triggerIds = component.triggers.map((trigger) => trigger.id);
       expect(triggerIds.includes('queryManagementRespondQuery')).toBe(true);
-      expect(component.triggers.length).toEqual(3);
+      expect(component.triggers.length).toEqual(4);
     });
   });
 });

@@ -6,22 +6,7 @@
         </label>
       </h1>
       <div id="add-comments-hint" class="govuk-hint">
-        {{addCommentsStepEnum.HINT_TEXT | rpxTranslate}}
-      </div>
-      <div class="govuk-warning-text" *ngIf="!isDisplayContextParameterExternal">
-        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-        <strong class="govuk-warning-text__text">
-          <span class="govuk-warning-text__assistive">{{'Warning' | rpxTranslate}}</span>
-          {{addCommentsStepEnum.WARNING_TEXT | rpxTranslate}}
-        </strong>
-      </div>
-      <div class="govuk-warning-text"
-        *ngIf="!isDisplayContextParameterExternal && isDisplayContextParameter2Point1Enabled && !otherInternalFlagTypeSelected">
-        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-        <strong class="govuk-warning-text__text">
-          <span class="govuk-warning-text__assistive">{{'Warning' | rpxTranslate}}</span>
-          {{addCommentsStepEnum.WARNING_TEXT | rpxTranslate}}
-        </strong>
+        {{addCommentsHint | rpxTranslate}}
       </div>
       <div class="govuk-warning-text"
         *ngIf="!isDisplayContextParameterExternal && isDisplayContextParameter2Point1Enabled && !otherInternalFlagTypeSelected">

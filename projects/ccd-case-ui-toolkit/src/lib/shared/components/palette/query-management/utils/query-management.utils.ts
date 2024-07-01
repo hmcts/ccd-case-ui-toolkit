@@ -23,7 +23,7 @@ export class QueryManagementUtils {
   public static getNewQueryData(formGroup: FormGroup, currentUserDetails: any): CaseMessage {
     const currentUserId = currentUserDetails?.uid;
     const currentUserName = currentUserDetails?.name;
-    const id = formGroup.get('id').value;
+    const id = currentUserDetails?.id;
     const subject = formGroup.get('subject').value;
     const body = formGroup.get('body').value;
     const isHearingRelated = formGroup.get('isHearingRelated').value;
@@ -47,7 +47,7 @@ export class QueryManagementUtils {
   public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any): CaseMessage {
     const currentUserId = currentUserDetails?.uid;
     const currentUserName = currentUserDetails?.name;
-    const id = formGroup.get('id').value;
+    const id = currentUserDetails?.id;
     const body = formGroup.get('body').value;
     const attachments = formGroup.get('attachments').value;
     return {
