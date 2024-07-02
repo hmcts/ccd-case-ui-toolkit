@@ -41,7 +41,9 @@
   </div>
   <div *ngIf="hasEventSelector" class="column-one-half">
     <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()" [triggers]="caseDetails.triggers"
-                       [triggerText]="triggerText" (onTriggerChange)="clearErrorsAndWarnings()"
+                       [triggerText]="triggerText"
+                       [eventId]="eventId"
+                       (onTriggerChange)="clearErrorsAndWarnings()"
                        (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
   </div>
 </div>

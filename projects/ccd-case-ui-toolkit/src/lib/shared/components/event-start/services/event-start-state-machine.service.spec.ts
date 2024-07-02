@@ -191,7 +191,7 @@ describe('EventStartStateMachineService', () => {
     expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
-      { queryParams: { isComplete: true }, relativeTo: mockRoute });
+      { relativeTo: mockRoute });
   });
 
   it('should allow user to perform event if one task assigned to user and initiated from dropdown', () => {
@@ -207,7 +207,7 @@ describe('EventStartStateMachineService', () => {
     expect(stateMachine.currentState.id).toEqual(EventStartStates.FINAL);
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
-      { queryParams: { isComplete: true }, relativeTo: mockRoute });
+      { relativeTo: mockRoute });
   });
 
   it('should navigate to task unassigned error page if one unassigned task', () => {
