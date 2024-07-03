@@ -23,7 +23,10 @@
       <td class="case-table-column"><span [title]="case.stateDescription">{{case.state}}</span></td>
       <td class="case-table-column" *ngFor="let details of case.linkDetails">
         <span *ngFor="let reason of details.reasons; let i = index; let isLast = last">
-          {{reason | ccdLinkCasesFromReasonValue}} <br>
+          {{reason | ccdLinkCasesFromReasonValue}}<span><a class="govuk-!-padding-left-1"
+            href="cases/case-details/{{ case.caseReference }}"
+            *ngIf="hasLeadCaseOrConsolidated(reason.reasonCode)">{{getCaseReferenceLink(case.caseReference)}}</a></span>
+        <br *ngIf="!isLast" />
         </span>
       </td>
     </tr>
