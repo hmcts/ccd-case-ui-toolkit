@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject, of } from 'rxjs';
 import { finalize, switchMap } from 'rxjs/operators';
+
+import { Constants } from '../../../commons/constants';
 import { ConditionalShowRegistrarService, GreyBarService } from '../../../directives';
 import {
   CaseEditCaseSubmit, CaseEditGenerateCaseEventData, CaseEditGetNextPage,
@@ -11,18 +13,16 @@ import {
   CaseEventData, CaseEventTrigger, CaseField,
   CaseView, Draft, HttpError, Profile
 } from '../../../domain';
-import { Task } from '../../../domain/work-allocation/Task';
+import { Task, TaskEvent } from '../../../domain/work-allocation/Task';
 import {
   AlertService,
   FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
   SessionStorageService, WindowService
 } from '../../../services';
-import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
-import { Constants } from '../../../commons/constants';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -240,18 +240,27 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
     let taskInSessionStorage: Task;
+    let taskEventInSessionStorage: TaskEvent;
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
+    const taskEventStr = this.sessionStorageService.getItem('taskEvent');
     if (taskStr) {
       taskInSessionStorage = JSON.parse(taskStr);
     }
-
-    if (taskInSessionStorage && taskInSessionStorage.case_id === this.getCaseId(caseDetails)) {
+    if (taskEventStr) {
+      taskEventInSessionStorage = JSON.parse(taskEventStr);
+    }
+    const eventId = this.getEventId(form);
+    const caseId = this.getCaseId(caseDetails);
+    if (this.taskExistsForThisEventAndCase(taskInSessionStorage, taskEventInSessionStorage, eventId, caseId)) {
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
-        caseId: this.getCaseId(caseDetails),
-        eventId: this.getEventId(form),
+        caseId,
+        eventId,
         task: taskInSessionStorage
       });
+      // add taskEvent to link current event with task id
+      const taskEvent = {eventId, taskId: taskInSessionStorage.id};
+      this.sessionStorageService.setItem('taskEvent', JSON.stringify(taskEvent));
       this.isEventCompletionChecksRequired = true;
     } else {
       // Task not in session storage, proceed to submit
@@ -430,6 +439,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       return this.postCompleteTaskIfRequired();
     }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
+        // on event completion ensure the previous event taskToComplete/taskEvent removed
+        this.sessionStorageService.removeItem('taskToComplete');
+        this.sessionStorageService.removeItem('taskEvent')
         this.isSubmitting = false;
       }))
       .subscribe(
@@ -493,6 +505,25 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       );
     } else {
       return null;
+    }
+  }
+
+  // checks whether current taskToComplete relevant for the event
+  public taskExistsForThisEventAndCase(taskInSessionStorage, taskEvent, eventId, caseId): boolean {
+    if (!taskInSessionStorage || taskInSessionStorage.case_id !== caseId) {
+      return false;
+    }
+    if (!taskEvent) {
+      // if no task event present then there is no task to complete from previous event present
+      return true;
+    } else {
+      if (taskEvent.taskId === taskInSessionStorage.id && taskEvent.eventId !== eventId) {
+        // if the session storage not related to event, ignore it and remove
+        this.sessionStorageService.removeItem('taskToComplete');
+        this.sessionStorageService.removeItem('taskEvent');
+        return false;
+      }
+      return true;
     }
   }
 
