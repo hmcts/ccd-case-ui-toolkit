@@ -73,7 +73,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     cancelled,
     validate: (caseEventData: CaseEventData) => of(caseEventData),
     saveDraft: (_: CaseEventData) => of(someObservable),
-    caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] },
+    caseDetails: { case_id: '1234567812345678', tabs: [], metadataFields: [caseField2] }
   };
   route = {
     params: of({ id: 123 }),
@@ -202,7 +202,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
         parent_category: '',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         key: 'bail',
@@ -216,7 +216,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
         parent_category: '',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
+        from: 'exui-default'
       },
       {
         key: 'other',
@@ -230,8 +230,8 @@ describe('WriteLinkedCasesFieldComponent', () => {
         parent_category: '',
         active_flag: 'Y',
         child_nodes: null,
-        from: 'exui-default',
-      },
+        from: 'exui-default'
+      }
     ]
   };
 
@@ -248,9 +248,8 @@ describe('WriteLinkedCasesFieldComponent', () => {
       service_id: 39,
       service_short_description: 'short descr',
       sub_business_area: 'buss area'
-
     }
-  ]
+  ];
 
   beforeEach(waitForAsync(() => {
     appConfig = createSpyObj<AbstractAppConfig>('appConfig', ['getRDCommonDataApiUrl']);
@@ -298,9 +297,9 @@ describe('WriteLinkedCasesFieldComponent', () => {
   });
 
   it('should initialise get OrgService', () => {
-   spyOn(component, 'getLinkedCaseReasons').and.returnValue(of([]));
+    spyOn(component, 'getLinkedCaseReasons').and.returnValue(of(serviceOrgData));
     component.getOrgService();
-    expect(component.getLinkedCaseReasons).toHaveBeenCalled();
+    expect(component.getLinkedCaseReasons).toHaveBeenCalledWith(serviceOrgData[0].service_code);
   });
 
   it('should initialise case details', () => {
