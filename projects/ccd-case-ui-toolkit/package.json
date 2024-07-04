@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.42-accessibility-table-fixed",
+  "version": "7.0.43-accessibility-table-fixed",
   "engines": {
     "node": ">=18.19.0"
   },
