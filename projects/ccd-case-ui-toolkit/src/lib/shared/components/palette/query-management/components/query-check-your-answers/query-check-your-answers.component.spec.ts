@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -185,6 +185,7 @@ describe('QueryCheckYourAnswersComponent', () => {
   };
 
   beforeEach(async () => {
+    router = jasmine.createSpyObj('Router', ['navigate']);
     workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
     workAllocationService.searchTasks.and.returnValue(of(response));
     sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
@@ -207,7 +208,8 @@ describe('QueryCheckYourAnswersComponent', () => {
         { provide: CaseNotifier, useValue: caseNotifier },
         { provide: CasesService, useValue: casesService },
         { provide: WorkAllocationService, useValue: workAllocationService },
-        { provide: SessionStorageService, useValue: sessionStorageService }
+        { provide: SessionStorageService, useValue: sessionStorageService },
+        { provide: Router, useValue: router }
       ]
     })
       .compileComponents();
@@ -279,7 +281,6 @@ describe('QueryCheckYourAnswersComponent', () => {
   });
 
   it('should query submission failure navigate to service down page', () => {
-    spyOn(router, 'navigate');
     component.submit();
     expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
   });
@@ -293,18 +294,18 @@ describe('QueryCheckYourAnswersComponent', () => {
 
   describe('submit', () => {
     it('should call search task', () => {
-      component.submit();
+      component.searchAndCompleteTask();
       fixture.detectChanges();
       const searchParameter = { ccdId: '1' } as TaskSearchParameter;
       expect(workAllocationService.searchTasks).toHaveBeenCalledWith(searchParameter);
     });
 
     it('should trigger event completion', () => {
-      component.submit();
+      component.searchAndCompleteTask();
       fixture.detectChanges();
       const eventCompletionParams: EventCompletionParams = {
         caseId: '1',
-        eventId: 'respondToQuery',
+        eventId: 'queryManagementRespondQuery',
         task: response.tasks[0]
       };
       expect(component.eventCompletionParams).toEqual(eventCompletionParams);
