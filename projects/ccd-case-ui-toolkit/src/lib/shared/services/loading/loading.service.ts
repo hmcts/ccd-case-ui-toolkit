@@ -13,18 +13,14 @@ export class LoadingService {
 
   public register(): string {
     const token = this.generateToken();
-    console.info(`registering [${token}]`);
     this.registered.set(token, token);
     this.loading.next(true);
-    console.info(`registered [${token}]`);
     return token;
   }
 
   public unregister(token: string): void {
-    console.info(`unregistering [${token}]`);
     this.registered.delete(token);
     this.loading.next(this.registered.size > 0);
-    console.info(`unregistered [${token}]`);
   }
 
   private generateToken(): string {

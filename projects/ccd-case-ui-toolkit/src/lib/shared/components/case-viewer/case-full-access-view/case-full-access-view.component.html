@@ -41,7 +41,9 @@
   </div>
   <div *ngIf="hasEventSelector" class="column-one-half">
     <ccd-event-trigger [isDisabled]="isTriggerButtonDisabled()" [triggers]="caseDetails.triggers"
-                       [triggerText]="triggerText" (onTriggerChange)="clearErrorsAndWarnings()"
+                       [triggerText]="triggerText"
+                       [eventId]="eventId"
+                       (onTriggerChange)="clearErrorsAndWarnings()"
                        (onTriggerSubmit)="applyTrigger($event)"></ccd-event-trigger>
   </div>
 </div>
@@ -60,7 +62,7 @@
         </mat-tab>
         <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate">
           <ng-template matTabContent>
-            <table [class]="tab.id" [attr.aria-describedby]="'case viewer table' | rpxTranslate">
+            <table [class]="tab.id" [attr.aria-label]="'case viewer table' | rpxTranslate">
               <tbody>
               <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup.controls['data']">
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">

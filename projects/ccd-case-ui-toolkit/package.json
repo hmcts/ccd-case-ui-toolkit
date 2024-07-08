@@ -1,8 +1,8 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.23",
+  "version": "7.0.43",
   "engines": {
-    "node": ">=18.17.0"
+    "node": ">=18.19.0"
   },
   "description": "Case UI Toolkit",
   "license": "MIT",

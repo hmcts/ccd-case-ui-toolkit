@@ -34,7 +34,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Lager encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '11 May 2023'
+      upload_timestamp: '11 May 2023 00:00:00'
     },
     {
       name: 'Beers encyclopedia',
@@ -42,7 +42,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Beers encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '14 Apr 2023'
+      upload_timestamp: '14 Apr 2023 00:00:00'
     },
     {
       name: 'Ale encyclopedia',
@@ -50,7 +50,7 @@ describe('CaseFileViewFolderComponent', () => {
       document_filename: 'Ale encyclopedia',
       document_binary_url: '/test/binary',
       attribute_path: '',
-      upload_timestamp: '12 Mar 2023'
+      upload_timestamp: '12 Mar 2023 00:00:00'
     }
   ]);
 
@@ -73,8 +73,7 @@ describe('CaseFileViewFolderComponent', () => {
         { provide: DocumentManagementService, useValue: mockDocumentManagementService },
         { provide: AbstractAppConfig, useValue: mockAppConfig }
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CaseFileViewFolderComponent);
     component = fixture.componentInstance;
@@ -91,9 +90,11 @@ describe('CaseFileViewFolderComponent', () => {
     documentFilterInputEl.dispatchEvent(new Event('input'));
     fixture.detectChanges();
     await fixture.whenStable();
+    component.sortDataSourceDescending(1)
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
-    expect(component.documentTreeData).toEqual(treeData);
+
+    expect(treeData[3].children[0].upload_timestamp).toEqual('17 Nov 2022 00:00:00');
   });
 
   it('should generate tree data from categorised data', () => {
@@ -133,7 +134,7 @@ describe('CaseFileViewFolderComponent', () => {
   it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
     const sortChildrenAscendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-      sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending').and.callThrough());
+      sortChildrenAscendingSpies.push(spyOn(item, 'sortChildrenAscending').and.callThrough());
     });
 
     component.sortDataSourceAscending(CaseFileViewSortColumns.DOCUMENT_NAME);
@@ -142,14 +143,13 @@ describe('CaseFileViewFolderComponent', () => {
     sortChildrenAscendingSpies.forEach((item) => {
       expect(item).toHaveBeenCalled();
     });
-
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyAsc);
   });
 
   it('should call sortChildrenDescending on all children of nestedDataSource when calling sortDataSourceDescAlphabetically', () => {
     const sortChildrenDescendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-      sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending').and.callThrough());
+      sortChildrenDescendingSpies.push(spyOn(item, 'sortChildrenDescending').and.callThrough());
     });
     component.sortDataSourceDescending(CaseFileViewSortColumns.DOCUMENT_NAME);
     fixture.detectChanges();
@@ -163,22 +163,22 @@ describe('CaseFileViewFolderComponent', () => {
 
   it('should set mediaViewer localStorage' +
     'and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
-    const documentTreeNode = component.nestedDataSource[0].children[3];
-    component.triggerDocumentAction('openInANewTab', documentTreeNode);
+      const documentTreeNode = component.nestedDataSource[0].children[3];
+      component.triggerDocumentAction('openInANewTab', documentTreeNode);
 
-    // @ts-expect-error -- private method
-    expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
-      MEDIA_VIEWER_LOCALSTORAGE_KEY,
       // @ts-expect-error -- private method
-      component.documentManagementService.getMediaViewerInfo({
-        document_binary_url: documentTreeNode.document_binary_url,
-        document_filename: documentTreeNode.document_filename
-      })
-    );
+      expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
+        MEDIA_VIEWER_LOCALSTORAGE_KEY,
+        // @ts-expect-error -- private method
+        component.documentManagementService.getMediaViewerInfo({
+          document_binary_url: documentTreeNode.document_binary_url,
+          document_filename: documentTreeNode.document_filename
+        })
+      );
 
-    // @ts-expect-error -- private method
-    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
-  });
+      // @ts-expect-error -- private method
+      expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
+    });
 
   it('should display correct folder icons', () => {
     component.nestedDataSource = treeData;

@@ -1,5 +1,5 @@
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@import 'govuk_frontend_toolkit/stylesheets/_colours.scss';
+@import 'govuk_frontend_toolkit/stylesheets/_typography';
 
 @mixin core-24pt($line-height: calc(30 / 24), $line-height-640: calc(24 / 20), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 24pt;

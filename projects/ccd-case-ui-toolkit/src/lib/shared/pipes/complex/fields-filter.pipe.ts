@@ -17,7 +17,7 @@ export class FieldsFilterPipe implements PipeTransform {
   ];
 
   private static readonly NESTED_TYPES = {
-    Complex: FieldsFilterPipe.isValidComplex
+    Complex: FieldsFilterPipe?.isValidComplex
   };
 
   /**
@@ -27,7 +27,6 @@ export class FieldsFilterPipe implements PipeTransform {
     values = values || {};
     const type = field.field_type;
     const value = FieldsFilterPipe.getValue(field, values);
-
     const hasChildrenWithValue = type.complex_fields.find(f => {
       return FieldsFilterPipe.keepField(f, value);
     });

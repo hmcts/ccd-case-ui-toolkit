@@ -19,7 +19,7 @@ import { CaseFlagDisplayContextParameter, CaseFlagErrorMessage, CaseFlagFieldSta
   styleUrls: ['./write-case-flag-field.component.scss']
 })
 export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyComponent implements OnInit, OnDestroy, Journey {
-  public formGroup: FormGroup;
+  //public formGroup: FormGroup;
   public fieldState: number;
   public caseFlagFieldState = CaseFlagFieldState;
   public errorMessages: ErrorMessage[] = [];
