@@ -140,11 +140,6 @@ export class CasesService {
     while (Date.now() < end) continue;
   }
 
-  public syncWait(seconds) {
-    const end = Date.now() + seconds * 1000;
-    while (Date.now() < end) continue;
-  }
-
   public getEventTrigger(caseTypeId: string,
     eventTriggerId: string,
     caseId?: string,

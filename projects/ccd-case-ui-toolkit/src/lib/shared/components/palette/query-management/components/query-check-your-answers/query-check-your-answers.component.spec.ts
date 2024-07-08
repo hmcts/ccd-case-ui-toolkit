@@ -1,12 +1,14 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { CaseView, TaskSearchParameter } from '../../../../../../shared/domain';
+import { SessionStorageService } from '../../../../../services';
 import { EventCompletionParams } from '../../../../case-editor/domain/event-completion-params.model';
-import { CaseNotifier, WorkAllocationService } from '../../../../case-editor/services';
+import { CaseNotifier, CasesService, WorkAllocationService } from '../../../../case-editor/services';
 import { QueryCreateContext, QueryListItem } from '../../models';
 import { QueryCheckYourAnswersComponent } from './query-check-your-answers.component';
 
@@ -23,7 +25,9 @@ describe('QueryCheckYourAnswersComponent', () => {
   let nativeElement: any;
   let casesService: any;
   let caseNotifier: any;
+  let router: Router;
   let workAllocationService: any;
+  let sessionStorageService: any;
 
   const items = [
     {
@@ -167,23 +171,45 @@ describe('QueryCheckYourAnswersComponent', () => {
     }]
   };
 
+  const eventTrigger = {
+    id: 'queryManagementRaiseQuery',
+    name: 'queryManagementRaiseQuery',
+    description: 'Respond to a query',
+    event_token: 'token0011223344'
+  };
+
+  const userDetails = {
+    email: 'smith_solicitor@test.com',
+    uid: '1111-2222-3333-4444',
+    name: 'Smith Solicitor'
+  };
+
   beforeEach(async () => {
+    router = jasmine.createSpyObj('Router', ['navigate']);
     workAllocationService = jasmine.createSpyObj('WorkAllocationService', ['searchTasks']);
     workAllocationService.searchTasks.and.returnValue(of(response));
-    casesService = jasmine.createSpyObj('casesService', ['getCaseViewV2']);
+    sessionStorageService = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+    casesService = jasmine.createSpyObj('casesService', ['getEventTrigger', 'createEvent', 'getCaseViewV2']);
+    casesService.getEventTrigger.and.returnValue(of(eventTrigger));
+    casesService.createEvent.and.returnValue(of({status: 200}));
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
     await TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule],
       declarations: [
         QueryCheckYourAnswersComponent,
         RpxTranslateMockPipe
       ],
       providers: [
         { provide: ActivatedRoute, useValue: snapshotActivatedRoute },
+        { provide: CaseNotifier, useValue: caseNotifier },
+        { provide: CasesService, useValue: casesService },
         { provide: WorkAllocationService, useValue: workAllocationService },
-        { provide: CaseNotifier, useValue: caseNotifier }
+        { provide: SessionStorageService, useValue: sessionStorageService },
+        { provide: Router, useValue: router }
       ]
     })
       .compileComponents();
@@ -199,7 +225,7 @@ describe('QueryCheckYourAnswersComponent', () => {
       isHearingRelated: new FormControl('', Validators.required),
       attachments: new FormControl([])
     });
-    component.formGroup.get('isHearingRelated').setValue(true);
+    component.formGroup.get('isHearingRelated')?.setValue(true);
     nativeElement = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });
@@ -254,20 +280,32 @@ describe('QueryCheckYourAnswersComponent', () => {
     expect(columnHeadings[1].nativeElement.textContent.trim()).toEqual('Document attached');
   });
 
+  xit('should query submission failure navigate to service down page', () => {
+    component.submit();
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
+  describe('searchAndCompleteTask', () => {
+    it('should call search task', () => {
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+      component.searchAndCompleteTask();
+    });
+  });
+
   describe('submit', () => {
     it('should call search task', () => {
-      component.submit();
+      component.searchAndCompleteTask();
       fixture.detectChanges();
       const searchParameter = { ccdId: '1' } as TaskSearchParameter;
       expect(workAllocationService.searchTasks).toHaveBeenCalledWith(searchParameter);
     });
 
     it('should trigger event completion', () => {
-      component.submit();
+      component.searchAndCompleteTask();
       fixture.detectChanges();
       const eventCompletionParams: EventCompletionParams = {
         caseId: '1',
-        eventId: 'respondToQuery',
+        eventId: 'queryManagementRespondQuery',
         task: response.tasks[0]
       };
       expect(component.eventCompletionParams).toEqual(eventCompletionParams);

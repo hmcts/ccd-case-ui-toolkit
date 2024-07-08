@@ -6,6 +6,7 @@ export * from './case-flag-form-fields.enum';
 export * from './case-flag-status.enum';
 export * from './case-flag-summary-list-display-mode.enum';
 export * from './case-flag-wizard-step-title.enum';
+export * from './case-flag-check-your-answers-step.enum';
 export * from './confirm-status-error-message.enum';
 export * from './confirm-status-step.enum';
 export * from './search-language-interpreter-error-message.enum';

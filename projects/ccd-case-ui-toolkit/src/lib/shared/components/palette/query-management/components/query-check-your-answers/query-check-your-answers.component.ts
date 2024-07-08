@@ -106,7 +106,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       () => this.router.navigate(['/', 'service-down'])
     );
   }
-
   public searchAndCompleteTask(): void {
     // Search Task
     const searchParameter = { ccdId: this.caseDetails.case_id } as TaskSearchParameter;
@@ -123,7 +122,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         // Trigger event completion
         this.eventCompletionParams = {
           caseId: this.caseDetails.case_id,
-          eventId: this.eventId,
+          eventId: this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID,
           task: filteredtask
         };
       });
@@ -150,7 +149,9 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       roleOnCase: '', // Not returned by CCD
       caseMessages: [
         {
+          id: null,
           value: {
+            id: null,
             subject,
             name: currentUserName,
             body,
