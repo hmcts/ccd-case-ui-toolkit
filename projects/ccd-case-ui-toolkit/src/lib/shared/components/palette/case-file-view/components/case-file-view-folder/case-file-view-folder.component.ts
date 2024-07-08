@@ -10,6 +10,7 @@ import { AbstractAppConfig } from '../../../../../../app.config';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
+  CaseFileViewSortColumns,
   CategoriesAndDocuments,
   DocumentTreeNode,
   DocumentTreeNodeType
@@ -100,6 +101,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       // Initialise cdk tree with generated data
       this.nestedDataSource = this.documentTreeData;
       this.nestedTreeControl.dataNodes = this.documentTreeData;
+      this.sortDataSourceDescending(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP);
     });
   }
 
