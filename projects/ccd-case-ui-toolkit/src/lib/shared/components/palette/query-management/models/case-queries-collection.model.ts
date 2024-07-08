@@ -1,12 +1,12 @@
-import { Document } from '../../../../domain';
+import { FormDocument } from '../../../../domain';
 
 export interface QueryMessageDocument {
   id: string;
-  value: Document;
+  value: FormDocument;
 }
 
 export interface CaseMessage {
-  id?: string;
+  id: string;
   subject?: string;
   name: string;
   body: string;
@@ -19,7 +19,7 @@ export interface CaseMessage {
 }
 
 export interface QueryMessage {
-  id?: string;
+  id: string;
   value: CaseMessage;
 }
 

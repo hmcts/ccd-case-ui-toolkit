@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { Constants } from '../../../commons/constants';
@@ -9,6 +9,7 @@ import { HmctsServiceDetail } from '../../../domain/case-flag';
 import { CaseField, CaseTypeLite, FieldType, Jurisdiction } from '../../../domain/definition';
 import { JudicialUserModel } from '../../../domain/jurisdiction';
 import { CaseFlagRefdataService, FieldsUtils, FormValidatorsService, JurisdictionService, SessionStorageService } from '../../../services';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { FirstErrorPipe, IsCompoundPipe, PaletteUtilsModule } from '../utils';
 import { WriteJudicialUserFieldComponent } from './write-judicial-user-field.component';
 import createSpyObj = jasmine.createSpyObj;
@@ -22,17 +23,17 @@ const FIELD_TYPE: FieldType = {
   id: 'JudicialUser',
   type: 'Complex',
 };
-const IDAM_ID: CaseField ={
+const IDAM_ID: CaseField = {
   id: 'idamId',
   label: 'IdamId',
-  field_type: {id: 'Text', type: 'Text'}
+  field_type: { id: 'Text', type: 'Text' }
 } as CaseField;
 
 const PERSONAL_CODE: CaseField = {
   id: 'personalCode',
   label: 'PersonalCode',
-  field_type: {id: 'Text', type: 'Text'}
-}as CaseField;
+  field_type: { id: 'Text', type: 'Text' }
+} as CaseField;
 
 const CASE_FIELD: CaseField = {
   id: FIELD_ID,
@@ -146,7 +147,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     jurisdictionService.searchJudicialUsers.and.returnValue(of(JUDICIAL_USERS));
     jurisdictionService.searchJudicialUsersByPersonalCodes.and.returnValue(of([JUDICIAL_USERS[1]]));
     sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-    sessionStorageService.getItem.and.returnValue(JSON.stringify({cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'SSCS'}));
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'SSCS' }));
     caseFlagRefdataService = createSpyObj<CaseFlagRefdataService>('caseFlagRefdataService', ['getHmctsServiceDetailsByCaseType', 'getHmctsServiceDetailsByServiceName']);
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(SERVICE_DETAILS));
     caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of(SERVICE_DETAILS));
@@ -160,7 +161,7 @@ describe('WriteJudicialUserFieldComponent', () => {
         MatAutocompleteModule,
         PaletteUtilsModule
       ],
-      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe],
+      declarations: [WriteJudicialUserFieldComponent, MockFirstErrorPipe, MockFieldLabelPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: JurisdictionService, useValue: jurisdictionService },
@@ -171,7 +172,7 @@ describe('WriteJudicialUserFieldComponent', () => {
         { provide: FirstErrorPipe, useValue: MockFirstErrorPipe }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(WriteJudicialUserFieldComponent);
     component = fixture.componentInstance;
@@ -187,7 +188,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create component', async() => {
+  it('should create component', async () => {
     expect(component.formGroup.setControl).toHaveBeenCalledWith(`${FIELD_ID}_judicialUserControl`, component.judicialUserControl);
     expect(FieldsUtils.addCaseFieldAndComponentReferences).toHaveBeenCalledWith(
       component.judicialUserControl, component.caseField, component);
@@ -233,7 +234,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(judicialUserField.setValidators).toHaveBeenCalledWith(Validators.required);
   });
 
-  it('should display "No results found" if there are no matches for the search term', async() => {
+  it('should display "No results found" if there are no matches for the search term', async () => {
     jurisdictionService.searchJudicialUsers.and.returnValue(of([]));
     const selectedJudicial = nativeElement.querySelector('#JudicialUserField');
     selectedJudicial.dispatchEvent(new Event('focusin'));
@@ -246,7 +247,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(autocompleteOptions.children[0].textContent).toContain('No results found');
   });
 
-  it('should return undefined if an error occurred searching for judicial users', async() => {
+  it('should return undefined if an error occurred searching for judicial users', async () => {
     jurisdictionService.searchJudicialUsers.and.returnValue(throwError(new Error('An error occurred')));
     filterJudicialUsersSpy.calls.reset();
     const selectedJudicial = nativeElement.querySelector('#JudicialUserField');
@@ -262,7 +263,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(filteredJudicialUsers).toEqual(undefined);
   });
 
-  it('should display "Invalid search term" if an error occurred searching for judicial users', async() => {
+  it('should display "Invalid search term" if an error occurred searching for judicial users', async () => {
     jurisdictionService.searchJudicialUsers.and.returnValue(throwError(new Error('An error occurred')));
     filterJudicialUsersSpy.calls.reset();
     const selectedJudicial = nativeElement.querySelector('#JudicialUserField');
@@ -278,7 +279,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(autocompleteOptions.children[0].textContent).toContain('Invalid search term');
   });
 
-  it('should allow the user to search for a judicial user after an error has occurred', async() => {
+  it('should allow the user to search for a judicial user after an error has occurred', async () => {
     jurisdictionService.searchJudicialUsers.and.returnValue(throwError(new Error('An error occurred')));
     filterJudicialUsersSpy.calls.reset();
     const selectedJudicial = nativeElement.querySelector('#JudicialUserField');
@@ -398,7 +399,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(displayNameAndEmail).toEqual('');
   });
 
-  it('should show nothing for the user\'s full name and/or email in the autocomplete list if these are not available', async() => {
+  it('should show nothing for the user\'s full name and/or email in the autocomplete list if these are not available', async () => {
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[2]]));
     const selectedJudicial = nativeElement.querySelector('#JudicialUserField');
     selectedJudicial.dispatchEvent(new Event('focusin'));
@@ -428,7 +429,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(autocompleteOptions.children[0].textContent.trim()).toEqual('');
   });
 
-  it('should clear the field if the user searches for a judicial user but makes no selection', async() => {
+  it('should clear the field if the user searches for a judicial user but makes no selection', async () => {
     const judicialUserField = component.judicialUserControl;
     spyOn(judicialUserField, 'setValue').and.callThrough();
     jurisdictionService.searchJudicialUsers.and.returnValue(of([JUDICIAL_USERS[0]]));
@@ -445,7 +446,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(judicialUserField.setValue).toHaveBeenCalledWith(null);
   });
 
-  it('should not clear the field if the user searches for a judicial user, makes no selection but did previously', async() => {
+  it('should not clear the field if the user searches for a judicial user, makes no selection but did previously', async () => {
     // Simulate the user having made a selection already
     component.onSelectionChange({
       source: {
@@ -469,7 +470,7 @@ describe('WriteJudicialUserFieldComponent', () => {
     expect(judicialUserField.setValue).not.toHaveBeenCalledWith(null);
   });
 
-  it('should clear the CaseField value, and idamId and personalCode values if the user clears the judicial user field', async() => {
+  it('should clear the CaseField value, and idamId and personalCode values if the user clears the judicial user field', async () => {
     component.caseField.value = {
       idamId: 'Test',
       personalCode: 'Test'

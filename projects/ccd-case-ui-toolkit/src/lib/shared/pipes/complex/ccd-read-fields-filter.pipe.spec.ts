@@ -101,6 +101,227 @@ describe('ReadFieldsFilterPipe', () => {
     show_condition: null
   }, 'test1');
 
+  const complexCaseField2: CaseField = buildCaseField('ViewApplicationTab', {
+    display_context: 'COMPLEX',
+    field_type: {
+      complex_fields: [
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            id: 'YesOrNo',
+            type: 'YesOrNo',
+          },
+          hidden: false,
+          id: 'caseAccepted',
+          label: 'Case Accepted?',
+          show_condition: null,
+          value: null,
+        },
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            id: 'Date',
+            type: 'Date',
+          },
+          hidden: false,
+          id: 'dateAccepted',
+          label: 'Date Accepted',
+          show_condition: 'caseAccepted=\"No\"',
+          value: null,
+        }
+      ],
+      id: 'acceptOrRejectCase',
+      type: 'Complex'
+    },
+    id: 'preAcceptCase',
+    label: '',
+    show_condition: null
+  });
+
+  const value1 = {
+    addNewHearingLabel: null,
+    allPartiesAttendHearingSameWayYesOrNo: 'No',
+    localAuthorityHearingChannel: {
+      list_items: [
+        {
+          code: 'INTER',
+          label: 'In Person'
+        },
+        {
+          code: 'NA',
+          label: 'Not In Attendance'
+        },
+        {
+          code: 'ONPPRS',
+          label: 'On the Papers'
+        },
+        {
+          code: 'TEL',
+          label: 'Telephone'
+        },
+        {
+          code: 'VID',
+          label: 'Video'
+        }
+      ],
+      value: null
+    }
+  };
+
+  const complexCaseField3: CaseField = buildCaseField('hearing', {
+    field_type: {
+      complex_fields: [
+        {
+          display_context: 'OPTIONAL',
+          field_type: {
+            complex_fields: [],
+            id: 'DynamicList',
+            type: 'DynamicList',
+          },
+          hidden: false,
+          id: 'localAuthorityHearingChannel',
+          label: 'Local authority',
+          list_items: [
+            {
+              code: 'INTER',
+              label: 'In Person'
+            },
+            {
+              code: 'NA',
+              label: 'Not In Attendance'
+            },
+            {
+              code: 'ONPPRS',
+              label: 'On the Papers'
+            },
+            {
+              code: 'TEL',
+              label: 'Telephone'
+            },
+            {
+              code: 'VID',
+              label: 'Video'
+            }
+          ],
+          show_condition: null,
+          value: {
+            list_items: [
+              {
+                code: 'INTER',
+                label: 'In Person'
+              },
+              {
+                code: 'NA',
+                label: 'Not In Attendance'
+              },
+              {
+                code: 'ONPPRS',
+                label: 'On the Papers'
+              },
+              {
+                code: 'TEL',
+                label: 'Telephone'
+              },
+              {
+                code: 'VID',
+                label: 'Video'
+              }
+            ],
+            value: null
+          },
+        },
+        {
+          display_context: 'HIDDEN',
+          field_type: {
+            complex_fields: [],
+            id: 'Label',
+            type: 'Label',
+          },
+          hidden: true,
+          id: 'addNewHearingLabel',
+          label: 'Add new Hearing',
+          show_condition: null,
+          value: undefined,
+        },
+        {
+          display_context: 'MANDATORY',
+          field_type: {
+            complex_fields: [],
+            id: 'YesOrNo',
+            type: 'YesOrNo',
+          },
+          hidden: false,
+          id: 'allPartiesAttendHearingSameWayYesOrNo',
+          label: 'Will all parties attend the hearing in the same way?',
+          show_condition: null,
+          value: undefined,
+        }
+      ],
+      id: 'HearingData',
+      type: 'Complex'
+    },
+    id: '0',
+    hidden: false,
+    label: 'Hearing 1',
+  }, value1);
+
+  const METADATA: object = {
+    ACCESS_GRANTED: 'STANDARD',
+    ACCESS_PROCESS: 'NONE',
+    CASE_REFERENCE: 1699282593769522,
+    CASE_TYPE: 'Benefit',
+    JURISDICTION: 'SSCS',
+    STATE: 'readyToList'
+  };
+
+  const FORM_GROUP = new FormGroup({
+    data: new FormGroup({
+      type: new FormControl('ORGANISATION'),
+      individualFirstName: new FormControl('Aamir'),
+      individualLastName: new FormControl('Khan'),
+      gender: new FormControl('Male'),
+      address: new FormControl('street 1'),
+      preAcceptCase: new FormGroup({
+        caseAccepted: new FormControl('Yes'),
+        dateAccepted: new FormControl('10/01/2023')
+      })
+    })
+  });
+
+  const FORM_GROUP1 = new FormGroup({
+    data: new FormGroup({
+      addNewHearingLabel: new FormControl(null),
+      allPartiesAttendHearingSameWayYesOrNo: new FormControl('No'),
+      localAuthorityHearingChannel: new FormControl({
+        list_items: [
+          {
+            code: 'INTER',
+            label: 'In Person'
+          },
+          {
+            code: 'NA',
+            label: 'Not In Attendance'
+          },
+          {
+            code: 'ONPPRS',
+            label: 'On the Papers'
+          },
+          {
+            code: 'TEL',
+            label: 'Telephone'
+          },
+          {
+            code: 'VID',
+            label: 'Video'
+          }
+        ],
+        value: null
+      })
+    })
+  });
+
   let pipe: ReadFieldsFilterPipe;
 
   beforeEach(() => {
@@ -234,13 +455,13 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(0);
   });
 
-  it('it shoulld evaluate showcondition and set the hidden property of field to false when value doesnt match within complex field', () => {
+  it('should evaluate showcondition and set the hidden property of field to false when value doesn\'t match within complex field', () => {
     const RESULT: CaseField[] = pipe.transform(complexCaseField, false, undefined, true);
     expect(RESULT.length).toEqual(3);
     expect(RESULT[1].hidden).toEqual(false);
     expect(RESULT[2].hidden).toEqual(false);
   });
-  it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field', () => {
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match within complex field', () => {
     complexCaseField.value = {
       type: 'ORGANISATION',
       individualFirstName: 'Aamir',
@@ -251,23 +472,15 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT[1].hidden).toEqual(true);
     expect(RESULT[2].hidden).toEqual(true);
   });
-  it('it shoulld return blank array if we sent null as input parameters', () => {
+  it('should return blank array if we sent null as input parameters', () => {
     const RESULT: CaseField[] = pipe.transform(null);
     expect(RESULT.length).toEqual(0);
   });
-  it('it shoulld return blank array if we sent blank array for complex field type', () => {
+  it('should return blank array if we sent blank array for complex field type', () => {
     const RESULT: CaseField[] = pipe.transform(complexCaseField1);
     expect(RESULT.length).toEqual(0);
   });
-  it('it shoulld evaluate showcondition and set the hidden property of field to true when value doesnt match within complex field even Formgroup passed', () => {
-    const FORM_GROUP = new FormGroup({
-      data: new FormGroup({
-        type: new FormControl('ORGANISATION'),
-        individualFirstName: new FormControl('Aamir'),
-        individualLastName: new FormControl('Khan'),
-        address: new FormControl('street 1')
-      })
-    });
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match within complex field even Formgroup passed', () => {
     complexCaseField.value = {
       type: 'ORGANISATION',
       individualFirstName: 'Aamir',
@@ -277,5 +490,58 @@ describe('ReadFieldsFilterPipe', () => {
     expect(RESULT.length).toEqual(3);
     expect(RESULT[1].hidden).toEqual(true);
     expect(RESULT[2].hidden).toEqual(true);
+  });
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
+    complexCaseField2.value = {
+      caseAccepted: 'Yes',
+      dateAccepted: '10/01/2023'
+    };
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, FORM_GROUP.controls['data'], undefined, '');
+    expect(RESULT.length).toEqual(2);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(true);
+  });
+  it('should evaluate showcondition and set the hidden property of field to false when value match within complex field even Formgroup passed with idPrefix passed as empty string', () => {
+    complexCaseField2.value = {
+      caseAccepted: 'Yes',
+      dateAccepted: '10/01/2023'
+    };
+    complexCaseField2.field_type.complex_fields[1].show_condition = 'caseAccepted=\"Yes\"';
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, FORM_GROUP.controls['data'], undefined, '');
+    expect(RESULT.length).toEqual(2);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(false);
+  });
+  it('should evaluate showcondition and set the hidden property of field to false when value match with MetaData field', () => {
+    const formField = FORM_GROUP.controls['data'] as FormGroup;
+    const allFieldValues = Object.assign(METADATA, formField.value);
+    complexCaseField2.value = {
+      caseAccepted: 'Yes',
+      dateAccepted: '10/01/2023'
+    };
+    complexCaseField2.field_type.complex_fields[1].show_condition = 'STATE=\"readyToList\"';
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, allFieldValues);
+    expect(RESULT.length).toEqual(2);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(false);
+  });
+  it('should evaluate showcondition and set the hidden property of field to true when value doesn\'t match with MetaData field', () => {
+    const formField = FORM_GROUP.controls['data'] as FormGroup;
+    const allFieldValues = Object.assign(METADATA, formField.value);
+    complexCaseField2.value = {
+      caseAccepted: 'Yes',
+      dateAccepted: '10/01/2023'
+    };
+    complexCaseField2.field_type.complex_fields[1].show_condition = 'STATE=\"Do Not Show\"';
+    const RESULT: CaseField[] = pipe.transform(complexCaseField2, false, undefined, true, allFieldValues);
+    expect(RESULT.length).toEqual(2);
+    expect(RESULT[0].hidden).toEqual(false);
+    expect(RESULT[1].hidden).toEqual(true);
+  });
+  it('should remove dynamic list field if its value is null', () => {
+    const formField = FORM_GROUP1.controls['data'] as FormGroup;
+    const allFieldValues = Object.assign(METADATA, formField.value);
+    const RESULT: CaseField[] = pipe.transform(complexCaseField3, false, undefined, true, allFieldValues);
+    expect(RESULT.length).toEqual(2);
   });
 });

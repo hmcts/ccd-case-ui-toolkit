@@ -21,8 +21,8 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   private static readonly ALWAYS_NULL_FIELDS = ['CasePaymentHistoryViewer', 'WaysToPay', 'FlagLauncher', 'ComponentLauncher'];
 
   private static readonly NESTED_TYPES = {
-    Complex: ReadFieldsFilterPipe.isValidComplex,
-    Collection: ReadFieldsFilterPipe.isValidCollection
+    Complex: ReadFieldsFilterPipe?.isValidComplex,
+    Collection: ReadFieldsFilterPipe?.isValidCollection
   };
 
   /**
@@ -62,8 +62,9 @@ export class ReadFieldsFilterPipe implements PipeTransform {
   }
 
   private static isEmpty(value: any): boolean {
-    return ReadFieldsFilterPipe.EMPTY_VALUES.indexOf(value) !== -1
-      || value.length === 0;
+    const fieldValue = value?.hasOwnProperty('list_items')  && value?.hasOwnProperty('value') ? value.value : value;
+    return  ReadFieldsFilterPipe.EMPTY_VALUES.indexOf(fieldValue) !== -1
+      || fieldValue.length === 0;
   }
 
   private static isCompound(field: CaseField): boolean {
@@ -92,13 +93,13 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     }
 
     return !ReadFieldsFilterPipe.isEmpty(field.value)
-              || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
+      || !ReadFieldsFilterPipe.isEmpty(value[field.id]);
   }
 
   private static getValue(field: CaseField, values: any, index?: number): any {
     if (ReadFieldsFilterPipe.isEmpty(field.value)) {
       let value: any;
-      if (index >= 0 ) {
+      if (index >= 0) {
         value = values[index].value[field.id];
       } else {
         value = values[field.id];
@@ -145,12 +146,17 @@ export class ReadFieldsFilterPipe implements PipeTransform {
     let checkConditionalShowAgainst: any = values;
     let formGroupAvailable = false;
     if (formGroup) {
-      checkConditionalShowAgainst = formGroup.parent.getRawValue().data;
+      checkConditionalShowAgainst = formGroup.value ? formGroup.parent.getRawValue().data : formGroup;
       formGroupAvailable = true;
-      if (idPrefix) {
-        const fieldId = idPrefix.substring(0, idPrefix.indexOf('_'));
-        if (checkConditionalShowAgainst[fieldId]) {
-          checkConditionalShowAgainst = values;
+      if (idPrefix !== undefined) {
+        if (idPrefix !== '') {
+          const fieldId = idPrefix.substring(0, idPrefix.indexOf('_'));
+          if (checkConditionalShowAgainst[fieldId]) {
+            checkConditionalShowAgainst = values;
+            formGroupAvailable = false;
+          }
+        } else {
+          checkConditionalShowAgainst = Object.assign(checkConditionalShowAgainst, values);
           formGroupAvailable = false;
         }
       }
@@ -167,7 +173,9 @@ export class ReadFieldsFilterPipe implements PipeTransform {
       })
       .map(f => {
         if (!f.display_context) {
-          f.display_context = complexField.display_context;
+          if (FieldsUtils.isValidDisplayContext(complexField.display_context)) {
+            f.display_context = complexField.display_context;
+          }
         }
         if (setupHidden) {
           ReadFieldsFilterPipe.evaluateConditionalShow(f, checkConditionalShowAgainst, path, formGroupAvailable, complexField.id);

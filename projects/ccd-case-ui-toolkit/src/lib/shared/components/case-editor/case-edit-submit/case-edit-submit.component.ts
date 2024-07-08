@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CaseEventTrigger, CaseField, Profile } from '../../../domain';
@@ -7,8 +7,9 @@ import { Task } from '../../../domain/work-allocation/Task';
 import {
   CaseFieldService,
   FieldsUtils,
+  FormValidatorsService,
   OrderService,
-  ProfileNotifier,
+  ProfileNotifier
 } from '../../../services';
 import { CallbackErrorsComponent, CallbackErrorsContext } from '../../error';
 import { PaletteContext } from '../../palette';
@@ -35,6 +36,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public contextFields: CaseField[];
   public task: Task;
   public pageTitle: string;
+  public metadataFieldsObject: object;
+  public allFieldsValues: any;
+  public summary: AbstractControl;
+  public description: AbstractControl;
+  public eventSummaryLabel: string = 'Event summary';
+  public eventDescriptionLabel: string = 'Event description';
 
   public static readonly SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION = (a: CaseField, b: CaseField): number => {
     const aCaseField = a.show_summary_content_option === 0 || a.show_summary_content_option;
@@ -48,7 +55,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       return -1;
     }
     return a.show_summary_content_option - b.show_summary_content_option;
-  }
+  };
 
   public get isDisabled(): boolean {
     // EUI-3452.
@@ -65,11 +72,12 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly orderService: OrderService,
     private readonly profileNotifier: ProfileNotifier,
+    private readonly formValidatorsService: FormValidatorsService
   ) {
   }
 
   public ngOnInit(): void {
-    this.profileSubscription = this.profileNotifier.profile.subscribe(_ => this.profile = _);
+    this.profileSubscription = this.profileNotifier.profile.subscribe((_) => this.profile = _);
     this.eventTrigger = this.caseEdit.eventTrigger;
     this.triggerText = this.eventTrigger.end_button_label || CallbackErrorsComponent.TRIGGER_TEXT_SUBMIT;
     this.editForm = this.caseEdit.form;
@@ -77,29 +85,37 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
     this.showSummaryFields = this.sortFieldsByShowSummaryContent(this.eventTrigger.case_fields);
     this.caseEdit.isSubmitting = false;
     this.contextFields = this.getCaseFields();
+    this.metadataFieldsObject = this.caseEdit?.caseDetails?.metadataFields?.
+      reduce((o, key) => Object.assign(o, { [key.id]: key.value }), {});
+    this.allFieldsValues = Object.assign(this.metadataFieldsObject ? this.metadataFieldsObject : {}, this.editForm.getRawValue().data);
     // Indicates if the submission is for a Case Flag, as opposed to a "regular" form submission, by the presence of
     // a FlagLauncher field in the event trigger
     this.caseEdit.isCaseFlagSubmission =
-      this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']));
+      this.eventTrigger.case_fields.some((caseField) => FieldsUtils.isCaseFieldOfType(caseField, ['FlagLauncher']));
     this.caseEdit.isLinkedCasesSubmission =
       this.eventTrigger.case_fields.some(caseField => FieldsUtils.isCaseFieldOfType(caseField, ['ComponentLauncher']));
     this.pageTitle = this.getPageTitle();
+
+    this.summary = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.summary');
+    this.description = this.formValidatorsService.addMarkDownValidators(this.editForm, 'event.description');
   }
 
   public ngOnDestroy(): void {
-     /* istanbul ignore else */
+    /* istanbul ignore else */
     if (this.profileSubscription) {
       this.profileSubscription.unsubscribe();
     }
   }
 
   public submit(): void {
-    this.caseEdit.submitForm({
-      eventTrigger: this.eventTrigger,
-      form: this.editForm,
-      submit: this.caseEdit.submit,
-      caseDetails: this.caseEdit.caseDetails,
-    });
+    if (this.summary.valid && this.description.valid) {
+      this.caseEdit.submitForm({
+        eventTrigger: this.eventTrigger,
+        form: this.editForm,
+        submit: this.caseEdit.submit,
+        caseDetails: this.caseEdit.caseDetails
+      });
+    }
   }
 
   public onEventCanBeCompleted(eventCanBeCompleted: boolean): void {
@@ -108,7 +124,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
       eventCanBeCompleted,
       caseDetails: this.caseEdit.caseDetails,
       form: this.editForm,
-      submit: this.caseEdit.submit,
+      submit: this.caseEdit.submit
     });
   }
 
@@ -138,7 +154,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public summaryCaseField(field: CaseField): CaseField {
-     /* istanbul ignore else */
+    /* istanbul ignore else */
     if (null === this.editForm.get('data').get(field.id)) {
       // If not in form, return field itself
       return field;
@@ -153,9 +169,9 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   public cancel(): void {
     if (this.eventTrigger.can_save_draft) {
       if (this.route.snapshot.queryParamMap.get(CaseEditComponent.ORIGIN_QUERY_PARAM) === 'viewDraft') {
-        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.RESUMED_FORM_DISCARD});
+        this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.RESUMED_FORM_DISCARD });
       } else {
-        this.caseEdit.cancelled.emit({status: CaseEditPageComponent.NEW_FORM_DISCARD});
+        this.caseEdit.cancelled.emit({ status: CaseEditPageComponent.NEW_FORM_DISCARD });
       }
     } else {
       this.caseEdit.cancelled.emit();
@@ -171,20 +187,20 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public checkYourAnswerFieldsToDisplayExists(): boolean {
-     /* istanbul ignore else */
+    /* istanbul ignore else */
     if (this.eventTrigger.show_summary || this.eventTrigger.show_summary === null) {
       for (const page of this.wizard.pages) {
         /* istanbul ignore else */
-       if (page.case_fields && this.isShown(page)) {
-         for (const field of page.case_fields) {
+        if (page.case_fields && this.isShown(page)) {
+          for (const field of page.case_fields) {
             /* istanbul ignore else */
-           if (this.canShowFieldInCYA(field)) {
-             // at least one field needs showing
-             return true;
-           }
-         }
-       }
-     }
+            if (this.canShowFieldInCYA(field)) {
+              // at least one field needs showing
+              return true;
+            }
+          }
+        }
+      }
     } else {
       // found no fields to show in CYA summary page
       return false;
@@ -192,7 +208,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public readOnlySummaryFieldsToDisplayExists(): boolean {
-    return this.eventTrigger.case_fields.some(field => field.show_summary_content_option >= 0 );
+    return this.eventTrigger.case_fields.some((field) => field.show_summary_content_option >= 0);
   }
 
   public showEventNotes(): boolean {
@@ -209,7 +225,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   private getLastPageShown(): WizardPage {
     let lastPage: WizardPage;
-    this.wizard.reverse().forEach(page => {
+    this.wizard.reverse().forEach((page) => {
       if (!lastPage && this.isShown(page)) {
         lastPage = page;
       }
@@ -219,7 +235,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   }
 
   public previous(): void {
-     /* istanbul ignore else */
+    /* istanbul ignore else */
     if (this.hasPrevious()) {
       this.navigateToPage(this.getLastPageShown().id);
     }
@@ -231,7 +247,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public isShown(page: WizardPage): boolean {
     const fields = this.fieldsUtils
-      .mergeCaseFieldsAndFormFields(this.eventTrigger.case_fields, this.editForm.controls['data'].value);
+      .mergeCaseFieldsAndFormFields(this.eventTrigger.case_fields, this.editForm.controls.data.value);
     return page.parsedShowCondition.match(fields);
   }
 
@@ -242,7 +258,7 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
   private sortFieldsByShowSummaryContent(fields: CaseField[]): CaseField[] {
     return this.orderService
       .sort(fields, CaseEditSubmitComponent.SHOW_SUMMARY_CONTENT_COMPARE_FUNCTION)
-      .filter(cf => cf.show_summary_content_option);
+      .filter((cf) => cf.show_summary_content_option);
   }
 
   private getCaseFields(): CaseField[] {
@@ -259,15 +275,14 @@ export class CaseEditSubmitComponent implements OnInit, OnDestroy {
 
   public getCaseTitle(): string {
     return (this.caseEdit.caseDetails && this.caseEdit.caseDetails.state &&
-    this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
+      this.caseEdit.caseDetails.state.title_display ? this.caseEdit.caseDetails.state.title_display : '');
   }
 
   public getCancelText(): string {
     if (this.eventTrigger.can_save_draft) {
       return 'Return to case list';
-    } else {
-      return 'Cancel';
     }
+    return 'Cancel';
   }
 }
 

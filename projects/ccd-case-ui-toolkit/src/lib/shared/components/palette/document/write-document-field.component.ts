@@ -1,6 +1,7 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialogConfig } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AbstractAppConfig } from '../../../../app.config';
 import { Constants } from '../../../commons/constants';
@@ -24,9 +25,11 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   public static readonly DOCUMENT_BINARY_URL = 'document_binary_url';
   public static readonly DOCUMENT_FILENAME = 'document_filename';
   public static readonly DOCUMENT_HASH = 'document_hash';
+  public static readonly UPLOAD_TIMESTAMP = 'upload_timestamp';
   public static readonly UPLOAD_ERROR_FILE_REQUIRED = 'File required';
   public static readonly UPLOAD_ERROR_NOT_AVAILABLE = 'Document upload facility is not available at the moment';
   public static readonly UPLOAD_WAITING_FILE_STATUS = 'Uploading...';
+  public static readonly ERROR_UPLOADING_FILE = 'Error Uploading File';
 
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
@@ -58,17 +61,6 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     private readonly jurisdictionService: JurisdictionService,
   ) {
     super();
-  }
-
-  @HostListener('document:click', ['$event'])
-  public clickout(event) {
-    // Capturing the event of the associated  ElementRef <input type="file" #fileInpu
-
-    if (this.fileInput.nativeElement.contains(event.target)) {
-      this.clickInsideTheDocument = true;
-    } else {
-      this.fileValidations();
-    }
   }
 
   public ngOnInit(): void {
@@ -206,7 +198,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private subscribeToCaseDetails(): void {
     this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe({
       next: (caseDetails: CaseView) => {
-        this.caseTypeId = caseDetails?.case_id;
+        this.caseTypeId = caseDetails?.case_type.id;
         this.jurisdictionId = caseDetails?.case_type?.jurisdiction?.id;
       }
     });
@@ -257,6 +249,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     if (documentHash) {
       this.uploadedDocument.get(WriteDocumentFieldComponent.DOCUMENT_HASH).setValue(documentHash);
     }
+    if(this.uploadedDocument.get(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP)){
+      this.uploadedDocument.removeControl(WriteDocumentFieldComponent.UPLOAD_TIMESTAMP);
+    }
   }
 
   private createDocumentFormWithValidator(document: FormDocument): void {
@@ -266,9 +261,16 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename, Validators.required)
     };
 
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
+      documentFormGroup = {
+        ...documentFormGroup,
+        ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
+      }
+    }
+
     documentFormGroup = this.secureModeOn ? {
       ...documentFormGroup,
-      ...{ document_hash:  new FormControl(document.document_hash) }
+      ...{ document_hash: new FormControl(document.document_hash) }
     } : documentFormGroup;
 
     this.uploadedDocument = this.registerControl(new FormGroup(documentFormGroup), true) as FormGroup;
@@ -281,6 +283,13 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       document_filename: new FormControl(document.document_filename)
     };
 
+    if(document.upload_timestamp && (typeof document.upload_timestamp === 'string' )){
+      documentFormGroup = {
+        ...documentFormGroup,
+        ...{ upload_timestamp: new FormControl(document.upload_timestamp) }
+      }
+    }
+
     documentFormGroup = this.secureModeOn ? {
       ...documentFormGroup,
       ...{ document_hash: new FormControl(document.document_hash) }
@@ -290,11 +299,31 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   }
 
   private getErrorMessage(error: HttpError): string {
-    // Document Management unavailable
-    if (0 === error.status || 502 === error.status) {
-      return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+    switch (error.status) {
+      case 0:
+      case 502:
+        return WriteDocumentFieldComponent.UPLOAD_ERROR_NOT_AVAILABLE;
+      case 422:
+        {
+          let errorMsg = WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
+          if (error?.error) {
+            const fullError = error.error;
+            const start = fullError.indexOf('{');
+            if (start >= 0) {
+              const json = fullError.substring(start, fullError.length - 1).split('<EOL>').join('');
+              const obj = JSON.parse(json);
+              if (obj?.error) {
+                errorMsg = obj.error;
+              }
+            }
+          }
+          return errorMsg;
+        }
+      case 429:
+        return error?.error;
+      default:
+        return WriteDocumentFieldComponent.ERROR_UPLOADING_FILE;
     }
-    return error.error;
   }
 
   private buildDocumentUploadData(selectedFile: File): FormData {
@@ -304,7 +333,7 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
     if (this.appConfig.getDocumentSecureMode()) {
       const caseTypeId = this.caseTypeId ? this.caseTypeId : null;
-      const caseTypeJurisdictionId = this.jurisdictionId? this.jurisdictionId  : null;
+      const caseTypeJurisdictionId = this.jurisdictionId ? this.jurisdictionId : null;
       documentUpload.append('caseTypeId', caseTypeId);
       documentUpload.append('jurisdictionId', caseTypeJurisdictionId);
     }
@@ -315,9 +344,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
   private handleDocumentUploadResult(result: DocumentData): void {
     if (!this.uploadedDocument) {
       if (this.secureModeOn) {
-        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null, document_hash: null});
+        this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null, document_hash: null });
       } else {
-        this.createDocumentForm({document_url: null, document_binary_url: null, document_filename: null});
+        this.createDocumentForm({ document_url: null, document_binary_url: null, document_filename: null });
       }
     }
 

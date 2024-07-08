@@ -108,7 +108,8 @@ export class WizardPageFieldToCaseFieldMapper {
 
     if (childrenCaseFields.length > 0 && this.allCaseFieldsHidden(childrenCaseFields)) {
       caseField.hidden = true;
-      caseField.display_context = 'HIDDEN';
+      // marking display_context as special hidden so field not being deleted in event submission
+      caseField.display_context = 'HIDDEN_TEMP';
     }
   }
 
@@ -123,6 +124,6 @@ export class WizardPageFieldToCaseFieldMapper {
   }
 
   private allCaseFieldsHidden(children: CaseField[]): boolean {
-    return !children.some(e => e.hidden !== true);
+    return children.every(e => e.display_context === 'HIDDEN' || e.display_context === 'HIDDEN_TEMP');
   }
 }

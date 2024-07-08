@@ -16,8 +16,8 @@ import { CaseChallengedAccessRequestComponent } from './case-challenged-access-r
 import { ChallengedAccessRequestErrors, ChallengedAccessRequestPageText } from './models';
 import createSpyObj = jasmine.createSpyObj;
 
-@Component({template: ``})
-class StubComponent {}
+@Component({ template: `` })
+class StubComponent { }
 
 describe('CaseChallengedAccessRequestComponent', () => {
   let component: CaseChallengedAccessRequestComponent;
@@ -48,17 +48,19 @@ describe('CaseChallengedAccessRequestComponent', () => {
           { path: 'work/my-work/list', component: StubComponent }
         ])
       ],
-      declarations: [ CaseChallengedAccessRequestComponent, ErrorMessageComponent,StubComponent, MockRpxTranslatePipe ],
+      declarations: [CaseChallengedAccessRequestComponent, ErrorMessageComponent, StubComponent, MockRpxTranslatePipe],
       providers: [
         FormBuilder,
-        { provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
-            ['getTranslation$', 'translate']) },
+        {
+          provide: RpxTranslationService, useValue: createSpyObj('RpxTranslationService',
+            ['getTranslation$', 'translate'])
+        },
         { provide: CasesService, useValue: casesService },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: CaseNotifier, useValue: casesNotifier },
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -348,7 +350,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
         caseReference: '1111222233334444',
         otherReason: null
       } as ChallengedAccessRequest);
-    expect(router.navigate).toHaveBeenCalledWith(['success'], {relativeTo: mockRoute});
+    expect(router.navigate).toHaveBeenCalledWith(['success'], { relativeTo: mockRoute });
   });
 
   it('should make a Challenged Access request with correct parameters for the second reason, and navigate to the success page', () => {
@@ -365,7 +367,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
         caseReference: null,
         otherReason: null
       } as ChallengedAccessRequest);
-    expect(router.navigate).toHaveBeenCalledWith(['success'], {relativeTo: mockRoute});
+    expect(router.navigate).toHaveBeenCalledWith(['success'], { relativeTo: mockRoute });
   });
 
   it('should make a Challenged Access request with correct parameters for the third reason, and navigate to the success page', () => {
@@ -382,7 +384,7 @@ describe('CaseChallengedAccessRequestComponent', () => {
         caseReference: null,
         otherReason: null
       } as ChallengedAccessRequest);
-    expect(router.navigate).toHaveBeenCalledWith(['success'], {relativeTo: mockRoute});
+    expect(router.navigate).toHaveBeenCalledWith(['success'], { relativeTo: mockRoute });
   });
 
   it('should make a Challenged Access request with correct parameters for the fourth reason, and navigate to the success page', () => {
@@ -402,6 +404,6 @@ describe('CaseChallengedAccessRequestComponent', () => {
         caseReference: null,
         otherReason: 'Test'
       } as ChallengedAccessRequest);
-    expect(router.navigate).toHaveBeenCalledWith(['success'], {relativeTo: mockRoute});
+    expect(router.navigate).toHaveBeenCalledWith(['success'], { relativeTo: mockRoute });
   });
 });

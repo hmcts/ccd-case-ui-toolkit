@@ -8,6 +8,7 @@ import { ConditionalShowModule } from '../../../directives/conditional-show/cond
 import { CaseField, FieldType } from '../../../domain/definition';
 import { FieldsFilterPipe } from '../../../pipes/complex/fields-filter.pipe';
 import { FormValidatorsService } from '../../../services/form/form-validators.service';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { IsCompoundPipe, IsReadOnlyPipe, PaletteUtilsModule } from '../utils';
 import { WriteComplexFieldComponent } from './write-complex-field.component';
@@ -36,7 +37,7 @@ describe('WriteComplexFieldComponent', () => {
     inputs: ['caseField', 'caseFields', 'formGroup', 'withLabel']
   });
 
-  @Pipe({name: 'ccdIsReadOnly'})
+  @Pipe({ name: 'ccdIsReadOnly' })
   class IsReadOnlyPipeMock implements PipeTransform {
     public transform(field: CaseField): boolean {
       if (!field || !field.display_context) {
@@ -66,12 +67,13 @@ describe('WriteComplexFieldComponent', () => {
           fieldWriteComponentMock,
           fieldReadComponentMock,
           IsReadOnlyPipeMock,
-          MockRpxTranslatePipe
+          MockRpxTranslatePipe,
+          MockFieldLabelPipe
         ],
         providers: [
           IsCompoundPipe,
           IsReadOnlyPipe,
-          {provide: FormValidatorsService, useValue: formValidatorService}
+          { provide: FormValidatorsService, useValue: formValidatorService }
         ]
       })
       .compileComponents();
@@ -403,7 +405,7 @@ describe('WriteComplexFieldComponent', () => {
     });
 
     it('should render fields with empty value', () => {
-      component.caseField = (( ({
+      component.caseField = ((({
         id: 'x',
         label: 'x',
         display_context: 'OPTIONAL',
@@ -470,7 +472,7 @@ describe('WriteComplexFieldComponent', () => {
     };
 
     const FIELD_ID = 'AComplexField';
-    const CASE_FIELD_M: CaseField =  ({
+    const CASE_FIELD_M: CaseField = ({
       id: FIELD_ID,
       label: 'Complex Field',
       display_context: 'MANDATORY',
@@ -502,7 +504,7 @@ describe('WriteComplexFieldComponent', () => {
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ BROKEN_ADDRESS_LINE_1, ADDRESS_LINE_2 ]
+          complex_fields: [BROKEN_ADDRESS_LINE_1, ADDRESS_LINE_2]
         }
       }) as CaseField);
       component.ngOnInit();
@@ -522,7 +524,7 @@ describe('WriteComplexFieldComponent', () => {
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ ADDRESS_LINE_1, ADDRESS_LINE_2 ]
+          complex_fields: [ADDRESS_LINE_1, ADDRESS_LINE_2]
         }
       }) as CaseField);
       component.ngOnInit();
@@ -543,7 +545,7 @@ describe('WriteComplexFieldComponent', () => {
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ ({
+          complex_fields: [({
             id: 'AddressLine1',
             label: 'Line 1',
             field_type: {
@@ -551,7 +553,7 @@ describe('WriteComplexFieldComponent', () => {
               type: 'Text'
             },
             value: ''
-          }) as CaseField, ADDRESS_LINE_2 ]
+          }) as CaseField, ADDRESS_LINE_2]
         }
       }) as CaseField);
       component.ngOnInit();
@@ -571,7 +573,7 @@ describe('WriteComplexFieldComponent', () => {
         display_context: 'MANDATORY',
         field_type: {
           ...ADDRESS_TYPE,
-          complex_fields: [ ({
+          complex_fields: [({
             id: 'AddressLine3', // Should fall down here.
             label: 'Line 1',
             field_type: {
@@ -579,7 +581,7 @@ describe('WriteComplexFieldComponent', () => {
               type: 'Text'
             },
             value: ''
-          }) as CaseField, ADDRESS_LINE_2 ]
+          }) as CaseField, ADDRESS_LINE_2]
         }
       }) as CaseField);
       component.ngOnInit();
@@ -596,13 +598,13 @@ describe('WriteComplexFieldComponent', () => {
     const ADDRESS_LINE_1: CaseField = ({
       id: 'AddressLine1',
       label: 'Line 1',
-      field_type: {id: 'TextMax150', type: 'Text'},
+      field_type: { id: 'TextMax150', type: 'Text' },
       value: ''
     }) as CaseField;
     const ADDRESS_LINE_2: CaseField = ({
       id: 'AddressLine2',
       label: 'Line 2',
-      field_type: {id: 'Text', type: 'Text'},
+      field_type: { id: 'Text', type: 'Text' },
       value: '111 East India road'
     }) as CaseField;
     const ADDRESS_TYPE: FieldType = {
@@ -651,13 +653,13 @@ describe('WriteComplexFieldComponent', () => {
     const ADDRESS_LINE_1: CaseField = ({
       id: 'AddressLine1',
       label: 'Line 1',
-      field_type: {id: 'TextMax150', type: 'Text'},
+      field_type: { id: 'TextMax150', type: 'Text' },
       value: ''
     }) as CaseField;
     const ADDRESS_LINE_2: CaseField = ({
       id: 'AddressLine2',
       label: 'Line 2',
-      field_type: {id: 'Text', type: 'Text'},
+      field_type: { id: 'Text', type: 'Text' },
       value: '111 East India road'
     }) as CaseField;
     const COMPLEX_TYPE: FieldType = {

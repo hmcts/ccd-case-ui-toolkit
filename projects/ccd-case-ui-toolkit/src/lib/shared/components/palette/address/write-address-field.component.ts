@@ -1,5 +1,6 @@
-import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AddressValidationConstants } from '../../../commons/address-validation-constants';
 import { FocusElementDirective } from '../../../directives/focus-element';
 import { AddressModel } from '../../../domain/addresses/address.model';
 import { AddressesService } from '../../../services/addresses/addresses.service';
@@ -20,10 +21,10 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   @ViewChildren(FocusElementDirective)
   public focusElementDirectives: QueryList<FocusElementDirective>;
 
-  public addressesService: AddressesService;
+  public static readonly REQUIRED_ERROR_MESSAGE = 'Enter a Postcode';
+  public static readonly INVALID_ERROR_MESSAGE = 'Enter a valid Postcode';
 
-  @Input()
-  public formGroup: FormGroup;
+  public addressesService: AddressesService;
 
   public addressFormGroup = new FormGroup({});
   public postcode: FormControl;
@@ -31,7 +32,10 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   public addressOptions: AddressOption[];
 
+  public errorMessage: string = WriteAddressFieldComponent.REQUIRED_ERROR_MESSAGE;
+
   public missingPostcode = false;
+  public noAddressSelected = false;
 
   constructor(addressesService: AddressesService, private readonly isCompoundPipe: IsCompoundPipe) {
     super();
@@ -40,15 +44,24 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
 
   public ngOnInit(): void {
     if (!this.isComplexWithHiddenFields()) {
-      this.postcode = new FormControl('');
+      this.postcode = new FormControl('', [Validators.required]);
       this.addressFormGroup.addControl('postcode', this.postcode);
       this.addressList = new FormControl('');
       this.addressFormGroup.addControl('address', this.addressList);
     }
+
+    this.addressesService.getMandatoryError().subscribe((value: boolean) => {
+      this.updateErrorsOnContinue(value);
+    })
   }
 
   public findAddress() {
+    this.noAddressSelected = false;
     if (!this.postcode.value) {
+      this.errorMessage = WriteAddressFieldComponent.REQUIRED_ERROR_MESSAGE;
+      this.missingPostcode = true;
+    } else if (!this.postcode.value.trim().match(AddressValidationConstants.REGEX_POSTCODE)) {
+      this.errorMessage = WriteAddressFieldComponent.INVALID_ERROR_MESSAGE;
       this.missingPostcode = true;
     } else {
       this.missingPostcode = false;
@@ -85,6 +98,8 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   public blankAddress() {
     this.caseField.value = new AddressModel();
     this.setFormValue();
+    this.missingPostcode = false;
+    this.noAddressSelected = false;
   }
 
   public isComplexWithHiddenFields() {
@@ -119,6 +134,7 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   public addressSelected() {
     this.caseField.value = this.addressList.value;
     this.setFormValue();
+    this.noAddressSelected = false;
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -144,5 +160,11 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
         this.caseField.value
       );
     }
+  }
+
+  private updateErrorsOnContinue(value: boolean): void {
+    this.missingPostcode = value && !this.shouldShowDetailFields() && !this.addressOptions;
+    this.noAddressSelected = value && !this.shouldShowDetailFields() && !!this.addressOptions;
+    this.errorMessage = this.noAddressSelected ? 'Select an address' : this.errorMessage;
   }
 }

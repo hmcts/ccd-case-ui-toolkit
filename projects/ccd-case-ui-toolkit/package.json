@@ -1,9 +1,8 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "6.19.9-case-flags-exui-848-fix",
+  "version": "7.0.43",
   "engines": {
-    "yarn": "^3.5.0",
-    "npm": "^8.10.0"
+    "node": ">=18.19.0"
   },
   "description": "Case UI Toolkit",
   "license": "MIT",

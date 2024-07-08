@@ -56,6 +56,7 @@ export abstract class AbstractAppConfig {
   getRemotePrintServiceUrl(): string {
     return undefined;
   }
+
   abstract getPaginationPageSize(): number;
   abstract getBannersUrl(): string;
   abstract getPrdUrl(): string;
@@ -64,26 +65,34 @@ export abstract class AbstractAppConfig {
   getUserInfoApiUrl(): string {
     return undefined;
   }
+
   getWAServiceConfig(): any {
     return undefined;
   }
+
   getAccessManagementMode(): boolean {
     return undefined;
   }
+
   getAccessManagementBasicViewMock(): AccessManagementBasicViewMockModel {
     return undefined;
   }
+
   getAccessManagementRequestReviewMockModel(): AccessManagementRequestReviewMockModel {
     return undefined;
   }
+
   getLocationRefApiUrl(): string {
     return undefined;
   }
+
   getCamRoleAssignmentsApiUrl(): string {
     return undefined;
   }
+
   abstract getRefundsUrl(): string;
   abstract getPaymentReturnUrl(): string;
+  abstract getEnableCaseFileViewVersion1_1(): boolean
 }
 
 export class CaseEditorConfig {
@@ -129,6 +138,7 @@ export class CaseEditorConfig {
     },
     accessProcess?: string
   };
+
   access_management_request_review_mock?: {
     active?: boolean;
     details?: {
@@ -139,7 +149,8 @@ export class CaseEditorConfig {
       reasonForCaseAccess: string;
     };
     accessProcess?: string;
-  }
+  };
+
   location_ref_api_url?: string;
   cam_role_assignments_api_url?: string;
   refunds_url: string;

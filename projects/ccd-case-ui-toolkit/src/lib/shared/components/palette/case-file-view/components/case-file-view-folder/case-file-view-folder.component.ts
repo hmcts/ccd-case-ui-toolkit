@@ -1,17 +1,21 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
-import { Observable, of, Subscription } from 'rxjs';
+import moment from 'moment/moment';
+import { Observable, Subscription, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
+import { AbstractAppConfig } from '../../../../../../app.config';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
+  CaseFileViewSortColumns,
   CategoriesAndDocuments,
   DocumentTreeNode,
   DocumentTreeNodeType
 } from '../../../../../domain/case-file-view';
+import { SortOrder } from '../../../../../domain/sort-order.enum';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { CaseFileViewFolderSelectorComponent } from '../case-file-view-folder-selector/case-file-view-folder-selector.component';
 export const MEDIA_VIEWER_LOCALSTORAGE_KEY = 'media-viewer-info';
@@ -29,7 +33,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
   @Input() public categoriesAndDocuments: Observable<CategoriesAndDocuments>;
   @Input() public allowMoving: boolean;
   @Output() public clickedDocument = new EventEmitter<DocumentTreeNode>();
-  @Output() public moveDocument = new EventEmitter<{newCategory: string, document: DocumentTreeNode}>();
+  @Output() public moveDocument = new EventEmitter<{ newCategory: string, document: DocumentTreeNode }>();
 
   public nestedTreeControl: NestedTreeControl<DocumentTreeNode>;
   public nestedDataSource: DocumentTreeNode[];
@@ -59,7 +63,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     private readonly windowService: WindowService,
     private readonly router: Router,
     private readonly documentManagementService: DocumentManagementService,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly appConfig: AbstractAppConfig
   ) {
     this.nestedTreeControl = new NestedTreeControl<DocumentTreeNode>(this.getChildren);
   }
@@ -96,6 +101,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       // Initialise cdk tree with generated data
       this.nestedDataSource = this.documentTreeData;
       this.nestedTreeControl.dataNodes = this.documentTreeData;
+      this.sortDataSourceDescending(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP);
     });
   }
 
@@ -103,13 +109,14 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     return categories.reduce((tree, node) => {
       const newDocumentTreeNode = new DocumentTreeNode();
       newDocumentTreeNode.name = node.category_name;
-      newDocumentTreeNode.type =  DocumentTreeNodeType.FOLDER;
+      newDocumentTreeNode.type = DocumentTreeNodeType.FOLDER;
       newDocumentTreeNode.children = [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)];
+      newDocumentTreeNode.category_order = node.category_order;
 
       return [
         ...tree,
         newDocumentTreeNode,
-      ];
+      ].sort((a,b) => a.category_order - b.category_order);
     }, []);
   }
 
@@ -122,6 +129,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
+      documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
+          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY HH:mm:ss') : '';
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -138,6 +147,8 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_filename = document.document_filename;
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
+      documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
+          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY HH:mm:ss') : '';
 
       documents.push(documentTreeNode);
     });
@@ -176,11 +187,11 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     actionType: 'changeFolder' | 'openInANewTab' | 'download' | 'print',
     documentTreeNode: DocumentTreeNode
   ): void {
-    switch(actionType) {
-      case('changeFolder'):
+    switch (actionType) {
+      case ('changeFolder'):
         this.openMoveDialog(documentTreeNode);
         break;
-      case('openInANewTab'):
+      case ('openInANewTab'):
         this.windowService.setLocalStorage(MEDIA_VIEWER_LOCALSTORAGE_KEY,
           this.documentManagementService.getMediaViewerInfo({
             document_binary_url: documentTreeNode.document_binary_url,
@@ -191,13 +202,13 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
           this.router.createUrlTree(['/media-viewer'])?.toString()
         );
         break;
-      case('download'):
+      case ('download'):
         // Create a URL from the document_binary_url property (absolute URL) and use the path portion (relative URL).
         // This is necessary because the Manage Cases application will automatically apply a proxy to the request, with
         // the correct remote endpoint
         this.downloadFile(new URL(documentTreeNode.document_binary_url).pathname, documentTreeNode.document_filename);
         break;
-      case('print'):
+      case ('print'):
         this.printDocument(new URL(documentTreeNode.document_binary_url).pathname);
         break;
       default:
@@ -205,18 +216,18 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public sortDataSourceAscAlphabetically() {
+  public sortDataSourceAscending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenAscending();
+      item.sortChildrenAscending(column, SortOrder.ASCENDING);
       return item;
     });
 
     this.updateNodeData(sortedData);
   }
 
-  public sortDataSourceDescAlphabetically() {
+  public sortDataSourceDescending(column: number) {
     const sortedData = this.nestedDataSource.map(item => {
-      item.sortChildrenDescending();
+      item.sortChildrenDescending(column, SortOrder.DESCENDING);
       return item;
     });
 
@@ -260,7 +271,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(newCatId => {
       if (newCatId) {
-        this.moveDocument.emit({newCategory: newCatId, document: node});
+        this.moveDocument.emit({ newCategory: newCatId, document: node });
       }
     });
   }

@@ -1,7 +1,8 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RpxTranslatePipe } from 'rpx-xui-translation';
+import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
+import { of } from 'rxjs';
 import { CaseField, FieldType } from '../../../domain/definition';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { PaletteUtilsModule } from '../utils';
@@ -18,7 +19,7 @@ const FIELD_TYPE: FieldType = {
 const CASE_REFERENCE: CaseField = {
   id: 'CaseReference',
   label: 'Case Reference',
-  field_type: {id: 'TextCaseReference', type: 'Text'}
+  field_type: { id: 'TextCaseReference', type: 'Text' }
 } as CaseField;
 
 const CASE_FIELD: CaseField = {
@@ -37,6 +38,8 @@ describe('WriteCaseLinkFieldComponent', () => {
   let component: WriteCaseLinkFieldComponent;
   let fixture: ComponentFixture<WriteCaseLinkFieldComponent>;
   let de: DebugElement;
+  const rpxTranslationServiceSpy = jasmine.createSpyObj('RpxTranslationService', ['getTranslation$', 'translate']);
+  rpxTranslationServiceSpy.getTranslation$.and.callFake((someString: string) => of(someString));
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -49,10 +52,11 @@ describe('WriteCaseLinkFieldComponent', () => {
         MockRpxTranslatePipe
       ],
       providers: [
-        { provide: RpxTranslatePipe, useClass: MockRpxTranslatePipe }
+        { provide: RpxTranslatePipe, useClass: MockRpxTranslatePipe },
+        { provide: RpxTranslationService, useValue: rpxTranslationServiceSpy }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(WriteCaseLinkFieldComponent);
     component = fixture.componentInstance;
@@ -73,7 +77,7 @@ describe('WriteCaseLinkFieldComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     component.caseLinkGroup.controls['CaseReference'].setValue(null);
-    component.caseLinkGroup.controls['CaseReference'].markAsTouched({onlySelf: true});
+    component.caseLinkGroup.controls['CaseReference'].markAsTouched({ onlySelf: true });
     component.caseLinkGroup.controls['CaseReference'].updateValueAndValidity();
     fixture.detectChanges();
     expect(component).toBeTruthy();

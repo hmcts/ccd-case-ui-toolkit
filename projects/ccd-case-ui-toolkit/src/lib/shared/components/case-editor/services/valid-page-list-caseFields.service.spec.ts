@@ -25,6 +25,10 @@ describe('ValidPageListCaseFieldsService', () => {
   const fieldsUtils = new FieldsUtils();
   const eventTriggerFields = [caseField1, caseField2, caseField3, caseField4,
     caseField5, caseField6, caseField7, caseField8, caseField9, caseField10];
+  const formFields = {
+    caseField9 : 'someValue9',
+    caseField10 : 'someValue10'
+  }
   let caseEventData;
   beforeEach(() => {
     caseEventData = {
@@ -38,22 +42,22 @@ describe('ValidPageListCaseFieldsService', () => {
   });
 
   it('should return valid data from case submition after deleting non-valid fields', () => {
-    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, caseEventData, eventTriggerFields);
+    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, caseEventData, eventTriggerFields, false, formFields);
     expect(Object.keys(caseEventData).length).toBe(3);
   });
 
   it('should return valid data from EventJourney after deleting non-valid fields', () => {
-    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, caseEventData, eventTriggerFields);
+    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, caseEventData, eventTriggerFields, false, formFields);
     expect(Object.keys(caseEventData).length).toBe(3);
   });
 
   it('should return same data if fromPrevious argument set to true', () => {
-    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, caseEventData, eventTriggerFields, true);
+    validPageListCaseFieldsService.deleteNonValidatedFields(validPageList, caseEventData, eventTriggerFields, true, formFields);
     expect(Object.keys(caseEventData).length).toBe(5);
   });
 
   it('should return caseField list of valid page list', () => {
-    const caseField = validPageListCaseFieldsService.validPageListCaseFields(validPageList, caseEventData, eventTriggerFields);
+    const caseField = validPageListCaseFieldsService.validPageListCaseFields(validPageList, eventTriggerFields, formFields);
     expect(caseField.length).toBe(8);
   });
 

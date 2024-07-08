@@ -27,7 +27,7 @@
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="flagDescriptionWelsh?.length > 0">
+  <div class="govuk-summary-list__row" *ngIf="flagDescriptionWelsh?.length > 0 && !externalUserUpdate">
     <dt class="govuk-summary-list__key">
       {{'Other description (Welsh)' | rpxTranslate}}
     </dt>
@@ -46,7 +46,7 @@
       {{'Comments' | rpxTranslate}}
     </dt>
     <dd class="govuk-summary-list__value">
-      {{flagComments}}
+      {{externalUserUpdate ? flagUpdateComments : flagComments}}
     </dd>
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="javascript:void(0)"
@@ -55,7 +55,7 @@
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="flagCommentsWelsh?.length > 0">
+  <div class="govuk-summary-list__row" *ngIf="flagCommentsWelsh?.length > 0 && !externalUserUpdate">
     <dt class="govuk-summary-list__key">
       {{'Comments (Welsh)' | rpxTranslate}}
     </dt>
@@ -69,7 +69,7 @@
       </a>
     </dd>
   </div>
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="flagDescriptionWelsh?.length > 0">
     <dt class="govuk-summary-list__key">
       {{'Status' | rpxTranslate}}
     </dt>

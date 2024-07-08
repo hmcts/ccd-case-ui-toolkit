@@ -2,10 +2,10 @@
      [ngClass]="{'form-group-error': dateControl && !dateControl.valid && dateControl.dirty}">
   <fieldset>
     <legend>
-      <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel) | rpxTranslate }}</span>
+      <span class="form-label" *ngIf="caseField.label">{{(caseField | ccdFieldLabel)}}</span>
       <span class="form-hint" *ngIf="caseField.hint_text">{{caseField.hint_text | rpxTranslate}}</span>
       <span class="error-message"
-            *ngIf="dateControl && dateControl.errors && dateControl.dirty && !(minError || maxError)">{{(dateControl.errors | ccdFirstError:caseField.label) | rpxTranslate}}</span>
+            *ngIf="dateControl && dateControl.errors && dateControl.dirty && !(minError || maxError)">{{(dateControl.errors | ccdFirstError:caseField.label)}}</span>
             <span class="error-message"
             *ngIf="dateControl && dateControl.dirty && minError">{{'This date is older than the minimum date allowed' | rpxTranslate}}</span>
             <span class="error-message"
@@ -41,6 +41,9 @@
                                (monthSelected)="monthSelected($event)"
                                (opened)="toggleClick()"
       >
+        <ngx-mat-datepicker-actions>
+          <button mat-raised-button color="primary" ngxMatDatepickerApply>Confirm</button>
+        </ngx-mat-datepicker-actions>
       </ngx-mat-datetime-picker>
     </div>
   </fieldset>

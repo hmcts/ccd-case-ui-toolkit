@@ -77,3 +77,7 @@ projects/ccd-case-ui-toolkit/.yarn/*
 !projects/ccd-case-ui-toolkit/.yarn/sdks
 !projects/ccd-case-ui-toolkit/.yarn/versions
 cptk.sh
+
+
+.angular/cache
+.nx/cache

@@ -130,8 +130,6 @@ const TEST_SEARCH_INPUTS: SearchInput[] = createSearchInputs();
 
 })
 class FieldWriteComponent extends AbstractFieldWriteComponent {
-  @Input()
-  public formGroup: FormGroup;
 }
 
 function createObservableFrom<T>(param: T): Observable<T> {
@@ -230,7 +228,7 @@ describe('SearchFiltersComponent', () => {
       .whenStable()
       .then(() => {
         expect(searchHandler.applyFilters).toHaveBeenCalledWith({
-          selected: {formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined},
+          selected: { formGroup: TEST_FORM_GROUP, page: 1, metadataFields: undefined },
           queryParams: {}
         });
       });
@@ -431,7 +429,7 @@ describe('SearchFiltersComponent', () => {
     component.apply();
     expect(searchHandler.applyFilters).toHaveBeenCalledWith({
       selected: component.selected,
-      queryParams: {jurisdiction: component.selected.jurisdiction.id}
+      queryParams: { jurisdiction: component.selected.jurisdiction.id }
     });
     expect(component.selected.formGroup.value).toEqual(TEST_FORM_GROUP.value);
   }));

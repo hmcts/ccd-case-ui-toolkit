@@ -1,12 +1,13 @@
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
-import { DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
+import { AbstractAppConfig } from '../../../../../../app.config';
+import { CaseFileViewSortColumns, DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
 import { DocumentManagementService, WindowService } from '../../../../../services';
 import { mockDocumentManagementService } from '../../../../../services/document-management/document-management.service.mock';
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
@@ -24,10 +25,39 @@ describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
   let fixture: ComponentFixture<CaseFileViewFolderComponent>;
   let nativeElement: any;
+  let mockAppConfig: any;
+
+  const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
+    {
+      name: 'Lager encyclopedia',
+      type: DocumentTreeNodeType.DOCUMENT,
+      document_filename: 'Lager encyclopedia',
+      document_binary_url: '/test/binary',
+      attribute_path: '',
+      upload_timestamp: '11 May 2023 00:00:00'
+    },
+    {
+      name: 'Beers encyclopedia',
+      type: DocumentTreeNodeType.DOCUMENT,
+      document_filename: 'Beers encyclopedia',
+      document_binary_url: '/test/binary',
+      attribute_path: '',
+      upload_timestamp: '14 Apr 2023 00:00:00'
+    },
+    {
+      name: 'Ale encyclopedia',
+      type: DocumentTreeNodeType.DOCUMENT,
+      document_filename: 'Ale encyclopedia',
+      document_binary_url: '/test/binary',
+      attribute_path: '',
+      upload_timestamp: '12 Mar 2023 00:00:00'
+    }
+  ]);
 
   beforeEach(waitForAsync(() => {
     const mockWindowService = createSpyObj<WindowService>('WindowService', ['setLocalStorage', 'openOnNewTab']);
-
+    mockAppConfig = jasmine.createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['getEnableCaseFileViewVersion1_1']);
+    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(true);
     TestBed.configureTestingModule({
       imports: [
         CdkTreeModule,
@@ -40,10 +70,10 @@ describe('CaseFileViewFolderComponent', () => {
       ],
       providers: [
         { provide: WindowService, useValue: mockWindowService },
-        { provide: DocumentManagementService, useValue: mockDocumentManagementService }
+        { provide: DocumentManagementService, useValue: mockDocumentManagementService },
+        { provide: AbstractAppConfig, useValue: mockAppConfig }
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CaseFileViewFolderComponent);
     component = fixture.componentInstance;
@@ -60,41 +90,20 @@ describe('CaseFileViewFolderComponent', () => {
     documentFilterInputEl.dispatchEvent(new Event('input'));
     fixture.detectChanges();
     await fixture.whenStable();
+    component.sortDataSourceDescending(1)
     fixture.detectChanges();
     expect(component.filter).toHaveBeenCalled();
-    expect(component.documentTreeData).toEqual(treeData);
+
+    expect(treeData[3].children[0].upload_timestamp).toEqual('17 Nov 2022 00:00:00');
   });
 
   it('should generate tree data from categorised data', () => {
     expect(component.generateTreeData(categoriesAndDocumentsTestData.categories)).toEqual(categorisedTreeData);
   });
 
-  it('should get documents from category', () => {
+  it('should get documents from category with upload timestamp when feature toggle is on', () => {
     const documents = categoriesAndDocumentsTestData.categories[0].documents;
-    const documentsTreeNodes: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
-      {
-        name: 'Lager encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT,
-        document_filename: 'Lager encyclopedia',
-        document_binary_url: '/test/binary',
-        attribute_path: ''
-      },
-      {
-        name: 'Beers encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT,
-        document_filename: 'Beers encyclopedia',
-        document_binary_url: '/test/binary',
-        attribute_path: ''
-      },
-      {
-        name: 'Ale encyclopedia',
-        type: DocumentTreeNodeType.DOCUMENT,
-        document_filename: 'Ale encyclopedia',
-        document_binary_url: '/test/binary',
-        attribute_path: ''
-      }
-    ]);
-
+    fixture.detectChanges();
     expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
   });
 
@@ -102,35 +111,47 @@ describe('CaseFileViewFolderComponent', () => {
     expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
   });
 
-  it('should render cdk nested tree', () => {
+  it('should render cdk nested tree and verify the timestamp values', () => {
     component.nestedDataSource = treeData;
     fixture.detectChanges();
     const documentTreeContainerEl = nativeElement.querySelector('.document-tree-container');
     expect(documentTreeContainerEl).toBeDefined();
+    const timestampElements = nativeElement.querySelectorAll('.node__document-upload-timestamp');
+    expect(timestampElements[0].textContent).toEqual('11 May 2023');
+    expect(timestampElements[1].textContent).toEqual('14 Apr 2023');
+    expect(timestampElements[2].textContent).toEqual('12 Mar 2023');
+    expect(timestampElements[3].textContent).toEqual('');
+    expect(timestampElements[4].textContent).toEqual('10 Feb 2023');
+    expect(timestampElements[5].textContent).toEqual('12 Apr 2023');
+    expect(timestampElements[6].textContent).toEqual('16 Mar 2023');
+    expect(timestampElements[7].textContent).toEqual('21 Jun 2022');
+    expect(timestampElements[8].textContent).toEqual('04 Nov 2022');
+    expect(timestampElements[9].textContent).toEqual('28 Dec 2022');
+    expect(timestampElements[10].textContent).toEqual('17 Nov 2022');
+    expect(timestampElements[11].textContent).toEqual('23 Feb 2023');
   });
 
   it('should call sortChildrenAscending on all children of nestedDataSource when calling sortDataSourceAscAlphabetically', () => {
     const sortChildrenAscendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-      sortChildrenAscendingSpies.push(spyOn(item,'sortChildrenAscending').and.callThrough());
+      sortChildrenAscendingSpies.push(spyOn(item, 'sortChildrenAscending').and.callThrough());
     });
 
-    component.sortDataSourceAscAlphabetically();
+    component.sortDataSourceAscending(CaseFileViewSortColumns.DOCUMENT_NAME);
     fixture.detectChanges();
 
     sortChildrenAscendingSpies.forEach((item) => {
       expect(item).toHaveBeenCalled();
     });
-
     expect(component.nestedDataSource).toEqual(treeDataSortedAlphabeticallyAsc);
   });
 
   it('should call sortChildrenDescending on all children of nestedDataSource when calling sortDataSourceDescAlphabetically', () => {
     const sortChildrenDescendingSpies = [];
     component.nestedDataSource.forEach((item) => {
-      sortChildrenDescendingSpies.push(spyOn(item,'sortChildrenDescending').and.callThrough());
+      sortChildrenDescendingSpies.push(spyOn(item, 'sortChildrenDescending').and.callThrough());
     });
-    component.sortDataSourceDescAlphabetically();
+    component.sortDataSourceDescending(CaseFileViewSortColumns.DOCUMENT_NAME);
     fixture.detectChanges();
 
     sortChildrenDescendingSpies.forEach((item) => {
@@ -142,22 +163,22 @@ describe('CaseFileViewFolderComponent', () => {
 
   it('should set mediaViewer localStorage' +
     'and open in a new tab using windowService when calling triggerDocumentAction with actionType: openInANewTab', () => {
-    const documentTreeNode = component.nestedDataSource[0].children[3];
-    component.triggerDocumentAction('openInANewTab', documentTreeNode);
+      const documentTreeNode = component.nestedDataSource[0].children[3];
+      component.triggerDocumentAction('openInANewTab', documentTreeNode);
 
-    // @ts-expect-error -- private method
-    expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
-      MEDIA_VIEWER_LOCALSTORAGE_KEY,
       // @ts-expect-error -- private method
-      component.documentManagementService.getMediaViewerInfo({
-        document_binary_url: documentTreeNode.document_binary_url,
-        document_filename: documentTreeNode.document_filename
-      })
-    );
+      expect(component.windowService.setLocalStorage).toHaveBeenCalledWith(
+        MEDIA_VIEWER_LOCALSTORAGE_KEY,
+        // @ts-expect-error -- private method
+        component.documentManagementService.getMediaViewerInfo({
+          document_binary_url: documentTreeNode.document_binary_url,
+          document_filename: documentTreeNode.document_filename
+        })
+      );
 
-    // @ts-expect-error -- private method
-    expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
-  });
+      // @ts-expect-error -- private method
+      expect(component.windowService.openOnNewTab).toHaveBeenCalledWith('/media-viewer');
+    });
 
   it('should display correct folder icons', () => {
     component.nestedDataSource = treeData;
@@ -303,7 +324,7 @@ describe('CaseFileViewFolderComponent', () => {
   });
 
   it('should get all document count as get documentCount', () => {
-    expect(component.documentCount).toEqual(8);
+    expect(component.documentCount).toEqual(12);
   });
 
   it('should emit clickedDocument when clicking a node that is of type document', () => {
@@ -371,5 +392,20 @@ describe('CaseFileViewFolderComponent', () => {
     expect(fakeAnchorElement.download).toEqual('Document1.pdf');
     expect(fakeAnchorElement.click).toHaveBeenCalled();
     expect(fakeAnchorElement.remove).toHaveBeenCalled();
+  });
+
+  it('should get documents from category without upload timestamp when feature toggle is off', () => {
+    const documents = categoriesAndDocumentsTestData.categories[0].documents;
+    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
+    fixture.detectChanges();
+    documentsTreeNodes.forEach((n) => n.upload_timestamp = '');
+    expect(component.getDocuments(documents)).toEqual(documentsTreeNodes);
+  });
+
+  it('should get uncategorised documents', () => {
+    mockAppConfig.getEnableCaseFileViewVersion1_1.and.returnValue(false);
+    fixture.detectChanges();
+    uncategorisedTreeData.children.forEach((c) => c.upload_timestamp = '');
+    expect(component.getUncategorisedDocuments(categoriesAndDocumentsTestData.uncategorised_documents)).toEqual(uncategorisedTreeData);
   });
 });

@@ -2,19 +2,19 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, NgModule, Provider } from '@angular/core';
+import { ChangeDetectorRef, NgModule, Provider, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
+import { MAT_LEGACY_DATE_LOCALE as MAT_DATE_LOCALE } from '@angular/material/legacy-core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { RouterModule } from '@angular/router';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-import { NgxMdModule } from 'ngx-md';
+import { MarkdownModule } from 'ngx-markdown';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 import { HeadersModule, TabsModule } from '../../../components';
 import { BannersModule } from '../../../components/banners/banners.module';
@@ -30,11 +30,7 @@ import { FormValidatorsService } from '../../services/form/form-validators.servi
 import { JurisdictionService } from '../../services/jurisdiction/jurisdiction.service';
 import { LoadingModule } from '../../services/loading/loading.module';
 import { WindowService } from '../../services/window';
-import {
-  CaseEventCompletionComponent,
-  CaseEventCompletionTaskCancelledComponent,
-  CaseEventCompletionTaskReassignedComponent
-} from '../case-editor/case-event-completion';
+import { CaseEventCompletionComponent, CaseEventCompletionTaskCancelledComponent, CaseEventCompletionTaskReassignedComponent } from '../case-editor/case-event-completion';
 import { WriteAddressFieldComponent } from './address/write-address-field.component';
 import { FieldReadComponent, FieldReadLabelComponent, FieldWriteComponent } from './base-field';
 import { CaseFileViewOverlayMenuComponent } from './case-file-view';
@@ -129,7 +125,6 @@ import {
   QueryAttachmentsReadComponent,
   QueryCaseDetailsHeaderComponent,
   QueryCheckYourAnswersComponent,
-  QueryConfirmationComponent,
   QueryDetailsComponent,
   QueryEventCompletionComponent,
   QueryListComponent,
@@ -272,7 +267,6 @@ const PALETTE_COMPONENTS = [
   QualifyingQuestionDetailComponent,
   QueryAttachmentsReadComponent,
   QueryEventCompletionComponent,
-  QueryConfirmationComponent,
 
   // Case event completion
   CaseEventCompletionComponent,
@@ -296,7 +290,7 @@ const PALETTE_COMPONENTS = [
     FormModule,
     TabsModule,
     LabelSubstitutorModule,
-    NgxMdModule,
+    MarkdownModule.forChild(),
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
@@ -314,7 +308,6 @@ const PALETTE_COMPONENTS = [
     MatDialogModule,
     MediaViewerModule,
     LoadingModule,
-    RpxTranslationModule.forChild(),
     MarkdownComponentModule
   ],
   declarations: [
@@ -353,7 +346,8 @@ const PALETTE_COMPONENTS = [
     CommonDataService,
     LinkedCasesService,
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class PaletteModule {
 }

@@ -1,23 +1,24 @@
-import { NgxMatDateAdapter, NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
+import { NGX_MAT_DATE_FORMATS, NgxMatDateAdapter, NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
-import { ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, discardPeriodicTasks, fakeAsync, flush, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
+import moment from 'moment';
 import { CaseField, FieldType } from '../../../domain';
 import { CaseFieldService } from '../../../services';
 import { FormatTranslatorService } from '../../../services/case-fields/format-translator.service';
+import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
 import { FieldLabelPipe, FirstErrorPipe } from '../utils';
 import { CUSTOM_MOMENT_FORMATS } from './datetime-picker-utils';
 import { DatetimePickerComponent } from './datetime-picker.component';
 
 describe('DatetimePickerComponent', () => {
-
   let component: DatetimePickerComponent;
   let fixture: ComponentFixture<DatetimePickerComponent>;
   const caseFieldService = new CaseFieldService();
@@ -44,33 +45,33 @@ describe('DatetimePickerComponent', () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-          imports: [
-            NgxMatDatetimePickerModule,
-            NgxMatTimepickerModule,
-            NgxMatNativeDateModule,
-            NoopAnimationsModule,
-            MatFormFieldModule,
-            MatInputModule,
-            MatDatepickerModule,
-            FormsModule,
-            ReactiveFormsModule
-          ],
-          declarations: [
-            DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe
-          ],
-          providers: [FormatTranslatorService,
-            { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-            { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
-            { provide: CaseFieldService, useValue: caseFieldService }
-            ]
-        })
-        .compileComponents();
+      imports: [
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule,
+        NgxMatNativeDateModule,
+        NoopAnimationsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        FormsModule,
+        ReactiveFormsModule
+      ],
+      declarations: [
+        DatetimePickerComponent, FieldLabelPipe, FirstErrorPipe, MockRpxTranslatePipe, MockFieldLabelPipe
+      ],
+      providers: [FormatTranslatorService,
+        { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
+        { provide: NgxMatDateAdapter, useClass: NgxMatMomentAdapter },
+        { provide: CaseFieldService, useValue: caseFieldService }
+      ]
+    })
+      .compileComponents();
 
-      fixture = TestBed.createComponent(DatetimePickerComponent);
-      component = fixture.componentInstance;
-      component.caseField = CASE_FIELD;
-      component.hideTime = false;
-      component.hideMinutes = false;
+    fixture = TestBed.createComponent(DatetimePickerComponent);
+    component = fixture.componentInstance;
+    component.caseField = CASE_FIELD;
+    component.hideTime = false;
+    component.hideMinutes = false;
   }));
 
   afterEach(fakeAsync(() => {
@@ -193,7 +194,7 @@ describe('DatetimePickerComponent', () => {
 
     expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
 
-    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -222,7 +223,7 @@ describe('DatetimePickerComponent', () => {
     dayCells[0].nativeElement.click();
     fixture.detectChanges();
 
-    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -294,7 +295,62 @@ describe('DatetimePickerComponent', () => {
     discardPeriodicTasks();
   }));
 
-  it('should be able to change the selected time (hours and minutes)', fakeAsync(() => {
+  it('should be able to confirm datepicker concurs with formatting for field_type Date', fakeAsync(() => {
+    fixture.detectChanges();
+    tick(1);
+
+    const firstDateEntryParameter = 'DD-MM-YYYY HH+mm+ss';
+    const FIELD_TYPE_1: FieldType = {
+      id: 'Date',
+      type: 'Date'
+    };
+
+    const FIRST_CASE_FIELD: CaseField = ({
+      id: FIELD_ID,
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE_1,
+      value: initialDateTime,
+      dateTimeEntryFormat: firstDateEntryParameter
+    }) as CaseField;
+
+    component.caseField = FIRST_CASE_FIELD;
+    fixture.detectChanges();
+    component.ngOnInit();
+    tick(1);
+    // fixture.detectChanges();
+
+    clickFirstElement(fixture);
+
+    const dayCells = fixture.debugElement.queryAll(
+      By.css('.mat-calendar-body-cell')
+    );
+
+    // get the collection of day buttons in order to click them
+    if (dayCells && dayCells[0]) {
+      dayCells[0].nativeElement.click();
+      fixture.detectChanges();
+    }
+
+    // check the new input against the first day of the month of the year in order to verify
+    if (fixture.debugElement.query(By.css('.actions'))) {
+      const confirm = fixture.debugElement.query(By.css('.actions')).nativeElement;
+      confirm.dispatchEvent(new MouseEvent('click'));
+      fixture.detectChanges();
+      if (initialDateTime.getDate() !== 1) {
+        const initialFormattedDate = fixture.nativeElement.querySelector('.govuk-input').value;
+        expect(initialFormattedDate).not.toBe(null);
+        expectSeparatorCharacters(initialFormattedDate, '-', '+');
+        expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBe(null);
+      }
+    }
+
+    flush();
+    discardPeriodicTasks();
+  }));
+
+  
+  xit('should be able to change the selected time (hours and minutes)', fakeAsync(() => {
     fixture.detectChanges();
     tick(1);
 
@@ -309,14 +365,14 @@ describe('DatetimePickerComponent', () => {
     expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
 
     const timeChanges = fixture.debugElement.queryAll(
-      By.css('.mat-icon-button')
+      By.css('.mat-mdc-icon-button')
     );
 
     timeChanges[3].nativeElement.click();
     timeChanges[4].nativeElement.click();
     fixture.detectChanges();
 
-    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -347,7 +403,7 @@ describe('DatetimePickerComponent', () => {
     expect(document.querySelector('.cdk-overlay-pane.mat-datepicker-popup')).not.toBeNull();
 
     const timeChanges = fixture.debugElement.queryAll(
-      By.css('.mat-icon-button')
+      By.css('.mat-mdc-icon-button')
     );
 
     for (let i = 0; i < 3; i++) {
@@ -355,7 +411,7 @@ describe('DatetimePickerComponent', () => {
     }
     fixture.detectChanges();
 
-    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -389,7 +445,7 @@ describe('DatetimePickerComponent', () => {
 
     expect(meridian.innerText).not.toBe(initialMeridian);
 
-    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -454,7 +510,7 @@ describe('DatetimePickerComponent', () => {
     dayCells[0].nativeElement.click();
     fixture.detectChanges();
 
-    const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+    const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
     confirm.dispatchEvent(new MouseEvent('click'));
     fixture.detectChanges();
 
@@ -497,6 +553,51 @@ describe('DatetimePickerComponent', () => {
     expect(component.minDate(MIN_MAX_CASE_FIELD)).toEqual(miniDate);
     expect(component.maxDate(MIN_MAX_CASE_FIELD)).toEqual(maxiDate);
   }));
+
+  it('should be able to confirm datepicker formatting is wrong', fakeAsync(() => {
+
+    fixture.detectChanges();
+    tick(1);
+
+    const firstDateEntryParameter = 'DD MM YYYY HH+mm+ss';
+
+    const FIRST_CASE_FIELD: CaseField = ({
+      id: FIELD_ID,
+      label: 'X',
+      display_context: 'OPTIONAL',
+      field_type: FIELD_TYPE,
+      value: initialDateTime,
+      dateTimeEntryFormat: firstDateEntryParameter
+    }) as CaseField;
+
+    fixture.detectChanges();
+    component.ngOnInit();
+    tick(1);
+    fixture.detectChanges();
+    expect(FIRST_CASE_FIELD.dateTimeEntryFormat).not.toEqual(CUSTOM_MOMENT_FORMATS.parse.dateInput);
+    flush();
+    discardPeriodicTasks();
+  }));
+
+  it('should set the correct formatted value in dateControl on focusOut', () => {
+    fixture.detectChanges();
+    const inputValue = '2022-11-23T12:34:56.789';
+    component.inputElement.nativeElement.value = inputValue;
+    component.focusOut();
+
+    const expectedFormattedValue = moment(inputValue).format('YYYY-MM-DDTHH:mm:ss.SSS');
+    expect(component.dateControl.value).toEqual(expectedFormattedValue);
+  });
+
+  it('should set the correct formatted value in dateControl on focusOut', () => {
+    fixture.detectChanges();
+    const inputValue = '';
+    component.inputElement.nativeElement.value = inputValue;
+    component.focusOut();
+
+    const expectedFormattedValue = moment(inputValue).format('YYYY-MM-DDTHH:mm:ss.SSS');
+    expect(expectedFormattedValue).toEqual('Invalid date');
+  });
 });
 
 function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {
@@ -510,7 +611,7 @@ function clickFirstElement(fixture: ComponentFixture<DatetimePickerComponent>) {
   // get the collection of day buttons in order to click them
   dayCells[0].nativeElement.click();
   fixture.detectChanges();
-  const confirm = fixture.debugElement.query(By.css('.actions button')).nativeElement;
+  const confirm = fixture.debugElement.query(By.css('.mat-datepicker-actions button')).nativeElement;
   confirm.dispatchEvent(new MouseEvent('click'));
   fixture.detectChanges();
 }

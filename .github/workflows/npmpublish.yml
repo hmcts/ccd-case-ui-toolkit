@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 18
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn lint
@@ -29,7 +29,7 @@ jobs:
       - name: Create code coverage report
         run: yarn test:coverage
       - name: Change Report Path
-        run: sed -i 's+/home/runner/work/ccd-case-ui-toolkit/ccd-case-ui-toolkit+/github/workspace+g' coverage/ccd-case-ui-toolkit/lcov-report/lcov.info
+        run: sed -i 's+/home/runner/work/ccd-case-ui-toolkit/ccd-case-ui-toolkit+/github/workspace+g' coverage/ccd-case-ui-toolkit/lcov.info
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
@@ -73,12 +73,12 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 18
           registry-url: https://registry.npmjs.org/
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn build
-      - run: npm publish dist/ccd-case-ui-toolkit --ignore-scripts
+      - run: npm publish dist/ccd-case-ui-toolkit/ --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_API_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://registry.npmjs.org/
@@ -91,13 +91,13 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 18
           registry-url: https://npm.pkg.github.com/
           scope: '@hmcts'
       - run: corepack enable && yarn --version
       - run: yarn install
       - run: yarn build
-      - run: npm publish dist/ccd-case-ui-toolkit --ignore-scripts
+      - run: npm publish dist/ccd-case-ui-toolkit/ --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_PUBLISH_REGISTRY: https://npm.pkg.github.com/

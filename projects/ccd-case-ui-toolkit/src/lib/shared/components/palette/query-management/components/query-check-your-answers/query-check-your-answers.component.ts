@@ -40,6 +40,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public queryCreateContextEnum = QueryCreateContext;
   public eventCompletionParams: EventCompletionParams;
+  private caseId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -58,6 +59,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       this.caseViewTrigger = this.caseDetails.triggers.find((trigger) => trigger.id = this.RAISE_A_QUERY_EVENT_TRIGGER_ID);
       // Initialise getEventTrigger observable, will be used when submitting the query
       this.getEventTrigger$ = this.casesService.getEventTrigger(undefined, this.RAISE_A_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
+      this.caseId = caseDetails.case_id;
       // To be set after integration
       this.eventId = 'respondToQuery';
     });

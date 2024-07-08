@@ -28,12 +28,14 @@
           <ng-container *ngIf="isShown(page)">
             <ng-container *ngFor="let field of page
             | ccdPageFields: editForm
-            | ccdReadFieldsFilter: false :undefined :true : editForm.controls['data']
+            | ccdReadFieldsFilter: false :undefined :true :allFieldsValues
             | ccdCYAPageLabelFilter">
               <ng-container *ngIf="canShowFieldInCYA(field)">
                 <tr ccdLabelSubstitutor [caseField]="field" [hidden]="field.hidden"
                     [formGroup]="editForm.controls['data']" [contextFields]="contextFields">
-                  <th *ngIf="!isLabel(field) && !caseEdit.isCaseFlagSubmission" class="valign-top case-field-label"><span class="text-16">{{field.label}}</span></th>
+                  <th *ngIf="!isLabel(field) && !caseEdit.isCaseFlagSubmission" class="valign-top case-field-label">
+                    <span class="text-16">{{field.label | rpxTranslate}}</span>
+                  </th>
                   <td class="form-cell case-field-content" [attr.colspan]="isLabel(field) ? '2' : '1'">
                     <ccd-field-read
                       [formGroup]="editForm.controls['data']" [topLevelFormGroup]="editForm.controls['data']"
@@ -82,17 +84,24 @@
     <ng-container *ngIf="showEventNotes()">
       <fieldset id="fieldset-event" formGroupName="event">
         <legend style="display: none;"></legend>
-        <div class="form-group">
+        <div class="form-group" [ngClass]="{'form-group-error': !!summary && !summary.valid && (summary.dirty || summary.touched)}">
           <label for="field-trigger-summary" class="form-label">
             Event summary (optional)
             <span class="form-hint">A few words describing the purpose of the event.</span>
           </label>
-          <input type="text" id="field-trigger-summary" class="form-control bottom-30 width-50" formControlName="summary" maxlength="1024">
+          <span class="error-message" *ngIf="summary?.errors && (summary.dirty || summary.touched)">
+            {{summary.errors | ccdFirstError: eventSummaryLabel | rpxTranslate}}
+          </span>
+          <input type="text" id="field-trigger-summary" class="form-control bottom-30 width-50"
+            [ngClass]="{'govuk-input--error': summary?.errors && (summary.dirty || summary.touched)}" formControlName="summary" maxlength="1024">
         </div>
-        <div class="form-group">
+        <div class="form-group" [ngClass]="{'form-group-error': !!description && !description.valid && (description.dirty || description.touched)}">
           <label for="field-trigger-description" class="form-label">Event description (optional)</label>
+          <span class="error-message" *ngIf="description?.errors && (description.dirty || description.touched)">
+            {{description.errors | ccdFirstError: eventDescriptionLabel | rpxTranslate}}
+          </span>
           <textarea id="field-trigger-description" class="form-control bottom-30 width-50" formControlName="description"
-                    maxlength="65536"></textarea>
+            [ngClass]="{'govuk-input--error': description?.errors && (description.dirty || description.touched)}" maxlength="65536"></textarea>
         </div>
       </fieldset>
     </ng-container>
@@ -105,9 +114,7 @@
       </button>
     </div>
     <p class="cancel">
-      <a (click)="cancel()" href="javascript:void(0)" [class.disabled]="caseEdit.isSubmitting">
-        {{getCancelText() | rpxTranslate}}
-      </a>
+      <a (click)="cancel()" href="javascript:void(0)" [class.disabled]="caseEdit.isSubmitting">{{getCancelText() | rpxTranslate}}</a>
     </p>
   </form>
 </div>

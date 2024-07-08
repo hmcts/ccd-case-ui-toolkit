@@ -24,29 +24,17 @@ export const caseMessagesMockData: CaseQueriesCollection[] = [
             {
               id: 'ccd-document-id-001',
               value: {
-                originalDocumentName: 'Screenshot 2023-06-01 at 16.07.06.png',
-                _links: {
-                  binary: {
-                    href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f/binary'
-                  },
-                  self: {
-                    href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f'
-                  }
-                }
+                document_filename: 'Screenshot 2023-06-01 at 16.07.06.png',
+                document_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f',
+                document_binary_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/e5366837-b3f6-492d-acbf-548730625e8f/binary'
               }
             },
             {
               id: 'ccd-document-id-002',
               value: {
-                originalDocumentName: 'dummy.pdf',
-                _links: {
-                  binary: {
-                    href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506/binary'
-                  },
-                  self: {
-                    href: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506'
-                  }
-                }
+                document_filename: 'dummy.pdf',
+                document_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506',
+                document_binary_url: 'https://dm-store-aat.service.core-compute-aat.internal/documents/f50ccd7a-7f28-40f3-b5f9-7ad2f6425506/binary'
               }
             }
           ],
@@ -67,15 +55,9 @@ export const caseMessagesMockData: CaseQueriesCollection[] = [
             {
               id: 'ccd-document-id-003',
               value: {
-                originalDocumentName: 'talking-document.pdf',
-                _links: {
-                  binary: {
-                    href: '/'
-                  },
-                  self: {
-                    href: '/'
-                  }
-                }
+                document_filename: 'talking-document.pdf',
+                document_url: '/',
+                document_binary_url: '/'
               }
             }
           ],
@@ -95,15 +77,9 @@ export const caseMessagesMockData: CaseQueriesCollection[] = [
             {
               id: 'ccd-document-id-004',
               value: {
-                originalDocumentName: 'games-document.pdf',
-                _links: {
-                  binary: {
-                    href: '/'
-                  },
-                  self: {
-                    href: '/'
-                  }
-                }
+                document_filename: 'games-document.pdf',
+                document_url: '/',
+                document_binary_url: '/'
               }
             }
           ],

@@ -46,7 +46,7 @@ describe('UpdateFlagComponent', () => {
   const requestedFlag = {
     name: 'Flag 3',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL3',
     status: 'Requested'
@@ -54,7 +54,7 @@ describe('UpdateFlagComponent', () => {
   const notApprovedFlag = {
     name: 'Flag 4',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL4',
     status: 'Not approved'
@@ -64,16 +64,49 @@ describe('UpdateFlagComponent', () => {
     flagComment: 'First flag',
     flagComment_cy: 'Cymraeg',
     dateTimeCreated: new Date(),
-    path: [{id: null, value: 'Reasonable adjustment'}],
+    path: [{ id: null, value: 'Reasonable adjustment' }],
     hearingRelevant: false,
     flagCode: 'FL1',
     status: 'Active',
     subTypeValue: 'Sub Type'
   } as FlagDetail;
+  const activeFlagWithSubTypeValueCy = {
+    name: 'Flag 1',
+    flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
+    dateTimeCreated: new Date(),
+    path: [{ id: null, value: 'Reasonable adjustment' }],
+    hearingRelevant: false,
+    flagCode: 'FL1',
+    status: 'Active',
+    subTypeValue_cy: 'Sub Type (Welsh)'
+  } as FlagDetail;
+  const activeFlagWithOtherDescription = {
+    name: 'Flag 1',
+    flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
+    dateTimeCreated: new Date(),
+    path: [{ id: null, value: 'Reasonable adjustment' }],
+    hearingRelevant: false,
+    flagCode: 'OT0001',
+    status: 'Active',
+    otherDescription: 'Description'
+  } as FlagDetail;
+  const activeFlagWithOtherDescriptionCy = {
+    name: 'Flag 1',
+    flagComment: 'First flag',
+    flagComment_cy: 'Cymraeg',
+    dateTimeCreated: new Date(),
+    path: [{ id: null, value: 'Reasonable adjustment' }],
+    hearingRelevant: false,
+    flagCode: 'OT0001',
+    status: 'Active',
+    otherDescription_cy: 'Description (Welsh)'
+  } as FlagDetail;
   const selectedFlag1 = {
     flagDetailDisplay: {
       partyName: 'Rose Bank',
-      flagDetail: activeFlag,
+      flagDetail: activeFlag
     },
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
@@ -87,7 +120,8 @@ describe('UpdateFlagComponent', () => {
   const selectedFlag3 = {
     flagDetailDisplay: {
       partyName: 'Rose Bank',
-      flagDetail: requestedFlag
+      flagDetail: requestedFlag,
+      visibility: 'External'
     },
     pathToFlagsFormGroup: ''
   } as FlagDetailDisplayWithFormGroupPath;
@@ -120,7 +154,7 @@ describe('UpdateFlagComponent', () => {
         { provide: RpxTranslationService, useValue: mockRpxTranslationService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -506,7 +540,14 @@ describe('UpdateFlagComponent', () => {
     component.displayContextParameter = '';
     expect(component.setUpdateCaseFlagTitle(activeFlag)).toEqual(CaseFlagWizardStepTitle.NONE);
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
-    expect(component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValue)).toEqual(`${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Sub Type"`);
+    expect(component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValue)).toEqual(
+      `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Sub Type"`);
+    expect(component.setUpdateCaseFlagTitle(activeFlagWithSubTypeValueCy)).toEqual(
+      `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Sub Type (Welsh)"`);
+    expect(component.setUpdateCaseFlagTitle(activeFlagWithOtherDescription)).toEqual(
+      `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Description"`);
+    expect(component.setUpdateCaseFlagTitle(activeFlagWithOtherDescriptionCy)).toEqual(
+      `${CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE} "Flag 1, Description (Welsh)"`);
     const flag = {} as FlagDetail;
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE;
     expect(component.setUpdateCaseFlagTitle(flag)).toEqual(CaseFlagWizardStepTitle.UPDATE_FLAG_TITLE);
@@ -525,8 +566,23 @@ describe('UpdateFlagComponent', () => {
     expect(checkboxWelshTranslation).toBeNull();
   });
 
-  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled', () => {
+  it('should not display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is internally visible only', () => {
     component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1)
+    });
+    fixture.detectChanges();
+    const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
+    expect(warningTextElement).toBeNull();
+  });
+
+  it('should display the warning text for case workers and internal staff users if Case Flags v2.1 is enabled and the ' +
+    'selected flag is externally visible', () => {
+    component.displayContextParameter = CaseFlagDisplayContextParameter.UPDATE_2_POINT_1;
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag3)
+    });
     fixture.detectChanges();
     const warningTextElement = fixture.debugElement.nativeElement.querySelector('.govuk-warning-text');
     expect(warningTextElement.textContent.trim()).toContain(UpdateFlagStep.WARNING_TEXT);
@@ -688,5 +744,24 @@ describe('UpdateFlagComponent', () => {
     expect(component.formGroup.get(CaseFlagFormFields.STATUS).setValue).toHaveBeenCalledWith(Object.keys(CaseFlagStatus)[2]);
     // The "Make inactive" button should no longer be visible
     expect(fixture.debugElement.nativeElement.querySelector('.button-secondary')).toBeNull();
+  });
+
+  it('should use the original persisted flag status instead of the UI value, to determine the actual flag status', () => {
+    // Set the original status of selectedFlag1 to "Requested" (its UI value is "Active")
+    selectedFlag1.originalStatus = 'Requested';
+    // Reset activeFlag status to "Active" because it gets changed by other tests
+    activeFlag.status = 'Active';
+    component.formGroup = new FormGroup({
+      selectedManageCaseLocation: new FormControl(selectedFlag1)
+    });
+    fixture.detectChanges();
+    // All four status options should be in the list of valid progressions
+    expect(component.validStatusProgressions).toEqual(Object.keys(CaseFlagStatus));
+    // Remove the original status of selectedFlag1; the component should fall back on the UI value
+    selectedFlag1.originalStatus = null;
+    component.ngOnInit();
+    // Only "Active" and "Inactive" status options should be in the list of valid progressions
+    expect(component.validStatusProgressions).toEqual(
+      Object.keys(CaseFlagStatus).filter((key) => !['REQUESTED', 'NOT_APPROVED'].includes(key)));
   });
 });
