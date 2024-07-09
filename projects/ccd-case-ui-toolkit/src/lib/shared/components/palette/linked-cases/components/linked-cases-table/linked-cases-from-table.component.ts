@@ -16,6 +16,8 @@ import { LinkedCasesService } from '../../services';
 
 export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
   private static readonly CASE_NAME_MISSING_TEXT = 'Case name missing';
+  private static readonly CASE_CONSOLIDATED_REASON_CODE = 'CLRC015';
+  private static readonly CASE_PROGRESS_REASON_CODE = 'CLRC016';
 
   @Input()
   public caseField: CaseField;
@@ -93,6 +95,15 @@ export class LinkedCasesFromTableComponent implements OnInit, AfterViewInit {
 
   public mapLookupIDToValueFromJurisdictions(fieldName, fieldValue): string {
     return this.linkedCasesService.mapLookupIDToValueFromJurisdictions(fieldName, fieldValue);
+  }
+
+  public getCaseReferenceLink(caseRef: string): string {
+    return caseRef.slice(this.caseId.length - 4);
+  }
+
+  public hasLeadCaseOrConsolidated(reasonCode: string): boolean {
+    return reasonCode === LinkedCasesFromTableComponent.CASE_PROGRESS_REASON_CODE ||
+      reasonCode === LinkedCasesFromTableComponent.CASE_CONSOLIDATED_REASON_CODE;
   }
 
   public onClick(): void {
