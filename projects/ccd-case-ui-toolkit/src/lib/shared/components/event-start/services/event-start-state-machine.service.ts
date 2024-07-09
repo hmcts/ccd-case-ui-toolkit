@@ -183,9 +183,17 @@ export class EventStartStateMachineService {
     }
 
     const taskStr= JSON.stringify(task);
-    console.log('entryActionForStateOneTaskAssignedToUser: setting taskToComplete to ' + taskStr);
+    console.log('entryActionForStateOneTaskAssignedToUser: setting client context task_data to ' + taskStr);
     // Store task to session
-    context.sessionStorageService.setItem('taskToComplete', taskStr );
+    const clientContext = {
+      client_context: {
+        user_task: {
+          task_data: task,
+          complete_task: true
+        }
+      }
+    };
+    context.sessionStorageService.setItem('clientContext', JSON.stringify(clientContext));
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
       { relativeTo: context.route });
