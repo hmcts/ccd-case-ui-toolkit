@@ -39,6 +39,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public queryCreateContextEnum = QueryCreateContext;
   public eventCompletionParams: EventCompletionParams;
+  private caseId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -109,7 +110,6 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       () => this.router.navigate(['/', 'service-down'])
     );
   }
-
   public searchAndCompleteTask(): void {
     // Search Task
     const searchParameter = { ccdId: this.caseDetails.case_id } as TaskSearchParameter;

@@ -1,4 +1,28 @@
 ## RELEASE NOTES
+### Version 6.19.9-case-flags-exui-848-fix
+**EUI-8947** Fix bug introduced by change to `CaseEditComponent` case event data generation in EXUI-848
+
+### Version 6.19.9-case-flags-v2-1-manage-case-flags-missing-header
+**EUI-8944** Fix missing header on "Manage case flags" page when Case Flags v2.1 is enabled
+
+### Version 6.19.8-case-flags-v2-1-consolidation-final-fixes-2
+**EUI-8935** Fix incorrect logic for setting flag status on flag creation
+
+### Version 6.19.8-case-flags-v2-1-consolidation-final-fixes-1
+**EUI-8914** Fix case-level flag creation to work when the case-level `Flags` object in the form data is an empty object initially
+**EUI-8913** Remove the "Previous" button from the Case Flag Summary (CYA) page
+**EUI-8915** Remove the "Change" link for the "Status" item on the Case Flag Summary (CYA) page if Case Flags v2.1 is not enabled
+**EUI-8916** Fix "Change" link navigations from the Case Flag Summary (CYA) page when Case Flags v2.1 is enabled
+
+### Version 6.19.8-case-flags-v2-1-consolidation-final
+**EUI-8819** Final release of Case Flags v2.1 consolidation; includes support for "dual mode" operation, allowing the Case Flags feature to be run as either v1 or v2.1
+
+### Version 6.19.7-case-flags-v2-1-consolidation-interim
+**EUI-8819** Interim release of Case Flags v2.1 consolidation; includes minor UI display changes (flag status tag colour changes; flag status displayed on Case Flag Summary page always)
+
+### Version 6.19.7-case-flags-v2-1-remove-duplicate-party-locations
+**EUI-8844** Remove duplicate party locations where an internal and external `Flags` object (with the same groupId) exists for a party
+
 ### Version 6.19.7
 **EUI-8711/EUI-8706** Re-tag for formal release. Also includes EUI-8734
 
@@ -7,6 +31,12 @@
 
 ### Version 6.19.5-case-flags-v2-1-internal-external-grouping
 **EUI-8711** Ensure internal and external collections of flag data are grouped by groupId into one instance of the `Flags` object per party, for internal users
+
+### Version 6.19.6-case-flags-v2-external-user-flag-update-fix
+**EUI-8840** Use flagUpdateComment field for persisting flag comments on update by external users
+
+### Version 6.19.6-case-flags-v2-reasonable-adjustments-v2
+**EUI-7243** Case flags v2 reasonable adjustments
 
 ### Version 7.0.41
 **EXUI-1856** Unable to see Present (PED) button
