@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.46
+**EXUI-1984** Submit button greyed out on events
+
 ### Version 7.0.41
 **EXUI-1856** Unable to see Present (PED) button
 **EXUI-1598** auto-redirect to tabs as expected

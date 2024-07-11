@@ -442,6 +442,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         // on event completion ensure the previous event taskToComplete/taskEvent removed
         this.sessionStorageService.removeItem('taskToComplete');
         this.sessionStorageService.removeItem('taskEvent')
+        this.isSubmitting = false;
       }))
       .subscribe(
         () => {
@@ -457,7 +458,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
               this.formErrorService
                 .mapFieldErrors(this.error.details.field_errors, form.controls['data'] as FormGroup, 'validation');
             }
-            this.isSubmitting = false;
           } else {
             this.sessionStorageService.setItem('taskCompletionError', 'true');
             // task assignment/completion error - handled within workallocation service
