@@ -1,74 +1,83 @@
-import { Directive, Input, ViewChild } from "@angular/core";
-import { Journey } from "../../../domain";
-import { MultipageComponentStateService } from "../../../services";
+import { Directive, Input, ViewChild } from '@angular/core';
+import { Journey } from '../../../domain';
+import { MultipageComponentStateService } from '../../../services';
 
 @Directive()
 export abstract class AbstractJourneyComponent implements Journey {
-
-    public journeyStartPageNumber: number = 0;
-    public journeyEndPageNumber: number = 0;
-    public journeyPageNumber: number = 0;
+  public journeyStartPageNumber: number = 0;
+  public journeyEndPageNumber: number = 0;
+  public journeyPageNumber: number = 0;
 
     @Input()
-    public journeyId: string = 'journey';
+  public journeyId: string = 'journey';
 
     // todo...
     @ViewChild('journeyChild')
     public childJourney!: Journey;
 
     public constructor(protected readonly multipageComponentStateService: MultipageComponentStateService) {
-        this.multipageComponentStateService.addTojourneyCollection(this);
-        this.journeyPageNumber = this.journeyStartPageNumber;
+      this.multipageComponentStateService.addTojourneyCollection(this);
+      this.journeyPageNumber = this.journeyStartPageNumber;
+      console.log(this.multipageComponentStateService.getJourneyCollection());
     }
 
     public next(): void {
-        if (!this.hasNext()) {
-            return;
-        }
-
-        this.childJourney.next();
+      if (!this.hasNext()) {
+        return;
+      }
+      this.childJourney.next();
     }
 
     public previous(): void {
-        if (!this.hasPrevious()) {
-            return;
-        }
-        this.previousPage();
+      if (!this.hasPrevious()) {
+        return;
+      }
+      this.previousPage();
     }
 
     protected previousPage(): void {
-        if (this.hasPrevious()) {
-            this.journeyPageNumber--;
-        }
+      if (this.hasPrevious()) {
+        this.journeyPageNumber--;
+      }
     }
 
     public ngOnInit(): void {
-        this.journeyPageNumber = this.journeyStartPageNumber;
+      this.journeyPageNumber = this.journeyStartPageNumber;
 
-        const state = this.multipageComponentStateService.getJourneyState(this);
-
-        if (state) {
-            const { journeyPageNumber, journeyStartPageNumber, journeyEndPageNumber } = state;
-
-            this.journeyPageNumber = journeyPageNumber;
-            this.journeyStartPageNumber = journeyStartPageNumber;
-            this.journeyEndPageNumber = journeyEndPageNumber;            
-        }
+      const state = this.multipageComponentStateService.getJourneyState(this);
+      console.log(this.journeyPageNumber);
+      if (state) {
+        const { journeyPageNumber, journeyStartPageNumber, journeyEndPageNumber } = state;
+        console.log('abstract-journey.component.ts ngOnInit', journeyPageNumber);
+        this.journeyPageNumber = journeyPageNumber;
+        this.journeyStartPageNumber = journeyStartPageNumber;
+        this.journeyEndPageNumber = journeyEndPageNumber;
+      }
     }
 
     public ngOnDestroy(): void {
-        this.multipageComponentStateService.setJourneyState(this);    
+      this.multipageComponentStateService.setJourneyState(this);
     }
 
-    public hasNext(): boolean { return this.journeyPageNumber < this.journeyEndPageNumber };
+    public hasNext(): boolean {
+      return this.journeyPageNumber < this.journeyEndPageNumber;
+    }
 
-    public hasPrevious(): boolean { return this.journeyPageNumber > this.journeyStartPageNumber };
+    public hasPrevious(): boolean {
+      return this.journeyPageNumber > this.journeyStartPageNumber;
+    }
 
-    public isFinished(): boolean { return this.journeyPageNumber === this.journeyEndPageNumber };
+    public isFinished(): boolean {
+      return this.journeyPageNumber === this.journeyEndPageNumber;
+    }
 
-    public isStart(): boolean { return this.journeyPageNumber === this.journeyStartPageNumber };
+    public isStart(): boolean {
+      return this.journeyPageNumber === this.journeyStartPageNumber;
+    }
 
-    public getId(): string { return this.journeyId };
+    public getId(): string {
+      return this.journeyId;
+    }
 
-    public onPageChange(): void { /* To be implemented by some child classes. */ };
+    public onPageChange(): void { /* To be implemented by some child classes. */ }
 }

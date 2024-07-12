@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -17,7 +17,6 @@ import { SearchLanguageInterpreterControlNames } from '../search-language-interp
   styleUrls: ['./select-flag-type.component.scss']
 })
 export class SelectFlagTypeComponent extends AbstractJourneyComponent implements OnInit, OnDestroy, Journey {
-
   @Input()
   public formGroup: FormGroup;
 
@@ -68,8 +67,8 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
 
   public constructor(private readonly caseFlagRefdataService: CaseFlagRefdataService, pageStateService: MultipageComponentStateService) {
     super(pageStateService);
-   }
-   
+  }
+
   public get selectedFlagType(): FlagType | null {
     return this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.value;
   }
@@ -77,12 +76,11 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
   public get otherFlagTypeSelected(): boolean {
     return this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.value?.flagCode === this.otherFlagTypeCode;
   }
-  
+
   public ngOnInit(): void {
     this.isCaseLevelFlag = this.selectedFlagsLocation?.flags?.flagsCaseFieldId === this.caseLevelCaseFlagsFieldId;
     this.flagTypes = [];
     const flagType = this.isCaseLevelFlag ? RefdataCaseFlagType.CASE : RefdataCaseFlagType.PARTY;
-
     this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
     this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
     // FormControl is linked to a checkbox input element, so initial value should be false
@@ -90,7 +88,7 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
 
     // Should clear descriptionControlName if flagTypeControlName is changed
     this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.valueChanges
-      .subscribe(_ => {
+      .subscribe((_) => {
         this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION)?.setValue('');
         this.cachedPath = [];
 
@@ -100,30 +98,30 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
           [SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY]: ''
         });
       }
-    );
+      );
 
     // If hmctsServiceId is present, use this to retrieve the relevant list of flag types
     if (this.hmctsServiceId) {
       this.flagRefdata$ = this.caseFlagRefdataService
         .getCaseFlagsRefdata(this.hmctsServiceId, flagType, true, this.isDisplayContextParameterExternal)
         .subscribe({
-          next: flagTypes => this.processFlagTypes(flagTypes),
-          error: error => this.onRefdataError(error)
+          next: (flagTypes) => this.processFlagTypes(flagTypes),
+          error: (error) => this.onRefdataError(error)
         });
     } else {
       // Else, HMCTS service code is required to retrieve the relevant list of flag types; attempt to obtain it by case type ID first
       this.flagRefdata$ = this.caseFlagRefdataService.getHmctsServiceDetailsByCaseType(this.caseTypeId)
         .pipe(
           // If an error occurs retrieving HMCTS service details by case type ID, try by service name instead
-          catchError(_ => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
+          catchError((_) => this.caseFlagRefdataService.getHmctsServiceDetailsByServiceName(this.jurisdiction)),
           // Use switchMap to return an inner Observable of the flag types data, having received the service details
           // including service_code. This avoids having nested `subscribe`s, which is an anti-pattern!
-          switchMap(serviceDetails => this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType,
+          switchMap((serviceDetails) => this.caseFlagRefdataService.getCaseFlagsRefdata(serviceDetails[0].service_code, flagType,
             true, this.isDisplayContextParameterExternal))
         )
         .subscribe({
-          next: flagTypes => this.processFlagTypes(flagTypes),
-          error: error => this.onRefdataError(error)
+          next: (flagTypes) => this.processFlagTypes(flagTypes),
+          error: (error) => this.onRefdataError(error)
         });
     }
   }
@@ -150,6 +148,7 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
 
     // If the selected flag type is a parent, load the list of child flag types and reset the current selection
     if (this.selectedFlagType?.isParent) {
+      console.log('is this hit?');
       // Cache the current flag type selection before it is reset - this is needed for displaying its name as the title
       // when displaying the next set of child flags
       this.cachedFlagType = this.selectedFlagType;
@@ -175,9 +174,9 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
       if (this.cachedFlagType) {
         errorMessage = SelectFlagTypeErrorMessage.FLAG_TYPE_OPTION_NOT_SELECTED;
       } else {
-        errorMessage  = this.isDisplayContextParameterExternal
-        ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED_EXTERNAL
-        : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
+        errorMessage = this.isDisplayContextParameterExternal
+          ? SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED_EXTERNAL
+          : SelectFlagTypeErrorMessage.FLAG_TYPE_NOT_SELECTED;
       }
       this.flagTypeNotSelectedErrorMessage = errorMessage;
       this.errorMessages.push({ title: '', description: errorMessage, fieldId: 'conditional-radios-list' });
@@ -198,20 +197,28 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
   }
 
   private processFlagTypes(flagTypes: FlagType[]): void {
-    // First (and only) object in the returned array should be the top-level "Party" flag type
-    // The "Other" flag type should be removed from the top level if the user is external
-    this.flagTypes = flagTypes[0].childFlags.filter((flag) =>
-      this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
+    if (this.selectedFlagType) {
+      const selectedFlagType = this.selectedFlagType;
+      const pathToSearch = selectedFlagType.Path.slice(1);
+      let currentPath = flagTypes[0];
+      for (const pathElement of pathToSearch) {
+        const foundFlag = currentPath.childFlags.find((flag) => flag.name === pathElement);
+        if (foundFlag) {
+          currentPath = foundFlag;
+        }
+      }
+      this.flagTypes = currentPath.childFlags;
+      this.cachedFlagType = currentPath;
+    } else {
+      this.flagTypes = flagTypes[0].childFlags.filter((flag) =>
+        this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
+    }
 
     const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
     if (formControl?.value) {
-      // Cache Path based on existing flagCode -- needed for nested choices
       const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
-      this.cachedPath = [
-        ...path,
-        foundFlagType
-      ];
-      formControl.setValue(this.cachedPath[0], { emitEvent: false });
+      this.cachedPath = [...path, foundFlagType];
+      formControl.setValue(this.selectedFlagType ? this.cachedPath[this.cachedPath.length - 1] : this.cachedPath[0], { emitEvent: false });
     }
   }
 
