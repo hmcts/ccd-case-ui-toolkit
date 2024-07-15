@@ -23,16 +23,15 @@ export class QueryManagementUtils {
   public static getNewQueryData(formGroup: FormGroup, currentUserDetails: any): CaseMessage {
     const currentUserId = currentUserDetails?.uid;
     const currentUserName = currentUserDetails?.name;
-    const id = currentUserDetails?.id;
     const subject = formGroup.get('subject').value;
     const body = formGroup.get('body').value;
-    const isHearingRelated = formGroup.get('isHearingRelated').value;
-    const hearingDate = (isHearingRelated as boolean)
+    const isHearingRelated = formGroup.get('isHearingRelated').value ? 'Yes' : 'No';
+    const hearingDate = (isHearingRelated as string)
       ? formGroup.get('hearingDate').value
       : null;
     const attachments = formGroup.get('attachments').value;
     return {
-      id,
+      id: '',
       subject,
       name: currentUserName,
       body,
@@ -47,11 +46,12 @@ export class QueryManagementUtils {
   public static getRespondOrFollowupQueryData(formGroup: FormGroup, queryItem: QueryListItem, currentUserDetails: any): CaseMessage {
     const currentUserId = currentUserDetails?.uid;
     const currentUserName = currentUserDetails?.name;
-    const id = currentUserDetails?.id;
     const body = formGroup.get('body').value;
     const attachments = formGroup.get('attachments').value;
+    queryItem.isHearingRelated = queryItem.isHearingRelated ? 'Yes' : 'No';
+
     return {
-      id,
+      id: '',
       subject: queryItem.subject,
       name: currentUserName,
       body,

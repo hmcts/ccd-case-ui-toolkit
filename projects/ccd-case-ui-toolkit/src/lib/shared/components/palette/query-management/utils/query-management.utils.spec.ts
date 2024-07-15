@@ -51,7 +51,7 @@ describe('QueryManagementUtils', () => {
         name: 'Stuart Smith',
         body: 'Please review attached document and advise if hearing should proceed?',
         attachments: [],
-        isHearingRelated: 'true',
+        isHearingRelated: 'Yes',
         hearingDate: '2023-10-23',
         createdOn: new Date(),
         createdBy: '1111-2222-3333-4444'
@@ -70,7 +70,7 @@ describe('QueryManagementUtils', () => {
         name: 'Stuart Smith',
         body: 'Please review attached document and advise if hearing should proceed?',
         attachments: [],
-        isHearingRelated: 'true',
+        isHearingRelated: 'Yes',
         hearingDate: '2023-10-23',
         createdOn: new Date(),
         createdBy: '1111-2222-3333-4444',
@@ -92,7 +92,7 @@ describe('QueryManagementUtils', () => {
         name: 'Stuart Smith',
         body: 'Please review attached document and advise if hearing should proceed?',
         attachments: [],
-        isHearingRelated: 'true',
+        isHearingRelated: 'Yes',
         hearingDate: '2023-10-23',
         createdOn: new Date(),
         createdBy: '1111-2222-3333-4444'
