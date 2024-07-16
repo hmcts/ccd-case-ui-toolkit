@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.48
+**EXUI-1952** Add time to date display in case file view
+
 ### Version 7.0.47
 **EXUI-2082** Transparent background of calendar control
 
