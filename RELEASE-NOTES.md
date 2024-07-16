@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.47
+**EXUI-2082** Transparent background of calendar control
+
 ### Version 7.0.46
 **EXUI-1984** Submit button greyed out on events
 
