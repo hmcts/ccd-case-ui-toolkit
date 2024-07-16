@@ -8,6 +8,7 @@ export abstract class AbstractFieldWriteJourneyComponent extends AbstractFieldWr
   public journeyStartPageNumber: number = 0;
   public journeyEndPageNumber: number = 0;
   public journeyPageNumber: number = 0;
+  public journeyPreviousPageNumber: number = 0;
 
     @Input()
   public journeyId: string = 'journey';
@@ -33,7 +34,11 @@ export abstract class AbstractFieldWriteJourneyComponent extends AbstractFieldWr
       if (!this.hasPrevious()) {
         return;
       }
-      this.previousPage();
+      if (this.childJourney['cachedFlagType'] && this.childJourney['subJourneyIndex'] !== 0) {
+        this.childJourney.previous();
+      } else {
+        this.previousPage();
+      }
     }
 
     protected previousPage(): void {
@@ -53,7 +58,6 @@ export abstract class AbstractFieldWriteJourneyComponent extends AbstractFieldWr
     public ngOnInit(): void {
       this.journeyPageNumber = this.journeyStartPageNumber;
       const state = this.multipageComponentStateService.getJourneyState(this);
-
       if (state) {
         const { journeyPageNumber, journeyStartPageNumber, journeyEndPageNumber } = state;
 

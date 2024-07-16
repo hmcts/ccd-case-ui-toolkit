@@ -73,9 +73,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     // If it is start of the journey or navigation from check your answers page then fieldStateToNavigate property
     // in case flag state service will contain the field state to navigate based on create or manage journey
     this.fieldState = this.caseFlagStateService.fieldStateToNavigate;
-    if (this.fieldState === undefined ||
-        this.fieldState === CaseFlagFieldState.FLAG_LOCATION ||
-        this.fieldState === CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS) {
+    if (this.fieldState === undefined) {
       const params = this.route.snapshot.params;
       // Clear the form group, field state to navigate and set the page location
       this.caseFlagStateService.resetCache(`../${params['eid']}/${params['page']}`);
@@ -259,6 +257,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
 
   public proceedToNextState(): void {
     if (!this.isAtFinalState()) {
+      this.journeyPreviousPageNumber = this.fieldState;
       // Skip the "language interpreter" state if current state is CaseFlagFieldState.FLAG_TYPE and the flag type doesn't
       // have a "list of values" - currently, this is present only for those flag types that require language interpreter
       // selection
@@ -290,6 +289,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   }
 
   public previousPage(): void {
+    this.journeyPreviousPageNumber = this.fieldState;
     if (this.hasPrevious() && this.fieldState === CaseFlagFieldState.FLAG_COMMENTS && !this.flagType?.listOfValues) {
       this.fieldState = CaseFlagFieldState.FLAG_TYPE;
     } else if (this.hasPrevious()) {

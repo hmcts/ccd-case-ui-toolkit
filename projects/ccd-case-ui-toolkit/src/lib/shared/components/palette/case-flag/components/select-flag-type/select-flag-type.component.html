@@ -3,7 +3,7 @@
     <fieldset class="govuk-fieldset" aria-describedby="flag-type-heading">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
         <h1 id="flag-type-heading" class="govuk-fieldset__heading govuk-!-margin-bottom-1">
-          <ng-container *ngIf="!cachedFlagType; else priorFlagTypeSelected">
+          <ng-container *ngIf="!cachedFlagType || subJourneyIndex == 0; else priorFlagTypeSelected">
             {{
             isDisplayContextParameterExternal
             ? (caseFlagWizardStepTitle.SELECT_CASE_FLAG_EXTERNAL | rpxTranslate)

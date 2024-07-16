@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -55,6 +55,8 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
   public flagTypeControlChangesSubscription: Subscription;
   public caseFlagFormField = CaseFlagFormFields;
   public isCaseLevelFlag = false;
+  private cachedRDFlagTypes;
+  public subJourneyIndex: number = 0;
 
   private readonly maxCharactersForOtherFlagType = 80;
   // Code for "Other" flag type as defined in Reference Data
@@ -148,14 +150,42 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
 
     // If the selected flag type is a parent, load the list of child flag types and reset the current selection
     if (this.selectedFlagType?.isParent) {
-      console.log('is this hit?');
       // Cache the current flag type selection before it is reset - this is needed for displaying its name as the title
       // when displaying the next set of child flags
       this.cachedFlagType = this.selectedFlagType;
       this.flagTypes = this.selectedFlagType.childFlags;
-      this.cachedPath?.shift();
-      this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(this.cachedPath?.length ? this.cachedPath[0] : null, { emitEvent: false });
+      if (this.cachedPath.length !== 0 && this.cachedPath[this.subJourneyIndex] === this.selectedFlagType) {
+        this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(this.cachedPath[this.subJourneyIndex + 1], { emitEvent: false });
+      } else {
+        this.cachedPath?.shift();
+        const value = this.cachedPath?.length ? this.cachedPath[0] : null;
+        this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(value, { emitEvent: false });
+      }
+      this.subJourneyIndex++;
     }
+  }
+
+  // Simplified version of the onPrevious method with optimized code
+  public onPrevious(): void {
+    if (this.cachedFlagType) {
+      if (this.cachedFlagType.Path.length === 1) {
+        this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(this.cachedFlagType, { emitEvent: false });
+        this.flagTypes = this.cachedRDFlagTypes[0].childFlags;
+      } else {
+        let currentPath = this.cachedRDFlagTypes[0];
+        const pathToSearch = this.cachedFlagType.Path.slice(1);
+        for (const pathElement of pathToSearch) {
+          const foundFlag = currentPath.childFlags.find((flag) => flag.name === pathElement);
+          if (foundFlag) {
+            currentPath = foundFlag;
+          }
+        }
+        this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(this.cachedFlagType, { emitEvent: false });
+        this.flagTypes = currentPath.childFlags;
+        this.cachedFlagType = currentPath;
+      }
+    }
+    this.subJourneyIndex = Math.max(0, this.subJourneyIndex - 1);
   }
 
   // Identity function for trackBy use by *ngFor for flagTypes in HTML template
@@ -197,7 +227,10 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
   }
 
   private processFlagTypes(flagTypes: FlagType[]): void {
-    if (this.selectedFlagType) {
+    const prevJourneyPage = this.multipageComponentStateService.getJourneyCollection()[0];
+    const { journeyPreviousPageNumber, journeyPageNumber } = prevJourneyPage;
+    this.cachedRDFlagTypes = flagTypes;
+    if (this.selectedFlagType && (journeyPreviousPageNumber > journeyPageNumber)) {
       const selectedFlagType = this.selectedFlagType;
       const pathToSearch = selectedFlagType.Path.slice(1);
       let currentPath = flagTypes[0];
@@ -213,12 +246,14 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
       this.flagTypes = flagTypes[0].childFlags.filter((flag) =>
         this.isDisplayContextParameterExternal ? flag.flagCode !== this.otherFlagTypeCode : true);
     }
-
     const formControl = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE);
     if (formControl?.value) {
-      const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.flagTypes);
+      const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.cachedRDFlagTypes[0].childFlags);
       this.cachedPath = [...path, foundFlagType];
-      formControl.setValue(this.selectedFlagType ? this.cachedPath[this.cachedPath.length - 1] : this.cachedPath[0], { emitEvent: false });
+      formControl.setValue((this.selectedFlagType && (journeyPreviousPageNumber > journeyPageNumber)) ? this.cachedPath[this.cachedPath.length - 1] : this.cachedPath[0], { emitEvent: false });
+      if (this.cachedPath.length !== 0){
+        this.subJourneyIndex = this.cachedPath.length-1;
+      }
     }
   }
 
@@ -236,6 +271,14 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
 
     if (this.errorMessages.length === 0) {
       super.next();
+    }
+  }
+
+  public previous() {
+    this.onPrevious();
+
+    if (this.subJourneyIndex <= 0) {
+      super.previous();
     }
   }
 }

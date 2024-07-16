@@ -75,7 +75,7 @@ export class MultipageComponentStateService {
     }
 
     const isAnyObjectNotFinished: boolean = this.journeyCollection.some((journey) => !journey.isFinished());
-    console.log('isAnyObjectNotFinished', isAnyObjectNotFinished);
+
     if (!isAnyObjectNotFinished) {
       this.instigator?.onFinalNext();
       return;
@@ -101,7 +101,6 @@ export class MultipageComponentStateService {
     }
 
     const isAnyObjectNotAtStart: boolean = this.journeyCollection.some((journey) => !journey.isStart());
-
     if (!isAnyObjectNotAtStart) {
       this.instigator?.onFinalPrevious();
       return;

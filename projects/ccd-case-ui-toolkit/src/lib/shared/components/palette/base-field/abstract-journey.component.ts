@@ -7,6 +7,7 @@ export abstract class AbstractJourneyComponent implements Journey {
   public journeyStartPageNumber: number = 0;
   public journeyEndPageNumber: number = 0;
   public journeyPageNumber: number = 0;
+  public journeyPreviousPageNumber: number;
 
     @Input()
   public journeyId: string = 'journey';
@@ -18,7 +19,6 @@ export abstract class AbstractJourneyComponent implements Journey {
     public constructor(protected readonly multipageComponentStateService: MultipageComponentStateService) {
       this.multipageComponentStateService.addTojourneyCollection(this);
       this.journeyPageNumber = this.journeyStartPageNumber;
-      console.log(this.multipageComponentStateService.getJourneyCollection());
     }
 
     public next(): void {
@@ -48,7 +48,6 @@ export abstract class AbstractJourneyComponent implements Journey {
       console.log(this.journeyPageNumber);
       if (state) {
         const { journeyPageNumber, journeyStartPageNumber, journeyEndPageNumber } = state;
-        console.log('abstract-journey.component.ts ngOnInit', journeyPageNumber);
         this.journeyPageNumber = journeyPageNumber;
         this.journeyStartPageNumber = journeyStartPageNumber;
         this.journeyEndPageNumber = journeyEndPageNumber;

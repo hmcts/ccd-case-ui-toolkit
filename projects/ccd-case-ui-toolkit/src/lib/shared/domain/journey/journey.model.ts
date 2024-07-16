@@ -10,5 +10,6 @@ export interface Journey {
     journeyPageNumber: number;
     journeyStartPageNumber: number;
     journeyEndPageNumber: number;
+    journeyPreviousPageNumber: number;
     childJourney: Journey;
 }
