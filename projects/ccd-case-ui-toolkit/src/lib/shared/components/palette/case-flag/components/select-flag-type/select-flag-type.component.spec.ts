@@ -653,4 +653,40 @@ describe('SelectFlagTypeComponent', () => {
     flagVisibilityCheckboxEl.click();
     expect(component.formGroup.get(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY).value).toBe(true);
   });
+
+  it('should call super next method when errorMessages length is 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalled();
+  });
+
+  it('should not call super next method when errorMessages length is not 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [{ title: 'string', description: 'string' }];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call super.previous when subJourneyIndex is less than or equal to 0', () => {
+    spyOn(component, 'previous').and.callThrough();
+    spyOn(component, 'onPrevious');
+    component.subJourneyIndex = 0;
+    component.previous();
+    expect(component.onPrevious).toHaveBeenCalled();
+    expect(component.previous).toHaveBeenCalled();
+  });
+
+  it('should not call super.previous when subJourneyIndex is greater than 0', () => {
+    spyOn(component, 'previous').and.callThrough();
+    spyOn(component, 'onPrevious');
+    component.subJourneyIndex = 1;
+    component.previous();
+    expect(component.onPrevious).toHaveBeenCalled();
+    expect(component.previous).toHaveBeenCalled();
+  });
 });
