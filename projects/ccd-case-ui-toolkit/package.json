@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.44-calendar-backround-fix",
+  "version": "7.0.47",
   "engines": {
     "node": ">=18.19.0"
   },
