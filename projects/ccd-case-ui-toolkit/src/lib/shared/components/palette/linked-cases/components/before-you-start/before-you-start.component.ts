@@ -1,12 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { ErrorMessage } from '../../../../../domain';
+import { ErrorMessage, Journey } from '../../../../../domain';
 import { LinkedCasesState } from '../../domain';
 import { LinkedCasesPages } from '../../enums';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { AbstractJourneyComponent } from '../../../base-field';
 import { MultipageComponentStateService } from '../../../../../services';
-import { Journey } from '../../../../../domain';
 
 @Component({
   selector: 'ccd-linked-cases-before-you-start',
@@ -24,13 +23,13 @@ export class BeforeYouStartComponent extends AbstractJourneyComponent implements
   constructor(private readonly router: Router,
     private readonly linkedCasesService: LinkedCasesService,
     multipageComponentStateService: MultipageComponentStateService) {
-      super(multipageComponentStateService);
+    super(multipageComponentStateService);
     this.isLinkCasesJourney = this.linkedCasesService.isLinkedCasesEventTrigger;
     this.serverLinkedApiError = this.linkedCasesService.serverLinkedApiError;
     // re-initiate the state based on the casefield value
     const linkedCaseRefereneIds = this.linkedCasesService.caseFieldValue.filter(item => item).map(item => item.id);
     this.linkedCasesService.linkedCases = this.linkedCasesService.linkedCases.filter
-                                      (item => linkedCaseRefereneIds.indexOf(item.caseReference) !== -1);
+    (item => linkedCaseRefereneIds.indexOf(item.caseReference) !== -1);
     this.linkedCasesService.initialCaseLinks = this.linkedCasesService.linkedCases;
   }
 

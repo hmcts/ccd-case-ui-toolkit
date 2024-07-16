@@ -442,4 +442,22 @@ describe('WriteLinkedCasesFieldComponent', () => {
     wp.order = order;
     return wp;
   }
+
+  it('should decrement linkedCasesPage when not on CHECK_YOUR_ANSWERS or LINK_CASE', () => {
+    component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START + 1;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage to LINK_CASE when on CHECK_YOUR_ANSWERS', () => {
+    component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.LINK_CASE);
+  });
+
+  it('should set linkedCasesPage to BEFORE_YOU_START when on LINK_CASE', () => {
+    component.linkedCasesPage = LinkedCasesPages.LINK_CASE;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
 });

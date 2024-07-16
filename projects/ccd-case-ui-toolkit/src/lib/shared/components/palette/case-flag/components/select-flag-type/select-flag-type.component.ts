@@ -226,7 +226,7 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
     }
   }
 
-  private processFlagTypes(flagTypes: FlagType[]): void {
+  public processFlagTypes(flagTypes: FlagType[]): void {
     const prevJourneyPage = this.multipageComponentStateService.getJourneyCollection()[0];
     const { journeyPreviousPageNumber, journeyPageNumber } = prevJourneyPage;
     this.cachedRDFlagTypes = flagTypes;

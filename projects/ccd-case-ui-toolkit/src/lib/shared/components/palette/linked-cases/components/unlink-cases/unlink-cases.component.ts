@@ -1,13 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { forkJoin, Observable } from 'rxjs';
-import { CaseView, ErrorMessage } from '../../../../../domain';
+import { CaseView, ErrorMessage, Journey } from '../../../../../domain';
 import { CasesService } from '../../../../case-editor/services/cases.service';
 import { CaseLink, LinkedCasesState } from '../../domain';
 import { LinkedCasesErrorMessages, LinkedCasesPages } from '../../enums/write-linked-cases-field.enum';
 import { LinkedCasesService } from '../../services/linked-cases.service';
 import { AbstractFieldWriteJourneyComponent } from '../../../base-field';
-import { Journey } from '../../../../../domain';
 import { MultipageComponentStateService } from '../../../../../services';
 
 @Component({

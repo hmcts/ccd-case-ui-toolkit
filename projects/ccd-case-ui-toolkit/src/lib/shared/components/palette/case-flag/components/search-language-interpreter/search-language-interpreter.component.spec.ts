@@ -430,4 +430,28 @@ describe('SearchLanguageInterpreterComponent', () => {
     fixture.detectChanges();
     expect(titleElement.textContent).toContain(component.flagType.name_cy);
   });
+
+  it('should call onNext method when next is called', () => {
+    spyOn(component, 'onNext');
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+  });
+
+  it('should call super next method when errorMessages length is 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalled();
+  });
+
+  it('should not call super next method when errorMessages length is not 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [{ title: 'string', description: 'string' }];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalledTimes(1);
+  });
 });

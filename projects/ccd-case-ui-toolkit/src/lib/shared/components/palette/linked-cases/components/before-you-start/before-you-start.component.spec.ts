@@ -69,4 +69,22 @@ describe('BeforeYouStartComponent', () => {
     component.onBack();
     expect(mockRouter.navigate).toHaveBeenCalled();
   });
+
+  it('should emit linkedCasesStateEmitter when onNext is called', () => {
+    component.onNext();
+    expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalled();
+  });
+
+  it('should call onNext when next is called', () => {
+    spyOn(component, 'onNext');
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+  });
+
+  it('should call super.next when next is called and errorMessages is an empty array', () => {
+    spyOn(component, 'next').and.callThrough();
+    component.errorMessages = [];
+    component.next();
+    expect(component.next).toHaveBeenCalled();
+  });
 });
