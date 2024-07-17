@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.0.49
+**EXUI-1538** MC - (Level-A) : DAC_Tables_01
+**EXUI-1539** MC - (Level-A) : DAC_Sortable_Tables_01
+
 ### Version 7.0.48
 **EXUI-1952** Add time to date display in case file view
 
