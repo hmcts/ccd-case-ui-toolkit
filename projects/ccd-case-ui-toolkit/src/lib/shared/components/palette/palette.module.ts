@@ -140,6 +140,7 @@ import { UnsupportedFieldComponent } from './unsupported-field.component';
 import { PaletteUtilsModule } from './utils';
 import { WaysToPayFieldComponent } from './waystopay';
 import { ReadYesNoFieldComponent, WriteYesNoFieldComponent, YesNoService } from './yes-no';
+import { QueryConfirmationComponent } from './query-management/components/query-confirmation/query-confirmation.component';
 
 const PALETTE_COMPONENTS = [
   UnsupportedFieldComponent,
@@ -267,6 +268,7 @@ const PALETTE_COMPONENTS = [
   QualifyingQuestionDetailComponent,
   QueryAttachmentsReadComponent,
   QueryEventCompletionComponent,
+  QueryConfirmationComponent,
 
   // Case event completion
   CaseEventCompletionComponent,
