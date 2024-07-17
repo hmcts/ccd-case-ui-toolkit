@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AddressValidationConstants } from '../../../commons/address-validation-constants';
 import { FocusElementDirective } from '../../../directives/focus-element';
@@ -25,9 +25,6 @@ export class WriteAddressFieldComponent extends AbstractFieldWriteComponent impl
   public static readonly INVALID_ERROR_MESSAGE = 'Enter a valid Postcode';
 
   public addressesService: AddressesService;
-
-  @Input()
-  public formGroup: FormGroup;
 
   public addressFormGroup = new FormGroup({});
   public postcode: FormControl;

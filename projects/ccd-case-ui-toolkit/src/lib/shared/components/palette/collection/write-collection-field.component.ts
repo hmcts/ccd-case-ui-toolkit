@@ -32,9 +32,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   @Input()
   public caseFields: CaseField[] = [];
 
-  @Input()
-  public formGroup: FormGroup;
-
   public formArray: FormArray;
 
   public profile: Profile;
