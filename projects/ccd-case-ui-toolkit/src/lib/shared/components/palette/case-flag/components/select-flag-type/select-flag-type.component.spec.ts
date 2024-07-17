@@ -14,11 +14,13 @@ import { SearchLanguageInterpreterControlNames } from '../search-language-interp
 import { SelectFlagTypeComponent } from './select-flag-type.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { MultipageComponentStateService } from '../../../../../services';
 
 describe('SelectFlagTypeComponent', () => {
   let component: SelectFlagTypeComponent;
   let fixture: ComponentFixture<SelectFlagTypeComponent>;
   let caseFlagRefdataService: jasmine.SpyObj<CaseFlagRefdataService>;
+  let multipageComponentStateService: jasmine.SpyObj<MultipageComponentStateService>;
   let flagTypes: FlagType[];
   let selectedFlagsLocation: FlagsWithFormGroupPath;
   let mockRpxTranslationService: any;
@@ -177,6 +179,12 @@ describe('SelectFlagTypeComponent', () => {
     caseFlagRefdataService.getCaseFlagsRefdata.and.returnValue(of(flagTypes));
     caseFlagRefdataService.getHmctsServiceDetailsByServiceName.and.returnValue(of(serviceDetails));
     caseFlagRefdataService.getHmctsServiceDetailsByCaseType.and.returnValue(of(serviceDetails));
+
+    multipageComponentStateService = createSpyObj<MultipageComponentStateService>('MultipageComponentStateService', ['getJourneyCollection', 'addTojourneyCollection']);
+    const mockJourneyCollection = [{ journeyPreviousPageNumber: 1, journeyPageNumber: 2 }];
+    multipageComponentStateService.getJourneyCollection.and.returnValue(mockJourneyCollection);
+    multipageComponentStateService.addTojourneyCollection.and.returnValue(mockJourneyCollection);
+
     const source = new BehaviorSubject<RpxLanguage>('en');
     let currentLanguage: RpxLanguage = 'en';
     mockRpxTranslationService = {
@@ -195,7 +203,8 @@ describe('SelectFlagTypeComponent', () => {
       declarations: [SelectFlagTypeComponent, MockRpxTranslatePipe, FlagFieldDisplayPipe],
       providers: [
         { provide: CaseFlagRefdataService, useValue: caseFlagRefdataService },
-        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService },
+        { provide: MultipageComponentStateService, useValue: multipageComponentStateService }
       ]
     })
       .compileComponents();
@@ -688,5 +697,50 @@ describe('SelectFlagTypeComponent', () => {
     component.previous();
     expect(component.onPrevious).toHaveBeenCalled();
     expect(component.previous).toHaveBeenCalled();
+  });
+
+  it('should handle previous flag type selection correctly when path > 1', () => {
+    component.cachedRDFlagTypes = flagTypes;
+    component.cachedFlagType = flagTypes[0].childFlags[0].childFlags[0];
+    component.formGroup = new FormGroup({
+      [CaseFlagFormFields.FLAG_TYPE]: new FormControl(''),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('')
+    });
+    component.onPrevious();
+    expect(component.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.value).toEqual(flagTypes[0].childFlags[0].childFlags[0]);
+    expect(component.flagTypes).toEqual(flagTypes[0].childFlags[0].childFlags);
+  });
+
+  it('should handle previous flag type selection correctly when path == 1', () => {
+    component.cachedRDFlagTypes = flagTypes;
+    component.cachedFlagType = flagTypes[0].childFlags[0];
+    component.formGroup = new FormGroup({
+      [CaseFlagFormFields.FLAG_TYPE]: new FormControl(''),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('')
+    });
+    component.onPrevious();
+    expect(component.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.value).toEqual(flagTypes[0].childFlags[0]);
+    expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
+  });
+
+  it('should set the flagTypes property correctly', () => {
+    component.formGroup = new FormGroup({
+      [CaseFlagFormFields.FLAG_TYPE]: new FormControl(''),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('')
+    });
+    component.processFlagTypes(flagTypes);
+    expect(component.flagTypes).toEqual(flagTypes[0].childFlags);
+  });
+
+  it('should set the cachedFlagType property correctly', () => {
+    const mockJourneyCollection = [{ journeyPreviousPageNumber: 2, journeyPageNumber: 1 }];
+    multipageComponentStateService.getJourneyCollection.and.returnValue(mockJourneyCollection);
+    component.formGroup = new FormGroup({
+      [CaseFlagFormFields.FLAG_TYPE]: new FormControl(''),
+      [CaseFlagFormFields.OTHER_FLAG_DESCRIPTION]: new FormControl('')
+    });
+    component.formGroup.get(CaseFlagFormFields.FLAG_TYPE).setValue(flagTypes[0].childFlags[0]);
+    component.processFlagTypes(flagTypes);
+    expect(component.cachedFlagType).toEqual(flagTypes[0]);
   });
 });

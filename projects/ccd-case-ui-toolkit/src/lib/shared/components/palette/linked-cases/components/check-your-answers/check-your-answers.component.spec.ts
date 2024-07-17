@@ -186,4 +186,12 @@ describe('CheckYourAnswersComponent', () => {
     const changeLinkElement = linkedCasesTableElement.querySelector('.govuk-link');
     expect(changeLinkElement).toBeNull();
   });
+
+  it('should call next method', () => {
+    spyOn(component, 'next');
+
+    component.next();
+
+    expect(component.next).toHaveBeenCalledTimes(1);
+  });
 });

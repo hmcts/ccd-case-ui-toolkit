@@ -55,7 +55,7 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
   public flagTypeControlChangesSubscription: Subscription;
   public caseFlagFormField = CaseFlagFormFields;
   public isCaseLevelFlag = false;
-  private cachedRDFlagTypes;
+  public cachedRDFlagTypes: FlagType[];
   public subJourneyIndex: number = 0;
 
   private readonly maxCharactersForOtherFlagType = 80;
