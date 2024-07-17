@@ -176,6 +176,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     // journey page number to the field state. 
     if (navigatedTo) {
       this.journeyPageNumber = this.fieldState;
+      this.journeyPreviousPageNumber = this.journeyEndPageNumber++;
     }
 
     // Provided we have some stored state, i.e. when going backwards, we want 
