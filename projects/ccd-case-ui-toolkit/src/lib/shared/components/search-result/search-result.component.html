@@ -30,6 +30,7 @@
         <div class="govuk-checkboxes__item">
           <input class="govuk-checkboxes__input" id="select-all" name="select-all" type="checkbox" (change)="selectAll()" [checked]="allOnPageSelected()" [disabled]="!canAnyBeShared()" />
           <label class="govuk-label govuk-checkboxes__label" for="select-all">
+            Select all
           </label>
         </div>
       </th>
@@ -57,6 +58,7 @@
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
               type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" />
             <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
+              Select case {{ result.case_id }}
             </label>
           </div>
         </td>
@@ -93,6 +95,7 @@
             <input class="govuk-checkboxes__input" id="select-{{ result.case_id }}" name="select-{{ result.case_id }}"
               type="checkbox" (change)="changeSelection(result)" [checked]="isSelected(result)" [disabled]="!canBeShared(result)" (keyup)="onKeyUp($event, result)" />
             <label class="govuk-label govuk-checkboxes__label" for="select-{{ result.case_id }}">
+              Select case {{ result.case_id }}
             </label>
           </div>
         </td>
