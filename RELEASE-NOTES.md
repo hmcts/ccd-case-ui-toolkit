@@ -1,5 +1,39 @@
 ## RELEASE NOTES
 
+### Version 7.0.49
+**EXUI-1538** MC - (Level-A) : DAC_Tables_01
+**EXUI-1539** MC - (Level-A) : DAC_Sortable_Tables_01
+
+### Version 7.0.48
+**EXUI-1952** Add time to date display in case file view
+
+### Version 7.0.47
+**EXUI-2082** Transparent background of calendar control
+
+### Version 7.0.46
+**EXUI-1984** Submit button greyed out on events
+
+### Version 7.0.41
+**EXUI-1856** Unable to see Present (PED) button
+**EXUI-1598** auto-redirect to tabs as expected
+**EXUI-1739** not passing service code for case linking
+
+### Version 7.0.40
+**EXUI-1808** Angular 17 update
+
+### Version 7.0.24
+**EXUI-706** Clone - Insufficient Anti-Automation Mechanisms 
+**EXUI-724** Remove support for WA versions
+**EXUI-830** Screen freezes when submitting event
+**EXUI-1184** Data going missing when using the continue and previous buttons
+**EXUI-1194** Rate limit document uploads
+**EXUI-1304** Accessibilty issues
+**EXUI-1453** Rework On Uploading a Unsupported File type error
+**EXUI-1455** New EXUI manage-case PR has broken the POST /documentsv2 endpoint
+
+### Version 7.0.23
+**CSFD-95** If upload_timestamp is present on a case document pass it though to update case event. remove upload_timestamp if present on new file replacement
+
 ### Version 7.0.20
 **EUI-1300** accessibility change
 

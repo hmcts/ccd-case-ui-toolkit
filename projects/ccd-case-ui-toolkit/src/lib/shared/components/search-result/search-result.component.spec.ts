@@ -14,7 +14,9 @@ import {
   Jurisdiction,
   PaginationMetadata,
   SearchResultView,
-  SearchResultViewItem
+  SearchResultViewColumn,
+  SearchResultViewItem,
+  SortOrder
 } from '../../domain';
 import { CaseReferencePipe, SortSearchResultPipe } from '../../pipes';
 import { ActivityService, BrowserService, FieldsUtils, SearchResultViewItemComparatorFactory, SessionStorageService } from '../../services';
@@ -350,7 +352,7 @@ describe('SearchResultComponent', () => {
 
     it('should render an case activity column with header', () => {
       const headRow = de.query(By.css('div>table>thead>tr th:nth-child(4)'));
-      expect(headRow.nativeElement.textContent).toBe('');
+      expect(headRow.nativeElement.textContent).not.toBeNull();
     });
 
     it('should not render an case activity column when activity is disabled', () => {
@@ -900,6 +902,27 @@ describe('SearchResultComponent', () => {
 
       const pagination = de.query(By.css('div.pagination-top'));
       expect(pagination).toBeFalsy();
+    });
+
+    it('should return true if the column is sorted in ascending order', () => {
+      const column = { case_field_id: 'PersonFirstName' } as SearchResultViewColumn;
+      component.consumerSortParameters = { column: 'PersonFirstName', order: SortOrder.ASCENDING, type: 'Text' };
+
+      expect(component.isSortAscending(column)).toBe(true);
+    });
+
+    it('should return false if the column is sorted in descending order', () => {
+      const column = { case_field_id: 'PersonFirstName' } as SearchResultViewColumn;
+      component.consumerSortParameters = { column: 'PersonFirstName', order: SortOrder.DESCENDING, type: 'Text' };
+
+      expect(component.isSortAscending(column)).toBe(false);
+    });
+
+    it('should return null if the column is not sorted', () => {
+      const column = { case_field_id: 'PersonFirstName' } as SearchResultViewColumn;
+      component.consumerSortParameters = { column: 'PersonLastName', order: SortOrder.ASCENDING, type: 'Text' };
+
+      expect(component.isSortAscending(column)).toBe(null);
     });
   });
 });

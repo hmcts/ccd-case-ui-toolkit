@@ -658,7 +658,7 @@ describe('CaseEditComponent', () => {
           expect(wizard.nextPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
           expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_2.id).value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_2.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_3.id).value).not.toBeNull();
         });
 
@@ -695,9 +695,7 @@ describe('CaseEditComponent', () => {
           // 'PersonMiddleName' value expected to be null because this sub-field does not have
           // retain_hidden_value = true, even though its parent Complex field does
           expect(component.form.get('data').get(`${CASE_FIELD_2_COMPLEX.id}.PersonMiddleName`).value).toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_3_COMPLEX.id)).not.toBeNull();
-          expect(component.form.get('data').get(`${CASE_FIELD_3_COMPLEX.id}.AddressLine1`)).not.toBeNull();
-          expect(component.form.get('data').get(`${CASE_FIELD_3_COMPLEX.id}.AddressLine1`).value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_3_COMPLEX.id)).toBeNull();
         });
 
         it('should navigate to next page when next is called and clear hidden collection form field', () => {
@@ -739,11 +737,7 @@ describe('CaseEditComponent', () => {
           // retain_hidden_value = true, even though its top-level collection field does
           expect((component.form.get('data').get(CASE_FIELD_2_COLLECTION.id) as FormArray).at(0)
             .get('value.PersonMiddleName').value).toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_3_COLLECTION.id)).not.toBeNull();
-          expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
-            .get('value.AddressLine1')).not.toBeNull();
-          expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
-            .get('value.AddressLine1').value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_3_COLLECTION.id)).toBeNull();
         });
 
         it('should not delete sub-field value if the FormGroup for the parent Complex hidden field cannot be determined', () => {
@@ -939,7 +933,7 @@ describe('CaseEditComponent', () => {
           expect(wizard.previousPage).toHaveBeenCalled();
           expect(routerStub.navigate).toHaveBeenCalled();
           expect(component.form.get('data').get(CASE_FIELD_1.id)).not.toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_2.id).value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_2.id)).toBeNull();
           expect(component.form.get('data').get(CASE_FIELD_3.id).value).not.toBeNull();
         });
 
@@ -976,9 +970,7 @@ describe('CaseEditComponent', () => {
           // 'PersonMiddleName' value expected to be null because this sub-field does not have
           // retain_hidden_value = true, even though its parent Complex field does
           expect(component.form.get('data').get(`${CASE_FIELD_2_COMPLEX.id}.PersonMiddleName`).value).toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_3_COMPLEX.id)).not.toBeNull();
-          expect(component.form.get('data').get(`${CASE_FIELD_3_COMPLEX.id}.AddressLine1`)).not.toBeNull();
-          expect(component.form.get('data').get(`${CASE_FIELD_3_COMPLEX.id}.AddressLine1`).value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_3_COMPLEX.id)).toBeNull();
         });
 
         it('should navigate to previous page when previous is called and clear hidden collection form field', () => {
@@ -1020,11 +1012,7 @@ describe('CaseEditComponent', () => {
           // retain_hidden_value = true, even though its top-level collection field does
           expect((component.form.get('data').get(CASE_FIELD_2_COLLECTION.id) as FormArray).at(0)
             .get('value.PersonMiddleName').value).toBeNull();
-          expect(component.form.get('data').get(CASE_FIELD_3_COLLECTION.id)).not.toBeNull();
-          expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
-            .get('value.AddressLine1')).not.toBeNull();
-          expect((component.form.get('data').get(CASE_FIELD_3_COLLECTION.id) as FormArray).at(0)
-            .get('value.AddressLine1').value).toBeNull();
+          expect(component.form.get('data').get(CASE_FIELD_3_COLLECTION.id)).toBeNull();
         });
 
         it('should not delete sub-field value if the FormGroup for the parent Complex hidden field cannot be determined', () => {
@@ -1190,7 +1178,7 @@ describe('CaseEditComponent', () => {
           submit: mockClass.submit,
         });
 
-        expect(component.isSubmitting).toEqual(true);
+        expect(component.isSubmitting).toEqual(false);
         expect(formValueService.sanitise).toHaveBeenCalled();
       });
     });
@@ -1234,6 +1222,9 @@ describe('CaseEditComponent', () => {
         expect(validPageListCaseFieldsService.deleteNonValidatedFields).toHaveBeenCalled();
         expect(validPageListCaseFieldsService.validPageListCaseFields).toHaveBeenCalled();
         expect(formValueService.removeUnnecessaryFields).toHaveBeenCalled();
+        // check that tasks removed from session storage once event has been completed
+        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('taskToComplete');
+        expect(mockSessionStorageService.removeItem).toHaveBeenCalledWith('taskEvent');
       });
 
       it('should submit the case for a Case Flags submission', () => {
@@ -1424,6 +1415,50 @@ describe('CaseEditComponent', () => {
 
         expect(component.confirm).not.toHaveBeenCalled();
         expect(component.emitSubmitted).toHaveBeenCalled();
+      });
+    });
+
+    describe('taskExistsForThisEventAndCase', () => {
+      const mockEventId = 'testEvent';
+      const mockCaseId = '123456789';
+      const mockTaskEvent = {taskId: '123', eventId: 'testEvent'};
+      it('should return false when there is no task present', () => {
+        expect(component.taskExistsForThisEventAndCase(null, null, mockEventId, mockCaseId)).toBe(false);
+      });
+
+      it('should return false when there is a task present that does not match the current case', () => {
+        const mockTask = {id: '123', case_id: '987654321'};
+        expect(component.taskExistsForThisEventAndCase(mockTask, null, mockEventId, mockCaseId)).toBe(false);
+      });
+
+      it('should return true when there is a task present that matches the current case when there is no event in session storage', () => {
+        const mockTask = {id: '123', case_id: '123456789'};
+        expect(component.taskExistsForThisEventAndCase(mockTask, null, mockEventId, mockCaseId)).toBe(true);
+      });
+
+      it('should return true when there is a task present that matches the current case and current event', () => {
+        const mockTask = {id: '123', case_id: '123456789'};
+        const mockTaskEvent = {taskId: '123', eventId: 'testEvent'};
+        expect(component.taskExistsForThisEventAndCase(mockTask, mockTaskEvent, mockEventId, mockCaseId)).toBe(true);
+      });
+
+      it('should return false when there is a task present that matches the current case but does not match the event', () => {
+        const mockTask = {id: '123', case_id: '123456789'};
+        const mockTaskEvent = {taskId: '123', eventId: 'testEvent2'};
+        expect(component.taskExistsForThisEventAndCase(mockTask, mockTaskEvent, mockEventId, mockCaseId)).toBe(false);
+      });
+
+      it('should return true when there is a task present that matches the current case, does not match the event but does not match the task associated with the event in session storage', () => {
+        // highly unlikely to occur but feasible scenario
+        const mockTask = {id: '123', case_id: '123456789'};
+        const mockTaskEvent = {taskId: '1234', eventId: 'testEvent2'};
+        expect(component.taskExistsForThisEventAndCase(mockTask, mockTaskEvent, mockEventId, mockCaseId)).toBe(true);
+      });
+
+      it('should return true when there is a task present that matches the current case, matches the event and does not match the task associated with the event in session storage', () => {
+        const mockTask = {id: '123', case_id: '123456789'};
+        const mockTaskEvent = {taskId: '123', eventId: 'testEvent'};
+        expect(component.taskExistsForThisEventAndCase(mockTask, mockTaskEvent, mockEventId, mockCaseId)).toBe(true);
       });
     });
   });

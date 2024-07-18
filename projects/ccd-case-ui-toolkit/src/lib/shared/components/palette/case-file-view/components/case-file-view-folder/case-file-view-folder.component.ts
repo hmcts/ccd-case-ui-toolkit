@@ -10,6 +10,7 @@ import { AbstractAppConfig } from '../../../../../../app.config';
 import {
   CaseFileViewCategory,
   CaseFileViewDocument,
+  CaseFileViewSortColumns,
   CategoriesAndDocuments,
   DocumentTreeNode,
   DocumentTreeNodeType
@@ -100,6 +101,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       // Initialise cdk tree with generated data
       this.nestedDataSource = this.documentTreeData;
       this.nestedTreeControl.dataNodes = this.documentTreeData;
+      this.sortDataSourceDescending(CaseFileViewSortColumns.DOCUMENT_UPLOAD_TIMESTAMP);
     });
   }
 
@@ -109,11 +111,12 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       newDocumentTreeNode.name = node.category_name;
       newDocumentTreeNode.type = DocumentTreeNodeType.FOLDER;
       newDocumentTreeNode.children = [...this.generateTreeData(node.sub_categories), ...this.getDocuments(node.documents)];
+      newDocumentTreeNode.category_order = node.category_order;
 
       return [
         ...tree,
         newDocumentTreeNode,
-      ];
+      ].sort((a,b) => a.category_order - b.category_order);
     }, []);
   }
 
@@ -127,7 +130,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
       documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY') : '';
+          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY HH:mm:ss') : '';
 
       documentsToReturn.push(documentTreeNode);
     });
@@ -145,7 +148,7 @@ export class CaseFileViewFolderComponent implements OnInit, OnDestroy {
       documentTreeNode.document_binary_url = document.document_binary_url;
       documentTreeNode.attribute_path = document.attribute_path;
       documentTreeNode.upload_timestamp = this.appConfig.getEnableCaseFileViewVersion1_1()
-          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY') : '';
+          && document.upload_timestamp ? moment(document.upload_timestamp).format('DD MMM YYYY HH:mm:ss') : '';
 
       documents.push(documentTreeNode);
     });

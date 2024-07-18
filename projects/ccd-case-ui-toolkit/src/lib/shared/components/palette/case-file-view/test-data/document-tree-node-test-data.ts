@@ -7,7 +7,7 @@ export const lagerEncyclopedia = {
   document_filename: 'Lager encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '11 May 2023'
+  upload_timestamp: '11 May 2023 00:00:00'
 };
 
 export const beersEncyclopedia = {
@@ -16,7 +16,7 @@ export const beersEncyclopedia = {
   document_filename: 'Beers encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '14 Apr 2023'
+  upload_timestamp: '14 Apr 2023 00:00:00'
 };
 
 export const aleEncyclopedia = {
@@ -25,7 +25,7 @@ export const aleEncyclopedia = {
   document_filename: 'Ale encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '12 Mar 2023'
+  upload_timestamp: '12 Mar 2023 01:23:01'
 };
 
 export const whiskyHighland = {
@@ -35,9 +35,11 @@ export const whiskyHighland = {
     {
       name: 'Highland 1',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     }
-  ]
+  ],
+  category_order: 1
 };
 
 export const whiskyLowland1 = {
@@ -46,7 +48,7 @@ export const whiskyLowland1 = {
   document_filename: 'Details about Whisky Lowland 1',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '21 Jun 2022'
+  upload_timestamp: '21 Jun 2022 00:00:00'
 };
 
 export const whiskyLowland = {
@@ -58,14 +60,17 @@ export const whiskyLowland = {
       type: DocumentTreeNodeType.FOLDER,
       children: [
         whiskyLowland1
-      ]
+      ],
+      category_order: 1
     },
     {
       name: 'Lowland 2',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 2
     }
-  ]
+  ],
+  category_order: 2
 };
 
 export const whiskyIslayDetails = {
@@ -74,7 +79,7 @@ export const whiskyIslayDetails = {
   document_filename: 'Details about Whisky Islay',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '04 Nov 2022'
+  upload_timestamp: '04 Nov 2022 00:00:00'
 };
 
 export const whiskyIslayMoreInformation = {
@@ -83,19 +88,21 @@ export const whiskyIslayMoreInformation = {
   document_filename: 'More information about Whisky Islay',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '28 Dec 2022'
+  upload_timestamp: '28 Dec 2022 00:00:00'
 };
 
 export const whiskySpeyside = {
   name: 'Speyside',
   type: DocumentTreeNodeType.FOLDER,
-  children: []
+  children: [],
+  category_order: 4
 };
 
 export const whiskyCampbelTown = {
   name: 'Campbeltown',
   type: DocumentTreeNodeType.FOLDER,
-  children: []
+  children: [],
+  category_order: 5
 };
 
 export const redWineItalian = {
@@ -113,7 +120,7 @@ export const whiteWineItalian = {
   document_filename: 'Details about white wine',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '10 Feb 2023'
+  upload_timestamp: '10 Feb 2023 00:00:00'
 };
 
 export const proseccoItalian = {
@@ -122,7 +129,7 @@ export const proseccoItalian = {
   document_filename: 'Details about Prosecco',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '12 Apr 2023'
+  upload_timestamp: '12 Apr 2023 00:00:00'
 };
 
 export const pinotGrigioItalian = {
@@ -131,7 +138,7 @@ export const pinotGrigioItalian = {
   document_filename: 'Details about Pinot Grigio',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '16 Mar 2023'
+  upload_timestamp: '16 Mar 2023 00:00:00'
 };
 
 export const beersAlphabeticallyAsc = {
@@ -141,17 +148,20 @@ export const beersAlphabeticallyAsc = {
     {
       name: 'Bitters',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     },
     {
       name: 'American',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 2
     },
     {
       name: 'Asian',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 3
     },
     aleEncyclopedia,
     beersEncyclopedia,
@@ -166,17 +176,20 @@ export const beersAlphabeticallyDesc = {
     {
       name: 'Bitters',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     },
     {
       name: 'American',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 2
     },
     {
       name: 'Asian',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 3
     },
     lagerEncyclopedia,
     beersEncyclopedia,
@@ -191,7 +204,8 @@ export const winesAlphabeticallyAsc = {
     {
       name: 'French',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     },
     {
       name: 'Italian',
@@ -201,7 +215,8 @@ export const winesAlphabeticallyAsc = {
         proseccoItalian,
         redWineItalian,
         whiteWineItalian
-      ]
+      ],
+      category_order: 2
     }
   ]
 };
@@ -213,7 +228,8 @@ export const winesAlphabeticallyDesc = {
     {
       name: 'French',
       type: DocumentTreeNodeType.FOLDER,
-      children: []
+      children: [],
+      category_order: 1
     },
     {
       name: 'Italian',
@@ -223,7 +239,8 @@ export const winesAlphabeticallyDesc = {
         redWineItalian,
         proseccoItalian,
         pinotGrigioItalian
-      ]
+      ],
+      category_order: 2
     }
   ]
 };
@@ -244,13 +261,16 @@ export const spiritsAlphabeticallyAsc = {
           children: [
             whiskyIslayDetails,
             whiskyIslayMoreInformation
-          ]
+          ],
+          category_order: 3
         },
         whiskySpeyside,
         whiskyCampbelTown
-      ]
+      ],
+      category_order: 1
     }
-  ]
+  ],
+  // category_order:  3
 };
 
 export const spiritsAlphabeticallyDesc = {
@@ -269,11 +289,13 @@ export const spiritsAlphabeticallyDesc = {
           children: [
             whiskyIslayMoreInformation,
             whiskyIslayDetails,
-          ]
+          ],
+          category_order: 3
         },
         whiskySpeyside,
         whiskyCampbelTown
-      ]
+      ],
+      category_order: 1
     }
   ]
 };
@@ -284,7 +306,7 @@ export const uncategorisedDocument1 = {
   document_filename: 'Uncategorised document 1',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '17 Nov 2022'
+  upload_timestamp: '17 Nov 2022 00:00:00'
 };
 
 export const uncategorisedDocument2 = {
@@ -293,7 +315,7 @@ export const uncategorisedDocument2 = {
   document_filename: 'Uncategorised document 2',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '23 Feb 2023'
+  upload_timestamp: '23 Feb 2023 00:00:00'
 };
 
 export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTreeNode, [
@@ -304,22 +326,26 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
       {
         name: 'Bitters',
         type: DocumentTreeNodeType.FOLDER,
-        children: []
+        children: [],
+        category_order: 1
       },
       {
         name: 'American',
         type: DocumentTreeNodeType.FOLDER,
-        children: []
+        children: [],
+        category_order: 2
       },
       {
         name: 'Asian',
         type: DocumentTreeNodeType.FOLDER,
-        children: []
+        children: [],
+        category_order: 3
       },
       lagerEncyclopedia,
       beersEncyclopedia,
       aleEncyclopedia
-    ]
+    ],
+    category_order: 1
   },
   {
     name: 'Wines',
@@ -328,7 +354,8 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
       {
         name: 'French',
         type: DocumentTreeNodeType.FOLDER,
-        children: []
+        children: [],
+        category_order: 1
       },
       {
         name: 'Italian',
@@ -338,9 +365,11 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
           whiteWineItalian,
           proseccoItalian,
           pinotGrigioItalian
-        ]
+        ],
+        category_order: 2
       }
-    ]
+    ],
+    category_order: 2
   },
   {
     name: 'Spirits',
@@ -358,13 +387,16 @@ export const categorisedTreeData: DocumentTreeNode[] = plainToClass(DocumentTree
             children: [
               whiskyIslayDetails,
               whiskyIslayMoreInformation
-            ]
+            ],
+            category_order: 3
           },
           whiskySpeyside,
           whiskyCampbelTown
-        ]
+        ],
+        category_order: 1
       }
-    ]
+    ],
+    category_order: 3
   }
 ]);
 
