@@ -177,4 +177,29 @@ describe('LinkCasesFromTableComponent', () => {
       document.getElementsByClassName('govuk-table__cell')[0].textContent.trim()
     ).toEqual('None');
   });
+
+  it('should return the last 4 digits of the case reference', () => {
+    component.caseId = '1234567890123456';
+    const caseRef = '1234567890123456';
+    const result = component.getCaseReferenceLink(caseRef);
+    expect(result).toEqual('3456');
+  });
+
+  it('should return true for CASE_PROGRESS_REASON_CODE', () => {
+    const reasonCode = 'CLRC016';
+    const result = component.hasLeadCaseOrConsolidated(reasonCode);
+    expect(result).toBeTruthy();
+  });
+
+  it('should return true for CASE_CONSOLIDATED_REASON_CODE', () => {
+    const reasonCode = 'CLRC015';
+    const result = component.hasLeadCaseOrConsolidated(reasonCode);
+    expect(result).toBeTruthy();
+  });
+
+  it('should return false for any other reason code', () => {
+    const reasonCode = 'OTHER_CODE';
+    const result = component.hasLeadCaseOrConsolidated(reasonCode);
+    expect(result).toBeFalsy();
+  });
 });
