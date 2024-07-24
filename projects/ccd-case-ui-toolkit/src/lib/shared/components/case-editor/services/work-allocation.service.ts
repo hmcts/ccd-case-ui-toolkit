@@ -105,7 +105,7 @@ export class WorkAllocationService {
     console.log(`completeTask: completing ${taskId}`);
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
-      .post(url, {})
+      .post(url, { actionByEvent: true })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
