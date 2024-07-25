@@ -215,7 +215,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     let validErrorFieldFound = false;
     let validationErrorAmount = this.validationErrors.length;
     const failingFields = fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
-    .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path));
+      .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm, path));
     // note that thougn these checks are on getinvalidfields they are needed for sub field checks
     failingFields
       .forEach(casefield => {
@@ -266,7 +266,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
                 id = `${fieldArray['component']['collItems'][0].prefix}`;
               }
               fieldArray.controls.forEach((c: AbstractControl) => {
-               errorPresent = this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
+                const idPrefix = c.get('value')['component'].idPrefix;
+                id = idPrefix !== id ? idPrefix : id;
+                errorPresent = this.generateErrorMessage(casefield.field_type.collection_field_type.complex_fields, c.get('value'), id);
               });
             } else if (FieldsUtils.isCaseFieldOfType(casefield, ['FlagLauncher'])) {
               this.validationErrors.push({
@@ -288,7 +290,7 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
       });
     if (!validErrorFieldFound) {
       path ? this.validationErrors.push({ id: path, message: `There is an internal issue with ${path} fields. The field that is causing the error cannot be determined but there is an error present` })
-       : this.validationErrors.push({ id: null, message: `The field that is causing the error cannot be determined but there is an error present` });
+        : this.validationErrors.push({ id: null, message: `The field that is causing the error cannot be determined but there is an error present` });
     } else if (this.validationErrors.length === validationErrorAmount) {
       // if no error messages have been generated
       if (path) {
