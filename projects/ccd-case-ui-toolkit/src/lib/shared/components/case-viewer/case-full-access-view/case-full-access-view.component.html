@@ -1,36 +1,4 @@
 <!-- Generic error heading and error message to be displayed only if there are no specific callback errors or warnings, or no error details -->
-<div *ngIf="error && !(error.callbackErrors || error.callbackWarnings || error.details)" class="error-summary"
-     role="group" aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-  <h1 class="heading-h1 error-summary-heading" id="edit-case-event_error-summary-heading">
-    {{'Something went wrong' | rpxTranslate}}
-  </h1>
-  <div class="govuk-error-summary__body" id="edit-case-event_error-summary-body">
-    <p>{{"We're working to fix the problem. Try again shortly." | rpxTranslate}}</p>
-    <p>
-      <a href="get-help" target="_blank">
-        {{"Contact us" | rpxTranslate}}</a> {{"if you're still having problems." | rpxTranslate}}
-    </p>
-  </div>
-</div>
-<!-- Callback error heading and error message to be displayed if there are specific error details -->
-<div *ngIf="error && error.details" class="error-summary" role="group"
-     aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
-  <h2 class="heading-h2 error-summary-heading" id="edit-case-event_error-summary-heading">
-    {{'The callback data failed validation' | rpxTranslate}}
-  </h2>
-  <p>{{error.message | rpxTranslate}}</p>
-  <ul *ngIf="error.details?.field_errors" class="error-summary-list">
-    <li *ngFor="let fieldError of error.details.field_errors">
-      {{fieldError.message | rpxTranslate}}
-    </li>
-  </ul>
-</div>
-<ccd-callback-errors
-  [triggerTextContinue]="triggerTextStart"
-  [triggerTextIgnore]="triggerTextIgnoreWarnings"
-  [callbackErrorsSubject]="callbackErrorsSubject"
-  (callbackErrorsContext)="callbackErrorsNotify($event)">
-</ccd-callback-errors>
 <ccd-activity [caseId]="caseDetails.case_id" [displayMode]="BANNER"></ccd-activity>
 <div class="grid-row">
   <div class="column-one-half">
@@ -62,16 +30,17 @@
         </mat-tab>
         <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate">
           <ng-template matTabContent>
-            <table [class]="tab.id" [attr.aria-labelledby]="tab.id | rpxTranslate">
+            <div class="hide-table-capion" id="table_caption">{{tab.label  | rpxTranslate}}</div>
+            <table class="olaaa" [class]="tab.id" aria-labelledby="table_caption">
               <tbody>
-                
+              
               <ng-container *ngFor="let field of tab | ccdTabFields | ccdReadFieldsFilter:false :undefined :true : formGroup.controls['data']">
                 <div ccdLabelSubstitutor [caseField]="field" [contextFields]="caseFields" [hidden]="field.hidden">
                   <ng-container [ngSwitch]="!(field | ccdIsCompound)">
                     <tr *ngSwitchCase="true">
                       <th id="case-viewer-field-label" *ngIf="!isFieldToHaveNoLabel(field)">
                         <div class="case-viewer-label text-16">
-                          {{field.label | rpxTranslate}}</div>
+                          {{field.label | rpxTranslate}}&ZeroWidthSpace;</div>
                       </th>
                       <td [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
@@ -89,7 +58,7 @@
                                           [caseField]="field" [caseReference]="caseDetails.case_id"
                                           [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
                           </ccd-field-read>
-                        </span>
+                        </span>&ZeroWidthSpace;
                       </th>
                     </tr>
                   </ng-container>

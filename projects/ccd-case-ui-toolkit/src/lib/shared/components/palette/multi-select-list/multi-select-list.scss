@@ -13,3 +13,8 @@
     white-space: nowrap;
   }
 }
+
+.hide-table-caption {
+  position: absolute;
+  visibility: hidden;
+}
