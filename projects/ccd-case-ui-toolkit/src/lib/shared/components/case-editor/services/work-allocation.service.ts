@@ -131,7 +131,8 @@ export class WorkAllocationService {
       .post(url, {
         completion_options: {
           assign_and_complete: true
-        }
+        },
+        actionByEvent: true
       })
       .pipe(
         catchError(error => {
