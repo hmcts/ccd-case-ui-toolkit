@@ -3,14 +3,13 @@ import { DebugElement, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { MarkdownModule } from 'ngx-markdown';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { PipesModule } from '../../../pipes';
 import { attr } from '../../../test/helpers';
 import { MockFieldLabelPipe } from '../../../test/mock-field-label.pipe';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
-import { MarkdownComponent, MarkdownComponentModule } from '../markdown';
+import { MarkdownComponent } from '../markdown';
 import { PaletteUtilsModule } from '../utils/utils.module';
 import { WriteDynamicMultiSelectListFieldComponent } from './write-dynamic-multi-select-list-field.component';
 import { RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
@@ -155,13 +154,13 @@ describe('WriteDynamicMultiSelectListFieldComponent', () => {
       });
     });
 
-    xit('should show a link in the checkbox label', () => {
-      const labels = de.queryAll($LABELS);
-      labels.forEach((lb, i) => {
-        const mockUrl = MD_LIST_ITEMS[i].label.match(URL_REGEX)[0];
-        expect(lb.nativeElement.innerHTML).toContain(`<a href="${mockUrl}">`);
-      });
-    });
+    // it('should show a link in the checkbox label', () => {
+    //   const labels = de.queryAll($LABELS);
+    //   labels.forEach((lb, i) => {
+    //     const mockUrl = MD_LIST_ITEMS[i].label.match(URL_REGEX)[0];
+    //     expect(lb.nativeElement.innerHTML).toContain(`<a href="${mockUrl}">`);
+    //   });
+    // });
   });
 
   describe('Null Value Dynamic Case Field', () => {
