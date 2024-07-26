@@ -93,7 +93,6 @@ describe('ReadMultiSelectListFieldComponent', () => {
     it('should NOT render anything when value is undefined', () => {
       component.caseField.value = [];
       fixture.detectChanges();
-      console.log('de', de)
       expect(de?.children?.length).toBe(1); // &ZeroWidthSpace; has been added to every <th> for accessibilty reasons. At least 1 item always present
     });
 
