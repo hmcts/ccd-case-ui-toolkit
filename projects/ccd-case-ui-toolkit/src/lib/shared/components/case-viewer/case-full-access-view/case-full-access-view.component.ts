@@ -132,8 +132,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
 
     // Check for active Case Flags
     this.activeCaseFlags = this.hasActiveCaseFlags();
-    console.log('prepend', this.prependedTabs);
-    console.log('append', this.appendedTabs);
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -142,8 +140,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
       this.crf.detectChanges();
       this.organiseTabPosition();
     }
-    console.log('prepend', this.prependedTabs);
-    console.log('append', this.appendedTabs);
   }
 
   public isPrintEnabled(): boolean {
@@ -352,8 +348,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     } else {
       // Routing here is based on tab label, not ideal
       // cases/case-details/:caseId#tabLabel
-      console.log('prepend1', this.prependedTabs);
-      console.log('append', this.appendedTabs);
       this.router.navigate(['cases', 'case-details', this.caseDetails.case_id], { fragment: tabLabel });
     }
   }
@@ -430,7 +424,6 @@ export class CaseFullAccessViewComponent implements OnInit, OnDestroy, OnChanges
     this.caseFields = this.getTabFields();
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
     this.formGroup = this.buildFormGroup(this.caseFields);
-    console.log('sortedTabs', this.sortedTabs);
     if (this.caseDetails?.triggers && this.error) {
       this.resetErrors();
     }
