@@ -266,7 +266,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         eventId,
         task: taskInSessionStorage
       });
-      // add taskEvent to link current event with task id
+      // add taskEventCompletionInfo again to ensure link current event with task id
+      // note: previous usage was created here so this is to ensure correct functionality continues
       const taskEventCompletionInfo: TaskEventCompletionInfo = {
         caseId,
         eventId,
@@ -452,9 +453,9 @@ export class CaseEditComponent implements OnInit, OnDestroy {
       return this.postCompleteTaskIfRequired();
     }),finalize(() => {
         this.loadingService.unregister(loadingSpinnerToken);
-        // on event completion ensure the previous event taskToComplete/taskEvent removed
+        // on event completion ensure the previous event taskToComplete/taskEventCompletionInfo removed
         this.sessionStorageService.removeItem('taskToComplete');
-        this.sessionStorageService.removeItem('taskEvent')
+        this.sessionStorageService.removeItem('taskEventCompletionInfo')
         this.isSubmitting = false;
       }))
       .subscribe(
@@ -536,7 +537,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
           this.eventDetailsDoNotMatch(taskEventCompletionInfo, eventDetails))
         || this.eventMoreThanDayAgo(taskEventCompletionInfo.createdTimestamp)
       ) {
-        console.log('howdy there')
         // if the session storage not related to event, ignore it and remove
         this.sessionStorageService.removeItem('taskToComplete');
         this.sessionStorageService.removeItem('taskEventCompletionInfo');
@@ -567,9 +567,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   private eventMoreThanDayAgo(timestamp: number) {
     let dayAgoDate = new Date().getTime() - (24*60*60*1000);
-    console.log(dayAgoDate, 'decent', timestamp)
     if (dayAgoDate > timestamp) {
-      console.log('jeffrey')
       return true;
     }
     return false;
@@ -579,7 +577,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     if (taskEventCompletionInfo.eventId !== eventDetails.eventId
       || taskEventCompletionInfo.caseId !== eventDetails.caseId
       || taskEventCompletionInfo.userId !== eventDetails.userId) {
-        console.log(taskEventCompletionInfo, 'yee-haw 2', eventDetails)
       return true;
     }
     return false;
