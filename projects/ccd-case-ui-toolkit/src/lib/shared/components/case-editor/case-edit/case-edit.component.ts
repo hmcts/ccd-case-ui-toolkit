@@ -13,7 +13,7 @@ import {
   CaseEventData, CaseEventTrigger, CaseField,
   CaseView, Draft, HttpError, Profile
 } from '../../../domain';
-import { Task, TaskEvent } from '../../../domain/work-allocation/Task';
+import { EventDetails, Task, TaskEventCompletionInfo } from '../../../domain/work-allocation/Task';
 import {
   AlertService,
   FieldsPurger, FieldsUtils, FormErrorService, FormValueService, LoadingService,
@@ -23,6 +23,7 @@ import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
+import { UserInfo } from '../../../domain/user/user-info.model';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -240,18 +241,25 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     // We have to run the event completion checks if task in session storage
     // and if the task is in session storage, then is it associated to the case
     let taskInSessionStorage: Task;
-    let taskEventInSessionStorage: TaskEvent;
+    let taskEventCompletionInfo: TaskEventCompletionInfo;
+    let userInfo: UserInfo;
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
-    const taskEventStr = this.sessionStorageService.getItem('taskEvent');
+    const taskEventCompletionStr = this.sessionStorageService.getItem('taskEventCompletionInfo');
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (taskStr) {
       taskInSessionStorage = JSON.parse(taskStr);
     }
-    if (taskEventStr) {
-      taskEventInSessionStorage = JSON.parse(taskEventStr);
+    if (taskEventCompletionStr) {
+      taskEventCompletionInfo = JSON.parse(taskEventCompletionStr);
+    }
+    if (userInfoStr) {
+      userInfo = JSON.parse(userInfoStr);
     }
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
-    if (this.taskExistsForThisEventAndCase(taskInSessionStorage, taskEventInSessionStorage, eventId, caseId)) {
+    const userId = userInfo.uid;
+    const eventDetails: EventDetails = {eventId, caseId, userId};
+    if (this.taskExistsForThisEvent(taskInSessionStorage, taskEventCompletionInfo, eventDetails)) {
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
         caseId,
@@ -259,8 +267,13 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         task: taskInSessionStorage
       });
       // add taskEvent to link current event with task id
-      const taskEvent = {eventId, taskId: taskInSessionStorage.id};
-      this.sessionStorageService.setItem('taskEvent', JSON.stringify(taskEvent));
+      const taskEventCompletionInfo: TaskEventCompletionInfo = {
+        caseId,
+        eventId,
+        userId,
+        taskId: taskInSessionStorage.id,
+        createdTimestamp: Date.now()};
+      this.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
       this.isEventCompletionChecksRequired = true;
     } else {
       // Task not in session storage, proceed to submit
@@ -509,18 +522,24 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   // checks whether current taskToComplete relevant for the event
-  public taskExistsForThisEventAndCase(taskInSessionStorage, taskEvent, eventId, caseId): boolean {
-    if (!taskInSessionStorage || taskInSessionStorage.case_id !== caseId) {
+  public taskExistsForThisEvent(taskInSessionStorage: Task, taskEventCompletionInfo: TaskEventCompletionInfo, eventDetails: EventDetails): boolean {
+    if (!taskInSessionStorage || taskInSessionStorage.case_id !== eventDetails.caseId) {
       return false;
     }
-    if (!taskEvent) {
+    if (!taskEventCompletionInfo) {
       // if no task event present then there is no task to complete from previous event present
       return true;
     } else {
-      if (taskEvent.taskId === taskInSessionStorage.id && taskEvent.eventId !== eventId) {
+      if (taskEventCompletionInfo.taskId !== taskInSessionStorage.id) {
+        return true;
+      } else if ((taskEventCompletionInfo.taskId === taskInSessionStorage.id &&
+          this.eventDetailsDoNotMatch(taskEventCompletionInfo, eventDetails))
+        || this.eventMoreThanDayAgo(taskEventCompletionInfo.createdTimestamp)
+      ) {
+        console.log('howdy there')
         // if the session storage not related to event, ignore it and remove
         this.sessionStorageService.removeItem('taskToComplete');
-        this.sessionStorageService.removeItem('taskEvent');
+        this.sessionStorageService.removeItem('taskEventCompletionInfo');
         return false;
       }
       return true;
@@ -544,5 +563,25 @@ export class CaseEditComponent implements OnInit, OnDestroy {
 
   private hasCallbackFailed(response: object): boolean {
     return response['callback_response_status'] !== 'CALLBACK_COMPLETED';
+  }
+
+  private eventMoreThanDayAgo(timestamp: number) {
+    let dayAgoDate = new Date().getTime() - (24*60*60*1000);
+    console.log(dayAgoDate, 'decent', timestamp)
+    if (dayAgoDate > timestamp) {
+      console.log('jeffrey')
+      return true;
+    }
+    return false;
+  }
+
+  private eventDetailsDoNotMatch(taskEventCompletionInfo: TaskEventCompletionInfo, eventDetails: EventDetails) {
+    if (taskEventCompletionInfo.eventId !== eventDetails.eventId
+      || taskEventCompletionInfo.caseId !== eventDetails.caseId
+      || taskEventCompletionInfo.userId !== eventDetails.userId) {
+        console.log(taskEventCompletionInfo, 'yee-haw 2', eventDetails)
+      return true;
+    }
+    return false;
   }
 }
