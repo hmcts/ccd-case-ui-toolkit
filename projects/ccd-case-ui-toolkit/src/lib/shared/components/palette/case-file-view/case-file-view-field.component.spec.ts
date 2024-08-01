@@ -110,6 +110,7 @@ describe('CaseFileViewFieldComponent', () => {
     expect(mockCaseFileViewService.getCategoriesAndDocuments).toHaveBeenCalled();
     expect(component.getCategoriesAndDocumentsError).toBe(false);
     const nativeElement = fixture.debugElement.nativeElement;
+    expect(component.caseId).toEqual('1234123412341234');
     const errorMessageHeadingElement = nativeElement.querySelector('.govuk-heading-xl');
     expect(errorMessageHeadingElement).toBeNull();
     const errorMessageBodyElement = nativeElement.querySelector('.govuk-body');
