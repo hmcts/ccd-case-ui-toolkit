@@ -199,7 +199,6 @@ export class EventStartStateMachineService {
       taskId: task.id,
       createdTimestamp: Date.now()};
     context.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
-    console.log('have added', taskEventCompletionInfo)
     context.sessionStorageService.setItem('taskToComplete', taskStr );
     // Allow user to perform the event
     context.router.navigate([`/cases/case-details/${context.caseId}/trigger/${context.eventId}`],
