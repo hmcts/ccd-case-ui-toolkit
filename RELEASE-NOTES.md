@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.51
+**EXUI-2051** Unable to Add documents
+
 ### Version 7.0.50
 **EXUI-1298** MC - (Level-A) : DAC_No_Accessible_Name_01
 **EXUI-1540** Accessibilty issues
