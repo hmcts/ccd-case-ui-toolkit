@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/ccd-case-ui-toolkit",
-  "version": "7.0.52-task-event-completion-info-2",
+  "version": "7.0.53-task-event-completion-info",
   "engines": {
     "node": ">=18.19.0"
   },
