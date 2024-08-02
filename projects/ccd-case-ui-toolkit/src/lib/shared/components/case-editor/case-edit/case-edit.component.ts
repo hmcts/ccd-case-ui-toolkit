@@ -566,8 +566,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
   }
 
   private eventMoreThanDayAgo(timestamp: number) {
-    let dayAgoDate = new Date().getTime() - (24*60*60*1000);
-    if (dayAgoDate > timestamp) {
+    if ((new Date().getTime() - timestamp) > (24*60*60*1000)) {
       return true;
     }
     return false;

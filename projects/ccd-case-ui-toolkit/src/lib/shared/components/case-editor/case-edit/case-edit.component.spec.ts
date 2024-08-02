@@ -1473,6 +1473,13 @@ describe('CaseEditComponent', () => {
         const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: dayAndTwoHoursAgo};
         expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(false);
       });
+
+      it('should return true when there is a task present that matches the current case, matches the event but the timestamp is less than day ago', () => {
+        const mockTask = {id: '123', case_id: '123456789'};
+        const twoHoursAgo = new Date().getTime() - (2*60*60*1000);
+        const mockTaskEventCompletionInfo = {taskId: '123', eventId: 'testEvent', caseId: '123456789', userId: '1', createdTimestamp: twoHoursAgo};
+        expect(component.taskExistsForThisEvent(mockTask as Task, mockTaskEventCompletionInfo, mockEventDetails)).toBe(true);
+      });
     });
   });
 
