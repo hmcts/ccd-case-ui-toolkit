@@ -598,6 +598,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   }
 
   public moveToFinalReviewStage(): void {
+    this.caseFlagStateService.lastPageFieldState = this.fieldState;
     this.setFlagsCaseFieldValue();
     // Check that no errors have been set on caseFlagParentFormGroup (by determineLocationForFlag()); prevent moving to
     // final review stage if errors exist
