@@ -26,9 +26,19 @@ export interface Task {
   work_type_id?: string;
 }
 
-export interface TaskEvent {
+// Query: UserID will be removed on logout/login (is it necessary)?
+export interface TaskEventCompletionInfo {
   taskId: string;
   eventId: string;
+  caseId: string;
+  userId: string;
+  createdTimestamp: number;
+}
+
+export interface EventDetails {
+  eventId: string;
+  caseId: string;
+  userId: string;
 }
 
 export enum Permissions {
