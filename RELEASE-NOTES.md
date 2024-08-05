@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.53
+**EXUI-1540** revert this change
+
 ### Version 7.0.51
 **EXUI-2051** Unable to Add documents
 
