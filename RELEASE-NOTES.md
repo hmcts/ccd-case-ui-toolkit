@@ -1,5 +1,7 @@
 ## RELEASE NOTES
 
+### Version 7.0.55
+**EXUI-1775** Refdata intend to change
 
 ### Version 7.0.54
 **EXUI-2085** Add Task completion logs in app insight
