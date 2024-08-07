@@ -2,13 +2,12 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AbstractAppConfig } from '../../../../app.config';
 import { CaseEditDataService } from '../../../commons/case-edit-data';
-import { ErrorMessage } from '../../../domain';
 import { CaseView } from '../../../domain/case-view';
 import { CommonDataService } from '../../../services/common-data-service/common-data-service';
 import { CasesService } from '../../case-editor/services/cases.service';
 import { AbstractFieldWriteJourneyComponent } from '../base-field';
 import { CaseLink, LinkedCasesState } from './domain';
-import { LinkedCasesErrorMessages, LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
+import { LinkedCasesEventTriggers, LinkedCasesPages } from './enums';
 import { LinkedCasesService } from './services';
 import { Subscription } from 'rxjs';
 import { MultipageComponentStateService } from '../../../services';
@@ -58,12 +57,19 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
 
     this.journeyPageNumber = this.journeyStartPageNumber = LinkedCasesPages.BEFORE_YOU_START;
     this.journeyEndPageNumber = LinkedCasesPages.CHECK_YOUR_ANSWERS;
+
+    if (this.linkedCasesService.cameFromFinalStep){
+      this.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
+      this.journeyPageNumber = LinkedCasesPages.CHECK_YOUR_ANSWERS;
+      this.caseEditDataService.setLinkedCasesJourneyAtFinalStep(true);
+    }
+
     this.multipageComponentStateService.isAtStart = this.journeyPageNumber === this.journeyStartPageNumber;
   }
 
   public onPageChange(): void {
     const isAtStart: boolean = this.journeyPageNumber === this.journeyStartPageNumber || this.linkedCasesPage === LinkedCasesPages.BEFORE_YOU_START;
-    this.multipageComponentStateService.isAtStart = isAtStart;  
+    this.multipageComponentStateService.isAtStart = isAtStart;
   }
 
   public initialiseCaseDetails(caseDetails: CaseView): void {
@@ -90,7 +96,6 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
   public onLinkedCasesStateEmitted(linkedCasesState: LinkedCasesState): void {
     // Clear validation errors
     this.caseEditDataService.clearFormValidationErrors();
-    
     if (linkedCasesState.navigateToNextPage) {
       this.linkedCasesPage = this.getNextPage(linkedCasesState);
       this.proceedToNextPage();
@@ -181,15 +186,19 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
         const caseLinkFieldValue = caseViewFiltered.map(filtered =>
           filtered.fields?.length > 0 && filtered.fields.filter(field => field.id === 'caseLinks')[0].value
         );
-        this.linkedCasesService.caseFieldValue = caseLinkFieldValue.length ? caseLinkFieldValue[0] : [];
-        this.linkedCasesService.getAllLinkedCaseInformation();
+        if (!this.linkedCasesService.caseFieldValue.length){
+          this.linkedCasesService.caseFieldValue = caseLinkFieldValue.length ? caseLinkFieldValue[0] : [];
+          this.linkedCasesService.getAllLinkedCaseInformation();
+        }
       }
       // Initialise the first page to display
-      this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger ||
+      if (!this.linkedCasesService.cameFromFinalStep){
+        this.linkedCasesPage = this.linkedCasesService.isLinkedCasesEventTrigger ||
         (this.linkedCasesService.caseFieldValue && this.linkedCasesService.caseFieldValue.length > 0
           && !this.linkedCasesService.serverLinkedApiError)
-        ? LinkedCasesPages.BEFORE_YOU_START
-        : LinkedCasesPages.NO_LINKED_CASES;
+          ? LinkedCasesPages.BEFORE_YOU_START
+          : LinkedCasesPages.NO_LINKED_CASES;
+      }
     });
   }
 
@@ -198,14 +207,23 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
   }
 
   public previousPage(): void {
-    if (this.linkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS) {
-      this.linkedCasesPage = LinkedCasesPages.LINK_CASE
-    } else if (this.linkedCasesPage === LinkedCasesPages.LINK_CASE) {
-      this.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
+    if (this.linkedCasesService.isLinkedCasesEventTrigger){
+      if (this.linkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS) {
+        this.linkedCasesPage = LinkedCasesPages.LINK_CASE
+      } else if (this.linkedCasesPage === LinkedCasesPages.LINK_CASE) {
+        this.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
+      } else {
+        this.linkedCasesPage --;
+      }
     } else {
-      this.linkedCasesPage --;
+      if (this.linkedCasesPage === LinkedCasesPages.UNLINK_CASE){
+        this.linkedCasesPage = this.linkedCasesPages.BEFORE_YOU_START;
+      } else if (this.linkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS) {
+        this.linkedCasesPage = this.linkedCasesPages.UNLINK_CASE;
+      } else {
+        this.linkedCasesPage --;
+      }
     }
-
     super.previousPage();
   }
 }

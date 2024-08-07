@@ -23,6 +23,7 @@ import { Wizard } from '../domain/wizard.model';
 import { PageValidationService } from '../services/page-validation.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { JourneyInstigator } from '../../../domain/journey';
+import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 
 @Component({
   selector: 'ccd-case-edit-page',
@@ -87,7 +88,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
     private readonly loadingService: LoadingService,
     private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
     private readonly multipageComponentStateService: MultipageComponentStateService,
-    private readonly addressService: AddressesService
+    private readonly addressService: AddressesService,
+    private readonly linkedCasesService: LinkedCasesService,
   ) {
     this.multipageComponentStateService.setInstigator(this);
   }
@@ -460,6 +462,9 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   public cancel(): void {
+    if (this.isLinkedCasesJourney()){
+      this.linkedCasesService.resetLinkedCaseData();
+    }
     if (this.eventTrigger.can_save_draft) {
       if (this.formValuesChanged) {
         const dialogRef = this.dialog.open(SaveOrDiscardDialogComponent, this.dialogConfig);

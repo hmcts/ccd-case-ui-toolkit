@@ -45,7 +45,6 @@ export abstract class AbstractJourneyComponent implements Journey {
       this.journeyPageNumber = this.journeyStartPageNumber;
 
       const state = this.multipageComponentStateService.getJourneyState(this);
-      console.log(this.journeyPageNumber);
       if (state) {
         const { journeyPageNumber, journeyStartPageNumber, journeyEndPageNumber } = state;
         this.journeyPageNumber = journeyPageNumber;

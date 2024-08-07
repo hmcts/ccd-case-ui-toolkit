@@ -25,6 +25,9 @@ export class LinkedCasesService {
   public serverLinkedApiError: { id: string, message: string } = null;
   public isServerReasonCodeError = false;
   public caseJurisdictionID = null;
+  public storedCaseNumber = '';
+  public cameFromFinalStep = false;
+  public hasNavigatedInJourney = false;
 
   constructor(private readonly jurisdictionService: JurisdictionService,
               private readonly searchService: SearchService) {
@@ -51,6 +54,14 @@ export class LinkedCasesService {
       },
       size,
     };
+  }
+
+  public resetLinkedCaseData(): void {
+    this.caseFieldValue = [];
+    this.linkedCases = [];
+    this.storedCaseNumber = '';
+    this.cameFromFinalStep = false;
+    this.hasNavigatedInJourney = false;
   }
 
   public mapResponse(esSearchCasesResponse): any {
@@ -85,7 +96,6 @@ export class LinkedCasesService {
             casesResponse.push(this.mapResponse(result));
           });
         });
-
         this.linkedCases = casesResponse.map(item => {
           return {
             caseReference: item.caseReference,
