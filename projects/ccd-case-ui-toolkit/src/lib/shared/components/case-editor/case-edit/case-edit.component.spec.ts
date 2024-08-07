@@ -20,6 +20,7 @@ import { WizardFactoryService } from '../services/wizard-factory.service';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { CaseEditComponent } from './case-edit.component';
 import createSpyObj = jasmine.createSpyObj;
+import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 
 describe('CaseEditComponent', () => {
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -330,6 +331,7 @@ describe('CaseEditComponent', () => {
             WindowService,
             { provide: LoadingService, loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
+            LinkedCasesService
           ]
         })
         .compileComponents();

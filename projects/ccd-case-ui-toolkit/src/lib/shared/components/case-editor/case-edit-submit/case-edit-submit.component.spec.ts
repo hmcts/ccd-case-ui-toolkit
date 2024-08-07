@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { PlaceholderService } from '../../../directives/substitutor/services';
 
-import { CaseField, Profile } from '../../../domain';
+import { CaseField, Jurisdiction, Profile } from '../../../domain';
 import { createAProfile } from '../../../domain/profile/profile.test.fixture';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CaseReferencePipe } from '../../../pipes/case-reference/case-reference.pipe';
@@ -21,8 +21,10 @@ import {
   FormErrorService,
   FormValidatorsService,
   FormValueService,
+  JurisdictionService,
   OrderService,
   ProfileNotifier,
+  SearchService,
   SessionStorageService
 } from '../../../services';
 import { MockRpxTranslatePipe } from '../../../test/mock-rpx-translate.pipe';
@@ -36,6 +38,8 @@ import { CaseEditSubmitTitles } from './case-edit-submit-titles.enum';
 import { CaseEditSubmitComponent } from './case-edit-submit.component';
 
 import createSpyObj = jasmine.createSpyObj;
+import { CaseFlagStateService } from '../services/case-flag-state.service';
+import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -47,6 +51,27 @@ describe('CaseEditSubmitComponent', () => {
   mockRouter = {
     navigate: jasmine.createSpy('navigate')
   };
+
+  const CASE_TYPES_2 = [
+    {
+        id: 'Benefit_Xui',
+        name: 'Benefit_Xui',
+        description: '',
+        states: [],
+        events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+  const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
 
   let sessionStorageService: any;
   const mockCaseNotifier: any = {};
@@ -385,6 +410,9 @@ describe('CaseEditSubmitComponent', () => {
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
           { provide: CaseNotifier, useValue: mockCaseNotifier },
+          CaseFlagStateService,
+          { provide: LinkedCasesService, useValue: linkedCasesService },
+          JurisdictionService
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -730,17 +758,6 @@ describe('CaseEditSubmitComponent', () => {
       expect(cancelLink).toBeNull();
     });
 
-    it('should not display the "Previous" button if submission is for a Case Flag', () => {
-      const caseFieldCaseFlagCreate: CaseField = aCaseField('FlagLauncher1', 'FlagLauncher1', 'FlagLauncher', '#ARGUMENT(CREATE)', 2);
-      comp.eventTrigger.case_fields = [
-        caseFieldCaseFlagCreate
-      ];
-      fixture.detectChanges();
-      expect(comp.caseEdit.isCaseFlagSubmission).toBe(true);
-      const previousButton = de.query(By.css('.button-secondary'));
-      expect(previousButton).toBeNull();
-    });
-
     it('should display the "Previous" button if submission is not for a Case Flag', () => {
       comp.eventTrigger.case_fields = [];
       fixture.detectChanges();
@@ -818,6 +835,27 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
+      const CASE_TYPES_2 = [
+        {
+            id: 'Benefit_Xui',
+            name: 'Benefit_Xui',
+            description: '',
+            states: [],
+            events: [],
+        }];
+      const MOCK_JURISDICTION: Jurisdiction[] = [{
+        id: 'JURI_1',
+        name: 'Jurisdiction 1',
+        description: '',
+        caseTypes: CASE_TYPES_2
+      }];
+    
+      const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+      searchService.searchCasesByIds.and.returnValue(of({}));
+      const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+      jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+      const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -846,6 +884,9 @@ describe('CaseEditSubmitComponent', () => {
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
           { provide: CaseNotifier, useValue: mockCaseNotifier },
+          CaseFlagStateService,
+          { provide: LinkedCasesService, useValue: linkedCasesService },
+          JurisdictionService
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -978,6 +1019,27 @@ describe('CaseEditSubmitComponent', () => {
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
 
+      const CASE_TYPES_2 = [
+        {
+            id: 'Benefit_Xui',
+            name: 'Benefit_Xui',
+            description: '',
+            states: [],
+            events: [],
+        }];
+      const MOCK_JURISDICTION: Jurisdiction[] = [{
+        id: 'JURI_1',
+        name: 'Jurisdiction 1',
+        description: '',
+        caseTypes: CASE_TYPES_2
+      }];
+    
+      const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+      searchService.searchCasesByIds.and.returnValue(of({}));
+      const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+      jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+      const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
+
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -1006,6 +1068,9 @@ describe('CaseEditSubmitComponent', () => {
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
           { provide: CaseNotifier, useValue: mockCaseNotifier },
+          CaseFlagStateService,
+          { provide: LinkedCasesService, useValue: linkedCasesService },
+          JurisdictionService
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);

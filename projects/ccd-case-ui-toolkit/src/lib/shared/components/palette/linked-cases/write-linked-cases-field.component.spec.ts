@@ -10,7 +10,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseView } from '../../../domain/case-view';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { Draft } from '../../../domain/draft.model';
-import { AddressesService, FieldsUtils, LoadingService, MultipageComponentStateService } from '../../../services';
+import { AddressesService, FieldsUtils, LoadingService, MultipageComponentStateService, RequestOptionsBuilder, SearchService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
@@ -30,6 +30,8 @@ import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.compo
 import createSpyObj = jasmine.createSpyObj;
 import { ServiceOrg } from '../../../domain/case-view/service-org-response.model';
 import { ValidPageListCaseFieldsService } from '../../case-editor/services/valid-page-list-caseFields.service';
+import { HttpService, JurisdictionService } from 'ccd-case-ui-toolkit';
+import { Jurisdiction } from '../../../domain/definition/jurisdiction.model';
 
 describe('WriteLinkedCasesFieldComponent', () => {
   let component: WriteLinkedCasesFieldComponent;
@@ -89,19 +91,40 @@ describe('WriteLinkedCasesFieldComponent', () => {
   const fieldUtils = new FieldsUtils();
   const validPageListCaseFieldsService = new ValidPageListCaseFieldsService(fieldUtils);
   const multipageComponentStateService = new MultipageComponentStateService();
+
+  const CASE_TYPES_2 = [
+    {
+        id: 'Benefit_Xui',
+        name: 'Benefit_Xui',
+        description: '',
+        states: [],
+        events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+
   caseEditPageComponent = new CaseEditPageComponent(caseEditComponentStub,
-    route, 
-    formValueService, 
-    formErrorService, 
-    null, 
-    pageValidationService, 
-    dialog, 
-    caseFieldService, 
-    new CaseEditDataService(), 
-    new LoadingService(), 
+    route,
+    formValueService,
+    formErrorService,
+    null,
+    pageValidationService,
+    dialog,
+    caseFieldService,
+    new CaseEditDataService(),
+    new LoadingService(),
     validPageListCaseFieldsService,
     multipageComponentStateService,
-    new AddressesService(null, null));
+    new AddressesService(null, null),
+    new LinkedCasesService(jurisdictionService as any, searchService));
   const caseInfo = {
     case_id: '1682374819203471',
     case_type: {
@@ -450,12 +473,14 @@ describe('WriteLinkedCasesFieldComponent', () => {
   });
 
   it('should set linkedCasesPage to LINK_CASE when on CHECK_YOUR_ANSWERS', () => {
+    spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
     component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
     component.previousPage();
     expect(component.linkedCasesPage).toEqual(LinkedCasesPages.LINK_CASE);
   });
 
   it('should set linkedCasesPage to BEFORE_YOU_START when on LINK_CASE', () => {
+    spyOn(linkedCasesService, 'isLinkedCasesEventTrigger').and.returnValue(true);
     component.linkedCasesPage = LinkedCasesPages.LINK_CASE;
     component.previousPage();
     expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);

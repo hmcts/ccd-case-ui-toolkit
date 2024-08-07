@@ -209,7 +209,7 @@ export class WriteLinkedCasesFieldComponent extends AbstractFieldWriteJourneyCom
   public previousPage(): void {
     if (this.linkedCasesService.isLinkedCasesEventTrigger){
       if (this.linkedCasesPage === LinkedCasesPages.CHECK_YOUR_ANSWERS) {
-        this.linkedCasesPage = LinkedCasesPages.LINK_CASE
+        this.linkedCasesPage = LinkedCasesPages.LINK_CASE;
       } else if (this.linkedCasesPage === LinkedCasesPages.LINK_CASE) {
         this.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START;
       } else {

@@ -29,6 +29,7 @@ import {
   DRAFT_PREFIX,
   FieldType,
   HttpError,
+  Jurisdiction,
 } from '../../../domain';
 import { aCaseField } from '../../../fixture/shared.test.fixture';
 import { CcdPageFieldsPipe } from '../../../pipes';
@@ -42,8 +43,10 @@ import {
   FieldTypeSanitiser,
   FormErrorService,
   FormValueService,
+  JurisdictionService,
   LoadingService,
   MultipageComponentStateService,
+  SearchService,
 } from '../../../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
 import { FieldsUtils } from '../../../services/fields/fields.utils';
@@ -59,6 +62,7 @@ import { CaseEditPageText } from './case-edit-page-text.enum';
 import { CaseEditPageComponent } from './case-edit-page.component';
 import { ShowCondition } from '../../../directives';
 import createSpyObj = jasmine.createSpyObj;
+import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
 
 describe('CaseEditPageComponent - creation and update event trigger tests', () => {
   let component: CaseEditPageComponent;
@@ -70,6 +74,27 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
   ]);
   const mockStore = jasmine.createSpyObj('Store', ['dispatch']);
 
+  const CASE_TYPES_2 = [
+    {
+        id: 'Benefit_Xui',
+        name: 'Benefit_Xui',
+        description: '',
+        states: [],
+        events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+  const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
+  
   const initializeComponent = ({
     caseEdit = {},
     formValueService = {},
@@ -83,7 +108,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     loadingService = {},
     validPageListCaseFieldsService = {},
     multipageComponentStateService = new MultipageComponentStateService(),
-    addressesService = {}
+    addressesService = {},
+    linkedCasesService = {}
   }) =>
   new CaseEditPageComponent(
     caseEdit as CaseEditComponent,
@@ -98,7 +124,8 @@ describe('CaseEditPageComponent - creation and update event trigger tests', () =
     loadingService as LoadingService,
     validPageListCaseFieldsService as ValidPageListCaseFieldsService,
     multipageComponentStateService as MultipageComponentStateService,
-    addressesService as AddressesService
+    addressesService as AddressesService,
+    linkedCasesService as LinkedCasesService
   );
 
   it('should create', () => {
@@ -406,6 +433,28 @@ describe('CaseEditPageComponent - all other tests', () => {
     ignore_warning: true,
   };
 
+  const CASE_TYPES_2 = [
+    {
+        id: 'Benefit_Xui',
+        name: 'Benefit_Xui',
+        description: '',
+        states: [],
+        events: [],
+    }];
+  const MOCK_JURISDICTION: Jurisdiction[] = [{
+    id: 'JURI_1',
+    name: 'Jurisdiction 1',
+    description: '',
+    caseTypes: CASE_TYPES_2
+  }];
+
+  const searchService = createSpyObj<SearchService>('SearchService', ['searchCases', 'searchCasesByIds', 'search']);
+  searchService.searchCasesByIds.and.returnValue(of({}));
+  const jurisdictionService = createSpyObj<JurisdictionService>('JurisdictionService', ['getJurisdictions']);
+  jurisdictionService.getJurisdictions.and.returnValue(of(MOCK_JURISDICTION));
+  const linkedCasesService = new LinkedCasesService(jurisdictionService, searchService);
+  
+
   describe('Save and Resume enabled', () => {
     const eventTrigger = {
       case_fields: [caseField1],
@@ -525,7 +574,9 @@ describe('CaseEditPageComponent - all other tests', () => {
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
             { provide: AddressesService, useValue: addressesServiceMock },
-            { provide: MultipageComponentStateService, useValue: multipageComponentStateService }
+            { provide: MultipageComponentStateService, useValue: multipageComponentStateService },
+            { provide: LinkedCasesService, useValue: linkedCasesService }
+
           ],
         }).compileComponents();
         fixture = TestBed.createComponent(CaseEditPageComponent);
@@ -922,7 +973,9 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: LinkedCasesService, useValue: linkedCasesService }
+
           ],
         }).compileComponents();
       })
@@ -1089,7 +1142,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: LinkedCasesService, useValue: linkedCasesService }
           ],
         }).compileComponents();
       })
@@ -1261,7 +1315,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: LinkedCasesService, useValue: linkedCasesService }
           ],
         }).compileComponents();
       })
@@ -1608,7 +1663,8 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock}
+            { provide: AddressesService, useValue: addressesServiceMock},
+            { provide: LinkedCasesService, useValue: linkedCasesService }
           ],
         }).compileComponents();
       })
@@ -1827,7 +1883,9 @@ describe('CaseEditPageComponent - all other tests', () => {
             PlaceholderService,
             { provide: LoadingService, useValue: loadingServiceMock },
             { provide: ValidPageListCaseFieldsService, useValue: validPageListCaseFieldsService},
-            { provide: AddressesService, useValue: addressesServiceMock }
+            { provide: AddressesService, useValue: addressesServiceMock },
+            { provide: LinkedCasesService, useValue: linkedCasesService }
+
           ],
         }).compileComponents();
       })
