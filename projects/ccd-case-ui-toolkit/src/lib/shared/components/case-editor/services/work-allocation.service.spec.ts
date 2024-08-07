@@ -221,7 +221,7 @@ describe('WorkAllocationService', () => {
 
     it('should call post with the correct parameters', () => {
       workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
-      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {});
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, { actionByEvent: true });
     });
 
     it('should set error service error when the call fails', (done) => {
@@ -255,7 +255,7 @@ describe('WorkAllocationService', () => {
 
     it('should call post with the correct parameters', () => {
       workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
-      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {completion_options: {assign_and_complete: true}});
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {completion_options: {assign_and_complete: true}, actionByEvent: true});
     });
 
     it('should set error service error when the call fails', (done) => {
