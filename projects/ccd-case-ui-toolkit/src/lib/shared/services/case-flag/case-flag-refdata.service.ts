@@ -24,31 +24,26 @@ export class CaseFlagRefdataService {
    */
   public getCaseFlagsRefdata(serviceId: string, flagType?: RefdataCaseFlagType, welshRequired?: boolean, externalFlagsOnly?: boolean): Observable<FlagType[]> {
     let url = this.appConfig.getCaseFlagsRefdataApiUrl();
-
     if (url) {
       url = url.replace(':sid', serviceId);
+      const requestSearchParams = new URLSearchParams();
       if (flagType) {
-        url += `?flag-type=${flagType}`;
+        requestSearchParams.set('flag-type', flagType);
       }
       if (typeof welshRequired === 'boolean') {
-        // Check if flag-type has been added to the query string; if so, append welsh-required with '&'
-        url.indexOf('?') > -1 ? url += '&' : url += '?';
-        welshRequired ? url += 'welsh-required=Y' : url += 'welsh-required=N';
+        const welshFlagValue = welshRequired ? 'Y' : 'N';
+        requestSearchParams.set('welsh-required', welshFlagValue);
       }
-
-      if (externalFlagsOnly) {
-        // Check if anything has been added to the query string; if so, append available-external-flag with '&'
-        url.indexOf('?') > -1 ? url += '&' : url += '?';
-        url += 'available-external-flag=Y';
-      }
-
+      const externalFlagsValue = externalFlagsOnly ? 'Y' : 'N';
+      requestSearchParams.set('available-external-flag', externalFlagsValue);
+      url = `${url}?${requestSearchParams.toString()}`;
       return this.http
-        .get(url, {observe: 'body'})
+        .get(url, { observe: 'body' })
         .pipe(
           // Reference Data Common API returns a single object with a "flags" array, which itself contains a single object
           // with a "FlagDetails" array, which contains a hierarchy of flag types in an object - one each for "Party" flags
           // and "Case" flags
-          map(body => {
+          map((body) => {
             if (!body || !body.flags || !body.flags.length || !body.flags[0].FlagDetails || !body.flags[0].FlagDetails.length) {
               // Note: Reference Data Common API appears to respond with a 404 error rather than send an empty response,
               // so this may be redundant

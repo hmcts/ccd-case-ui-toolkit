@@ -18,8 +18,8 @@ export class WriteDynamicRadioListFieldComponent extends AbstractFieldWriteCompo
       this.caseField.list_items = this.caseField.formatted_value.list_items;
     }
 
-    if (!this.caseField.value && this.caseField.formatted_value && this.caseField.formatted_value.value) {
-      this.caseField.value = this.caseField.formatted_value.value.code;
+    if (!this.caseField.value && this.caseField.formatted_value?.value) {
+      this.caseField.value = this.caseField.formatted_value.value?.code;
     }
 
     const isNull: boolean = this.caseField.value === undefined || this.caseField.value === '';
