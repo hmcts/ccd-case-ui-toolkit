@@ -10,7 +10,7 @@ import { CaseEventData } from '../../../domain/case-event-data.model';
 import { CaseView } from '../../../domain/case-view';
 import { CaseField } from '../../../domain/definition/case-field.model';
 import { Draft } from '../../../domain/draft.model';
-import { AddressesService, FieldsUtils, LoadingService, MultipageComponentStateService, RequestOptionsBuilder, SearchService } from '../../../services';
+import { AddressesService, FieldsUtils, LoadingService, MultipageComponentStateService, SearchService } from '../../../services';
 import { CaseFieldService } from '../../../services/case-fields/case-field.service';
 import { CommonDataService, LovRefDataByServiceModel } from '../../../services/common-data-service/common-data-service';
 import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser';
@@ -30,7 +30,7 @@ import { WriteLinkedCasesFieldComponent } from './write-linked-cases-field.compo
 import createSpyObj = jasmine.createSpyObj;
 import { ServiceOrg } from '../../../domain/case-view/service-org-response.model';
 import { ValidPageListCaseFieldsService } from '../../case-editor/services/valid-page-list-caseFields.service';
-import { HttpService, JurisdictionService } from 'ccd-case-ui-toolkit';
+import { JurisdictionService } from '../../../services/jurisdiction/jurisdiction.service';
 import { Jurisdiction } from '../../../domain/definition/jurisdiction.model';
 
 describe('WriteLinkedCasesFieldComponent', () => {
