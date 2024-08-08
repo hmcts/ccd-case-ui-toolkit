@@ -218,6 +218,7 @@ describe('WriteLinkedCasesFieldComponent', () => {
     isLinkedCasesEventTrigger: true,
     linkedCases,
     caseFieldValue: linkedCases,
+    cameFromFinalStep: false,
     getAllLinkedCaseInformation() { },
     getCaseName() { }
   };
@@ -484,5 +485,56 @@ describe('WriteLinkedCasesFieldComponent', () => {
     component.linkedCasesPage = LinkedCasesPages.LINK_CASE;
     component.previousPage();
     expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage to LINK_CASE when on CHECK_YOUR_ANSWERS and isLinkedCasesEventTrigger is true', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = true;
+    component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.LINK_CASE);
+  });
+
+  it('should set linkedCasesPage to BEFORE_YOU_START when on LINK_CASE and isLinkedCasesEventTrigger is true', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = true;
+    component.linkedCasesPage = LinkedCasesPages.LINK_CASE;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should decrement linkedCasesPage when not on CHECK_YOUR_ANSWERS or LINK_CASE and isLinkedCasesEventTrigger is true', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = true;
+    component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START + 1;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage to BEFORE_YOU_START when on UNLINK_CASE and isLinkedCasesEventTrigger is false', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = false;
+    component.linkedCasesPage = LinkedCasesPages.UNLINK_CASE;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage to UNLINK_CASE when on CHECK_YOUR_ANSWERS and isLinkedCasesEventTrigger is false', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = false;
+    component.linkedCasesPage = LinkedCasesPages.CHECK_YOUR_ANSWERS;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.UNLINK_CASE);
+  });
+
+  it('should decrement linkedCasesPage when not on CHECK_YOUR_ANSWERS or UNLINK_CASE and isLinkedCasesEventTrigger is false', () => {
+    linkedCasesService.isLinkedCasesEventTrigger = false;
+    component.linkedCasesPage = LinkedCasesPages.BEFORE_YOU_START + 1;
+    component.previousPage();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.BEFORE_YOU_START);
+  });
+
+  it('should set linkedCasesPage and journeyPageNumber to CHECK_YOUR_ANSWERS if cameFromFinalStep is true', () => {
+    linkedCasesService.cameFromFinalStep = true;
+    spyOn(caseEditDataService, 'setLinkedCasesJourneyAtFinalStep');
+    component.ngOnInit();
+    expect(component.linkedCasesPage).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
+    expect(component.journeyPageNumber).toEqual(LinkedCasesPages.CHECK_YOUR_ANSWERS);
+    expect(caseEditDataService.setLinkedCasesJourneyAtFinalStep).toHaveBeenCalledWith(true);
   });
 });

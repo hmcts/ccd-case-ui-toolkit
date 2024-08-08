@@ -187,6 +187,18 @@ describe('CheckYourAnswersComponent', () => {
     expect(changeLinkElement).toBeNull();
   });
 
+  it('should emit correct state and call super.next() when next is called', () => {
+    spyOn(component, 'next').and.callThrough();
+
+    component.next();
+
+    expect(component.linkedCasesStateEmitter.emit).toHaveBeenCalledWith({
+      currentLinkedCasesPage: LinkedCasesPages.CHECK_YOUR_ANSWERS,
+      navigateToPreviousPage: false,
+      navigateToNextPage: true
+    });
+  });
+
   it('should call next method', () => {
     spyOn(component, 'next');
 
