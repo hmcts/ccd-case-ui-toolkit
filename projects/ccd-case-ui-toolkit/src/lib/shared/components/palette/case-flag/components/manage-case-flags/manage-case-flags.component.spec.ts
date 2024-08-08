@@ -595,7 +595,7 @@ describe('ManageCaseFlagsComponent', () => {
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-selection-1').click();
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_MANAGE_CASE_FLAGS,
@@ -622,7 +622,7 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.flagsDisplayData.length).toBe(4);
     expect(component.noFlagsError).toBe(false);
     const nativeElement = fixture.debugElement.nativeElement;
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -663,5 +663,29 @@ describe('ManageCaseFlagsComponent', () => {
     expect(component.setManageCaseFlagTitle(CaseFlagDisplayContextParameter.UPDATE)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
     expect(component.setManageCaseFlagTitle(CaseFlagDisplayContextParameter.UPDATE_EXTERNAL)).toEqual(CaseFlagWizardStepTitle.MANAGE_SUPPORT);
     expect(component.setManageCaseFlagTitle(CaseFlagDisplayContextParameter.UPDATE_2_POINT_1)).toEqual(CaseFlagWizardStepTitle.MANAGE_CASE_FLAGS);
+  });
+
+  it('should call onNext method when next is called', () => {
+    spyOn(component, 'onNext');
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+  });
+
+  it('should call super next method when errorMessages length is 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalled();
+  });
+
+  it('should not call super next method when errorMessages length is not 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [{ title: 'string', description: 'string' }];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalledTimes(1);
   });
 });

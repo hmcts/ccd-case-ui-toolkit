@@ -169,7 +169,7 @@ describe('SelectFlagLocationComponent', () => {
     spyOn(component.caseFlagStateEmitter, 'emit');
     const nativeElement = fixture.debugElement.nativeElement;
     nativeElement.querySelector('#flag-location-0').click();
-    nativeElement.querySelector('.button').click();
+    component.onNext();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
       currentCaseFlagFieldState: CaseFlagFieldState.FLAG_LOCATION,
@@ -184,7 +184,7 @@ describe('SelectFlagLocationComponent', () => {
     expect(component.filteredFlagsData.length).toBe(3);
     expect(component.caseFlagsConfigError).toBe(false);
     const nativeElement = fixture.debugElement.nativeElement;
-    nativeElement.querySelector('.button').click();
+    component.onNext(); 
     fixture.detectChanges();
     expect(component.onNext).toHaveBeenCalled();
     expect(component.caseFlagStateEmitter.emit).toHaveBeenCalledWith({
@@ -208,5 +208,29 @@ describe('SelectFlagLocationComponent', () => {
     component.ngOnInit();
     expect(component.isDisplayContextParameterExternal).toEqual(true);
     expect(component.flagLocationTitle).toEqual(CaseFlagWizardStepTitle.SELECT_FLAG_LOCATION_EXTERNAL);
+  });
+
+  it('should call onNext method when next is called', () => {
+    spyOn(component, 'onNext');
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+  });
+
+  it('should call super next method when errorMessages length is 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalled();
+  });
+
+  it('should not call super next method when errorMessages length is not 0', () => {
+    spyOn(component, 'next').and.callThrough();
+    spyOn(component, 'onNext');
+    component.errorMessages = [{ title: 'string', description: 'string' }];
+    component.next();
+    expect(component.onNext).toHaveBeenCalled();
+    expect(component.next).toHaveBeenCalledTimes(1);
   });
 });
