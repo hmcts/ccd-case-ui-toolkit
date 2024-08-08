@@ -40,6 +40,7 @@ import { CaseEditSubmitComponent } from './case-edit-submit.component';
 import createSpyObj = jasmine.createSpyObj;
 import { CaseFlagStateService } from '../services/case-flag-state.service';
 import { LinkedCasesService } from '../../palette/linked-cases/services/linked-cases.service';
+import exp from 'constants';
 
 describe('CaseEditSubmitComponent', () => {
 
@@ -343,7 +344,9 @@ describe('CaseEditSubmitComponent', () => {
     ];
     const firstPage = pages[0];
     const wizard: Wizard = new Wizard(pages);
-    beforeEach(() => {
+    let caseFlagStateService: CaseFlagStateService;
+    let caseFlagStateServiceSpy: jasmine.SpyObj<CaseFlagStateService>;
+      beforeEach(() => {
       orderService = new OrderService();
       spyOn(orderService, 'sort').and.callThrough();
 
@@ -378,9 +381,12 @@ describe('CaseEditSubmitComponent', () => {
       profileNotifier.profile = new BehaviorSubject(createAProfile()).asObservable();
       profileNotifierSpy = spyOn(profileNotifier, 'announceProfile').and.callThrough();
 
+      caseFlagStateServiceSpy = jasmine.createSpyObj('CaseFlagStateService', ['resetCache']);
+      caseFlagStateServiceSpy.formGroup = FORM_GROUP;
+      caseFlagStateServiceSpy.fieldStateToNavigate = 5;
+
       sessionStorageService = createSpyObj<SessionStorageService>('sessionStorageService', ['getItem', 'removeItem']);
       sessionStorageService.getItem.and.returnValue(null);
-
       TestBed.configureTestingModule({
         declarations: [
           CaseEditSubmitComponent,
@@ -410,9 +416,9 @@ describe('CaseEditSubmitComponent', () => {
           { provide: Router, useValue: mockRouter },
           PlaceholderService,
           { provide: CaseNotifier, useValue: mockCaseNotifier },
-          CaseFlagStateService,
           { provide: LinkedCasesService, useValue: linkedCasesService },
-          JurisdictionService
+          JurisdictionService,
+          { provide: CaseFlagStateService, useValue: caseFlagStateServiceSpy }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(CaseEditSubmitComponent);
@@ -470,6 +476,38 @@ describe('CaseEditSubmitComponent', () => {
 
       expect(comp.navigateToPage).toHaveBeenCalled();
       expect(caseEditComponent.navigateToPage).toHaveBeenCalled();
+    });
+
+    it('should return lastPageShown and set the fieldStateToNavigate', () => {
+      spyOn(comp, 'navigateToPage').and.callThrough();
+      spyOn(caseEditComponent, 'isCaseFlagSubmission').and.returnValue(true);
+      caseFlagStateServiceSpy.lastPageFieldState = 1;
+      comp.previous();
+
+      expect(caseFlagStateServiceSpy.fieldStateToNavigate).toEqual(1);
+      expect(comp.navigateToPage).toHaveBeenCalled();
+      expect(caseEditComponent.navigateToPage).toHaveBeenCalled();
+    });
+
+    it('should return lastPageShown and set cameFromFinalStep if in linkedCaseSubmission', () => {
+      spyOn(comp, 'navigateToPage').and.callThrough();
+      spyOn(caseEditComponent, 'isCaseFlagSubmission').and.returnValue(true);
+      caseEditComponent.isLinkedCasesSubmission = true;
+      comp.previous();
+
+      expect(linkedCasesService.cameFromFinalStep).toBeTruthy();
+      expect(comp.navigateToPage).toHaveBeenCalled();
+      expect(caseEditComponent.navigateToPage).toHaveBeenCalled();
+    });
+
+    it('should reset the linkedCasesService values on cancel', () => {
+      spyOn(comp, 'navigateToPage').and.callThrough();
+      spyOn(caseEditComponent, 'isCaseFlagSubmission').and.returnValue(true);
+      spyOn(linkedCasesService, 'resetLinkedCaseData').and.callThrough();
+      caseEditComponent.isLinkedCasesSubmission = true;
+      comp.cancel();
+
+      expect(linkedCasesService.resetLinkedCaseData).toHaveBeenCalled();
     });
 
     it('should return false when no field exists and checkYourAnswerFieldsToDisplayExists is called', () => {
