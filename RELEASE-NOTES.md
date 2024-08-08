@@ -1,7 +1,16 @@
 ## RELEASE NOTES
 
+### Version 7.0.55
+**EXUI-1775** Refdata intend to change
+
+### Version 7.0.54
+**EXUI-2085** Add Task completion logs in app insight
+
 ### Version 7.0.53
 **EXUI-1540** revert this change
+
+### Version 7.0.52
+**EXUI-1117** Improve robustness to malformed dynamic list data
 
 ### Version 7.0.51
 **EXUI-2051** Unable to Add documents
