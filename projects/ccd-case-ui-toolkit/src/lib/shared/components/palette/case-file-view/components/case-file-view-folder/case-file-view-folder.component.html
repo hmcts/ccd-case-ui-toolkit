@@ -36,7 +36,7 @@
           <span class="node__name node-name-document">
             {{node.name}}
             <br>
-            <span class="node__document-upload-timestamp">{{node.upload_timestamp | date:"dd MMM YYYY HH:mm"}}</span>
+            <span class="node__document-upload-timestamp">{{node.upload_timestamp | ccdDate : 'local' | date:"dd MMM YYYY HH:mm"}}</span>
           </span>
           <div class="node__document-options">
             <ccd-case-file-view-folder-document-actions
