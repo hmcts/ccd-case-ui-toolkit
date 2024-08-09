@@ -96,7 +96,7 @@ describe('Case Flag Refdata Service', () => {
       next: flagTypes => expect(flagTypes).toEqual(dummyFlagsData.flags[0].FlagDetails)
     });
 
-    const req = httpMock.expectOne(caseFlagsRefdataApiUrl.replace(':sid', 'BBA3'));
+    const req = httpMock.expectOne(caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')+'?available-external-flag=N');
     expect(req.request.method).toEqual('GET');
     req.flush(dummyFlagsData);
   });
@@ -106,7 +106,7 @@ describe('Case Flag Refdata Service', () => {
       next: flagTypes => expect(flagTypes).toEqual(dummyFlagsData.flags[0].FlagDetails)
     });
 
-    const req = httpMock.expectOne(`${caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')}?flag-type=${RefdataCaseFlagType.PARTY}`);
+    const req = httpMock.expectOne(`${caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')}?flag-type=${RefdataCaseFlagType.PARTY}&available-external-flag=N`);
     expect(req.request.method).toEqual('GET');
     req.flush(dummyFlagsData);
   });
@@ -117,7 +117,7 @@ describe('Case Flag Refdata Service', () => {
     });
 
     const req = httpMock.expectOne(
-      `${caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')}?flag-type=${RefdataCaseFlagType.PARTY}&welsh-required=Y`);
+      `${caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')}?flag-type=${RefdataCaseFlagType.PARTY}&welsh-required=Y&available-external-flag=N`);
     expect(req.request.method).toEqual('GET');
     req.flush(dummyFlagsData);
   });
@@ -127,7 +127,7 @@ describe('Case Flag Refdata Service', () => {
       next: flagTypes => expect(flagTypes).toEqual(dummyFlagsData.flags[0].FlagDetails)
     });
 
-    const req = httpMock.expectOne(`${caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')}?welsh-required=N`);
+    const req = httpMock.expectOne(`${caseFlagsRefdataApiUrl.replace(':sid', 'BBA3')}?welsh-required=N&available-external-flag=N`);
     expect(req.request.method).toEqual('GET');
     req.flush(dummyFlagsData);
   });

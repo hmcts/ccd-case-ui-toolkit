@@ -237,6 +237,25 @@
 **EXUI-1000** Complex type not showing data
 **EXUI-1006** Case Flags stopped working
 
+### Version 7.0.55
+**EXUI-1775** Refdata intend to change
+
+### Version 7.0.54
+**EXUI-2085** Add Task completion logs in app insight
+
+### Version 7.0.53
+**EXUI-1540** revert this change
+
+### Version 7.0.52
+**EXUI-1117** Improve robustness to malformed dynamic list data
+
+### Version 7.0.51
+**EXUI-2051** Unable to Add documents
+
+### Version 7.0.50
+**EXUI-1298** MC - (Level-A) : DAC_No_Accessible_Name_01
+**EXUI-1540** Accessibilty issues
+
 ### Version 7.0.49
 **EXUI-1538** MC - (Level-A) : DAC_Tables_01
 **EXUI-1539** MC - (Level-A) : DAC_Sortable_Tables_01
