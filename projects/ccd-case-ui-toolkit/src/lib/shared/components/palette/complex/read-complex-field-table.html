@@ -1,6 +1,6 @@
 <div class="complex-panel">
-  <dl class="complex-panel-title"><dt><span id="complex-table" class="text-16">{{caseField.label | rpxTranslate}}</span></dt><dd></dd></dl>
-  <table id="complex" class="complex-panel-table" aria-describedby="complex-table">
+  <dl class="complex-panel-title"><dt><span id="{{caseField.id}}" class="text-16">{{caseField.label | rpxTranslate}}</span></dt><dd></dd></dl>
+  <table class="complex-panel-table" [attr.aria-describedby]="caseField.id">
     <tbody>
       <ng-container *ngFor="let field of caseField | ccdReadFieldsFilter:false :undefined :true :topLevelFormGroup: undefined :idPrefix">
         <ng-container *ngIf="(field | ccdIsCompound); else SimpleRow">
