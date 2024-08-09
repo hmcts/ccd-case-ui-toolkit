@@ -218,9 +218,11 @@ export class AppMockConfig implements AbstractAppConfig {
   public getEnableCaseFileViewVersion1_1(): boolean {
     return true;
   }
+
   public getIcpEnable(): boolean {
     return false;
   }
+
   public getIcpJurisdictions(): string[] {
     return ['', ''];
   }

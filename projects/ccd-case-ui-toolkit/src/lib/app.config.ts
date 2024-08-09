@@ -194,4 +194,5 @@ export class CaseEditorConfig {
   public enable_case_file_view_version_1_1: boolean;
   public icp_enabled: boolean;
   public icp_jurisdictions: string[];
+  public events_to_hide: string[];
 }
