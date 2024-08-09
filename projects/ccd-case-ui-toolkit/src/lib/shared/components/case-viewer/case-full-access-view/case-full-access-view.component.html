@@ -76,7 +76,7 @@ aria-labelledby="edit-case-event_error-summary-heading" tabindex="-1">
                       </th>
                       <td [id]="'case-viewer-field-read--' + field.id" scope="col">
                         <span class="text-16">
-                          <ccd-field-read [topLevelFormGroup]="formGroup.controls['data']"
+                          <ccd-field-read [topLevelFormGroup]="formGroup?.controls['data']"
                                           [caseField]="field" [caseReference]="caseDetails.case_id"
                                           [markdownUseHrefAsRouterLink]="markdownUseHrefAsRouterLink">
                           </ccd-field-read>
