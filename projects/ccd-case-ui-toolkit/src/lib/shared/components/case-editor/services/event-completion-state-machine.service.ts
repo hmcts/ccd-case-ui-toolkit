@@ -79,7 +79,7 @@ export class EventCompletionStateMachineService {
   }
 
   public entryActionForStateCheckTasksCanBeCompleted(state: State, context: EventCompletionStateMachineContext): void {
-    context.workAllocationService.getTask(context.task.id).subscribe(
+    context.workAllocationService.getTask(context?.task?.id).subscribe(
       taskResponse => {
         if (taskResponse && taskResponse.task && taskResponse.task.task_state) {
           switch (taskResponse.task.task_state.toUpperCase()) {

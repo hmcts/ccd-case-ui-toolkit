@@ -28,3 +28,7 @@ export interface CaseQueriesCollection {
   roleOnCase: string;
   caseMessages: QueryMessage[];
 }
+
+export interface QmCaseQueriesCollection {
+  qmCaseQueriesCollection: CaseQueriesCollection
+}

@@ -43,4 +43,9 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     this.showQueryList = false;
     this.query = query;
   }
+
+  public backToQueryListPage(): void {
+    this.showQueryList = true;
+    this.query = null;
+  }
 }

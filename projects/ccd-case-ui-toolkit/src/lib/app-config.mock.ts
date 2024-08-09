@@ -207,6 +207,10 @@ export class AppMockConfig implements AbstractAppConfig {
     return '';
   }
 
+  public getEventsToHide(): string[] {
+    return [];
+  }
+
   public getEnableRestrictedCaseAccessConfig(): boolean {
     return true;
   }
@@ -214,9 +218,11 @@ export class AppMockConfig implements AbstractAppConfig {
   public getEnableCaseFileViewVersion1_1(): boolean {
     return true;
   }
+
   public getIcpEnable(): boolean {
     return false;
   }
+
   public getIcpJurisdictions(): string[] {
     return ['', ''];
   }
