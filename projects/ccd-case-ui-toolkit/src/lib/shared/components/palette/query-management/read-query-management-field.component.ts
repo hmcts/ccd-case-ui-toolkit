@@ -31,8 +31,8 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
       // Each parties will have a separate collection of party messages
       // Find whether queries tab is available in the case data
       const queriesTab = (this.route.snapshot.data.case.tabs as CaseTab[])
-        .filter(tab => tab.fields && tab.fields
-        .some(caseField => caseField.id === 'QueryManagement'));
+        .filter((tab) => tab.fields && tab.fields
+          .some((caseField) => caseField.id === 'QueryManagement'));
 
       // Loop through the list of parties and their case queries collections
       QueryManagementUtils.extractCaseQueriesFromCaseField();
