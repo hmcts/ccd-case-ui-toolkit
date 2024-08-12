@@ -60,7 +60,7 @@
         <mat-tab *ngFor="let tab of sortedTabs; let curIdx=index" [id]="tab.id" [label]="tab.label | rpxTranslate">
           <ng-template matTabContent>
             <div class="hide-table-capion" id="table_caption">{{tab.label | rpxTranslate}}</div>
-            <table class="olaaa" [class]="tab.id" aria-labelledby="table_caption">
+            <table [class]="tab.id" aria-labelledby="table_caption">
               <tbody>
 
                 <ng-container
