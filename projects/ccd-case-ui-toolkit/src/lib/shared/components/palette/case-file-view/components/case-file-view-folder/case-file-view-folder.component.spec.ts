@@ -8,7 +8,7 @@ import { plainToClass } from 'class-transformer';
 import { of } from 'rxjs';
 import { AbstractAppConfig } from '../../../../../../app.config';
 import { CaseFileViewSortColumns, DocumentTreeNode, DocumentTreeNodeType } from '../../../../../domain/case-file-view';
-import { DocumentManagementService, WindowService } from '../../../../../services';
+import { DocumentManagementService, FormatTranslatorService, WindowService } from '../../../../../services';
 import { mockDocumentManagementService } from '../../../../../services/document-management/document-management.service.mock';
 import { categoriesAndDocumentsTestData } from '../../test-data/categories-and-documents-test-data';
 import {
@@ -20,6 +20,7 @@ import {
 } from '../../test-data/document-tree-node-test-data';
 import { CaseFileViewFolderComponent, MEDIA_VIEWER_LOCALSTORAGE_KEY } from './case-file-view-folder.component';
 import createSpyObj = jasmine.createSpyObj;
+import { DatePipe } from '../../../utils'
 
 describe('CaseFileViewFolderComponent', () => {
   let component: CaseFileViewFolderComponent;
@@ -66,12 +67,14 @@ describe('CaseFileViewFolderComponent', () => {
         MatDialogModule
       ],
       declarations: [
-        CaseFileViewFolderComponent
+        CaseFileViewFolderComponent,
+        DatePipe
       ],
       providers: [
         { provide: WindowService, useValue: mockWindowService },
         { provide: DocumentManagementService, useValue: mockDocumentManagementService },
-        { provide: AbstractAppConfig, useValue: mockAppConfig }
+        { provide: AbstractAppConfig, useValue: mockAppConfig },
+        FormatTranslatorService
       ]
     }).compileComponents();
 
