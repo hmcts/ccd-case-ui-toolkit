@@ -39,6 +39,7 @@ export interface EventDetails {
   eventId: string;
   caseId: string;
   userId: string;
+  assignNeeded?: string;
 }
 
 export enum Permissions {

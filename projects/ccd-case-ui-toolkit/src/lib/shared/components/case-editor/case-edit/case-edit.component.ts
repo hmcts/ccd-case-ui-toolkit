@@ -246,6 +246,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const taskStr = this.sessionStorageService.getItem('taskToComplete');
     const taskEventCompletionStr = this.sessionStorageService.getItem('taskEventCompletionInfo');
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    const assignNeeded = this.sessionStorageService.getItem('assignNeeded');
     if (taskStr) {
       taskInSessionStorage = JSON.parse(taskStr);
     }
@@ -258,7 +259,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
     const userId = userInfo.uid;
-    const eventDetails: EventDetails = {eventId, caseId, userId};
+    const eventDetails: EventDetails = {eventId, caseId, userId, assignNeeded};
     if (this.taskExistsForThisEvent(taskInSessionStorage, taskEventCompletionInfo, eventDetails)) {
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
@@ -541,6 +542,11 @@ export class CaseEditComponent implements OnInit, OnDestroy {
         this.sessionStorageService.removeItem('taskToComplete');
         this.sessionStorageService.removeItem('taskEventCompletionInfo');
         return false;
+      }
+      if (eventDetails.assignNeeded === 'false' && eventDetails.userId !== taskInSessionStorage.assignee) {
+        // if the user does not match task assignee, assign is now needed
+        // data cannot be deleted and ignored as it matches understanding
+        this.sessionStorageService.setItem('assignNeeded', 'true');
       }
       return true;
     }
