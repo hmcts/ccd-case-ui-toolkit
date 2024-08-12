@@ -1,6 +1,6 @@
 ## RELEASE NOTES
 
-### Version 7.0.56
+### Version 7.0.56 
 **EXUI-2224** 'Go' button doesn't re-activate
 
 ### Version 7.0.55
