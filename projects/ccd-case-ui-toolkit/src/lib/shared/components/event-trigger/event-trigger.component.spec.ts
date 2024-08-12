@@ -154,6 +154,7 @@ describe('EventTriggerComponent', () => {
       fixture.detectChanges();
 
       expect(component.onTriggerChange.emit).toHaveBeenCalled();
+      expect(component.isDisabled).toBeFalsy();
     });
 
     it('should disable button when form is not valid', () => {
