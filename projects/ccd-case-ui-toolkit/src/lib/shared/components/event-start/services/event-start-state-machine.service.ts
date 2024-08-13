@@ -195,7 +195,7 @@ export class EventStartStateMachineService {
     const taskEventCompletionInfo: TaskEventCompletionInfo = {
       caseId: context.caseId,
       eventId: context.eventId,
-      userId: userInfo.uid,
+      userId: userInfo.id ? userInfo.id : userInfo.uid,
       taskId: task.id,
       createdTimestamp: Date.now()};
     context.sessionStorageService.setItem('taskEventCompletionInfo', JSON.stringify(taskEventCompletionInfo));
