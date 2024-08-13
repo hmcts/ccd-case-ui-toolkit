@@ -258,7 +258,7 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     }
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
-    const userId = userInfo.uid;
+    const userId = userInfo.uid ? userInfo.uid : userInfo.id;
     const eventDetails: EventDetails = {eventId, caseId, userId, assignNeeded};
     if (this.taskExistsForThisEvent(taskInSessionStorage, taskEventCompletionInfo, eventDetails)) {
       // Show event completion component to perform event completion checks
