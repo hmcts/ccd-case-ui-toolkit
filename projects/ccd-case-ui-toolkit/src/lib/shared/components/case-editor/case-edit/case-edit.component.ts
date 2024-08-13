@@ -476,10 +476,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
     if (taskStr && assignNeeded) {
       const task: Task = JSON.parse(taskStr);
-      return this.workAllocationService.assignAndCompleteTask(task.id);
+      return this.workAllocationService.assignAndCompleteTask(task.id, this.eventTrigger.name);
     } else if (taskStr) {
       const task: Task = JSON.parse(taskStr);
-      return this.workAllocationService.completeTask(task.id);
+      return this.workAllocationService.completeTask(task.id, this.eventTrigger.name);
     }
     return of(true);
   }
