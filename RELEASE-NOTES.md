@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.56 
+**EXUI-2224** 'Go' button doesn't re-activate
+
 ### Version 7.0.55
 **EXUI-1775** Refdata intend to change
 
