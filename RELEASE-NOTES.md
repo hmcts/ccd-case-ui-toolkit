@@ -1,6 +1,9 @@
 ## RELEASE NOTES
 
-### Version 7.0.56
+### Version 7.0.57 
+**EXUI-2209** MV Upgrade to v4.0.7
+
+### Version 7.0.56 
 **EXUI-2224** 'Go' button doesn't re-activate
 
 ### Version 7.0.55
