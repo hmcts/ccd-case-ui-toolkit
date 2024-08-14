@@ -25,7 +25,7 @@ export class EventStartGuard implements CanActivate {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo = JSON.parse(userInfoStr);
-      userId = userInfo?.uid ? userInfo.uid : null;
+      userId = userInfo.id ? userInfo.id : userInfo.uid;
     }
     const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
     if (caseInfoStr) {
