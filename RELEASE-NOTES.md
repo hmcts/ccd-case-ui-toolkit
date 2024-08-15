@@ -1,5 +1,9 @@
 ## RELEASE NOTES
 
+### Version 7.0.58 
+**EXUI-1270** Accessibility Issue
+**EXUI-1504** Accessibility Issue
+
 ### Version 7.0.57 
 **EXUI-2209** MV Upgrade to v4.0.7
 
