@@ -25,7 +25,7 @@ export const aleEncyclopedia = {
   document_filename: 'Ale encyclopedia',
   document_binary_url: '/test/binary',
   attribute_path: '',
-  upload_timestamp: '12 Mar 2023 00:00:00'
+  upload_timestamp: '12 Mar 2023 01:23:01'
 };
 
 export const whiskyHighland = {
