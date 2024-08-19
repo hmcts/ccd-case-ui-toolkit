@@ -98,14 +98,14 @@ export class WorkAllocationService {
    * Call the API to complete a task.
    * @param taskId specifies which task should be completed.
    */
-  public completeTask(taskId: string): Observable<any> {
+  public completeTask(taskId: string, eventName?: string): Observable<any> {
     if (!this.isWAEnabled()) {
       return of(null);
     }
     console.log(`completeTask: completing ${taskId}`);
     const url = `${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}/complete`;
     return this.http
-      .post(url, { actionByEvent: true })
+      .post(url, { actionByEvent: true, eventName: eventName })
       .pipe(
         catchError(error => {
           this.errorService.setError(error);
@@ -122,7 +122,7 @@ export class WorkAllocationService {
    * Call the API to assign and complete a task.
    * @param taskId specifies which task should be completed.
    */
-  public assignAndCompleteTask(taskId: string): Observable<any> {
+  public assignAndCompleteTask(taskId: string, eventName?: string): Observable<any> {
     if (!this.isWAEnabled()) {
       return of(null);
     }
@@ -132,7 +132,8 @@ export class WorkAllocationService {
         completion_options: {
           assign_and_complete: true
         },
-        actionByEvent: true
+        actionByEvent: true,
+        eventName: eventName
       })
       .pipe(
         catchError(error => {
@@ -196,7 +197,7 @@ export class WorkAllocationService {
           const tasks: any[] = response.tasks;
           if (tasks && tasks.length > 0) {
             if (tasks.length === 1) {
-              this.completeTask(tasks[0].id).subscribe();
+              this.completeTask(tasks[0].id, eventId).subscribe();
             } else {
               // This is a problem. Throw an appropriate error.
               throw new Error(MULTIPLE_TASKS_FOUND);
