@@ -50,6 +50,9 @@ export class WorkAllocationService {
         })
       );
   }
+  private isWAEnabled1(jurisdiction?: string, caseType?: string): boolean {
+    return false;
+  }
 
   private isWAEnabled(jurisdiction?: string, caseType?: string): boolean {
     this.features = this.appConfig.getWAServiceConfig();
@@ -220,7 +223,8 @@ export class WorkAllocationService {
       task_required_for_event: false,
       tasks: []
     };
-    if (!this.isWAEnabled()) {
+    if (!this.isWAEnabled1()) {
+      this.appConfig.logMessage('search for completable call missing.');
       return of(defaultPayload);
     }
     return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/case/tasks/${caseId}/event/${eventId}/caseType/${caseType}/jurisdiction/${jurisdiction}`);
