@@ -23,6 +23,7 @@ import { Confirmation, Wizard, WizardPage } from '../domain';
 import { EventCompletionParams } from '../domain/event-completion-params.model';
 import { CaseNotifier, WizardFactoryService, WorkAllocationService } from '../services';
 import { ValidPageListCaseFieldsService } from '../services/valid-page-list-caseFields.service';
+import { AbstractAppConfig } from '../../../../app.config';
 
 @Component({
   selector: 'ccd-case-edit',
@@ -103,7 +104,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     private readonly loadingService: LoadingService,
     private readonly validPageListCaseFieldsService: ValidPageListCaseFieldsService,
     private readonly workAllocationService: WorkAllocationService,
-    private readonly alertService: AlertService
+    private readonly alertService: AlertService,
+    private readonly abstractConfig: AbstractAppConfig
   ) {}
 
   public ngOnInit(): void {
@@ -252,6 +254,8 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
     if (this.taskExistsForThisEventAndCase(taskInSessionStorage, taskEventInSessionStorage, eventId, caseId)) {
+      console.log(`task exist for this event for caseId and eventId as ${caseId} ${eventId}`);
+      this.abstractConfig.logMessage(`task exist for this event for caseId and eventId as ${caseId} ${eventId}`);
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
         caseId,
@@ -476,9 +480,13 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
     if (taskStr && assignNeeded) {
       const task: Task = JSON.parse(taskStr);
+      console.log(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger.name}`);
+      this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       return this.workAllocationService.assignAndCompleteTask(task.id, this.eventTrigger.name);
     } else if (taskStr) {
       const task: Task = JSON.parse(taskStr);
+      console.log(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger.name}`);
+      this.abstractConfig.logMessage(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       return this.workAllocationService.completeTask(task.id, this.eventTrigger.name);
     }
     return of(true);
