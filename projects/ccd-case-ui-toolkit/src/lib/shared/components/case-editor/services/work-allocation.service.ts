@@ -50,15 +50,12 @@ export class WorkAllocationService {
         })
       );
   }
-  private isWAEnabled1(jurisdiction?: string, caseType?: string): boolean {
-    return false;
-  }
 
   private isWAEnabled(jurisdiction?: string, caseType?: string): boolean {
     this.features = this.appConfig.getWAServiceConfig();
     const ftstr = JSON.stringify(this.features);
-    console.log(`isWAEnabled: wa-service-config returning ${ftstr.length > 0}`);
-    this.appConfig.logMessage(`isWAEnabled: ${ftstr}`);
+    console.log(`isWAEnabled: ${ftstr}`);
+    this.appConfig.logMessage(`isWAEnabled: wa-service-config returning ${ftstr.length > 0}`);
     let enabled = false;
     if (!jurisdiction || !caseType) {
       const caseInfo = JSON.parse(this.sessionStorageService.getItem('caseInfo'));
@@ -77,7 +74,6 @@ export class WorkAllocationService {
     });
     console.log(`isWAEnabled: returning ${enabled}`);
     this.appConfig.logMessage(`isWAEnabled: returning ${enabled}`);
-
     return enabled;
   }
 
@@ -230,7 +226,6 @@ export class WorkAllocationService {
       tasks: []
     };
     if (!this.isWAEnabled()) {
-      console.log(`search for completable call missed for ${caseId} in event ${eventId}`);
       this.appConfig.logMessage(`search for completable call missed for ${caseId} in event ${eventId}`);
       return of(defaultPayload);
     }
@@ -244,7 +239,6 @@ export class WorkAllocationService {
   if (!this.isWAEnabled()) {
     return of({task: null});
   }
-  console.log(`getTask: ${taskId}`);
   this.appConfig.logMessage(`getTask: ${taskId}`);
   return this.http.get(`${this.appConfig.getWorkAllocationApiUrl()}/task/${taskId}`);
  }

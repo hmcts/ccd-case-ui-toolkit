@@ -254,7 +254,6 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const eventId = this.getEventId(form);
     const caseId = this.getCaseId(caseDetails);
     if (this.taskExistsForThisEventAndCase(taskInSessionStorage, taskEventInSessionStorage, eventId, caseId)) {
-      console.log(`task exist for this event for caseId and eventId as ${caseId} ${eventId}`);
       this.abstractConfig.logMessage(`task exist for this event for caseId and eventId as ${caseId} ${eventId}`);
       // Show event completion component to perform event completion checks
       this.eventCompletionParams = ({
@@ -480,12 +479,10 @@ export class CaseEditComponent implements OnInit, OnDestroy {
     const assignNeeded = this.sessionStorageService.getItem('assignNeeded') === 'true';
     if (taskStr && assignNeeded) {
       const task: Task = JSON.parse(taskStr);
-      console.log(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       this.abstractConfig.logMessage(`postCompleteTaskIfRequired with assignNeeded: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       return this.workAllocationService.assignAndCompleteTask(task.id, this.eventTrigger.name);
     } else if (taskStr) {
       const task: Task = JSON.parse(taskStr);
-      console.log(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       this.abstractConfig.logMessage(`postCompleteTaskIfRequired: taskId ${task.id} and event name ${this.eventTrigger.name}`);
       return this.workAllocationService.completeTask(task.id, this.eventTrigger.name);
     }
