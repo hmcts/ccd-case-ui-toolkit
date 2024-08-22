@@ -195,7 +195,7 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
   }
 
   public onPageChange(): void {
-    this.multipageComponentStateService.isAtStart = this.journeyPageNumber === this.journeyStartPageNumber;
+    this.multipageComponentStateService.isAtStart = this.fieldState === this.caseFlagFieldState.FLAG_LOCATION;
   }
 
   public setDisplayContextParameterUpdate(displayContextParameter: string): boolean {
@@ -296,7 +296,6 @@ export class WriteCaseFlagFieldComponent extends AbstractFieldWriteJourneyCompon
     } else if (this.hasPrevious()) {
       this.fieldState--;
     }
-    
     super.previousPage();
   }
 
