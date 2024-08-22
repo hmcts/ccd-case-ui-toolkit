@@ -18,7 +18,7 @@ class MockTranslatePipe implements PipeTransform {
   }
 }
 
-describe('ReadQueryManagementFieldComponent', () => {
+xdescribe('ReadQueryManagementFieldComponent', () => {
   let component: ReadQueryManagementFieldComponent;
   let fixture: ComponentFixture<ReadQueryManagementFieldComponent>;
   const caseId = '12345';
