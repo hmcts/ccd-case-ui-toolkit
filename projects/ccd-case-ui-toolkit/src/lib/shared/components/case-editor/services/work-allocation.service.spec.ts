@@ -104,6 +104,7 @@ describe('WorkAllocationService', () => {
   const TASK_SEARCH_URL = `${API_URL}/searchForCompletable`;
   const TASK_ASSIGN_URL = `${API_URL}/task/${MOCK_TASK_1.id}/assign`;
   const TASK_COMPLETE_URL = `${API_URL}/task/${MOCK_TASK_1.id}/complete`;
+  const GET_TASK_URL = `${API_URL}/task/${MOCK_TASK_1.id}`;
 
   const ERROR: HttpError = new HttpError();
   ERROR.message = 'Critical error!';
@@ -222,6 +223,7 @@ describe('WorkAllocationService', () => {
 
     it('should call post with the correct parameters', () => {
       workAllocationService.completeTask(MOCK_TASK_1.id, 'Add case number').subscribe();
+      expect(appConfig.logMessage).toHaveBeenCalledWith(`completeTask: completing ${MOCK_TASK_1.id}`);
       expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, { actionByEvent: true, eventName: 'Add case number' });
     });
 
@@ -256,6 +258,7 @@ describe('WorkAllocationService', () => {
 
     it('should call post with the correct parameters', () => {
       workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id, 'Add case number').subscribe();
+      expect(appConfig.logMessage).toHaveBeenCalledWith(`assignAndCompleteTask: completing ${MOCK_TASK_1.id}`);
       expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {completion_options: {assign_and_complete: true}, actionByEvent: true, eventName: 'Add case number'});
     });
 
@@ -367,6 +370,12 @@ describe('WorkAllocationService', () => {
         expect(error.message).toEqual(COMPLETE_ERROR.message); // The error for completing the task.
         done();
       });
+    });
+
+    it('should get the task for the task id given with log message', () => {
+      workAllocationService.getTask(MOCK_TASK_1.id).subscribe();
+      expect(httpService.get).toHaveBeenCalledWith(GET_TASK_URL);
+      expect(appConfig.logMessage).toHaveBeenCalledWith(`getTask: ${MOCK_TASK_1.id}`);
     });
 
     it('should get task for the task id provided', (done) => {
