@@ -57,7 +57,7 @@ export class WorkAllocationService {
   private isWAEnabled(jurisdiction?: string, caseType?: string): boolean {
     this.features = this.appConfig.getWAServiceConfig();
     const ftstr = JSON.stringify(this.features);
-    console.log(`isWAEnabled: ${ftstr}`);
+    console.log(`isWAEnabled: wa-service-config returning ${ftstr.length > 0}`);
     this.appConfig.logMessage(`isWAEnabled: ${ftstr}`);
     let enabled = false;
     if (!jurisdiction || !caseType) {
