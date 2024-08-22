@@ -220,8 +220,8 @@ describe('WorkAllocationService', () => {
     }));
 
     it('should call post with the correct parameters', () => {
-      workAllocationService.completeTask(MOCK_TASK_1.id).subscribe();
-      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, { actionByEvent: true });
+      workAllocationService.completeTask(MOCK_TASK_1.id, 'Add case number').subscribe();
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, { actionByEvent: true, eventName: 'Add case number' });
     });
 
     it('should set error service error when the call fails', (done) => {
@@ -254,8 +254,8 @@ describe('WorkAllocationService', () => {
     }));
 
     it('should call post with the correct parameters', () => {
-      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id).subscribe();
-      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {completion_options: {assign_and_complete: true}, actionByEvent: true});
+      workAllocationService.assignAndCompleteTask(MOCK_TASK_1.id, 'Add case number').subscribe();
+      expect(httpService.post).toHaveBeenCalledWith(TASK_COMPLETE_URL, {completion_options: {assign_and_complete: true}, actionByEvent: true, eventName: 'Add case number'});
     });
 
     it('should set error service error when the call fails', (done) => {
@@ -333,7 +333,7 @@ describe('WorkAllocationService', () => {
         tasks: [ MOCK_TASK_2 ]
       }));
       workAllocationService.completeAppropriateTask('1234567890', 'event', 'IA', 'caseType').subscribe(result => {
-        expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
+        expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id, 'event');
         done();
       });
     });
@@ -362,7 +362,7 @@ describe('WorkAllocationService', () => {
         // Should not get here... so if we do, make sure it fails.
         done.fail('Completed task instead of erroring');
       }, error => {
-        expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id);
+        expect(completeSpy).toHaveBeenCalledWith(MOCK_TASK_2.id, 'event');
         expect(error.message).toEqual(COMPLETE_ERROR.message); // The error for completing the task.
         done();
       });
