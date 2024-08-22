@@ -1,5 +1,14 @@
 ## RELEASE NOTES
 
+### Version 7.0.58
+**EXUI-2235** add event name in task completion log
+
+### Version 7.0.57 
+**EXUI-2209** MV Upgrade to v4.0.7
+
+### Version 7.0.56 
+**EXUI-2224** 'Go' button doesn't re-activate
+
 ### Version 7.0.55
 **EXUI-1775** Refdata intend to change
 

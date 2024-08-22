@@ -1303,7 +1303,7 @@ describe('CaseEditComponent', () => {
           submit: mockClass.submit,
         });
 
-        expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('12345');
+        expect(mockWorkAllocationService.assignAndCompleteTask).toHaveBeenCalledWith('12345', component.eventTrigger.name);
       });
 
       it('should submit the case and complete task for an event submission', () => {
@@ -1339,7 +1339,7 @@ describe('CaseEditComponent', () => {
           submit: mockClass.submit,
         });
 
-        expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('12345');
+        expect(mockWorkAllocationService.completeTask).toHaveBeenCalledWith('12345', component.eventTrigger.name);
       });
 
       it('should NOT submit the case due to error', () => {
