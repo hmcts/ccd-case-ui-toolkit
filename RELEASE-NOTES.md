@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 7.0.60
+**EXUI-2146/EXUI-2230** Case file view time is 1 hour behind
+
 ### Version 7.0.58
 **EXUI-2235** add event name in task completion log
 
