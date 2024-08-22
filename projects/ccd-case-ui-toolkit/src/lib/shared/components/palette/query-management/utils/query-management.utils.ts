@@ -1,12 +1,29 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Document, FormDocument } from '../../../../domain';
+import { Document, FormDocument, CaseField } from '../../../../domain';
 import { CaseMessage, QueryListItem } from '../models';
 
 @Injectable()
 export class QueryManagementUtils {
-  public static extractCaseQueriesFromCaseField(): void {
+  private static readonly caseLevelCaseFieldId = 'qmCaseQueriesCollection';
+  public static readonly FIELD_TYPE_COLLECTION = 'Collection';
+  public static readonly FIELD_TYPE_COMPLEX = 'Complex';
 
+  public static extractCaseQueriesFromCaseField(caseField: CaseField, caseFieldId: string) {
+    const { field_type, value, id } = caseField;
+
+    // Handle Complex type fields
+    if (field_type.type === QueryManagementUtils.FIELD_TYPE_COMPLEX) {
+      if (id === QueryManagementUtils.caseLevelCaseFieldId || QueryManagementUtils.isNonEmptyObject(value)) {
+        return value;
+      }
+      return '';
+    }
+
+    // Handle Collection type fields
+    if (field_type.type === QueryManagementUtils.FIELD_TYPE_COLLECTION) {
+      return [];
+    }
   }
 
   public static documentToCollectionFormDocument(document: Document): { id: string; value: FormDocument } {
@@ -31,7 +48,7 @@ export class QueryManagementUtils {
       : null;
     const attachments = formGroup.get('attachments').value;
     return {
-      id: '',
+      id: null,
       subject,
       name: currentUserName,
       body,
@@ -51,7 +68,7 @@ export class QueryManagementUtils {
     queryItem.isHearingRelated = queryItem.isHearingRelated ? 'Yes' : 'No';
 
     return {
-      id: '',
+      id: null,
       subject: queryItem.subject,
       name: currentUserName,
       body,
@@ -62,5 +79,13 @@ export class QueryManagementUtils {
       createdBy: currentUserId,
       parentId: queryItem.id
     };
+  }
+
+  public static isObject(elem: any): boolean {
+    return typeof elem === 'object' && elem !== null;
+  }
+
+  public static isNonEmptyObject(elem: any): boolean {
+    return this.isObject(elem) && Object.keys(elem).length !== 0;
   }
 }

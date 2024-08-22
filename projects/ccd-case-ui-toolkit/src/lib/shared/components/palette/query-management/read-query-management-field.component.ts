@@ -5,11 +5,9 @@ import { AbstractFieldReadComponent } from '../base-field/abstract-field-read.co
 import { PaletteContext } from '../base-field/palette-context.enum';
 import { CaseQueriesCollection, QueryListItem } from './models';
 import { QueryManagementUtils } from './utils/query-management.utils';
-import { caseMessagesMockData } from './__mocks__';
-
 @Component({
   selector: 'ccd-read-query-management-field',
-  templateUrl: './read-query-management-field.component.html',
+  templateUrl: './read-query-management-field.component.html'
 })
 export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponent implements OnInit {
   public caseQueriesCollections: CaseQueriesCollection[];
@@ -25,17 +23,28 @@ export class ReadQueryManagementFieldComponent extends AbstractFieldReadComponen
     this.caseId = this.route.snapshot.params.cid;
     if (this.context === PaletteContext.DEFAULT) {
       // EUI-8303 Using mock data until CCD is ready with the API and data contract
-      this.caseQueriesCollections = caseMessagesMockData;
+      // this.caseQueriesCollections = caseMessagesMockData;
 
       // TODO: Actual implementation once the CCD API and data contract is available
       // Each parties will have a separate collection of party messages
       // Find whether queries tab is available in the case data
-      const queriesTab = (this.route.snapshot.data.case.tabs as CaseTab[])
-        .filter((tab) => tab.fields && tab.fields
-          .some((caseField) => caseField.id === 'QueryManagement'));
+
+      if (this.route.snapshot.data.case?.tabs) {
+        this.caseQueriesCollections = (this.route.snapshot.data.case.tabs as CaseTab[])
+          .filter((tab) => tab.fields?.some(
+            (caseField) => caseField.field_type.type === 'ComponentLauncher' && caseField.id === this.caseField.id))
+          [0].fields?.reduce((acc, caseField) => {
+            const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
+
+            if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
+              acc.push(extractedCaseQueriesFromCaseField);
+            }
+            return acc;
+          }, []);
+      }
 
       // Loop through the list of parties and their case queries collections
-      QueryManagementUtils.extractCaseQueriesFromCaseField();
+      // QueryManagementUtils.extractCaseQueriesFromCaseField();
     }
   }
 

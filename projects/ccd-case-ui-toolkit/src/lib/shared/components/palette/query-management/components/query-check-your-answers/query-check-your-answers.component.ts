@@ -6,6 +6,7 @@ import { switchMap, take } from 'rxjs/operators';
 import {
   CaseEventData,
   CaseEventTrigger,
+  CaseTab,
   CaseView,
   CaseViewTrigger,
   TaskSearchParameter
@@ -41,6 +42,8 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   public eventCompletionParams: EventCompletionParams;
   private caseId: string;
 
+  public caseQueriesCollections: CaseQueriesCollection[];
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -52,7 +55,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.queryId = this.route.snapshot.params.qid;
-    this.caseNotifier.caseView.pipe(take(1)).subscribe(caseDetails => {
+    this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
       if (this.queryCreateContext !== QueryCreateContext.RESPOND) {
         // Find raise a query event trigger from the list, will be used when submitting the query
@@ -67,6 +70,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
         this.getEventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
       }
     });
+    this.isCaseQueriesClollectionDataPresent();
   }
 
   public ngOnDestroy(): void {
@@ -110,6 +114,7 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       () => this.router.navigate(['/', 'service-down'])
     );
   }
+
   public searchAndCompleteTask(): void {
     // Search Task
     const searchParameter = { ccdId: this.caseDetails.case_id } as TaskSearchParameter;
@@ -139,17 +144,44 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
       ? QueryManagementUtils.getNewQueryData(this.formGroup, currentUserDetails)
       : QueryManagementUtils.getRespondOrFollowupQueryData(this.formGroup, this.queryItem, currentUserDetails);
 
-    return {
+    // Base data structure for the query
+    const newQueryData = {
       qmCaseQueriesCollection: {
         partyName: '', // Not returned by CCD
         roleOnCase: '', // Not returned by CCD
         caseMessages: [
           {
-            id: '',
+            id: null,
             value: caseMessage
           }
         ]
       }
     };
+
+    // If caseQueriesCollections is not empty, append its data
+    if (this.caseQueriesCollections && this.caseQueriesCollections.length > 0) {
+      newQueryData.qmCaseQueriesCollection.caseMessages.push(
+        ...this.caseQueriesCollections.map((collection) => collection.caseMessages).flat()
+      );
+    }
+
+    return newQueryData;
+  }
+
+  private isCaseQueriesClollectionDataPresent() {
+    if (this.route.snapshot.data.case?.tabs) {
+      this.caseQueriesCollections = (this.route.snapshot.data.case.tabs as CaseTab[])
+        .filter((tab) => tab.fields?.some(
+          (caseField) => caseField.field_type.type === 'ComponentLauncher' && caseField.id === 'QueryManagement1'))
+        [0].fields?.reduce((acc, caseField) => {
+          console.log('acc, caseField', acc, caseField);
+          const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
+
+          if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
+            acc.push(extractedCaseQueriesFromCaseField);
+          }
+          return acc;
+        }, []);
+    }
   }
 }
