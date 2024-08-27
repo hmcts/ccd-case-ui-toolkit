@@ -207,6 +207,10 @@ export class AppMockConfig implements AbstractAppConfig {
     return '';
   }
 
+  public getEventsToHide(): string[] {
+    return [];
+  }
+
   public getEnableRestrictedCaseAccessConfig(): boolean {
     return true;
   }

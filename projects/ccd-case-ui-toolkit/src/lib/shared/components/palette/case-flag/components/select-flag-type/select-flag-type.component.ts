@@ -98,6 +98,24 @@ export class SelectFlagTypeComponent implements OnInit, OnDestroy {
       }
     );
 
+    this.formGroup.addControl(CaseFlagFormFields.FLAG_TYPE, new FormControl(''));
+    this.formGroup.addControl(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION, new FormControl(''));
+    this.formGroup.addControl(CaseFlagFormFields.IS_VISIBLE_INTERNALLY_ONLY, new FormControl(''));
+
+    // Should clear descriptionControlName if flagTypeControlName is changed
+    this.flagTypeControlChangesSubscription = this.formGroup.get(CaseFlagFormFields.FLAG_TYPE).valueChanges
+      .subscribe(_ => {
+        this.formGroup.get(CaseFlagFormFields.OTHER_FLAG_DESCRIPTION).setValue('');
+        this.cachedPath = [];
+
+        // required to clear language interpreter
+        this.formGroup.patchValue({
+          [SearchLanguageInterpreterControlNames.LANGUAGE_SEARCH_TERM]: '',
+          [SearchLanguageInterpreterControlNames.MANUAL_LANGUAGE_ENTRY]: ''
+        });
+      }
+    );
+
     // If hmctsServiceId is present, use this to retrieve the relevant list of flag types
     if (this.hmctsServiceId) {
       this.flagRefdata$ = this.caseFlagRefdataService

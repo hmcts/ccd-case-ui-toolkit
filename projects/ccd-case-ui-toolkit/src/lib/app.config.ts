@@ -117,6 +117,7 @@ export abstract class AbstractAppConfig {
   public abstract getCaseFlagsRefdataApiUrl(): string;
   public abstract getRDCommonDataApiUrl(): string;
   public abstract getCaseDataStoreApiUrl(): string;
+  public abstract getEventsToHide(): string[];
   public abstract getEnableRestrictedCaseAccessConfig(): boolean;
   public abstract getEnableCaseFileViewVersion1_1(): boolean;
 }

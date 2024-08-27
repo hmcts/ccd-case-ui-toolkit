@@ -281,6 +281,9 @@ describe('ManageCaseFlagsComponent', () => {
     }
   ] as FlagsWithFormGroupPath[];
 
+  const updateMode = '#ARGUMENT(UPDATE)';
+  const updateExternalMode = '#ARGUMENT(UPDATE,EXTERNAL)';
+
   beforeEach(waitForAsync(() => {
     const source = new BehaviorSubject<RpxLanguage>('en');
     let currentLanguage: RpxLanguage = 'en';
