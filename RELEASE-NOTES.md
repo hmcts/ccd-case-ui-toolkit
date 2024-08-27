@@ -207,6 +207,9 @@
 **EXUI-1000** Complex type not showing data
 **EXUI-1006** Case Flags stopped working
 
+### Version 7.0.60
+**EXUI-EXUI-2280** MV Upgrade to v4.0.8
+
 ### Version 7.0.58
 **EXUI-2235** add event name in task completion log
 
