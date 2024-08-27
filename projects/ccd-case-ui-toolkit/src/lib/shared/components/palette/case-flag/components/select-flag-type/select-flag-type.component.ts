@@ -131,6 +131,24 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
   public ngOnDestroy(): void {
     this.flagRefdata$?.unsubscribe();
     this.flagTypeControlChangesSubscription?.unsubscribe();
+    // check if the user has an existing path when navigating away from the page
+    // if so we may need to ensure the values are set correctly.
+    this.checkForExistingPath();
+  }
+
+  public checkForExistingPath() {
+    // Restore values from cachedPath
+    if (this.subJourneyIndex <= 0) {
+      // check if the user is navigating to the previous page in the jounrey.
+      // in this situation we need to restore the full path for data retention across pages.
+      if (this.cachedPath && this.cachedPath.length > 0) {
+        this.cachedPath.forEach((flagType) => {
+          if (flagType) {
+            this.formGroup.get(CaseFlagFormFields.FLAG_TYPE)?.setValue(flagType, { emitEvent: false });
+          }
+        });
+      }
+    }
   }
 
   public onNext(): void {
@@ -251,7 +269,7 @@ export class SelectFlagTypeComponent extends AbstractJourneyComponent implements
       const [foundFlagType, path] = FlagType.searchPathByFlagTypeObject(formControl.value as FlagType, this.cachedRDFlagTypes[0].childFlags);
       this.cachedPath = [...path, foundFlagType];
       formControl.setValue((this.selectedFlagType && (journeyPreviousPageNumber > journeyPageNumber)) ? this.cachedPath[this.cachedPath.length - 1] : this.cachedPath[0], { emitEvent: false });
-      if (this.cachedPath.length !== 0){
+      if (this.cachedPath.length !== 0 && (journeyPreviousPageNumber > journeyPageNumber)){
         this.subJourneyIndex = this.cachedPath.length-1;
       }
     }
