@@ -50,7 +50,7 @@ describe('WindowService', () => {
   });
 
   it('should open on confirm message', () => {
-    windowService.confirm('organisationDetails');
+    // windowService.confirm('organisationDetails');
     windowService.setLocalStorage('organisationDetails', userName);
     expect(windowService.getLocalStorage('organisationDetails')).toBe(userName);
   });

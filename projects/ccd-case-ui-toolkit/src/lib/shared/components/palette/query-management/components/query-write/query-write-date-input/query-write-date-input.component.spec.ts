@@ -49,6 +49,13 @@ describe('QueryWriteDateInputComponent', () => {
     });
   });
 
+  it('should set day, month, and year for a valid date', () => {
+    const date = new Date(2024, 7, 27); // August 27, 2024
+    component.writeValue(date);
+    expect(component.day).toBe(27);
+    expect(component.month).toBe(8); // Months are 1-based in this component
+    expect(component.year).toBe(2024);
+  });
 
   describe('updateDate', () => {
     it('should invoke onChange and onTouched when updateDate is called with a valid date input', () => {

@@ -21,18 +21,18 @@ export class QueryManagementUtils {
     }
 
     // Handle Collection type fields
-    if (field_type.type === QueryManagementUtils.FIELD_TYPE_COLLECTION) {
-      return [];
-    }
+    // if (field_type.type === QueryManagementUtils.FIELD_TYPE_COLLECTION) {
+    //   return [];
+    // }
   }
 
   public static documentToCollectionFormDocument(document: Document): { id: string; value: FormDocument } {
     return {
       id: null,
       value: {
-        document_filename: document.originalDocumentName,
-        document_url: document._links.self.href,
-        document_binary_url: document._links.binary.href
+        document_filename: document?.originalDocumentName,
+        document_url: document?._links?.self?.href,
+        document_binary_url: document?._links?.binary?.href
       }
     };
   }

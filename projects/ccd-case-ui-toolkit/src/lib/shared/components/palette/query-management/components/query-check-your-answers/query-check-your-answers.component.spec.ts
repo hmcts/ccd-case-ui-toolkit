@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,7 +19,7 @@ class RpxTranslateMockPipe implements PipeTransform {
   }
 }
 
-xdescribe('QueryCheckYourAnswersComponent', () => {
+describe('QueryCheckYourAnswersComponent', () => {
   let component: QueryCheckYourAnswersComponent;
   let fixture: ComponentFixture<QueryCheckYourAnswersComponent>;
   let nativeElement: any;
@@ -79,11 +79,11 @@ xdescribe('QueryCheckYourAnswersComponent', () => {
       hearingDate: '',
       createdOn: new Date('2023-06-01'),
       createdBy: 'Person D',
-      parentId: '444-444',
+      parentId: '444-444'
     }
   ];
 
-  const childrenItems = items.map(item => {
+  const childrenItems = items.map((item) => {
     const listItem = new QueryListItem();
     Object.assign(listItem, item);
     return listItem;
@@ -129,6 +129,76 @@ xdescribe('QueryCheckYourAnswersComponent', () => {
     snapshot: {
       params: {
         qid: '1'
+      },
+      data: {
+        case: {
+          tabs: [
+            {
+              fields: [],
+              id: 'QueryManagement2',
+              label: 'Queries (writeable view)',
+              order: 8,
+              show_condition: null
+            },
+            {
+              fields: [
+                {
+                  field_type: {
+                    collection_field_type: null,
+                    complex_fields: [],
+                    fixed_list_items: [],
+                    id: 'ComponentLauncher',
+                    max: null,
+                    min: null,
+                    regular_expression: null,
+                    type: 'ComponentLauncher'
+                  },
+                  id: 'QueryManagement1',
+                  label: 'Query management component'
+                },
+                {
+                  field_type: {
+                    collection_field_type: null,
+                    complex_fields: [],
+                    fixed_list_items: [],
+                    id: 'CaseQueriesCollection',
+                    max: null,
+                    min: null,
+                    regular_expression: null,
+                    type: 'Complex'
+                  },
+                  id: 'qmCaseQueriesCollection',
+                  label: 'Query management case queries collection',
+                  value: {
+                    caseMessages: [{
+                      id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+                      value: {
+                        attachments: [],
+                        body: 'testing by olu',
+                        createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+                        createdOn: '2024-08-27T15:44:50.700Z',
+                        hearingDate: '2023-01-10',
+                        id: null,
+                        isHearingRelated: 'Yes',
+                        name: 'Piran Sam',
+                        parentId: 'ca',
+                        subject: 'Review attached document'
+                      }
+                    }],
+                    partyName: '',
+                    roleOnCase: ''
+                  }
+                }
+
+              ],
+              id: 'QueryManagement1',
+              label: 'Queries (read-only view)',
+              order: 7,
+              show_condition: null
+            }
+          ]
+        }
+
       }
     }
   };
@@ -140,7 +210,7 @@ xdescribe('QueryCheckYourAnswersComponent', () => {
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'TEST',
-        name: 'Test',
+        name: 'Test'
       }
     },
     channels: [],
@@ -148,8 +218,71 @@ xdescribe('QueryCheckYourAnswersComponent', () => {
       id: 'CaseCreated',
       name: 'Case created'
     },
-    tabs: [],
-    triggers: [],
+    tabs: [
+      {
+        fields: [],
+        id: 'QueryManagement2',
+        label: 'Queries (writeable view)',
+        order: 8,
+        show_condition: null
+      },
+      {
+        fields: [],
+        id: 'QueryManagement1',
+        label: 'Queries (read-only view)',
+        order: 8,
+        show_condition: null
+      }
+    ],
+    triggers: [
+    ],
+    events: []
+  };
+  const CASE_VIEW_OTHER: CaseView = {
+    case_id: '1',
+    case_type: {
+      id: 'TestAddressBookCase',
+      name: 'Test Address Book Case',
+      jurisdiction: {
+        id: 'TEST',
+        name: 'Test'
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [
+      {
+        fields: [],
+        id: 'QueryManagement2',
+        label: 'Queries (writeable view)',
+        order: 8,
+        show_condition: null
+      },
+      {
+        fields: [],
+        id: 'QueryManagement1',
+        label: 'Queries (read-only view)',
+        order: 8,
+        show_condition: null
+      }
+    ],
+    triggers: [
+      {
+        description: 'Raise a query',
+        id: 'queryManagementRaiseQuery',
+        name: 'Raise a query',
+        order: 14
+      },
+      {
+        description: 'Respond to a query (not intended to be visible)',
+        id: 'queryManagementRespondQuery',
+        name: 'Respond to a query',
+        order: 15
+      }
+    ],
     events: []
   };
 
@@ -192,7 +325,7 @@ xdescribe('QueryCheckYourAnswersComponent', () => {
     sessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     casesService = jasmine.createSpyObj('casesService', ['getEventTrigger', 'createEvent', 'getCaseViewV2']);
     casesService.getEventTrigger.and.returnValue(of(eventTrigger));
-    casesService.createEvent.and.returnValue(of({status: 200}));
+    casesService.createEvent.and.returnValue(of({ status: 200 }));
     caseNotifier = new CaseNotifier(casesService);
     caseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
 
@@ -243,6 +376,7 @@ xdescribe('QueryCheckYourAnswersComponent', () => {
   it('should display correct columns for raise a query', () => {
     component.queryCreateContext = QueryCreateContext.NEW_QUERY;
     fixture.detectChanges();
+    component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
     expect(caption.innerText).toEqual('Raise a query');
     const heading = nativeElement.querySelector('.govuk-heading-l');
@@ -258,6 +392,7 @@ xdescribe('QueryCheckYourAnswersComponent', () => {
   it('should display correct columns for respond to a query', () => {
     component.queryCreateContext = QueryCreateContext.RESPOND;
     fixture.detectChanges();
+    component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
     expect(caption).toBeNull();
     const heading = nativeElement.querySelector('.govuk-heading-l');
@@ -271,6 +406,7 @@ xdescribe('QueryCheckYourAnswersComponent', () => {
   it('should display correct columns for following up a query', () => {
     component.queryCreateContext = QueryCreateContext.FOLLOWUP;
     fixture.detectChanges();
+    component.ngOnInit();
     const caption = nativeElement.querySelector('.govuk-caption-l');
     expect(caption).toBeNull();
     const heading = nativeElement.querySelector('.govuk-heading-l');
@@ -283,6 +419,17 @@ xdescribe('QueryCheckYourAnswersComponent', () => {
   it('should query submission failure navigate to service down page', () => {
     component.submit();
     expect(router.navigate).toHaveBeenCalledWith(['/', 'service-down']);
+  });
+
+  it('should set querySubmitted to true when submit is called', () => {
+    caseNotifier.caseView = new BehaviorSubject(CASE_VIEW_OTHER).asObservable();
+    fixture.detectChanges();
+    component.ngOnInit();
+
+    spyOn(component.querySubmitted, 'emit');
+    component.submit();
+
+    expect(component.querySubmitted.emit).toHaveBeenCalledWith(true);
   });
 
   describe('searchAndCompleteTask', () => {

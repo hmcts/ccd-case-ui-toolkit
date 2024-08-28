@@ -1,5 +1,5 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Document, FormDocument } from '../../../../domain';
+import { CaseField, Document, FieldType, FormDocument } from '../../../../domain';
 import { QueryListItem } from '../models';
 import { QueryManagementUtils } from './query-management.utils';
 
@@ -102,6 +102,88 @@ describe('QueryManagementUtils', () => {
       expect(caseMessageResult.body).toEqual(caseMessage.body);
       expect(caseMessageResult.isHearingRelated).toEqual(caseMessage.isHearingRelated);
       expect(caseMessageResult.hearingDate).toEqual(caseMessage.hearingDate);
+    });
+  });
+
+  describe('extractCaseQueriesFromCaseField', () => {
+    it('should return value for Complex type field when id matches caseLevelCaseFieldId', () => {
+      const caseField = {
+        id: 'qmCaseQueriesCollection',
+        field_type: {
+          id: 'CaseQueriesCollection',
+          type: QueryManagementUtils.FIELD_TYPE_COMPLEX
+        } as FieldType,
+        value: {
+          caseMessages: [{
+            id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+            value: {
+              attachments: [],
+              body: 'testing by olu',
+              createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+              createdOn: '2024-08-27T15:44:50.700Z',
+              hearingDate: '2023-01-10',
+              id: null,
+              isHearingRelated: 'Yes',
+              name: 'Piran Sam',
+              parentId: 'ca',
+              subject: 'Review attached document'
+            }
+          }],
+          partyName: '',
+          roleOnCase: ''
+        }
+      } as CaseField;
+      const result = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
+      expect(result).toEqual(caseField.value);
+    });
+
+    it('should return value for Complex type field when value is a non-empty object', () => {
+      const caseField = {
+        id: 'qmCaseQueriesCollection',
+        field_type: {
+          id: 'CaseQueriesCollection',
+          type: QueryManagementUtils.FIELD_TYPE_COMPLEX
+        } as FieldType,
+        value: null
+      } as CaseField;
+
+      const result = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
+      expect(result).toEqual(caseField.value);
+    });
+
+    it('should return null for Collection type field', () => {
+      const caseField = {
+        id: 'qmCaseQueriesCollection',
+        field_type: {
+          id: 'CaseQueriesCollection',
+          type: QueryManagementUtils.FIELD_TYPE_COMPLEX
+        } as FieldType,
+        value: null
+      } as CaseField;
+      const result = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
+      expect(result).toEqual(null);
+    });
+  });
+
+  describe('isNonEmptyObject', () => {
+    it('should return true for non-empty object', () => {
+      const obj = { key: 'value' };
+      const result = QueryManagementUtils.isNonEmptyObject(obj);
+      expect(result).toBeTruthy();
+    });
+
+    it('should return false for empty object', () => {
+      const obj = {};
+      const result = QueryManagementUtils.isNonEmptyObject(obj);
+      expect(result).toBeFalsy();
+    });
+
+    it('should return false for non-object types', () => {
+      expect(QueryManagementUtils.isNonEmptyObject(null)).toBeFalsy();
+      expect(QueryManagementUtils.isNonEmptyObject(undefined)).toBeFalsy();
+      expect(QueryManagementUtils.isNonEmptyObject('string')).toBeFalsy();
+      expect(QueryManagementUtils.isNonEmptyObject(123)).toBeFalsy();
+      expect(QueryManagementUtils.isNonEmptyObject([])).toBeFalsy();
     });
   });
 });

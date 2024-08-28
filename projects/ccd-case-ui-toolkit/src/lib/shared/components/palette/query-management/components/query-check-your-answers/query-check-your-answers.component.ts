@@ -169,11 +169,11 @@ export class QueryCheckYourAnswersComponent implements OnInit, OnDestroy {
   }
 
   private isCaseQueriesClollectionDataPresent() {
-    if (this.route.snapshot.data.case?.tabs) {
+    if (this.route.snapshot?.data?.case?.tabs) {
       this.caseQueriesCollections = (this.route.snapshot.data.case.tabs as CaseTab[])
-        .filter((tab) => tab.fields?.some(
+        .filter((tab) => tab?.fields?.some(
           (caseField) => caseField.field_type.type === 'ComponentLauncher' && caseField.id === 'QueryManagement1'))
-        [0].fields?.reduce((acc, caseField) => {
+        [0]?.fields?.reduce((acc, caseField) => {
           console.log('acc, caseField', acc, caseField);
           const extractedCaseQueriesFromCaseField = QueryManagementUtils.extractCaseQueriesFromCaseField(caseField, caseField.id);
 
